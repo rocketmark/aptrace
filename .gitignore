@@ -1,0 +1,20 @@
+# Upstream Galois clone (macaw + crucible/what4/semmc/dismantle/asl-translator
+# submodules) -- ~2.7GB, its own git history. Not vendored; see README.md for
+# the exact clone/build steps to recreate it.
+/external/
+
+# cabal build artifacts (built under external/macaw when following the README)
+dist-newstyle/
+*.hi
+*.o
+
+# Proprietary firmware and vendor tooling -- do not redistribute.
+# Hashes are tracked (SHA256SUMS.txt); the binaries/manual/flasher are not.
+/Autopilot_firm/*.bin
+/Autopilot_firm/bossac.exe
+/Autopilot_firm/desktop.ini
+/PerformingRigs_UserManual_AutoPilot.pdf
+/research/firmware/originals/*.bin
+/research/firmware/extracted/*
+
+.DS_Store

@@ -1,0 +1,153 @@
+{-# LANGUAGE DataKinds #-}
+module Main (main) where
+
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BSC
+import           Data.Maybe ( mapMaybe )
+import qualified Data.Map as Map
+import           Data.Parameterized.Some ( Some(..) )
+import           Data.Word ( Word32 )
+import           Lens.Micro ( (^.) )
+import           Numeric ( readHex, showHex )
+import qualified Prettyprinter as PP
+import           System.Environment ( getArgs )
+import           System.Exit ( die )
+
+import qualified Data.Macaw.ARM as ARM
+import qualified Data.Macaw.ARM.ARMReg as AR
+import qualified Data.Macaw.Discovery as MD
+import qualified Data.Macaw.Discovery.ParsedContents as MDP
+import qualified Data.Macaw.Memory as MM
+
+import           APTrace.FirmwareLoader
+  ( buildMemory, buildMemoryWithMMIO, resolveEntry )
+import           APTrace.SymbolicRunner
+  ( BranchQuery(..), BranchResult(..), checkBranchModel )
+import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
+
+-- Fixed for the AutoPilot/Mando firmware family (ATSAMD51, 192KB RAM);
+-- not yet exposed as CLI flags -- see the plan's Step 5 "not over-designing
+-- the CLI yet" guidance.
+ramBase :: Word32
+ramBase = 0x20000000
+
+ramSize :: Word32
+ramSize = 0x30000
+
+numIrq :: Int
+numIrq = 40
+
+main :: IO ()
+main = do
+  args <- getArgs
+  case args of
+    ["solve", path]             -> runSolve path 0x4000
+    ["solve", path, flashBaseS] -> runSolve path (parseHexWord flashBaseS)
+    [path]                      -> run path 0x4000
+    [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]"
+
+parseHexWord :: String -> Word32
+parseHexWord s =
+  let s' = case s of
+             ('0':'x':rest) -> rest
+             ('0':'X':rest) -> rest
+             _              -> s
+  in case readHex s' of
+       [(w, "")] -> w
+       _         -> error ("not a hex address: " ++ s)
+
+-- | @aptrace FIRMWARE.bin [FLASH_BASE]@ -- Step 5/6 demo: parse the vector
+-- table, run Macaw code discovery from every handler, and dump the
+-- recovered functions.
+run :: FilePath -> Word32 -> IO ()
+run path flashBase = do
+  bytes <- BS.readFile path
+  putStrLn (path ++ ": " ++ show (BS.length bytes) ++ " bytes, flash base 0x"
+            ++ showHex flashBase "")
+  case buildMemory bytes flashBase ramBase ramSize of
+    Left err -> die ("failed to build memory image: " ++ err)
+    Right mem -> do
+      let entries = parseVectorTable numIrq bytes
+      putStrLn (show (length entries) ++ " non-empty vector table entries:")
+      mapM_ (putStrLn . ("  " ++) . show) entries
+
+      let (addrSymMap, entryAddrs) = resolveEntries mem entries
+      putStrLn ("\nRunning Macaw code discovery from " ++ show (length entryAddrs)
+                ++ " entry points...")
+      let discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap entryAddrs []
+          funs = discState ^. MD.funInfo
+
+      putStrLn ("\nDiscovered " ++ show (Map.size funs) ++ " function(s):\n")
+      mapM_ (\(Some info) -> print (PP.pretty info)) (Map.elems funs)
+
+resolveEntries :: MM.Memory 32 -> [VectorEntry] -> (MD.AddrSymMap 32, [MM.MemSegmentOff 32])
+resolveEntries mem entries =
+  let resolved = mapMaybe (\e -> (,) (veName e) <$> resolveEntry mem (veRawAddr e)) entries
+      addrSymMap = Map.fromList [ (addr, BSC.pack name) | (name, addr) <- resolved ]
+  in (addrSymMap, map snd resolved)
+
+-- | @aptrace solve FIRMWARE.bin [FLASH_BASE]@ -- Steps 7-9 demo.
+--
+-- This is deliberately hardcoded to one real, already-discovered function in
+-- the AutoPilot firmware family, @IRQ10_Handler@: it clears a bit in an MMIO
+-- register at 0x40002000, then polls a status word at 0x40002008 in a loop
+-- (@while (status == 0) {}@-shaped), branching to 0x953c once the status
+-- becomes non-zero. See research/notes/symbolic-execution-results.md for how
+-- these addresses were found (a real firmware literal-pool load, confirmed
+-- by hand-decoding the firmware bytes).
+--
+-- We seed R3 (the register holding the peripheral base pointer, invariant
+-- across loop iterations) concretely, symbolically execute *only* the loop
+-- body block in isolation (see 'APTrace.SymbolicRunner' for why), and ask
+-- the solver for a model of R2 (the loaded status word) that reaches each of
+-- the block's two branch targets.
+runSolve :: FilePath -> Word32 -> IO ()
+runSolve path flashBase = do
+  bytes <- BS.readFile path
+  let mmioBase = 0x40002000 :: Word32
+      mmioSize = 0x400       :: Word32
+      funcEntryRaw = 0x952d  :: Word32  -- IRQ10_Handler, Thumb bit set
+      loopBlockAddr = 0x9536 :: Word32  -- loop body: load status, compare, branch
+      exitAddr = 0x953c      :: Word32  -- falls out of the loop
+      loopAddr = 0x9536      :: Word32  -- branches back to the top of the loop
+  case buildMemoryWithMMIO bytes flashBase ramBase ramSize mmioBase mmioSize of
+    Left err -> die ("failed to build memory image: " ++ err)
+    Right mem -> do
+      let entries = parseVectorTable numIrq bytes
+          (addrSymMap, entryAddrs) = resolveEntries mem entries
+          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap entryAddrs []
+          funs = discState ^. MD.funInfo
+
+      funcEntry <- maybe (die "could not resolve function entry address") pure
+                     (resolveEntry mem funcEntryRaw)
+      Some funInfo <- maybe (die "target function was not discovered") pure
+                        (Map.lookup funcEntry funs)
+      loopBlockOff <- maybe (die "could not resolve loop block address") pure
+                        (MM.resolveAbsoluteAddr mem (MM.memWord (fromIntegral loopBlockAddr)))
+      block <- maybe (die "target block not found in discovered function") pure
+                 (Map.lookup loopBlockOff (funInfo ^. MD.parsedBlocks))
+
+      putStrLn ("Function @ 0x" ++ showHex funcEntryRaw "" ++ ", loop block @ 0x"
+                ++ showHex loopBlockAddr "")
+      putStrLn ("MMIO region: 0x" ++ showHex mmioBase "" ++ " - 0x"
+                ++ showHex (mmioBase + mmioSize) "" ++ " (fully symbolic)")
+      putStrLn ("Seeding R3 = 0x" ++ showHex mmioBase "" ++ " (peripheral base pointer)\n")
+
+      putStrLn ("Query 1: is exit block 0x" ++ showHex exitAddr "" ++ " reachable?")
+      exitResult <- checkBranchModel mem block
+        BranchQuery { bqPointerReg = AR.r3, bqPointerVal = mmioBase
+                    , bqTargetAddr = exitAddr, bqObserveReg = AR.r2 }
+      reportResult "R2 (status word @ 0x40002008)" exitResult
+
+      putStrLn ("\nQuery 2: is loop-continuation 0x" ++ showHex loopAddr "" ++ " reachable?")
+      loopResult <- checkBranchModel mem block
+        BranchQuery { bqPointerReg = AR.r3, bqPointerVal = mmioBase
+                    , bqTargetAddr = loopAddr, bqObserveReg = AR.r2 }
+      reportResult "R2 (status word @ 0x40002008)" loopResult
+
+reportResult :: String -> BranchResult -> IO ()
+reportResult label res = case res of
+  Unreachable -> putStrLn "  UNSAT: no model -- this branch is not reachable."
+  Reachable v -> putStrLn ("  SAT: reachable when " ++ label ++ " = 0x" ++ showHex v "")
+  SolverError e -> putStrLn ("  error: " ++ e)

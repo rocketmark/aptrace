@@ -1,0 +1,19 @@
+event_id,dispatcher_target,kind,payload_or_shape,autopilot_tx,remote_rx,confidence,notes
+0,0x92f0,single-byte,X,0x7f84,0x10e22 X branch,high,No direct producer found in current direct-pending-write survey; endpoint remains present.
+1,0x92fa,single-byte,@,0x7f84,0x10db4 #/@ branch,high,Producer 0x8f9c schedules count=3 on bounds/position condition -> @@@.
+2,0x92f6,none,—,—,—,high,No outbound send; no direct producer found.
+3,0x92f6,none,—,—,—,high,No outbound send; no direct producer found.
+4,0x92fa,single-byte,@,0x7f84,0x10db4 #/@ branch,very high,R0 schedules once; R1 schedules twice.
+5,0x9306,dynamic string,V01R39,0x8c10,0xba98 synchronous capture -> UI around 0xfa10/0xfadc,very high,Scheduled by &|. Function 0x4328 initializes buffer 0x20003134 to V01R39; Remote displays it under AutoPilot firmware-version UI.
+6,0x930a,dynamic ASCII,"P<value0>, or P<value0>,<value1>,<bool>,",0x8c10,0xc440 synchronous P parser,very high structure / medium semantics,Scheduled by S|. Three-field variant emitted when AP state byte 0x20002524 == 4; Remote also knows a PN branch not yet matched to an AP producer.
+7,0x9356,dynamic ASCII CSV,11 numeric comma-terminated fields,0x8c70 -> 0x8c10,0xc440 bulk parser,very high structure / low field semantics,"Scheduled by !. AutoPilot emits 11 fields, while this Remote routine explicitly invokes its numeric parser 10 times."
+8,0x935c,dynamic ASCII CSV,"<value/10000>,<(value/100)%100>,<value%100>,",0x8d74 -> 0x8c10,not found,high structure / low semantic,No direct producer found. Earlier firmware-version hypothesis downgraded because &| -> V01R39 is the proven firmware-version path.
+9,0x9362,dynamic ASCII numeric,scaled float x1000 -> decimal,0x8c10,not found,high structure / low semantic,No direct producer found in current survey.
+10,0x9390,literal string,C,0x8c10,0x10f6e C/c branch,high,Producer 0x8b4e schedules once on timed state-monitor path.
+11,0x9394,literal string,M1,0x8c10,no active M1 branch found,high endpoint / medium dormant inference,No direct producer found; Remote async M parser handles MS/MT but not M1. Likely dormant/legacy compatibility endpoint.
+12,0x9398,literal string,M2,0x8c10,no active M2 branch found,high endpoint / medium dormant inference,No direct producer found; likely dormant/legacy compatibility endpoint.
+13,0x92fe,dynamic string,a0 / a1 / a2,0x8c10,0x10cf4 lowercase state branch,very high structure,Builder 0x4440; startup schedules count=5 at 0x94b2; state-change path schedules count=1 at 0x445a. Human state meanings unresolved.
+14,0x939c,literal string,M3,0x8c10,no active M3 branch found,high endpoint / medium dormant inference,No direct producer found; likely dormant/legacy compatibility endpoint.
+15,0x93a0,dynamic ASCII numeric,selected per-channel signed value + comma,0x8ddc -> 0x8c10,0xb958 synchronous I-family numeric parser,high linkage / low numeric semantic,Producer 0x8b70 on per-channel state completion; reads i32 table 0x20002064[channel].
+16,0x93a6,literal string,MS,0x8c10,0x10e5a M -> S branch,very high,Producer 0x5ea4 schedules count=3 on connection/state transition.
+17,0x93aa,single-byte,#,0x7f84,0x10db4 #/@ branch and synchronous wait loops,very high,G schedules 1; helper 0x4618 schedules 2 from several paths; W1 calls helper 0x4630 with 5 under state preconditions.

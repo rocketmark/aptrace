@@ -1,0 +1,16 @@
+write_site,event_id,count_or_value,producer_context,trigger_or_caller,payload,confidence,notes
+0x445a,13,1,0x4440 state/status builder,state change when 0x20002329 == 0,a0 / a1 / a2,high,Builds lowercase a plus one state digit; see pending-events.md.
+0x4622,17,2,helper 0x4618,callers 0x8200; 0x8390 (+ path); 0x85b4 (T/non-TR path),# repeated twice,high,Guarded by byte 0x2000209f == 0.
+0x4638,17,r0,helper 0x4630,caller 0x861c in W1 path supplies r0=5,# repeated caller count,high,W1 can therefore schedule five # bytes when its state preconditions pass.
+0x5ea4,16,3,connection/state transition path,transition/watchdog logic,MS repeated three times,high,Active asynchronous connection/status event.
+0x81fc,17,0,parser/reset path,clear/reset,none,high,Explicitly clears pending event 17.
+0x83ea,17,1,G parser branch,G request,#,very high,Direct request -> response link.
+0x86ac,4,2,R1 parser branch,R1,@@,very high,Shared store site with R0; R1 supplies count 2.
+0x86ac,4,1,R0 parser branch via 0x86ca,R0,@,very high,Shared store site; R0 supplies count 1.
+0x87ba,7,1,! parser branch,!0| / !1|,11-field numeric CSV,very high,Remote c440 routine parses only 10 fields; preserve this mismatch.
+0x87d2,6,1,S parser branch,S|,P-prefixed response,very high,"Normal P<value0>, or conditional 3-field form."
+0x889a,5,1,& parser branch,&|,V01R39,very high,Proven AutoPilot firmware-version query/response path.
+0x8b4e,10,1,timed state-monitor path,~400 ms state condition,C,high,Active asynchronous event.
+0x8b70,15,1,per-channel completion monitor,I-family state machine completion,"<signed-number>,",high,Selector updated to channel+1 at 0x8b74 before event dispatch.
+0x8f9c,1,3,bounds/position monitor path,out-of-bounds/position condition,@@@,high,Scheduled before call to 0x6e4c.
+0x94b2,13,5,startup sequence,boot/startup,a0/a1/a2 repeated five times,very high,0x4328 is also called during startup to initialize version string V01R39.
