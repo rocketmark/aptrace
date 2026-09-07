@@ -262,6 +262,55 @@ G/!/S's handlers perform their claimed event-scheduling writes (only handler-ent
 hooking outbound TX at `0x8c10`/`0x7f84`; adding the Remote/mando firmware and a
 virtual RF queue connecting both sides — all explicitly requested, next in queue.
 
+### Session paused: deep dive into the whole-function dispatcher replay
+
+Per direct instruction, spent this session tracing the caller/state setup
+into `0x8258` (R4-R7), dumping the `0x827e`-`0x82c4` indexed-lookup
+structure, and trying to get a real in-memory `&|` packet through the
+*whole* compiled dispatcher function (not just the isolated `0x888c` block).
+Full details: [protocol-harness-results.md](protocol-harness-results.md)
+("Follow-up session" heading).
+
+**Real progress, not just exploration:**
+- Found and fixed a genuine bug: the opaque function-call override clobbered
+  every register, including AAPCS callee-saved ones (R4-R11), corrupting the
+  loop's own counter/table-pointer state. Fixed via `MS.updateReg`, only
+  substituting R0-R3/R12. Confirmed via direct register tracing.
+- Built a reusable diagnostic: a step-tracing Crucible `ExecutionFeature`
+  (`APTrace.ProtocolHarness.debugFeature`) that turns an opaque hang into a
+  visible "stuck cycling through addresses X,Y,Z" trace — this is what made
+  both the calling-convention bug and the next finding possible to diagnose
+  at all, instead of guessing blind.
+- Traced the real caller (`0x8a34 -> 0x8259`) and found Macaw lifts a nearby
+  call site (`0x801c`) as **ARM/A32-mode code**, which is architecturally
+  impossible on Cortex-M4 (M-profile has no ARM state). Flagged as a
+  discovery anomaly worth a closer look on its own, separate from this task.
+- Ruled out packet content as the whole-function loop's blocker (tested two
+  different concrete `buffer[1]` values with identical non-terminating
+  results), narrowing the real cause to a **memory-modeling gap**: the
+  opaque-call stubs for `0x5274`/`0x5448` (real per-channel "motor state"
+  functions) have zero memory side effects, and the loop's true exit
+  condition likely depends on a write one of them makes.
+
+**Not yet done**: the architecturally correct fix (lazily building and
+executing *real* Crucible CFGs for called functions, via
+`MS.LookupFunctionHandle`'s supported lazy-registration mechanism, instead of
+opaque stubbing) is understood but not implemented. User chose to pause here
+rather than continue into that implementation this session.
+
+**Still valid and unaffected by any of the above**: the single-block,
+solver-verified results from earlier this session (`&`→0x26, `G`→0x47,
+`!`→0x21, `S`→0x53, each independently confirmed to require exactly that
+ASCII value at R3 to reach its event-scheduling handler block) — these never
+depended on the `0x827e` loop or on any opaque-call memory effects.
+
+**Explicit instruction from the user**: do not move to the Remote (mando)
+firmware until the single end-to-end AutoPilot `&|` -> event 5 -> `V01R39`
+transaction (via the real, unmodified parser path, with the TX hook at
+`0x8c10`/`0x7f84` verifying the emitted string) works. That milestone is
+**not yet reached** — next session should pick up either the lazy-real-CFG
+fix or a reassessed approach before continuing toward it.
+
 ## Next experiment
 
 1. Cross-validate the decoded Thumb-2 instructions against an independent
