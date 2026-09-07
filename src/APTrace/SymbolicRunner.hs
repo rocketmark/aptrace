@@ -92,17 +92,20 @@ withZ3Backend k = do
 -- that a memory access through it lands at a fixed, known MMIO address
 -- rather than an arbitrary symbolic one).
 data BranchQuery = BranchQuery
-  { bqPointerReg  :: AR.ARMReg (MT.BVType 32)
-    -- ^ Register to seed with 'bqPointerVal' (e.g. the register holding the
-    -- base address of the peripheral this block dereferences).
-  , bqPointerVal  :: W.Word32
+  { bqPointerOverride :: Maybe (AR.ARMReg (MT.BVType 32), W.Word32)
+    -- ^ Optionally seed one register to a concrete value before running the
+    -- block (e.g. the register holding the base address of a peripheral this
+    -- block dereferences). 'Nothing' leaves every register fresh/symbolic,
+    -- which is what you want when the register itself is the thing you're
+    -- asking the solver to find a value for.
   , bqTargetAddr  :: W.Word32
     -- ^ The (even, Thumb-bit-cleared) instruction address we're asking
-    -- "is this branch target reachable, and under what MMIO value?"
+    -- "is this branch target reachable, and under what value?"
   , bqObserveReg  :: AR.ARMReg (MT.BVType 32)
     -- ^ Register whose final symbolic value we ask the solver to produce a
-    -- concrete model for (typically the register just loaded from the MMIO
-    -- address, immediately before the branch).
+    -- concrete model for (typically the register just loaded from memory
+    -- immediately before the branch, or the register the branch condition
+    -- itself was computed from).
   }
 
 data BranchResult
@@ -164,13 +167,15 @@ checkBranchModel mem block q
                            (CS.FnBindings CFH.emptyHandleMap) ext MS.MacawSimulatorState
             let globalState = CSG.insertGlobal memVar initialMem CS.emptyGlobals
 
-            pointerVal <- resolvedPointer bak (MS.globalMemMap mmConf) initialMem (bqPointerVal q)
-
             let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
             regVals <- Ctx.traverseWithIndex (freshSymVar sym) regTypes
             let regStruct0 = CS.RegEntry (CC.StructRepr regTypes) regVals
-                regStruct1 = MS.updateReg archVals regStruct0 (bqPointerReg q) pointerVal
-                initRegs = CS.RegMap (Ctx.singleton regStruct1)
+            regStruct1 <- case bqPointerOverride q of
+              Nothing -> pure regStruct0
+              Just (reg, val) -> do
+                pointerVal <- resolvedPointer bak (MS.globalMemMap mmConf) initialMem val
+                pure (MS.updateReg archVals regStruct0 reg pointerVal)
+            let initRegs = CS.RegMap (Ctx.singleton regStruct1)
 
             let retTy = CFH.handleReturnType (CC.cfgHandle cfg)
             let simulation = CS.regValue <$> CS.callCFG cfg initRegs

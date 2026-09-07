@@ -215,6 +215,53 @@ proof. Wrote up the mapping and a concrete milestone order (M1-M6) in
 been run against the AutoPilot image so far, not the Remote/mando images where most
 of that inventory's addresses live (M1 in the roadmap).
 
+### Protocol harness M2/M3 — first execution against real protocol anchors
+
+Full details: [protocol-harness-results.md](protocol-harness-results.md).
+
+Per explicit direction: seeded the AutoPilot inbound packet dispatcher directly at
+Thumb entry `0x8259` (flash `0x8258`) and attempted to reproduce the concrete
+`&| -> event 5 -> V01R39` transaction, then made the packet byte symbolic and asked
+Z3 for the input constraint.
+
+**Significant finding**: running the *whole* discovered function (339 blocks, via
+`mkFunCFG`) hangs. Diagnosed with a custom Crucible `ExecutionFeature` that logs the
+visited program location every 2000 steps (a generally reusable technique) — this
+showed execution cycling through `0x827e`-`0x82c4` indefinitely. Reading that IR: it's
+a **hash-table/lookup-table probe** (indexed load `[R7 + R0*4]`, compare, advance),
+*not* the flat if/else-if character chain `research/autopilot_static_inventory/
+parser-dispatch.md` models — a real correction to that inventory, not a bug in our
+tooling. Registers R4-R7 need real values (a table base, etc.) we haven't traced yet;
+defaulted to zero, the probe dereferences near-null memory and never exits.
+
+**Workaround (successful)**: target the *specific* CMP+branch blocks for each
+single-character command directly (found by grepping the already-discovered IR for
+`CMP_i_T1 ... Rn 3, imm8 <ascii>`), using the exact single-block technique already
+proven in Steps 7-9 (`checkBranchModel`/`mkParsedBlockCFG`) — seed R3 directly instead
+of modeling the packet buffer as memory (justified: confirmed by inspection that these
+blocks' own precondition is exactly "R3 already holds the packet's first byte").
+
+**Results — every value solver-derived, not hand-fed, matching ASCII exactly:**
+
+| Command | Z3 model for R3 |
+|---|---|
+| `&` (schedules event 5) | `0x26` |
+| `G` | `0x47` |
+| `!` | `0x21` |
+| `S` | `0x53` |
+
+Also confirmed the `&` fallthrough path (not-`&`) is reachable with R3=0 (any non-0x26
+value would do). `aptrace protocol` (new subcommand) runs all of this; each query
+takes tens of seconds (nonlinear-bitvector formulas from the CMP instruction's full
+NZCV flag computation), a few minutes total.
+
+**Not yet done** (see protocol-harness-results.md's next-steps list): tracing the
+R4-R7 hash-lookup setup to unblock the whole-function run; independently confirming
+G/!/S's handlers perform their claimed event-scheduling writes (only handler-entry
+*reachability* is solver-verified for these three so far, not the write itself);
+hooking outbound TX at `0x8c10`/`0x7f84`; adding the Remote/mando firmware and a
+virtual RF queue connecting both sides — all explicitly requested, next in queue.
+
 ## Next experiment
 
 1. Cross-validate the decoded Thumb-2 instructions against an independent
