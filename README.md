@@ -20,6 +20,15 @@ solver-produced path model on a real memory-mapped peripheral) are demonstrated
 on real, unmodified AutoPilot firmware. See `research/notes/progress.md` for the
 full log.
 
+A separate research track, `research/autopilot_static_inventory/`, has statically
+mapped the bidirectional RF command protocol between the AutoPilot and Remote
+firmware (parser dispatch, event system, several proven request/response
+transactions). `research/notes/protocol-harness-roadmap.md` maps that inventory's
+open questions onto APTrace's discovery/symbolic-execution capabilities as the
+next phase of work — several of them (dormant pending events, unexplained
+Remote-transmitted commands) are reachability questions APTrace can answer
+directly rather than by further manual tracing.
+
 ## Repository layout
 
 ```
@@ -37,11 +46,13 @@ aptrace/
                                  see external/macaw/cabal.project (local, not upstream)
   research/
     firmware/originals/      -- copies of the AutoPilot/Mando firmware images + SHA256SUMS.txt
+    autopilot_static_inventory/  -- separate research track: static RF protocol reverse-engineering
     notes/
       progress.md                        -- chronological log: commands, findings, decisions
       firmware-layout.md                 -- MCU ID, vector table, memory map
       macaw-cortexm-assessment.md        -- can Macaw's AArch32 backend handle Cortex-M?
       symbolic-execution-results.md      -- the Steps 7-9 demonstration, in detail
+      protocol-harness-roadmap.md        -- next phase: apply APTrace to the protocol inventory
       runs/                              -- saved tool output from real runs
 ```
 

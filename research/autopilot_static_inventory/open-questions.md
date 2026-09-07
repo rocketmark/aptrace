@@ -10,3 +10,11 @@ Priority order for the next static pass:
 6. Resolve the `PN...` branch known to Remote `0xc440`: determine whether it is unreachable in this build or produced through a non-event path.
 7. Reconcile Remote-originating packets not accepted by the visible AutoPilot main parser: `MS|`, `MR|`, `MM|`, `N|`, `KK|`, `E1...|`, bare `W|`, and the short `I9|`/`I1|` query forms.
 8. Determine whether events 8, 9, 11, 12, and 14 are truly unreachable in this build or can be scheduled through computed-pointer/indirect writes missed by the direct-reference survey. This is a good symbolic-execution/reachability target for the harness team.
+
+---
+
+See `../notes/protocol-harness-roadmap.md` for how APTrace's Macaw/Crucible/What4
+pipeline (proven end-to-end in `../notes/symbolic-execution-results.md`) maps onto
+these open questions -- in particular items 7 and 8 above, which are reachability
+questions the discovery/symbolic-execution machinery can answer directly rather
+than by further manual tracing.

@@ -196,6 +196,25 @@ Primary Goal item (1-9) is now demonstrated on real firmware, using only unmodif
 upstream Macaw/Crucible/What4/Z3** plus ~350 lines of new APTrace code total
 (`VectorTable.hs`, `FirmwareLoader.hs`, `SymbolicRunner.hs`, `Main.hs`).
 
+### Protocol-level RF inventory found in the repo, and how it connects
+
+A separate, concurrent research pass populated `research/autopilot_static_inventory/`
+(v0.3) with a detailed static reverse-engineering of the bidirectional AutoPilot<->Remote
+RF command protocol (parser dispatch tree at AutoPilot `0x8258`, outbound event
+dispatcher at `0x9268`, several proven request/response transactions, and a list of
+open questions — dormant pending events, an 11-vs-10 field mismatch, several
+Remote-transmitted packets not explained by the visible dispatch tree).
+
+Several of those open questions are reachability/symbolic-execution questions that
+APTrace's already-proven pipeline (discovery + `SymbolicMutable` memory + Crucible +
+What4/Z3, per `symbolic-execution-results.md`) is a direct fit for — notably "are
+events 8/9/11/12/14 truly unreachable" and "which Remote-transmitted commands does
+the parser actually accept," both currently answered by static inference rather than
+proof. Wrote up the mapping and a concrete milestone order (M1-M6) in
+[protocol-harness-roadmap.md](protocol-harness-roadmap.md). Key gap: APTrace has only
+been run against the AutoPilot image so far, not the Remote/mando images where most
+of that inventory's addresses live (M1 in the roadmap).
+
 ## Next experiment
 
 1. Cross-validate the decoded Thumb-2 instructions against an independent
@@ -211,7 +230,10 @@ upstream Macaw/Crucible/What4/Z3** plus ~350 lines of new APTrace code total
    CLI" guidance) — e.g. accept function/block/pointer-register/MMIO-address as CLI
    arguments instead of literals in `runSolve`.
 4. Try a whole-function symbolic run (not just one block) on a function with no
-   internal loops, to validate the `mkFunCFG` path end-to-end too. and its dependency chain** (`semmc`, `dismantle`,
+   internal loops, to validate the `mkFunCFG` path end-to-end too.
+5. **Protocol harness roadmap M1**: point APTrace's loader/discovery at
+   `firmware_mando868.bin` (the Remote image) — see
+   [protocol-harness-roadmap.md](protocol-harness-roadmap.md). and its dependency chain** (`semmc`, `dismantle`,
    `asl-translator`, `arm-asl-parser`, `crucible`, `what4`) — this is the biggest remaining
    unknown. Need to: init the relevant submodules, read each repo's build docs (README,
    `cabal.project*`, any Nix flake) to find the officially supported build path, and
