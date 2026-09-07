@@ -12,6 +12,7 @@ import           Numeric ( readHex, showHex )
 import qualified Prettyprinter as PP
 import           System.Environment ( getArgs )
 import           System.Exit ( die )
+import qualified System.IO as IO
 
 import qualified Data.Macaw.ARM as ARM
 import qualified Data.Macaw.ARM.ARMReg as AR
@@ -21,6 +22,8 @@ import qualified Data.Macaw.Memory as MM
 
 import           APTrace.FirmwareLoader
   ( buildMemory, buildMemoryWithMMIO, resolveEntry )
+import           APTrace.ProtocolHarness ( PacketByte(..) )
+import qualified APTrace.ProtocolHarness as PH
 import           APTrace.SymbolicRunner
   ( BranchQuery(..), BranchResult(..), checkBranchModel )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
@@ -39,6 +42,7 @@ numIrq = 40
 
 main :: IO ()
 main = do
+  IO.hSetBuffering IO.stdout IO.LineBuffering
   args <- getArgs
   case args of
     ["solve", path]                    -> runSolve path 0x4000
@@ -139,13 +143,13 @@ runSolve path flashBase = do
 
       putStrLn ("Query 1: is exit block 0x" ++ showHex exitAddr "" ++ " reachable?")
       exitResult <- checkBranchModel mem block
-        BranchQuery { bqPointerOverride = Just (AR.r3, mmioBase)
+        BranchQuery { bqPointerOverrides = [(AR.r3, mmioBase)]
                     , bqTargetAddr = exitAddr, bqObserveReg = AR.r2 }
       reportResult "R2 (status word @ 0x40002008)" exitResult
 
       putStrLn ("\nQuery 2: is loop-continuation 0x" ++ showHex loopAddr "" ++ " reachable?")
       loopResult <- checkBranchModel mem block
-        BranchQuery { bqPointerOverride = Just (AR.r3, mmioBase)
+        BranchQuery { bqPointerOverrides = [(AR.r3, mmioBase)]
                     , bqTargetAddr = loopAddr, bqObserveReg = AR.r2 }
       reportResult "R2 (status word @ 0x40002008)" loopResult
 
@@ -205,6 +209,9 @@ runProtocol path flashBase = do
       ampersandCheck    = 0x888c :: Word32 -- "if R3 == '&', goto 0x8890"
       ampersandHandler  = 0x8890 :: Word32 -- writes pending[5]=1, then returns
       fallthroughTarget = 0x889e :: Word32 -- "not '&', check next command"
+      bufAddr           = 0x2000232a :: Word32  -- RX packet buffer (literal @ flash 0x8528)
+      pendingBase       = 0x200025bc :: Word32  -- pending-event array base (literal @ flash 0x893c)
+      event5Addr        = pendingBase + 5
   case buildMemory bytes flashBase ramBase ramSize of
     Left err -> die ("failed to build memory image: " ++ err)
     Right mem -> do
@@ -223,21 +230,56 @@ runProtocol path flashBase = do
                 ++ ", '&' check @ 0x" ++ showHex ampersandCheck ""
                 ++ " (\"if R3 == '&', goto 0x" ++ showHex ampersandHandler "" ++ "\")\n")
 
-      putStrLn "Test 1: concrete R3 = '&' (0x26)"
+      -- Diagnostic: the whole-function run (Test 0 below) was hanging with
+      -- R6 growing without bound. Rather than hand-deriving the ARM CMP/ASR
+      -- flag arithmetic at 0x8286 (error-prone), ask Z3 directly what
+      -- buffer[1] value makes the loop's own exit block (0x83ec, a real
+      -- confirmed `return`) reachable from a single pass of the loop body
+      -- (0x827e), versus what value keeps it looping (0x828e).
+      loopBodyOff <- maybe (die "could not resolve loop body address") pure
+                       (MM.resolveAbsoluteAddr mem (MM.memWord 0x827e))
+      loopBody <- maybe (die "loop body block not found") pure
+                    (Map.lookup loopBodyOff (fn ^. MD.parsedBlocks))
+      putStrLn "Loop probe: block 0x827e, R4=R5=bufAddr, R6=0, R7=0x20000180 -- what is buffer[1] when the loop exits vs. continues?"
+      lp1 <- checkBranchModel mem loopBody
+        BranchQuery { bqPointerOverrides = [(AR.r4, bufAddr), (AR.r5, bufAddr), (AR.r6, 0), (AR.r7, 0x20000180)]
+                    , bqTargetAddr = 0x83ec, bqObserveReg = AR.r3 }
+      putStr "  exit (0x83ec): " >> reportResult "buffer[1]" lp1
+      lp2 <- checkBranchModel mem loopBody
+        BranchQuery { bqPointerOverrides = [(AR.r4, bufAddr), (AR.r5, bufAddr), (AR.r6, 0), (AR.r7, 0x20000180)]
+                    , bqTargetAddr = 0x828e, bqObserveReg = AR.r3 }
+      putStr "  continue (0x828e): " >> reportResult "buffer[1]" lp2
+
+      -- The '|' is the wire-protocol frame terminator consumed by the LoRa
+      -- assembly loop (0x8960 per research/autopilot_static_inventory);
+      -- rf-boundaries.md says the buffer gets NUL-terminated once assembled,
+      -- so it's very unlikely '|' itself is ever stored at buffer[1]. The
+      -- loop probe above confirms buffer[1]=1 exits this pre-check loop
+      -- immediately (R6=0); our formula predicts buffer[1]=0 does too (both
+      -- give a negative (buf[1]-7), satisfying the observed exit condition).
+      putStrLn "\nTest 0: whole dispatcher function, buffer[1]=0x01 (Z3-confirmed exit witness above)"
+      let realPacket = [Concrete 0x26, Concrete 0x01, Concrete 0x00, Concrete 0x00]
+      r0 <- PH.runPacketTransaction mem fn bufAddr realPacket event5Addr 1
+      case r0 of
+        PH.ConcreteResult 1 -> putStrLn "  PASS: pending[5] = 1 (event 5 scheduled) via the real parser path"
+        PH.ConcreteResult v -> putStrLn ("  FAIL: pending[5] = 0x" ++ showHex v "" ++ " (expected 1)")
+        other -> putStrLn ("  error: " ++ show other)
+
+      putStrLn "\nTest 1: concrete R3 = '&' (0x26)"
       r1 <- checkBranchModel mem block
-        BranchQuery { bqPointerOverride = Just (AR.r3, 0x26)
+        BranchQuery { bqPointerOverrides = [(AR.r3, 0x26)]
                     , bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
       reportResult "R3" r1
 
       putStrLn "\nTest 2: R3 left fully symbolic -- what value reaches the '&' handler?"
       r2 <- checkBranchModel mem block
-        BranchQuery { bqPointerOverride = Nothing
+        BranchQuery { bqPointerOverrides = []
                     , bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
       reportResult "R3" r2
 
       putStrLn "\nTest 3: R3 left fully symbolic -- what value takes the fallthrough (not '&') path?"
       r3 <- checkBranchModel mem block
-        BranchQuery { bqPointerOverride = Nothing
+        BranchQuery { bqPointerOverrides = []
                     , bqTargetAddr = fallthroughTarget, bqObserveReg = AR.r3 }
       reportResult "R3" r3
 
@@ -266,7 +308,7 @@ runSingleCharCheck mem fn (label, checkAddr, handlerAddr, expected) = do
       Nothing -> putStrLn "  error: check block not found"
       Just block -> do
         r <- checkBranchModel mem block
-          BranchQuery { bqPointerOverride = Nothing
+          BranchQuery { bqPointerOverrides = []
                       , bqTargetAddr = handlerAddr, bqObserveReg = AR.r3 }
         reportResult "R3" r
         case r of

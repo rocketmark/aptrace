@@ -97,6 +97,102 @@ nonlinear-bitvector formula per branch), so `aptrace protocol`'s full run takes 
 minutes; each individual `checkBranchModel` call remains a clean, bounded query with no
 risk of the hang described above.
 
+## Follow-up session: tracing the caller, R4-R7, and the whole-function attempt
+
+Per direct instruction, went back to fully trace the caller/state setup into
+`0x8258` and understand the `0x827e`-`0x82c4` indexed-lookup loop, then tried
+again to run a real in-memory `&|` packet through the *whole* dispatcher
+function (not just the isolated `0x888c` block).
+
+### Root-cause diagnosis of the original hang: a real bug, now fixed
+
+Added a custom Crucible `ExecutionFeature` (`APTrace.ProtocolHarness.debugFeature`)
+that logs the visited program location every N steps -- this is the key
+reusable technique: it turns an opaque hang into a visible "stuck cycling
+through addresses X, Y, Z" trace. Using it, plus register-value logging
+inside the opaque-call override, found the actual bug:
+
+**The original opaque-call override clobbered *every* register on every call,
+including R4-R11 -- registers a real ARM (AAPCS) function call is not allowed
+to touch (only R0-R3, R12, and the condition flags are caller-saved/undefined
+after a call).** The loop at `0x827e` keeps its own counter in R6 and a table
+pointer in R4; clobbering them on every one of its two calls-per-iteration
+corrupted the loop's own control state. This has nothing to do with the
+firmware's real behavior -- it was purely an artifact of an over-eager
+"conservative" approximation. Fixed by rewriting the override to only
+substitute fresh values for R0-R3/R12 via `MS.updateReg`, preserving
+everything else from the incoming register struct. Confirmed fixed by
+direct observation: R6 now increments cleanly (0, 0, 1, 1, 2, 2, ...) across
+calls instead of jumping to arbitrary fresh values.
+
+### Caller trace: found the real call site, and a Macaw discovery anomaly
+
+Seeding discovery at `0x8a35` (LoRa RX area) reaches `0x8259` as a properly
+call-classified function (`call and return to 0x8259` at flash `0x8a34`),
+confirming: R4 = R5 = the packet buffer pointer (`0x2000232a`, loaded via
+`LDR [0x8528]`), R6 = R0 (the caller's argument, `MOV R6, R0` at `0x8262`),
+R7 = a fixed literal (`0x20000180`, loaded via `LDR [0x8534]`).
+
+Tracing *what sets R0* led to `0x8a1b -> 0x896a -> BL 0x801c -> CBZ R0`.
+**`0x801c` is lifted by Macaw as ARM (A32) mode code** (`BL_i_A1`, `BX_A1`,
+`PSTATE_T => 0`) -- which is architecturally impossible on a Cortex-M4
+(M-profile has no ARM execution state at all). Its second block (`0x8020`)
+hits a Macaw discovery "classify failure" on an indirect `BX R11`. This is
+either a genuine Macaw/dismantle decode edge case for this call site, or
+this specific path is dead/unreachable code on real hardware; either way, it
+means **R0's "correct" value cannot be reliably derived from this trace**.
+Not investigated further -- out of scope for this pass, but worth flagging
+upstream or revisiting.
+
+### The `0x827e` loop's real dependency: not the packet, not R0 either
+
+With the calling-convention bug fixed, re-ran the whole-function test with a
+real `&`-command packet. It still does not terminate (confirmed via the same
+step-tracing technique: R6 grows linearly and unboundedly, R4 becomes
+symbolic partway through). Ruled out packet content as the cause by directly
+testing two different concrete values for `buffer[1]` (`0x7c` and `0x01`,
+the latter a value the single-block solver confirmed reaches the loop's exit
+block `0x83ec` when queried in isolation) -- **both produce identical,
+non-terminating behavior**. This proves the loop's true termination does not
+depend on the packet buffer content the way the block-level probe suggested
+(that probe's result was likely an artifact of R0-R3 and the condition flags
+still being free/symbolic in that isolated single-block query, letting the
+solver "cheat" via an unrelated free variable rather than genuinely
+reflecting the whole-function dependency).
+
+**Current leading hypothesis**: the loop's real per-iteration state includes
+memory, not just registers -- specifically, `0x5274`/`0x5448` (per-channel
+"motor state" functions per `research/autopilot_static_inventory/
+functions-of-interest.md`) are called once per iteration and very plausibly
+*write* to the per-channel table this loop scans (e.g. marking a channel
+processed). Our opaque-call override has *zero* memory side effects, so if
+the real exit condition depends on such a write, it can never be satisfied
+under this approximation -- a modeling gap, not evidence of a real infinite
+loop in the firmware.
+
+**The architecturally correct fix, not yet implemented**: rather than
+stubbing `0x5274`/`0x5448` opaquely, use `MS.LookupFunctionHandle`'s support
+for *lazily building and registering a real Crucible CFG* for the actual
+callee (looking it up in the full discovered-function map, which `cfgFromAddrs`
+already has as part of the same 57-function call graph) instead of an opaque
+override -- letting these functions genuinely execute and produce real memory
+effects. This is a real, well-supported Crucible/macaw-symbolic mechanism, not
+a missing tool; it just requires more implementation (extracting the call
+target from the incoming PC, resolving it against both possible discovery-key
+parities, caching one handle per callee, and threading the updated
+`CrucibleState` back through the lookup callback).
+
+### Where the working, solver-verified evidence stands
+
+The single-block results from the first pass of this session remain valid and
+unaffected by any of the above (they never depended on the `0x827e` loop or
+on opaque-call memory effects): `&`, `G`, `!`, `S` all solver-confirmed to
+require exactly their ASCII byte value at R3 to reach their respective
+event-scheduling handler blocks. What is *not yet* demonstrated is the fully
+faithful "real packet bytes in memory, run the unmodified whole function,
+observe `pending[5]`" version -- that is blocked on the memory-side-effect
+modeling gap above.
+
 ## Next steps (per protocol-harness-roadmap.md)
 
 1. Resolve the `R4`-`R7` hash-lookup setup so the *whole* dispatcher (or at least the

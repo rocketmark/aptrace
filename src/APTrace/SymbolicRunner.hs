@@ -27,6 +27,7 @@ module APTrace.SymbolicRunner
   , checkBranchModel
   ) where
 
+import           Control.Monad ( foldM )
 import           Data.Proxy ( Proxy(..) )
 import qualified Data.BitVector.Sized as BV
 import qualified Data.Parameterized.Context as Ctx
@@ -92,12 +93,13 @@ withZ3Backend k = do
 -- that a memory access through it lands at a fixed, known MMIO address
 -- rather than an arbitrary symbolic one).
 data BranchQuery = BranchQuery
-  { bqPointerOverride :: Maybe (AR.ARMReg (MT.BVType 32), W.Word32)
-    -- ^ Optionally seed one register to a concrete value before running the
-    -- block (e.g. the register holding the base address of a peripheral this
-    -- block dereferences). 'Nothing' leaves every register fresh/symbolic,
-    -- which is what you want when the register itself is the thing you're
-    -- asking the solver to find a value for.
+  { bqPointerOverrides :: [(AR.ARMReg (MT.BVType 32), W.Word32)]
+    -- ^ Seed zero or more registers to concrete values before running the
+    -- block (e.g. pointers this block dereferences). Registers not
+    -- mentioned here are left fresh/symbolic, which is what you want when
+    -- the register itself (or, since RAM is fully symbolic here, memory
+    -- read through it) is the thing you're asking the solver to find a
+    -- value for.
   , bqTargetAddr  :: W.Word32
     -- ^ The (even, Thumb-bit-cleared) instruction address we're asking
     -- "is this branch target reachable, and under what value?"
@@ -170,11 +172,12 @@ checkBranchModel mem block q
             let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
             regVals <- Ctx.traverseWithIndex (freshSymVar sym) regTypes
             let regStruct0 = CS.RegEntry (CC.StructRepr regTypes) regVals
-            regStruct1 <- case bqPointerOverride q of
-              Nothing -> pure regStruct0
-              Just (reg, val) -> do
-                pointerVal <- resolvedPointer bak (MS.globalMemMap mmConf) initialMem val
-                pure (MS.updateReg archVals regStruct0 reg pointerVal)
+            regStruct1 <- foldM
+              (\struct (reg, val) -> do
+                 pointerVal <- resolvedPointer bak (MS.globalMemMap mmConf) initialMem val
+                 pure (MS.updateReg archVals struct reg pointerVal))
+              regStruct0
+              (bqPointerOverrides q)
             let initRegs = CS.RegMap (Ctx.singleton regStruct1)
 
             let retTy = CFH.handleReturnType (CC.cfgHandle cfg)

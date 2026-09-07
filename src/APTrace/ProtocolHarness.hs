@@ -58,6 +58,7 @@ import qualified Data.Macaw.Memory as MM
 import qualified Data.Macaw.Symbolic as MS
 import qualified Data.Macaw.Symbolic.Memory as MSM
 import qualified Data.Macaw.AArch32.Symbolic ()
+import qualified Data.Macaw.ARM.ARMReg as AR
 import qualified SemMC.Architecture.AArch32 as ARM
 
 import qualified Lang.Crucible.Backend as CB
@@ -151,19 +152,44 @@ runPacketTransaction mem fn bufAddr bufBytes observeAddr targetValue
             memVar <- CLM.mkMemVar "aptrace:llvm_memory" halloc
             (baseMem, memPtrTable) <-
               MSM.newGlobalMemory (Proxy @ARM.AArch32) bak LDL.LittleEndian MSM.ConcreteMutable mem
-            -- Every call we might encounter (e.g. a critical-section helper
-            -- reached before the character-dispatch chain we actually care
-            -- about) is treated as an opaque black box: it clobbers all
-            -- registers with fresh symbolic values and has no other observed
-            -- effect. Sound over-approximation for a dispatcher we expect to
-            -- do its real work inline (confirmed for the '&' handler itself
-            -- by inspection), not via calls whose *results* affect dispatch.
+            -- Every call we might encounter (e.g. a per-channel helper called
+            -- from inside a loop we don't want to inline) is treated as an
+            -- opaque black box -- but a *calling-convention-respecting* one.
+            -- AAPCS makes R0-R3/R12 and the condition flags caller-saved
+            -- (undefined after a call) while R4-R11/SP are callee-saved (a
+            -- well-behaved function preserves them). Our first attempt at
+            -- this clobbered *every* register, including whatever loop
+            -- counter or table pointer the caller was using in R4-R11 --
+            -- which corrupted ordinary bounded loops into apparently-infinite
+            -- ones (see research/notes/protocol-harness-results.md). Only
+            -- clobber the registers a real call is actually allowed to.
             let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
+            callCounter <- newIORef (0 :: Int)
             opaqueCallHandle <- CFH.mkHandle' halloc (WF.functionNameFromText "opaque_call")
                                   (Ctx.singleton (CC.StructRepr regTypes)) (CC.StructRepr regTypes)
             let opaqueCallOverride = CS.mkOverride' (WF.functionNameFromText "opaque_call") (CC.StructRepr regTypes) $ do
+                  CS.RegMap argsAssign <- CS.getOverrideArgs
+                  let incoming = CS.RegEntry (CC.StructRepr regTypes) (CS.regValue (argsAssign Ctx.! Ctx.baseIndex))
                   ovSym <- CS.getSymInterface
-                  liftIO (Ctx.traverseWithIndex (freshSymVar ovSym) regTypes)
+                  liftIO $ do
+                    n <- atomicModifyIORef' callCounter (\c -> (c + 1, c + 1))
+                    when (n `mod` 200 == 0) $ do
+                      let CLM.LLVMPointer _ r6off = CS.regValue (MS.lookupReg archVals incoming AR.r6)
+                          CLM.LLVMPointer _ r4off = CS.regValue (MS.lookupReg archVals incoming AR.r4)
+                          CLM.LLVMPointer _ r7off = CS.regValue (MS.lookupReg archVals incoming AR.r7)
+                      IO.hPutStrLn IO.stderr ("  [opaque_call] #" ++ show n ++ " R6=" ++ show (WI.asBV r6off)
+                                               ++ " R4=" ++ show (WI.asBV r4off) ++ " R7=" ++ show (WI.asBV r7off))
+                    v0  <- freshBV32 ovSym "opaque_r0"
+                    v1  <- freshBV32 ovSym "opaque_r1"
+                    v2  <- freshBV32 ovSym "opaque_r2"
+                    v3  <- freshBV32 ovSym "opaque_r3"
+                    v12 <- freshBV32 ovSym "opaque_r12"
+                    let s1 = MS.updateReg archVals incoming AR.r0 v0
+                        s2 = MS.updateReg archVals s1 AR.r1 v1
+                        s3 = MS.updateReg archVals s2 AR.r2 v2
+                        s4 = MS.updateReg archVals s3 AR.r3 v3
+                        s5 = MS.updateReg archVals s4 AR.ip v12
+                    pure (CS.regValue s5)
                 fnBindings = CS.FnBindings
                   (CFH.insertHandleMap opaqueCallHandle (CS.UseOverride opaqueCallOverride) CFH.emptyHandleMap)
                 lookupFn = MS.LookupFunctionHandle $ \st _mem _regs -> pure (opaqueCallHandle, st)
@@ -304,6 +330,14 @@ debugFeature counterRef = CSE.ExecutionFeature $ \execState -> do
           Exit.exitFailure
         else pure CSE.ExecutionFeatureNoChange
     Nothing -> pure CSE.ExecutionFeatureNoChange
+
+-- | A fresh, uniquely-named 32-bit symbolic register value, with no
+-- dependency on a Crucible context index (used by the opaque-call override,
+-- which only clobbers a fixed, small set of named registers).
+freshBV32 :: (CB.IsSymInterface sym) => sym -> String -> IO (CS.RegValue sym (CLM.LLVMPointerType 32))
+freshBV32 sym nm = case WI.userSymbol nm of
+  Right symbol -> CLM.llvmPointer_bv sym =<< WI.freshConstant sym symbol (WI.BaseBVRepr (WI.knownNat @32))
+  Left err -> fail (show err)
 
 resolvedPointer
   :: (CB.IsSymBackend (WE.ExprBuilder t st fs) bak)
