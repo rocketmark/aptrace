@@ -167,6 +167,18 @@ re-proving:
   the harness," not "real hardware timing modeled." See
   [`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md)
   and [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`--mmio-force-bits`/`--mmio-clear-bits`/`--map-page` added to the
+  Unicorn backend**: explicit, address-scoped hooks that force a named
+  MMIO register's bits set or clear on every read (never on a write,
+  never on a timer), for a real, SVD-identified completion/self-clearing
+  bit the zero-behavior model otherwise leaves permanently wrong —
+  plus a minimal facility to map one extra fixed page (e.g. the SAMD51
+  NVM calibration row) outside flash/RAM/MMIO. Not a peripheral model —
+  each address is named and justified individually. Used to run
+  `Reset_Handler`'s real clock-init chain and a real SERCOM/DMA driver
+  constructor to completion for the first time. See
+  [`docs/investigations/reset-handler-clock-init.md`](investigations/reset-handler-clock-init.md)
+  and [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
 - **The real `&|` -> `pending[5]=1` transaction, concretely demonstrated**:
   entering at the real caller (`0x8a34`), letting the firmware establish
   its own entry state (not manually seeded), with a real `&|` packet in the
@@ -336,6 +348,21 @@ re-proving:
   gap, not an independent new one. No write to `0x20001b14` beyond the
   already-known `.bss` clear was observed. See
   [`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md).
+- **The `FUN_0000cdd8` stall resolved; the null-driver-object crash
+  avoided for real (roadmap M6)**: identified all 4 of `FUN_0000cdd8`'s
+  16 status polls that don't already pass under zero-behavior MMIO
+  (each a real, SVD-named ready/lock bit — see "Tooling gaps"), modeled
+  them with a new, explicit `--mmio-force-bits`/`--mmio-clear-bits`
+  mechanism, and reran from the true `Reset_Handler`. The run now
+  completes clock init, constructs the real SERCOM/DMA driver object
+  (two SERCOM instances, `SERCOM5` then `SERCOM2`, each needing its own
+  SWRST-clear and DRE-ready treatment) without the previous crash, and
+  reaches and exits `FUN_00006968`'s real homing timeout — the primary
+  acceptance target for this slice. Still no write to `0x20001b14`
+  observed; reaching a directly observable main-loop state needs more
+  simulated tick-time than expected, a new characterization gap (not a
+  hardware-modeling one) named precisely rather than patched around. See
+  [`docs/investigations/reset-handler-clock-init.md`](investigations/reset-handler-clock-init.md).
 
 ## Corrected assumptions
 
@@ -385,25 +412,29 @@ re-proving:
 
 ## Tooling gaps
 
-**Gap: `FUN_0000cdd8`'s clock/peripheral-init chain stalls under Unicorn.**
-Entering a concrete run at the true `Reset_Handler` (`0xcc24`) reaches
-`FUN_0000cdd8` (clock tree/analog/USB bring-up) and stalls there
-indefinitely — confirmed most precisely in
+**Resolved: `FUN_0000cdd8`'s clock/peripheral-init chain now runs to
+completion under Unicorn.** Previously stalled indefinitely (confirmed
+in
 [`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md)
-(`pc=0xcde8`, 3,000,000 instructions, unmoved despite the tick advancing
-normally elsewhere), consistent with earlier, less precise
-encounters in `motor-timer-survey.md` and `pin-index-provenance.md`. This
-is a status-register (`SYNCBUSY`-shaped) poll against the zero-behavior
-MMIO model, not a millis/tick dependency — `--fake-tick` does not help
-it. **Deliberately not fixed**: every investigation to date that needed
-to get past boot has routed around it by entering later (at
-`FUN_00009464` or another post-init function) rather than modeling the
-specific status bit(s) involved; `systick-tick-injection.md` found one
-concrete downstream cost of that routing (an uninitialized DMA/SERCOM
-peripheral object `FUN_0000cdd8`'s chain would otherwise have
-constructed). Revisit only if a real investigation specifically needs a
-*complete*, unrouted-around boot — the narrow fix would be identifying
-and seeding the exact status bit(s) polled, not a general SYNCBUSY model.
+at `pc=0xcde8`), root-caused and fixed in
+[`docs/investigations/reset-handler-clock-init.md`](investigations/reset-handler-clock-init.md):
+of 16 status-register polls in the function, exactly 4 don't already
+pass under the zero-behavior MMIO model (`OSC32KCTRL.STATUS.XOSC32KRDY`,
+`OSCCTRL.STATUS.DFLLRDY`, `OSCCTRL.DPLL0/DPLL1.DPLLSTATUS.{LOCK,CLKRDY}`
+— all real, SVD-identified, predictably-completing bits on hardware
+already confirmed to boot), now satisfied via a new, explicit
+`run_concrete.py --mmio-force-bits`/`--mmio-clear-bits` mechanism (never
+a general peripheral model — each address is named and justified
+individually). A real, unmodified concrete run now goes
+`Reset_Handler` -> `FUN_0000cdd8` (complete) -> the real SERCOM/DMA
+driver constructor (also completes, resolving the downstream
+null-pointer crash `systick-tick-injection.md` found) -> real homing,
+confirmed via `--watch` hits at the same exit point found from the
+routed-around entry point. **Not fully resolved**: continuing past
+homing to a directly observable main-loop state (`FUN_00008960`) needs
+far more simulated tick-time than initially expected — a newly
+identified characterization gap (not a missing-MMIO-behavior one), see
+that doc's "next step."
 
 **Not a firmware blocker — a known, documented, and deliberately unfixed
 harness limitation.** A whole-function Crucible replay of the `&`-command
@@ -479,14 +510,21 @@ separately and immediately afterward, also on 2026-09-08.
    `run_concrete.py --watch-mem-write`) confirmed one branch writes
    nothing. See
    [`docs/investigations/channel-busy-gate-search.md`](investigations/channel-busy-gate-search.md).
-   A concrete follow-up ([`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md))
+   Two concrete follow-ups: first
+   ([`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md))
    resolved the homing-timeout tick gap with a new `--fake-tick`
-   capability and got past it with the watchpoint live, but hit a
-   different, precisely-identified dependency first (an uninitialized
-   DMA/SERCOM-shaped peripheral object, root-caused to the
-   `FUN_0000cdd8` stall in "Tooling gaps" above) — still no write
-   observed. Reaching the setter now most likely needs that stall solved
-   for real, not routed around.
+   capability and got past it with the watchpoint live, but hit an
+   uninitialized DMA/SERCOM-shaped peripheral object, root-caused to the
+   `FUN_0000cdd8` clock-init stall; second
+   ([`docs/investigations/reset-handler-clock-init.md`](investigations/reset-handler-clock-init.md))
+   resolved *that* stall too (4 real, SVD-named completion bits, a new
+   `--mmio-force-bits`/`--mmio-clear-bits` mechanism) and reran from the
+   true `Reset_Handler` — clock init now completes, the driver object
+   constructs without crashing, and real homing runs and exits, all
+   confirmed. Still no write to `0x20001b14` observed: reaching a
+   directly observable main-loop state past homing needs more simulated
+   tick-time than expected — a newly identified characterization gap
+   (not a hardware-modeling one), not yet resolved.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

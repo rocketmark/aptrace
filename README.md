@@ -132,13 +132,19 @@ gates whether the ramp logic ever reaches the real timer/GPIO chain — see
 What sets that gate nonzero was searched for exhaustively and not found
 by any static method — see
 [`docs/investigations/channel-busy-gate-search.md`](docs/investigations/channel-busy-gate-search.md).
-A concrete follow-up diagnosed and resolved the suspected timing gap (a
-new `--fake-tick` Unicorn capability) and got past the real homing
-sequence, but hit a *different*, precisely-identified dependency first
-— see
-[`docs/investigations/systick-tick-injection.md`](docs/investigations/systick-tick-injection.md).
-`!`/`I`'s own protocol transactions remain queued for whenever M4
-resumes. Full roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
+Two concrete follow-ups diagnosed and resolved the suspected timing gaps
+(new `--fake-tick`/`--mmio-force-bits`/`--mmio-clear-bits` Unicorn
+capabilities) and got a real, unmodified concrete run all the way from
+`Reset_Handler` through real clock init, a real SERCOM/DMA driver
+constructor, and real homing — see
+[`docs/investigations/systick-tick-injection.md`](docs/investigations/systick-tick-injection.md)
+and
+[`docs/investigations/reset-handler-clock-init.md`](docs/investigations/reset-handler-clock-init.md).
+Reaching a directly observable main-loop state past homing needs more
+simulated tick-time than expected, a newly identified characterization
+gap, not yet resolved. `!`/`I`'s own protocol transactions remain queued
+for whenever M4 resumes. Full roadmap:
+[`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?
 

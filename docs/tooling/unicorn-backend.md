@@ -117,13 +117,56 @@ address: a tight cycle-counter busy-wait (e.g. reading `DWT->CYCCNT` at
 `--stub-call` the delay function itself if its precise pulse-width
 timing isn't what the scenario is testing.
 
+**`--mmio-force-bits ADDR:MASK`** (repeatable): every read of the
+4-byte-aligned MMIO register at `ADDR` is OR'd with `MASK` before the CPU
+sees it — a specific status/ready bit forced set. This is **not** a
+peripheral model: it never fires on a write, never clears anything, and
+touches exactly the one named register. Use it only for a bit you can
+name from the real SVD (`tools/svd/resolve_mmio.py`) as a documented
+completion/ready flag that real hardware sets predictably once the
+firmware's own preceding write takes effect — e.g. an oscillator-ready
+or PLL-lock bit on hardware already confirmed to boot (see
+[`docs/investigations/reset-handler-clock-init.md`](../investigations/reset-handler-clock-init.md),
+which used this for `OSC32KCTRL.STATUS.XOSC32KRDY`,
+`OSCCTRL.STATUS.DFLLRDY`, and both `DPLLx.DPLLSTATUS.{LOCK,CLKRDY}`
+during real clock-init). Never use it for a bit whose true value depends
+on something this harness can't establish — an external signal, or
+state that belongs in `--seed-mem` instead.
+
+**`--mmio-clear-bits ADDR:MASK`** (repeatable): the complement — every
+read is AND'd with `~MASK`, forcing a bit clear. For a bit the firmware
+itself just *set* that real hardware self-clears within a few cycles (a
+software-reset bit is the textbook case) and the plain read/write memory
+model otherwise leaves stuck forever. `reset-handler-clock-init.md` used
+this for two SERCOM instances' `CTRLA.SWRST`/`SYNCBUSY.SWRST` (bit 0),
+both real, SVD-documented self-clearing bits triggered by the firmware's
+own reset write. Same discipline as `--mmio-force-bits`: name the real
+register/field first, never use it to paper over a bit whose true
+behavior is unknown.
+
+**`--map-page ADDR:SIZE`** (repeatable): maps one additional
+page-aligned region before execution, for a real, fixed memory area
+outside flash/RAM/MMIO that the firmware genuinely reads — the only
+case seen so far is the SAMD51 NVM Software Calibration Row
+(`0x00800080`), a real, factory-programmed, per-die area. Pair with
+`--seed-mem` to fill it; the seeded bytes are then a **disclosed
+placeholder** for real silicon-specific data this harness has no way to
+know, not a claim about the true calibration values — document what the
+placeholder feeds (in `reset-handler-clock-init.md`'s case, only analog
+ADC/DAC/USB trim registers, confirmed to have no path to the digital
+state that investigation cared about).
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
 register values, any requested memory dumps, a `watch_hits` list (each
 entry: hit index, instruction count, address, registers, watched memory),
 (with `--log-mmio`) an `mmio_log` list, (with `--stub-call`) a
-`stub_hits` list, (with `--watch-mem-write`) a `mem_write_hits` list, and
+`stub_hits` list, (with `--watch-mem-write`) a `mem_write_hits` list,
 (with `--fake-tick`) a `fake_ticks_applied` list (address, period, and
-how many increments actually fired). Written to `--out PATH` or stdout.
+how many increments actually fired), and (with `--mmio-force-bits`/
+`--mmio-clear-bits`) `mmio_force_bits_applied`/`mmio_clear_bits_applied`
+lists (address, mask, and how many reads actually changed a value —
+`count: 0` means the bit was already in the needed state and the hook
+never had to do anything). Written to `--out PATH` or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 
@@ -173,12 +216,21 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   peripheral state; not fine for anything that does — e.g. a status-bit
   polling loop against a real peripheral will spin forever here, since the
   bit never goes high. `--log-mmio` (see above) plus
-  `tools/svd/resolve_mmio.py` names *which* addresses are touched; neither
-  adds real peripheral *behavior*, which remains a separate, larger problem
-  not addressed by this pass (see `docs/project-status.md`'s "Tooling
-  gaps" — do not build a general peripheral emulator unless a real use case
-  needs it). `--stub-call` (see above) is the usual escape hatch when a
-  real callee would otherwise busy-wait against this stub forever.
+  `tools/svd/resolve_mmio.py` names *which* addresses are touched.
+  **Where a specific bit is a real, SVD-identified, predictably-completing
+  status/ready/self-clearing flag** — confirmed for this firmware's real
+  `Reset_Handler` clock-init chain and one SERCOM/DMA driver constructor,
+  see
+  [`docs/investigations/reset-handler-clock-init.md`](../investigations/reset-handler-clock-init.md)
+  — use `--mmio-force-bits`/`--mmio-clear-bits` (above) rather than
+  `--stub-call`ing the whole poll away; it lets the real surrounding logic
+  run and produces a real result instead of skipping it. This is still not
+  a general peripheral *behavior* model (see `docs/project-status.md`'s
+  "Tooling gaps" — do not build one unless a real use case needs it) —
+  each address is named and justified individually, never applied broadly.
+  `--stub-call` remains the right tool when a callee's internal behavior
+  genuinely doesn't matter to the scenario, or when the bit's true value
+  is not something this harness can establish.
 - The ARM Private Peripheral Bus (`0xE0000000`-`0xE00FFFFF` — SysTick,
   NVIC, SCB, MPU) was unmapped until
   [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)

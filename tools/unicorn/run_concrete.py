@@ -109,6 +109,7 @@ def build_argparser():
     p.add_argument("--sp", default=None, help="initial SP (default: top of RAM)")
     p.add_argument("--reg", action="append", default=[], metavar="NAME=HEX", help="seed a register before execution (repeatable)")
     p.add_argument("--seed-mem", action="append", default=[], metavar="ADDR:HEXBYTES", help="write concrete bytes into memory before execution (repeatable)")
+    p.add_argument("--map-page", action="append", default=[], metavar="ADDR:SIZE", help="map an additional page-aligned region before execution (repeatable), for a real fixed memory region outside flash/RAM/MMIO -- e.g. the SAMD51 NVM Software Calibration Row (0x00800080), a real, factory-programmed, per-die area the firmware genuinely reads. Use with --seed-mem to fill it; the seeded bytes are then a disclosed placeholder for real silicon-specific data this harness cannot know, not a claim about the true calibration values.")
     p.add_argument("--stop-at", action="append", default=[], metavar="HEXADDR", help="halt when this address is reached (repeatable)")
     p.add_argument("--max-instructions", type=lambda s: int(s, 0), default=200000, help="hard instruction cap (default 200000)")
     p.add_argument("--trace", action="store_true", help="log every N instructions to stderr (see --trace-every)")
@@ -123,6 +124,8 @@ def build_argparser():
     p.add_argument("--max-mem-write-log", type=int, default=2000, help="cap on recorded hits per --watch-mem-write range (default 2000)")
     p.add_argument("--fake-tick", action="append", default=[], metavar="ADDR:PERIOD", help="repeatable: every PERIOD instructions, increment the 4-byte little-endian counter at ADDR by 1. Deliberately NOT a SysTick/timer peripheral model -- it is a direct, labeled stand-in for a firmware-maintained tick/millis variable (identify the real one first: find the real millis()-equivalent function, e.g. via its literal-pool DAT_ symbol, and fake-tick *that* RAM address, not a SysTick MMIO register) so real elapsed-time delay/timeout loops in the firmware can terminate. Advances on an INSTRUCTION-COUNT cadence, not real time -- results obtained this way are 'firmware behavior observed after time was advanced by the harness', not 'real hardware timing behavior modeled'. See docs/investigations/channel-busy-gate-search.md and its concrete follow-up for the real use case this was added for.")
     p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee (e.g. a hardware driver call) whose return value this scenario doesn't depend on -- the concrete-execution equivalent of the opaque function-call override already used on the Crucible side (see docs/project-status.md). Does not fabricate a return value; R0 is left exactly as the caller set it up.")
+    p.add_argument("--mmio-force-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is OR'd with MASK before the CPU sees it (a status/ready bit forced set). This is NOT a peripheral model -- it never touches the register on a write, never clears the bit, and applies to exactly the named register. Use it only for a specific, SVD-identified completion/ready bit that real hardware predictably asserts once the firmware's own preceding write takes effect (e.g. an oscillator-ready or PLL-lock flag on a board already confirmed to boot) -- not for a bit whose real value depends on something this harness can't establish (an external signal, a value this scenario should instead seed via --seed-mem). Document, per address, which SVD register/field this is and why forcing it is justified. See docs/investigations/reset-handler-clock-init.md.")
+    p.add_argument("--mmio-clear-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is AND'd with ~MASK before the CPU sees it (a bit forced clear) -- the complement of --mmio-force-bits, for a self-clearing bit the firmware itself just set (e.g. a software-reset or SYNCBUSY bit real hardware clears within a few cycles of the triggering write) that the plain read/write memory model otherwise leaves stuck set forever. Same justification discipline applies: only a real, SVD-identified, predictably-self-clearing bit, never a stand-in for genuine external state.")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
 
@@ -164,6 +167,10 @@ def main(argv):
     if not (mmio_lo <= ppb_base and ppb_base + ppb_size <= mmio_hi):
         uc.mem_map(ppb_base, ppb_size)
 
+    for spec in args.map_page:
+        addr, size = parse_addr_len(spec)
+        uc.mem_map(align_down(addr), align_up(size))
+
     sp = parse_hex(args.sp) if args.sp else (ram_base + ram_size)
     uc.reg_write(UC_ARM_REG_SP, sp)
     uc.reg_write(UC_ARM_REG_PC, entry)
@@ -185,7 +192,14 @@ def main(argv):
     watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
     mem_write_ranges = [parse_addr_len(spec) for spec in args.watch_mem_write]
     fake_ticks = [parse_addr_len(spec) for spec in args.fake_tick]  # (addr, period)
-    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [], "mem_write_hits": [], "fake_tick_count": [0] * len(fake_ticks)}
+    force_bits = [parse_addr_len(spec) for spec in args.mmio_force_bits]  # (addr, mask)
+    clear_bits = [parse_addr_len(spec) for spec in args.mmio_clear_bits]  # (addr, mask)
+    state = {
+        "instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [],
+        "mem_write_hits": [], "fake_tick_count": [0] * len(fake_ticks),
+        "mmio_force_count": [0] * len(force_bits),
+        "mmio_clear_count": [0] * len(clear_bits),
+    }
 
     def capture_registers():
         return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
@@ -247,6 +261,24 @@ def main(argv):
             "value": f"0x{value:x}" if access != UC_MEM_READ else None,
         })
 
+    def make_mmio_force_hook(i, addr, mask):
+        def hook_mmio_force(uc_, access, address, size, value, _user_data):
+            cur = int.from_bytes(uc_.mem_read(addr, 4), "little")
+            forced = (cur | mask) & 0xFFFFFFFF
+            if forced != cur:
+                uc_.mem_write(addr, forced.to_bytes(4, "little"))
+                state["mmio_force_count"][i] += 1
+        return hook_mmio_force
+
+    def make_mmio_clear_hook(i, addr, mask):
+        def hook_mmio_clear(uc_, access, address, size, value, _user_data):
+            cur = int.from_bytes(uc_.mem_read(addr, 4), "little")
+            cleared = cur & (~mask & 0xFFFFFFFF)
+            if cleared != cur:
+                uc_.mem_write(addr, cleared.to_bytes(4, "little"))
+                state["mmio_clear_count"][i] += 1
+        return hook_mmio_clear
+
     def make_mem_write_hook(range_addr, range_len):
         def hook_mem_write(uc_, access, address, size, value, _user_data):
             if len(state["mem_write_hits"]) >= args.max_mem_write_log:
@@ -270,6 +302,12 @@ def main(argv):
     for addr, length in mem_write_ranges:
         uc.hook_add(UC_HOOK_MEM_WRITE, make_mem_write_hook(addr, length),
                     begin=addr, end=addr + length - 1)
+    for i, (addr, mask) in enumerate(force_bits):
+        uc.hook_add(UC_HOOK_MEM_READ, make_mmio_force_hook(i, addr, mask),
+                    begin=addr, end=addr + 3)
+    for i, (addr, mask) in enumerate(clear_bits):
+        uc.hook_add(UC_HOOK_MEM_READ, make_mmio_clear_hook(i, addr, mask),
+                    begin=addr, end=addr + 3)
 
     error = None
     try:
@@ -310,6 +348,14 @@ def main(argv):
         "fake_ticks_applied": [
             {"addr": f"0x{addr:08x}", "period": period, "count": state["fake_tick_count"][i]}
             for i, (addr, period) in enumerate(fake_ticks)
+        ],
+        "mmio_force_bits_applied": [
+            {"addr": f"0x{addr:08x}", "mask": f"0x{mask:x}", "count": state["mmio_force_count"][i]}
+            for i, (addr, mask) in enumerate(force_bits)
+        ],
+        "mmio_clear_bits_applied": [
+            {"addr": f"0x{addr:08x}", "mask": f"0x{mask:x}", "count": state["mmio_clear_count"][i]}
+            for i, (addr, mask) in enumerate(clear_bits)
         ],
     }
 

@@ -178,7 +178,7 @@ closing recommendation.
     neighboring array). Added a genuine Unicorn memory watchpoint
     (`--watch-mem-write`) and got a partial concrete confirmation. See
     [`docs/investigations/channel-busy-gate-search.md`](../investigations/channel-busy-gate-search.md).
-16. Concrete follow-up attempted
+16. Concrete follow-up
     ([`docs/investigations/systick-tick-injection.md`](../investigations/systick-tick-injection.md)):
     diagnosed the `FUN_0000ccd0` tick source precisely (a
     firmware-maintained RAM counter incremented by the real
@@ -188,10 +188,28 @@ closing recommendation.
     run escaped `FUN_00006968`'s homing timeout with
     `--watch-mem-write 0x20001b14:4` live, then hit a *different*
     dependency — an uninitialized DMA/SERCOM-shaped peripheral driver
-    object, root-caused to `FUN_0000cdd8`'s already-known `SYNCBUSY`-style
-    stall (now documented in `docs/project-status.md`'s "Tooling gaps").
-    No new write observed. **Next**: solving that clock-init stall for
-    real (not routing around it) is now the identified path to the
-    setter — a larger undertaking than this chain's own scope. Once
-    found, the full `I<channel><mode>| -> ... -> now-known GPIO ->
-    event-15 result` chain closes completely.
+    object, root-caused to `FUN_0000cdd8`'s clock-init stall. No write
+    observed.
+17. ~~Solve `FUN_0000cdd8`'s clock-init stall for real~~ — done
+    ([`docs/investigations/reset-handler-clock-init.md`](../investigations/reset-handler-clock-init.md)):
+    of 16 status polls in the function, exactly 4 don't already pass
+    under zero-behavior MMIO — each a real, SVD-named ready/lock bit
+    (`OSC32KCTRL.STATUS.XOSC32KRDY`, `OSCCTRL.STATUS.DFLLRDY`,
+    `OSCCTRL.DPLL0/DPLL1.DPLLSTATUS.{LOCK,CLKRDY}`) — modeled with a
+    new, explicit `--mmio-force-bits`/`--mmio-clear-bits` mechanism
+    (never a general peripheral model). Rerunning from the true
+    `Reset_Handler`: clock init completes, the real SERCOM/DMA driver
+    object (two SERCOM instances) constructs without the previous
+    null-pointer crash, and real homing runs and exits — confirmed via
+    `--watch` hits at the same exit point (16)'s routed-around entry
+    found. **Still no write to `0x20001b14`**: reaching a directly
+    observable main-loop state (`FUN_00008960`) needs far more simulated
+    tick-time than expected — a newly identified characterization gap
+    (not a hardware-modeling one). **Next**: enumerate the post-homing
+    delay/init call sites (`FUN_00007770`/`FUN_00005d44` are the known
+    starting points) to get a real tick-count estimate, rather than
+    guessing at a larger instruction budget; once past that, injecting a
+    real inbound "M"/"I" command through the now-functional receive path
+    is the natural follow-on (not attempted). Once the setter is found,
+    the full `I<channel><mode>| -> ... -> now-known GPIO -> event-15
+    result` chain closes completely.
