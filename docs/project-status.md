@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08.
+Last updated: 2026-09-08 (pin-index provenance).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -249,16 +249,30 @@ re-proving:
   four channels via `run_concrete.py --log-mmio`. The rate-control
   mechanism fell out naturally: `FUN_00005c00`/`FUN_00006260` write/read
   each TC's `CC0` (period) with correct SYNCBUSY/RETRIGGER sequencing.
-  **Honestly limited, not forced**: the real per-channel pin assignment
-  depends on a RAM index byte per channel that this pass found no static
-  producer for — cold-RAM concrete execution gives the same pin (PA23)
-  for all four channels, an artifact of uninitialized state, not a
-  hardware fact, and is documented as exactly that rather than reported
+  **Honestly limited, not forced, at the time**: the real per-channel pin
+  assignment depended on a RAM index byte per channel that pass found no
+  static producer for — cold-RAM concrete execution gave the same pin
+  (PA23) for all four channels, an artifact of uninitialized state, not a
+  hardware fact, and was documented as exactly that rather than reported
   as a result. A genuine protocol-to-hardware link was found in passing:
   the event-15/`I`-command result value
   (`i32[0x20002064[channel]]`) is the *same* address as this mechanism's
   own step-position counter. See
   [`docs/investigations/motor-timer-survey.md`](investigations/motor-timer-survey.md).
+- **Pin-index provenance resolved (roadmap M6)**: the per-channel
+  pin-index bytes above (`0x20000164`-`0x20000167`) are not written by any
+  application instruction — they are `.data`-segment initializers,
+  compiled into flash and copied into RAM by `Reset_Handler`'s own
+  startup copy loop (`0xcc24`-`0xcc70`), before any peripheral init runs.
+  Read directly from the unmodified firmware image: **TC0 -> PB10, TC1 ->
+  PA08, TC2 -> PB12, TC3 -> PA10** — a static (level-1), compiled-image
+  fact, not a concrete-execution artifact, cross-validated against the
+  already-proven PB22/TCC1 fact (table index 40 independently decodes to
+  PB22 under the same group/pin scheme). Also ruled out, with evidence,
+  as *not* the source: NVM/EEPROM-persisted config (real NVM flash-write
+  helpers exist in this firmware but none reads config into this array)
+  and board/runtime detection (nothing runs before the `.data` copy). See
+  [`docs/investigations/pin-index-provenance.md`](investigations/pin-index-provenance.md).
 
 ## Corrected assumptions
 
@@ -350,14 +364,19 @@ separately and immediately afterward, also on 2026-09-08.
    The motor-timer survey (TC0-TC3's ISR/GPIO mechanism, matched against
    the already-proven TCC1 -> PB22 case) is now done — see
    [`docs/investigations/motor-timer-survey.md`](investigations/motor-timer-survey.md).
-   **Concrete next micro-step**: find what writes the per-channel
-   pin-index RAM bytes (`0x20000164`-`0x20000167`) — the one gap between
-   "mechanism confirmed" and "per-channel pin confirmed." Then: connect
-   `I<channel><mode>|`'s already-mapped protocol-level state machine
+   The per-channel pin-index gap that survey left open is now also
+   closed: TC0->PB10, TC1->PA08, TC2->PB12, TC3->PA10, a `.data`-segment
+   startup-initialization fact, not application-written — see
+   [`docs/investigations/pin-index-provenance.md`](investigations/pin-index-provenance.md).
+   **Concrete next micro-step**: connect `I<channel><mode>|`'s
+   already-mapped protocol-level state machine
    (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
-   `i32[0x20002064[channel]]` — the last of these is now confirmed to be
-   the exact same address as the timer mechanism's own step-position
-   counter) to the confirmed timer/pin chain — not started.
+   `i32[0x20002064[channel]]` — the last of these is already confirmed to
+   be the exact same address as the timer mechanism's own step-position
+   counter) forward to `step_delta[channel]` (`RAM 0x20000094`, the
+   per-tick rate `FUN_00005898` adds) — the one remaining link to close
+   the full `command -> state -> timer rate -> ISR -> now-known GPIO`
+   chain. Not started.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

@@ -120,8 +120,11 @@ motor-timer survey is done: TC0-TC3 (IRQ107-110) each clear their own
 interrupt flags and reach a shared, table-indexed GPIO-pulse mechanism,
 structurally distinct from the already-proven TCC1 -> PB22 case — see
 [`docs/investigations/motor-timer-survey.md`](docs/investigations/motor-timer-survey.md).
-Next: find what sets each channel's real pin index (the one gap left),
-then connect `I<channel><mode>|` to this confirmed chain. `!`/`I`'s own
+The per-channel pin index is now also resolved (TC0->PB10, TC1->PA08,
+TC2->PB12, TC3->PA10 — a compile-time `.data`-segment fact, not
+application-written) — see
+[`docs/investigations/pin-index-provenance.md`](docs/investigations/pin-index-provenance.md).
+Next: connect `I<channel><mode>|` to this confirmed chain. `!`/`I`'s own
 protocol transactions remain queued for whenever M4 resumes. Full
 roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 

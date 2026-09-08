@@ -147,14 +147,23 @@ closing recommendation.
     Also found, falling out naturally: `FUN_00005c00`/`FUN_00006260`
     write/read each TC's `CC0` (period) — the rate-control mechanism. See
     [`docs/investigations/motor-timer-survey.md`](../investigations/motor-timer-survey.md).
-13. Connect `I<channel><mode>|`'s already-mapped protocol-level state
+13. ~~Find what writes the per-channel pin-index RAM bytes
+    (`0x20000164`-`0x20000167`)~~ — done: they are `.data`-segment
+    initializers copied into RAM by `Reset_Handler`'s own startup copy
+    loop, not written by any application instruction — a static
+    (level-1), compiled-image fact. **TC0->PB10, TC1->PA08, TC2->PB12,
+    TC3->PA10**, cross-validated against the independently-known
+    PB22/TCC1 fact. Also ruled out with evidence: NVM/EEPROM-persisted
+    config and board/runtime detection. See
+    [`docs/investigations/pin-index-provenance.md`](../investigations/pin-index-provenance.md).
+14. Connect `I<channel><mode>|`'s already-mapped protocol-level state
     machine (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
     `i32[0x20002064[channel]]`, per
     `research/autopilot_static_inventory/synchronous-responses.md`) to
-    the timer/pin chain (12) found — `i32[0x20002064[channel]]` is
+    the timer/pin chain (12, 13) found — `i32[0x20002064[channel]]` is
     already confirmed to be the exact same step-position counter
     `FUN_00005898` increments, a real link found in (12), not yet
-    exploited. The concrete next step per `motor-timer-survey.md`: find
-    what writes the per-channel pin-index RAM bytes
-    (`0x20000164`-`0x20000167`), the one gap blocking a fully confirmed
-    per-channel pin. Not started.
+    exploited. The concrete next step per `motor-timer-survey.md`: trace
+    the two known write sites forward to `step_delta[channel]` (RAM
+    `0x20000094`) — the one remaining link, now that (13) has resolved
+    the pin identity. Not started.

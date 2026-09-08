@@ -241,9 +241,12 @@ pass":
   `FUN_00006338` (the one caller of the rate-reader) were named, not
   traced.
 - The RAM per-channel pin-index array's real initializer was searched
-  for (see above) but not found; no attempt was made to brute-force it
-  via a full-startup concrete run, which would be a larger undertaking
-  (running real `Reset_Handler` to completion) than this slice's scope.
+  for (see above) but not found at the time this was written. **Now
+  resolved** — see
+  [`pin-index-provenance.md`](pin-index-provenance.md): the values are
+  baked into the compiler's `.data` segment and copied into RAM by
+  `Reset_Handler`'s own startup copy loop, not written by any application
+  instruction, which is why the search here correctly found nothing.
 
 ## Confirmed vs. candidate — summary table
 
@@ -255,7 +258,7 @@ pass":
 | `FUN_00005898` pulses a table-indexed GPIO pin via `FUN_0000d388` (the same helper already found in `samd51-peripheral-mapping.md`) | **Confirmed** (static + concrete, PA23 case) |
 | The flash pin-descriptor table at `0x14284` (10 candidate entries: PA23, PA22, PB17, PB16, PB13, PB14, PB15, PB12, PA21, PA20) | **Confirmed** (static, direct flash read) |
 | `FUN_00005c00`/`FUN_00006260` write/read each TC's `CC0` (period) with correct SYNCBUSY/RETRIGGER sequencing | **Confirmed** (static; matches the already-known startup peripheral survey) |
-| Which specific pin each of TC0/TC1/TC2/TC3 drives on a real, running device | **Candidate only** — mechanism confirmed, per-channel index not resolved; cold-RAM concrete execution gives PA23 for *all four*, which is an artifact of uninitialized state, not a hardware fact |
+| Which specific pin each of TC0/TC1/TC2/TC3 drives on a real, running device | **Confirmed** (static, direct flash read) — TC0->PB10, TC1->PA08, TC2->PB12, TC3->PA10; see [`pin-index-provenance.md`](pin-index-provenance.md). Cold-RAM concrete execution giving PA23 for all four was an artifact of uninitialized state, not a hardware fact — now superseded |
 | Any "Motor 1/2/3/4" physical identity for TC0-3 | **Not claimed** — no evidence connecting TC-channel-number to a physical motor connector was sought or found this pass |
 
 ## Motor hardware-provenance graph (as far as this slice's evidence supports)
@@ -263,10 +266,10 @@ pass":
 ```
 TCC1  --IRQ93/0x60ec-->  ISR (inline)  --INTFLAG bit16-->  PORT.GROUP1.OUTTGL  -->  PB22            [fully confirmed]
 
-TC0   --IRQ107/0x607c--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5be8, ramp logic) --fast path--> FUN_00005898(0) --> FUN_0000d388(pin_idx_table[RAM 0x20000164]) --> OUTSET/OUTCLR --> candidate pin (PA23 in cold RAM; real index unresolved)
-TC1   --IRQ108/0x6098--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5898, r0=1)       -->                FUN_00005898(1) --> FUN_0000d388(pin_idx_table[RAM 0x20000165]) --> OUTSET/OUTCLR --> candidate pin (PA23 in cold RAM; real index unresolved)
-TC2   --IRQ109/0x60b4--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5898, r0=2)       -->                FUN_00005898(2) --> FUN_0000d388(pin_idx_table[RAM 0x20000166]) --> OUTSET/OUTCLR --> candidate pin (PA23 in cold RAM; real index unresolved)
-TC3   --IRQ110/0x60d0--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5898, r0=3)       -->                FUN_00005898(3) --> FUN_0000d388(pin_idx_table[RAM 0x20000167]) --> OUTSET/OUTCLR --> candidate pin (PA23 in cold RAM; real index unresolved)
+TC0   --IRQ107/0x607c--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5be8, ramp logic) --fast path--> FUN_00005898(0) --> FUN_0000d388(pin_idx_table[RAM 0x20000164]=41) --> OUTSET/OUTCLR --> PB10 [confirmed, see pin-index-provenance.md]
+TC1   --IRQ108/0x6098--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5898, r0=1)       -->                FUN_00005898(1) --> FUN_0000d388(pin_idx_table[RAM 0x20000165]=43) --> OUTSET/OUTCLR --> PA08 [confirmed, see pin-index-provenance.md]
+TC2   --IRQ109/0x60b4--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5898, r0=2)       -->                FUN_00005898(2) --> FUN_0000d388(pin_idx_table[RAM 0x20000166]=7)  --> OUTSET/OUTCLR --> PB12 [confirmed, see pin-index-provenance.md]
+TC3   --IRQ110/0x60d0--> ISR --INTFLAG MC0+OVF--> tail-branch(0x5898, r0=3)       -->                FUN_00005898(3) --> FUN_0000d388(pin_idx_table[RAM 0x20000167]=45) --> OUTSET/OUTCLR --> PA10 [confirmed, see pin-index-provenance.md]
 
 Rate control (all five timers): FUN_00005c00(channel, period) -> TCx.CC0 (+ RETRIGGER)  <-- callable at runtime, not just startup
 Rate readback (TC0-3):          FUN_00006260(channel) -> reads TCx.CC0 + SYNCBUSY
@@ -310,26 +313,26 @@ for a stronger one.
 ## Best next entry point for connecting `I<channel><mode>|` to this hardware chain
 
 **Not executed this pass**, per the task — but the concrete starting
-point is now clear and specific, not a vague "trace the I command more":
+point is now clear and specific, not a vague "trace the I command more".
+Item (1) below is now done — see
+[`pin-index-provenance.md`](pin-index-provenance.md) — which removes the
+one blocker that made (3) premature; (2) is the natural next slice:
 
-1. **Find what writes `0x20000164`-`0x20000167`** (the per-channel
-   pin-table index array) — the single missing link that would turn
-   every "candidate pin" in the table above into a confirmed one. Likely
-   either a startup loop using computed addressing (matching
-   `docs/protocol/open-questions.md`'s already-documented class of
-   static-survey blind spot) or a value read from persistent config —
-   worth checking `docs/hardware/autopilot-research-handoff.md`'s
-   persistent-storage notes for what's actually stored there before
-   assuming it's code-only.
+1. ~~Find what writes `0x20000164`-`0x20000167`~~ — **done**: they are
+   `.data`-segment initializers copied by `Reset_Handler`, not written by
+   application code. TC0->PB10, TC1->PA08, TC2->PB12, TC3->PA10,
+   confirmed at the static evidence tier. See
+   [`pin-index-provenance.md`](pin-index-provenance.md).
 2. **Trace `I<channel><mode>|`'s already-known write sites**
    (`u8[0x20001b14[channel]]`, `u8[0x200029d8[channel]]`, per
    `synchronous-responses.md`) forward to see whether they influence
    `step_delta[channel]` (`RAM 0x20000094`, the per-tick increment
-   `FUN_00005898` adds to the position counter) — this would be the
-   direct "command sets the step rate" link, separate from (and probably
-   more directly reachable than) the RAM pin-index question above.
-3. Once (1) is resolved, a `run_concrete.py`-based concrete run seeding
-   a specific `I<channel><mode>|`-derived state and observing the real
-   resulting pin toggle would close the full
-   `command -> internal state -> timer -> ISR -> GPIO -> pin` chain this
-   project has been building toward since M6 was opened.
+   `FUN_00005898` adds to the position counter) — this is now the single
+   remaining link needed to close the full
+   `command -> internal state -> timer rate -> ISR -> now-known GPIO`
+   chain. This is the recommended next entry point.
+3. Once (2) is resolved, a `run_concrete.py`-based concrete run seeding a
+   specific `I<channel><mode>|`-derived state and observing the real
+   resulting pin toggle (now a *known* pin, not a candidate) would close
+   the full chain this project has been building toward since M6 was
+   opened.
