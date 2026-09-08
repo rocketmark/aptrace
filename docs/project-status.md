@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (post-homing init: real LoRa-radio ID-probe dependency found).
+Last updated: 2026-09-08 (real Reset_Handler run reaches the real main loop, past a disclosed radio-ID assumption).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -178,6 +178,18 @@ re-proving:
   `Reset_Handler`'s real clock-init chain and a real SERCOM/DMA driver
   constructor to completion for the first time. See
   [`docs/investigations/reset-handler-clock-init.md`](investigations/reset-handler-clock-init.md)
+  and [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`--force-reg` added to the Unicorn backend**: fabricates one
+  register's value at one exact instruction — deliberately a different,
+  stricter-disclosure mechanism than `--mmio-force-bits`/
+  `--mmio-clear-bits` (which model documented MCU-internal silicon
+  behavior; this stands in for something genuinely external, like an
+  attached device's response, that the harness has no way to know).
+  Scoped to a single program point (the instruction after one specific
+  call site returns), not a callee's every invocation. First and only
+  use so far: one SPI chip-ID read result, disclosed as harness-supplied
+  external-device state every time it's mentioned. See
+  [`docs/investigations/post-probe-main-loop.md`](investigations/post-probe-main-loop.md)
   and [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
 - **The real `&|` -> `pending[5]=1` transaction, concretely demonstrated**:
   entering at the real caller (`0x8a34`), letting the firmware establish
@@ -386,6 +398,32 @@ re-proving:
   self-completing status bits modeled in the prior slice. No new
   tooling needed. See
   [`docs/investigations/post-homing-radio-probe.md`](investigations/post-homing-radio-probe.md).
+- **A real concrete run now reaches the real main loop, past the
+  radio-ID boundary (roadmap M6)**: confirmed no software bypass exists
+  for the radio-ID probe (both call sites and the probe body checked).
+  Introduced the narrowest possible disclosed assumption — a new,
+  explicit `run_concrete.py --force-reg ADDR:REG:HEX` flag, used exactly
+  once (`--force-reg 0x9dd4:r0:0x12`, the single instruction right after
+  the SPI read returns) — deliberately a different, stricter-disclosure
+  mechanism than `--mmio-force-bits` (that models documented MCU
+  silicon; this fabricates one external value at one program point,
+  disclosed every time as harness-supplied, not observed). With it, a
+  real run goes `Reset_Handler` -> real clock/peripheral init -> the
+  real startup reference/input routine (the neutral term for what was
+  called "homing") -> the disclosed radio-ID assumption -> real
+  post-probe init -> the **real main loop, confirmed stable and
+  repeating** (`FUN_00008960` hit five times, ~400,000 instructions
+  total, confirming the earlier tick-cost puzzle really was entirely the
+  now-resolved infinite retry loop). `0x20001b14` remains unwritten
+  across genuine steady-state idle execution — confirmed concretely,
+  not inferred. A second, deeper dependency (a real bulk NVM erase loop
+  that doesn't visibly advance over millions of instructions, likely
+  gated on a zero-valued config field rather than a documented status
+  bit) was found and precisely reported, not chased, since it doesn't
+  block the above. The real RX injection point for a follow-on "inject
+  I/M" slice was identified concretely (a 100-byte RAM ring buffer at
+  `0x2000245c`) but not used. See
+  [`docs/investigations/post-probe-main-loop.md`](investigations/post-probe-main-loop.md).
 
 ## Corrected assumptions
 
@@ -555,8 +593,24 @@ separately and immediately afterward, also on 2026-09-08.
    **infinite** retry loop. Not a timing gap; not faked (a different,
    external-device evidence class from the MCU-internal bits already
    modeled) — correctly identified and left as an open, real hardware
-   boundary. Still no write to `0x20001b14` observed; the main-loop
-   receive path is not reachable without resolving this dependency.
+   boundary. A fourth follow-up
+   ([`docs/investigations/post-probe-main-loop.md`](investigations/post-probe-main-loop.md))
+   confirmed no software bypass exists, then introduced the narrowest
+   possible disclosed assumption (a new `--force-reg` mechanism,
+   fabricating exactly one register value at one instruction) to get
+   past it. The real main loop is now reached and confirmed stable
+   (`FUN_00008960`, 5 iterations, ~400,000 instructions total from
+   `Reset_Handler`) — resolving the earlier "excessive tick cost" as
+   entirely attributable to the now-bypassed infinite retry loop.
+   `0x20001b14` remains unwritten through genuine idle main-loop
+   execution, concretely confirmed. **The real RX injection point is
+   now identified** (a 100-byte RAM ring buffer at `0x2000245c`,
+   index `0x200024c0`) for a follow-on slice that injects a real `I`/`M`
+   command — not attempted this pass. A second, deeper dependency (a
+   real bulk NVM erase loop that doesn't advance over millions of
+   instructions, likely gated on a zero-valued config field rather than
+   a status bit) was found and reported precisely; it does not block
+   the above and was not chased further.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

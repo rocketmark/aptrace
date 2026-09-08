@@ -97,6 +97,11 @@ def parse_addr_len(spec):
     return parse_hex(addr_s), int(len_s, 0)
 
 
+def parse_addr_reg_value(spec):
+    addr_s, reg_s, value_s = spec.split(":", 2)
+    return parse_hex(addr_s), reg_s.strip().lower(), parse_hex(value_s)
+
+
 def build_argparser():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--firmware", required=True, help="raw firmware .bin (no ELF header)")
@@ -126,6 +131,7 @@ def build_argparser():
     p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee (e.g. a hardware driver call) whose return value this scenario doesn't depend on -- the concrete-execution equivalent of the opaque function-call override already used on the Crucible side (see docs/project-status.md). Does not fabricate a return value; R0 is left exactly as the caller set it up.")
     p.add_argument("--mmio-force-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is OR'd with MASK before the CPU sees it (a status/ready bit forced set). This is NOT a peripheral model -- it never touches the register on a write, never clears the bit, and applies to exactly the named register. Use it only for a specific, SVD-identified completion/ready bit that real hardware predictably asserts once the firmware's own preceding write takes effect (e.g. an oscillator-ready or PLL-lock flag on a board already confirmed to boot) -- not for a bit whose real value depends on something this harness can't establish (an external signal, a value this scenario should instead seed via --seed-mem). Document, per address, which SVD register/field this is and why forcing it is justified. See docs/investigations/reset-handler-clock-init.md.")
     p.add_argument("--mmio-clear-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is AND'd with ~MASK before the CPU sees it (a bit forced clear) -- the complement of --mmio-force-bits, for a self-clearing bit the firmware itself just set (e.g. a software-reset or SYNCBUSY bit real hardware clears within a few cycles of the triggering write) that the plain read/write memory model otherwise leaves stuck set forever. Same justification discipline applies: only a real, SVD-identified, predictably-self-clearing bit, never a stand-in for genuine external state.")
+    p.add_argument("--force-reg", action="append", default=[], metavar="ADDR:REG:HEX", help="repeatable: immediately before executing the instruction at ADDR, set register REG to HEX. Unlike --mmio-force-bits/--mmio-clear-bits (which model a documented, predictable MCU-internal completion bit), this DOES fabricate a value -- use it only as a disclosed environmental/external-device assumption at one exact, narrow program point (e.g. 'the byte an external chip's ID register read returned'), never as a stand-in for real silicon behavior. Scope it to the single instruction after a specific call site returns, not to the callee's every invocation, so unrelated calls to the same function are unaffected. State plainly, wherever this run's results are reported, that the value at ADDR is harness-supplied external-device state, not observed or firmware-produced.")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
 
@@ -194,11 +200,20 @@ def main(argv):
     fake_ticks = [parse_addr_len(spec) for spec in args.fake_tick]  # (addr, period)
     force_bits = [parse_addr_len(spec) for spec in args.mmio_force_bits]  # (addr, mask)
     clear_bits = [parse_addr_len(spec) for spec in args.mmio_clear_bits]  # (addr, mask)
+    force_regs = [parse_addr_reg_value(spec) for spec in args.force_reg]  # (addr, reg, value)
+    for addr, reg_name, _ in force_regs:
+        if reg_name not in REG_BY_NAME:
+            print(f"error: unknown register '{reg_name}' in --force-reg", file=sys.stderr)
+            return 2
+    force_reg_by_addr = {}
+    for addr, reg_name, value in force_regs:
+        force_reg_by_addr.setdefault(addr, []).append((reg_name, value))
     state = {
         "instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [],
         "mem_write_hits": [], "fake_tick_count": [0] * len(fake_ticks),
         "mmio_force_count": [0] * len(force_bits),
         "mmio_clear_count": [0] * len(clear_bits),
+        "force_reg_hits": [],
     }
 
     def capture_registers():
@@ -222,6 +237,12 @@ def main(argv):
                 cur = int.from_bytes(uc_.mem_read(tick_addr, 4), "little")
                 uc_.mem_write(tick_addr, ((cur + 1) & 0xFFFFFFFF).to_bytes(4, "little"))
                 state["fake_tick_count"][i] += 1
+        if address in force_reg_by_addr:
+            hit = {"instruction": state["instructions"], "address": f"0x{address:08x}", "set": []}
+            for reg_name, value in force_reg_by_addr[address]:
+                uc_.reg_write(REG_BY_NAME[reg_name], value)
+                hit["set"].append({"reg": reg_name, "value": f"0x{value:08x}"})
+            state["force_reg_hits"].append(hit)
         if address in stub_addrs:
             lr = uc_.reg_read(UC_ARM_REG_LR)
             state["stub_hits"].append({
@@ -357,6 +378,7 @@ def main(argv):
             {"addr": f"0x{addr:08x}", "mask": f"0x{mask:x}", "count": state["mmio_clear_count"][i]}
             for i, (addr, mask) in enumerate(clear_bits)
         ],
+        "force_reg_hits": state["force_reg_hits"],
     }
 
     text = json.dumps(snapshot, indent=2)

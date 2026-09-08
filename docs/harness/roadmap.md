@@ -222,13 +222,31 @@ closing recommendation.
     response is a different evidence class from the MCU-internal
     completion bits modeled in (17), and this is likely the same
     unmodeled transport-peripheral boundary already on record
-    (`docs/project-status.md`'s TX-path next step). **The main receive
-    path (`FUN_00008960`) is not reachable without resolving this real
-    hardware dependency** — not attempted this pass; a future slice
-    could try a single, clearly-disclosed `--seed-mem` on the SPI DATA
-    register returning `0x12` (a materially weaker evidence class than
-    (17)'s modeling, explicitly labeled as such) if seeing past this one
-    check is ever the actual goal. Once the setter is found (whenever
-    that path opens up, or via a separately-injected real "M"/"I"
-    command), the full `I<channel><mode>| -> ... -> now-known GPIO ->
-    event-15 result` chain closes completely.
+    (`docs/project-status.md`'s TX-path next step).
+19. ~~Get past the radio-ID boundary honestly and reach the real main
+    loop~~ — done
+    ([`docs/investigations/post-probe-main-loop.md`](../investigations/post-probe-main-loop.md)):
+    confirmed no software bypass exists (both call sites and the probe
+    body checked), then introduced the narrowest possible disclosed
+    assumption — a new `run_concrete.py --force-reg ADDR:REG:HEX`
+    mechanism (deliberately stricter-disclosure than `--mmio-force-bits`:
+    it fabricates one external value at one exact instruction, not a
+    documented MCU behavior), used exactly once
+    (`--force-reg 0x9dd4:r0:0x12`, the instruction right after the SPI
+    read returns). The real main loop is now reached and confirmed
+    stable (`FUN_00008960`, 5 iterations, ~400,000 instructions total
+    from `Reset_Handler`) — resolving the "excessive tick cost" question
+    as entirely the now-bypassed infinite retry loop, not a sum of
+    delays needing further characterization. `0x20001b14` remains
+    unwritten through genuine idle main-loop execution, concretely
+    confirmed. **The real RX injection point is identified** (a 100-byte
+    RAM ring buffer at `0x2000245c`, index `0x200024c0`, selected by
+    flags `0x20000018=0`/`0x2000006a=1` — both observed, not assumed) —
+    not used this pass. A second, deeper dependency (a real bulk NVM
+    erase loop that doesn't advance over millions of instructions,
+    likely gated on a zero-valued config field rather than a status bit)
+    was found and reported precisely, not chased, since it doesn't block
+    the above. **Next**: inject a real "M"/"I" command into the
+    identified ring buffer and watch `0x20001b14` through a real
+    dispatch — once found, the full `I<channel><mode>| -> ... ->
+    now-known GPIO -> event-15 result` chain closes completely.

@@ -156,17 +156,40 @@ placeholder feeds (in `reset-handler-clock-init.md`'s case, only analog
 ADC/DAC/USB trim registers, confirmed to have no path to the digital
 state that investigation cared about).
 
+**`--force-reg ADDR:REG:HEX`** (repeatable): immediately before executing
+the instruction at `ADDR`, set register `REG` to `HEX`. This is
+different in kind from every other hook above, and the only one that
+**fabricates** a value rather than modeling documented MCU behavior:
+`--mmio-force-bits`/`--mmio-clear-bits` assert what the chip's *own*
+silicon guarantees once its preceding register write takes effect;
+`--force-reg` asserts something the harness has no way to know — an
+external device's response, a value from outside the MCU entirely. Use
+it only as a disclosed environmental assumption, scoped to the single
+instruction *after* one specific call site returns (not the callee's
+entry, so unrelated calls to the same function are unaffected), and say
+so plainly wherever the run's results are reported — "harness-supplied
+external-device state," never "observed" or "firmware-produced." First
+use:
+[`docs/investigations/post-homing-radio-probe.md`](../investigations/post-homing-radio-probe.md)'s
+follow-up forces `r0 = 0x12` at the one instruction right after a real
+SPI chip-ID read returns, standing in for "a radio module is present and
+answers this specific read with the value real firmware requires" — not
+evidence that a real radio was observed, and not a general SERCOM/SPI
+model (every *other* read through the same peripheral is unaffected).
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
 register values, any requested memory dumps, a `watch_hits` list (each
 entry: hit index, instruction count, address, registers, watched memory),
 (with `--log-mmio`) an `mmio_log` list, (with `--stub-call`) a
 `stub_hits` list, (with `--watch-mem-write`) a `mem_write_hits` list,
 (with `--fake-tick`) a `fake_ticks_applied` list (address, period, and
-how many increments actually fired), and (with `--mmio-force-bits`/
+how many increments actually fired), (with `--mmio-force-bits`/
 `--mmio-clear-bits`) `mmio_force_bits_applied`/`mmio_clear_bits_applied`
 lists (address, mask, and how many reads actually changed a value —
 `count: 0` means the bit was already in the needed state and the hook
-never had to do anything). Written to `--out PATH` or stdout.
+never had to do anything), and (with `--force-reg`) a `force_reg_hits`
+list (instruction count, address, and which register was set to what).
+Written to `--out PATH` or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 
@@ -230,7 +253,13 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   each address is named and justified individually, never applied broadly.
   `--stub-call` remains the right tool when a callee's internal behavior
   genuinely doesn't matter to the scenario, or when the bit's true value
-  is not something this harness can establish.
+  is not something this harness can establish. **When it genuinely is
+  external** — a real device's response over a real bus, not MCU-internal
+  state — that's exactly the case `--force-reg` (above) is for, with its
+  own, stricter disclosure requirement (it fabricates, it doesn't model).
+  See
+  [`docs/investigations/post-homing-radio-probe.md`](../investigations/post-homing-radio-probe.md)'s
+  follow-up for a worked example distinguishing the two.
 - The ARM Private Peripheral Bus (`0xE0000000`-`0xE00FFFFF` — SysTick,
   NVIC, SCB, MPU) was unmapped until
   [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)

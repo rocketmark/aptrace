@@ -148,6 +148,15 @@ its own real, infinite retry loop — correctly identified and left
 unfaked, a real hardware boundary rather than something to model past.
 See
 [`docs/investigations/post-homing-radio-probe.md`](docs/investigations/post-homing-radio-probe.md).
+Confirmed no software bypass exists, then got past that boundary
+honestly with the narrowest possible disclosed assumption (a new
+`--force-reg` capability, fabricating one register value at one exact
+instruction, explicitly labeled every time as harness-supplied
+external-device state, not observed) — **a real concrete run now reaches
+the real, stable main loop**, with `0x20001b14` still unwritten by idle
+execution alone and the real inbound-command injection point identified
+for a follow-on slice. See
+[`docs/investigations/post-probe-main-loop.md`](docs/investigations/post-probe-main-loop.md).
 `!`/`I`'s own protocol transactions remain queued for whenever M4
 resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
