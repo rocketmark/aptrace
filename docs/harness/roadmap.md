@@ -250,3 +250,37 @@ closing recommendation.
     identified ring buffer and watch `0x20001b14` through a real
     dispatch — once found, the full `I<channel><mode>| -> ... ->
     now-known GPIO -> event-15 result` chain closes completely.
+20. ~~Inject a real command into the RX ring and catch the `0x20001b14`
+    setter~~ — done, and the answer is a structural one, not a missing
+    write: a new `run_concrete.py --force-mem TRIGGER:MEMADDR:HEXBYTES`
+    flag (the memory-range counterpart to `--force-reg`) delivered a
+    real `G<d><d><seq>|` end to end through the real RX ring, real
+    parser, and real dispatcher — the first fully real command delivery
+    in this project — after diagnosing and fixing a real harness-timing
+    artifact (a per-byte real radio-poll cost that exceeded the
+    firmware's own real inter-byte assembly timeout at the previous
+    `--fake-tick` calibration; raised 20 -> 300). Found a previously
+    undocumented write (`G`'s handler arms `0x200025e1=2`, a byte
+    `FUN_00007e2c` gates on) but still no write to `0x20001b14`. Tracing
+    why found the real structural answer: `FUN_00007e2c`/`FUN_00008e18`/
+    `FUN_00006338`/`FUN_00008a80` — every function this roadmap has
+    described as running "every main-loop iteration" since (14) — are
+    **not reachable from a cold boot at all**. The real, currently-
+    running main loop lives entirely inside `FUN_00009464` (confirmed
+    concretely to never exit, several runs, up to 4,000,000
+    instructions) and only calls `FUN_00008960`/`FUN_00005dd0`;
+    `FUN_000093fc` (which calls all four motor-phase functions) is only
+    reached after `FUN_00009464` returns, which requires clearing a byte
+    (`0x20000060`) traced, via the same exhaustive literal-pool-scan
+    method (15) used for `0x20001b14` itself, to exactly one writer in
+    the whole firmware: **`MC4<...>|`** (motor configuration, all four
+    channels — never per-channel `MC<0-3>`). A concrete `MC4` delivery
+    attempt hit a second, distinct per-byte timing dependency and was
+    not chased further. See
+    [`docs/investigations/g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md).
+    **Next**: characterize `MC4`'s own per-byte timing cost (the same way
+    this item characterized `G`'s) and concretely confirm the unlock;
+    per (15)'s already-exhaustive search, no new `0x20001b14` writer is
+    expected to appear even once `FUN_000093fc` is reachable — if that
+    holds, the honest conclusion becomes that no code path in this
+    firmware image, reachable or not, ever sets `0x20001b14` nonzero.

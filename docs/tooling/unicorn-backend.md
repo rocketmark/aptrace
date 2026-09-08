@@ -177,6 +177,26 @@ answers this specific read with the value real firmware requires" — not
 evidence that a real radio was observed, and not a general SERCOM/SPI
 model (every *other* read through the same peripheral is unaffected).
 
+**`--force-mem TRIGGER:MEMADDR:HEXBYTES`** (repeatable): immediately
+before executing the instruction at `TRIGGER`, write `HEXBYTES` into
+memory at `MEMADDR`. The memory-range counterpart to `--force-reg` above,
+and subject to the same stricter-disclosure rule (it injects bytes the
+harness cannot know arrived from outside, not documented MCU behavior).
+Its intended use is delivering real, externally-arriving protocol bytes
+into a real RX buffer at one exact point in an otherwise fully real,
+unmodified-instruction run — e.g. writing a real `G000|` packet into the
+AutoPilot's live 100-byte RX ring (`0x2000245c`) and its write index
+(`0x200024c4`) right after real boot reaches the main loop for the first
+time, rather than before `Reset_Handler`'s own `.bss`-zero loop would
+wipe it. Pick `TRIGGER` so it fires exactly once during the run (a
+one-time, pre-loop instruction address, not a loop-body address) — the
+hook fires on *every* hit of `TRIGGER`, same as `--force-reg`, so a
+poorly chosen trigger re-injects the same bytes every iteration. See
+[`docs/investigations/g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md)
+for a worked example, including a real per-byte-arrival-timeout
+dependency (`--fake-tick`'s period vs. the firmware's own real
+inter-byte timeout) this technique surfaced.
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
 register values, any requested memory dumps, a `watch_hits` list (each
 entry: hit index, instruction count, address, registers, watched memory),
@@ -187,9 +207,11 @@ how many increments actually fired), (with `--mmio-force-bits`/
 `--mmio-clear-bits`) `mmio_force_bits_applied`/`mmio_clear_bits_applied`
 lists (address, mask, and how many reads actually changed a value —
 `count: 0` means the bit was already in the needed state and the hook
-never had to do anything), and (with `--force-reg`) a `force_reg_hits`
-list (instruction count, address, and which register was set to what).
-Written to `--out PATH` or stdout.
+never had to do anything), (with `--force-reg`) a `force_reg_hits`
+list (instruction count, address, and which register was set to what),
+and (with `--force-mem`) a `force_mem_hits` list (instruction count,
+address, and which memory writes were applied). Written to `--out PATH`
+or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 

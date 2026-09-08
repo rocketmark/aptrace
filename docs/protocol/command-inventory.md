@@ -17,13 +17,13 @@ Everything else below is static-analysis-only.
 | `&\|` | Remote -> AutoPilot | Firmware-version query | `V01R39` (event 5) — **execution-confirmed** |
 | `S\|` | Remote -> AutoPilot | State/config query | `P<value0>,` or `P<value0>,<value1>,<bool>,` (event 6) |
 | `!0\|` / `!1\|` | Remote -> AutoPilot | Bulk state/config query | 11-field numeric CSV (event 7); Remote only parses 10 — see [`event-map.md`](event-map.md) |
-| `G<d><d><seq>\|` | Remote -> AutoPilot | Synchronous request, rolling sequence digit | `#` (event 17) |
+| `G<d><d><seq>\|` | Remote -> AutoPilot | Synchronous request, rolling sequence digit; **also arms a state byte (`0x200025e1=2`) a separate manual-move state machine gates on** — see [`g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md) | `#` (event 17) |
 | `B0\|` / `B1\|` / `B2\|` | Remote -> AutoPilot | B-family mode/state command | inline state change |
 | `TR0\|` / `TR1\|` | Remote -> AutoPilot | Boolean family (false/true) | inline state change |
 | `W0\|` / `W1\|` | Remote -> AutoPilot | W-family subcommand | `W1` -> up to five `#` (event 17), conditional |
 | `R0\|` / `R1\|` / `R2\|` | Remote -> AutoPilot | R-family state | `R0`->`@`, `R1`->`@@` (event 4) |
 | `MC<0-3><a>,<b>,<c>,<d>,\|` | Remote -> AutoPilot | Motor configuration, one channel | — |
-| `MC4<...>\|` | Remote -> AutoPilot | Motor configuration, all four channels | — |
+| `MC4<...>\|` | Remote -> AutoPilot | Motor configuration, all four channels; **the only command in this firmware image that ends the boot-phase loop and hands control to the loop containing the motor-phase/ramp/monitor subsystem** (clears `0x20000060`) — see [`g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md) | — |
 | `I<1-4><0-1>\|` | Remote -> AutoPilot | Per-channel async/query state machine | `<signed-number>,` (event 15) |
 | `LL1\|` / `LL2\|` | Remote -> AutoPilot | First/second limit workflow | — |
 | `H\|` / `J\|` | Remote -> AutoPilot | Toggle a global flag (opposite directions) | — |

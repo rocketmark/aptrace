@@ -157,6 +157,17 @@ the real, stable main loop**, with `0x20001b14` still unwritten by idle
 execution alone and the real inbound-command injection point identified
 for a follow-on slice. See
 [`docs/investigations/post-probe-main-loop.md`](docs/investigations/post-probe-main-loop.md).
+That injection point is now used: a real `G<d><d><seq>|` was delivered
+end to end through the real RX ring, real parser, and real dispatcher
+(a new `--force-mem` capability, plus a `--fake-tick` recalibration after
+diagnosing a real per-byte radio-poll-vs-inter-byte-timeout collision) —
+and it uncovered the real reason `0x20001b14` never moves: the whole
+motor-phase/ramp/monitor subsystem is not reachable from a cold boot at
+all. The real, currently-running main loop lives entirely inside a
+different function that never returns; the one real unlock traces,
+via an exhaustive literal-pool scan, to exactly one command —
+`MC4<...>|` (motor configuration, all four channels). See
+[`docs/investigations/g-command-motor-subsystem-unlock.md`](docs/investigations/g-command-motor-subsystem-unlock.md).
 `!`/`I`'s own protocol transactions remain queued for whenever M4
 resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).

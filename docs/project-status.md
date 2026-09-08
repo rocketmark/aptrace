@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (real Reset_Handler run reaches the real main loop, past a disclosed radio-ID assumption).
+Last updated: 2026-09-08 (a real `G` command delivered through the real RX ring found that the motor-phase subsystem is unreachable from cold boot without a prior `MC4` command).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -424,6 +424,38 @@ re-proving:
   I/M" slice was identified concretely (a 100-byte RAM ring buffer at
   `0x2000245c`) but not used. See
   [`docs/investigations/post-probe-main-loop.md`](investigations/post-probe-main-loop.md).
+- **A real `G<d><d><seq>|` command delivered end to end through the real
+  RX ring, real parser, and real dispatcher (roadmap M6) — and the
+  reason `0x20001b14` still doesn't move**: a new, disclosed
+  `run_concrete.py --force-mem TRIGGER:MEMADDR:HEXBYTES` flag (the
+  memory-range counterpart to `--force-reg`) injected a real `"G000|"`
+  packet into the live RX ring right after boot reaches the main loop.
+  Delivery first required diagnosing and fixing a genuine harness-timing
+  artifact: the real per-byte "is data available" check re-runs a real
+  SX127x-style radio IRQ-flags poll on *every* byte, costing far more
+  real instructions than the existing `--fake-tick` period accounted
+  for, which spuriously tripped the firmware's own real inter-byte
+  assembly timeout and prevented the terminator from ever being
+  recognized — fixed by raising the tick period (20 -> 300), not by
+  adding a new model. Once fixed, the real dispatcher ran to completion
+  and this slice found `G`'s handler also writes a previously
+  undocumented `0x200025e1 = 2` arm byte a second function
+  (`FUN_00007e2c`) gates on — but `0x20001b14` still didn't move.
+  Tracing why found the real reason: `FUN_00007e2c` (and
+  `FUN_00008e18`/`FUN_00006338`/`FUN_00008a80` — everything this project
+  has ever described as "runs every main-loop iteration") is **not
+  reachable from a cold boot at all**, because it lives inside
+  `FUN_000093fc`, which is only called after `FUN_00009464` returns — and
+  `FUN_00009464` contains its own internal loop (the *real*,
+  currently-permanent main loop, confirmed concretely to never exit in
+  any run this slice performed) with exactly one real exit, gated on a
+  byte (`0x20000060`) this slice traced, via an exhaustive whole-firmware
+  literal-pool scan, to exactly one writer: **`MC4<...>|`** (motor
+  configuration, all four channels — never the per-channel `MC<0-3>`
+  form). Concretely confirming the `MC4` unlock hit a second, distinct
+  per-byte timing dependency (not yet characterized) and was not chased
+  further, per the task's explicit anti-fuzzing scope. See
+  [`docs/investigations/g-command-motor-subsystem-unlock.md`](investigations/g-command-motor-subsystem-unlock.md).
 
 ## Corrected assumptions
 
@@ -470,6 +502,20 @@ re-proving:
   [`docs/tooling/tool-selection.md`](tooling/tool-selection.md#tool-disagreements-investigate-dont-default),
   [`docs/investigations/trigger-input.md`](investigations/trigger-input.md),
   and [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
+- **`FUN_000093fc` (and the motor-phase/ramp/monitor code it calls) is not
+  reachable from a cold boot at all, without a prior `MC4` command.**
+  `i-command-motor-chain.md`, `channel-busy-gate-search.md`, and
+  `post-probe-main-loop.md` all describe `FUN_00006338`/`FUN_00007e2c`/
+  `FUN_00008e18`/`FUN_00008a80` as running "every main-loop iteration" —
+  an accurate reading of `FUN_000093fc`'s static structure, but this was
+  never concretely confirmed as *reachable* until this slice tried and
+  found the real, currently-running main loop is actually
+  `FUN_00009464`'s own internal loop, which calls only
+  `FUN_00008960`/`FUN_00005dd0` and does not return under any condition
+  exercised so far. Those docs are not rewritten retroactively (their own
+  static findings still stand); this is the corrected, concretely-checked
+  reachability picture. See
+  [`docs/investigations/g-command-motor-subsystem-unlock.md`](investigations/g-command-motor-subsystem-unlock.md).
 
 ## Tooling gaps
 
@@ -611,6 +657,23 @@ separately and immediately afterward, also on 2026-09-08.
    instructions, likely gated on a zero-valued config field rather than
    a status bit) was found and reported precisely; it does not block
    the above and was not chased further.
+   A fifth follow-up
+   ([`docs/investigations/g-command-motor-subsystem-unlock.md`](investigations/g-command-motor-subsystem-unlock.md))
+   delivered a real `G000|` through the real RX ring for the first time
+   (a new `--force-mem` mechanism, plus a `--fake-tick` recalibration
+   after diagnosing a real per-byte radio-poll-vs-inter-byte-timeout
+   collision), confirmed `G`'s handler arms a previously undocumented
+   `0x200025e1=2` byte, and — the real answer to why `0x20001b14` never
+   moves — found that `FUN_00007e2c`/`FUN_00008e18`/`FUN_00006338`/
+   `FUN_00008a80` (the whole motor-phase/ramp/monitor subsystem) are not
+   reachable from a cold boot at all: the real, currently-running main
+   loop lives entirely inside `FUN_00009464` and never returns, so
+   `FUN_000093fc` (which calls all four) is never called. The one real
+   unlock — clearing `0x20000060` — traces to exactly one command,
+   `MC4<...>|` (never per-channel `MC<0-3>`), found by the same
+   exhaustive literal-pool-scan method already used for `0x20001b14`
+   itself. A concrete `MC4` delivery attempt hit a second, distinct
+   per-byte timing dependency and was not chased further this pass.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and
