@@ -1,5 +1,16 @@
 # Investigation: `0x5274`/`0x5448` and the Dispatcher Loop's Exit Condition
 
+> **Update (2026-09-07)**: a follow-up concrete-execution pass found that
+> the `0x827e`-`0x82c4` loop analyzed below is **gated on `buffer[0] ==
+> 0xF0`** and is never entered at all for the `&` command this milestone
+> is about — see
+> [`docs/investigations/dispatcher-loop-concrete-trace.md`](dispatcher-loop-concrete-trace.md).
+> Everything below about the loop's structure and `0x5274`/`0x5448`'s
+> reads/writes remains accurate and useful for future `0xF0`/`0xE0`
+> binary-frame work, but it is **not** the explanation for the `&`-packet
+> whole-function replay's non-termination — that code path is never
+> reached for this command. Read the update first.
+
 **Question**: does the whole-function Crucible replay's non-termination
 (see [`docs/project-status.md`](../project-status.md)'s "Current blocker")
 actually depend on memory side effects `0x5274`/`0x5448` produce, as

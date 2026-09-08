@@ -35,9 +35,19 @@ Key flags: `--reg NAME=HEX` seeds a register before execution (repeatable);
 includes a memory range in the output snapshot; `--trace` logs each
 instruction's address to stderr. Full flag list: `run_concrete.py --help`.
 
+**`--watch HEXADDR`** (repeatable): records full register state every time
+an address is hit, **without halting** — unlike `--stop-at`. Combine with
+**`--watch-mem ADDR:LEN`** (repeatable) to also capture memory ranges at
+each hit. This is what a per-iteration loop trace needs (one `--stop-at`
+only ever gives you the *first* hit); see
+[`docs/investigations/dispatcher-loop-concrete-trace.md`](../investigations/dispatcher-loop-concrete-trace.md)
+for a real trace built this way. `--max-watch-hits N` (default 2000) caps
+total recorded hits as a safety net against a genuinely unbounded loop.
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
-register values, and any requested memory dumps. Written to `--out PATH` or
-stdout.
+register values, any requested memory dumps, and a `watch_hits` list (each
+entry: hit index, instruction count, address, registers, watched memory).
+Written to `--out PATH` or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 
@@ -49,6 +59,17 @@ solver-confirmed symbolically. Seeding any other value for `r3` (e.g. `0x0`)
 instead halts at the fallthrough `0x889e`. This is a genuine cross-check at
 a different evidence level (see `tool-selection.md`'s "Evidence levels"): a
 concrete run for one input, agreeing with a solver's proof over all inputs.
+
+## Second confirmed use: locating a real branch a static/symbolic pass missed
+
+Entering at the dispatcher's real caller (`0x8a34`) with a real `&|` packet
+and letting the firmware establish its own entry state (see
+[`docs/investigations/dispatcher-loop-concrete-trace.md`](../investigations/dispatcher-loop-concrete-trace.md))
+found, concretely, that the previously-suspected `0x827e` loop is not even
+on the execution path for this command — a `bne` branch at `0x8266`
+(`buffer[0] == 0xF0`?) routes around it entirely. This is exactly the kind
+of fact concrete execution settles quickly that manual disassembly reading
+had missed across several earlier passes.
 
 ## A real gotcha this surfaced: the Thumb bit belongs on the *address*, not just the mode flag
 

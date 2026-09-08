@@ -31,7 +31,7 @@ mechanism. All four match the ASCII values the static command inventory
 assigned independently. **This part of the v0.1 model is solid and does not
 need revising.**
 
-## What v0.1 got wrong: entry is not a flat scan starting at the top
+## What v0.1 got wrong (and partly right): entry is not a flat scan, but it *does* branch by first byte
 
 Seeding Macaw discovery at `0x8259` (the dispatcher's real entry) and
 letting it run reveals a **single merged unit of ~339 blocks and 57
@@ -39,32 +39,39 @@ callees** — Macaw follows real jump-based control flow, not the human
 notion of "one small function," and this dispatcher turns out to be fused
 with a large amount of surrounding code via plain jumps rather than calls.
 
-More importantly, **entry does not go straight into a character comparison
-at all.** The block range `0x827e`-`0x82c4` runs first, and its lifted IR is
-not a `CMP`+branch pair — it:
+Early passes over this found a block range `0x827e`-`0x82c4` that isn't a
+`CMP`+branch pair but an **indexed-lookup loop** — compute a key from the
+buffer, index into a table at `0x20000180`, compare, advance — and,
+without yet knowing when this loop runs relative to entry, assumed it was
+simply the first thing entry does for every packet. **This assumption was
+wrong.** Concrete execution
+([`docs/investigations/dispatcher-loop-concrete-trace.md`](dispatcher-loop-concrete-trace.md))
+found entry's *very first* real decision, at `0x8258`-`0x8266`, is:
 
-1. Loads a byte from `[R5+1]`.
-2. Computes an index from bytes at `[R4+6..9]`.
-3. Performs an indexed load `[R7 + R0*4]`.
-4. Compares the result against another loaded value, and either matches or
-   advances to the next slot.
+```
+r3 = buffer[0]
+cmp r3, #0xF0
+bne <skip the loop entirely, go to the 0xE0/ASCII-chain check instead>
+```
 
-This is the shape of a **hash-table or lookup-table probe** — compute a
-key, index into a table, compare, advance on mismatch — not a linear string
-of character comparisons. See
-[`docs/investigations/trigger-input.md`](trigger-input.md) for what's known
-about how R4/R5/R6/R7 get established going into this loop, and
+**The loop only runs when `buffer[0] == 0xF0`** — it is v0.1's own "binary
+motor/control frame" path (`0xF0`/`0xE0` in the original tree diagram),
+which v0.1 got right. For `&`/`G`/`!`/`S` and every other ASCII command,
+execution goes straight from `0x8266` to `0x82c6` (the `0xE0` check) and
+on into the character-comparison chain — **the loop is never entered for
+these commands at all.** See
+[`docs/investigations/trigger-input.md`](trigger-input.md) for how
+R4/R5/R6/R7 get established, and
 [`docs/investigations/dispatcher-loop-callees.md`](dispatcher-loop-callees.md)
-for the loop's now fully-decoded structure (it's a per-channel scan over the
-buffer comparing a shared table entry against a packed target value, calling
-`0x5274` or `0x5448` per channel) and what those two callees actually
-read/write.
+for the loop's fully-decoded internal structure (relevant to any future
+`0xF0`/`0xE0` binary-frame work, not to the ASCII-command milestone).
 
-**Revised model**: entry -> indexed-lookup loop (`0x827e`-`0x82c4`,
-mechanism not fully understood) -> *then*, at some point, code resembling
-v0.1's character-comparison chain. The character checks are real endpoints
-reachable via the documented ASCII values; they are just not the first
-thing that runs.
+**Revised model**: entry -> `buffer[0]` gate (`0xF0`/`0xE0` -> binary-frame
+loop; anything else -> the ASCII character-comparison chain, reached via
+`0x82c6`-`0x8368` and onward). v0.1's individual character checks are real
+endpoints on this second path, confirmed both symbolically (table above)
+and now concretely, in as few as 46 real instructions with no loop
+iterations at all.
 
 ## Why this was missed originally
 
@@ -82,18 +89,20 @@ inspection alone unless someone happened to walk from entry manually.
 
 ## Current status and what's still open
 
-- The loop's exact purpose is not identified. Leading hypothesis (per
-  [`docs/protocol/open-questions.md`](../protocol/open-questions.md) #10):
-  it dispatches per-channel/per-command work by calling `0x5274`/`0x5448`
-  once per iteration, and its exit condition depends on a memory write one
-  of those makes — which the harness's current opaque-call approximation
-  doesn't model, and which is the current blocker on the AutoPilot-only
-  milestone (see [`docs/project-status.md`](../project-status.md)).
-- Whether every one of v0.1's other character branches (`B`, `W`, `I`, `L`,
-  `T`/`R`, `M`, `D`, `H`, `J`, `A`, `X`, `Y`, `+`) is reached *through* this
-  same loop, or whether some are reached by a separate, more direct path,
-  has not been checked — only `&`/`G`/`!`/`S` have been individually
-  verified so far.
+- The loop's exact purpose is now understood
+  ([`dispatcher-loop-callees.md`](dispatcher-loop-callees.md): a per-channel
+  scan calling `0x5274`/`0x5448`) and it is **confirmed not to be the cause
+  of the AutoPilot-only milestone's blocker** — it's gated on
+  `buffer[0]==0xF0` and never runs for ASCII commands at all
+  ([`dispatcher-loop-concrete-trace.md`](dispatcher-loop-concrete-trace.md)).
+  See [`docs/project-status.md`](../project-status.md) for the current
+  (revised) blocker.
+- Since the loop is not on the ASCII-command path, v0.1's other character
+  branches (`B`, `W`, `I`, `L`, `T`/`R`, `M`, `D`, `H`, `J`, `A`, `X`, `Y`,
+  `+`) are almost certainly reached via the same `0x82c6`-`0x8368`
+  character-comparison chain as `&`/`G`/`!`/`S`, not through the loop —
+  each one individually confirmed reachable that way hasn't been done, but
+  the loop is no longer a plausible intermediate step for any of them.
 - The "important mismatches" v0.1 flagged (`MS|`, `MR|`, `MM|`, `N|`, `KK|`,
   `E1,...|`, bare `W|`, short `I9|`/`I1|` — packets the Remote transmits
   that aren't explained by the visible character chain) are **not resolved

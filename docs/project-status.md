@@ -26,14 +26,25 @@ wire command "&|"
     -> observed string == "V01R39"
 ```
 
-**Status: not yet complete** — see "Current blocker" below.
+**Status: concretely demonstrated end to end (Unicorn); not yet
+solver-proven (Crucible)** — see "Current blocker" below. This is a real
+milestone-status upgrade as of 2026-09-07: entering at the real caller
+(`0x8a34`) with a real `&|` packet and letting the firmware establish its
+own state, `pending[5]` was concretely observed to become `1` in 46
+instructions. See
+[`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
+Per [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s
+evidence levels, this is level 2 (concretely executed, one input) — the
+milestone still wants level 3 (solver-confirmed, Crucible/What4/Z3) for the
+full transaction, which is what's blocked (see "Current blocker"). The TX
+hook (`0x8c10`/`0x7f84` -> `"V01R39"`) has not yet been tested at either
+level.
 
 **Note on the command itself**: `&|` is the wire-level frame the Remote
-transmits (`|` is the frame terminator). What's solver-confirmed so far is
-narrower: the dispatcher's first-byte check requires exactly `0x26` ('&')
-at flash `0x888c`. How the full `&|` frame gets from the receive buffer to
-that single-byte check — i.e. the exact parser-visible representation — is
-still part of the receive-path investigation (see "Corrected assumptions").
+transmits (`|` is the frame terminator). The dispatcher's first-byte check
+requires exactly `0x26` ('&') at flash `0x888c` — solver-confirmed
+(level 3) — and the full `&|` frame reaching that check has now also been
+demonstrated concretely (level 2, above).
 
 **Remote (`mando`) firmware**: substantial *static* research already exists
 for it (`research/autopilot_static_inventory/`, `docs/protocol/`), covering
@@ -97,18 +108,39 @@ re-proving:
   Cortex-M4 model): concretely running from `0x888c` with `r3=0x26`
   reproduces the solver-confirmed `&` -> `0x8890` branch exactly. See
   [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`--watch`/`--watch-mem`** added to the Unicorn backend: records full
+  register/memory state at multiple addresses across one run without
+  halting (unlike `--stop-at`) — needed for a per-iteration loop trace. See
+  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **The real `&|` -> `pending[5]=1` transaction, concretely demonstrated**:
+  entering at the real caller (`0x8a34`), letting the firmware establish
+  its own entry state (not manually seeded), with a real `&|` packet in the
+  buffer — `pending[5]` becomes `1` in 46 instructions. See
+  [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
 - **`tools/doctor.sh`** verifies Ghidra, Unicorn, and Macaw/Crucible/What4/Z3
   are all usable, including functional smoke tests.
 
 ## Corrected assumptions
 
-- **The "flat parser chain" model of `0x8258` is not fully trusted.** The
-  original static pass modeled the dispatcher as a simple if/else-if scan
-  over the packet's leading byte. Symbolic execution found the real entry
-  sequence runs through an indexed-lookup loop first (`0x827e`-`0x82c4`,
-  reading `[R5+1]`, `[R4+6..9]`, indexing `[R7 + R0*4]`) inside one large
-  (~340-block) Macaw-discovered unit. The individual character checks
-  (table above) still hold; the overall shape does not. See
+- **The `0x827e`-`0x82c4` loop is not on the ASCII-command path at all —
+  it's gated on `buffer[0]==0xF0`.** Two earlier passes (Ghidra-based
+  decompilation, then a first symbolic-execution pass) both examined this
+  loop under the assumption that it runs first for *every* packet,
+  including `&`. Concrete execution found the dispatcher's actual first
+  decision, at `0x8258`-`0x8266`, is `cmp buffer[0],#0xF0; bne <skip the
+  loop>` — the loop is v0.1's own "binary motor/control frame" path
+  (`0xF0`/`0xE0`), and ASCII commands branch straight past it into the
+  character-comparison chain instead. **The loop is never entered for the
+  `&` command the current milestone is about.** This supersedes the
+  "flat parser chain" correction below it and the memory-side-effect
+  blocker hypothesis that followed from it. See
+  [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md)
+  and [`docs/investigations/parser-dispatch.md`](investigations/parser-dispatch.md).
+- **The "flat parser chain" model of `0x8258` is not fully trusted** (background,
+  now refined by the point above). The original static pass modeled the
+  dispatcher as a simple if/else-if scan over the packet's leading byte;
+  the real shape is a `buffer[0]` gate into either the binary-frame loop or
+  the ASCII chain. See
   [`docs/investigations/parser-dispatch.md`](investigations/parser-dispatch.md).
 - **Macaw vs. Ghidra disagreement at `0x801c`, resolved.** Macaw lifted this
   address (on the path that sets up the dispatcher's R0 argument) as
@@ -116,87 +148,72 @@ re-proving:
   Thumb-only Cortex-M language (incapable of decoding A32 at all) instead
   decoded it as an ordinary, well-formed, 8-times-called Thumb function.
   **Conclusion: the A32 lift was a Macaw/dismantle decode limitation, not
-  dead code.** R0's exact value at the dispatcher call site is still
-  unconfirmed. See
-  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md#tool-disagreements-investigate-dont-default)
-  and [`docs/investigations/trigger-input.md`](investigations/trigger-input.md).
+  dead code.** R0's exact value at the dispatcher call site was
+  subsequently pinned down directly via Unicorn: **R0 = 0**, traced to
+  `*(byte*)0x20001fd4` at the real call site, a byte never written before
+  that point from cold RAM. See
+  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md#tool-disagreements-investigate-dont-default),
+  [`docs/investigations/trigger-input.md`](investigations/trigger-input.md),
+  and [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
 
 ## Current blocker
 
-Whole-function Crucible replay of the AutoPilot dispatcher against a real
-in-memory `&` packet **does not terminate**, even with the calling-convention
-bug fixed. Full trail:
-[`docs/harness/protocol-harness-results.md`](harness/protocol-harness-results.md)
-("Follow-up session").
+**Reframed (2026-09-07).** The blocker is *not* the `0x827e` loop, and not
+a memory-side-effect or register-seeding gap — those hypotheses are
+superseded (see "Corrected assumptions"). Concretely executing the real
+call path (`0x8a34 -> 0x8259`) with the *exact same nominal inputs*
+`app/Main.hs`'s existing whole-function Crucible test already uses (`R0=0`,
+packet buffer `= [0x26, 0x01, 0x00, 0x00]`) takes 46 instructions, never
+enters the loop, and reaches `pending[5]=1` cleanly.
 
-**Hypothesis revised (2026-09-07) after a Ghidra deep-dive on `0x5274`/
-`0x5448`.** The original hypothesis was that these two per-channel functions
-have memory side effects the loop's exit condition depends on, and that
-opaquely stubbing them (zero memory effects) breaks that dependency.
-Decompiling both functions and resolving their actual RAM read/write
-targets found: `0x5274` (at its loop call site, mode fixed to `4`) writes
-`0x200024cc[channel]` and `0x2000309d[channel]`; `0x5448` writes
-`0x20000134[channel]`, `0x200023d8[channel]`, `0x20002524[channel]`
-unconditionally plus two conditional writes (`0x20003098`, and
-`0x200024cc[channel]` again). **None of these overlap the loop's own reads**
-— the loop only reads `buffer[1]`, a sliding 4-byte buffer window, and
-`TABLE[channel]` at `0x20000180` (read-only; neither function writes to
-`0x20000180`). Full breakdown:
-[`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md).
-
-This is now in tension with the memory-side-effect hypothesis rather than
-confirming it. The loop's exit condition (`R6 >= buffer[1]-derived
-threshold`) is structurally an ordinary bounded counter — it should
-terminate in a small, finite number of iterations regardless of what
-`0x5274`/`0x5448` do to memory. The previously-recorded observation that
-"R6 grows linearly and unboundedly" for two different concrete `buffer[1]`
-values is not yet explained by this structure. **New leading candidate**:
-the loop's initial `R6` value (seeded from the dispatcher's still-unresolved
-caller argument — [`docs/investigations/trigger-input.md`](investigations/trigger-input.md))
-or another upstream register/memory-seeding choice in that whole-function
-test may be the actual cause, not the opaque-callee memory model. Both
-explanations remain open; a concrete Unicorn run (see "Next steps") is
-needed to distinguish them before touching the Crucible model.
+**The current blocker is that Crucible's whole-function replay of the
+identical scenario does not do this** — it was observed getting stuck in
+the `0x827e` loop with `R6` growing unboundedly
+([`docs/harness/protocol-harness-results.md`](harness/protocol-harness-results.md)).
+Since every nominal input matches between the two runs, **the divergence is
+in Crucible/Macaw's handling of the `0x8266: bne 0x82c6` branch itself**
+(`buffer[0]==0xF0`?) — not in what values were chosen upstream of it. Full
+comparison and candidate explanations (not yet investigated — this means
+reading Crucible/Macaw internals, out of scope for the Unicorn-based pass
+that found this):
+[`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md)'s
+"Comparison with the Crucible run" section.
 
 ## Next steps
 
-1. ~~**Ghidra**: statically determine what `0x5274`/`0x5448` actually write
-   to memory.~~ **Done** — see
-   [`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md).
-   Result: no overlap found between what they write and what the loop
-   reads, which redirects the next step below.
-2. **Unicorn**: run the dispatcher loop concretely (seeded at `0x8259` or
-   directly at `0x827e`) with a real `&|` packet, and capture: the actual
-   initial `R6` value, `buffer[1]` and the resulting exit threshold, `R7`
-   and real `TABLE[]` entries, iteration count to termination, and
-   `0x200024cc`/`0x2000309d`/`0x20002524`/`0x20003098` before/after a few
-   iterations. This directly tests whether the loop concretely terminates
-   quickly (supporting a harness-seeding explanation) or genuinely runs long
-   (pointing to something not yet identified) — see
-   [`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md)'s
-   "What Unicorn should capture next."
-3. **Crucible**: adjust the harness's model based on (2) — this may now be
-   a register/memory-seeding fix (how `R6`/`R0` is established at the
-   dispatcher's true entry) rather than an opaque-callee memory-effect
-   model. Only decide once (2) gives concrete data; the lazy real-CFG
-   execution mechanism (`MS.LookupFunctionHandle`; see
-   [`docs/harness/execution-model.md`](harness/execution-model.md)) remains
-   the fallback if a genuine memory-effect dependency is still found.
-4. Once the loop terminates: confirm `pending[5]` becomes 1 from a real
-   `&` packet run through the *unmodified* whole dispatcher function.
-5. Hook `0x8c10`/`0x7f84` and verify the emitted bytes equal `V01R39` —
-   closes the AutoPilot milestone.
-6. Independently verify `G`/`!`/`S`'s handlers perform their claimed
+1. **Investigate why Crucible's whole-function CFG doesn't resolve the
+   `0x8266` branch the way concrete execution does**, given identical
+   concrete inputs. Candidates to check (see
+   [`dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md)
+   for the specifics): whether `mkFunCFG`'s translated entry block actually
+   corresponds to physical `0x8258`; whether the packet-buffer write is
+   visible to the first block's reads under the LLVM memory model; whether
+   `debugFeature`'s trace (re-run and re-examined) shows `0x8266`/`0x82c6`
+   being visited at all before diverging into the loop. This is Crucible/
+   Macaw-internals debugging — no model changes without first
+   understanding the actual cause.
+2. Once (1) is understood and fixed: re-run the whole-function `&` test and
+   confirm `pending[5]` becomes 1 **via Crucible/What4/Z3** (level 3
+   evidence) — the concrete (level 2) result already exists, see "Proven
+   capabilities & findings."
+3. Hook `0x8c10`/`0x7f84` and verify the emitted bytes equal `V01R39` —
+   this could reasonably be done concretely via Unicorn *first* (continuing
+   past `0x83ec`), independently of (1)-(2), since it doesn't depend on the
+   loop/CFG question at all. Closes the AutoPilot milestone once done at
+   both evidence levels.
+4. Independently verify `G`/`!`/`S`'s handlers perform their claimed
    event-scheduling writes (currently only entry *reachability* is
    solver-verified for these three).
-7. **Only after (1)-(5)**: begin Remote (`mando`) harness work per
+5. **Only after (1)-(3)**: begin Remote (`mando`) harness work per
    [`docs/harness/roadmap.md`](harness/roadmap.md), building on the
    existing static research rather than starting from nothing.
 
-Do not resume the dispatcher experiment without following this order —
-notably, do not jump to step 3 before 1-2. Fuller backlogs (protocol open
-questions, tooling gaps like SVD/MMIO labeling) are tracked in
-[`docs/protocol/open-questions.md`](protocol/open-questions.md) and
+The `0x827e` loop's own internal structure and its callees `0x5274`/`0x5448`
+([`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md))
+remain correctly documented and are relevant to future `0xF0`/`0xE0`
+binary-frame work — just not to steps (1)-(3) above. Fuller backlogs
+(protocol open questions, tooling gaps like SVD/MMIO labeling) are tracked
+in [`docs/protocol/open-questions.md`](protocol/open-questions.md) and
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md), not
 duplicated here.
 

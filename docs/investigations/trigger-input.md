@@ -8,12 +8,13 @@ argument), and getting those wrong was the proximate cause of a long,
 confusing debugging session (see
 [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md)).
 
-**Status**: mostly resolved. R4/R5/R7's setup is understood and confirmed
-(they're established by the dispatcher's *own* entry code, not by the
-caller). The `0x801c` anomaly that blocked tracing R0 has since been
-cross-checked with Ghidra (see "Update" below) and is now believed to be a
-Macaw/dismantle decode limitation rather than dead code, though R0's exact
-numeric value at the call site is still not pinned down.
+**Status**: resolved. R4/R5/R7's setup is understood and confirmed (they're
+established by the dispatcher's *own* entry code, not by the caller). The
+`0x801c` anomaly that originally blocked tracing R0 was cross-checked with
+Ghidra and is a Macaw/dismantle decode limitation, not dead code — and R0's
+real value at the call site was subsequently pinned down directly via
+Unicorn (`R0 = 0`, from `*(byte*)0x20001fd4`), without needing to fully
+resolve `0x801c`'s own computation. See the two "Update" sections below.
 
 ## The real call site
 
@@ -139,20 +140,31 @@ plausibly testing (a "has some time elapsed" style check), but doesn't pin
 down the exact number without either fully modeling the two callees
 (`0xb71a`, `0xc93e`/`0x7fdc`) or observing a real value via Unicorn/hardware.
 
+## Update: R0 concretely resolved via Unicorn (2026-09-07)
+
+Per the follow-up below, R0 turned out not to require modeling `0x801c`'s
+full return-value computation at all. Tracing the actual `0x8a34` call site
+in `FUN_00008960` (the UART/serial receive state machine that assembles
+the packet into `0x2000232a` — confirmed by resolving its literal pool)
+found `R0` there is simply `*(byte*)0x20001fd4`, loaded fresh at `0x8a2e`
+(`ldrb r0,[r4,#0]`) just before the call — not the leftover return value of
+the preceding `0x801c()` call as first assumed. `0x20001fd4` is never
+written anywhere in `FUN_00008960`, so in the project's standard cold/zero
+RAM convention it's `0`. Running `0x801c()` alone via Unicorn from cold RAM
+separately (and concretely) confirmed *it* also returns `0` from that
+state, for what it's worth — but it isn't actually what feeds R0 here.
+**R0 = 0 at the real dispatcher call, demonstrated by tracing the actual
+source instruction, not assumed.** Full trace:
+[`docs/investigations/dispatcher-loop-concrete-trace.md`](dispatcher-loop-concrete-trace.md).
+
+This resolves this document's remaining open question. It also turned out
+not to matter for the current milestone's blocker: the address R0 feeds
+(`R6`, the `0x827e` loop's counter) is on a code path
+(`buffer[0]==0xF0`) the real `&` command never reaches at all — see the
+linked document.
+
 ## Open follow-ups
 
 - Consider reporting the A32 misdecode upstream to GaloisInc/macaw or
   GaloisInc/dismantle with a minimal reproduction (the raw bytes at
   `0x801c` plus the expected Thumb decode above).
-- If R0's exact value at the dispatcher call site ever becomes load-bearing
-  for a milestone, use Unicorn (`tools/unicorn/run_concrete.py`) to
-  concretely run from a real entry point through this call chain and
-  observe the actual returned value, rather than re-attempting the Macaw
-  trace — see [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md)'s
-  decision guidance (this is a concrete-execution question, not a symbolic
-  one).
-- Independently of the above, consider whether the dispatcher's behavior
-  for the AutoPilot-only milestone
-  ([`docs/project-status.md`](../project-status.md)) actually depends on
-  R0's exact value, or whether a reasonable placeholder (e.g. `0`) is
-  sufficient — this hasn't been definitively settled either way.

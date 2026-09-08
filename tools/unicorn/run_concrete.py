@@ -110,6 +110,9 @@ def build_argparser():
     p.add_argument("--trace", action="store_true", help="log every N instructions to stderr (see --trace-every)")
     p.add_argument("--trace-every", type=int, default=1, help="instruction-log frequency when --trace is set (default 1)")
     p.add_argument("--dump-mem", action="append", default=[], metavar="ADDR:LEN", help="include this memory range (hex bytes) in the snapshot (repeatable)")
+    p.add_argument("--watch", action="append", default=[], metavar="HEXADDR", help="record full register state (+ --watch-mem ranges) every time this address is hit, without stopping (repeatable) -- for per-iteration traces of a loop, unlike --stop-at which halts")
+    p.add_argument("--watch-mem", action="append", default=[], metavar="ADDR:LEN", help="memory range to capture at every --watch hit, in addition to registers (repeatable)")
+    p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
 
@@ -157,12 +160,38 @@ def main(argv):
         uc.mem_write(addr, data)
 
     stop_addrs = {parse_hex(a) & ~1 for a in args.stop_at}
-    state = {"instructions": 0, "stop_reason": None}
+    watch_addrs = {parse_hex(a) & ~1 for a in args.watch}
+    watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
+    state = {"instructions": 0, "stop_reason": None, "watch_hits": []}
+
+    def capture_registers():
+        return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
+
+    def capture_watch_memory():
+        mem = {}
+        for addr, length in watch_mem_ranges:
+            try:
+                mem[f"0x{addr:08x}"] = uc.mem_read(addr, length).hex()
+            except UcError as e:
+                mem[f"0x{addr:08x}"] = f"error: {e}"
+        return mem
 
     def hook_code(uc_, address, size, _user_data):
         state["instructions"] += 1
         if args.trace and state["instructions"] % args.trace_every == 0:
             print(f"  [unicorn] #{state['instructions']} pc=0x{address:08x}", file=sys.stderr)
+        if address in watch_addrs:
+            if len(state["watch_hits"]) >= args.max_watch_hits:
+                state["stop_reason"] = f"max watch hits ({args.max_watch_hits}) reached at 0x{address:08x}"
+                uc_.emu_stop()
+                return
+            state["watch_hits"].append({
+                "hit": len(state["watch_hits"]),
+                "instruction": state["instructions"],
+                "address": f"0x{address:08x}",
+                "registers": capture_registers(),
+                "memory": capture_watch_memory(),
+            })
         if address in stop_addrs:
             state["stop_reason"] = f"reached stop address 0x{address:08x}"
             uc_.emu_stop()
@@ -187,8 +216,7 @@ def main(argv):
         if state["stop_reason"] is None:
             state["stop_reason"] = f"error: {error}"
 
-    registers = {NAME_BY_REG[r]: uc.reg_read(r) for r in NAME_BY_REG}
-    registers_hex = {k: f"0x{v:08x}" for k, v in registers.items()}
+    registers_hex = capture_registers()
 
     memory = {}
     for spec in args.dump_mem:
@@ -207,6 +235,7 @@ def main(argv):
         "error": error,
         "registers": registers_hex,
         "memory": memory,
+        "watch_hits": state["watch_hits"],
     }
 
     text = json.dumps(snapshot, indent=2)
