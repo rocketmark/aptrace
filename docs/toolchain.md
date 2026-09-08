@@ -85,6 +85,50 @@ A future CLI may grow into something like `aptrace scan` / `aptrace vectors`
 subcommands; today's flat subcommand set (`aptrace [solve|explore|protocol]
 FIRMWARE.bin [ARGS]`) is deliberately minimal for this phase.
 
+## Ghidra (static RE)
+
+```sh
+brew install ghidra   # pinned at 12.1.3 as of this writing; pulls in openjdk@21
+```
+
+```sh
+tools/ghidra/analyze_firmware.sh Autopilot_firm/firmware_autopilot868.bin 0x4000
+```
+
+See [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) for the
+full usage, why the language is forced to `ARM:LE:32:Cortex`, and why
+vector-table seeding is necessary.
+
+## Unicorn (concrete execution)
+
+A project-local, pinned Python venv:
+
+```sh
+python3 -m venv tools/unicorn/.venv
+tools/unicorn/.venv/bin/pip install -r tools/unicorn/requirements.txt   # unicorn==2.1.4
+```
+
+```sh
+tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
+    --firmware Autopilot_firm/firmware_autopilot868.bin \
+    --entry 0x888c --reg r3=0x26 --stop-at 0x8890 --stop-at 0x889e
+```
+
+See [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md) for the
+full usage and a real gotcha (the Thumb bit belongs on the address passed
+to `emu_start`, not just the engine's mode flag).
+
+## Verifying everything at once
+
+```sh
+tools/doctor.sh
+```
+
+Checks Ghidra headless analysis, Unicorn concrete execution, and the
+Macaw/Crucible/What4/Z3 build prerequisites (does not itself run the
+15-20 minute `cabal build`) — including two real functional smoke tests
+against the AutoPilot firmware if present.
+
 ## Standalone vector-table scanner
 
 `tools/vector_scan.py` is a dependency-free Python prototype that scores
@@ -98,10 +142,11 @@ python3 tools/vector_scan.py FIRMWARE.bin --flash-base 0x4000 --ram-size 0x30000
 
 ## Known toolchain gaps
 
-- No independent disassembler (arm-none-eabi-objdump / Capstone / Ghidra) is
-  installed on the reference dev machine as of this writing — cross-
-  validating Macaw's Thumb-2 decode against one of these remains an open
-  item (not currently blocking; see
-  [`docs/firmware/cortexm-assessment.md`](firmware/cortexm-assessment.md)).
-- No Ghidra or Unicorn integration yet (planned; see
-  [`docs/architecture.md`](architecture.md)).
+- No SVD-based MMIO/peripheral register naming yet — a maintained mechanism
+  was identified (`cmsis-svd-data` + the `GhidraSVD` Ghidra extension) but
+  not wired up, pending confirmation of the exact ATSAMD51 part number. See
+  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s "SVD /
+  MMIO labeling" section.
+- Unicorn's MMIO region has no real peripheral behavior (plain
+  zero-initialized memory) — see
+  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).

@@ -8,11 +8,12 @@ argument), and getting those wrong was the proximate cause of a long,
 confusing debugging session (see
 [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md)).
 
-**Status**: partially resolved. R4/R5/R7's setup is understood and
-confirmed (they're established by the dispatcher's *own* entry code, not by
-the caller). R0's real value is not reliably known, because tracing it hit
-a Macaw discovery anomaly (below) that undermines confidence in that
-specific trace.
+**Status**: mostly resolved. R4/R5/R7's setup is understood and confirmed
+(they're established by the dispatcher's *own* entry code, not by the
+caller). The `0x801c` anomaly that blocked tracing R0 has since been
+cross-checked with Ghidra (see "Update" below) and is now believed to be a
+Macaw/dismantle decode limitation rather than dead code, though R0's exact
+numeric value at the call site is still not pinned down.
 
 ## The real call site
 
@@ -81,21 +82,77 @@ determined which is correct:**
    that happen to disassemble as plausible-looking instructions but are
    never actually executed by the real firmware.
 
-**Practical consequence**: R0's "correct" value for a real dispatcher call
-cannot be reliably derived from this trace. Treat any conclusion drawn from
-following execution through `0x801c` as unreliable until this is resolved.
-Do not use this path as a source of ground truth for other investigations.
+**Practical consequence (as originally written)**: R0's "correct" value for
+a real dispatcher call cannot be reliably derived from this trace. See the
+update below for what's changed since.
+
+## Update: Ghidra cross-check (2026-09-07)
+
+Per [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md)'s rule
+to never trust a Macaw A32 lift on this target without cross-checking it,
+`0x801c` was re-examined with `tools/ghidra/analyze_firmware.sh`, seeding
+it as an extra function-start address. Ghidra's `ARM:LE:32:Cortex` language
+is architecturally incapable of decoding A32 (its processor spec forces
+Thumb mode across the whole address space) — so if this really were
+unreachable/non-code, Ghidra would be expected to produce garbage or fail
+to form a sensible function there. Instead it decoded a completely
+ordinary, well-formed 54-byte Thumb function:
+
+```
+push {r3,lr}
+ldr  r3,[0x8054]
+ldrb r3,[r3,#0]
+cbz  r3,0x802e
+ldr  r0,[0x8058]
+bl   0xb71a
+uxtb r0,r0
+pop  {r3,pc}
+... (0x802e-0x8050: a second branch computing an elapsed-time-like value
+     via two loaded counters, `cmp`/`it lt`/`add.lt r0,#0x64` -- a
+     wraparound-safe subtraction pattern, i.e. "if the new count wrapped,
+     add 100 back before subtracting" -- then calling one of two more
+     helpers at 0xc93e/0x7fdc before falling through to the same
+     `uxtb r0,r0; pop {r3,pc}` return.)
+```
+
+This function is called from **eight** real, cross-referenced sites in
+Ghidra's own analysis, including `0x896a`, `0x897e`, `0x8986`, `0x8a28`,
+`0x8a3c`, `0x8a54`, and `0x8b22` — all within the same caller region
+(`FUN_00008960`) that contains the `0x8a34 -> 0x8258` call Macaw found
+independently. This is strong, independent evidence that:
+
+1. `0x801c` is real, reachable, ordinary Thumb code — not dead code, and
+2. Macaw's A32 lift for this address was a genuine decode limitation, not
+   a reflection of real firmware behavior.
+
+**What this resolves**: the "is it dead code or a decode bug" question
+(previously open item #11 in
+[`docs/protocol/open-questions.md`](../protocol/open-questions.md)) —
+resolved in favor of "decode bug."
+
+**What this does not resolve**: R0's *exact numeric value* at the real
+`0x8a34` call site. What's now known is that `0x801c` returns a small,
+`uxtb`-truncated (i.e. single-byte-range) value that looks like an elapsed
+tick/time count, not an arbitrary or complex control value — which
+significantly narrows what the subsequent `CBZ R0` at the caller is
+plausibly testing (a "has some time elapsed" style check), but doesn't pin
+down the exact number without either fully modeling the two callees
+(`0xb71a`, `0xc93e`/`0x7fdc`) or observing a real value via Unicorn/hardware.
 
 ## Open follow-ups
 
-- Determine which of the two `0x801c` explanations is correct — likely
-  needs an independent disassembler (objdump/Capstone/Ghidra; see
-  [`docs/project-status.md`](../project-status.md)'s tooling gaps) to
-  cross-check Macaw's decode of the surrounding bytes.
-- If it's a real decode limitation, consider reporting upstream to
-  GaloisInc/macaw or GaloisInc/dismantle with a minimal reproduction.
-- Independently of resolving the above, consider whether the dispatcher's
-  behavior for the AutoPilot-only milestone
+- Consider reporting the A32 misdecode upstream to GaloisInc/macaw or
+  GaloisInc/dismantle with a minimal reproduction (the raw bytes at
+  `0x801c` plus the expected Thumb decode above).
+- If R0's exact value at the dispatcher call site ever becomes load-bearing
+  for a milestone, use Unicorn (`tools/unicorn/run_concrete.py`) to
+  concretely run from a real entry point through this call chain and
+  observe the actual returned value, rather than re-attempting the Macaw
+  trace — see [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md)'s
+  decision guidance (this is a concrete-execution question, not a symbolic
+  one).
+- Independently of the above, consider whether the dispatcher's behavior
+  for the AutoPilot-only milestone
   ([`docs/project-status.md`](../project-status.md)) actually depends on
   R0's exact value, or whether a reasonable placeholder (e.g. `0`) is
   sufficient — this hasn't been definitively settled either way.

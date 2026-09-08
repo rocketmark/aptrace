@@ -51,12 +51,15 @@ about the protocol itself.
     explanation for the whole-function replay not terminating. See
     [`docs/project-status.md`](../project-status.md) and
     [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md).
-11. **Is the `0x801c` ARM/A32-mode lift a real Macaw/dismantle discovery
-    limitation, or dead code on real hardware?** Cortex-M4F cannot execute
-    ARM-mode instructions at all, so either this path never really executes
-    on the real device, or something about Macaw's decode of the
-    surrounding call site is wrong. Not yet resolved either way. See
-    [`docs/investigations/trigger-input.md`](../investigations/trigger-input.md).
+11. ~~Is the `0x801c` ARM/A32-mode lift a real Macaw/dismantle discovery
+    limitation, or dead code on real hardware?~~ **Resolved (2026-09-07),
+    in favor of "decode limitation."** A Ghidra cross-check (`ARM:LE:32:Cortex`,
+    architecturally incapable of decoding A32 on this target) found `0x801c`
+    to be an ordinary, well-formed, 8-times-called Thumb function. See
+    [`docs/investigations/trigger-input.md`](../investigations/trigger-input.md)
+    and [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md).
+    Reporting the Macaw/dismantle decode issue upstream remains open (not a
+    protocol question, tracked as a follow-up in `trigger-input.md`).
 12. **What is R0's real value when the real firmware calls the dispatcher**
     (`0x8a34 -> 0x8259`)? The trace back through `0x801c` hit the anomaly
     above and couldn't reliably establish it. Understanding this may be

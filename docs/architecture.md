@@ -43,22 +43,22 @@ needs, well served by separate, mature tools.
 these tools, rather than a monolith that reimplements what they already do
 well.**
 
-## Planned tool roles
+## Tool roles
+
+See [`docs/tooling/tool-selection.md`](tooling/tool-selection.md) for the
+full decision guidance (when to use which, worked examples, evidence
+levels, anti-patterns) — this table is a summary.
 
 | Tool | Role | Status |
 |---|---|---|
-| **Ghidra** | Static RE / decompiler / cross-references / data structure and table recovery / naming MMIO registers and globals | Not yet integrated |
+| **Ghidra** | Static RE / decompiler / cross-references / data structure and table recovery / naming MMIO registers and globals | Integrated — [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) |
 | **Macaw** | Independent CFG recovery and machine-code lifting (ground truth, doesn't depend on a decompiler's heuristics) | In use, proven (see `docs/firmware/cortexm-assessment.md`) |
-| **Unicorn** | Fast concrete Thumb execution and state snapshotting — run firmware to a checkpoint cheaply, then hand a concrete state to the symbolic side | Not yet integrated |
+| **Unicorn** | Fast concrete Thumb execution and state snapshotting — run firmware to a checkpoint cheaply, then hand a concrete state to the symbolic side | Integrated — [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md) |
 | **Crucible + What4 + Z3** | Targeted symbolic reachability and input-value solving, once the question and the relevant code region are well understood | In use, proven |
 | **APTrace** | Orchestration: evidence model, scenario definitions, trace capture, and (eventually) a UI/workbench tying the above together | This repo |
 
-This is a planning statement, not an implementation status — none of
-Ghidra, Unicorn, or the orchestration layer exist yet. Per
-[`docs/project-status.md`](project-status.md)'s "explicit do-not-start-yet
-items," that integration work is deliberately deferred until the current
-AutoPilot-only symbolic-execution blocker is resolved or explicitly
-deprioritized.
+The orchestration/evidence-model/UI layer beyond what's described in
+`docs/tooling/` is still just this table — not yet built.
 
 ## Intended pipeline (Macaw/Crucible side)
 
@@ -94,6 +94,7 @@ Macaw AArch32 / Thumb lifting
 ```
 aptrace/
   README.md                 -- entry point; see docs/ for everything else
+  CLAUDE.md                  -- mandatory operating rules for Claude Code sessions
   aptrace.cabal              -- the APTrace library + CLI, as a local cabal package
   src/APTrace/
     VectorTable.hs           -- ARMv7-M vector table parser
@@ -101,11 +102,16 @@ aptrace/
     SymbolicRunner.hs        -- one Macaw block -> Crucible -> What4/Z3
     ProtocolHarness.hs       -- whole-function Crucible execution + diagnostics
   app/Main.hs                -- CLI entry point (see docs/toolchain.md for usage)
-  tools/vector_scan.py       -- standalone Python vector-table scanner/validator
+  tools/
+    vector_scan.py           -- standalone Python vector-table scanner/validator
+    doctor.sh                -- verifies Ghidra/Unicorn/Macaw-Crucible-What4-Z3 are usable
+    ghidra/                  -- headless Ghidra integration (see docs/tooling/ghidra-backend.md)
+    unicorn/                 -- concrete-execution backend (see docs/tooling/unicorn-backend.md)
   external/macaw/            -- GaloisInc/macaw, vendored as described in docs/toolchain.md
   docs/                       -- current, authoritative documentation (this tree)
+    tooling/                 -- tool-selection.md and per-backend usage docs
   research/
     firmware/originals/      -- copies of the AutoPilot/Mando firmware images + hashes
     autopilot_static_inventory/  -- raw static RE research artifacts (see docs/protocol/)
-    runs/                    -- saved raw tool output from real runs
+    runs/                    -- saved raw tool output from real runs (incl. runs/ghidra/)
 ```

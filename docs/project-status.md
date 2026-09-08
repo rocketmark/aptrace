@@ -9,6 +9,11 @@ bug in the docs; fix it here.
 
 Last updated: 2026-09-07.
 
+**Before doing firmware-analysis work, read
+[`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** — it covers
+which of Ghidra/Unicorn/Macaw/Crucible to reach for and why; see also
+[`CLAUDE.md`](../CLAUDE.md) for the short mandatory version.
+
 ## Current milestone
 
 **Goal**: a single, complete AutoPilot-only transaction, fully verified
@@ -74,6 +79,23 @@ safe to build on without re-proving:
   one-off hack — it's what turns an opaque hang into "stuck cycling through
   addresses X, Y, Z," and it's what found both bugs described below. Reuse
   it whenever a whole-function run doesn't terminate as expected.
+- **Ghidra headless static analysis** (`tools/ghidra/analyze_firmware.sh`),
+  forced to the Thumb-only `ARM:LE:32:Cortex` language, with vector-table
+  entry seeding (`APTraceSeedVectorTable.java`, reusing the same 56-entry
+  structure `tools/vector_scan.py` validated) and JSON export of functions/
+  calls/data-references/strings (`APTraceExportStaticAnalysis.java`).
+  Confirmed on real firmware: 414 functions discovered (vs. 204 without
+  vector-table seeding), including the protocol dispatcher region. See
+  [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md).
+- **Unicorn concrete Thumb execution** (`tools/unicorn/run_concrete.py`,
+  Cortex-M4 CPU model, pinned `unicorn==2.1.4` in a project-local venv).
+  Confirmed on real firmware: concretely executing from `0x888c` with
+  `r3=0x26` reproduces the solver-confirmed `&` -> `0x8890` branch exactly
+  (any other value of R3 reaches the fallthrough instead). See
+  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`tools/doctor.sh`** verifies all four backends (Ghidra headless,
+  Unicorn, and Macaw/Crucible/What4/Z3 build prerequisites) are usable,
+  including the two functional smoke tests above.
 
 ## Confirmed findings
 
@@ -118,8 +140,17 @@ safe to build on without re-proving:
   execution state at all). **Treat this as a discovery/mode anomaly, not
   trusted semantics** — do not derive conclusions about real firmware
   behavior from this specific lifted region without independent
-  confirmation. See
-  [`docs/investigations/trigger-input.md`](investigations/trigger-input.md).
+  confirmation. **Update**: Ghidra's Thumb-only `ARM:LE:32:Cortex` language
+  (architecturally incapable of decoding A32 at all) decodes this same
+  address as a completely ordinary, well-formed Thumb function — a flag
+  check plus a wraparound-safe elapsed-time computation, called from eight
+  real, cross-referenced sites including the same `0x8a34` caller Macaw
+  found. This is strong evidence the A32 lift is a genuine Macaw/dismantle
+  decode limitation for this address, **not** dead/unreachable code — see
+  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s "Tool
+  disagreements" section for the full comparison and
+  [`docs/investigations/trigger-input.md`](investigations/trigger-input.md)
+  for the updated investigation.
 
 ## Current blockers
 
@@ -146,21 +177,27 @@ evidence of a real infinite loop in the firmware. See
   fully opaque (current) or would require manually lifting the whole
   transitive call graph up front. The supported middle ground
   (`MS.LookupFunctionHandle`'s lazy-registration mechanism, building a real
-  CFG for a callee on first call) is understood but not implemented.
-- No static-analysis tool (Ghidra) integrated yet — all cross-referencing
-  and structure recovery so far has been either manual (the
-  `autopilot_static_inventory` pass) or via Macaw's own discovery. See
-  "Planned tool roles" in [`docs/architecture.md`](architecture.md).
-- No concrete-execution engine (Unicorn) integrated yet — there is currently
-  no fast way to concretely run firmware to a checkpoint and snapshot state
-  for seeding a subsequent symbolic run; everything goes through
-  Crucible/What4, which is precise but comparatively heavyweight for pure
-  concrete replay.
-- No independent disassembler cross-check of the Thumb-2 decode yet
-  (arm-none-eabi-objdump / Capstone; neither installed on the dev machine as
-  of this writing). Not currently blocking anything, but listed in
-  [`docs/firmware/cortexm-assessment.md`](firmware/cortexm-assessment.md) as
-  an open item.
+  CFG for a callee on first call) is understood but not implemented. **Now
+  that Unicorn is integrated, this may not even be the right fix** — see
+  "Next 3-5 concrete steps" below.
+- No Unicorn-to-Crucible state hand-off format yet — Ghidra and Unicorn are
+  now integrated (see
+  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)), but there
+  is no defined way to feed a Unicorn-captured concrete snapshot into a
+  Crucible run as its initial state. Plain JSON is enough for this pass's
+  smoke tests; a real hand-off format is future work if a scenario needs it.
+- No SVD-based MMIO/peripheral register naming yet. A maintained mechanism
+  was identified (`cmsis-svd-data` for the SVD file + the `GhidraSVD`
+  extension to apply it) but not wired up, because the exact ATSAMD51 part
+  number on the real board hasn't been confirmed yet (family and RAM size
+  are known; the specific G/J/N/P variant isn't). See
+  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s "SVD / MMIO
+  labeling" section for the concrete next step.
+- Unicorn's MMIO region is plain zero-initialized RAM with no real
+  peripheral behavior (see
+  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md)) — fine
+  for control-flow questions, not for anything depending on genuine
+  peripheral semantics.
 
 ## Open research questions
 
@@ -181,47 +218,57 @@ reporting upstream, or reflects genuinely dead/unreachable code.
 - **Do not move to the Remote (`mando`) firmware** until the AutoPilot-only
   `&` -> event 5 -> `V01R39` transaction works end to end (see "Current
   milestone").
-- **Do not start Ghidra or Unicorn integration** until the current
-  Macaw/Crucible-only blocker above is either resolved or explicitly
-  deprioritized in favor of bringing in another tool for this specific gap.
 - **Do not resume the parser/dispatcher symbolic-execution experiment**
-  itself without first deciding, deliberately, whether to (a) implement
-  lazy real-CFG calling for `0x5274`/`0x5448`, or (b) pursue a different
-  approach — this was an explicit pause point, not an oversight.
+  itself without first deciding, deliberately, how to unblock it — see
+  "Next 3-5 concrete steps" below, which now includes a Unicorn-based option
+  that wasn't available when this pause point was first set.
+- Ghidra and Unicorn integration is **done** as of this pass (see "Known-good
+  capabilities" above and [`docs/tooling/tool-selection.md`](tooling/tool-selection.md));
+  this bullet previously deferred that work and no longer applies.
 
 ## Next 3-5 concrete steps
 
-1. Decide how to unblock the whole-function replay: implement lazy real-CFG
-   execution for called functions (architecturally correct, more
-   implementation work), or find a narrower workaround specific to
-   `0x5274`/`0x5448` once their real behavior is understood.
-2. Once the loop terminates: confirm `pending[5]` becomes 1 from a real
+1. **New option, worth trying first**: use Unicorn
+   (`tools/unicorn/run_concrete.py`) to concretely execute `0x5274` and
+   `0x5448` from a plausible caller state and observe their *actual* memory
+   writes, rather than continuing to opaquely stub them in Crucible. If
+   their real behavior is simple enough, this may let the whole-function
+   Crucible replay use a narrow, evidence-based memory-effect model instead
+   of requiring the larger lazy-real-CFG-execution mechanism. See
+   [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s decision
+   guidance (concrete execution is the right tool for "what does this code
+   do from a known state," which is exactly this question).
+2. If (1) doesn't fully resolve it: implement lazy real-CFG execution for
+   called functions in Crucible (architecturally correct, more
+   implementation work — see
+   [`docs/harness/execution-model.md`](harness/execution-model.md)).
+3. Once the loop terminates: confirm `pending[5]` becomes 1 from a real
    in-memory `&` packet run through the *unmodified* whole dispatcher
    function (not just the isolated `0x888c` block).
-3. Hook outbound transmission at `0x8c10`/`0x7f84` and verify the emitted
+4. Hook outbound transmission at `0x8c10`/`0x7f84` and verify the emitted
    bytes equal `V01R39` for the `&` transaction — this closes the AutoPilot
    milestone.
-4. Independently verify `G`/`!`/`S`'s handlers perform their claimed
+5. Independently verify `G`/`!`/`S`'s handlers perform their claimed
    event-scheduling writes (currently only handler-entry *reachability* is
    solver-verified for these three; the writes themselves were read
    statically from `pending-writes.csv`, not independently confirmed via
    the harness).
-5. Only after (1)-(3): begin the Remote (`mando`) firmware work per
+6. Only after (1)-(4): begin the Remote (`mando`) firmware work per
    [`docs/harness/roadmap.md`](harness/roadmap.md).
 
 ## Project direction: APTrace as a workbench, not a monolith
 
-APTrace is moving toward wrapping specialized tools rather than forcing
-Macaw/Crucible to do everything a full RE workflow needs. Planned roles
-(not yet implemented beyond Macaw/Crucible/What4/Z3):
+APTrace wraps specialized tools rather than forcing Macaw/Crucible to do
+everything a full RE workflow needs. All four backends are now integrated:
 
-| Tool | Role |
-|---|---|
-| Ghidra | static RE / decompiler / xrefs / tables / structures / MMIO naming |
-| Macaw | independent CFG and machine-code lifting |
-| Unicorn | concrete Thumb execution and state snapshots |
-| Crucible + What4 + Z3 | targeted symbolic reachability / input solving |
-| APTrace | orchestration, evidence model, scenarios, traces, UI/workbench |
+| Tool | Role | Status |
+|---|---|---|
+| Ghidra | static RE / decompiler / xrefs / tables / structures / MMIO naming | Integrated — [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) |
+| Macaw | independent CFG and machine-code lifting | In use, proven |
+| Unicorn | concrete Thumb execution and state snapshots | Integrated — [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md) |
+| Crucible + What4 + Z3 | targeted symbolic reachability / input solving | In use, proven |
+| APTrace | orchestration, evidence model, scenarios, traces, UI/workbench | This repo |
 
-See [`docs/architecture.md`](architecture.md) for the fuller rationale and
-how this reframes the earlier, more Macaw-centric assessment.
+See [`docs/tooling/tool-selection.md`](tooling/tool-selection.md) for when
+to use which, and [`docs/architecture.md`](architecture.md) for the fuller
+rationale.

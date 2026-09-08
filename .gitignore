@@ -17,4 +17,8 @@ dist-newstyle/
 /research/firmware/originals/*.bin
 /research/firmware/extracted/*
 
+# Reproducible Python venv for tools/unicorn/run_concrete.py -- rebuild via
+# tools/doctor.sh or docs/tooling/tool-selection.md; pinned in requirements.txt.
+/tools/unicorn/.venv/
+
 .DS_Store

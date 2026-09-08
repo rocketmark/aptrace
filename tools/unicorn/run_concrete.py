@@ -1,0 +1,224 @@
+#!/usr/bin/env python3
+"""APTrace: minimal Unicorn-based concrete Cortex-M/Thumb execution backend.
+
+See docs/tooling/tool-selection.md for when to reach for this instead of
+Crucible: whenever the question is "what does this code concretely do from
+a known starting state" rather than "what input satisfies this property" --
+Unicorn runs actual Thumb-2 instructions natively (fast), while Crucible
+pays for full symbolic evaluation of an already-fixed input, which is the
+wrong tool for that job. This script deliberately does NOT try to be a
+scenario/harness framework -- it is one reusable building block (load,
+seed, run, hook, snapshot), following the same "orchestrate mature tools"
+principle as tools/ghidra/analyze_firmware.sh.
+
+Usage example (concretely single-step the '&' character check block that
+docs/harness/protocol-harness-results.md solver-confirmed symbolically):
+
+    tools/unicorn/run_concrete.py \\
+        --firmware Autopilot_firm/firmware_autopilot868.bin \\
+        --entry 0x888c --reg r3=0x26 \\
+        --stop-at 0x8890 --stop-at 0x889e \\
+        --trace --out /tmp/snapshot.json
+
+Known limitations (see docs/tooling/tool-selection.md and
+docs/project-status.md's "Tooling gaps"):
+  - The MMIO region is mapped as plain zero-initialized RAM with no
+    peripheral behavior (reads return whatever was last written, not a
+    real register's semantics). Fine for control-flow/logic questions that
+    don't depend on real peripheral state; not fine for anything that does.
+  - No ATSAMD51 SVD-based register naming is applied here (see
+    docs/tooling/tool-selection.md's "SVD / MMIO labeling" section for why
+    that's currently a documented gap, not a silent one).
+  - This is a single-shot script (one process per run), not a persistent
+    session -- fine for scenario-style concrete replay, not for interactive
+    step debugging.
+"""
+import argparse
+import json
+import sys
+
+from unicorn import (
+    Uc,
+    UC_ARCH_ARM,
+    UC_MODE_THUMB,
+    UC_MODE_MCLASS,
+    UC_HOOK_CODE,
+    UC_HOOK_MEM_UNMAPPED,
+    UcError,
+)
+from unicorn.arm_const import (
+    UC_ARM_REG_R0, UC_ARM_REG_R1, UC_ARM_REG_R2, UC_ARM_REG_R3,
+    UC_ARM_REG_R4, UC_ARM_REG_R5, UC_ARM_REG_R6, UC_ARM_REG_R7,
+    UC_ARM_REG_R8, UC_ARM_REG_R9, UC_ARM_REG_R10, UC_ARM_REG_R11,
+    UC_ARM_REG_R12, UC_ARM_REG_SP, UC_ARM_REG_LR, UC_ARM_REG_PC,
+    UC_ARM_REG_CPSR, UC_CPU_ARM_CORTEX_M4,
+)
+
+REG_BY_NAME = {
+    "r0": UC_ARM_REG_R0, "r1": UC_ARM_REG_R1, "r2": UC_ARM_REG_R2, "r3": UC_ARM_REG_R3,
+    "r4": UC_ARM_REG_R4, "r5": UC_ARM_REG_R5, "r6": UC_ARM_REG_R6, "r7": UC_ARM_REG_R7,
+    "r8": UC_ARM_REG_R8, "r9": UC_ARM_REG_R9, "r10": UC_ARM_REG_R10, "r11": UC_ARM_REG_R11,
+    "r12": UC_ARM_REG_R12, "sp": UC_ARM_REG_SP, "lr": UC_ARM_REG_LR, "pc": UC_ARM_REG_PC,
+    "cpsr": UC_ARM_REG_CPSR,
+}
+NAME_BY_REG = {v: k for k, v in REG_BY_NAME.items()}
+
+PAGE = 0x1000
+
+
+def align_down(x, page=PAGE):
+    return x & ~(page - 1)
+
+
+def align_up(x, page=PAGE):
+    return (x + page - 1) & ~(page - 1)
+
+
+def parse_hex(s):
+    return int(s, 16) if s.lower().startswith("0x") else int(s, 16)
+
+
+def parse_kv_hex(spec):
+    name, value = spec.split("=", 1)
+    return name.strip().lower(), parse_hex(value.strip())
+
+
+def parse_addr_bytes(spec):
+    addr_s, data_s = spec.split(":", 1)
+    return parse_hex(addr_s), bytes.fromhex(data_s)
+
+
+def parse_addr_len(spec):
+    addr_s, len_s = spec.split(":", 1)
+    return parse_hex(addr_s), int(len_s, 0)
+
+
+def build_argparser():
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--firmware", required=True, help="raw firmware .bin (no ELF header)")
+    p.add_argument("--flash-base", default="0x4000", help="flash load address (default 0x4000)")
+    p.add_argument("--ram-base", default="0x20000000", help="RAM base (default 0x20000000, ATSAMD51)")
+    p.add_argument("--ram-size", default="0x30000", help="RAM size (default 0x30000, 192KB)")
+    p.add_argument("--mmio-base", default="0x40000000", help="MMIO window base (default 0x40000000)")
+    p.add_argument("--mmio-size", default="0x100000", help="MMIO window size (default 1MB; zero-behavior, see module docstring)")
+    p.add_argument("--entry", required=True, help="start address (hex); Thumb bit ignored, mode is fixed Thumb/M-class")
+    p.add_argument("--sp", default=None, help="initial SP (default: top of RAM)")
+    p.add_argument("--reg", action="append", default=[], metavar="NAME=HEX", help="seed a register before execution (repeatable)")
+    p.add_argument("--seed-mem", action="append", default=[], metavar="ADDR:HEXBYTES", help="write concrete bytes into memory before execution (repeatable)")
+    p.add_argument("--stop-at", action="append", default=[], metavar="HEXADDR", help="halt when this address is reached (repeatable)")
+    p.add_argument("--max-instructions", type=lambda s: int(s, 0), default=200000, help="hard instruction cap (default 200000)")
+    p.add_argument("--trace", action="store_true", help="log every N instructions to stderr (see --trace-every)")
+    p.add_argument("--trace-every", type=int, default=1, help="instruction-log frequency when --trace is set (default 1)")
+    p.add_argument("--dump-mem", action="append", default=[], metavar="ADDR:LEN", help="include this memory range (hex bytes) in the snapshot (repeatable)")
+    p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
+    return p
+
+
+def main(argv):
+    args = build_argparser().parse_args(argv)
+
+    flash_base = parse_hex(args.flash_base)
+    ram_base = parse_hex(args.ram_base)
+    ram_size = parse_hex(args.ram_size)
+    mmio_base = parse_hex(args.mmio_base)
+    mmio_size = parse_hex(args.mmio_size)
+    # Unicorn (like real hardware BX/BLX) reads the *start address's* low bit
+    # to decide ARM vs. Thumb state at entry -- UC_MODE_THUMB alone is not
+    # enough; the address passed to emu_start (and the initial PC) must carry
+    # the Thumb bit. Cortex-M is Thumb-only, so this is always set here.
+    entry = parse_hex(args.entry) | 1
+
+    with open(args.firmware, "rb") as f:
+        firmware = f.read()
+
+    uc = Uc(UC_ARCH_ARM, UC_MODE_THUMB | UC_MODE_MCLASS)
+    uc.ctl_set_cpu_model(UC_CPU_ARM_CORTEX_M4)
+
+    flash_map_size = align_up(len(firmware))
+    uc.mem_map(align_down(flash_base), flash_map_size)
+    uc.mem_write(flash_base, firmware)
+
+    uc.mem_map(align_down(ram_base), align_up(ram_size))
+    uc.mem_map(align_down(mmio_base), align_up(mmio_size))
+
+    sp = parse_hex(args.sp) if args.sp else (ram_base + ram_size)
+    uc.reg_write(UC_ARM_REG_SP, sp)
+    uc.reg_write(UC_ARM_REG_PC, entry)
+
+    for spec in args.reg:
+        name, value = parse_kv_hex(spec)
+        if name not in REG_BY_NAME:
+            print(f"error: unknown register '{name}'", file=sys.stderr)
+            return 2
+        uc.reg_write(REG_BY_NAME[name], value)
+
+    for spec in args.seed_mem:
+        addr, data = parse_addr_bytes(spec)
+        uc.mem_write(addr, data)
+
+    stop_addrs = {parse_hex(a) & ~1 for a in args.stop_at}
+    state = {"instructions": 0, "stop_reason": None}
+
+    def hook_code(uc_, address, size, _user_data):
+        state["instructions"] += 1
+        if args.trace and state["instructions"] % args.trace_every == 0:
+            print(f"  [unicorn] #{state['instructions']} pc=0x{address:08x}", file=sys.stderr)
+        if address in stop_addrs:
+            state["stop_reason"] = f"reached stop address 0x{address:08x}"
+            uc_.emu_stop()
+
+    def hook_mem_unmapped(uc_, access, address, size, value, _user_data):
+        state["stop_reason"] = f"unmapped memory access (type={access}) at 0x{address:08x} size={size}"
+        return False  # let Unicorn raise UcError, caught below
+
+    uc.hook_add(UC_HOOK_CODE, hook_code)
+    uc.hook_add(UC_HOOK_MEM_UNMAPPED, hook_mem_unmapped)
+
+    error = None
+    try:
+        uc.emu_start(entry, 0, count=args.max_instructions)
+        if state["stop_reason"] is None:
+            state["stop_reason"] = (
+                "instruction limit reached" if state["instructions"] >= args.max_instructions
+                else "returned (fell off emu_start)"
+            )
+    except UcError as e:
+        error = str(e)
+        if state["stop_reason"] is None:
+            state["stop_reason"] = f"error: {error}"
+
+    registers = {NAME_BY_REG[r]: uc.reg_read(r) for r in NAME_BY_REG}
+    registers_hex = {k: f"0x{v:08x}" for k, v in registers.items()}
+
+    memory = {}
+    for spec in args.dump_mem:
+        addr, length = parse_addr_len(spec)
+        try:
+            data = uc.mem_read(addr, length)
+            memory[f"0x{addr:08x}"] = data.hex()
+        except UcError as e:
+            memory[f"0x{addr:08x}"] = f"error: {e}"
+
+    snapshot = {
+        "firmware": args.firmware,
+        "entry": f"0x{entry:08x}",
+        "instructions_executed": state["instructions"],
+        "stop_reason": state["stop_reason"],
+        "error": error,
+        "registers": registers_hex,
+        "memory": memory,
+    }
+
+    text = json.dumps(snapshot, indent=2)
+    if args.out:
+        with open(args.out, "w") as f:
+            f.write(text + "\n")
+        print(f"Wrote {args.out}", file=sys.stderr)
+    else:
+        print(text)
+
+    return 0 if error is None else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
