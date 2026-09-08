@@ -19,13 +19,17 @@ elsewhere in the same function.
 
 - Optionally seed one or more registers to concrete values
   (`bqPointerOverrides`); everything else starts fresh/symbolic.
+- Optionally seed one or more concrete memory bytes (`bqMemoryBytes`) —
+  e.g. a packet buffer byte a block loads via a fixed literal-pool pointer,
+  which `bqPointerOverrides` can't reach since it only seeds registers, not
+  the RAM they point at.
 - Ask whether a given target PC value is reachable, and if so, get a
   solver-produced model for one named "observe" register.
 - Memory is `SymbolicMutable` (all RAM/MMIO is symbolic) — appropriate when
   you're asking "what memory content reaches this outcome," but see the
-  soundness note below.
+  soundness notes below.
 
-**Soundness caveat**: because every register not explicitly overridden is
+**Soundness caveat 1**: because every register not explicitly overridden is
 free, a single-block query can be satisfied by an unrelated free variable
 rather than the one you think you're testing — this is exactly what
 happened when the `0x827e` loop-body block was queried in isolation (see
@@ -35,6 +39,21 @@ whole-function test with the same concrete buffer value proved it didn't.
 **Cross-check single-block results against a whole-function run before
 trusting them as a statement about real program behavior**, especially when
 several registers are left free.
+
+**Soundness caveat 2**: if the queried block's *own* instructions write
+memory (e.g. a `push`/`STMDB` at block entry, writing `[SP-N..SP-1]`) and
+`SP` (or any other register used as a write address) is left free, the
+solver can choose that register so the write **aliases and overwrites** a
+value you seeded with `bqMemoryBytes` — silently defeating the seed rather
+than erroring. Confirmed concretely in
+[`docs/investigations/gate-block-crucible-isolation.md`](../investigations/gate-block-crucible-isolation.md):
+querying a block starting with a register-list push, with only the target
+byte seeded and `SP` left free, returned "reachable" for *both* branch
+targets with nonsense models — fixed by adding `SP` to
+`bqPointerOverrides` (seeded to a concrete, buffer-disjoint address, e.g.
+top of RAM). **Whenever a queried block writes memory itself, seed every
+register that address computation depends on** (`SP` at minimum), not just
+the registers the branch condition reads.
 
 ### Whole function (`APTrace.ProtocolHarness.runPacketTransaction`)
 

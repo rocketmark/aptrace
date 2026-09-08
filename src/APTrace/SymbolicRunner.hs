@@ -100,6 +100,14 @@ data BranchQuery = BranchQuery
     -- the register itself (or, since RAM is fully symbolic here, memory
     -- read through it) is the thing you're asking the solver to find a
     -- value for.
+  , bqMemoryBytes :: [(W.Word32, W.Word8)]
+    -- ^ Concrete bytes to write into memory (address, value) before running
+    -- the block -- e.g. a packet buffer byte the block loads via a fixed
+    -- literal-pool pointer, which 'bqPointerOverrides' can't reach because
+    -- it only seeds registers, not the RAM those registers point at. RAM
+    -- is otherwise fully symbolic (@SymbolicMutable@) here, matching the
+    -- module's usual soundness posture; addresses not listed stay
+    -- symbolic.
   , bqTargetAddr  :: W.Word32
     -- ^ The (even, Thumb-bit-cleared) instruction address we're asking
     -- "is this branch target reachable, and under what value?"
@@ -152,18 +160,23 @@ checkBranchModel mem block q
       let ?recordLLVMAnnotation = \_ _ _ -> pure ()
       let ?processMacawAssert = MSM.defaultProcessMacawAssertion
       let ?memOpts = CLM.defaultMemOptions
+      let ?ptrWidth = WI.knownNat @32
       halloc <- CFH.newHandleAllocator
       someCfg <- MS.mkParsedBlockCFG (MS.archFunctions archVals) halloc posFn block
       case someCfg of
         CC.SomeCFG cfg ->
           MS.withArchEval archVals sym $ \archEvalFns -> do
             memVar <- CLM.mkMemVar "aptrace:llvm_memory" halloc
-            (initialMem, memPtrTable) <-
+            (memAfterBuild, memPtrTable) <-
               MSM.newGlobalMemory (Proxy @ARM.AArch32) bak LDL.LittleEndian MSM.SymbolicMutable mem
             let mmConf = (MSM.memModelConfig bak memPtrTable)
                   { MS.lookupFunctionHandle = MS.unsupportedFunctionCalls "aptrace"
                   , MS.lookupSyscallHandle = MS.unsupportedSyscalls "aptrace"
                   }
+            initialMem <- foldM
+              (\m (addr, byte) -> writeConcreteByte bak (MS.globalMemMap mmConf) m addr byte)
+              memAfterBuild
+              (bqMemoryBytes q)
             let ext = MS.macawExtensions archEvalFns memVar mmConf
             let simCtx = CS.initSimContext bak CLI.llvmIntrinsicTypes halloc IO.stderr
                            (CS.FnBindings CFH.emptyHandleMap) ext MS.MacawSimulatorState
@@ -208,6 +221,29 @@ checkBranchModel mem block q
               CS.TimeoutResult {} -> pure (SolverError "simulation timed out")
       where
         posFn addr = WPL.BinaryPos "aptrace" (maybe 0 fromIntegral (MC.segoffAsAbsoluteAddr addr))
+
+-- | Write one concrete byte into memory at 'addr', for 'bqMemoryBytes'.
+-- Mirrors the store pattern 'APTrace.ProtocolHarness.writeBuffer' uses for
+-- the whole-function harness's packet buffer; kept local here (rather than
+-- imported) to avoid coupling this module to 'APTrace.ProtocolHarness'.
+writeConcreteByte
+  :: ( CB.IsSymBackend (WE.ExprBuilder t st fs) bak
+     , CLM.HasLLVMAnn (WE.ExprBuilder t st fs)
+     , CLM.HasPtrWidth 32
+     , ?memOpts :: CLM.MemOptions
+     )
+  => bak
+  -> MS.GlobalMap (WE.ExprBuilder t st fs) CLM.Mem 32
+  -> CLM.MemImpl (WE.ExprBuilder t st fs)
+  -> W.Word32
+  -> W.Word8
+  -> IO (CLM.MemImpl (WE.ExprBuilder t st fs))
+writeConcreteByte bak globalMap mem addr byte = do
+  let sym = CB.backendGetSym bak
+  ptr <- resolvedPointer bak globalMap mem addr
+  bv <- WI.bvLit sym (WI.knownNat @8) (BV.mkBV WI.knownNat (fromIntegral byte))
+  val <- CLM.llvmPointer_bv sym bv
+  CLM.doStore bak mem ptr (CLM.LLVMPointerRepr (WI.knownNat @8)) (CLM.bitvectorType 1) LDL.noAlignment val
 
 resolvedPointer
   :: (CB.IsSymBackend (WE.ExprBuilder t st fs) bak)

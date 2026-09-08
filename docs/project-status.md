@@ -170,28 +170,38 @@ enters the loop, and reaches `pending[5]=1` cleanly.
 identical scenario does not do this** — it was observed getting stuck in
 the `0x827e` loop with `R6` growing unboundedly
 ([`docs/harness/protocol-harness-results.md`](harness/protocol-harness-results.md)).
-Since every nominal input matches between the two runs, **the divergence is
-in Crucible/Macaw's handling of the `0x8266: bne 0x82c6` branch itself**
-(`buffer[0]==0xF0`?) — not in what values were chosen upstream of it. Full
-comparison and candidate explanations (not yet investigated — this means
-reading Crucible/Macaw internals, out of scope for the Unicorn-based pass
-that found this):
-[`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md)'s
-"Comparison with the Crucible run" section.
+
+**Narrowed further (2026-09-07): the `0x8266` branch itself is exonerated.**
+Isolating exactly this block in Crucible (existing single-block machinery,
+extended with a small `bqMemoryBytes` addition to seed the buffer content —
+see [`docs/investigations/gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md))
+and seeding the identical concrete inputs reproduces the correct,
+deterministic result: `buffer[0]=0x26` reaches `0x82c6` (skip-the-loop) and
+cannot reach `0x8268`; `buffer[0]=0xF0` cannot reach `0x82c6`. Macaw's
+lift of the `CMP`/conditional-branch pair is correct; Crucible's
+single-block branch semantics are correct. Reading `mkFunCFG`'s source
+also confirms its entry mechanically jumps to `discoveredFunAddr fn`
+(address-matched, concretely: `0x8259`), and its generic `ParsedBranch`-to-
+`Br` translation is unremarkable. **None of the "obvious" candidates from
+the prior pass hold up** — the fault, if real, is somewhere else in the
+~339-block whole-function graph, in something the isolated test and source
+reading can't see; a finer-grained re-run of the actual whole-function test
+is the next step, not yet done. See that document's "Smallest next
+experiment" section.
 
 ## Next steps
 
-1. **Investigate why Crucible's whole-function CFG doesn't resolve the
-   `0x8266` branch the way concrete execution does**, given identical
-   concrete inputs. Candidates to check (see
-   [`dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md)
-   for the specifics): whether `mkFunCFG`'s translated entry block actually
-   corresponds to physical `0x8258`; whether the packet-buffer write is
-   visible to the first block's reads under the LLVM memory model; whether
-   `debugFeature`'s trace (re-run and re-examined) shows `0x8266`/`0x82c6`
-   being visited at all before diverging into the loop. This is Crucible/
-   Macaw-internals debugging — no model changes without first
-   understanding the actual cause.
+1. ~~**Investigate why Crucible's whole-function CFG doesn't resolve the
+   `0x8266` branch the way concrete execution does**~~ — the branch itself
+   (isolated in Crucible) and `mkFunCFG`'s entry/`ParsedBranch` wiring
+   (read and address-confirmed) are both exonerated; see
+   [`gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md).
+   **Next**: re-run the actual whole-function test with much
+   finer-grained tracing than `debugFeature`'s default (every 2000 steps)
+   to find where in the ~339-block graph execution actually diverges —
+   likely an aliasing-style hazard analogous to the one found (and fixed)
+   in this pass's own isolated-block test, but located elsewhere. No model
+   changes without that trace in hand.
 2. Once (1) is understood and fixed: re-run the whole-function `&` test and
    confirm `pending[5]` becomes 1 **via Crucible/What4/Z3** (level 3
    evidence) — the concrete (level 2) result already exists, see "Proven

@@ -164,22 +164,30 @@ this merged ~340-block region doesn't correctly resolve the `0x8266`
 branch away from the loop given a concrete, non-`0xF0` `buffer[0]`.**
 
 This is *not* a register/memory-seeding fix (both already match between
-the two tests). Candidate explanations for a future pass to check (not
-investigated here — this would mean reading Crucible/Macaw internals,
-explicitly out of scope for this pass):
+the two tests).
 
-1. Whether `mkFunCFG`'s translated entry block for this discovered function
-   actually corresponds to physical `0x8258`, or whether Macaw's discovery/
-   block-merging for this specific ~340-block unit produces a CFG whose
-   Crucible "entry" doesn't line up with the real first instruction the way
-   single-block tests (`mkParsedBlockCFG`) do.
+**Update (2026-09-07)**: all three candidates below were checked in
+[`gate-block-crucible-isolation.md`](gate-block-crucible-isolation.md) and
+ruled out — the `0x8266` branch, isolated in Crucible with the same
+concrete inputs, behaves correctly, and `mkFunCFG`'s entry/branch-wiring
+machinery is confirmed correct by both source reading and an address
+match. The remaining candidate is a finer-grained re-run of the actual
+whole-function test, not yet done. Original candidates, for the record:
+
+1. ~~Whether `mkFunCFG`'s translated entry block for this discovered function
+   actually corresponds to physical `0x8258`~~ — confirmed it does
+   (`discoveredFunAddr fn == 0x8259`, and the generic entry-jump mechanism
+   in `mkFunRegCFG`'s source is correct by construction).
 2. Whether the buffer write (`writeBuffer` in `ProtocolHarness.hs`) is
    actually visible to the *first* block's memory reads in the CFG Crucible
-   executes, given the LLVM memory model's initialization order.
+   executes, given the LLVM memory model's initialization order — not
+   directly tested, but the isolated block test's own memory-seeding
+   (once its own SP-aliasing bug was fixed) confirmed the same underlying
+   mechanism works correctly.
 3. Whether `debugFeature`'s address trace, if re-examined against *this*
    specific run, ever printed `0x8266`/`0x8267` before diverging into the
-   loop — the original session's records don't show this level of detail,
-   only that `R6` grew and `R4` became symbolic partway through.
+   loop — still not done; this is now the recommended next step (see the
+   isolation doc's "Smallest next experiment").
 
 ## Reusable addition: `--watch`/`--watch-mem` in the Unicorn backend
 

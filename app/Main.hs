@@ -144,13 +144,13 @@ runSolve path flashBase = do
       putStrLn ("Query 1: is exit block 0x" ++ showHex exitAddr "" ++ " reachable?")
       exitResult <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = [(AR.r3, mmioBase)]
-                    , bqTargetAddr = exitAddr, bqObserveReg = AR.r2 }
+                    , bqMemoryBytes = [], bqTargetAddr = exitAddr, bqObserveReg = AR.r2 }
       reportResult "R2 (status word @ 0x40002008)" exitResult
 
       putStrLn ("\nQuery 2: is loop-continuation 0x" ++ showHex loopAddr "" ++ " reachable?")
       loopResult <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = [(AR.r3, mmioBase)]
-                    , bqTargetAddr = loopAddr, bqObserveReg = AR.r2 }
+                    , bqMemoryBytes = [], bqTargetAddr = loopAddr, bqObserveReg = AR.r2 }
       reportResult "R2 (status word @ 0x40002008)" loopResult
 
 -- | @aptrace explore FIRMWARE.bin [FLASH_BASE] ENTRY_ADDR_HEX@ -- seed a single,
@@ -223,12 +223,70 @@ runProtocol path flashBase = do
       putStrLn "Loop probe: block 0x827e, R4=R5=bufAddr, R6=0, R7=0x20000180 -- what is buffer[1] when the loop exits vs. continues?"
       lp1 <- checkBranchModel mem loopBody
         BranchQuery { bqPointerOverrides = [(AR.r4, bufAddr), (AR.r5, bufAddr), (AR.r6, 0), (AR.r7, 0x20000180)]
-                    , bqTargetAddr = 0x83ec, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = 0x83ec, bqObserveReg = AR.r3 }
       putStr "  exit (0x83ec): " >> reportResult "buffer[1]" lp1
       lp2 <- checkBranchModel mem loopBody
         BranchQuery { bqPointerOverrides = [(AR.r4, bufAddr), (AR.r5, bufAddr), (AR.r6, 0), (AR.r7, 0x20000180)]
-                    , bqTargetAddr = 0x828e, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = 0x828e, bqObserveReg = AR.r3 }
       putStr "  continue (0x828e): " >> reportResult "buffer[1]" lp2
+
+      -- Isolate the dispatcher's real first decision (0x8258-0x8266, per
+      -- docs/investigations/dispatcher-loop-concrete-trace.md) in Crucible,
+      -- using the existing single-block machinery plus 'bqMemoryBytes' (a
+      -- small addition: 'BranchQuery' previously could only seed pointer
+      -- *registers*, not the memory they point at, which this block's
+      -- buffer[0] load needs). This is the block Unicorn found gates entry
+      -- to the 0x827e loop (concretely, buffer[0]=0x26 skips it; the
+      -- whole-function Crucible run, given the same nominal inputs, was
+      -- observed getting stuck inside it instead -- see project-status.md's
+      -- "Current blocker"). 'entry' is this block's own address, since it's
+      -- the function's discovered entry block.
+      gateBlock <- maybe (die "gate block (function entry) not found") pure
+                     (Map.lookup entry (fn ^. MD.parsedBlocks))
+      putStrLn "\nGate block (0x8258-0x8266) -- Macaw's parsed IR:"
+      print (PP.pretty gateBlock)
+      case MDP.pblockTermStmt gateBlock of
+        MDP.ParsedBranch _regs cond trueAddr falseAddr -> do
+          putStrLn "\nDecoded terminator: ParsedBranch"
+          putStrLn ("  condition : " ++ show (PP.pretty cond))
+          putStrLn ("  trueAddr  : " ++ show trueAddr)
+          putStrLn ("  falseAddr : " ++ show falseAddr)
+        other -> putStrLn ("\nUnexpected terminator (not ParsedBranch): " ++ show other)
+      putStrLn ("\ndiscoveredFunAddr fn = " ++ show (MD.discoveredFunAddr fn)
+                ++ "  (our resolved entry = " ++ show entry
+                ++ ", match: " ++ show (MD.discoveredFunAddr fn == entry) ++ ")")
+
+      -- SP must be seeded concretely: this block's first instruction is
+      -- `push {r4,r5,r6,r7,r8,r9,r10,lr}` (writes [SP-32..SP-1]). Left
+      -- symbolic (the default for anything not in bqPointerOverrides), the
+      -- solver is free to pick SP so that push aliases and overwrites our
+      -- seeded buffer[0] byte with a fresh symbolic register's low byte --
+      -- which is exactly what happened on the first attempt here (both
+      -- targets came back "reachable" with an unconstrained-looking R3).
+      -- Seeding SP to a concrete, buffer-disjoint value (top of RAM, same
+      -- convention Unicorn/ProtocolHarness already use) removes the hazard.
+      let stackTop = ramBase + ramSize :: Word32
+      putStrLn "\nTest G1: seed buffer[0] = 0x26 ('&'), SP = top of RAM -- is 0x82c6 (skip-the-loop path) reachable?"
+      g1 <- checkBranchModel mem gateBlock
+        BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0x26)]
+                    , bqTargetAddr = 0x82c6, bqObserveReg = AR.r3 }
+      reportResult "R3 (buffer[0])" g1
+      putStrLn "Test G2: seed buffer[0] = 0x26, SP = top of RAM -- is 0x8268 (enter-the-loop path) reachable?"
+      g2 <- checkBranchModel mem gateBlock
+        BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0x26)]
+                    , bqTargetAddr = 0x8268, bqObserveReg = AR.r3 }
+      reportResult "R3 (buffer[0])" g2
+
+      putStrLn "\nTest G3 (control): seed buffer[0] = 0xF0, SP = top of RAM -- is 0x82c6 reachable?"
+      g3 <- checkBranchModel mem gateBlock
+        BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0xF0)]
+                    , bqTargetAddr = 0x82c6, bqObserveReg = AR.r3 }
+      reportResult "R3 (buffer[0])" g3
+      putStrLn "Test G4 (control): seed buffer[0] = 0xF0, SP = top of RAM -- is 0x8268 reachable?"
+      g4 <- checkBranchModel mem gateBlock
+        BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0xF0)]
+                    , bqTargetAddr = 0x8268, bqObserveReg = AR.r3 }
+      reportResult "R3 (buffer[0])" g4
 
       -- The '|' is the wire-protocol frame terminator consumed by the LoRa
       -- assembly loop (0x8960 per research/autopilot_static_inventory);
@@ -248,19 +306,19 @@ runProtocol path flashBase = do
       putStrLn "\nTest 1: concrete R3 = '&' (0x26)"
       r1 <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = [(AR.r3, 0x26)]
-                    , bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
       reportResult "R3" r1
 
       putStrLn "\nTest 2: R3 left fully symbolic -- what value reaches the '&' handler?"
       r2 <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = []
-                    , bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
       reportResult "R3" r2
 
       putStrLn "\nTest 3: R3 left fully symbolic -- what value takes the fallthrough (not '&') path?"
       r3 <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = []
-                    , bqTargetAddr = fallthroughTarget, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = fallthroughTarget, bqObserveReg = AR.r3 }
       reportResult "R3" r3
 
       -- Same technique, same dispatcher, three more single-character command
@@ -289,7 +347,7 @@ runSingleCharCheck mem fn (label, checkAddr, handlerAddr, expected) = do
       Just block -> do
         r <- checkBranchModel mem block
           BranchQuery { bqPointerOverrides = []
-                      , bqTargetAddr = handlerAddr, bqObserveReg = AR.r3 }
+                      , bqMemoryBytes = [], bqTargetAddr = handlerAddr, bqObserveReg = AR.r3 }
         reportResult "R3" r
         case r of
           Reachable v | v == expected -> putStrLn "  (matches expected ASCII value)"
