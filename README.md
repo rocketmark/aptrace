@@ -168,6 +168,14 @@ different function that never returns; the one real unlock traces,
 via an exhaustive literal-pool scan, to exactly one command —
 `MC4<...>|` (motor configuration, all four channels). See
 [`docs/investigations/g-command-motor-subsystem-unlock.md`](docs/investigations/g-command-motor-subsystem-unlock.md).
+That unlock is now confirmed concretely: a real `MC4` frame delivered
+through the same real RX path hands control to the real operational main
+loop, and — sequenced with a real `G` — the real motor "commit a move"
+function (`FUN_00006fd8`) fires for the first time in this project.
+`0x20001b14` still doesn't move; this run's own register-captured
+`distance=0` explains why, via `FUN_00006fd8`'s own documented no-op
+branch, not a missing mechanism. See
+[`docs/investigations/mc4-transition.md`](docs/investigations/mc4-transition.md).
 `!`/`I`'s own protocol transactions remain queued for whenever M4
 resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).

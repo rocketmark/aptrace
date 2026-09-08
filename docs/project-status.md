@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (a real `G` command delivered through the real RX ring found that the motor-phase subsystem is unreachable from cold boot without a prior `MC4` command).
+Last updated: 2026-09-08 (a real `MC4` command concretely unlocks the motor-phase subsystem; sequenced with a real `G`, the real "commit a move" function fires for the first time).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -456,6 +456,34 @@ re-proving:
   per-byte timing dependency (not yet characterized) and was not chased
   further, per the task's explicit anti-fuzzing scope. See
   [`docs/investigations/g-command-motor-subsystem-unlock.md`](investigations/g-command-motor-subsystem-unlock.md).
+- **`MC4` concretely confirmed as the real cold-boot-to-motor-subsystem
+  transition; `FUN_00006fd8` (real "commit a move") fires for the first
+  time in this project (roadmap M6)**: static characterization first —
+  `MC4`'s handler (`FUN_00008258` at `0x86f0`, calling `FUN_00007a98` x4)
+  writes four per-channel fields, of which only the 4th is genuinely
+  consumed by the locked subsystem (`FUN_00007e2c`/`FUN_00008e18`, via
+  exhaustive literal-pool xref), then writes `0x20000060=0` — the sole
+  unlock, confirmed by a from-scratch exhaustive scan. Delivering a real
+  36-byte `MC4` frame hit a second, now precisely diagnosed, per-byte
+  timing dependency: `FUN_00008960`'s inter-byte timeout is measured
+  *cumulatively from packet start*, not per byte, so a longer frame needs
+  a proportionally larger `--fake-tick` period (300 -> 2000, sized from a
+  direct ~5,696-instruction-per-byte measurement, not guessed). With that
+  fix, `MC4` alone concretely unlocks `FUN_000093fc` (confirmed: `0x8714`
+  -> `FUN_00009464` returns -> `FUN_000093fc`/`FUN_00007e2c`/`FUN_00008e18`
+  all reached repeatedly). Sending `G` and `MC4` in the same buffer found
+  a real "flush stale bytes while busy" firmware behavior that silently
+  drops the second command — fixed by sequencing a second `--force-mem`
+  injection at `FUN_00009464`'s own one-time return instruction. With
+  `MC4` then `G` properly sequenced, `G`'s `0x200025e1=2` arm — confirmed
+  independent of `MC4` by both xref and control flow — lets
+  `FUN_00007e2c` reach **`FUN_00006fd8`, the real motor move-commit
+  function, for the first time ever observed in this project**
+  (register-captured: `channel=0, distance=0, rate=0x121fa`). Still no
+  write to `0x20001b14`: with `distance=0`, `FUN_00006fd8`'s own code
+  takes its documented "8 units or fewer, no real move" branch — a
+  concrete, register-level explanation, not an open question. See
+  [`docs/investigations/mc4-transition.md`](investigations/mc4-transition.md).
 
 ## Corrected assumptions
 
@@ -674,6 +702,25 @@ separately and immediately afterward, also on 2026-09-08.
    exhaustive literal-pool-scan method already used for `0x20001b14`
    itself. A concrete `MC4` delivery attempt hit a second, distinct
    per-byte timing dependency and was not chased further this pass.
+   A sixth follow-up
+   ([`docs/investigations/mc4-transition.md`](investigations/mc4-transition.md))
+   characterized `MC4` fully (frame schema, per-channel field storage —
+   only the 4th field feeds the locked subsystem — and the exact
+   `0x20000060=0` unlock instruction), diagnosed the second timing
+   dependency precisely (a *cumulative*, not per-byte, inter-byte
+   timeout — fixed by sizing `--fake-tick`'s period from a direct
+   per-byte-cost measurement), and delivered `MC4` alone concretely:
+   `FUN_000093fc` reached for real, with `FUN_00007e2c`/`FUN_00008e18`
+   now running every iteration. Sequencing a real `G` after `MC4` (a
+   second `--force-mem` at `FUN_00009464`'s own one-time return
+   instruction, after finding same-buffer back-to-back delivery gets the
+   second command silently flushed by a real firmware behavior) reached
+   **`FUN_00006fd8`, the real move-commit function, for the first time in
+   this project** — still no `0x20001b14` write, explained concretely by
+   a register-captured `distance=0` taking `FUN_00006fd8`'s own
+   documented no-op branch. `0x200025e1` (`G`'s arm) and `0x20000060`
+   (`MC4`'s unlock) are confirmed independent by both xref and control
+   flow — no function touches both.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

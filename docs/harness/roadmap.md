@@ -284,3 +284,46 @@ closing recommendation.
     expected to appear even once `FUN_000093fc` is reachable — if that
     holds, the honest conclusion becomes that no code path in this
     firmware image, reachable or not, ever sets `0x20001b14` nonzero.
+21. ~~Characterize `MC4` and confirm the unlock concretely~~ — done.
+    Statically: `MC4`'s handler (`FUN_00008258` at `0x86f0`, the
+    `packet[2]=='4'` sub-branch, calling `FUN_00007a98` x4) writes four
+    per-channel fields (`0x2000006c`/`0x200000dc`/`0x200000f0`/
+    `0x20000138`); an exhaustive literal-pool xref finds only the 4th is
+    consumed by the locked subsystem (`FUN_00007e2c`/`FUN_00008e18`, as
+    a lookup-table index) — the other three feed unrelated boot-time/
+    display functions. The unlock write (`0x20000060=0` at `0x8714`) is
+    confirmed, by exhaustive scan, to be the *only* write to that byte
+    anywhere in the firmware. The second per-byte timing dependency
+    (19)/(20) both hit is now precisely diagnosed: `FUN_00008960`'s
+    inter-byte timeout is cumulative from packet start, not per byte —
+    a longer frame needs proportionally more `--fake-tick` headroom,
+    sized from a direct ~5,696-instruction-per-byte measurement (period
+    300 -> 2000), not guessed. With that fix, `MC4` alone concretely
+    unlocks `FUN_000093fc` (`0x8714` -> `FUN_00009464` returns ->
+    `FUN_000093fc`/`FUN_00007e2c`/`FUN_00008e18` all reached repeatedly,
+    hundreds of hits). Sending `G` and `MC4` in the same buffer back to
+    back found a real "flush stale bytes while busy" firmware behavior
+    that silently drops the second command — not a bug, and not
+    coupling between the two commands (confirmed independent by both
+    xref and control flow: no function touches both `0x200025e1` and
+    `0x20000060`). Fixed by sequencing a second injection at
+    `FUN_00009464`'s own one-time return instruction. With `MC4` then
+    `G` properly sequenced, `G`'s arm lets `FUN_00007e2c` reach
+    **`FUN_00006fd8` — the real motor move-commit function — for the
+    first time in this project's history** (register-captured:
+    `channel=0, distance=0, rate=0x121fa`). Still no `0x20001b14` write:
+    with `distance=0`, `FUN_00006fd8`'s own code takes its documented
+    "8 units or fewer, no real move" branch — a concrete, register-level
+    explanation. See
+    [`docs/investigations/mc4-transition.md`](../investigations/mc4-transition.md).
+    **Next**: thread a real, nonzero target/position value through
+    `FUN_00007e2c`'s own per-channel-per-mode config struct
+    (`0x20001b40`+, a *different* structure from the one `MC4`
+    populates) so a delivered `G` computes a nonzero distance, and watch
+    whether `FUN_00006fd8`'s real-move branch reaches
+    `FUN_00005274`/`FUN_00006338` and, through the already-proven
+    `FUN_00005ee8`->`FUN_00005c00`->`FUN_00005898` chain, a real GPIO
+    pulse — completing the full `I<channel><mode>|`-equivalent chain end
+    to end, concretely, for the first time. `0x20001b14` remains
+    unwritten through every path exercised across (14)-(21); no further
+    setter search is expected to find one.
