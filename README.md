@@ -88,17 +88,22 @@ build/usage instructions: [`docs/toolchain.md`](docs/toolchain.md).
   copied into the Remote's own capture buffer), the first concrete
   execution of the Remote (`mando`) firmware. See
   [`docs/investigations/mando-first-execution.md`](docs/investigations/mando-first-execution.md).
+- **The two firmwares are now connected through a harness-driven virtual
+  RF link** (`tools/unicorn/virtual_link.py`, no LoRa/SPI hardware
+  modeled): Remote sends `"&|"`, the harness transfers the exact bytes,
+  AutoPilot parses it and produces `"V01R39"`, the harness transfers the
+  exact bytes back, Remote captures exactly `"V01R39\0"` — one script, one
+  round trip, both real firmwares. This closes roadmap M3. See
+  [`docs/investigations/virtual-rf-link.md`](docs/investigations/virtual-rf-link.md).
 
 Full current-state detail: [`docs/project-status.md`](docs/project-status.md).
 
 ## What is the next milestone?
 
-**M3**: connect the two firmwares through an in-memory virtual RF link
-(no LoRa/SPI hardware modeling) so a single harness run exercises the
-`&|` -> `V01R39` transaction, and others, end to end across both
-firmwares. Both directions' mechanics are already concretely validated in
-isolation; what remains is wiring them into one harness-driven loop. Full
-roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
+**M4**: exercise the next protocol transaction (`G -> #` or `S -> P...`)
+through the same virtual link, using the two reusable primitives it's
+built from (`capture_tx_bytes`/`deliver_and_observe`). Full roadmap:
+[`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?
 
@@ -143,7 +148,9 @@ aptrace/
     vector_scan.py           -- standalone Python vector-table scanner/validator
     doctor.sh                -- verifies Ghidra/Unicorn/Macaw-Crucible-What4-Z3 are usable
     ghidra/                  -- headless Ghidra integration
-    unicorn/                 -- concrete-execution backend (pinned venv)
+    unicorn/                 -- concrete-execution backend (pinned venv);
+                                 virtual_link.py orchestrates it into the
+                                 cross-firmware virtual RF link
     svd/                     -- ATSAMD51J19A SVD file + MMIO address resolver
   external/macaw/            -- GaloisInc/macaw, with crucible/what4/semmc/dismantle/
                                  asl-translator/arm-asl-parser as git submodules

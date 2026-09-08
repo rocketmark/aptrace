@@ -57,22 +57,26 @@ requires exactly `0x26` ('&') at flash `0x888c` — solver-confirmed
 onward path to `"V01R39"`, has now also been demonstrated concretely
 (level 2, above).
 
-**Remote (`mando`) firmware**: first concrete execution done (2026-09-08).
-Ghidra's existing pipeline loads/discovers Mando cleanly with zero
-platform-specific changes (563 functions; every previously-named Remote
-function of interest resolves at its documented address). Both halves of
-the `&|` -> `V01R39` round trip are now concretely (Unicorn) confirmed
-from the Remote's own side: Remote's real `0xba98` loads `R0` from a real
-`"&|\0"` flash literal and calls the real TX wrapper with it; and,
-separately, Remote's real byte-collection loop, given the AutoPilot's
-already-proven real response bytes, copies exactly `"V01R39\0"` into its
-own capture buffer. See
-[`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md)
-for the full result, the honest boundary found (both firmwares gate real
-RF I/O behind an unmodeled driver layer — reaching past it needed a new
-`--stub-call` Unicorn capability, not full radio emulation), and the
-now-concretely-validated design for the virtual RF link (roadmap M3 step
-8) — not yet wired into one harness-driven loop, that's the next slice.
+**Remote (`mando`) firmware**: first concrete execution (2026-09-08), then
+a full harness-driven virtual RF link (2026-09-08) closing roadmap M3
+entirely at the concrete evidence tier. Ghidra's existing pipeline loads/
+discovers Mando cleanly with zero platform-specific changes (563
+functions; every previously-named Remote function of interest resolves
+at its documented address). The complete `&|` -> `V01R39` round trip now
+runs as **one harness-driven script** (`tools/unicorn/virtual_link.py`),
+not two hand-run scenarios: Remote's real `0xba98` computes `"&|"` and
+calls its real TX wrapper; the harness transfers those exact bytes (no
+radio modeled) into AutoPilot's real RX buffer; AutoPilot's real
+dispatcher schedules event 5 and its real outbound dispatcher builds
+`"V01R39"`; the harness transfers those exact bytes into Remote's real RX
+ring buffer; Remote's real collection loop captures exactly `"V01R39\0"`.
+See [`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md)
+for the per-firmware proofs and the honest boundary found (both firmwares
+gate real RF I/O behind an unmodeled driver layer — reaching past it
+needed the `--stub-call` Unicorn capability, not full radio emulation),
+and [`docs/investigations/virtual-rf-link.md`](investigations/virtual-rf-link.md)
+for the round trip itself and the two reusable primitives
+(`capture_tx_bytes`/`deliver_and_observe`) it's built from.
 
 ## Proven capabilities & findings
 
@@ -184,6 +188,17 @@ re-proving:
   not-yet-modeled radio/SPI driver dependency — the same class of boundary
   already found on the AutoPilot's TX path. See
   [`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md).
+- **A full, harness-driven virtual RF link, both firmwares, one round
+  trip**: `tools/unicorn/virtual_link.py` runs the complete `&|` ->
+  `V01R39` transaction end to end — Remote's real TX call, a harness-
+  mediated byte transfer (no radio modeled), AutoPilot's real dispatch
+  and response, a second harness-mediated transfer, Remote's real
+  capture — asserting the exact bytes at every step. Built from two
+  reusable primitives (`capture_tx_bytes`, `deliver_and_observe`) that
+  don't hardcode transaction content, only the already-proven RF-boundary
+  addresses, so the same script structure applies to future transactions
+  (`G -> #`, `S -> P...`). This closes roadmap M3. See
+  [`docs/investigations/virtual-rf-link.md`](investigations/virtual-rf-link.md).
 
 ## Corrected assumptions
 
@@ -258,15 +273,26 @@ proven for the packet buffer) would be the smallest starting point.
 
 ## Next steps
 
-1. **Wire the virtual RF link** (roadmap M3 step 8): both directions'
-   mechanics are now concretely validated in isolation (see
-   [`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md)'s
-   "What this means for the virtual RF link") — capture a TX argument on
-   one side, seed it into the other side's real RX buffer, run. What
-   remains is wiring these into one harness-driven loop instead of two
-   hand-run `run_concrete.py` invocations; not a new technique, an
-   integration task. After `&|`, repeat for `G -> #` and `S`/`!` per
-   `research/autopilot_static_inventory/protocol-bidirectional.md`.
+**Note**: a tooling-only detour (2026-09-08, ahead of a Galois meeting)
+happened between the milestone above and this section — two clean repros
+(Macaw's A32-on-Cortex-M mode selection, readonly-flash/plain-Crucible
+divergence), an experimental `aptrace debug` (`crucible-debug`/
+`crucible-macaw-debug`), an optional GREASE experiment, and a small MMIO-
+diagnostics addition. See
+[`docs/tooling/galois-premeeting.md`](tooling/galois-premeeting.md). It did
+not touch the milestone/roadmap; roadmap M3 (the virtual RF link) closed
+separately and immediately afterward, also on 2026-09-08.
+
+1. **Exercise the next protocol transaction through the virtual link**
+   (roadmap M4): `G -> #` (`0xb680`/`0xb59c` on the Remote side, event 17
+   on the AutoPilot side) or `S -> P...` (`0xc440`, event 6) — both
+   already statically mapped on both sides per
+   `research/autopilot_static_inventory/protocol-bidirectional.md`, and
+   both reachable with the same two primitives
+   [`docs/investigations/virtual-rf-link.md`](investigations/virtual-rf-link.md)
+   built (`capture_tx_bytes`/`deliver_and_observe`) — not a new
+   technique. `G`'s Remote side involves a retry loop (`0xb59c`) that may
+   need its own `--stub-call` treatment, not yet confirmed.
 2. Independently verify `G`/`!`/`S`'s handlers perform their claimed
    event-scheduling writes (currently only entry *reachability* is
    solver-verified for these three) — a smaller, parallel task, not a

@@ -15,6 +15,14 @@ version of the same rules; this is the reasoning behind them.
 | **Macaw** | Independent machine-code CFG discovery and ARM/Thumb lifting | the `aptrace` CLI (`APTrace.FirmwareLoader`, `APTrace.VectorTable`) |
 | **Crucible + What4 + Z3** | Targeted symbolic reachability and input solving | `APTrace.SymbolicRunner`, `APTrace.ProtocolHarness` |
 | **APTrace** | Orchestration: evidence model, scenarios, traces, snapshots, (eventually) UI | this repo |
+| `crucible-debug` (experimental) | Interactive stepping/breakpoints/register inspection over a real Crucible run | `aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX` — see `APTrace.DebugHarness` |
+| GREASE (experimental, external) | Under-constrained symbolic execution as a cheap first-pass sweep, not a replacement for the targeted queries above | not vendored in this repo — see [`galois-premeeting.md`](galois-premeeting.md) |
+
+The last two rows are additions at an explicitly **experimental** tier —
+see [`galois-premeeting.md`](galois-premeeting.md) for what was tried, what
+worked, and open questions for Galois. They do not change the hierarchy
+below: Ghidra -> Unicorn -> Macaw/Crucible/What4 remains the load-bearing
+path for any actual finding recorded in this project's docs.
 
 ## The execution order
 

@@ -55,17 +55,20 @@ Remote (0xba98): send "&|"             [execution-confirmed: real "&|\0" literal
 ```
 
 Both the AutoPilot side (parser -> event 5 -> TX hook -> `"V01R39"`) and
-the Remote side (TX construction and RX capture) are now
-execution-confirmed at the concrete (Unicorn) evidence tier — see
+the Remote side (TX construction and RX capture) are execution-confirmed
+at the concrete (Unicorn) evidence tier — see
 [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md),
 [`docs/investigations/tx-hook-verification.md`](../investigations/tx-hook-verification.md),
 and
-[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md).
-Not yet done: connecting the two sides into one live virtual-RF-link
-harness run (design validated, not yet built — see
-`mando-first-execution.md`) and a solver-confirmed (Crucible) proof of
-either side's whole transaction — see
-[`docs/project-status.md`](../project-status.md).
+[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+— **and now also connected into one live, harness-driven round trip**
+(`tools/unicorn/virtual_link.py`, no LoRa/SPI hardware modeled): Remote's
+real TX call, a harness-mediated byte transfer, AutoPilot's real parse
+and response, a second harness-mediated transfer, Remote's real capture,
+asserted end to end. See
+[`docs/investigations/virtual-rf-link.md`](../investigations/virtual-rf-link.md).
+Not yet done: a solver-confirmed (Crucible) proof of either side's whole
+transaction — see [`docs/project-status.md`](../project-status.md).
 
 ### `G` acknowledgement
 

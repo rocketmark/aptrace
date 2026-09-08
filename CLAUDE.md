@@ -19,6 +19,11 @@ rather than reimplementing what they already do well.
 - **Crucible + What4 + Z3** — targeted symbolic reachability and input
   solving, once the question and code region are already understood. Used
   via `APTrace.SymbolicRunner` / `APTrace.ProtocolHarness`.
+- **`crucible-debug`/GREASE** — experimental additions, not part of the
+  load-bearing pipeline above. `aptrace debug` (interactive stepping) and
+  an external GREASE sweep were prototyped in
+  [`docs/tooling/galois-premeeting.md`](docs/tooling/galois-premeeting.md);
+  neither replaces Ghidra/Unicorn/Macaw/Crucible for a real finding.
 
 **Do not use Crucible to approximate ordinary concrete execution when
 Ghidra or Unicorn can establish the needed context/state more directly.**

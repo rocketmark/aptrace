@@ -58,10 +58,11 @@ M1 is done; this is a smaller, parallel task, not a prerequisite for M3:
    motor channels' pin/ISR pairs; naming the TX path's real transport
    peripheral).
 
-### M3 — Remote (`mando`) firmware — **in progress**
+### M3 — Remote (`mando`) firmware — **COMPLETE (concrete tier)**
 
-M1 is done, so this began 2026-09-08. See
+M1 is done, so this began 2026-09-08 and closed the same day. See
 [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+and [`docs/investigations/virtual-rf-link.md`](../investigations/virtual-rf-link.md)
 for the full result.
 
 6. ~~Point APTrace's loader/discovery at `firmware_mando868.bin`~~ — done:
@@ -77,23 +78,30 @@ for the full result.
    **Not** done at the solver-confirmed (Crucible) tier — deliberately,
    consistent with M1's own evidence-level discipline; revisit only if a
    real use case needs it.
-8. Connect the two sides with an in-memory virtual RF queue (Remote TX hook
-   feeds AutoPilot RX buffer and vice versa), so a single harness run
-   exercises both firmwares against each other without modeling LoRa/SPI
-   hardware. **Design now concretely validated, not yet built**: hook each
-   side's real TX-wrapper argument, seed it into the other side's real RX
-   buffer (AutoPilot: `0x2000232a`; Remote: ring buffer at `0x20001773`),
-   run — see `mando-first-execution.md`'s "What this means for the virtual
-   RF link" for the exact recipe and addresses. The remaining work is
-   integration (one harness loop instead of two hand-run invocations), not
-   a new technique.
+8. ~~Connect the two sides with an in-memory virtual RF queue~~ — done:
+   `tools/unicorn/virtual_link.py` runs the complete `&|` -> `V01R39`
+   round trip as one harness-driven script, hooking each side's real
+   TX-wrapper argument and seeding it into the other side's real RX state
+   (AutoPilot: packet buffer `0x2000232a`; Remote: ring buffer
+   `0x20001773` + write pointer `0x200017d8`) — no LoRa/SPI hardware
+   modeled. Built as two reusable primitives (`capture_tx_bytes`,
+   `deliver_and_observe`), not a transaction-specific script — see
+   `virtual-rf-link.md` for the full design and what the harness still
+   substitutes for real radio behavior.
 
 ### M4 — Broader protocol reachability
 
-9. Resolve the Remote-transmitted-packets-not-in-dispatch-tree question
-   (`docs/protocol/open-questions.md` #8) now that the real dispatch
-   structure is better understood.
-10. Resolve the event-7 11-vs-10 field mismatch by symbolically tracing the
+9. Exercise the next protocol transaction through the virtual link built
+   in M3 — `G -> #` (`0xb680`/`0xb59c`, event 17) or `S -> P...`
+   (`0xc440`, event 6), per
+   `research/autopilot_static_inventory/protocol-bidirectional.md`. Same
+   two primitives, new addresses; `G`'s Remote-side retry loop (`0xb59c`)
+   may need its own `--stub-call` treatment, not yet confirmed. Not
+   started.
+10. Resolve the Remote-transmitted-packets-not-in-dispatch-tree question
+    (`docs/protocol/open-questions.md` #8) now that the real dispatch
+    structure is better understood.
+11. Resolve the event-7 11-vs-10 field mismatch by symbolically tracing the
     Remote's `0xc440` parser with the real 11-field output as input.
 
 ### M5+ — Tool-workbench integration — **done**

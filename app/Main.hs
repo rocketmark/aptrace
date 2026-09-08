@@ -20,6 +20,7 @@ import qualified Data.Macaw.Discovery as MD
 import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
 
+import           APTrace.DebugHarness ( runDebug )
 import           APTrace.FirmwareLoader
   ( buildMemory, buildMemoryWithMMIO, resolveEntry )
 import           APTrace.ProtocolHarness ( PacketByte(..) )
@@ -50,9 +51,10 @@ main = do
     ["explore", path, entryS]          -> runExplore path 0x4000 (parseHexWord entryS)
     ["explore", path, flashBaseS, entryS] -> runExplore path (parseHexWord flashBaseS) (parseHexWord entryS)
     ["protocol", path]                 -> runProtocol path 0x4000
+    ["debug", path, entryS]            -> runDebug path 0x4000 (parseHexWord entryS)
     [path]                      -> run path 0x4000
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
-    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin"
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)"
 
 parseHexWord :: String -> Word32
 parseHexWord s =

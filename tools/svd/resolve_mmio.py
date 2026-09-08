@@ -12,6 +12,7 @@ firmware correspond to?" See docs/tooling/tool-selection.md's SVD section.
 Usage:
     python3 resolve_mmio.py 0x40001c04 0x4101c005
     python3 resolve_mmio.py --json addrs.json   # {"addrs": ["0x...", ...]}
+    python3 resolve_mmio.py --unicorn-log snapshot.json  # run_concrete.py --log-mmio output
     import resolve_mmio; resolve_mmio.resolve(0x40001c04)
 """
 import json
@@ -121,6 +122,14 @@ def main(argv):
     if not argv:
         print(__doc__)
         return 1
+    if argv[0] == "--unicorn-log":
+        snapshot = json.loads(Path(argv[1]).read_text())
+        for entry in snapshot.get("mmio_log", []):
+            addr = int(entry["address"], 0)
+            value = f" = {entry['value']}" if entry.get("value") else ""
+            print(f"{entry['direction']:<5} 0x{addr:08x}{value}  {resolve(addr)}"
+                  f"  (pc={entry['pc']}, instr #{entry['instruction']})")
+        return 0
     if argv[0] == "--json":
         data = json.loads(Path(argv[1]).read_text())
         addrs = data["addrs"]

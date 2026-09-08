@@ -307,14 +307,12 @@ two hand-run Unicorn invocations, not inventing any new technique.
 
 ## Next logical slice
 
-1. **Wire the four-step recipe above into one harness-driven virtual RF
-   link** (roadmap M3 step 8) — an in-memory queue connecting the two
-   `run_concrete.py` invocations (or a small Haskell/Python driver around
-   them) rather than two hand-run commands. This is the natural next step
-   and the largest deliverable remaining for M3.
-2. Repeat this pass's technique for `G -> #` (`0xb680`/`0xb59c`) and
+1. ~~Wire the four-step recipe above into one harness-driven virtual RF
+   link~~ — done, same day: `tools/unicorn/virtual_link.py`. See
+   [`docs/investigations/virtual-rf-link.md`](virtual-rf-link.md).
+2. Repeat the virtual link's technique for `G -> #` (`0xb680`/`0xb59c`) and
    `S -> P...`/`! -> CSV` (`0xc440`) — `protocol-bidirectional.md`'s
-   next-recommended transactions after `&|`.
+   next-recommended transactions after `&|`. Not started.
 3. If a real use case ever needs it: run the Remote's own Reset_Handler-
    equivalent first (find it the same way `docs/firmware/firmware-layout.md`
    found the AutoPilot's) so the radio driver object is genuinely
