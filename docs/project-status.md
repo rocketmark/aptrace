@@ -158,6 +158,15 @@ re-proving:
   RAM address at all. First used in
   [`docs/investigations/channel-busy-gate-search.md`](investigations/channel-busy-gate-search.md).
   See [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`--fake-tick` added to the Unicorn backend**: a narrow,
+  instruction-count-paced increment of a *firmware-maintained tick
+  variable* (identified first, not assumed) — deliberately not a
+  SysTick/timer peripheral model. Used to get a real concrete run past
+  `FUN_00006968`'s homing-timeout wait; results obtained this way are
+  documented as "firmware behavior observed after time was advanced by
+  the harness," not "real hardware timing modeled." See
+  [`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md)
+  and [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
 - **The real `&|` -> `pending[5]=1` transaction, concretely demonstrated**:
   entering at the real caller (`0x8a34`), letting the firmware establish
   its own entry state (not manually seeded), with a real `&|` packet in the
@@ -307,9 +316,26 @@ re-proving:
   decompiler artifact by disassembly along the way. Added a genuine
   Unicorn memory watchpoint (`--watch-mem-write`, new in
   `tools/unicorn/run_concrete.py`) and used it for a partial concrete
-  confirmation. The remaining path is concrete, not static: a full-boot
-  run past the already-documented homing-timeout tooling gap with the
-  new watchpoint live.
+  confirmation.
+- **A concrete follow-up ran past the homing timeout, then hit a
+  different real dependency (roadmap M6)**: the elapsed-time source was
+  diagnosed precisely (a firmware-maintained tick RAM variable, not a
+  SysTick register) and resolved with a new, narrow `--fake-tick`
+  capability, plus one disclosed real-GPIO-input boundary condition
+  (`PORT.GROUP0.IN` bit 22 read high) and one disclosed stub (a
+  `DWT->CYCCNT`-based pulse-width delay, unrelated to control flow). The
+  run escaped `FUN_00006968`'s homing-timeout loop at almost exactly the
+  predicted tick count, with `--watch-mem-write 0x20001b14:4` live
+  throughout — then crashed on a null-pointer dereference into an
+  uninitialized DMA/SERCOM-shaped peripheral driver object, touched from
+  more than one call site. Root-caused, not just described: a separate
+  true-`Reset_Handler` run confirms this object would have been
+  constructed by `FUN_0000cdd8`'s own clock/peripheral bring-up chain,
+  which is blocked by the already-documented `SYNCBUSY`-style stall in
+  "Tooling gaps" below — this is a downstream symptom of that same known
+  gap, not an independent new one. No write to `0x20001b14` beyond the
+  already-known `.bss` clear was observed. See
+  [`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md).
 
 ## Corrected assumptions
 
@@ -358,6 +384,26 @@ re-proving:
   and [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
 
 ## Tooling gaps
+
+**Gap: `FUN_0000cdd8`'s clock/peripheral-init chain stalls under Unicorn.**
+Entering a concrete run at the true `Reset_Handler` (`0xcc24`) reaches
+`FUN_0000cdd8` (clock tree/analog/USB bring-up) and stalls there
+indefinitely — confirmed most precisely in
+[`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md)
+(`pc=0xcde8`, 3,000,000 instructions, unmoved despite the tick advancing
+normally elsewhere), consistent with earlier, less precise
+encounters in `motor-timer-survey.md` and `pin-index-provenance.md`. This
+is a status-register (`SYNCBUSY`-shaped) poll against the zero-behavior
+MMIO model, not a millis/tick dependency — `--fake-tick` does not help
+it. **Deliberately not fixed**: every investigation to date that needed
+to get past boot has routed around it by entering later (at
+`FUN_00009464` or another post-init function) rather than modeling the
+specific status bit(s) involved; `systick-tick-injection.md` found one
+concrete downstream cost of that routing (an uninitialized DMA/SERCOM
+peripheral object `FUN_0000cdd8`'s chain would otherwise have
+constructed). Revisit only if a real investigation specifically needs a
+*complete*, unrouted-around boot — the narrow fix would be identifying
+and seeding the exact status bit(s) polled, not a general SYNCBUSY model.
 
 **Not a firmware blocker — a known, documented, and deliberately unfixed
 harness limitation.** A whole-function Crucible replay of the `&`-command
@@ -433,8 +479,14 @@ separately and immediately afterward, also on 2026-09-08.
    `run_concrete.py --watch-mem-write`) confirmed one branch writes
    nothing. See
    [`docs/investigations/channel-busy-gate-search.md`](investigations/channel-busy-gate-search.md).
-   The remaining path is concrete: a full-boot run past the
-   already-documented homing-timeout tooling gap, watchpoint live.
+   A concrete follow-up ([`docs/investigations/systick-tick-injection.md`](investigations/systick-tick-injection.md))
+   resolved the homing-timeout tick gap with a new `--fake-tick`
+   capability and got past it with the watchpoint live, but hit a
+   different, precisely-identified dependency first (an uninitialized
+   DMA/SERCOM-shaped peripheral object, root-caused to the
+   `FUN_0000cdd8` stall in "Tooling gaps" above) — still no write
+   observed. Reaching the setter now most likely needs that stall solved
+   for real, not routed around.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

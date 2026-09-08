@@ -211,13 +211,17 @@ blocked by an already-documented tooling gap.
 
 ## Next step
 
-The strongest remaining candidates are code paths not yet reached by
-*any* static reference to `0x20001b14` and not yet executed concretely:
-specifically, whatever runs between `FUN_00006968`'s homing-timeout exit
-and the point where a channel first becomes eligible for a real
-`I`/motion command — i.e., resolving the `FUN_0000ccd0` tick-source
-tooling gap enough to get a full boot past homing and into the main loop
-with a live `--watch-mem-write` on `0x20001b14`, so any setter — however
-it's reached — is caught concretely regardless of which function it
-turns out to be. This is a tooling-gap fix, not another static-reading
-pass; the static search is now believed exhausted.
+**Update**: this concrete follow-up was attempted — see
+[`systick-tick-injection.md`](systick-tick-injection.md). The
+`FUN_0000ccd0` tick-source gap was correctly diagnosed (a
+firmware-maintained RAM counter, not a SysTick register) and resolved
+with a new, narrow `--fake-tick` capability; a real GPIO-input boundary
+condition was also needed and disclosed. The run got past the homing
+timeout successfully with `--watch-mem-write 0x20001b14:4` live, but hit
+a *different* genuine dependency before reaching the setter — an
+uninitialized DMA/SERCOM-shaped peripheral driver object, root-caused to
+the same already-documented `FUN_0000cdd8` clock-init stall (not solved,
+per the task's explicit scope). No write to `0x20001b14` beyond the
+already-known `.bss` clear was observed. The static search here remains
+believed exhausted; the concrete path is now blocked by a precisely
+identified, different dependency rather than the original tick gap.

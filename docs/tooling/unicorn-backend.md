@@ -91,12 +91,39 @@ via a direct literal. Each hit records the instruction count, PC, LR,
 address, size, and value written. `--max-mem-write-log N` (default 2000)
 caps hits per range.
 
+**`--fake-tick ADDR:PERIOD`** (repeatable): every `PERIOD` *instructions*
+executed, increments the 4-byte little-endian counter at `ADDR` by 1.
+This is deliberately **not** a SysTick/timer peripheral model — it never
+touches SysTick's MMIO registers (`CTRL`/`LOAD`/`VAL`) or NVIC. It is a
+direct, narrowly-scoped stand-in for a **firmware-maintained tick
+variable** (a `millis()`-style counter an ISR increments), for the case
+where real elapsed-time delay/timeout logic needs to see time pass to
+terminate, and building a real SysTick countdown model would be more
+machinery than the question needs. **Find the real variable first**:
+locate the firmware's own tick-read function (its body is typically just
+`return *some_RAM_address;`) and disassemble the real `SysTick_Handler`
+(vector table index 15) to confirm it increments that same address — see
+[`docs/investigations/systick-tick-injection.md`](../investigations/systick-tick-injection.md)
+for a full worked example on this firmware (`FUN_0000ccd0`/`FUN_0000ccdc`
+both derive from a single RAM counter at `0x200052ec`, incremented by the
+real `SysTick_Handler` at `0xcca4`). Advancing on an instruction-count
+cadence rather than real time means any result obtained this way must be
+reported as **"firmware behavior observed after time was advanced by the
+harness,"** never as "real hardware timing behavior modeled" — the rate,
+jitter, and exact tick/instruction ratio are artifacts of the harness,
+not the MCU. A **separate** hardware-timing dependency this does *not*
+address: a tight cycle-counter busy-wait (e.g. reading `DWT->CYCCNT` at
+`0xE0001000+4` twice and comparing) needs its own treatment —
+`--stub-call` the delay function itself if its precise pulse-width
+timing isn't what the scenario is testing.
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
 register values, any requested memory dumps, a `watch_hits` list (each
 entry: hit index, instruction count, address, registers, watched memory),
 (with `--log-mmio`) an `mmio_log` list, (with `--stub-call`) a
-`stub_hits` list, and (with `--watch-mem-write`) a `mem_write_hits` list.
-Written to `--out PATH` or stdout.
+`stub_hits` list, (with `--watch-mem-write`) a `mem_write_hits` list, and
+(with `--fake-tick`) a `fake_ticks_applied` list (address, period, and
+how many increments actually fired). Written to `--out PATH` or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 
@@ -158,9 +185,17 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   found real Cortex-M startup/delay code touching it; now mapped
   unconditionally with the same zero-behavior stub (skipped only if a
   custom `--mmio-base`/`--mmio-size` already covers it). Same caveat as
-  above: no real SysTick counting, so a delay loop that waits for it to
-  reach a value will spin forever — `--stub-call` the delay function
-  itself if the scenario doesn't need real timing.
+  above: no real SysTick counting, so a delay loop that reads SysTick's
+  own MMIO registers directly will spin forever. **Where a delay instead
+  reads a firmware-maintained tick/millis *variable*** (the common case —
+  confirmed for this firmware's `millis()`/`micros()` equivalents), use
+  `--fake-tick` (above) rather than `--stub-call`ing the delay away — it
+  lets the real elapsed-time comparison logic run and produce a real
+  result instead of skipping it. Still no general SysTick/NVIC emulator,
+  and still not planned unless a real use case needs one; a genuine
+  cycle-counter (`DWT->CYCCNT`) busy-wait is a separate case (see
+  `--fake-tick`'s entry above) — `--stub-call` remains the right tool
+  when a callee's internal timing genuinely doesn't matter.
 - Single-shot process per run, not a persistent/interactive session — fine
   for scenario-style concrete replay (load, seed, run, snapshot), not for
   step-through debugging.

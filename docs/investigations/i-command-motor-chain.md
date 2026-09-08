@@ -282,15 +282,18 @@ satisfies this property."
 
 ## Best next entry point
 
-**Find the `0x20001b14[channel]` setter** — the one remaining open cell,
-now that [`channel-busy-gate-search.md`](channel-busy-gate-search.md) has
-exhausted the static-analysis approach. The remaining path is a concrete
-one: resolve the `FUN_0000ccd0` tick-source tooling gap (documented in
-`docs/project-status.md`'s "Tooling gaps") enough to run a real boot past
-`FUN_00006968`'s homing-timeout wait and into the main loop with a live
-`--watch-mem-write 0x20001b14:4` (the new watchpoint capability) active
-the whole time — catching the setter concretely regardless of which
-function it turns out to be, rather than continuing to guess candidates
-to decompile by hand. Once found, the chain in the table above closes
-completely — every other edge from `I<channel><mode>|` through to the
-now-known GPIO pin and back to the event-15 result is already confirmed.
+**Find the `0x20001b14[channel]` setter** — the one remaining open cell.
+A concrete attempt was made
+([`systick-tick-injection.md`](systick-tick-injection.md)): the
+`FUN_0000ccd0` tick-source gap was correctly diagnosed and resolved with
+a new, narrow `--fake-tick` capability, and the run got past
+`FUN_00006968`'s homing timeout with `--watch-mem-write 0x20001b14:4`
+live — but hit a different, genuine dependency (an uninitialized
+DMA/SERCOM-shaped peripheral object, root-caused to the already-known
+`FUN_0000cdd8` clock-init stall) before reaching any code that could set
+the byte. No new write was observed. Reaching the setter now most likely
+requires resolving that clock-init stall for real, a larger undertaking
+than this chain's own scope. Once found, the chain in the table above
+closes completely — every other edge from `I<channel><mode>|` through to
+the now-known GPIO pin and back to the event-15 result is already
+confirmed.

@@ -178,9 +178,20 @@ closing recommendation.
     neighboring array). Added a genuine Unicorn memory watchpoint
     (`--watch-mem-write`) and got a partial concrete confirmation. See
     [`docs/investigations/channel-busy-gate-search.md`](../investigations/channel-busy-gate-search.md).
-    **Next**: resolve the `FUN_0000ccd0` tick-source tooling gap enough
-    to run a full boot past `FUN_00006968`'s homing timeout into the
-    main loop with the new watchpoint live — a concrete, not static,
-    continuation. Once found, the full
-    `I<channel><mode>| -> ... -> now-known GPIO -> event-15 result`
-    chain closes completely.
+16. Concrete follow-up attempted
+    ([`docs/investigations/systick-tick-injection.md`](../investigations/systick-tick-injection.md)):
+    diagnosed the `FUN_0000ccd0` tick source precisely (a
+    firmware-maintained RAM counter incremented by the real
+    `SysTick_Handler`, not a SysTick register) and resolved it with a
+    new, narrow `--fake-tick` capability; also needed one disclosed
+    real-GPIO-input boundary condition and one disclosed delay stub. The
+    run escaped `FUN_00006968`'s homing timeout with
+    `--watch-mem-write 0x20001b14:4` live, then hit a *different*
+    dependency — an uninitialized DMA/SERCOM-shaped peripheral driver
+    object, root-caused to `FUN_0000cdd8`'s already-known `SYNCBUSY`-style
+    stall (now documented in `docs/project-status.md`'s "Tooling gaps").
+    No new write observed. **Next**: solving that clock-init stall for
+    real (not routing around it) is now the identified path to the
+    setter — a larger undertaking than this chain's own scope. Once
+    found, the full `I<channel><mode>| -> ... -> now-known GPIO ->
+    event-15 result` chain closes completely.

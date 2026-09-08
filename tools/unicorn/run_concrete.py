@@ -121,6 +121,7 @@ def build_argparser():
     p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
     p.add_argument("--watch-mem-write", action="append", default=[], metavar="ADDR:LEN", help="true memory watchpoint (repeatable): record every WRITE that lands in [ADDR, ADDR+LEN), anywhere in the address space, with PC/instruction/old+new bytes -- unlike --watch (which triggers on a CODE address), this catches a store to a RAM range regardless of which instruction or function performs it, including a computed/indirect address a static xref search can't attribute to the range's own literal. Does not stop execution.")
     p.add_argument("--max-mem-write-log", type=int, default=2000, help="cap on recorded hits per --watch-mem-write range (default 2000)")
+    p.add_argument("--fake-tick", action="append", default=[], metavar="ADDR:PERIOD", help="repeatable: every PERIOD instructions, increment the 4-byte little-endian counter at ADDR by 1. Deliberately NOT a SysTick/timer peripheral model -- it is a direct, labeled stand-in for a firmware-maintained tick/millis variable (identify the real one first: find the real millis()-equivalent function, e.g. via its literal-pool DAT_ symbol, and fake-tick *that* RAM address, not a SysTick MMIO register) so real elapsed-time delay/timeout loops in the firmware can terminate. Advances on an INSTRUCTION-COUNT cadence, not real time -- results obtained this way are 'firmware behavior observed after time was advanced by the harness', not 'real hardware timing behavior modeled'. See docs/investigations/channel-busy-gate-search.md and its concrete follow-up for the real use case this was added for.")
     p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee (e.g. a hardware driver call) whose return value this scenario doesn't depend on -- the concrete-execution equivalent of the opaque function-call override already used on the Crucible side (see docs/project-status.md). Does not fabricate a return value; R0 is left exactly as the caller set it up.")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
@@ -183,7 +184,8 @@ def main(argv):
     stub_addrs = {parse_hex(a) & ~1 for a in args.stub_call}
     watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
     mem_write_ranges = [parse_addr_len(spec) for spec in args.watch_mem_write]
-    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [], "mem_write_hits": []}
+    fake_ticks = [parse_addr_len(spec) for spec in args.fake_tick]  # (addr, period)
+    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [], "mem_write_hits": [], "fake_tick_count": [0] * len(fake_ticks)}
 
     def capture_registers():
         return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
@@ -201,6 +203,11 @@ def main(argv):
         state["instructions"] += 1
         if args.trace and state["instructions"] % args.trace_every == 0:
             print(f"  [unicorn] #{state['instructions']} pc=0x{address:08x}", file=sys.stderr)
+        for i, (tick_addr, period) in enumerate(fake_ticks):
+            if period > 0 and state["instructions"] % period == 0:
+                cur = int.from_bytes(uc_.mem_read(tick_addr, 4), "little")
+                uc_.mem_write(tick_addr, ((cur + 1) & 0xFFFFFFFF).to_bytes(4, "little"))
+                state["fake_tick_count"][i] += 1
         if address in stub_addrs:
             lr = uc_.reg_read(UC_ARM_REG_LR)
             state["stub_hits"].append({
@@ -300,6 +307,10 @@ def main(argv):
         "mmio_log": state["mmio_log"],
         "stub_hits": state["stub_hits"],
         "mem_write_hits": state["mem_write_hits"],
+        "fake_ticks_applied": [
+            {"addr": f"0x{addr:08x}", "period": period, "count": state["fake_tick_count"][i]}
+            for i, (addr, period) in enumerate(fake_ticks)
+        ],
     }
 
     text = json.dumps(snapshot, indent=2)
