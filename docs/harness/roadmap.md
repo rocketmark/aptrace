@@ -58,27 +58,35 @@ M1 is done; this is a smaller, parallel task, not a prerequisite for M3:
    motor channels' pin/ISR pairs; naming the TX path's real transport
    peripheral).
 
-### M3 — Remote (`mando`) firmware — **now unblocked**
+### M3 — Remote (`mando`) firmware — **in progress**
 
-M1 is done, so this may begin. Not yet started as of this writing — no
-Ghidra/Macaw/Unicorn/Crucible work has touched `firmware_mando868.bin`/
-`firmware_mando915.bin`.
+M1 is done, so this began 2026-09-08. See
+[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+for the full result.
 
-6. Point APTrace's loader/discovery at `firmware_mando868.bin` — same
-   mechanics as the AutoPilot image (see
-   [`docs/firmware/firmware-layout.md`](../firmware/firmware-layout.md) for
-   why the same flash-base/bootloader assumptions apply), but not yet
-   attempted. Success criterion: clean discovery covering the Remote
-   functions named in `research/autopilot_static_inventory/functions-of-interest.md`'s
-   "Remote firmware" table (`0x58a8`, `0xb680`, `0xc440`, `0xba98`,
-   `0x10cf4`, etc.).
-7. Complete the `&|` -> `V01R39` transaction from the *Remote's* side:
-   symbolically confirm the Remote's request-building and response-parsing
-   code around `0xba98`.
+6. ~~Point APTrace's loader/discovery at `firmware_mando868.bin`~~ — done:
+   clean discovery, 563 functions, every named Remote function of interest
+   (`0x58a8`, `0xb440`, `0xb59c`, `0xb680`, `0xba98`, `0xc440`, `0xfa10`,
+   `0xfadc`, `0x10cf4`) resolved at its documented address, zero
+   platform-specific harness changes needed.
+7. ~~Complete the `&|` -> `V01R39` transaction from the *Remote's* side~~
+   — done at the **concrete (Unicorn)** evidence tier, both halves: real
+   TX construction (`0xba98` calling the real TX wrapper with a real
+   `"&|\0"` literal) and real RX capture (the real byte-collection loop
+   copying the AutoPilot's already-proven response into `0x200002fc`).
+   **Not** done at the solver-confirmed (Crucible) tier — deliberately,
+   consistent with M1's own evidence-level discipline; revisit only if a
+   real use case needs it.
 8. Connect the two sides with an in-memory virtual RF queue (Remote TX hook
    feeds AutoPilot RX buffer and vice versa), so a single harness run
    exercises both firmwares against each other without modeling LoRa/SPI
-   hardware.
+   hardware. **Design now concretely validated, not yet built**: hook each
+   side's real TX-wrapper argument, seed it into the other side's real RX
+   buffer (AutoPilot: `0x2000232a`; Remote: ring buffer at `0x20001773`),
+   run — see `mando-first-execution.md`'s "What this means for the virtual
+   RF link" for the exact recipe and addresses. The remaining work is
+   integration (one harness loop instead of two hand-run invocations), not
+   a new technique.
 
 ### M4 — Broader protocol reachability
 

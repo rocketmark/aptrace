@@ -78,33 +78,27 @@ build/usage instructions: [`docs/toolchain.md`](docs/toolchain.md).
   (Unicorn) and via static cross-reference (Ghidra), agreeing with the
   solver result. See
   [`docs/tooling/tool-selection.md`](docs/tooling/tool-selection.md).
+- **The full AutoPilot-only milestone (M1) is complete** at the concrete
+  (Unicorn) evidence tier: a real `&|` packet, through the unmodified
+  dispatcher, sets `pending[5]`, and the real outbound TX hook emits
+  exactly `V01R39`. See
+  [`docs/investigations/tx-hook-verification.md`](docs/investigations/tx-hook-verification.md).
+- **The same transaction is now also confirmed from the Remote's own
+  side**: real TX construction (`"&|"`) and real RX capture (`"V01R39"`
+  copied into the Remote's own capture buffer), the first concrete
+  execution of the Remote (`mando`) firmware. See
+  [`docs/investigations/mando-first-execution.md`](docs/investigations/mando-first-execution.md).
 
 Full current-state detail: [`docs/project-status.md`](docs/project-status.md).
 
-## What is the current blocker?
-
-Replaying the **whole** dispatcher function (not just one isolated block)
-against a real in-memory `&` packet does not terminate. The cause has been
-narrowed to a memory-side-effect modeling gap: two called functions
-(`0x5274`/`0x5448`) are currently stubbed with no memory writes, and the
-loop they're called from likely depends on a write one of them makes to
-know when to stop. Full diagnosis:
-[`docs/harness/protocol-harness-results.md`](docs/harness/protocol-harness-results.md).
-Now that Unicorn is integrated, the next step is to concretely execute the
-two opaquely-stubbed functions and observe their real memory effects before
-deciding whether a full Crucible-side fix
-([`docs/harness/execution-model.md`](docs/harness/execution-model.md)) is
-even necessary — see
-[`docs/project-status.md`](docs/project-status.md)'s "Next 3-5 concrete
-steps."
-
 ## What is the next milestone?
 
-**M1**: complete the AutoPilot-only transaction end to end — a real `&`
-packet, run through the unmodified dispatcher, sets `pending[5]`, and the
-outbound hook at `0x8c10`/`0x7f84` emits `V01R39`. **Do not move to the
-Remote firmware before this works.** Full roadmap:
-[`docs/harness/roadmap.md`](docs/harness/roadmap.md).
+**M3**: connect the two firmwares through an in-memory virtual RF link
+(no LoRa/SPI hardware modeling) so a single harness run exercises the
+`&|` -> `V01R39` transaction, and others, end to end across both
+firmwares. Both directions' mechanics are already concretely validated in
+isolation; what remains is wiring them into one harness-driven loop. Full
+roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?
 

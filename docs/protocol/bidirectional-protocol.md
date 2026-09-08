@@ -42,22 +42,29 @@ AutoPilot parser (flash 0x8258)         <- one command byte confirmed
 
 ## Best-documented transactions (static analysis)
 
-### Firmware-version query (execution-confirmed end to end on the AutoPilot side)
+### Firmware-version query (execution-confirmed end to end, both firmwares)
 
 ```
-Remote (0xba98): send "&|"
+Remote (0xba98): send "&|"             [execution-confirmed: real "&|\0" literal, real TX call]
     -> AutoPilot parser (0x8258)
     -> 0x889a schedules event 5           [execution-confirmed]
     -> event 5 sends RAM 0x20003134
-    -> payload "V01R39"                    [confirmed: 0x4328 initializes this buffer]
-    -> Remote captures at RAM 0x200002fc
+    -> payload "V01R39"                    [execution-confirmed: real TX hook, exact bytes]
+    -> Remote captures at RAM 0x200002fc  [execution-confirmed: real RX loop, exact bytes]
     -> shown on Remote's firmware-info UI
 ```
 
-The AutoPilot side (parser -> event 5 scheduled) is now execution-confirmed;
-see [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md).
-Outbound transmission (the TX hook at `0x8c10`) and the Remote side are not
-yet verified by execution — this is exactly APTrace's current milestone, see
+Both the AutoPilot side (parser -> event 5 -> TX hook -> `"V01R39"`) and
+the Remote side (TX construction and RX capture) are now
+execution-confirmed at the concrete (Unicorn) evidence tier — see
+[`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md),
+[`docs/investigations/tx-hook-verification.md`](../investigations/tx-hook-verification.md),
+and
+[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md).
+Not yet done: connecting the two sides into one live virtual-RF-link
+harness run (design validated, not yet built — see
+`mando-first-execution.md`) and a solver-confirmed (Crucible) proof of
+either side's whole transaction — see
 [`docs/project-status.md`](../project-status.md).
 
 ### `G` acknowledgement

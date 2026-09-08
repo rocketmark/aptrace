@@ -59,10 +59,26 @@ was probed this way: zero MMIO accesses on the path up to the TX hook
 itself — a genuine, informative negative result, not a tool failure).
 `--max-mmio-log N` (default 5000) caps how many accesses are recorded.
 
+**`--stub-call HEXADDR`** (repeatable): treats that address as an opaque
+function that returns immediately (`PC := LR`) instead of executing its
+body. This is the concrete-execution equivalent of the opaque
+function-call override already used on the Crucible side
+(`docs/project-status.md`'s "A real calling-convention bug, fixed") — use
+it for a real callee whose *internals* the current scenario doesn't
+depend on (a hardware driver call, a busy-wait against a real peripheral
+that the zero-behavior MMIO stub can never satisfy) and whose return
+value is either unused (`void`) or doesn't matter for the property being
+checked. It does not fabricate a return value — registers are left
+exactly as the caller set them up. See
+[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+for a real use (stubbing a radio poll and a SysTick-based delay to let a
+real byte-consumption loop run to completion).
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
 register values, any requested memory dumps, a `watch_hits` list (each
 entry: hit index, instruction count, address, registers, watched memory),
-and (with `--log-mmio`) an `mmio_log` list. Written to `--out PATH` or
+(with `--log-mmio`) an `mmio_log` list, and (with `--stub-call`) a
+`stub_hits` list. Written to `--out PATH` or
 stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
@@ -117,7 +133,17 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   adds real peripheral *behavior*, which remains a separate, larger problem
   not addressed by this pass (see `docs/project-status.md`'s "Tooling
   gaps" — do not build a general peripheral emulator unless a real use case
-  needs it).
+  needs it). `--stub-call` (see above) is the usual escape hatch when a
+  real callee would otherwise busy-wait against this stub forever.
+- The ARM Private Peripheral Bus (`0xE0000000`-`0xE00FFFFF` — SysTick,
+  NVIC, SCB, MPU) was unmapped until
+  [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+  found real Cortex-M startup/delay code touching it; now mapped
+  unconditionally with the same zero-behavior stub (skipped only if a
+  custom `--mmio-base`/`--mmio-size` already covers it). Same caveat as
+  above: no real SysTick counting, so a delay loop that waits for it to
+  reach a value will spin forever — `--stub-call` the delay function
+  itself if the scenario doesn't need real timing.
 - Single-shot process per run, not a persistent/interactive session — fine
   for scenario-style concrete replay (load, seed, run, snapshot), not for
   step-through debugging.

@@ -57,12 +57,22 @@ requires exactly `0x26` ('&') at flash `0x888c` — solver-confirmed
 onward path to `"V01R39"`, has now also been demonstrated concretely
 (level 2, above).
 
-**Remote (`mando`) firmware**: now unblocked. Substantial *static*
-research already exists (`research/autopilot_static_inventory/`,
-`docs/protocol/`), covering both sides of the protocol. No APTrace
-execution/harness work has touched `firmware_mando868.bin`/
-`firmware_mando915.bin` yet — that's the natural next phase (see "Next
-steps"), not started in this pass.
+**Remote (`mando`) firmware**: first concrete execution done (2026-09-08).
+Ghidra's existing pipeline loads/discovers Mando cleanly with zero
+platform-specific changes (563 functions; every previously-named Remote
+function of interest resolves at its documented address). Both halves of
+the `&|` -> `V01R39` round trip are now concretely (Unicorn) confirmed
+from the Remote's own side: Remote's real `0xba98` loads `R0` from a real
+`"&|\0"` flash literal and calls the real TX wrapper with it; and,
+separately, Remote's real byte-collection loop, given the AutoPilot's
+already-proven real response bytes, copies exactly `"V01R39\0"` into its
+own capture buffer. See
+[`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md)
+for the full result, the honest boundary found (both firmwares gate real
+RF I/O behind an unmodeled driver layer — reaching past it needed a new
+`--stub-call` Unicorn capability, not full radio emulation), and the
+now-concretely-validated design for the virtual RF link (roadmap M3 step
+8) — not yet wired into one harness-driven loop, that's the next slice.
 
 ## Proven capabilities & findings
 
@@ -164,6 +174,16 @@ re-proving:
   driver-object pointer, not a literal address, and naming it is the next
   slice, not done here. See
   [`docs/investigations/samd51-peripheral-mapping.md`](investigations/samd51-peripheral-mapping.md).
+- **First concrete Mando (Remote) execution**: Ghidra discovery clean with
+  no platform-specific changes; both halves of the `&|` -> `V01R39`
+  round trip confirmed from the Remote's own side via Unicorn (real TX
+  construction and real RX capture, in two separate runs mirroring the
+  AutoPilot milestone's own two-step structure). Required a new
+  `run_concrete.py --stub-call` capability (the Unicorn-side equivalent of
+  Crucible's existing opaque function-call override) to get past a real,
+  not-yet-modeled radio/SPI driver dependency — the same class of boundary
+  already found on the AutoPilot's TX path. See
+  [`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md).
 
 ## Corrected assumptions
 
@@ -238,15 +258,15 @@ proven for the packet buffer) would be the smallest starting point.
 
 ## Next steps
 
-1. **Begin Remote (`mando`) harness work**, per
-   [`docs/harness/roadmap.md`](harness/roadmap.md) — now unblocked, since
-   the AutoPilot-only milestone above is closed at the concrete evidence
-   tier. Build on the existing static research
-   (`research/autopilot_static_inventory/`, `docs/protocol/`) rather than
-   starting from nothing; the natural first step is the virtual RF link
-   (an in-memory queue connecting the Remote's TX to the AutoPilot's RX
-   and vice versa, per the roadmap) so both firmwares can be exercised
-   against each other.
+1. **Wire the virtual RF link** (roadmap M3 step 8): both directions'
+   mechanics are now concretely validated in isolation (see
+   [`docs/investigations/mando-first-execution.md`](investigations/mando-first-execution.md)'s
+   "What this means for the virtual RF link") — capture a TX argument on
+   one side, seed it into the other side's real RX buffer, run. What
+   remains is wiring these into one harness-driven loop instead of two
+   hand-run `run_concrete.py` invocations; not a new technique, an
+   integration task. After `&|`, repeat for `G -> #` and `S`/`!` per
+   `research/autopilot_static_inventory/protocol-bidirectional.md`.
 2. Independently verify `G`/`!`/`S`'s handlers perform their claimed
    event-scheduling writes (currently only entry *reachability* is
    solver-verified for these three) — a smaller, parallel task, not a

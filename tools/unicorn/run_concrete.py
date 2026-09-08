@@ -119,6 +119,7 @@ def build_argparser():
     p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
     p.add_argument("--log-mmio", action="store_true", help="record every read/write into the MMIO window (address, size, direction, PC) in the snapshot -- observability only, does not change the zero-behavior MMIO model. Resolve addresses to peripheral/register names with tools/svd/resolve_mmio.py")
     p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
+    p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee (e.g. a hardware driver call) whose return value this scenario doesn't depend on -- the concrete-execution equivalent of the opaque function-call override already used on the Crucible side (see docs/project-status.md). Does not fabricate a return value; R0 is left exactly as the caller set it up.")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
 
@@ -150,6 +151,16 @@ def main(argv):
     uc.mem_map(align_down(ram_base), align_up(ram_size))
     uc.mem_map(align_down(mmio_base), align_up(mmio_size))
 
+    # The ARM-architected Private Peripheral Bus (SysTick, NVIC, SCB, MPU,
+    # etc. at 0xE0000000-0xE00FFFFF) is part of every Cortex-M's address map,
+    # not board-specific MMIO -- map it too (same zero-behavior stub) so
+    # ordinary startup/delay code that touches SysTick/NVIC doesn't fault.
+    # Skipped if a custom --mmio-base/--mmio-size already covers it.
+    ppb_base, ppb_size = 0xE0000000, 0x100000
+    mmio_lo, mmio_hi = align_down(mmio_base), align_down(mmio_base) + align_up(mmio_size)
+    if not (mmio_lo <= ppb_base and ppb_base + ppb_size <= mmio_hi):
+        uc.mem_map(ppb_base, ppb_size)
+
     sp = parse_hex(args.sp) if args.sp else (ram_base + ram_size)
     uc.reg_write(UC_ARM_REG_SP, sp)
     uc.reg_write(UC_ARM_REG_PC, entry)
@@ -167,8 +178,9 @@ def main(argv):
 
     stop_addrs = {parse_hex(a) & ~1 for a in args.stop_at}
     watch_addrs = {parse_hex(a) & ~1 for a in args.watch}
+    stub_addrs = {parse_hex(a) & ~1 for a in args.stub_call}
     watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
-    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": []}
+    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": []}
 
     def capture_registers():
         return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
@@ -186,6 +198,13 @@ def main(argv):
         state["instructions"] += 1
         if args.trace and state["instructions"] % args.trace_every == 0:
             print(f"  [unicorn] #{state['instructions']} pc=0x{address:08x}", file=sys.stderr)
+        if address in stub_addrs:
+            lr = uc_.reg_read(UC_ARM_REG_LR)
+            state["stub_hits"].append({
+                "instruction": state["instructions"], "address": f"0x{address:08x}", "lr": f"0x{lr:08x}",
+            })
+            uc_.reg_write(UC_ARM_REG_PC, lr)
+            return
         if address in watch_addrs:
             if len(state["watch_hits"]) >= args.max_watch_hits:
                 state["stop_reason"] = f"max watch hits ({args.max_watch_hits}) reached at 0x{address:08x}"
@@ -258,6 +277,7 @@ def main(argv):
         "memory": memory,
         "watch_hits": state["watch_hits"],
         "mmio_log": state["mmio_log"],
+        "stub_hits": state["stub_hits"],
     }
 
     text = json.dumps(snapshot, indent=2)

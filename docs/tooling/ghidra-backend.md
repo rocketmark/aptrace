@@ -76,6 +76,17 @@ how the `0x801c` cross-check in `tool-selection.md` was done.
   exports the JSON described above. Hand-rolled JSON serialization (no
   external library dependency — headless scripts only have Ghidra's own
   bundled classpath).
+- `tools/ghidra/scripts/APTraceDecompileFunctions.java` — `-postScript`,
+  dumps decompiler C output for a comma-separated list of addresses to a
+  text file. Cheaper to read than raw p-code for "what does this function
+  actually do" questions.
+- `tools/ghidra/scripts/APTraceDisassembleRange.java` — `-postScript`,
+  dumps per-instruction (address, mnemonic, operands) for one address
+  range. Decompiled C hides real instruction addresses; reach for this
+  when a Unicorn scenario needs an exact call-site or loop-entry address
+  (see
+  [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+  for a real use).
 
 Both extend `ghidra.app.script.GhidraScript` and are compiled on the fly by
 the headless analyzer; no separate build step.
