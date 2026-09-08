@@ -150,6 +150,14 @@ re-proving:
   register/memory state at multiple addresses across one run without
   halting (unlike `--stop-at`) — needed for a per-iteration loop trace. See
   [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`--watch-mem-write`** added to the Unicorn backend: a true memory
+  watchpoint (fires on any write landing in an address range, regardless
+  of which instruction performs it) rather than `--watch`'s code-address
+  trigger — for exactly the case where a static xref search finds no
+  writer and the question is whether a computed/indirect store reaches a
+  RAM address at all. First used in
+  [`docs/investigations/channel-busy-gate-search.md`](investigations/channel-busy-gate-search.md).
+  See [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
 - **The real `&|` -> `pending[5]=1` transaction, concretely demonstrated**:
   entering at the real caller (`0x8a34`), letting the firmware establish
   its own entry state (not manually seeded), with a real `&|` packet in the
@@ -284,12 +292,24 @@ re-proving:
   gate is nonzero — the two directions of the meet-in-the-middle search
   converge on the identical byte. Also corrected the record: the
   handler's "`=5`" write is to `0x20002524[channel]`, not
-  `0x20001b14[channel]` as an older static-inventory pass had it. One
-  edge remains open — what sets `0x20001b14[channel]` nonzero was
-  searched for exhaustively (all 12 referencing functions) and not
-  found, the same class of gap `.data`-segment analysis resolved for
-  the pin-index bytes. See
+  `0x20001b14[channel]` as an older static-inventory pass had it. See
   [`docs/investigations/i-command-motor-chain.md`](investigations/i-command-motor-chain.md).
+- **`0x20001b14[channel]`'s producer searched exhaustively — a genuine
+  negative result (roadmap M6)**: a dedicated follow-up
+  ([`docs/investigations/channel-busy-gate-search.md`](investigations/channel-busy-gate-search.md))
+  checked all 12 direct-reference functions, 7 one-hop candidates
+  (including the two originally suspected, `FUN_00006fd8` and
+  `FUN_00008e18`), the complete one-time-init boot chain, and every
+  literal-referenced global packed around the byte (ruling out a
+  computed-offset alias) — no setter found by any static method. Also
+  confirmed the byte is `.bss` (cold value `0`, not a fixed nonzero
+  startup constant, unlike the pin-index bytes) and resolved a
+  decompiler artifact by disassembly along the way. Added a genuine
+  Unicorn memory watchpoint (`--watch-mem-write`, new in
+  `tools/unicorn/run_concrete.py`) and used it for a partial concrete
+  confirmation. The remaining path is concrete, not static: a full-boot
+  run past the already-documented homing-timeout tooling gap with the
+  new watchpoint live.
 
 ## Corrected assumptions
 
@@ -407,10 +427,14 @@ separately and immediately afterward, also on 2026-09-08.
    `0x20001b14[channel]` gate is nonzero. See
    [`docs/investigations/i-command-motor-chain.md`](investigations/i-command-motor-chain.md).
    **One link remains**: what sets `0x20001b14[channel]` nonzero in the
-   first place — an exhaustive static search (all 12 functions that
-   reference it) found only reads and one clear-to-zero, the same class
-   of gap `.data`-segment analysis resolved for the pin-index bytes, not
-   yet resolved here.
+   first place — exhaustively searched (12 direct-reference functions, 7
+   one-hop candidates, the full boot chain, a neighbor-offset sweep) and
+   not found by any static method; a concrete watchpoint (new
+   `run_concrete.py --watch-mem-write`) confirmed one branch writes
+   nothing. See
+   [`docs/investigations/channel-busy-gate-search.md`](investigations/channel-busy-gate-search.md).
+   The remaining path is concrete: a full-boot run past the
+   already-documented homing-timeout tooling gap, watchpoint live.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

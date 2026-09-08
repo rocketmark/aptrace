@@ -120,7 +120,7 @@ This is exact agreement with the disassembly above at the concrete
 | Address | Real role | Evidence |
 |---|---|---|
 | `0x20002524[channel]` | The `I` handler's own per-channel signal byte. Set to `5` unconditionally by `I`; also set to `1` by `FUN_00006fd8` when committing a real move (see below), to `2` by an unnamed periodic poller (`0x541c`-`0x543c`) that re-issues the same `FUN_00005274(ch,4)` call whenever this byte is `2` and `0x20001b14[ch]!=0`, and cleared to `0` by `FUN_00006338` in most paths **except** when the value is exactly `5` (preserved, not clobbered) — this is genuinely a small per-channel state value, not a single global, correcting `motor-timer-survey.md`'s "may actually be the base of a small per-channel state array" to a confirmed fact. |
-| `0x20001b14[channel]` | The real "channel busy" gate. Read (never written to nonzero) by the `I` handler, `FUN_00005ee8`, `FUN_00006338`, `FUN_00008e18`'s phase dispatcher, and the monitor (`0x8b5c`-`0x8b66`, waits for exactly this to reach `0`); written to `0` (cleared) by `FUN_00005958`. See "The one open link" below — nothing found writes it to nonzero. |
+| `0x20001b14[channel]` | A per-channel rate-update enable gate ("busy"/"moving" is a plausible but not fully confirmed reading — see [`channel-busy-gate-search.md`](channel-busy-gate-search.md)). Read (never written to nonzero) by the `I` handler, `FUN_00005ee8`, `FUN_00006338`, `FUN_00008e18`'s phase dispatcher, and the monitor (`0x8b5c`-`0x8b66`, waits for exactly this to reach `0`); cleared to `0` by `FUN_00005958`, called from real completion paths in `FUN_00006338` and TC0's own ISR logic (`FUN_00005be8`). See "The one open link" below — exhaustively searched, nothing found writes it to nonzero. |
 
 `synchronous-responses.md` is left as-is (a raw v0.3 catalog) with a
 pointer added to this doc; this file is the corrected, authoritative
@@ -237,18 +237,22 @@ All twelve **read** it as a gate. Exactly one, `FUN_00005958` (called
 throughout `FUN_00006338`'s branches), **writes** it — to `0`. No
 literal-addressed instruction anywhere sets it to a nonzero value.
 
-This is the same category of gap already resolved once in this project:
-[`pin-index-provenance.md`](pin-index-provenance.md) found no literal
-writer for the GPIO pin-index bytes either, and the real answer turned
-out to be a `.data`-segment startup copy invisible to xref search.
-`0x20001b14` is **not** in that same `.data` region
-(`0x20000000`-`0x20000430`), so that specific mechanism doesn't apply
-here directly, but a different computed/indirect store — most plausibly
-inside `FUN_00006fd8` or the phase-0/phase-1 branches of
-`FUN_00008e18`'s dispatcher, both of which are one hop from the confirmed
-writes of the sibling flags `0x20002524[channel]` and
-`0x2000310c[channel]` — is the leading hypothesis, not confirmed this
-pass.
+**Update**: a dedicated follow-up slice
+([`channel-busy-gate-search.md`](channel-busy-gate-search.md)) chased
+this specifically, including the two candidates named below, the full
+one-time-init boot chain, a neighbor-offset sweep of every global packed
+around `0x20001b14`, a decompiler-artifact check via disassembly, and a
+concrete Unicorn memory watchpoint (a new `run_concrete.py` capability).
+**No setter was found.** `0x20001b14` is confirmed `.bss` (cold value
+`0`, ruling out a fixed nonzero startup constant) and confirmed to be a
+standalone 4-byte global, not aliased with any neighboring array via
+computed offset. This differs from the pin-index bytes'
+`.data`-segment resolution — that mechanism was checked and doesn't apply
+here. The search is believed exhausted at the static level; the
+remaining path is a concrete full-boot run past the known
+homing-timeout tooling gap. See that doc for the complete search log and
+the "best defensible semantic name" analysis (a "rate-update enable
+gate," short of asserting "busy"/"moving" as confirmed).
 
 ## Confirmed vs. inferred vs. unresolved
 
@@ -263,7 +267,7 @@ pass.
 | `FUN_00005c00` -> `FUN_00005898` -> position += step_delta, GPIO pulse on the now-known pin | **Confirmed** (static + concrete, from `motor-timer-survey.md`/`pin-index-provenance.md`) |
 | The monitor fires event 15 (`position[channel]`) only once the busy gate reaches `0` | **Confirmed** (static disassembly, `0x8b5c`-`0x8b8e`) |
 | `step_delta`'s *magnitude* (vs. just its sign) as the real step-rate driver | **Not established** — `FUN_00005c00`'s `CC0` value comes from `FUN_00006338`'s phase-2 target/position delta, not visibly from `step_delta`'s magnitude; keeping these distinct per the task's instruction |
-| What sets `0x20001b14[channel]` nonzero | **Unresolved** — exhaustive static search (12/12 direct-reference functions checked) found no literal writer; leading hypothesis is a computed/indirect store inside `FUN_00006fd8` or `FUN_00008e18`, not confirmed |
+| What sets `0x20001b14[channel]` nonzero | **Unresolved** — exhaustively searched in [`channel-busy-gate-search.md`](channel-busy-gate-search.md) (12 direct-reference functions, 7 one-hop candidates including `FUN_00006fd8`/`FUN_00008e18`, the full one-time-init chain, a neighbor-offset sweep, and a concrete watchpoint); no producer found by any method |
 | Any "Motor 1/2/3/4" physical connector identity | **Not claimed** — out of scope per the task |
 
 ## Evidence level
@@ -278,14 +282,15 @@ satisfies this property."
 
 ## Best next entry point
 
-**Find the `0x20001b14[channel]` setter** — the one remaining open cell.
-The two named candidates (`FUN_00006fd8`, `FUN_00008e18`'s phase-0/phase-1
-bodies) are already decompiled in this pass's working notes; re-reading
-them specifically for a computed-address store (the same technique that
-resolved the pin-index bytes: search for a loop whose destination
-pointer is built from a *different* base literal plus a runtime offset,
-rather than a direct `0x20001b14` literal) is the direct continuation.
-Once found, the chain in the table above closes completely — every other
-edge from `I<channel><mode>|` through to the now-known GPIO pin and back
-to the event-15 result is already confirmed. This is a single-function,
-targeted follow-up, not a broadening into full motor-control RE.
+**Find the `0x20001b14[channel]` setter** — the one remaining open cell,
+now that [`channel-busy-gate-search.md`](channel-busy-gate-search.md) has
+exhausted the static-analysis approach. The remaining path is a concrete
+one: resolve the `FUN_0000ccd0` tick-source tooling gap (documented in
+`docs/project-status.md`'s "Tooling gaps") enough to run a real boot past
+`FUN_00006968`'s homing-timeout wait and into the main loop with a live
+`--watch-mem-write 0x20001b14:4` (the new watchpoint capability) active
+the whole time — catching the setter concretely regardless of which
+function it turns out to be, rather than continuing to guess candidates
+to decompile by hand. Once found, the chain in the table above closes
+completely — every other edge from `I<channel><mode>|` through to the
+now-known GPIO pin and back to the event-15 result is already confirmed.

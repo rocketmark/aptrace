@@ -74,12 +74,29 @@ exactly as the caller set them up. See
 for a real use (stubbing a radio poll and a SysTick-based delay to let a
 real byte-consumption loop run to completion).
 
+**`--watch-mem-write ADDR:LEN`** (repeatable): a *true* memory
+watchpoint — unlike `--watch` (which triggers on a **code** address),
+this fires on any **write** that lands in `[ADDR, ADDR+LEN)`, anywhere in
+the address space, regardless of which instruction or function performs
+it. Use it when a static xref/literal search finds no writer for a RAM
+address and the leading theory is a computed/indirect store (a pointer
+built from a *different* literal plus a runtime offset) that a
+literal-value search can't attribute to the target address — this is
+exactly the tool for confirming or ruling that out concretely, rather
+than reading more decompiles by hand. Added for
+[`docs/investigations/channel-busy-gate-search.md`](../investigations/channel-busy-gate-search.md),
+which used it to get a genuine negative result (no write observed) after
+static search had already checked every function referencing the address
+via a direct literal. Each hit records the instruction count, PC, LR,
+address, size, and value written. `--max-mem-write-log N` (default 2000)
+caps hits per range.
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
 register values, any requested memory dumps, a `watch_hits` list (each
 entry: hit index, instruction count, address, registers, watched memory),
-(with `--log-mmio`) an `mmio_log` list, and (with `--stub-call`) a
-`stub_hits` list. Written to `--out PATH` or
-stdout.
+(with `--log-mmio`) an `mmio_log` list, (with `--stub-call`) a
+`stub_hits` list, and (with `--watch-mem-write`) a `mem_write_hits` list.
+Written to `--out PATH` or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 

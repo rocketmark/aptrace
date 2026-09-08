@@ -119,6 +119,8 @@ def build_argparser():
     p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
     p.add_argument("--log-mmio", action="store_true", help="record every read/write into the MMIO window (address, size, direction, PC) in the snapshot -- observability only, does not change the zero-behavior MMIO model. Resolve addresses to peripheral/register names with tools/svd/resolve_mmio.py")
     p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
+    p.add_argument("--watch-mem-write", action="append", default=[], metavar="ADDR:LEN", help="true memory watchpoint (repeatable): record every WRITE that lands in [ADDR, ADDR+LEN), anywhere in the address space, with PC/instruction/old+new bytes -- unlike --watch (which triggers on a CODE address), this catches a store to a RAM range regardless of which instruction or function performs it, including a computed/indirect address a static xref search can't attribute to the range's own literal. Does not stop execution.")
+    p.add_argument("--max-mem-write-log", type=int, default=2000, help="cap on recorded hits per --watch-mem-write range (default 2000)")
     p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee (e.g. a hardware driver call) whose return value this scenario doesn't depend on -- the concrete-execution equivalent of the opaque function-call override already used on the Crucible side (see docs/project-status.md). Does not fabricate a return value; R0 is left exactly as the caller set it up.")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
@@ -180,7 +182,8 @@ def main(argv):
     watch_addrs = {parse_hex(a) & ~1 for a in args.watch}
     stub_addrs = {parse_hex(a) & ~1 for a in args.stub_call}
     watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
-    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": []}
+    mem_write_ranges = [parse_addr_len(spec) for spec in args.watch_mem_write]
+    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [], "mem_write_hits": []}
 
     def capture_registers():
         return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
@@ -237,11 +240,29 @@ def main(argv):
             "value": f"0x{value:x}" if access != UC_MEM_READ else None,
         })
 
+    def make_mem_write_hook(range_addr, range_len):
+        def hook_mem_write(uc_, access, address, size, value, _user_data):
+            if len(state["mem_write_hits"]) >= args.max_mem_write_log:
+                return
+            state["mem_write_hits"].append({
+                "range": f"0x{range_addr:08x}:{range_len}",
+                "instruction": state["instructions"],
+                "pc": f"0x{uc_.reg_read(UC_ARM_REG_PC):08x}",
+                "lr": f"0x{uc_.reg_read(UC_ARM_REG_LR):08x}",
+                "address": f"0x{address:08x}",
+                "size": size,
+                "value": f"0x{value:x}",
+            })
+        return hook_mem_write
+
     uc.hook_add(UC_HOOK_CODE, hook_code)
     uc.hook_add(UC_HOOK_MEM_UNMAPPED, hook_mem_unmapped)
     if args.log_mmio:
         uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_mmio,
                     begin=align_down(mmio_base), end=align_down(mmio_base) + align_up(mmio_size) - 1)
+    for addr, length in mem_write_ranges:
+        uc.hook_add(UC_HOOK_MEM_WRITE, make_mem_write_hook(addr, length),
+                    begin=addr, end=addr + length - 1)
 
     error = None
     try:
@@ -278,6 +299,7 @@ def main(argv):
         "watch_hits": state["watch_hits"],
         "mmio_log": state["mmio_log"],
         "stub_hits": state["stub_hits"],
+        "mem_write_hits": state["mem_write_hits"],
     }
 
     text = json.dumps(snapshot, indent=2)

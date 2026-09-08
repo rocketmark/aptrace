@@ -125,11 +125,13 @@ TC2->PB12, TC3->PA10 — a compile-time `.data`-segment fact, not
 application-written) — see
 [`docs/investigations/pin-index-provenance.md`](docs/investigations/pin-index-provenance.md).
 `I<channel><mode>|` is now traced into that chain, meet-in-the-middle:
-the command handler's own per-channel "busy" gate both conditionally
+the command handler's own per-channel rate-update gate both conditionally
 triggers a direct `step_delta` direction-sign write and independently
-gates whether the ramp logic ever reaches the real timer/GPIO chain —
-one edge (what sets that gate nonzero) remains open — see
+gates whether the ramp logic ever reaches the real timer/GPIO chain — see
 [`docs/investigations/i-command-motor-chain.md`](docs/investigations/i-command-motor-chain.md).
+What sets that gate nonzero was searched for exhaustively and not found
+by any static method — a genuine negative result, not abandoned — see
+[`docs/investigations/channel-busy-gate-search.md`](docs/investigations/channel-busy-gate-search.md).
 `!`/`I`'s own protocol transactions remain queued for whenever M4
 resumes. Full roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 

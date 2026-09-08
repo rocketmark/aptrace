@@ -166,14 +166,21 @@ closing recommendation.
     when that same gate is nonzero — both directions converge on the
     identical byte. Also corrected the record: the handler's `=5` write
     targets `0x20002524[channel]`, not `0x20001b14[channel]`. **One edge
-    still open**: what sets `0x20001b14[channel]` nonzero — exhaustively
-    searched (all 12 referencing functions), not found; same class of
-    gap `.data`-segment analysis resolved for the pin-index bytes. See
+    still open**: what sets `0x20001b14[channel]` nonzero. See
     [`docs/investigations/i-command-motor-chain.md`](../investigations/i-command-motor-chain.md).
-15. Find the `0x20001b14[channel]` setter — the one open edge from (14).
-    Leading candidates: `FUN_00006fd8` (commits a new move) or
-    `FUN_00008e18`'s phase-0/phase-1 dispatcher body, both one hop from
-    confirmed writes of the sibling flags `0x20002524[channel]` and
-    `0x2000310c[channel]` (phase). Once found, the full
+15. ~~Find the `0x20001b14[channel]` setter~~ — searched exhaustively,
+    **not found** (a genuine negative result, not abandoned): all 12
+    direct-reference functions, 7 one-hop candidates (including the two
+    originally suspected, `FUN_00006fd8` and `FUN_00008e18`), the
+    complete one-time-init boot chain, and a neighbor-offset sweep of
+    every global packed around the byte all checked. Confirmed `.bss`
+    (cold value `0`); confirmed standalone (not aliased with a
+    neighboring array). Added a genuine Unicorn memory watchpoint
+    (`--watch-mem-write`) and got a partial concrete confirmation. See
+    [`docs/investigations/channel-busy-gate-search.md`](../investigations/channel-busy-gate-search.md).
+    **Next**: resolve the `FUN_0000ccd0` tick-source tooling gap enough
+    to run a full boot past `FUN_00006968`'s homing timeout into the
+    main loop with the new watchpoint live — a concrete, not static,
+    continuation. Once found, the full
     `I<channel><mode>| -> ... -> now-known GPIO -> event-15 result`
-    chain closes completely. Not started.
+    chain closes completely.
