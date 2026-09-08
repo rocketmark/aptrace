@@ -205,11 +205,30 @@ closing recommendation.
     found. **Still no write to `0x20001b14`**: reaching a directly
     observable main-loop state (`FUN_00008960`) needs far more simulated
     tick-time than expected — a newly identified characterization gap
-    (not a hardware-modeling one). **Next**: enumerate the post-homing
-    delay/init call sites (`FUN_00007770`/`FUN_00005d44` are the known
-    starting points) to get a real tick-count estimate, rather than
-    guessing at a larger instruction budget; once past that, injecting a
-    real inbound "M"/"I" command through the now-functional receive path
-    is the natural follow-on (not attempted). Once the setter is found,
-    the full `I<channel><mode>| -> ... -> now-known GPIO -> event-15
-    result` chain closes completely.
+    (not a hardware-modeling one).
+18. ~~Enumerate the post-homing delay/init call sites~~ — done
+    ([`docs/investigations/post-homing-radio-probe.md`](../investigations/post-homing-radio-probe.md)):
+    not a timing gap. `FUN_00009464`'s real post-homing sequence reaches
+    `FUN_0000610c` *second* (before either of the named "likely
+    hotspots," `FUN_00007770`/`FUN_00005d44`, which turn out to be
+    unreached) — a real device bring-up that performs a real SPI
+    chip-ID read (register `0x42`, expects `0x12`, matching the
+    well-known SX127x LoRa `RegVersion` check) through the already-real
+    SERCOM/DMA driver, concretely confirmed (`--watch 0x9dd4`) to read
+    `0` with no chip attached. On failure the firmware takes its own
+    real, **infinite** retry loop (print + `delay(1000ms)`, forever) —
+    this, not a sum of finite delays, is what consumed the large tick
+    counts in (17). Correctly **not faked**: an external device's real
+    response is a different evidence class from the MCU-internal
+    completion bits modeled in (17), and this is likely the same
+    unmodeled transport-peripheral boundary already on record
+    (`docs/project-status.md`'s TX-path next step). **The main receive
+    path (`FUN_00008960`) is not reachable without resolving this real
+    hardware dependency** — not attempted this pass; a future slice
+    could try a single, clearly-disclosed `--seed-mem` on the SPI DATA
+    register returning `0x12` (a materially weaker evidence class than
+    (17)'s modeling, explicitly labeled as such) if seeing past this one
+    check is ever the actual goal. Once the setter is found (whenever
+    that path opens up, or via a separately-injected real "M"/"I"
+    command), the full `I<channel><mode>| -> ... -> now-known GPIO ->
+    event-15 result` chain closes completely.

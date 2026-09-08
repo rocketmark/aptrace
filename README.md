@@ -140,10 +140,16 @@ constructor, and real homing — see
 [`docs/investigations/systick-tick-injection.md`](docs/investigations/systick-tick-injection.md)
 and
 [`docs/investigations/reset-handler-clock-init.md`](docs/investigations/reset-handler-clock-init.md).
-Reaching a directly observable main-loop state past homing needs more
-simulated tick-time than expected, a newly identified characterization
-gap, not yet resolved. `!`/`I`'s own protocol transactions remain queued
-for whenever M4 resumes. Full roadmap:
+That "extra tick-time" past homing turned out not to be a timing gap at
+all: tracing the real post-homing call graph found a real SPI
+chip-ID probe (matching the well-known SX127x LoRa `RegVersion` check)
+that genuinely fails with no chip attached, sending the firmware into
+its own real, infinite retry loop — correctly identified and left
+unfaked, a real hardware boundary rather than something to model past.
+See
+[`docs/investigations/post-homing-radio-probe.md`](docs/investigations/post-homing-radio-probe.md).
+`!`/`I`'s own protocol transactions remain queued for whenever M4
+resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?

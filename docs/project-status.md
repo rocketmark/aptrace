@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (pin-index provenance).
+Last updated: 2026-09-08 (post-homing init: real LoRa-radio ID-probe dependency found).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -363,6 +363,29 @@ re-proving:
   simulated tick-time than expected, a new characterization gap (not a
   hardware-modeling one) named precisely rather than patched around. See
   [`docs/investigations/reset-handler-clock-init.md`](investigations/reset-handler-clock-init.md).
+- **The "excessive tick cost" explained: a real radio-chip-ID probe
+  fails, not a timing gap (roadmap M6)**: tracing `FUN_00009464`'s real
+  post-homing call graph (not assuming `FUN_00007770`/`FUN_00005d44`
+  were the whole story — they turn out to be unreached) found
+  `FUN_0000610c` runs *second*, right after homing: a real device
+  bring-up (`FUN_00009d88`) that resets a peripheral, performs a real
+  SPI transaction through the already-confirmed SERCOM/DMA driver, and
+  requires register `0x42` to read back `0x12` — concretely confirmed
+  (`--watch 0x9dd4`) to instead read `0` under this harness, since no
+  real chip answers. On failure the firmware takes its own real,
+  intentional **infinite** retry loop (print + `delay(1000ms)`,
+  forever) — fully explaining the large, ever-climbing tick counts
+  `reset-handler-clock-init.md` found, which are that same loop's
+  per-iteration countdown, not a stuck one-time boot delay. Register
+  `0x42`=`0x12` matches the well-known SX127x LoRa "RegVersion" check —
+  a strong pattern match, not independently verified against this
+  board's actual silicon — plausibly the same unmodeled transport
+  peripheral already on record in `samd51-peripheral-mapping.md`/
+  `virtual-rf-link.md`. Correctly **not faked**: a real external-device
+  response is a different evidence class from the MCU's own
+  self-completing status bits modeled in the prior slice. No new
+  tooling needed. See
+  [`docs/investigations/post-homing-radio-probe.md`](investigations/post-homing-radio-probe.md).
 
 ## Corrected assumptions
 
@@ -521,10 +544,19 @@ separately and immediately afterward, also on 2026-09-08.
    `--mmio-force-bits`/`--mmio-clear-bits` mechanism) and reran from the
    true `Reset_Handler` — clock init now completes, the driver object
    constructs without crashing, and real homing runs and exits, all
-   confirmed. Still no write to `0x20001b14` observed: reaching a
-   directly observable main-loop state past homing needs more simulated
-   tick-time than expected — a newly identified characterization gap
-   (not a hardware-modeling one), not yet resolved.
+   confirmed. A third follow-up
+   ([`docs/investigations/post-homing-radio-probe.md`](investigations/post-homing-radio-probe.md))
+   traced *why*: `FUN_0000610c`, reached second after homing (before
+   either `FUN_00007770` or `FUN_00005d44`), performs a real SPI
+   device-ID probe (register `0x42` expected `0x12`, matching the
+   well-known SX127x LoRa `RegVersion` check) through the already-real
+   SERCOM/DMA driver — concretely confirmed to read `0`, not `0x12`,
+   with no chip attached, so the firmware takes its own real,
+   **infinite** retry loop. Not a timing gap; not faked (a different,
+   external-device evidence class from the MCU-internal bits already
+   modeled) — correctly identified and left as an open, real hardware
+   boundary. Still no write to `0x20001b14` observed; the main-loop
+   receive path is not reachable without resolving this dependency.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and
@@ -538,7 +570,11 @@ separately and immediately afterward, also on 2026-09-08.
 5. Name the TX path's real transport peripheral by tracing what
    populates the driver-object pointer `0x8c10` dispatches through;
    install `GhidraSVD` only if the standalone resolver stops being
-   convenient enough for routine use.
+   convenient enough for routine use. **Possibly related**: the radio-ID
+   probe object `post-homing-radio-probe.md` found (`0x20004160`) is a
+   real, constructed SERCOM/DMA driver object of the same general shape
+   — worth checking whether it's the *same* object `0x8c10` dispatches
+   through, not assumed to be.
 
 The `0x827e` loop's own internal structure and its callees `0x5274`/`0x5448`
 ([`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md))
