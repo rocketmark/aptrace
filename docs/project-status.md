@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-07.
+Last updated: 2026-09-08.
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -26,32 +26,43 @@ wire command "&|"
     -> observed string == "V01R39"
 ```
 
-**Status: concretely demonstrated end to end (Unicorn); not yet
-solver-proven (Crucible)** — see "Current blocker" below. This is a real
-milestone-status upgrade as of 2026-09-07: entering at the real caller
-(`0x8a34`) with a real `&|` packet and letting the firmware establish its
-own state, `pending[5]` was concretely observed to become `1` in 46
-instructions. See
-[`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
+**Status: COMPLETE at the concrete (Unicorn) evidence tier, end to end.**
+As of 2026-09-07, every stage of the chain above has been independently,
+concretely demonstrated against real, unmodified firmware, entering at
+real call sites with the firmware establishing its own state (not
+hand-picked to make the answer come out right):
+
+1. `&|` → `pending[5]=1`: entering at the real caller (`0x8a34`) with a
+   real `&|` packet, `pending[5]` becomes `1` in 46 instructions. See
+   [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
+2. `pending[5]=1` → TX hook → `"V01R39"`: the real, unmodified outbound
+   dispatcher (`0x9268`) consumes event 5 and calls the real TX hook
+   (`0x8c10`) with a pointer to a buffer holding exactly `"V01R39\0"` —
+   independently confirmed to be what a real, unconditional startup
+   routine (`FUN_00004328`) writes there before the main loop ever runs.
+   See [`docs/investigations/tx-hook-verification.md`](investigations/tx-hook-verification.md).
+
 Per [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s
-evidence levels, this is level 2 (concretely executed, one input) — the
-milestone still wants level 3 (solver-confirmed, Crucible/What4/Z3) for the
-full transaction, which is what's blocked (see "Current blocker"). The TX
-hook (`0x8c10`/`0x7f84` -> `"V01R39"`) has not yet been tested at either
-level.
+evidence levels, this is **level 2** (concretely executed) across the
+whole chain. A **level 3** (solver-confirmed, Crucible/What4/Z3) proof of
+the *whole* chain in one run remains blocked by a known, deliberately
+unfixed tooling gap — see "Tooling gaps," not a firmware blocker. Individual
+pieces of the chain (e.g. the `&` character check itself) already have
+independent level-3 confirmation.
 
 **Note on the command itself**: `&|` is the wire-level frame the Remote
 transmits (`|` is the frame terminator). The dispatcher's first-byte check
 requires exactly `0x26` ('&') at flash `0x888c` — solver-confirmed
-(level 3) — and the full `&|` frame reaching that check has now also been
-demonstrated concretely (level 2, above).
+(level 3) — and the full `&|` frame reaching that check, and the full
+onward path to `"V01R39"`, has now also been demonstrated concretely
+(level 2, above).
 
-**Remote (`mando`) firmware**: substantial *static* research already exists
-for it (`research/autopilot_static_inventory/`, `docs/protocol/`), covering
-both sides of the protocol. What hasn't happened is any APTrace
-execution/harness work — Ghidra, Macaw, Unicorn, or Crucible have not been
-pointed at `firmware_mando868.bin`/`firmware_mando915.bin` yet, and
-**must not be** until the AutoPilot-only milestone above is complete.
+**Remote (`mando`) firmware**: now unblocked. Substantial *static*
+research already exists (`research/autopilot_static_inventory/`,
+`docs/protocol/`), covering both sides of the protocol. No APTrace
+execution/harness work has touched `firmware_mando868.bin`/
+`firmware_mando915.bin` yet — that's the natural next phase (see "Next
+steps"), not started in this pass.
 
 ## Proven capabilities & findings
 
@@ -59,10 +70,13 @@ Demonstrated on real, unmodified firmware; safe to build on without
 re-proving:
 
 - **Target/platform**: Performing Rigs AutoPilot/Remote firmware on
-  Microchip/Atmel **ATSAMD51 (Cortex-M4F)**, Arduino/Adafruit SAMD lineage,
-  app image loaded at flash `0x4000`. Hashes:
-  [`docs/firmware/firmware-inventory.md`](firmware/firmware-inventory.md).
+  Microchip/Atmel **ATSAMD51J19A** (Cortex-M4F, 512KB flash, 192KB SRAM —
+  exact part confirmed by physical board inspection, not inferred),
+  Arduino/Adafruit SAMD lineage, app image loaded at flash `0x4000`.
+  Hashes: [`docs/firmware/firmware-inventory.md`](firmware/firmware-inventory.md).
   Layout/vector table: [`docs/firmware/firmware-layout.md`](firmware/firmware-layout.md).
+  Hardware/board-level research:
+  [`docs/hardware/autopilot-research-handoff.md`](hardware/autopilot-research-handoff.md).
 - **Macaw pipeline**: raw `.bin` loading (no ELF), vector-table parsing,
   Thumb-2 lifting (zero decode failures across ~1500 real instructions),
   and CFG discovery from arbitrary seeded entry points — used to seed the
@@ -71,8 +85,10 @@ re-proving:
   single-block (`APTrace.SymbolicRunner.checkBranchModel`) and
   whole-function (`APTrace.ProtocolHarness.runPacketTransaction`) — i.e.
   the lift-to-Crucible-to-What4/Z3 machinery runs correctly in general.
-  **This is distinct from the AutoPilot dispatcher replay specifically
-  completing, which it does not yet — see "Current blocker."**
+  **A whole-function solver-confirmed replay of the full `&`-command
+  dispatcher specifically is still blocked by a known, documented, and
+  deliberately unfixed tooling gap — see "Tooling gaps," not a claim
+  about the firmware.**
 - **Solver-confirmed single-block protocol checks** (not hand-derived): a
   register holding the packet's first byte, checked against each command's
   real comparison instruction, reaches the correct handler exactly at that
@@ -123,8 +139,31 @@ re-proving:
   a reusable, fine-grained (every-step, not sampled) execution trace for a
   bounded address range within a whole-function run, using the existing
   `Data.Macaw.Symbolic.Regs.simStateRegs` API to recover live register
-  state. What found the root cause below. See
-  [`docs/investigations/whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md).
+  state. What found the readonly-flash root cause — see "Tooling gaps."
+  See [`docs/investigations/whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md).
+- **The real `pending[5]=1` -> TX hook -> `"V01R39"` transaction, concretely
+  demonstrated**: the real, unmodified outbound dispatcher (`0x9268`)
+  consumes event 5 (`pending[5]` observed going `1` -> `0`) and calls the
+  real TX hook (`0x8c10`) with a pointer to a buffer independently
+  confirmed to hold exactly `"V01R39\0"` — written there unconditionally
+  by a real startup routine (`FUN_00004328`), not seeded to force the
+  answer. Combined with the `&|` -> `pending[5]=1` result above, this
+  closes the full AutoPilot milestone at the concrete evidence tier. See
+  [`docs/investigations/tx-hook-verification.md`](investigations/tx-hook-verification.md).
+- **Real ATSAMD51J19A peripheral/register naming for raw MMIO addresses**:
+  [`tools/svd/resolve_mmio.py`](../tools/svd/resolve_mmio.py), backed by
+  the real vendor SVD file, plus `run_concrete.py --log-mmio` to capture
+  what a concrete run actually touches. Used to confirm the full
+  `Reset_Handler` startup peripheral-init chain (clock tree, analog block,
+  WDT, PORT, TC0-TC3, TCC1, USB), and one fully-resolved pin-level fact:
+  **PB22 is toggled from a real timer interrupt handler (IRQ93/TCC1)** —
+  a named GPIO tied to already-understood firmware behavior, matching the
+  hardware doc's "4 motor-output channels." Also produced an honest
+  negative result: the outbound TX path (`0x9268`→`0x8c10`) touches no
+  MMIO directly — its real transport peripheral is gated behind a runtime
+  driver-object pointer, not a literal address, and naming it is the next
+  slice, not done here. See
+  [`docs/investigations/samd51-peripheral-mapping.md`](investigations/samd51-peripheral-mapping.md).
 
 ## Corrected assumptions
 
@@ -162,97 +201,73 @@ re-proving:
   [`docs/investigations/trigger-input.md`](investigations/trigger-input.md),
   and [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
 
-## Current blocker
+## Tooling gaps
 
-**Reframed (2026-09-07).** The blocker is *not* the `0x827e` loop, and not
-a memory-side-effect or register-seeding gap — those hypotheses are
-superseded (see "Corrected assumptions"). Concretely executing the real
-call path (`0x8a34 -> 0x8259`) with the *exact same nominal inputs*
-`app/Main.hs`'s existing whole-function Crucible test already uses (`R0=0`,
-packet buffer `= [0x26, 0x01, 0x00, 0x00]`) takes 46 instructions, never
-enters the loop, and reaches `pending[5]=1` cleanly.
+**Not a firmware blocker — a known, documented, and deliberately unfixed
+harness limitation.** A whole-function Crucible replay of the `&`-command
+dispatcher gets stuck in the `0x827e` loop, taking the wrong branch at
+`0x8266` despite `buffer[0]` being concretely `0x26`. This was fully
+investigated and explained (not left as an open mystery):
 
-**The current blocker is that Crucible's whole-function replay of the
-identical scenario does not do this** — it was observed getting stuck in
-the `0x827e` loop with `R6` growing unboundedly
-([`docs/harness/protocol-harness-results.md`](harness/protocol-harness-results.md)).
+- The `0x8266` branch itself, Macaw's lift of it, and `mkFunCFG`'s entry/
+  branch-CFG wiring are all confirmed correct — isolating the exact block
+  in Crucible (existing single-block machinery, extended with a small
+  `bqMemoryBytes` addition to seed the buffer content) reproduces the
+  correct, deterministic result for both `buffer[0]=0x26` and the `0xF0`
+  control case. See
+  [`docs/investigations/gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md).
+- **Root cause**: the dispatcher's buffer pointer is loaded from a literal
+  pool in flash, and flash is `readonly` — `populateSegmentChunk` always
+  populates readonly memory via solver assumptions, never as folded array
+  literals, regardless of `ConcreteMutable`/`SymbolicMutable`. That's fine
+  for a solver query, but plain Crucible execution has no solver in the
+  loop for an ordinary `Br`, so the branch condition never folds to a
+  concrete `Pred` and Crucible picks the wrong side. See
+  [`docs/investigations/whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md)
+  and [`docs/tooling/tool-selection.md`](tooling/tool-selection.md#known-limitation-readonly-flash-and-plain-crucible-execution).
 
-**Narrowed further (2026-09-07): the `0x8266` branch itself is exonerated.**
-Isolating exactly this block in Crucible (existing single-block machinery,
-extended with a small `bqMemoryBytes` addition to seed the buffer content —
-see [`docs/investigations/gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md))
-and seeding the identical concrete inputs reproduces the correct,
-deterministic result: `buffer[0]=0x26` reaches `0x82c6` (skip-the-loop) and
-cannot reach `0x8268`; `buffer[0]=0xF0` cannot reach `0x82c6`. Macaw's
-lift of the `CMP`/conditional-branch pair is correct; Crucible's
-single-block branch semantics are correct. Reading `mkFunCFG`'s source
-also confirms its entry mechanically jumps to `discoveredFunAddr fn`
-(address-matched, concretely: `0x8259`), and its generic `ParsedBranch`-to-
-`Br` translation is unremarkable.
-
-**Root cause found (2026-09-07).** Fine-grained tracing of the actual
-whole-function run (a new reusable `RichTraceConfig`/
-`runPacketTransactionTraced`, firing on every step in a bounded range —
-see [`docs/investigations/whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md))
-confirmed the discrepancy still reproduces under current code (not fixed
-by prior harness work), and pinpointed it precisely: **the dispatcher's
-buffer pointer is loaded from a literal pool in flash
-(`LDR R4, [0x8528]`), and flash is `readonly` — `populateSegmentChunk`
-always populates readonly memory via solver assumptions, never as folded
-array literals, regardless of `ConcreteMutable`/`SymbolicMutable`.** This
-is fine for a solver query (which sees the assumptions), but plain
-Crucible execution has no solver in the loop for an ordinary `Br` — with
-`R4` (and everything computed from it, including `R3`/`buffer[0]` and the
-`0x8266` branch condition) never folding to a concrete literal, Crucible
-picks the wrong successor (`0x8268`, the loop) for this input and gets
-stuck exactly as originally observed (`R6` climbing linearly, confirmed
-still happening). **Macaw's decoding, `mkFunCFG`'s wiring, and this
-branch's own logic remain fully exonerated** — the gap is specifically in
-how the harness's memory model interacts with plain (non-solver-mediated)
-execution of literal-pool-derived branches.
+**Deliberately not fixed in this pass, and not planned unless needed**: no
+general fix (baking all of flash into literals, redesigning
+`populateSegmentChunk`) — that's a real execution-model change with no
+current symbolic use case requiring it, now that the milestone below is
+closed at the concrete evidence tier. Revisit only if a future
+Crucible/What4/Z3 use case genuinely needs a whole-function proof through
+a literal-pool-derived branch; the narrow fix (baking the *specific*
+literal-pool words that target reads, the same store pattern already
+proven for the packet buffer) would be the smallest starting point.
 
 ## Next steps
 
-1. ~~**Investigate why Crucible's whole-function CFG doesn't resolve the
-   `0x8266` branch the way concrete execution does**~~ — root cause found:
-   literal-pool (readonly-flash) reads are populated via solver
-   assumptions, not folded literals, so the branch condition never
-   becomes concrete during plain execution. See
-   [`gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md)
-   and [`whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md).
-   **Next**: fix this — smallest option is baking the specific
-   literal-pool words this dispatcher reads (starting with `0x8528`) as
-   direct concrete values via the same store pattern already used for the
-   packet buffer; the more general option (change how readonly memory is
-   populated so it folds to literals for plain execution) is a real
-   execution-model change and should only be attempted after the targeted
-   fix is tried. **This next step does change the execution model** —
-   the investigation phase (find the cause without changing the model) is
-   done; implementing the fix is the natural following action, not
-   deferred further.
-2. Once (1)'s fix is in and verified: re-run the whole-function `&` test
-   and confirm `pending[5]` becomes 1 **via Crucible/What4/Z3** (level 3
-   evidence) — the concrete (level 2) result already exists, see "Proven
-   capabilities & findings."
-3. Hook `0x8c10`/`0x7f84` and verify the emitted bytes equal `V01R39` —
-   this could reasonably be done concretely via Unicorn *first* (continuing
-   past `0x83ec`), independently of (1)-(2), since it doesn't depend on the
-   loop/CFG question at all. Closes the AutoPilot milestone once done at
-   both evidence levels.
-4. Independently verify `G`/`!`/`S`'s handlers perform their claimed
+1. **Begin Remote (`mando`) harness work**, per
+   [`docs/harness/roadmap.md`](harness/roadmap.md) — now unblocked, since
+   the AutoPilot-only milestone above is closed at the concrete evidence
+   tier. Build on the existing static research
+   (`research/autopilot_static_inventory/`, `docs/protocol/`) rather than
+   starting from nothing; the natural first step is the virtual RF link
+   (an in-memory queue connecting the Remote's TX to the AutoPilot's RX
+   and vice versa, per the roadmap) so both firmwares can be exercised
+   against each other.
+2. Independently verify `G`/`!`/`S`'s handlers perform their claimed
    event-scheduling writes (currently only entry *reachability* is
-   solver-verified for these three).
-5. **Only after (1)-(3)**: begin Remote (`mando`) harness work per
-   [`docs/harness/roadmap.md`](harness/roadmap.md), building on the
-   existing static research rather than starting from nothing.
+   solver-verified for these three) — a smaller, parallel task, not a
+   prerequisite for (1).
+3. If a real symbolic use case for the readonly-flash gap above ever
+   arises, apply the narrow fix described in "Tooling gaps" — not before.
+4. **Hardware grounding, smaller follow-ups** (from
+   [`docs/investigations/samd51-peripheral-mapping.md`](investigations/samd51-peripheral-mapping.md),
+   not prerequisites for (1)): find the other three motor channels'
+   ISR/pin pairs the same way PB22/TCC1 was found; name the TX path's real
+   transport peripheral by tracing what populates the driver-object
+   pointer `0x8c10` dispatches through; install `GhidraSVD` only if the
+   standalone resolver stops being convenient enough for routine use.
 
 The `0x827e` loop's own internal structure and its callees `0x5274`/`0x5448`
 ([`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md))
 remain correctly documented and are relevant to future `0xF0`/`0xE0`
-binary-frame work — just not to steps (1)-(3) above. Fuller backlogs
-(protocol open questions, tooling gaps like SVD/MMIO labeling) are tracked
-in [`docs/protocol/open-questions.md`](protocol/open-questions.md) and
-[`docs/tooling/tool-selection.md`](tooling/tool-selection.md), not
+binary-frame work. Fuller backlogs (protocol open questions, remaining
+tooling gaps like the still-not-installed `GhidraSVD` extension) are
+tracked in [`docs/protocol/open-questions.md`](protocol/open-questions.md)
+and [`docs/tooling/tool-selection.md`](tooling/tool-selection.md), not
 duplicated here.
 
 ## Tool architecture

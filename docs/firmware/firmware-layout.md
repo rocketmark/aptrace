@@ -50,10 +50,19 @@ This directly names the MCU and toolchain:
   with the `--offset=0x4000` flashing command.
 
 Initial stack pointer in every image is `0x20030000` = `0x20000000 + 0x30000` (192 KB from
-RAM base). ATSAMD51 parts with 192 KB SRAM are the x19/x20 die variants (512 KB / 1 MB
-flash respectively) — used on boards like Adafruit Feather M4 Express, ItsyBitsy M4, Grand
-Central M4. Exact flash size is not yet pinned down (138 KB max firmware size observed is
-consistent with either 512 KB or 1 MB flash); not needed for the feasibility spike.
+RAM base), consistent with the x19 die variants (512 KB flash / 192 KB SRAM).
+
+**Exact part number confirmed** (2026-09-08, from physical board inspection —
+not derived from the firmware): **ATSAMD51J19A-AU** on the AutoPilot,
+**ATSAMD51J19A-AF** on the Remote (same silicon; the suffix is
+package/temperature grade, not a different die) — TQFP-64, Cortex-M4F,
+512 KB flash, 192 KB SRAM. See
+[`docs/hardware/autopilot-research-handoff.md`](../hardware/autopilot-research-handoff.md).
+This is now used directly for SVD-based MMIO/peripheral naming — see
+[`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md),
+which also confirms the Reset_Handler/startup peripheral-init chain below
+and adds new circumstantial-but-multi-signal evidence for the
+Adafruit/BOSSA hypothesis from the application's own startup code.
 
 **Working assumptions for APTrace:**
 - Flash base (absolute): `0x00000000` (standard Cortex-M internal flash mapping; ATSAMD51 flash starts at 0x0)
@@ -121,12 +130,18 @@ python3 tools/vector_scan.py research/firmware/originals/firmware_autopilot868.b
 
 ## Open questions / next steps
 
+- ~~Identify MMIO ranges actually touched~~ — done, using the real
+  ATSAMD51J19A SVD rather than hardcoding a memory map by hand: see
+  [`tools/svd/resolve_mmio.py`](../../tools/svd/resolve_mmio.py) and
+  [`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)
+  (startup peripheral survey, a confirmed PB22 GPIO-toggle finding, and an
+  honest negative result for the outbound TX path's peripheral identity).
 - Cross-check discovered handler addresses against Adafruit SAMD51 CMSIS startup file
   (`startup_samd51.c` in the Adafruit board package) to confirm IRQ numbering matches
-  standard ATSAMD51 NVIC layout (SERCOM0-7, TC0-5, TCC0-4, EIC, ADC0/1, DAC, etc.).
-- Identify MMIO ranges actually touched once we have basic block recovery (Step 5/6) —
-  ATSAMD51 peripheral base addresses are well documented in the datasheet and are a fixed,
-  known memory map we can hardcode into APTrace's `CortexMAddressSpace`.
+  standard ATSAMD51 NVIC layout (SERCOM0-7, TC0-5, TCC0-4, EIC, ADC0/1, DAC, etc.) — not
+  done; `samd51-peripheral-mapping.md`'s findings were derived from the firmware itself
+  (literal-pool constants, decompiled register offsets), not from cross-checking against
+  Adafruit's own startup source, so this remains a useful independent check.
 - PDF manual (`PerformingRigs_UserManual_AutoPilot.pdf`) yielded no extractable MCU-level
   text (likely image-based/compressed streams) — not useful for firmware analysis, only
   possibly for end-user/operational context.

@@ -16,6 +16,35 @@ version of the same rules; this is the reasoning behind them.
 | **Crucible + What4 + Z3** | Targeted symbolic reachability and input solving | `APTrace.SymbolicRunner`, `APTrace.ProtocolHarness` |
 | **APTrace** | Orchestration: evidence model, scenarios, traces, snapshots, (eventually) UI | this repo |
 
+## The execution order
+
+For any firmware-analysis question, work through these in order — don't
+skip ahead to a heavier tool because it feels more thorough:
+
+```
+Ghidra (static understanding)
+    -> Unicorn (concrete observation)
+        -> Crucible/What4/Z3 (symbolic proof)
+```
+
+1. **Ghidra first**: read the code, find the structure, name the
+   addresses/constants involved. Cheap, and every later step depends on
+   knowing *what* to point the next tool at.
+2. **Unicorn second**: once you know the region and a concrete
+   input/state, actually run it. This is where "what does this code do"
+   gets answered for real, and it's the tier that catches harness-vs-
+   firmware confusion (see "Harness rules" in `CLAUDE.md`) — if Crucible
+   says one thing and Unicorn says another, Unicorn is presumed right
+   until proven otherwise.
+3. **Crucible/What4/Z3 last**: only once the question is genuinely "what
+   input satisfies this," not "what does this input do" (already answered
+   by step 2) or "what is this code" (already answered by step 1).
+
+Macaw sits underneath all three, not as a fourth step: it's what lifts the
+binary into the IR Crucible executes, and its own CFG/discovery output is
+itself something to sanity-check with Ghidra (see "When Macaw is
+authoritative vs. a cross-check" below), not to trust blindly at any tier.
+
 ## Decision guidance
 
 Ask what kind of question you actually have, in this order:
@@ -43,6 +72,20 @@ Ask what kind of question you actually have, in this order:
    actually executes), but it is not infallible — see "Tool disagreements"
    below for a concrete case where it produced an architecturally
    impossible result.
+
+   **When Macaw is authoritative vs. when it's only a cross-check**: Macaw
+   is the right, load-bearing tool for *lifting* (turning Thumb-2 bytes
+   into Crucible-executable IR) and for *this project's own CFG*, since
+   that's literally what gets executed downstream — there's no
+   alternative for that job. It is **not** authoritative for claims about
+   the binary's structure independent of that role: what counts as "one
+   function," where a block boundary falls, and how regions merge are
+   products of Macaw's own discovery heuristics (see "Treat discovered
+   function/CFG boundaries as heuristic, not ground truth" in
+   `CLAUDE.md`), and its ARM/Thumb decode itself has a known limitation
+   (the `0x801c` A32 case below). Use Ghidra to cross-check any of those
+   *structural* claims before relying on them; use Macaw's own output
+   directly only for what Crucible will actually execute.
 
 4. **"What input reaches this address / makes this condition true?"** →
    **Crucible + What4 + Z3**, and only once you already know *which* code
@@ -130,6 +173,39 @@ Ghidra's Cortex-M language, being Thumb-only by construction, is the
 standard cross-check; a second opinion from an independent decoder is the
 whole reason to keep more than one tool in the workbench.
 
+## Known limitation: readonly flash and plain Crucible execution
+
+**Solver assumptions are not the same as concrete runtime literals** (see
+`CLAUDE.md`'s "Harness rules"). A value read from **readonly flash**
+(e.g. a literal-pool pointer load) is populated into Crucible's memory
+model via *solver assumptions*, not folded array literals —
+`Data.Macaw.Symbolic.Memory.populateSegmentChunk` does this for every
+readonly segment regardless of `ConcreteMutable`/`SymbolicMutable`, a
+deliberate tradeoff (baking large concrete regions directly into the
+array has crashed solvers in the past).
+
+That's sound for a **solver query** — `checkBranchModel` and a
+whole-function run's final reachability check both incorporate the
+assumption set correctly. It is **not** sound for **plain Crucible
+execution stepping through an ordinary branch** — there is no solver in
+the loop to resolve an assumption-backed value into a concrete `Pred`, so
+Crucible falls back to picking a side, which is not necessarily the one
+the real concrete value implies. Confirmed concretely in this project: a
+branch on a literal-pool-derived byte took the wrong successor during
+whole-function execution despite the underlying byte being genuinely
+concrete — see
+[`docs/investigations/whole-function-trace-divergence.md`](../investigations/whole-function-trace-divergence.md)
+for the full trace.
+
+**Practical implication**: any whole-function Crucible target whose
+control flow depends on a value read from flash (not just RAM) should be
+expected to hit this until it's specifically fixed. It is a documented
+gap, not a silent one — do not attempt a general fix (baking all flash
+into literals, or redesigning `populateSegmentChunk`) without a real
+symbolic use case that needs it; the narrow fix (baking the *specific*
+literal-pool words a given target actually reads) is cheaper and
+sufficient for now.
+
 ## Anti-patterns
 
 - **Using Crucible for concrete replay.** If nothing in the query is
@@ -152,39 +228,46 @@ whole reason to keep more than one tool in the workbench.
   even if you don't have time to fully resolve it — see "Tool
   disagreements" above.
 
-## SVD / MMIO labeling: mechanism identified, not yet wired up
+## SVD / MMIO labeling: standalone resolver wired up; GhidraSVD still not installed
 
 **Goal**: label MMIO registers by real peripheral/field name (instead of
-raw addresses like `0x40002000`) in both Ghidra and any future
-Unicorn/Crucible MMIO modeling.
+raw addresses like `0x40002000`) in Ghidra output, Unicorn traces, and any
+future Crucible MMIO modeling.
 
-**A maintained mechanism exists and was confirmed reachable in this pass**:
+**The part number is now confirmed**: `docs/hardware/autopilot-research-handoff.md`
+identifies the AutoPilot's MCU directly (physical board inspection) as
+**ATSAMD51J19A-AU** (Remote: -AF — same silicon, different
+package/temperature grade). This confirmation did *not* come from the RAM-
+size inference this section previously suggested ("`0x30000` = 192KB
+matches the N19A/N20A/P19A/P20A variants... not the smaller G/J variants")
+— that inference was wrong on its own terms: the confirmed J19A part does
+have 192KB SRAM. Corrected here rather than left standing now that the
+real part is known and this is directly load-bearing.
 
-- [`cmsis-svd/cmsis-svd-data`](https://github.com/cmsis-svd/cmsis-svd-data)
-  (the community-maintained successor to `posborne/cmsis-svd-data`) ships
-  real SVD files for the exact ATSAMD51 family under `data/Atmel/`:
-  `ATSAMD51{G18A,G19A,J18A,J19A,J20A,N19A,N20A,P19A,P20A}.svd`.
-- [`antoniovazquezblanco/GhidraSVD`](https://github.com/antoniovazquezblanco/GhidraSVD)
-  is an actively maintained (releases as recent as 2026-08) Ghidra
-  extension that loads an SVD file and labels/types the corresponding
-  peripheral registers directly in a Ghidra program.
+**Wired up in this pass**: the real SVD file
+([`cmsis-svd/cmsis-svd-data`](https://github.com/cmsis-svd/cmsis-svd-data)'s
+`data/Atmel/ATSAMD51J19A.svd`) is vendored at
+[`tools/svd/ATSAMD51J19A.svd`](../../tools/svd/ATSAMD51J19A.svd), with a
+small standalone resolver,
+[`tools/svd/resolve_mmio.py`](../../tools/svd/resolve_mmio.py), that
+parses it (stdlib XML, not a hand-rolled SVD format) and maps a raw
+address to `PERIPHERAL.REGISTER` (handling repeated/union structures like
+`PORT.GROUP0/1` and `TC.COUNT8/16/32`). `tools/unicorn/run_concrete.py
+--log-mmio` records every MMIO access from a concrete run so it can be fed
+through the same resolver. See
+[`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)
+for a real worked example (startup peripheral survey, a first concretely-
+named pin-mux fact, and an honest negative result for the outbound TX
+path).
 
-**Why this isn't wired up yet**: applying a specific SVD file requires
-knowing the *exact* ATSAMD51 part number on the real board (G18A vs. J19A
-vs. N20A, etc. — they differ in RAM/flash size and peripheral instance
-counts). `docs/project-status.md` and `docs/firmware/firmware-layout.md`
-currently confirm the family (ATSAMD51, Cortex-M4F) but not the exact part
-number. Guessing wrong would silently mislabel MMIO registers, which is
-worse than leaving them unlabeled — that's a real risk with SVD-based
-labeling in general, not specific to this tool.
-
-**Concrete next step** (not done in this pass): confirm the exact part
-number (likely derivable from the Adafruit/Arduino board package identified
-in `docs/firmware/firmware-layout.md`, or from RAM size — `0x30000` = 192KB
-matches the *N19A/N20A/P19A/P20A* variants' 192KB SKUs, not the smaller
-G/J variants — this is a real lead, just not chased down yet), install
-GhidraSVD, and re-run `tools/ghidra/analyze_firmware.sh` with the matching
-SVD applied.
+**Not done in this pass, and not required for anything above**: installing
+[`antoniovazquezblanco/GhidraSVD`](https://github.com/antoniovazquezblanco/GhidraSVD)
+so peripheral names appear directly inside Ghidra's own
+listing/decompiler, rather than needing a separate resolver lookup. This
+remains a reasonable future upgrade if the standalone resolver stops being
+convenient enough (e.g. once heavy manual Ghidra browsing of
+peripheral-heavy functions becomes routine) — not chased down here per
+this project's "smallest useful slice" discipline.
 
 ## Reproducing the environment
 

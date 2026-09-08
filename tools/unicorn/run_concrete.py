@@ -26,9 +26,10 @@ docs/project-status.md's "Tooling gaps"):
     peripheral behavior (reads return whatever was last written, not a
     real register's semantics). Fine for control-flow/logic questions that
     don't depend on real peripheral state; not fine for anything that does.
-  - No ATSAMD51 SVD-based register naming is applied here (see
-    docs/tooling/tool-selection.md's "SVD / MMIO labeling" section for why
-    that's currently a documented gap, not a silent one).
+  - No ATSAMD51 SVD-based register naming is applied automatically here.
+    Use --log-mmio to record every access into the MMIO window, then resolve
+    the addresses with tools/svd/resolve_mmio.py (see
+    docs/tooling/tool-selection.md's "SVD / MMIO labeling" section).
   - This is a single-shot script (one process per run), not a persistent
     session -- fine for scenario-style concrete replay, not for interactive
     step debugging.
@@ -44,6 +45,9 @@ from unicorn import (
     UC_MODE_MCLASS,
     UC_HOOK_CODE,
     UC_HOOK_MEM_UNMAPPED,
+    UC_HOOK_MEM_READ,
+    UC_HOOK_MEM_WRITE,
+    UC_MEM_READ,
     UcError,
 )
 from unicorn.arm_const import (
@@ -113,6 +117,8 @@ def build_argparser():
     p.add_argument("--watch", action="append", default=[], metavar="HEXADDR", help="record full register state (+ --watch-mem ranges) every time this address is hit, without stopping (repeatable) -- for per-iteration traces of a loop, unlike --stop-at which halts")
     p.add_argument("--watch-mem", action="append", default=[], metavar="ADDR:LEN", help="memory range to capture at every --watch hit, in addition to registers (repeatable)")
     p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
+    p.add_argument("--log-mmio", action="store_true", help="record every read/write into the MMIO window (address, size, direction, PC) in the snapshot -- observability only, does not change the zero-behavior MMIO model. Resolve addresses to peripheral/register names with tools/svd/resolve_mmio.py")
+    p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
 
@@ -162,7 +168,7 @@ def main(argv):
     stop_addrs = {parse_hex(a) & ~1 for a in args.stop_at}
     watch_addrs = {parse_hex(a) & ~1 for a in args.watch}
     watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
-    state = {"instructions": 0, "stop_reason": None, "watch_hits": []}
+    state = {"instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": []}
 
     def capture_registers():
         return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
@@ -200,8 +206,23 @@ def main(argv):
         state["stop_reason"] = f"unmapped memory access (type={access}) at 0x{address:08x} size={size}"
         return False  # let Unicorn raise UcError, caught below
 
+    def hook_mmio(uc_, access, address, size, value, _user_data):
+        if len(state["mmio_log"]) >= args.max_mmio_log:
+            return
+        state["mmio_log"].append({
+            "instruction": state["instructions"],
+            "pc": f"0x{uc_.reg_read(UC_ARM_REG_PC):08x}",
+            "address": f"0x{address:08x}",
+            "size": size,
+            "direction": "read" if access == UC_MEM_READ else "write",
+            "value": f"0x{value:x}" if access != UC_MEM_READ else None,
+        })
+
     uc.hook_add(UC_HOOK_CODE, hook_code)
     uc.hook_add(UC_HOOK_MEM_UNMAPPED, hook_mem_unmapped)
+    if args.log_mmio:
+        uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_mmio,
+                    begin=align_down(mmio_base), end=align_down(mmio_base) + align_up(mmio_size) - 1)
 
     error = None
     try:
@@ -236,6 +257,7 @@ def main(argv):
         "registers": registers_hex,
         "memory": memory,
         "watch_hits": state["watch_hits"],
+        "mmio_log": state["mmio_log"],
     }
 
     text = json.dumps(snapshot, indent=2)

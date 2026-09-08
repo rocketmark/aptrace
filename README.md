@@ -43,10 +43,15 @@ for the exact files and hashes.
 
 ## What MCU/platform is confirmed?
 
-**ATSAMD51 / Cortex-M4F** (Microchip), Arduino + Adafruit SAMD bootloader
-lineage. The application image is flashed behind a 16KB bootloader and
-loaded starting at flash offset **`0x4000`**. Details, vector table, and
-memory map: [`docs/firmware/firmware-layout.md`](docs/firmware/firmware-layout.md).
+**ATSAMD51J19A / Cortex-M4F** (Microchip; exact part confirmed by physical
+board inspection — see [`docs/hardware/`](docs/hardware/)), Arduino +
+Adafruit SAMD bootloader lineage. The application image is flashed behind
+a 16KB bootloader and loaded starting at flash offset **`0x4000`**.
+Details, vector table, and memory map:
+[`docs/firmware/firmware-layout.md`](docs/firmware/firmware-layout.md).
+Real peripheral/register naming for raw MMIO addresses (via the
+ATSAMD51J19A SVD) and a first hardware-grounded peripheral survey:
+[`docs/investigations/samd51-peripheral-mapping.md`](docs/investigations/samd51-peripheral-mapping.md).
 
 ## What tools are currently in use?
 
@@ -112,13 +117,17 @@ Remote firmware before this works.** Full roadmap:
    workbench direction.
 4. [`docs/toolchain.md`](docs/toolchain.md) — build and run it.
 5. [`docs/firmware/`](docs/firmware/) — the target firmware itself.
-6. [`docs/protocol/`](docs/protocol/) — the protocol being reverse-engineered.
-7. [`docs/harness/`](docs/harness/) — how the symbolic-execution harness
+6. [`docs/hardware/`](docs/hardware/) — the physical boards/MCUs the
+   firmware runs on (board photos, part numbers, pinout/wiring notes from
+   the user manual) — external, hardware-side research, not derived from
+   the firmware binaries themselves.
+7. [`docs/protocol/`](docs/protocol/) — the protocol being reverse-engineered.
+8. [`docs/harness/`](docs/harness/) — how the symbolic-execution harness
    works and what it's found.
-8. [`docs/investigations/`](docs/investigations/) — deep dives on specific
+9. [`docs/investigations/`](docs/investigations/) — deep dives on specific
    open questions.
-9. [`docs/history/`](docs/history/) — superseded material, kept for
-   provenance only.
+10. [`docs/history/`](docs/history/) — superseded material, kept for
+    provenance only.
 
 ## Repository layout
 
@@ -128,6 +137,7 @@ aptrace/
   CLAUDE.md                  -- mandatory operating rules for Claude Code sessions
   docs/                      -- current, authoritative documentation (see above)
     tooling/                 -- tool-selection.md and per-backend usage docs
+    hardware/                -- physical board/MCU research (photos, manual, pinouts)
   aptrace.cabal              -- the APTrace library + CLI, as a local cabal package
   src/APTrace/
     VectorTable.hs           -- ARMv7-M vector table parser
@@ -140,6 +150,7 @@ aptrace/
     doctor.sh                -- verifies Ghidra/Unicorn/Macaw-Crucible-What4-Z3 are usable
     ghidra/                  -- headless Ghidra integration
     unicorn/                 -- concrete-execution backend (pinned venv)
+    svd/                     -- ATSAMD51J19A SVD file + MMIO address resolver
   external/macaw/            -- GaloisInc/macaw, with crucible/what4/semmc/dismantle/
                                  asl-translator/arm-asl-parser as git submodules
   research/

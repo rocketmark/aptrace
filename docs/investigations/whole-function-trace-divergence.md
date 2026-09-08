@@ -166,28 +166,28 @@ literals, because it lives in a `readonly` memory segment — a property of
 loop for ordinary branch resolution) cannot resolve such a condition
 deterministically and takes the wrong side for this input.
 
-## Smallest next fix/experiment (not implemented — execution model unchanged)
+## Status: root cause documented, fix deliberately deferred
 
-Two candidate directions, in order of how targeted/small they are:
+This is a **resolved investigation** — the divergence is fully explained
+(above), not an open mystery. What remains is a decision already made
+explicitly, not a TODO: **do not implement a general fix for the
+readonly-flash/plain-Crucible gap** (no baking all of flash into
+literals, no redesign of `populateSegmentChunk`). The AutoPilot milestone
+this investigation was blocking has since been closed at the concrete
+(Unicorn) evidence tier without needing this fixed — see
+[`docs/investigations/tx-hook-verification.md`](tx-hook-verification.md)
+and [`docs/project-status.md`](../project-status.md). Revisit this gap
+only if a future symbolic (Crucible/What4/Z3) use case actually requires
+a whole-function proof through a literal-pool-derived branch; at that
+point, the narrowest fix is baking the *specific* literal-pool words that
+target reads as direct concrete values (the same `CLM.doStore`/
+`writeConcreteByte` pattern already used for the packet buffer and
+already proven to fold cleanly) — not the general redesign.
 
-1. **Bake the specific literal-pool words this dispatcher actually reads
-   as direct concrete values** (the same `CLM.doStore`/`writeConcreteByte`
-   pattern already used for the packet buffer and already proven to fold
-   cleanly), rather than relying on the generic readonly-segment
-   population path — e.g. `0x8528` (buffer pointer), and whichever other
-   literal-pool words feed this branch's inputs. Small, surgical, and
-   directly informed by this trace; would need to be identified per
-   dispatcher region rather than fixed once for all flash content.
-2. **A more general fix**: change how readonly/flash content is
-   populated so it folds to concrete literals for plain execution while
-   still being available to solver queries — a real memory-model change,
-   bigger, and exactly what "do not change the execution model yet" is
-   guarding against attempting without this evidence in hand (now it is).
-
-Either way, the fix belongs in `APTrace.ProtocolHarness`'s memory setup
-(or in how `MSM.newGlobalMemory`/`populateSegmentChunk` is invoked), not
-in Macaw's decoding or `mkFunCFG`'s CFG construction — both remain
-exonerated.
+Either way, the fix (if and when needed) belongs in
+`APTrace.ProtocolHarness`'s memory setup (or in how
+`MSM.newGlobalMemory`/`populateSegmentChunk` is invoked), not in Macaw's
+decoding or `mkFunCFG`'s CFG construction — both remain exonerated.
 
 ## Completing the pending `0xF0` control query
 

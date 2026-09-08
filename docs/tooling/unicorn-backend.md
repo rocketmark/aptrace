@@ -44,10 +44,26 @@ only ever gives you the *first* hit); see
 for a real trace built this way. `--max-watch-hits N` (default 2000) caps
 total recorded hits as a safety net against a genuinely unbounded loop.
 
+**`--log-mmio`**: records every read/write into the MMIO window (address,
+size, direction, value, PC) as a `mmio_log` list in the snapshot —
+observability only, it does not change the zero-behavior MMIO model
+(reads still return whatever was last written, with no real peripheral
+side effects). Resolve the logged addresses to real ATSAMD51J19A
+peripheral/register names with
+[`tools/svd/resolve_mmio.py`](../../tools/svd/resolve_mmio.py) — see
+[`tool-selection.md`](tool-selection.md)'s "SVD / MMIO labeling" section
+and
+[`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)
+for a real use of this (and for what happened when the outbound TX path
+was probed this way: zero MMIO accesses on the path up to the TX hook
+itself — a genuine, informative negative result, not a tool failure).
+`--max-mmio-log N` (default 5000) caps how many accesses are recorded.
+
 Output is a JSON snapshot: instruction count, why execution stopped, final
-register values, any requested memory dumps, and a `watch_hits` list (each
-entry: hit index, instruction count, address, registers, watched memory).
-Written to `--out PATH` or stdout.
+register values, any requested memory dumps, a `watch_hits` list (each
+entry: hit index, instruction count, address, registers, watched memory),
+and (with `--log-mmio`) an `mmio_log` list. Written to `--out PATH` or
+stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 
@@ -94,10 +110,14 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   plain zero-initialized RAM — reads return whatever was last written, with
   no real peripheral behavior (no side effects, no status-register
   semantics). Fine for control-flow questions that don't depend on real
-  peripheral state; not fine for anything that does. This is the same gap
-  SVD-based labeling (see `tool-selection.md`) would help name but not by
-  itself fix — actual peripheral *behavior* modeling is a separate, larger
-  problem not addressed by this pass.
+  peripheral state; not fine for anything that does — e.g. a status-bit
+  polling loop against a real peripheral will spin forever here, since the
+  bit never goes high. `--log-mmio` (see above) plus
+  `tools/svd/resolve_mmio.py` names *which* addresses are touched; neither
+  adds real peripheral *behavior*, which remains a separate, larger problem
+  not addressed by this pass (see `docs/project-status.md`'s "Tooling
+  gaps" — do not build a general peripheral emulator unless a real use case
+  needs it).
 - Single-shot process per run, not a persistent/interactive session — fine
   for scenario-style concrete replay (load, seed, run, snapshot), not for
   step-through debugging.

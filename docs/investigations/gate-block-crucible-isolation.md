@@ -1,7 +1,7 @@
 # Investigation: Isolating the `0x8258`-`0x8266` Gate Branch in Crucible
 
-> **Update (2026-09-07)**: the "smallest next experiment" below (fine-
-> grained whole-function tracing) was run and found the actual root
+> **Update (2026-09-07)**: the follow-up fine-grained whole-function
+> tracing this document called for was run and found the actual root
 > cause — see
 > [`docs/investigations/whole-function-trace-divergence.md`](whole-function-trace-divergence.md).
 > Short version: it's not Macaw, `mkFunCFG`, or this branch's own logic
@@ -161,8 +161,7 @@ project-specific code with an obvious defect. Given the isolated test
 proves the underlying `ParsedBranch` (`cond`/`trueAddr`/`falseAddr`) is
 itself correct, and this translation of it into a Crucible `Br` is
 textbook, **this specific mechanism is not a plausible location for the
-bug either** (though it was read, not independently tested in isolation —
-see "Open follow-up" below).
+bug either** (though it was read, not independently tested in isolation).
 
 Finally, checked whether `APTrace.ProtocolHarness.runPacketTransaction`
 (the whole-function harness) has the *same* symbolic-SP hazard this
@@ -172,47 +171,31 @@ already allocates a real stack and sets `SP` concretely
 building the initial register struct. **This specific hazard is already
 absent in the whole-function harness.**
 
-## Where the fault is: before or after `mkFunCFG`?
+## Conclusion
 
-**Neither of the two "before mkFunCFG" candidates (bad discovery/decode,
-bad `ParsedBranch` extraction) nor the obvious "after mkFunCFG" candidate
-(bad entry-block wiring) checked out.** The isolated block's own semantics
-are proven correct, `mkFunCFG`'s entry jump is proven correct by
-construction and confirmed address-matched, and the generic
-`ParsedBranch`-to-`Br` translation is unremarkable, well-tested library
-code. The whole-function harness's own stack setup is also fine.
+This investigation's job was to determine whether the gate branch's
+non-termination in the whole-function replay traced back to Macaw's
+decode/lift of `0x8258`-`0x8266`, or to Crucible's handling of it — and it
+did: **both are correct.** The isolated block, given the identical
+concrete inputs, deterministically reproduces the real branch outcome
+(table above); `mkFunCFG`'s entry jump lands on the right physical address
+(address-matched, not just read); and the generic `ParsedBranch`-to-`Br`
+translation it uses is unremarkable library code with no project-specific
+defect.
 
-**This means the fault, if it is a fault in APTrace's code or a Macaw/
-Crucible library defect rather than a mis-run test, is specific to
-something about the whole-function *execution* that this pass's static
-reading and isolated-block test can't see** — most plausibly something
-analogous to the aliasing hazard found and fixed here, but located
-somewhere else in the ~339-block whole-function graph (a different
-symbolic pointer this investigation didn't seed, in a *different* block
-along the real path, not the gate block itself).
-
-## Smallest next experiment (not run in this pass)
-
-Re-run the actual whole-function test (`app/Main.hs`'s "Test 0" /
-`PH.runPacketTransaction`) with **much finer-grained tracing** than
-`debugFeature`'s current default (every 2000 steps — far too coarse to see
-where within the first few blocks execution actually diverges). Print
-every step for at least the first ~2000-5000 steps, or add a one-off
-`--verbose-until N` style cap, and directly observe whether execution ever
-visits `0x8266`/`0x82c6` before ending up in the loop, or whether it
-diverges even earlier. This is the concrete follow-up the source-code
-reading above couldn't substitute for — everything in this pass narrowed
-*where to look* (an aliasing-style hazard elsewhere in the whole-function
-graph, not the gate block's own logic or the generic CFG-construction
-machinery) without pinpointing the exact block. Do not modify the Crucible
-model itself until this trace is in hand.
-
-## Open follow-up
-
-- `CR.Br`'s Crucible-level execution (as opposed to `ParsedBranch`'s
-  Macaw-level correctness, verified here) was read, not independently
-  tested — a `mkBlocksCFG`/multi-block isolated test of just `{gate block,
-  0x82c6 block}` (two real blocks wired together, bypassing the other 337)
-  would test this specific translation path empirically rather than by
-  code reading, if the finer-grained whole-function trace above doesn't
-  find the answer directly.
+That left the actual whole-function discrepancy unexplained by anything
+this document could test — single-block isolation and source reading rule
+out *what* the bug isn't, but can't see into the live whole-function
+execution to find what it *is*. The follow-up investigation,
+[`whole-function-trace-divergence.md`](whole-function-trace-divergence.md),
+did that: fine-grained tracing of the actual whole-function run found that
+`buffer[0]` (loaded through a literal pool in **readonly flash**) never
+folds to a concrete value during plain Crucible execution — flash content
+is populated via solver assumptions, not array literals, which a solver
+query (like this document's isolated tests) sees correctly but plain
+statement-by-statement execution of an ordinary `Br` cannot. Crucible
+picks the wrong successor as a result. **Confirms, precisely, what this
+document narrowed the search to: not Macaw's decode, not `mkFunCFG`'s
+entry wiring, and not this branch's own semantics — a gap specific to how
+literal-pool-derived values behave under plain (non-solver-mediated)
+whole-function execution.**

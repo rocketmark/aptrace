@@ -15,8 +15,14 @@ summary.
 
 **Execution-confirmed**: writing `1` to `pending[5]` (event 5, the
 firmware-version response) via the real `&` character check in the real
-compiled dispatcher. Nothing about `0x9268` itself, or any other event's
-producer, has been checked by execution yet.
+compiled dispatcher, **and** the full consumption side — `0x9268` (the
+outbound dispatcher itself) concretely confirmed to consume `pending[5]`
+(observed going `1` -> `0`) and hand the real TX hook (`0x8c10`) a pointer
+to exactly `"V01R39\0"`, closing the whole AutoPilot milestone at the
+concrete evidence tier. See
+[`docs/investigations/tx-hook-verification.md`](../investigations/tx-hook-verification.md)
+and [`docs/project-status.md`](../project-status.md). No other event's
+producer has been checked by execution yet.
 
 ## Event table (18 slots, 0-17)
 
