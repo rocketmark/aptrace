@@ -1,4 +1,17 @@
-# Protocol Harness Roadmap — connecting the RF protocol inventory to APTrace
+> **Superseded by later analysis on 2026-09-07.** This roadmap (M1-M6) was
+> written before running any actual symbolic execution against the
+> dispatcher, on the assumption that `research/autopilot_static_inventory/
+> parser-dispatch.md`'s flat if/else-if character-chain model was accurate.
+> Milestones M1-M3 were subsequently attempted; the attempt revealed that
+> model is incomplete (a real indexed-lookup loop precedes the character
+> chain — see `docs/investigations/parser-dispatch.md`) and surfaced a real
+> calling-convention bug in the harness itself (see
+> `docs/harness/protocol-harness-results.md`, "Follow-up session"). The
+> **current** roadmap, reflecting those corrections and the broader
+> multi-tool workbench direction, is `docs/harness/roadmap.md`. This
+> document is kept for provenance only.
+
+# Protocol Harness Roadmap — connecting the RF protocol inventory to APTrace (v1, historical)
 
 `research/autopilot_static_inventory/` (v0.3, produced by a separate concurrent
 research pass, not by the Macaw/Crucible spike documented elsewhere in

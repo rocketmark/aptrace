@@ -1,4 +1,16 @@
-# APTrace Progress Log
+> **Historical document.** This is the original chronological session log,
+> kept for provenance and forensic detail (exact commands, intermediate
+> failures, reasoning-in-the-moment). As of 2026-09-07 it is **no longer the
+> source of truth for current project state** — that's
+> [`docs/project-status.md`](../project-status.md). Several interpretations
+> recorded here in earlier entries (notably around the AutoPilot parser
+> dispatch region near flash `0x8258`) were later corrected; see
+> `docs/harness/protocol-harness-results.md` and
+> `docs/investigations/parser-dispatch.md` for the corrected understanding.
+> Do not treat statements below as current without cross-checking
+> `project-status.md`.
+
+# APTrace Progress Log (historical, chronological)
 
 ## 2026-09-07
 

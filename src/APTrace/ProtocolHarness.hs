@@ -12,20 +12,10 @@
 -- bytes (to reproduce a known transaction) or fresh symbolic bytes (to ask
 -- What4/Z3 what byte pattern reaches a given outcome).
 --
--- STATUS: this does NOT currently work for the AutoPilot inbound-packet
--- dispatcher (flash 0x8258) it was written for. Seeding it at its real entry
--- and running the whole ~340-block merged function hangs -- real execution
--- goes through what looks like a hash-table/lookup-table probe (reading
--- registers R4-R7, whose correct initial values we haven't traced yet)
--- before reaching the character-dispatch logic, not a simple loop-free
--- if/else-if chain as originally assumed. See
--- research/notes/protocol-harness-results.md for the full diagnosis
--- (including the step-tracing 'ExecutionFeature' technique used to find
--- this) and for the workaround actually used instead (targeting individual
--- known blocks directly via 'APTrace.SymbolicRunner.checkBranchModel').
--- This module is kept because the technique is sound and reusable in
--- general (and its debug-tracing helper is useful for diagnosing *why* a
--- whole-function run hangs) -- just not yet successfully applied here.
+-- Current status, blockers, and the diagnostic technique ('debugFeature')
+-- are documented in docs/harness/execution-model.md and
+-- docs/harness/protocol-harness-results.md -- see those before changing
+-- this module's call-handling or memory-model behavior.
 --
 -- Memory model: the base memory uses @ConcreteMutable@ content (all RAM,
 -- including the pending-event array, starts at a known concrete value --
@@ -161,7 +151,7 @@ runPacketTransaction mem fn bufAddr bufBytes observeAddr targetValue
             -- this clobbered *every* register, including whatever loop
             -- counter or table pointer the caller was using in R4-R11 --
             -- which corrupted ordinary bounded loops into apparently-infinite
-            -- ones (see research/notes/protocol-harness-results.md). Only
+            -- ones (see docs/harness/protocol-harness-results.md). Only
             -- clobber the registers a real call is actually allowed to.
             let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
             callCounter <- newIORef (0 :: Int)

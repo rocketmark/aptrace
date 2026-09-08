@@ -1,4 +1,11 @@
-# Functions of interest — v0.2
+> **Superseded by v0.3.** This is an earlier pass of the same document;
+> `research/autopilot_static_inventory/functions-of-interest.md` (v0.3) is
+> the current version — it revises and extends this one (e.g. the AutoPilot
+> function table gained many more entries and confidence annotations, and
+> the event-8 "firmware version" hypothesis was downgraded once `&| ->
+> V01R39` was proven). Kept here only for diff/provenance purposes.
+
+# Functions of interest — v0.2 (historical, superseded by v0.3)
 
 ## Remote firmware
 

@@ -1,131 +1,133 @@
 # APTrace
 
-APTrace is a bare-metal Cortex-M firmware analysis and symbolic execution tool
-built around [Macaw](https://github.com/GaloisInc/macaw),
-[Crucible](https://github.com/GaloisInc/crucible), and
-[What4](https://github.com/GaloisInc/what4). Its initial target is firmware for
-the AutoPilot motion-control system (Microchip ATSAMD51, Cortex-M4F), but the
-architecture is meant to stay general enough for other Cortex-M firmware.
+## What is APTrace?
 
-This is a feasibility spike, not a product: the goal is to reuse as much of the
-Galois Macaw/Crucible/What4 stack as possible rather than writing a new symbolic
-execution engine. See `research/notes/macaw-cortexm-assessment.md` for the
-detailed assessment and `research/notes/symbolic-execution-results.md` for the
-key end-to-end demonstration.
+A bare-metal Cortex-M firmware analysis tool built around the GaloisInc
+[Macaw](https://github.com/GaloisInc/macaw) /
+[Crucible](https://github.com/GaloisInc/crucible) /
+[What4](https://github.com/GaloisInc/what4) stack: raw firmware in, a
+Macaw-recovered control-flow graph, and targeted symbolic-execution queries
+("what input reaches this address / sets this memory location?") answered
+by Z3. It reuses that existing open-source RE/symbolic-execution stack
+rather than writing a new one.
 
-## Status
+The project is moving toward being a **workbench** — orchestrating several
+purpose-built tools rather than reimplementing what they already do well:
 
-All nine "primary goal" milestones (raw firmware loading through a
-solver-produced path model on a real memory-mapped peripheral) are demonstrated
-on real, unmodified AutoPilot firmware. See `research/notes/progress.md` for the
-full log.
+| Tool | Role |
+|---|---|
+| Ghidra | Static RE: decompiler, cross-references, structure/table recovery, MMIO naming |
+| Macaw | Independent control-flow recovery and Thumb-2 lifting |
+| Unicorn | Cheap concrete execution and memory-state snapshotting |
+| Crucible + What4 + Z3 | Targeted symbolic reachability and input-solving |
+| APTrace | Orchestration, evidence model, scenarios, traces, UI |
 
-A separate research track, `research/autopilot_static_inventory/`, has statically
-mapped the bidirectional RF command protocol between the AutoPilot and Remote
-firmware (parser dispatch, event system, several proven request/response
-transactions). `research/notes/protocol-harness-roadmap.md` maps that inventory's
-open questions onto APTrace's discovery/symbolic-execution capabilities as the
-next phase of work — several of them (dormant pending events, unexplained
-Remote-transmitted commands) are reachability questions APTrace can answer
-directly rather than by further manual tracing.
+See [`docs/architecture.md`](docs/architecture.md) for the full picture and
+[`docs/project-status.md`](docs/project-status.md)'s "explicit
+do-not-start-yet items" for why Ghidra/Unicorn integration hasn't started
+yet.
+
+## What problem is it solving?
+
+Reverse-engineering the bidirectional RF command protocol between a
+Performing Rigs **AutoPilot** motion-control unit and its **Remote**
+control, from firmware images alone — with claims backed by solver
+evidence ("this exact byte value is required to reach this code") rather
+than only by reading disassembly and reasoning by inspection.
+
+## What firmware are we analyzing?
+
+Performing Rigs **AutoPilot** and **Remote** firmware images. See
+[`docs/firmware/firmware-inventory.md`](docs/firmware/firmware-inventory.md)
+for the exact files and hashes.
+
+## What MCU/platform is confirmed?
+
+**ATSAMD51 / Cortex-M4F** (Microchip), Arduino + Adafruit SAMD bootloader
+lineage. The application image is flashed behind a 16KB bootloader and
+loaded starting at flash offset **`0x4000`**. Details, vector table, and
+memory map: [`docs/firmware/firmware-layout.md`](docs/firmware/firmware-layout.md).
+
+## What tools are currently in use?
+
+Macaw (discovery/lifting), Crucible (symbolic execution), What4/Z3
+(solving) — all via git submodules pinned to known-good versions, built
+with GHC 9.6.7. Full build/usage instructions:
+[`docs/toolchain.md`](docs/toolchain.md).
+
+## What has been proven so far?
+
+- Raw firmware loading, vector-table parsing, Thumb-2 lifting, Macaw CFG
+  recovery, Crucible execution, and What4/Z3 solving against a real
+  memory-mapped peripheral — all demonstrated on real, unmodified AutoPilot
+  firmware ([`docs/harness/symbolic-execution-results.md`](docs/harness/symbolic-execution-results.md)).
+- Four single-character protocol commands solver-confirmed against the real
+  compiled dispatcher: `&` → `0x26`, `G` → `0x47`, `!` → `0x21`, `S` →
+  `0x53`, each required to reach its real handler block
+  ([`docs/harness/protocol-harness-results.md`](docs/harness/protocol-harness-results.md)).
+- `&` additionally confirmed (by inspection of the reached handler) to write
+  `pending[5]=1`, which is the AutoPilot's firmware-version-response event.
+
+Full current-state detail: [`docs/project-status.md`](docs/project-status.md).
+
+## What is the current blocker?
+
+Replaying the **whole** dispatcher function (not just one isolated block)
+against a real in-memory `&` packet does not terminate. The cause has been
+narrowed to a memory-side-effect modeling gap: two called functions
+(`0x5274`/`0x5448`) are currently stubbed with no memory writes, and the
+loop they're called from likely depends on a write one of them makes to
+know when to stop. Full diagnosis:
+[`docs/harness/protocol-harness-results.md`](docs/harness/protocol-harness-results.md);
+the fix under consideration: [`docs/harness/execution-model.md`](docs/harness/execution-model.md).
+
+## What is the next milestone?
+
+**M1**: complete the AutoPilot-only transaction end to end — a real `&`
+packet, run through the unmodified dispatcher, sets `pending[5]`, and the
+outbound hook at `0x8c10`/`0x7f84` emits `V01R39`. **Do not move to the
+Remote firmware before this works.** Full roadmap:
+[`docs/harness/roadmap.md`](docs/harness/roadmap.md).
+
+## Where should a new developer read next?
+
+1. [`docs/project-status.md`](docs/project-status.md) — current state,
+   blockers, next steps. Start here.
+2. [`docs/architecture.md`](docs/architecture.md) — what APTrace is and the
+   workbench direction.
+3. [`docs/toolchain.md`](docs/toolchain.md) — build and run it.
+4. [`docs/firmware/`](docs/firmware/) — the target firmware itself.
+5. [`docs/protocol/`](docs/protocol/) — the protocol being reverse-engineered.
+6. [`docs/harness/`](docs/harness/) — how the symbolic-execution harness
+   works and what it's found.
+7. [`docs/investigations/`](docs/investigations/) — deep dives on specific
+   open questions.
+8. [`docs/history/`](docs/history/) — superseded material, kept for
+   provenance only.
 
 ## Repository layout
 
 ```
 aptrace/
-  README.md
+  README.md                 -- this file
+  docs/                      -- current, authoritative documentation (see above)
   aptrace.cabal              -- the APTrace library + CLI, as a local cabal package
   src/APTrace/
     VectorTable.hs           -- ARMv7-M vector table parser
     FirmwareLoader.hs        -- raw firmware -> Macaw Memory (no ELF)
-    SymbolicRunner.hs        -- one Macaw block -> Crucible -> What4/Z3
-  app/Main.hs                -- CLI: `aptrace` (discover) and `aptrace solve` (symbolic demo)
+    SymbolicRunner.hs        -- single-block Macaw -> Crucible -> What4/Z3
+    ProtocolHarness.hs       -- whole-function execution against the protocol dispatcher
+  app/Main.hs                -- CLI entry point
   tools/vector_scan.py       -- standalone Python vector-table scanner/validator
   external/macaw/            -- GaloisInc/macaw, with crucible/what4/semmc/dismantle/
-                                 asl-translator/arm-asl-parser as git submodules;
-                                 see external/macaw/cabal.project (local, not upstream)
+                                 asl-translator/arm-asl-parser as git submodules
   research/
-    firmware/originals/      -- copies of the AutoPilot/Mando firmware images + SHA256SUMS.txt
-    autopilot_static_inventory/  -- separate research track: static RF protocol reverse-engineering
-    notes/
-      progress.md                        -- chronological log: commands, findings, decisions
-      firmware-layout.md                 -- MCU ID, vector table, memory map
-      macaw-cortexm-assessment.md        -- can Macaw's AArch32 backend handle Cortex-M?
-      symbolic-execution-results.md      -- the Steps 7-9 demonstration, in detail
-      protocol-harness-roadmap.md        -- next phase: apply APTrace to the protocol inventory
-      runs/                              -- saved tool output from real runs
+    firmware/originals/           -- copies of the AutoPilot/Remote firmware images + SHA256SUMS.txt
+    autopilot_static_inventory/   -- raw/derived static RE artifacts (see docs/protocol/ for curated view)
+    runs/                          -- saved tool output from real runs
 ```
 
-Original firmware images live untouched in `Autopilot_firm/` at the repo root
-(not under `research/`); `research/firmware/originals/` holds working copies plus
-recorded hashes. Proprietary firmware binaries are not intended to be published
-outside this local checkout.
-
-## Environment setup
-
-No Haskell toolchain is required to be pre-installed; here's exactly what this
-project was built and run with (macOS, Apple Silicon):
-
-```sh
-# 1. GHC + cabal via GHCup
-export BOOTSTRAP_HASKELL_NONINTERACTIVE=1
-export BOOTSTRAP_HASKELL_INSTALL_NO_STACK=1
-export BOOTSTRAP_HASKELL_GHC_VERSION=9.6.7
-export BOOTSTRAP_HASKELL_ADJUST_BASHRC=P
-sh <(curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org)
-source ~/.ghcup/env
-
-# 2. Z3 (the SMT solver used by the `solve` subcommand)
-brew install z3      # or any package manager; just needs to be on PATH
-
-# 3. Macaw + its submodules (crucible, what4, semmc, dismantle, asl-translator, arm-asl-parser)
-cd external/macaw
-git submodule update --init
-ln -sf cabal.project.freeze.ghc-9.6.7 cabal.project.freeze   # pin known-good dependency versions
-# cabal.project here is NOT the upstream symlink -- it's a small local file:
-#   import: cabal.project.dist
-#   packages: ../../.
-# which adds this repo's `aptrace` package to macaw's own package set, so the
-# build reuses macaw's already-resolved/cached dependency tree.
-
-# 4. Build (targeted -- this skips x86/PPC/RISC-V, which aptrace doesn't need)
-cabal build aptrace
-```
-
-The build takes roughly 15-20 minutes on a modern machine the first time (most of
-it is `macaw-aarch32` and its ASL-derived semantics packages); subsequent builds
-are incremental.
-
-## Usage
-
-```sh
-EXE=external/macaw/dist-newstyle/build/*/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace
-
-# Parse the vector table and run Macaw code discovery from every handler:
-$EXE research/firmware/originals/firmware_autopilot868.bin 0x4000
-
-# Run the Steps 7-9 symbolic-execution demonstration (hardcoded to IRQ10_Handler
-# in the AutoPilot firmware family -- see research/notes/symbolic-execution-results.md):
-$EXE solve research/firmware/originals/firmware_autopilot868.bin
-```
-
-The `0x4000` argument is the flash address that firmware byte 0 corresponds to
-(the AutoPilot images are application-only dumps, flashed behind a 16KB
-bootloader at that offset — see `research/notes/firmware-layout.md`). It defaults
-to `0x4000` if omitted.
-
-A future CLI may grow into something like `aptrace scan` / `aptrace vectors` /
-`aptrace map` / `aptrace lift` / `aptrace solve` as separate, more general
-subcommands; today's `aptrace [solve] FIRMWARE.bin [FLASH_BASE]` is deliberately
-minimal, matching the project's "don't over-design the CLI yet" guidance for this
-phase.
-
-## Standalone vector-table scanner
-
-`tools/vector_scan.py` is a dependency-free Python prototype that scores
-candidate vector-table offsets in a raw firmware image (used to validate the
-firmware layout before any Haskell code was written):
-
-```sh
-python3 tools/vector_scan.py FIRMWARE.bin --flash-base 0x4000 --ram-size 0x30000
-```
+Original firmware images live untouched in `Autopilot_firm/` at the repo
+root (not under `research/`); `research/firmware/originals/` holds working
+copies plus recorded hashes. Proprietary firmware binaries are not intended
+to be published outside this local checkout.

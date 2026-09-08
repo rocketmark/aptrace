@@ -1,10 +1,10 @@
 # Protocol Harness Results — `aptrace protocol` (roadmap M2/M3)
 
-Follow-up to [protocol-harness-roadmap.md](protocol-harness-roadmap.md). This is the
+Follow-up to the original roadmap (now [docs/history/protocol-harness-roadmap-v1.md](../history/protocol-harness-roadmap-v1.md); current roadmap is [roadmap.md](roadmap.md)). This is the
 first concrete execution of that roadmap: seed the AutoPilot inbound packet dispatcher
 directly, model its input as controlled/symbolic, and ask What4/Z3 for the byte values
 that reach specific command-scheduling code -- cross-checked against
-`research/autopilot_static_inventory/`'s independently-derived command table.
+`../../research/autopilot_static_inventory/`'s independently-derived command table.
 
 ## Setup
 
@@ -18,7 +18,7 @@ that reach specific command-scheduling code -- cross-checked against
 
 ## Important correction to the static inventory's model
 
-`research/autopilot_static_inventory/parser-dispatch.md` models the dispatcher as a
+`../../research/autopilot_static_inventory/parser-dispatch.md` models the dispatcher as a
 flat if/else-if chain on the packet's leading byte(s). **That is not what the compiled
 entry sequence actually does.** Seeding discovery at `0x8259` and running the *whole*
 merged function via `Data.Macaw.Symbolic.mkFunCFG` (with a from-scratch memory/register
@@ -86,7 +86,7 @@ buffer as memory and letting the real entry code populate R3, closing the gap.
 
 Every value was **derived by the solver**, not hand-fed -- `checkBranchModel` only knows
 "is address X reachable," and asks Z3 to produce a witness. All four match the ASCII
-values `research/autopilot_static_inventory/commands.md` independently assigned to these
+values `../../research/autopilot_static_inventory/commands.md` independently assigned to these
 commands from separate static reading, which is a strong cross-validation of that
 inventory's command-letter claims (though not yet of what each handler actually *does*,
 beyond `&`, which was independently confirmed to write `pending[5]=1`).
@@ -162,7 +162,7 @@ reflecting the whole-function dependency).
 
 **Current leading hypothesis**: the loop's real per-iteration state includes
 memory, not just registers -- specifically, `0x5274`/`0x5448` (per-channel
-"motor state" functions per `research/autopilot_static_inventory/
+"motor state" functions per `../../research/autopilot_static_inventory/
 functions-of-interest.md`) are called once per iteration and very plausibly
 *write* to the per-channel table this loop scans (e.g. marking a channel
 processed). Our opaque-call override has *zero* memory side effects, so if
@@ -193,18 +193,12 @@ faithful "real packet bytes in memory, run the unmodified whole function,
 observe `pending[5]`" version -- that is blocked on the memory-side-effect
 modeling gap above.
 
-## Next steps (per protocol-harness-roadmap.md)
+## Next steps
 
-1. Resolve the `R4`-`R7` hash-lookup setup so the *whole* dispatcher (or at least the
-   full character-dispatch mechanism) can be run end-to-end, closing the "however it got
-   there" gap above -- would also let us model the packet as real memory again.
-2. Verify `G`/`!`/`S`'s handler blocks actually perform their claimed event-scheduling
-   writes the same way `&`/`0x8890` was confirmed (currently only reachability of the
-   handler *entry* is solver-verified for these three; the write itself was read
-   statically from `research/autopilot_static_inventory/pending-writes.csv`, not
-   independently confirmed via this harness yet).
-3. Hook outbound transmission at `0x8c10`/`0x7f84` (per the user's instruction) rather
-   than modeling LoRa/SPI -- not yet attempted.
-4. Add the Remote (mando) firmware and connect the two TX/RX boundaries with an
-   in-memory virtual RF queue -- not yet attempted; blocked on (1)-(3) first per the
-   roadmap's suggested order.
+Superseded by the consolidated current roadmap: see
+[docs/harness/roadmap.md](roadmap.md). (Briefly, as of this document: resolve
+the R4-R7 lookup setup or switch to lazy real-CFG execution for callees;
+verify G/!/S's handlers perform their claimed writes, not just reach their
+entry block; hook `0x8c10`/`0x7f84`; do not start on the Remote/mando
+firmware until the AutoPilot-only `&` -> event 5 -> `V01R39` transaction
+works end to end.)

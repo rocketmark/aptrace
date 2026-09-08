@@ -100,7 +100,7 @@ resolveEntries mem entries =
 -- the AutoPilot firmware family, @IRQ10_Handler@: it clears a bit in an MMIO
 -- register at 0x40002000, then polls a status word at 0x40002008 in a loop
 -- (@while (status == 0) {}@-shaped), branching to 0x953c once the status
--- becomes non-zero. See research/notes/symbolic-execution-results.md for how
+-- becomes non-zero. See docs/harness/symbolic-execution-results.md for how
 -- these addresses were found (a real firmware literal-pool load, confirmed
 -- by hand-decoding the firmware bytes).
 --
@@ -172,36 +172,16 @@ runExplore path flashBase entryRaw = do
                 ++ showHex entryRaw "" ++ ":\n")
       mapM_ (\(Some info) -> print (PP.pretty info)) (Map.elems funs)
 
--- | @aptrace protocol FIRMWARE.bin@ -- protocol-harness-roadmap M2/M3 demo.
+-- | @aptrace protocol FIRMWARE.bin@ -- targets the AutoPilot inbound packet
+-- dispatcher directly at Thumb entry 0x8259 (flash 0x8258), modeling the RX
+-- packet buffer at RAM 0x2000232a.
 --
--- Seeds the AutoPilot inbound packet dispatcher directly at Thumb entry
--- 0x8259 (flash 0x8258 -- the main parser named throughout
--- research/autopilot_static_inventory), models the RX packet buffer at RAM
--- 0x2000232a (found by reading the literal-pool pointer the dispatcher's
--- entry block loads).
---
--- IMPORTANT CORRECTION vs. the first version of this command: seeding
--- discovery at the dispatcher's true entry (0x8259) and running the whole
--- ~340-block merged function via 'Data.Macaw.Symbolic.mkFunCFG' does NOT
--- work -- it hangs. Diagnosis (see research/notes/protocol-harness-results.md
--- for the full trace): the entry sequence does not simply read the packet's
--- first byte and walk an if/else-if chain of character comparisons the way
--- research/autopilot_static_inventory/parser-dispatch.md describes; real
--- execution first goes through what looks like a hash-table/lookup-table
--- based command lookup (reading through registers R4-R7, which we don't yet
--- know how to seed correctly), and with those registers defaulted to zero
--- that mechanism loops forever dereferencing near-null memory.
---
--- We sidestep that unresolved mechanism for now: block 0x888c (part of the
--- SAME already-discovered function) is confirmed by direct inspection to be
--- exactly "if R3 == '&' (0x26), goto 0x8890" -- i.e. R3 already holds the
--- packet's first byte by the time control reaches here, however it got
--- there. Block 0x8890 (the '&' handler) unconditionally writes 1 to
--- pending[5] (RAM 0x200025bc + 5) and returns -- no further branching. So
--- "PC reaches 0x8890" is an exact proxy for "event 5 gets scheduled", and we
--- can test it with 'APTrace.SymbolicRunner.checkBranchModel' -- the same
--- single-block technique already proven safe and fast for the Steps 7-9 MMIO
--- demo, seeding R3 directly instead of modeling the packet buffer as memory.
+-- Runs single-block checks (via 'APTrace.SymbolicRunner.checkBranchModel')
+-- against known character-comparison blocks rather than the whole merged
+-- ~340-block function, because whole-function replay does not yet
+-- terminate -- see docs/investigations/parser-dispatch.md for why entry
+-- isn't a simple character chain, and docs/project-status.md for the
+-- current blocker on the whole-function version of this test.
 runProtocol :: FilePath -> Word32 -> IO ()
 runProtocol path flashBase = do
   bytes <- BS.readFile path

@@ -1,3 +1,15 @@
+> **This directory is a raw/derived research artifact, not the current
+> authoritative reference.** It's a separate, purely static reverse-engineering
+> pass (no execution, no solver) over the AutoPilot/Remote command protocol,
+> and it's the record of that pass, versioned in place (v0.1 through v0.3 —
+> see individual file headers). The curated, current understanding — which
+> incorporates later symbolic-execution findings, including a correction to
+> `parser-dispatch.md`'s model below — lives in
+> [`docs/protocol/`](../../docs/protocol/protocol-overview.md). Read that
+> first; come here for the underlying detail and the CSVs
+> (`commands.csv`, `responses.csv`, `pending-writes.csv`), which remain the
+> primary source data.
+
 # AutoPilot static protocol inventory v0.3
 
 This pass follows v0.2 by tracing **AutoPilot outbound event producers** and the Remote's **synchronous response parsers**.

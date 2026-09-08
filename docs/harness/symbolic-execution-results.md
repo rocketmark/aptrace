@@ -11,13 +11,14 @@ both directions of the branch.
   (SHA-256 `6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3`)
 - Function: `IRQ10_Handler`, entry `0x952d` (Thumb bit set), one of the ~20 real,
   distinct interrupt handlers found by the vector-table scan (see
-  `firmware-layout.md`).
+  [`../firmware/firmware-layout.md`](../firmware/firmware-layout.md)).
 - Target basic block: `0x9536` -- the body of a polling loop within that handler.
 
 ## How the addresses were found
 
 `tools/vector_scan.py` found `IRQ10_Handler` pointing at flash address `0x952d`
-(see the vector table dump in `firmware-layout.md`). Running
+(see the vector table dump in
+[`../firmware/firmware-layout.md`](../firmware/firmware-layout.md)). Running
 `aptrace`'s discovery mode (`aptrace firmware_autopilot868.bin 0x4000`) lifted its
 Macaw IR; the entry block loads a 32-bit literal from a PC-relative literal pool at
 flash address `0x9548`. Reading that literal directly from the firmware bytes

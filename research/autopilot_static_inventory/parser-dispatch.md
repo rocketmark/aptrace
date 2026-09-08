@@ -1,4 +1,20 @@
-# AutoPilot parser dispatch map — v0.1
+> **Corrected by later analysis on 2026-09-07.** Symbolic execution against
+> the real dispatcher found this flat if/else-if model is incomplete: entry
+> `0x8258` actually runs through an indexed-lookup loop (reading
+> `[R5+1]`/`[R4+6..9]`, indexing a table via `[R7 + R0*4]`) *before* reaching
+> anything resembling the character chain below, and the whole region is one
+> large (~340-block) Macaw-discovered unit, not a small self-contained
+> dispatcher. The character-level branches below (`&`, `G`, `!`, `S`,
+> confirmed so far) still appear to be real and individually reachable via
+> the documented ASCII values — that part checks out — but the tree
+> structure and the claim that entry starts a simple linear scan does not.
+> See [`docs/investigations/parser-dispatch.md`](../../docs/investigations/parser-dispatch.md)
+> for the current, corrected picture and
+> [`docs/harness/protocol-harness-results.md`](../../docs/harness/protocol-harness-results.md)
+> for how this was found. This file is kept as-is (v0.1, never updated to
+> v0.3) for provenance.
+
+# AutoPilot parser dispatch map — v0.1 (see correction notice above)
 
 Entry: `0x8258`
 
