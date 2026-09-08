@@ -113,14 +113,17 @@ Full current-state detail: [`docs/project-status.md`](docs/project-status.md).
 
 ## What is the next milestone?
 
-**M6**: a deliberate pivot from protocol mapping to hardware provenance —
-`command/state -> internal variable/function -> timer/MMIO -> ISR/GPIO ->
-MCU pin -> physical hardware behavior`. First step: find TC0/TC1/TC2's
-ISR/pin pairs, completing
-[`docs/investigations/samd51-peripheral-mapping.md`](docs/investigations/samd51-peripheral-mapping.md)'s
-motor-timer survey (TCC1/PB22 already done there). `!`/`I` remain queued
-for whenever protocol-transaction work (M4) resumes. Full roadmap:
-[`docs/harness/roadmap.md`](docs/harness/roadmap.md).
+**M6 (in progress)**: a deliberate pivot from protocol mapping to
+hardware provenance — `command/state -> internal variable/function ->
+timer/MMIO -> ISR/GPIO -> MCU pin -> physical hardware behavior`. The
+motor-timer survey is done: TC0-TC3 (IRQ107-110) each clear their own
+interrupt flags and reach a shared, table-indexed GPIO-pulse mechanism,
+structurally distinct from the already-proven TCC1 -> PB22 case — see
+[`docs/investigations/motor-timer-survey.md`](docs/investigations/motor-timer-survey.md).
+Next: find what sets each channel's real pin index (the one gap left),
+then connect `I<channel><mode>|` to this confirmed chain. `!`/`I`'s own
+protocol transactions remain queued for whenever M4 resumes. Full
+roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?
 

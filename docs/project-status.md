@@ -240,6 +240,25 @@ re-proving:
   both) are the *same* variable by construction, not independently
   aligned. See
   [`docs/investigations/s-p-roundtrip.md`](investigations/s-p-roundtrip.md).
+- **Motor-timer survey completed (roadmap M6)**: TC0/TC1/TC2/TC3 are
+  IRQ107-110 (`0x607c`/`0x6098`/`0x60b4`/`0x60d0`), each clearing its own
+  MC0+OVF interrupt flags then reaching a shared, table-indexed
+  GPIO-pulse helper (`FUN_00005898`/`FUN_0000d388`) — a real, confirmed
+  mechanism, structurally different from the already-proven TCC1 -> PB22
+  case (inline toggle, no shared helper), and concretely exercised on all
+  four channels via `run_concrete.py --log-mmio`. The rate-control
+  mechanism fell out naturally: `FUN_00005c00`/`FUN_00006260` write/read
+  each TC's `CC0` (period) with correct SYNCBUSY/RETRIGGER sequencing.
+  **Honestly limited, not forced**: the real per-channel pin assignment
+  depends on a RAM index byte per channel that this pass found no static
+  producer for — cold-RAM concrete execution gives the same pin (PA23)
+  for all four channels, an artifact of uninitialized state, not a
+  hardware fact, and is documented as exactly that rather than reported
+  as a result. A genuine protocol-to-hardware link was found in passing:
+  the event-15/`I`-command result value
+  (`i32[0x20002064[channel]]`) is the *same* address as this mechanism's
+  own step-position counter. See
+  [`docs/investigations/motor-timer-survey.md`](investigations/motor-timer-survey.md).
 
 ## Corrected assumptions
 
@@ -324,22 +343,21 @@ diagnostics addition. See
 not touch the milestone/roadmap; roadmap M3 (the virtual RF link) closed
 separately and immediately afterward, also on 2026-09-08.
 
-1. **Deliberate pivot: behavior-to-hardware provenance.** `&|`, `G -> #`,
-   and `S -> P...` are all done (see below) — a deliberate stop here
-   before `!`/`I` (per the task that closed `S -> P...`), to pivot toward
-   `command/state -> internal variable/function -> timer/MMIO -> ISR/GPIO
-   -> MCU pin -> physical hardware behavior`. The concrete next slice:
-   **find TC0/TC1/TC2's ISR/pin pairs**, completing
-   [`docs/investigations/samd51-peripheral-mapping.md`](investigations/samd51-peripheral-mapping.md)'s
-   motor-timer survey (TCC1/PB22 already closed there) with the same
-   proven technique (`tools/vector_scan.py` for the IRQ vector, decompile
-   the handler, `tools/svd/resolve_mmio.py` for the GPIO address) — small,
-   self-contained, and already flagged as the next step there. The
-   follow-on after that (a later slice): connect `I<channel><mode>|`'s
-   already-mapped protocol-level state machine
+1. **Deliberate pivot: behavior-to-hardware provenance (in progress).**
+   `&|`, `G -> #`, and `S -> P...` are all done — a deliberate stop before
+   `!`/`I`, pivoting toward `command/state -> internal variable/function
+   -> timer/MMIO -> ISR/GPIO -> MCU pin -> physical hardware behavior`.
+   The motor-timer survey (TC0-TC3's ISR/GPIO mechanism, matched against
+   the already-proven TCC1 -> PB22 case) is now done — see
+   [`docs/investigations/motor-timer-survey.md`](investigations/motor-timer-survey.md).
+   **Concrete next micro-step**: find what writes the per-channel
+   pin-index RAM bytes (`0x20000164`-`0x20000167`) — the one gap between
+   "mechanism confirmed" and "per-channel pin confirmed." Then: connect
+   `I<channel><mode>|`'s already-mapped protocol-level state machine
    (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
-   `i32[0x20002064[channel]]`) to which TC peripheral and pin each
-   channel actually drives, closing the full chain.
+   `i32[0x20002064[channel]]` — the last of these is now confirmed to be
+   the exact same address as the timer mechanism's own step-position
+   counter) to the confirmed timer/pin chain — not started.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

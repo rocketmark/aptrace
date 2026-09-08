@@ -372,12 +372,15 @@ In priority order:
    find corroborating firmware evidence (e.g. does `FUN_0000bd94`, the
    USB-touching function immediately following `FUN_0000bc44` in flash,
    dereference the same RAM driver-object pointer `0x20005158`?).
-1b. **Find the other three motor channels' pin/ISR pairs.** The PB22/TCC1
-   result (IRQ93, `0x60ec`) was one concrete hit; TC0-TC3 (Q2) almost
-   certainly each have a near-identical small ISR toggling a different
-   PORT pin, likely adjacent in flash and in the vector table to `0x60ec`
-   — the same technique (find the IRQ vector, decompile its handler,
-   resolve its literal-pool constants) should find all of them cheaply.
+1b. ~~Find the other three motor channels' pin/ISR pairs~~ — done:
+   TC0/TC1/TC2/TC3 are IRQ107-110 (`0x607c`/`0x6098`/`0x60b4`/`0x60d0`),
+   confirmed structurally *different* from TCC1's inline toggle (they
+   tail-branch into a shared, table-indexed pulse helper instead) — see
+   [`docs/investigations/motor-timer-survey.md`](motor-timer-survey.md)
+   for the full mechanism, the flash pin table, the rate-control function
+   found along the way, and the honest limit reached (the real per-channel
+   pin assignment needs a RAM index this pass couldn't find a producer
+   for).
 2. **Name the TX path's real transport peripheral.** Trace what populates
    the driver-object pointer `0x8c10` reads at its runtime mode-dispatch
    (likely another `FUN_0000bc44`-style init function, findable by

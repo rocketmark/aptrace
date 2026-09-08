@@ -136,16 +136,25 @@ remaining items — a parallel track, per
 [`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md)'s
 closing recommendation.
 
-12. **Find TC0/TC1/TC2's ISR/pin pairs**, completing
-    [`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)'s
-    motor-timer survey (TCC1/PB22 already closed there). Same proven
-    technique: `tools/vector_scan.py` for each IRQ vector, decompile the
-    handler, `tools/svd/resolve_mmio.py` for the GPIO address. Not
-    started.
-13. Once all four channels' pins are named: connect
-    `I<channel><mode>|`'s already-mapped protocol-level state machine
-    (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
+12. ~~Find TC0/TC1/TC2's ISR/pin pairs~~ — done: TC0-TC3 are IRQ107-110
+    (`0x607c`/`0x6098`/`0x60b4`/`0x60d0`), each clearing its own MC0+OVF
+    flags then reaching a shared, table-indexed GPIO-pulse helper
+    (`FUN_00005898`/`FUN_0000d388`) rather than TCC1's inline toggle — a
+    confirmed *mechanism*, concretely exercised on all four channels via
+    `--log-mmio`, but the real per-channel pin assignment depends on a
+    RAM index byte this pass found no static producer for (cold RAM
+    gives the same pin for all four, an artifact, not a hardware fact).
+    Also found, falling out naturally: `FUN_00005c00`/`FUN_00006260`
+    write/read each TC's `CC0` (period) — the rate-control mechanism. See
+    [`docs/investigations/motor-timer-survey.md`](../investigations/motor-timer-survey.md).
+13. Connect `I<channel><mode>|`'s already-mapped protocol-level state
+    machine (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
     `i32[0x20002064[channel]]`, per
     `research/autopilot_static_inventory/synchronous-responses.md`) to
-    which TC peripheral and pin each channel drives — the full
-    command-to-pin chain. Depends on (12); not started.
+    the timer/pin chain (12) found — `i32[0x20002064[channel]]` is
+    already confirmed to be the exact same step-position counter
+    `FUN_00005898` increments, a real link found in (12), not yet
+    exploited. The concrete next step per `motor-timer-survey.md`: find
+    what writes the per-channel pin-index RAM bytes
+    (`0x20000164`-`0x20000167`), the one gap blocking a fully confirmed
+    per-channel pin. Not started.
