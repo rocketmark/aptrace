@@ -119,6 +119,12 @@ re-proving:
   [`docs/investigations/dispatcher-loop-concrete-trace.md`](investigations/dispatcher-loop-concrete-trace.md).
 - **`tools/doctor.sh`** verifies Ghidra, Unicorn, and Macaw/Crucible/What4/Z3
   are all usable, including functional smoke tests.
+- **`APTrace.ProtocolHarness.RichTraceConfig`/`runPacketTransactionTraced`**:
+  a reusable, fine-grained (every-step, not sampled) execution trace for a
+  bounded address range within a whole-function run, using the existing
+  `Data.Macaw.Symbolic.Regs.simStateRegs` API to recover live register
+  state. What found the root cause below. See
+  [`docs/investigations/whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md).
 
 ## Corrected assumptions
 
@@ -182,28 +188,50 @@ lift of the `CMP`/conditional-branch pair is correct; Crucible's
 single-block branch semantics are correct. Reading `mkFunCFG`'s source
 also confirms its entry mechanically jumps to `discoveredFunAddr fn`
 (address-matched, concretely: `0x8259`), and its generic `ParsedBranch`-to-
-`Br` translation is unremarkable. **None of the "obvious" candidates from
-the prior pass hold up** — the fault, if real, is somewhere else in the
-~339-block whole-function graph, in something the isolated test and source
-reading can't see; a finer-grained re-run of the actual whole-function test
-is the next step, not yet done. See that document's "Smallest next
-experiment" section.
+`Br` translation is unremarkable.
+
+**Root cause found (2026-09-07).** Fine-grained tracing of the actual
+whole-function run (a new reusable `RichTraceConfig`/
+`runPacketTransactionTraced`, firing on every step in a bounded range —
+see [`docs/investigations/whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md))
+confirmed the discrepancy still reproduces under current code (not fixed
+by prior harness work), and pinpointed it precisely: **the dispatcher's
+buffer pointer is loaded from a literal pool in flash
+(`LDR R4, [0x8528]`), and flash is `readonly` — `populateSegmentChunk`
+always populates readonly memory via solver assumptions, never as folded
+array literals, regardless of `ConcreteMutable`/`SymbolicMutable`.** This
+is fine for a solver query (which sees the assumptions), but plain
+Crucible execution has no solver in the loop for an ordinary `Br` — with
+`R4` (and everything computed from it, including `R3`/`buffer[0]` and the
+`0x8266` branch condition) never folding to a concrete literal, Crucible
+picks the wrong successor (`0x8268`, the loop) for this input and gets
+stuck exactly as originally observed (`R6` climbing linearly, confirmed
+still happening). **Macaw's decoding, `mkFunCFG`'s wiring, and this
+branch's own logic remain fully exonerated** — the gap is specifically in
+how the harness's memory model interacts with plain (non-solver-mediated)
+execution of literal-pool-derived branches.
 
 ## Next steps
 
 1. ~~**Investigate why Crucible's whole-function CFG doesn't resolve the
-   `0x8266` branch the way concrete execution does**~~ — the branch itself
-   (isolated in Crucible) and `mkFunCFG`'s entry/`ParsedBranch` wiring
-   (read and address-confirmed) are both exonerated; see
-   [`gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md).
-   **Next**: re-run the actual whole-function test with much
-   finer-grained tracing than `debugFeature`'s default (every 2000 steps)
-   to find where in the ~339-block graph execution actually diverges —
-   likely an aliasing-style hazard analogous to the one found (and fixed)
-   in this pass's own isolated-block test, but located elsewhere. No model
-   changes without that trace in hand.
-2. Once (1) is understood and fixed: re-run the whole-function `&` test and
-   confirm `pending[5]` becomes 1 **via Crucible/What4/Z3** (level 3
+   `0x8266` branch the way concrete execution does**~~ — root cause found:
+   literal-pool (readonly-flash) reads are populated via solver
+   assumptions, not folded literals, so the branch condition never
+   becomes concrete during plain execution. See
+   [`gate-block-crucible-isolation.md`](investigations/gate-block-crucible-isolation.md)
+   and [`whole-function-trace-divergence.md`](investigations/whole-function-trace-divergence.md).
+   **Next**: fix this — smallest option is baking the specific
+   literal-pool words this dispatcher reads (starting with `0x8528`) as
+   direct concrete values via the same store pattern already used for the
+   packet buffer; the more general option (change how readonly memory is
+   populated so it folds to literals for plain execution) is a real
+   execution-model change and should only be attempted after the targeted
+   fix is tried. **This next step does change the execution model** —
+   the investigation phase (find the cause without changing the model) is
+   done; implementing the fix is the natural following action, not
+   deferred further.
+2. Once (1)'s fix is in and verified: re-run the whole-function `&` test
+   and confirm `pending[5]` becomes 1 **via Crucible/What4/Z3** (level 3
    evidence) — the concrete (level 2) result already exists, see "Proven
    capabilities & findings."
 3. Hook `0x8c10`/`0x7f84` and verify the emitted bytes equal `V01R39` —

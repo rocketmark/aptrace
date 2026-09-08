@@ -1,5 +1,16 @@
 # Investigation: Isolating the `0x8258`-`0x8266` Gate Branch in Crucible
 
+> **Update (2026-09-07)**: the "smallest next experiment" below (fine-
+> grained whole-function tracing) was run and found the actual root
+> cause — see
+> [`docs/investigations/whole-function-trace-divergence.md`](whole-function-trace-divergence.md).
+> Short version: it's not Macaw, `mkFunCFG`, or this branch's own logic
+> (all confirmed correct here) — it's that literal-pool (readonly-flash)
+> reads are represented via solver assumptions rather than folded
+> literals, so this branch's condition never becomes concrete during
+> plain Crucible execution, and Crucible picks the wrong side for this
+> input.
+
 **Question**: [`dispatcher-loop-concrete-trace.md`](dispatcher-loop-concrete-trace.md)
 found that Unicorn concretely takes the `buffer[0]!=0xF0` (skip-the-loop)
 path at `0x8266`, while the whole-function Crucible replay was observed

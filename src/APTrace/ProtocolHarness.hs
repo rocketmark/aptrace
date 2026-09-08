@@ -30,6 +30,8 @@ module APTrace.ProtocolHarness
   ( PacketByte(..)
   , PacketResult(..)
   , runPacketTransaction
+  , RichTraceConfig(..)
+  , runPacketTransactionTraced
   ) where
 
 import           Control.Monad ( when )
@@ -47,6 +49,7 @@ import qualified Data.Macaw.Discovery.State as MDS
 import qualified Data.Macaw.Memory as MM
 import qualified Data.Macaw.Symbolic as MS
 import qualified Data.Macaw.Symbolic.Memory as MSM
+import qualified Data.Macaw.Symbolic.Regs as MSR
 import qualified Data.Macaw.AArch32.Symbolic ()
 import qualified Data.Macaw.ARM.ARMReg as AR
 import qualified SemMC.Architecture.AArch32 as ARM
@@ -66,6 +69,7 @@ import           Lens.Micro ( (^.) )
 
 import           Data.Bits ( (.|.) )
 import qualified Data.Parameterized.Nonce as PN
+import qualified Numeric
 import qualified System.IO as IO
 import qualified What4.Config as WC
 import qualified What4.FunctionName as WF
@@ -107,7 +111,38 @@ runPacketTransaction
   -> W.Word32          -- ^ address to read back after execution
   -> Integer            -- ^ target value to search/check for at 'observeAddr'
   -> IO PacketResult
-runPacketTransaction mem fn bufAddr bufBytes observeAddr targetValue
+runPacketTransaction mem fn bufAddr bufBytes observeAddr targetValue =
+  runPacketTransactionTraced mem fn bufAddr bufBytes observeAddr targetValue Nothing
+
+-- | Bounded, per-step tracing for 'runPacketTransactionTraced' -- unlike
+-- 'debugFeature' (which only samples every 2000 steps, far too coarse to
+-- see which successor a specific branch took), this fires on *every* step
+-- whose current PC falls within ['rtLoAddr', 'rtHiAddr'], recording R0-R7,
+-- SP, and (if 'rtWatchMem' is set) one watched memory byte. Reusable for
+-- any investigation that needs a fine-grained trace of a specific region
+-- rather than the whole run -- not tied to the dispatcher specifically.
+data RichTraceConfig = RichTraceConfig
+  { rtLoAddr   :: W.Word32
+  , rtHiAddr   :: W.Word32
+  , rtWatchMem :: Maybe W.Word32
+  , rtMaxHits  :: Int
+    -- ^ Safety cap: stop *recording* (not stop the run) after this many
+    -- in-range hits, so a genuine infinite loop in-range doesn't flood
+    -- stderr.
+  }
+
+-- | Like 'runPacketTransaction', but with an optional 'RichTraceConfig'
+-- for fine-grained tracing of a specific address range.
+runPacketTransactionTraced
+  :: MM.Memory 32
+  -> MDS.DiscoveryFunInfo ARM.AArch32 ids
+  -> W.Word32
+  -> [PacketByte]
+  -> W.Word32
+  -> Integer
+  -> Maybe RichTraceConfig
+  -> IO PacketResult
+runPacketTransactionTraced mem fn bufAddr bufBytes observeAddr targetValue traceCfg
   | Just archVals <- MS.archVals (Proxy @ARM.AArch32) Nothing =
       withZ3Backend (run archVals)
   | otherwise = pure (HarnessError "no ArchVals for AArch32")
@@ -232,7 +267,12 @@ runPacketTransaction mem fn bufAddr bufBytes observeAddr targetValue
             t2 <- CT.getCurrentTime
             IO.hPutStrLn IO.stderr "  [timing] starting executeCrucible..."
             stepCounter <- newIORef (0 :: Int)
-            execRes <- CS.executeCrucible [debugFeature stepCounter] initState
+            richFeatures <- case traceCfg of
+              Nothing -> pure []
+              Just cfg -> do
+                hitsRef <- newIORef (0 :: Int)
+                pure [richTraceFeature bak archVals memVar globalMap cfg hitsRef]
+            execRes <- CS.executeCrucible (debugFeature stepCounter : richFeatures) initState
             t3 <- CT.getCurrentTime
             IO.hPutStrLn IO.stderr ("  [timing] executeCrucible took " ++ show (CT.diffUTCTime t3 t2))
             case execRes of
@@ -320,6 +360,71 @@ debugFeature counterRef = CSE.ExecutionFeature $ \execState -> do
           Exit.exitFailure
         else pure CSE.ExecutionFeatureNoChange
     Nothing -> pure CSE.ExecutionFeatureNoChange
+
+-- | See 'RichTraceConfig'. Fires on every step; only prints while the
+-- current PC is in range, and stops printing (without aborting the run)
+-- once 'rtMaxHits' in-range hits have been recorded.
+richTraceFeature
+  :: ( CB.IsSymBackend (WE.ExprBuilder t st fs) bak
+     , CLM.HasLLVMAnn (WE.ExprBuilder t st fs)
+     , CLM.HasPtrWidth 32
+     , ?memOpts :: CLM.MemOptions
+     )
+  => bak
+  -> MS.ArchVals ARM.AArch32
+  -> CS.GlobalVar CLM.Mem
+  -> MS.GlobalMap (WE.ExprBuilder t st fs) CLM.Mem 32
+  -> RichTraceConfig
+  -> IORef Int
+  -> CSE.ExecutionFeature p (WE.ExprBuilder t st fs) ext rtp
+richTraceFeature bak archVals memVar globalMap cfg hitsRef =
+  CSE.ExecutionFeature $ \execState ->
+    case CSET.execStateSimState execState of
+      Nothing -> pure CSE.ExecutionFeatureNoChange
+      Just (CSET.SomeSimState st) ->
+        case addrOfLoc (st ^. CSET.stateLocation) of
+          Just addr | rtLoAddr cfg <= addr && addr <= rtHiAddr cfg -> do
+            n <- atomicModifyIORef' hitsRef (\c -> (c + 1, c + 1))
+            when (n <= rtMaxHits cfg) $ do
+              let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
+              regsLine <- case MSR.simStateRegs (MS.archFunctions archVals) st of
+                Just rawRegs -> do
+                  let regsEntry = CS.RegEntry (CC.StructRepr regTypes) rawRegs
+                      regHex r = let CLM.LLVMPointer _ off = CS.regValue (MS.lookupReg archVals regsEntry r)
+                                 in case WI.asBV off of
+                                      Just bv -> "0x" ++ Numeric.showHex (BV.asUnsigned bv) ""
+                                      Nothing -> "<sym:" ++ show (WI.printSymExpr off) ++ ">"
+                  pure (unwords [ nm ++ "=" ++ regHex r | (nm, r) <- namedRegs ])
+                Nothing -> pure "(no register struct available here)"
+              memLine <- case rtWatchMem cfg of
+                Nothing -> pure ""
+                Just wa -> do
+                  let globals = st ^. CSET.stateGlobals
+                  case CSG.lookupGlobal memVar globals of
+                    Nothing -> pure "  buffer[0]=<no memory global>"
+                    Just mem -> do
+                      ptr <- resolvedPointer bak globalMap mem wa
+                      CLM.LLVMPointer _ byteOff <-
+                        CLM.doLoad bak mem ptr (CLM.bitvectorType 1)
+                          (CLM.LLVMPointerRepr (WI.knownNat @8)) LDL.noAlignment
+                      pure ("  buffer[0]=" ++ case WI.asBV byteOff of
+                              Just bv -> "0x" ++ Numeric.showHex (BV.asUnsigned bv) ""
+                              Nothing -> "<sym:" ++ show (WI.printSymExpr byteOff) ++ ">")
+              IO.hPutStrLn IO.stderr
+                ("  [rich-trace] #" ++ show n ++ " pc=0x" ++ Numeric.showHex addr ""
+                 ++ "  " ++ regsLine ++ memLine)
+            pure CSE.ExecutionFeatureNoChange
+          _ -> pure CSE.ExecutionFeatureNoChange
+  where
+    addrOfLoc (Just loc) = case WPL.plSourceLoc loc of
+      WPL.BinaryPos _ a -> Just (fromIntegral a :: W.Word32)
+      _ -> Nothing
+    addrOfLoc Nothing = Nothing
+    namedRegs =
+      [ ("r0", AR.r0), ("r1", AR.r1), ("r2", AR.r2), ("r3", AR.r3)
+      , ("r4", AR.r4), ("r5", AR.r5), ("r6", AR.r6), ("r7", AR.r7)
+      , ("sp", AR.sp)
+      ]
 
 -- | A fresh, uniquely-named 32-bit symbolic register value, with no
 -- dependency on a Crucible context index (used by the opaque-call override,

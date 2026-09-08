@@ -73,6 +73,38 @@ Requirements this mode needs that single-block mode doesn't:
 - A policy for calls the function makes to other, not-yet-lifted functions
   (see next section).
 
+**Known architectural gap, found 2026-09-07**: a branch whose condition
+depends on a value read from **readonly (flash) memory** — e.g. a
+literal-pool pointer load, `LDR Rn, [pc, #imm]` — will not resolve
+deterministically during plain execution, regardless of
+`ConcreteMutable`/`SymbolicMutable`. `Data.Macaw.Symbolic.Memory`'s
+`populateSegmentChunk` always populates readonly segments via solver
+*assumptions* rather than folded array literals (a documented tradeoff —
+baking large concrete regions directly into the array has crashed
+solvers). That's sound for a solver query (`checkBranchModel`,
+`runPacketTransaction`'s own final reachability check both see the
+assumption set), but plain Crucible execution of an ordinary `Br`
+statement has no solver in the loop for ordinary branch resolution — with
+the condition never folding to a concrete `Pred`, Crucible picks an
+arbitrary side, which is not necessarily the one the "real" concrete value
+implies. This is the confirmed root cause of the AutoPilot dispatcher's
+`0x8266` gate branch being taken incorrectly in the whole-function replay
+— see
+[`docs/investigations/whole-function-trace-divergence.md`](../investigations/whole-function-trace-divergence.md)
+for the full trace and reasoning. **Any future whole-function target whose
+control flow depends on a literal-pool-derived value should expect the
+same issue** until this is fixed (candidate fixes are in that document,
+not yet implemented — this is a documented gap, not a silent one).
+
+**Reusable diagnostic for this class of bug**:
+`APTrace.ProtocolHarness.RichTraceConfig` / `runPacketTransactionTraced` —
+a fine-grained (every-step, not sampled like `debugFeature`), bounded-range
+execution trace built on `Data.Macaw.Symbolic.Regs.simStateRegs` (an
+existing macaw-symbolic API for recovering live register state from a
+running `SimState`, not previously used in this codebase). Use it whenever
+`debugFeature`'s coarse sampling isn't enough to see which branch successor
+was actually taken.
+
 ## Function calls: the opaque-call mechanism, and its calling-convention bug
 
 `mkFunCFG` only lifts one function; any `BL` to another address needs a

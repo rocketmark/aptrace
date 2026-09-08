@@ -296,8 +296,13 @@ runProtocol path flashBase = do
       -- immediately (R6=0); our formula predicts buffer[1]=0 does too (both
       -- give a negative (buf[1]-7), satisfying the observed exit condition).
       putStrLn "\nTest 0: whole dispatcher function, buffer[1]=0x01 (Z3-confirmed exit witness above)"
+      putStrLn "  (rich-trace enabled: 0x8258-0x8900, watching buffer[0] -- see docs/investigations/whole-function-trace-divergence.md)"
       let realPacket = [Concrete 0x26, Concrete 0x01, Concrete 0x00, Concrete 0x00]
-      r0 <- PH.runPacketTransaction mem fn bufAddr realPacket event5Addr 1
+          traceCfg = PH.RichTraceConfig
+            { PH.rtLoAddr = 0x8258, PH.rtHiAddr = 0x8900
+            , PH.rtWatchMem = Just bufAddr, PH.rtMaxHits = 500
+            }
+      r0 <- PH.runPacketTransactionTraced mem fn bufAddr realPacket event5Addr 1 (Just traceCfg)
       case r0 of
         PH.ConcreteResult 1 -> putStrLn "  PASS: pending[5] = 1 (event 5 scheduled) via the real parser path"
         PH.ConcreteResult v -> putStrLn ("  FAIL: pending[5] = 0x" ++ showHex v "" ++ " (expected 1)")
