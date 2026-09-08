@@ -25,6 +25,15 @@ about the protocol itself.
 6. Trace `T...|` outbound telemetry values back to motion/state globals;
    separate from the inbound non-TR `T` command path (schedules `##`).
 7. Resolve the Remote's `PN...` branch — reachable in this build, or dead?
+   **Refined (2026-09-08)**: the Remote's own `PN` handling is fully
+   implemented, not missing (`0xc440`: on `PN`, if its stored state is 9,
+   10, or 11, reset it to 1) — confirmed by reading the full
+   disassembly, not by a failed search. Still open: the AutoPilot `S`
+   handler's switch (all 5 cases read) never emits `'N'` as a second
+   byte in *this* build, so there is still no producer here — but the
+   question is now "does any AutoPilot build/config reach it," not
+   "does the Remote support it." See
+   [`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
 8. **Reconcile Remote-transmitted packets not accepted by the visible
    AutoPilot dispatcher**: `MS|`, `MR|`, `MM|`, `N|`, `KK|`, `E1,...|`, bare
    `W|`, and the short `I9|`/`I1|` forms. **Note**: since

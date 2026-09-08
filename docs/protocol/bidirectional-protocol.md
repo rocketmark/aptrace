@@ -70,25 +70,48 @@ asserted end to end. See
 Not yet done: a solver-confirmed (Crucible) proof of either side's whole
 transaction — see [`docs/project-status.md`](../project-status.md).
 
-### `G` acknowledgement
+### `G` acknowledgement (execution-confirmed end to end, both firmwares, through the virtual link)
 
 ```
-Remote (0xb680) builds "G<d><d><seq>|"
+Remote (0xb680) builds "G<d><d><seq>|"        [execution-confirmed: real bytes, real send call]
     -> 0xb59c sends / retries
-    -> AutoPilot G branch                  [byte value execution-confirmed]
-    -> 0x83ea schedules event 17
-    -> "#"
-    -> Remote accepts acknowledgement
+    -> AutoPilot G branch                  [execution-confirmed: pending[17] concretely set, not just entry reachability]
+    -> 0x83ea-equivalent schedules event 17
+    -> "#"                                  [execution-confirmed: real 0x7f84 call, exact byte]
+    -> Remote 0xb59c accepts acknowledgement  [execution-confirmed: real retry/ack loop, R4=1]
 ```
 
-### `S` state/config query
+Confirmed via `tools/unicorn/virtual_link.py g` (roadmap M4) — the same
+harness-driven virtual link built for `&|` (M3), reusing its
+`capture_tx_bytes`/`deliver_and_observe` primitives plus a new
+byte-value `capture_tx_byte` (event 17's response is a single byte via
+`0x7f84`, not a string via `0x8c10`). See
+[`docs/investigations/g-ack-roundtrip.md`](../investigations/g-ack-roundtrip.md)
+for the full trace, including two AutoPilot-side helpers stubbed for the
+same reasons already documented for the RF drivers (one is architecturally
+identical: a driver-object virtual call only valid after real startup).
+
+### `S` state/config query (execution-confirmed end to end, both response forms, through the virtual link)
 
 ```
-Remote (0xc440) sends "S|"
-    -> AutoPilot schedules event 6         [byte value execution-confirmed]
-    -> "P<value0>," [or "P<value0>,<value1>,<bool>,"]
-    -> Remote P parser
+Remote (0xc440) sends "S|"                [execution-confirmed: exact bytes, real send call]
+    -> AutoPilot schedules event 6 AND     [execution-confirmed: pending[6] set, value0 computed
+       computes value0, in the same pass    in the same handler pass, not two separate steps]
+    -> "P<value0>," [or "P<value0>,<value1>,<bool>,"]   [execution-confirmed: both forms, real bytes]
+    -> Remote's real parser consumes and stores it       [execution-confirmed, both forms]
 ```
+
+Confirmed via `tools/unicorn/virtual_link.py s` (roadmap M4), run at two
+concrete AutoPilot device-state values to exercise both response forms
+for real. Two refinements to the reading above (both found by running
+the real code, not by re-reading the decompile more carefully): the
+AutoPilot-side "send the extended form" condition and the Remote-side
+"parse two extra fields" condition are the *same* variable by
+construction, not independently observed and coincidentally aligned; and
+the Remote has its own "don't downgrade" guard — a fresh device
+receiving the short form `"P1,"` does not update its stored state at
+all. See
+[`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
 
 ### Bulk `!` transaction (known field-count mismatch)
 

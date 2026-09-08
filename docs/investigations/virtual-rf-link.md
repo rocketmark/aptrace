@@ -176,19 +176,15 @@ needed.
 
 ## Next logical transaction
 
-`research/autopilot_static_inventory/protocol-bidirectional.md` names the
-next two candidates after `&|`, both already statically mapped on both
-sides:
+**Update (2026-09-08)**: `G -> #` is done — see
+[`docs/investigations/g-ack-roundtrip.md`](g-ack-roundtrip.md). It
+confirmed the two primitives above generalize (with two real additions:
+register seeding, and a byte-value `capture_tx_byte` alongside the
+pointer-based `capture_tx_bytes`, since event 17's response is a single
+byte via `0x7f84`, not a string via `0x8c10`).
 
-- **`G -> #`**: Remote `0xb680` builds `G<d><d><seq>|`, `0xb59c` sends/
-  retries, AutoPilot's `G` branch schedules event 17, Remote's `0xb59c`
-  accepts the `#` acknowledgement. A retry loop is involved on the
-  Remote side (`0xb59c` is documented as "synchronous request/retry,
-  waits for `#`") — likely needs the same `--stub-call` treatment for
-  its own retry/delay dependency, not yet confirmed.
-- **`S -> P...`**: Remote's `0xc440` sends `S|`, AutoPilot schedules
-  event 6, Remote's `0xc440` parses the `P<value>,...` response.
-
-Either is a reasonable next slice using the exact same two primitives
-this pass built (`capture_tx_bytes`/`deliver_and_observe`) — not started
-in this pass, per the task's explicit scope.
+Next: **`S -> P...`** — Remote's `0xc440` sends `S|`, AutoPilot schedules
+event 6, Remote's `0xc440` parses the `P<value>,...` response. `0xc440`
+is a larger function (also handles `!0|`/`!1|`), so expect to spend part
+of the slice narrowing down the `S`-specific path — not started, per the
+`g-ack-roundtrip.md` task's explicit scope.

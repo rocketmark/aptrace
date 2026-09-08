@@ -91,13 +91,27 @@ for the full result.
 
 ### M4 — Broader protocol reachability
 
-9. Exercise the next protocol transaction through the virtual link built
-   in M3 — `G -> #` (`0xb680`/`0xb59c`, event 17) or `S -> P...`
-   (`0xc440`, event 6), per
-   `research/autopilot_static_inventory/protocol-bidirectional.md`. Same
-   two primitives, new addresses; `G`'s Remote-side retry loop (`0xb59c`)
-   may need its own `--stub-call` treatment, not yet confirmed. Not
-   started.
+9. ~~Exercise the next protocol transaction through the virtual link
+   built in M3~~ — `G -> #` done (`tools/unicorn/virtual_link.py g`):
+   Remote's real `0xb680`/`0xb59c` request+retry, AutoPilot's real `G`
+   handler concretely scheduling event 17 (not just solver-confirmed
+   reachability), AutoPilot's real `0x7f84` single-byte response, and
+   Remote's real `0xb59c` accepting the ack — all at the concrete tier.
+   Confirmed the M3 primitives generalize (needed register seeding and a
+   new byte-value TX-capture primitive, both now reusable). See
+   [`docs/investigations/g-ack-roundtrip.md`](../investigations/g-ack-roundtrip.md).
+   Then `S -> P...` also done (`tools/unicorn/virtual_link.py s`): both
+   the short (`"P1,"`) and extended (`"P11,0,0,"`) response forms
+   exercised concretely, AutoPilot's event-6 scheduling and field
+   computation confirmed in one pass, and a real "don't downgrade" guard
+   in the Remote's parser found by running it (a fresh device receiving
+   `"P1,"` does not update its stored state). No new harness capability
+   needed. See
+   [`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
+   **Deliberate pause here, per the task that closed `S -> P...`**: not
+   continuing into `!`/`I` yet — pivoting to hardware provenance instead
+   (see M6 below). `!`/`I` remain queued for whenever protocol-transaction
+   work resumes.
 10. Resolve the Remote-transmitted-packets-not-in-dispatch-tree question
     (`docs/protocol/open-questions.md` #8) now that the real dispatch
     structure is better understood.
@@ -112,3 +126,26 @@ Ghidra and Unicorn are both integrated (see
 were exactly what closed M1 above — not deferred any further. See
 [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md) for the
 current, durable guidance on when to use which tool.
+
+### M6 — Behavior-to-hardware provenance (new, 2026-09-08)
+
+A deliberate pivot from protocol mapping toward physical hardware:
+`command/state -> internal variable/function -> timer/MMIO -> ISR/GPIO ->
+MCU pin -> physical hardware behavior`. Not a replacement for M4's
+remaining items — a parallel track, per
+[`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md)'s
+closing recommendation.
+
+12. **Find TC0/TC1/TC2's ISR/pin pairs**, completing
+    [`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)'s
+    motor-timer survey (TCC1/PB22 already closed there). Same proven
+    technique: `tools/vector_scan.py` for each IRQ vector, decompile the
+    handler, `tools/svd/resolve_mmio.py` for the GPIO address. Not
+    started.
+13. Once all four channels' pins are named: connect
+    `I<channel><mode>|`'s already-mapped protocol-level state machine
+    (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
+    `i32[0x20002064[channel]]`, per
+    `research/autopilot_static_inventory/synchronous-responses.md`) to
+    which TC peripheral and pin each channel drives — the full
+    command-to-pin chain. Depends on (12); not started.

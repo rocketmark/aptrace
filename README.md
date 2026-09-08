@@ -95,14 +95,31 @@ build/usage instructions: [`docs/toolchain.md`](docs/toolchain.md).
   exact bytes back, Remote captures exactly `"V01R39\0"` — one script, one
   round trip, both real firmwares. This closes roadmap M3. See
   [`docs/investigations/virtual-rf-link.md`](docs/investigations/virtual-rf-link.md).
+- **A second transaction, `G -> #`, confirms the virtual link generalizes**
+  (roadmap M4): Remote's real `G<d><d><seq>|` request, AutoPilot
+  concretely scheduling event 17 (not just solver-confirmed
+  reachability), AutoPilot's real `"#"` response, and Remote's real
+  retry/ack path accepting it — `tools/unicorn/virtual_link.py g`. See
+  [`docs/investigations/g-ack-roundtrip.md`](docs/investigations/g-ack-roundtrip.md).
+- **A third transaction, `S -> P...`, closes both response forms**
+  (roadmap M4): Remote's real `"S|"` query, AutoPilot concretely
+  scheduling event 6 and computing the response's first field in the same
+  handler pass, and both the short (`"P1,"`) and extended (`"P11,0,0,"`)
+  forms exercised concretely — `tools/unicorn/virtual_link.py s`. Found a
+  real "don't downgrade" guard in the Remote's own parser by running it.
+  See [`docs/investigations/s-p-roundtrip.md`](docs/investigations/s-p-roundtrip.md).
 
 Full current-state detail: [`docs/project-status.md`](docs/project-status.md).
 
 ## What is the next milestone?
 
-**M4**: exercise the next protocol transaction (`G -> #` or `S -> P...`)
-through the same virtual link, using the two reusable primitives it's
-built from (`capture_tx_bytes`/`deliver_and_observe`). Full roadmap:
+**M6**: a deliberate pivot from protocol mapping to hardware provenance —
+`command/state -> internal variable/function -> timer/MMIO -> ISR/GPIO ->
+MCU pin -> physical hardware behavior`. First step: find TC0/TC1/TC2's
+ISR/pin pairs, completing
+[`docs/investigations/samd51-peripheral-mapping.md`](docs/investigations/samd51-peripheral-mapping.md)'s
+motor-timer survey (TCC1/PB22 already done there). `!`/`I` remain queued
+for whenever protocol-transaction work (M4) resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?

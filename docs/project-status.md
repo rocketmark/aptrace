@@ -76,7 +76,15 @@ gate real RF I/O behind an unmodeled driver layer — reaching past it
 needed the `--stub-call` Unicorn capability, not full radio emulation),
 and [`docs/investigations/virtual-rf-link.md`](investigations/virtual-rf-link.md)
 for the round trip itself and the two reusable primitives
-(`capture_tx_bytes`/`deliver_and_observe`) it's built from.
+(`capture_tx_bytes`/`deliver_and_observe`) it's built from. A second
+transaction, `G -> #` (roadmap M4), closed the same way immediately
+afterward (2026-09-08), confirming the primitives generalize — see
+[`docs/investigations/g-ack-roundtrip.md`](investigations/g-ack-roundtrip.md).
+A third, `S -> P...`, closed the same day (2026-09-08) at *both* its
+response forms — see
+[`docs/investigations/s-p-roundtrip.md`](investigations/s-p-roundtrip.md)
+— after which the project deliberately paused protocol-transaction work
+to pivot toward hardware provenance (see "Next steps").
 
 ## Proven capabilities & findings
 
@@ -199,6 +207,39 @@ re-proving:
   addresses, so the same script structure applies to future transactions
   (`G -> #`, `S -> P...`). This closes roadmap M3. See
   [`docs/investigations/virtual-rf-link.md`](investigations/virtual-rf-link.md).
+- **`G -> #` through the same virtual link (roadmap M4)**: confirms the
+  M3 primitives genuinely generalize — `tools/unicorn/virtual_link.py g`
+  runs Remote's real `G<d><d><seq>|` request (register-seeded call
+  arguments, not just RAM), AutoPilot's real handler concretely
+  scheduling event 17 (not just solver-confirmed *reachability* — a real
+  first for this project), AutoPilot's real single-byte TX wrapper
+  (`0x7f84`, a new `capture_tx_byte` primitive alongside the
+  pointer-based `capture_tx_bytes`), and Remote's real retry/ack loop
+  (`0xb59c`) accepting the real `"#"` byte (`R4` becomes `1`, its own
+  genuine `int` return value). Needed two new `--stub-call` targets on
+  the AutoPilot side for real-but-irrelevant helpers (one hits the same
+  "driver object needs real startup" boundary already known from RF; one
+  spins on what's plausibly persistent motor-config data, not yet
+  investigated further). See
+  [`docs/investigations/g-ack-roundtrip.md`](investigations/g-ack-roundtrip.md).
+- **`S -> P...` through the same virtual link (roadmap M4), both response
+  forms**: `tools/unicorn/virtual_link.py s` runs Remote's real `"S|"`
+  query, AutoPilot's real handler concretely scheduling event 6 *and*
+  computing the response's first field in the same pass (from a
+  literal-pool-confirmed device-state variable, `0x20002524`), and
+  Remote's real parser consuming and storing the result — at **both** the
+  short (`"P1,"`) and extended (`"P11,0,0,"`) response forms, exercised
+  concretely by seeding two different real device-state values rather
+  than asserting one and trusting the decompile for the other. No new
+  harness capability needed (first time since M3 that a transaction
+  didn't need one). Found, by running it rather than by reading the
+  decompile: a real "don't downgrade" guard in the Remote's parser (a
+  fresh device receiving `"P1,"` does **not** update its stored state at
+  all), and that the AutoPilot- and Remote-side conditions for the
+  extended form (`docs/protocol/`'s existing description already named
+  both) are the *same* variable by construction, not independently
+  aligned. See
+  [`docs/investigations/s-p-roundtrip.md`](investigations/s-p-roundtrip.md).
 
 ## Corrected assumptions
 
@@ -283,29 +324,36 @@ diagnostics addition. See
 not touch the milestone/roadmap; roadmap M3 (the virtual RF link) closed
 separately and immediately afterward, also on 2026-09-08.
 
-1. **Exercise the next protocol transaction through the virtual link**
-   (roadmap M4): `G -> #` (`0xb680`/`0xb59c` on the Remote side, event 17
-   on the AutoPilot side) or `S -> P...` (`0xc440`, event 6) — both
-   already statically mapped on both sides per
-   `research/autopilot_static_inventory/protocol-bidirectional.md`, and
-   both reachable with the same two primitives
-   [`docs/investigations/virtual-rf-link.md`](investigations/virtual-rf-link.md)
-   built (`capture_tx_bytes`/`deliver_and_observe`) — not a new
-   technique. `G`'s Remote side involves a retry loop (`0xb59c`) that may
-   need its own `--stub-call` treatment, not yet confirmed.
-2. Independently verify `G`/`!`/`S`'s handlers perform their claimed
-   event-scheduling writes (currently only entry *reachability* is
-   solver-verified for these three) — a smaller, parallel task, not a
-   prerequisite for (1).
-3. If a real symbolic use case for the readonly-flash gap above ever
+1. **Deliberate pivot: behavior-to-hardware provenance.** `&|`, `G -> #`,
+   and `S -> P...` are all done (see below) — a deliberate stop here
+   before `!`/`I` (per the task that closed `S -> P...`), to pivot toward
+   `command/state -> internal variable/function -> timer/MMIO -> ISR/GPIO
+   -> MCU pin -> physical hardware behavior`. The concrete next slice:
+   **find TC0/TC1/TC2's ISR/pin pairs**, completing
+   [`docs/investigations/samd51-peripheral-mapping.md`](investigations/samd51-peripheral-mapping.md)'s
+   motor-timer survey (TCC1/PB22 already closed there) with the same
+   proven technique (`tools/vector_scan.py` for the IRQ vector, decompile
+   the handler, `tools/svd/resolve_mmio.py` for the GPIO address) — small,
+   self-contained, and already flagged as the next step there. The
+   follow-on after that (a later slice): connect `I<channel><mode>|`'s
+   already-mapped protocol-level state machine
+   (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
+   `i32[0x20002064[channel]]`) to which TC peripheral and pin each
+   channel actually drives, closing the full chain.
+2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
+   per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
+   11-vs-10 field mismatch to preserve, not normalize away) and
+   `I<channel><mode>|` (`0xb958`/`0xb834`, dynamic per-channel state) —
+   same two primitives, not started.
+3. `G`/`S`'s handler-side event-scheduling writes are now concretely
+   verified; `!` still only has solver-confirmed entry *reachability* —
+   a smaller, parallel task, not a prerequisite for (1) or (2).
+4. If a real symbolic use case for the readonly-flash gap above ever
    arises, apply the narrow fix described in "Tooling gaps" — not before.
-4. **Hardware grounding, smaller follow-ups** (from
-   [`docs/investigations/samd51-peripheral-mapping.md`](investigations/samd51-peripheral-mapping.md),
-   not prerequisites for (1)): find the other three motor channels'
-   ISR/pin pairs the same way PB22/TCC1 was found; name the TX path's real
-   transport peripheral by tracing what populates the driver-object
-   pointer `0x8c10` dispatches through; install `GhidraSVD` only if the
-   standalone resolver stops being convenient enough for routine use.
+5. Name the TX path's real transport peripheral by tracing what
+   populates the driver-object pointer `0x8c10` dispatches through;
+   install `GhidraSVD` only if the standalone resolver stops being
+   convenient enough for routine use.
 
 The `0x827e` loop's own internal structure and its callees `0x5274`/`0x5448`
 ([`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md))
