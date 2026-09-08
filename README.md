@@ -124,9 +124,14 @@ The per-channel pin index is now also resolved (TC0->PB10, TC1->PA08,
 TC2->PB12, TC3->PA10 — a compile-time `.data`-segment fact, not
 application-written) — see
 [`docs/investigations/pin-index-provenance.md`](docs/investigations/pin-index-provenance.md).
-Next: connect `I<channel><mode>|` to this confirmed chain. `!`/`I`'s own
-protocol transactions remain queued for whenever M4 resumes. Full
-roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
+`I<channel><mode>|` is now traced into that chain, meet-in-the-middle:
+the command handler's own per-channel "busy" gate both conditionally
+triggers a direct `step_delta` direction-sign write and independently
+gates whether the ramp logic ever reaches the real timer/GPIO chain —
+one edge (what sets that gate nonzero) remains open — see
+[`docs/investigations/i-command-motor-chain.md`](docs/investigations/i-command-motor-chain.md).
+`!`/`I`'s own protocol transactions remain queued for whenever M4
+resumes. Full roadmap: [`docs/harness/roadmap.md`](docs/harness/roadmap.md).
 
 ## Where should a new developer read next?
 

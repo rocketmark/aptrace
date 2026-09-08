@@ -156,14 +156,24 @@ closing recommendation.
     PB22/TCC1 fact. Also ruled out with evidence: NVM/EEPROM-persisted
     config and board/runtime detection. See
     [`docs/investigations/pin-index-provenance.md`](../investigations/pin-index-provenance.md).
-14. Connect `I<channel><mode>|`'s already-mapped protocol-level state
-    machine (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
-    `i32[0x20002064[channel]]`, per
-    `research/autopilot_static_inventory/synchronous-responses.md`) to
-    the timer/pin chain (12, 13) found — `i32[0x20002064[channel]]` is
-    already confirmed to be the exact same step-position counter
-    `FUN_00005898` increments, a real link found in (12), not yet
-    exploited. The concrete next step per `motor-timer-survey.md`: trace
-    the two known write sites forward to `step_delta[channel]` (RAM
-    `0x20000094`) — the one remaining link, now that (13) has resolved
-    the pin identity. Not started.
+14. ~~Connect `I<channel><mode>|`'s protocol-level state machine to the
+    timer/pin chain~~ — done, meet-in-the-middle: the `I` handler's own
+    `0x20001b14[channel]!=0` gate conditionally calls
+    `FUN_00005274`->`FUN_00004d18` (writes `step_delta[channel]`'s
+    direction sign, concretely validated); independently,
+    `FUN_00006338`'s ramp logic only forwards a rate update to the
+    already-proven `FUN_00005ee8`->`FUN_00005c00`->`FUN_00005898` chain
+    when that same gate is nonzero — both directions converge on the
+    identical byte. Also corrected the record: the handler's `=5` write
+    targets `0x20002524[channel]`, not `0x20001b14[channel]`. **One edge
+    still open**: what sets `0x20001b14[channel]` nonzero — exhaustively
+    searched (all 12 referencing functions), not found; same class of
+    gap `.data`-segment analysis resolved for the pin-index bytes. See
+    [`docs/investigations/i-command-motor-chain.md`](../investigations/i-command-motor-chain.md).
+15. Find the `0x20001b14[channel]` setter — the one open edge from (14).
+    Leading candidates: `FUN_00006fd8` (commits a new move) or
+    `FUN_00008e18`'s phase-0/phase-1 dispatcher body, both one hop from
+    confirmed writes of the sibling flags `0x20002524[channel]` and
+    `0x2000310c[channel]` (phase). Once found, the full
+    `I<channel><mode>| -> ... -> now-known GPIO -> event-15 result`
+    chain closes completely. Not started.

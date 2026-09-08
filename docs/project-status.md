@@ -273,9 +273,36 @@ re-proving:
   helpers exist in this firmware but none reads config into this array)
   and board/runtime detection (nothing runs before the `.data` copy). See
   [`docs/investigations/pin-index-provenance.md`](investigations/pin-index-provenance.md).
+- **`I<channel><mode>|` traced into the motor/timer chain, meet-in-the-
+  middle (roadmap M6)**: the command handler's own `0x20001b14[channel]`
+  gate conditionally calls `FUN_00005274`->`FUN_00004d18`, which writes
+  `step_delta[channel]`'s direction sign — concretely validated with
+  Unicorn (both branches of the gate exercised, matching the
+  disassembly exactly). Independently, `FUN_00006338` (ramp/velocity
+  logic) only forwards a rate update to the already-proven
+  `FUN_00005ee8`->`FUN_00005c00`->`FUN_00005898` chain when that same
+  gate is nonzero — the two directions of the meet-in-the-middle search
+  converge on the identical byte. Also corrected the record: the
+  handler's "`=5`" write is to `0x20002524[channel]`, not
+  `0x20001b14[channel]` as an older static-inventory pass had it. One
+  edge remains open — what sets `0x20001b14[channel]` nonzero was
+  searched for exhaustively (all 12 referencing functions) and not
+  found, the same class of gap `.data`-segment analysis resolved for
+  the pin-index bytes. See
+  [`docs/investigations/i-command-motor-chain.md`](investigations/i-command-motor-chain.md).
 
 ## Corrected assumptions
 
+- **The `I` handler's "`=5`" write targets `0x20002524[channel]`, not
+  `0x20001b14[channel]`.** `research/autopilot_static_inventory/synchronous-responses.md`'s
+  original static-inventory pass conflated two distinct, adjacent-in-role
+  per-channel byte arrays. Disassembly of the real handler
+  (`0x872e`-`0x877c`) shows `0x20001b14[channel]` is only ever *read*
+  there (as a gate on calling `FUN_00005274`); the literal `5` is stored
+  to `0x20002524[channel]`, a separate flag also written by
+  `FUN_00006fd8` (`=1`, on committing a real move) and an unnamed
+  periodic poller (`=2`). See
+  [`docs/investigations/i-command-motor-chain.md`](investigations/i-command-motor-chain.md).
 - **The `0x827e`-`0x82c4` loop is not on the ASCII-command path at all —
   it's gated on `buffer[0]==0xF0`.** Two earlier passes (Ghidra-based
   decompilation, then a first symbolic-execution pass) both examined this
@@ -368,15 +395,22 @@ separately and immediately afterward, also on 2026-09-08.
    closed: TC0->PB10, TC1->PA08, TC2->PB12, TC3->PA10, a `.data`-segment
    startup-initialization fact, not application-written — see
    [`docs/investigations/pin-index-provenance.md`](investigations/pin-index-provenance.md).
-   **Concrete next micro-step**: connect `I<channel><mode>|`'s
-   already-mapped protocol-level state machine
-   (`u8[0x20001b14[channel]]`/`u8[0x200029d8[channel]]`/
-   `i32[0x20002064[channel]]` — the last of these is already confirmed to
-   be the exact same address as the timer mechanism's own step-position
-   counter) forward to `step_delta[channel]` (`RAM 0x20000094`, the
-   per-tick rate `FUN_00005898` adds) — the one remaining link to close
-   the full `command -> state -> timer rate -> ISR -> now-known GPIO`
-   chain. Not started.
+   `I<channel><mode>|`'s state machine is now traced forward and meets
+   the timer chain from (12)/(13) in the middle: the handler's own
+   `0x20001b14[channel]!=0` gate conditionally calls `FUN_00005274` ->
+   `FUN_00004d18`, which writes `step_delta[channel]`'s *sign* (a
+   confirmed, concretely-validated edge — also corrected the record:
+   the handler's `=5` write is `0x20002524[channel]`, not
+   `0x20001b14[channel]` as previously catalogued); separately,
+   `FUN_00006338`'s ramp logic only propagates a rate update to the
+   real `FUN_00005c00`/`FUN_00005898` chain when that same
+   `0x20001b14[channel]` gate is nonzero. See
+   [`docs/investigations/i-command-motor-chain.md`](investigations/i-command-motor-chain.md).
+   **One link remains**: what sets `0x20001b14[channel]` nonzero in the
+   first place — an exhaustive static search (all 12 functions that
+   reference it) found only reads and one clear-to-zero, the same class
+   of gap `.data`-segment analysis resolved for the pin-index bytes, not
+   yet resolved here.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and
