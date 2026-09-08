@@ -1,274 +1,216 @@
 # APTrace — Project Status
 
-**This is the single authoritative source for current project state.** It
-replaces the old chronological `progress.md` (now
-[`docs/history/progress.md`](history/progress.md)) as the place to check
-before starting new work. If anything elsewhere in the repo conflicts with
-this document, this document wins — and if you find such a conflict, it's a
-bug in the docs; fix it here.
+**This is the single authoritative source for current project state.** If
+anything elsewhere in the repo conflicts with this document, this document
+wins — and if you find such a conflict, it's a bug in the docs; fix it here.
+Historical detail lives in linked docs, not here — this file stays short by
+design.
 
 Last updated: 2026-09-07.
 
 **Before doing firmware-analysis work, read
-[`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** — it covers
-which of Ghidra/Unicorn/Macaw/Crucible to reach for and why; see also
-[`CLAUDE.md`](../CLAUDE.md) for the short mandatory version.
+[`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
+version: [`CLAUDE.md`](../CLAUDE.md)) for which of Ghidra/Unicorn/Macaw/
+Crucible to reach for.
 
 ## Current milestone
 
-**Goal**: a single, complete AutoPilot-only transaction, fully verified
-through APTrace's own pipeline:
+**Goal**: one complete AutoPilot-only transaction, verified through
+APTrace's own pipeline:
 
 ```
-"&" command
+wire command "&|"
     -> real receive/parser path (unmodified compiled firmware)
     -> event 5 scheduled
     -> outbound TX hook (0x8c10 / 0x7f84)
     -> observed string == "V01R39"
 ```
 
-**Status: not yet complete.** See "Current blockers" below for exactly
-what's missing and why.
+**Status: not yet complete** — see "Current blocker" below.
 
-**Explicit rule**: do not start on the Remote (`firmware_mando868.bin` /
-`firmware_mando915.bin`) firmware until the above AutoPilot-only transaction
-works end to end. Nothing in the Remote firmware has been touched by APTrace
-code yet; this rule has held throughout the project.
+**Note on the command itself**: `&|` is the wire-level frame the Remote
+transmits (`|` is the frame terminator). What's solver-confirmed so far is
+narrower: the dispatcher's first-byte check requires exactly `0x26` ('&')
+at flash `0x888c`. How the full `&|` frame gets from the receive buffer to
+that single-byte check — i.e. the exact parser-visible representation — is
+still part of the receive-path investigation (see "Corrected assumptions").
 
-## Known-good capabilities (proven, reusable)
+**Remote (`mando`) firmware**: substantial *static* research already exists
+for it (`research/autopilot_static_inventory/`, `docs/protocol/`), covering
+both sides of the protocol. What hasn't happened is any APTrace
+execution/harness work — Ghidra, Macaw, Unicorn, or Crucible have not been
+pointed at `firmware_mando868.bin`/`firmware_mando915.bin` yet, and
+**must not be** until the AutoPilot-only milestone above is complete.
 
-These have been demonstrated on real, unmodified AutoPilot firmware and are
-safe to build on without re-proving:
+## Proven capabilities & findings
 
-- **Raw firmware loading** — Macaw `Memory` built directly from a flat
-  `.bin`, no ELF wrapper (`APTrace.FirmwareLoader.buildMemory`).
-- **Vector table parsing** — `tools/vector_scan.py` and
-  `APTrace.VectorTable`; validated against all four firmware images.
-- **Thumb-2 lifting via Macaw's AArch32 backend** — zero decode/lift
-  failures across ~1500 real instructions in the firmware's interrupt
-  handlers, including the large `Reset_Handler`.
-- **Macaw code discovery / CFG recovery** — including from arbitrary seeded
-  entry points not reachable via the vector table (used to seed the
-  protocol dispatcher directly).
-- **Crucible execution of lifted Macaw IR**, both single-block
-  (`APTrace.SymbolicRunner.checkBranchModel`) and whole-function
-  (`APTrace.ProtocolHarness.runPacketTransaction`).
-- **What4/Z3 solving** for reachability and input-value queries, including
-  registering models named for what they represent.
-- **Symbolic MMIO / symbolic register branching** — a real memory-mapped
-  peripheral status register modeled as symbolic, with Z3 producing correct
-  path conditions for both branch directions (see
-  [`docs/harness/symbolic-execution-results.md`](harness/symbolic-execution-results.md)).
-- **Single-block symbolic protocol checks**, solver-confirmed against the
-  real compiled dispatcher (not hand-derived): a fixed register holding the
-  packet's first byte, checked against each command's real comparison
-  instruction, reaches the correct handler exactly when set to that
+Demonstrated on real, unmodified firmware; safe to build on without
+re-proving:
+
+- **Target/platform**: Performing Rigs AutoPilot/Remote firmware on
+  Microchip/Atmel **ATSAMD51 (Cortex-M4F)**, Arduino/Adafruit SAMD lineage,
+  app image loaded at flash `0x4000`. Hashes:
+  [`docs/firmware/firmware-inventory.md`](firmware/firmware-inventory.md).
+  Layout/vector table: [`docs/firmware/firmware-layout.md`](firmware/firmware-layout.md).
+- **Macaw pipeline**: raw `.bin` loading (no ELF), vector-table parsing,
+  Thumb-2 lifting (zero decode failures across ~1500 real instructions),
+  and CFG discovery from arbitrary seeded entry points — used to seed the
+  protocol dispatcher directly.
+- **Crucible execution infrastructure works** at both granularities:
+  single-block (`APTrace.SymbolicRunner.checkBranchModel`) and
+  whole-function (`APTrace.ProtocolHarness.runPacketTransaction`) — i.e.
+  the lift-to-Crucible-to-What4/Z3 machinery runs correctly in general.
+  **This is distinct from the AutoPilot dispatcher replay specifically
+  completing, which it does not yet — see "Current blocker."**
+- **Solver-confirmed single-block protocol checks** (not hand-derived): a
+  register holding the packet's first byte, checked against each command's
+  real comparison instruction, reaches the correct handler exactly at that
   command's ASCII value:
 
-  | Command | Solver-confirmed value |
-  |---|---|
-  | `&` | `0x26` |
-  | `G` | `0x47` |
-  | `!` | `0x21` |
-  | `S` | `0x53` |
+  | Command | Solver-confirmed value | Check block |
+  |---|---|---|
+  | `&` | `0x26` | `0x888c` -> `0x8890` |
+  | `G` | `0x47` | `0x83b2` -> `0x83b6` |
+  | `!` | `0x21` | `0x87b2` -> `0x87b6` |
+  | `S` | `0x53` | `0x87be` -> `0x87c2` |
 
   See [`docs/harness/protocol-harness-results.md`](harness/protocol-harness-results.md).
-- **A reusable diagnostic**: a custom Crucible `ExecutionFeature`
-  (`APTrace.ProtocolHarness.debugFeature`) that logs the visited program
-  location every N simulator steps. This is a supported capability, not a
-  one-off hack — it's what turns an opaque hang into "stuck cycling through
-  addresses X, Y, Z," and it's what found both bugs described below. Reuse
-  it whenever a whole-function run doesn't terminate as expected.
-- **Ghidra headless static analysis** (`tools/ghidra/analyze_firmware.sh`),
-  forced to the Thumb-only `ARM:LE:32:Cortex` language, with vector-table
-  entry seeding (`APTraceSeedVectorTable.java`, reusing the same 56-entry
-  structure `tools/vector_scan.py` validated) and JSON export of functions/
-  calls/data-references/strings (`APTraceExportStaticAnalysis.java`).
-  Confirmed on real firmware: 414 functions discovered (vs. 204 without
-  vector-table seeding), including the protocol dispatcher region. See
-  [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md).
-- **Unicorn concrete Thumb execution** (`tools/unicorn/run_concrete.py`,
-  Cortex-M4 CPU model, pinned `unicorn==2.1.4` in a project-local venv).
-  Confirmed on real firmware: concretely executing from `0x888c` with
-  `r3=0x26` reproduces the solver-confirmed `&` -> `0x8890` branch exactly
-  (any other value of R3 reaches the fallthrough instead). See
-  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
-- **`tools/doctor.sh`** verifies all four backends (Ghidra headless,
-  Unicorn, and Macaw/Crucible/What4/Z3 build prerequisites) are usable,
-  including the two functional smoke tests above.
-
-## Confirmed findings
-
-- **Target firmware**: Performing Rigs AutoPilot / Remote firmware
-  (`firmware_autopilot868.bin`, `firmware_autopilot915.bin`,
-  `firmware_mando868.bin`, `firmware_mando915.bin`). See
-  [`docs/firmware/firmware-inventory.md`](firmware/firmware-inventory.md) for
-  hashes and provenance.
-- **MCU/platform**: Microchip/Atmel **ATSAMD51 (Cortex-M4F)**, Arduino +
-  Adafruit SAMD board-package lineage (v1.7.11), application image loaded at
-  flash `0x4000` (behind a 16KB Adafruit-style bootloader). See
-  [`docs/firmware/firmware-layout.md`](firmware/firmware-layout.md).
-- **The real caller into the protocol dispatch region** is
-  `0x8a34 -> 0x8259` (a genuine, Macaw-call-classified `BL`, not a
-  tail-jump). See [`docs/investigations/trigger-input.md`](investigations/trigger-input.md).
-- **The opaque-call handling had a real, now-fixed bug**: the original
-  function-call override substituted fresh symbolic values for *every*
-  register on every call, including R4-R11, which AAPCS makes callee-saved
-  (a real ARM function call must not touch them). This corrupted a loop's
-  own counter/table-pointer state and produced a hang that looked like
-  firmware complexity but wasn't. Fixed by only substituting the genuinely
-  caller-saved registers (R0-R3, R12) via `MS.updateReg`, confirmed by
-  direct register tracing. See
+- **The real caller into the protocol dispatch region**: `0x8a34 -> 0x8259`
+  (Macaw-call-classified `BL`, not a tail-jump). See
+  [`docs/investigations/trigger-input.md`](investigations/trigger-input.md).
+- **A real calling-convention bug, fixed**: the opaque function-call
+  override used to clobber *every* register (including AAPCS callee-saved
+  R4-R11), corrupting a loop's own counter/table-pointer state and
+  producing a hang that looked like firmware complexity. Fixed to only
+  substitute the genuinely caller-saved registers (R0-R3, R12). See
   [`docs/harness/execution-model.md`](harness/execution-model.md).
+- **A reusable diagnostic**: `APTrace.ProtocolHarness.debugFeature`, a
+  Crucible `ExecutionFeature` that logs the visited program location every
+  N steps — turns an opaque hang into "stuck cycling through X, Y, Z."
+  Reuse it whenever a whole-function run doesn't terminate as expected.
+- **Ghidra headless static analysis** integrated
+  (`tools/ghidra/analyze_firmware.sh`, Thumb-only `ARM:LE:32:Cortex`,
+  vector-table entry seeding): 414 functions discovered on real firmware
+  (vs. 204 unseeded), including the dispatcher region. See
+  [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md).
+- **Unicorn concrete execution** integrated (`tools/unicorn/run_concrete.py`,
+  Cortex-M4 model): concretely running from `0x888c` with `r3=0x26`
+  reproduces the solver-confirmed `&` -> `0x8890` branch exactly. See
+  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md).
+- **`tools/doctor.sh`** verifies Ghidra, Unicorn, and Macaw/Crucible/What4/Z3
+  are all usable, including functional smoke tests.
 
-## Corrections to earlier findings
+## Corrected assumptions
 
-- **The "flat parser chain" model of `0x8258` is no longer fully trusted.**
-  `research/autopilot_static_inventory/parser-dispatch.md` (v0.1, a purely
-  static pass) modeled the AutoPilot dispatcher as a simple if/else-if scan
+- **The "flat parser chain" model of `0x8258` is not fully trusted.** The
+  original static pass modeled the dispatcher as a simple if/else-if scan
   over the packet's leading byte. Symbolic execution found the real entry
-  sequence runs through a nontrivial indexed-lookup loop first (reading
-  `[R5+1]`, `[R4+6..9]`, indexing `[R7 + R0*4]`), and the region Macaw
-  discovers from that entry point is one large (~340-block) unit, not a
-  small self-contained function. The individual character-level branches
-  (`&`, `G`, `!`, `S`) still check out — see the confirmed-values table
-  above — but the overall shape does not. Current understanding:
+  sequence runs through an indexed-lookup loop first (`0x827e`-`0x82c4`,
+  reading `[R5+1]`, `[R4+6..9]`, indexing `[R7 + R0*4]`) inside one large
+  (~340-block) Macaw-discovered unit. The individual character checks
+  (table above) still hold; the overall shape does not. See
   [`docs/investigations/parser-dispatch.md`](investigations/parser-dispatch.md).
-- **`0x801c` (on the path that sets up the dispatcher's R0 argument) is lifted
-  by Macaw as ARM/A32-mode code** (`BL_i_A1`, `BX_A1`, `PSTATE_T => 0`),
-  which is architecturally impossible on Cortex-M4F (M-profile has no ARM
-  execution state at all). **Treat this as a discovery/mode anomaly, not
-  trusted semantics** — do not derive conclusions about real firmware
-  behavior from this specific lifted region without independent
-  confirmation. **Update**: Ghidra's Thumb-only `ARM:LE:32:Cortex` language
-  (architecturally incapable of decoding A32 at all) decodes this same
-  address as a completely ordinary, well-formed Thumb function — a flag
-  check plus a wraparound-safe elapsed-time computation, called from eight
-  real, cross-referenced sites including the same `0x8a34` caller Macaw
-  found. This is strong evidence the A32 lift is a genuine Macaw/dismantle
-  decode limitation for this address, **not** dead/unreachable code — see
-  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s "Tool
-  disagreements" section for the full comparison and
-  [`docs/investigations/trigger-input.md`](investigations/trigger-input.md)
-  for the updated investigation.
+- **Macaw vs. Ghidra disagreement at `0x801c`, resolved.** Macaw lifted this
+  address (on the path that sets up the dispatcher's R0 argument) as
+  ARM/A32-mode code — architecturally impossible on Cortex-M4F. Ghidra's
+  Thumb-only Cortex-M language (incapable of decoding A32 at all) instead
+  decoded it as an ordinary, well-formed, 8-times-called Thumb function.
+  **Conclusion: the A32 lift was a Macaw/dismantle decode limitation, not
+  dead code.** R0's exact value at the dispatcher call site is still
+  unconfirmed. See
+  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md#tool-disagreements-investigate-dont-default)
+  and [`docs/investigations/trigger-input.md`](investigations/trigger-input.md).
 
-## Current blockers
+## Current blocker
 
-**Primary blocker**: the whole-function replay of the AutoPilot dispatcher
-with a real in-memory `&` packet still does not terminate, even after fixing
-the calling-convention bug above. Diagnosis (via the same execution-tracing
-technique): the loop's real termination does not depend on the packet
-content or on the caller's R0 argument (both were tested directly and ruled
-out). Current best hypothesis: `0x5274` and `0x5448` (real per-channel
-"motor state" functions, called from inside the loop) very plausibly have
-memory side effects — e.g. marking a channel processed — that the loop's
-exit condition depends on. They are currently **opaquely stubbed** (treated
-as black boxes with fresh symbolic register results and zero memory
-effects), so if the real exit condition depends on such a write, it can
-never be satisfied under the current approximation. This is believed to be a
-**concrete execution / memory-side-effect modeling gap in the harness**, not
-evidence of a real infinite loop in the firmware. See
+Whole-function Crucible replay of the AutoPilot dispatcher against a real
+in-memory `&` packet **does not terminate**, even with the calling-convention
+bug fixed. Full trail:
 [`docs/harness/protocol-harness-results.md`](harness/protocol-harness-results.md)
-("Follow-up session") for the full diagnostic trail.
+("Follow-up session").
 
-## Tooling gaps
+**Hypothesis revised (2026-09-07) after a Ghidra deep-dive on `0x5274`/
+`0x5448`.** The original hypothesis was that these two per-channel functions
+have memory side effects the loop's exit condition depends on, and that
+opaquely stubbing them (zero memory effects) breaks that dependency.
+Decompiling both functions and resolving their actual RAM read/write
+targets found: `0x5274` (at its loop call site, mode fixed to `4`) writes
+`0x200024cc[channel]` and `0x2000309d[channel]`; `0x5448` writes
+`0x20000134[channel]`, `0x200023d8[channel]`, `0x20002524[channel]`
+unconditionally plus two conditional writes (`0x20003098`, and
+`0x200024cc[channel]` again). **None of these overlap the loop's own reads**
+— the loop only reads `buffer[1]`, a sliding 4-byte buffer window, and
+`TABLE[channel]` at `0x20000180` (read-only; neither function writes to
+`0x20000180`). Full breakdown:
+[`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md).
 
-- No lazy real-CFG execution for called functions yet — calls are either
-  fully opaque (current) or would require manually lifting the whole
-  transitive call graph up front. The supported middle ground
-  (`MS.LookupFunctionHandle`'s lazy-registration mechanism, building a real
-  CFG for a callee on first call) is understood but not implemented. **Now
-  that Unicorn is integrated, this may not even be the right fix** — see
-  "Next 3-5 concrete steps" below.
-- No Unicorn-to-Crucible state hand-off format yet — Ghidra and Unicorn are
-  now integrated (see
-  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)), but there
-  is no defined way to feed a Unicorn-captured concrete snapshot into a
-  Crucible run as its initial state. Plain JSON is enough for this pass's
-  smoke tests; a real hand-off format is future work if a scenario needs it.
-- No SVD-based MMIO/peripheral register naming yet. A maintained mechanism
-  was identified (`cmsis-svd-data` for the SVD file + the `GhidraSVD`
-  extension to apply it) but not wired up, because the exact ATSAMD51 part
-  number on the real board hasn't been confirmed yet (family and RAM size
-  are known; the specific G/J/N/P variant isn't). See
-  [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s "SVD / MMIO
-  labeling" section for the concrete next step.
-- Unicorn's MMIO region is plain zero-initialized RAM with no real
-  peripheral behavior (see
-  [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md)) — fine
-  for control-flow questions, not for anything depending on genuine
-  peripheral semantics.
+This is now in tension with the memory-side-effect hypothesis rather than
+confirming it. The loop's exit condition (`R6 >= buffer[1]-derived
+threshold`) is structurally an ordinary bounded counter — it should
+terminate in a small, finite number of iterations regardless of what
+`0x5274`/`0x5448` do to memory. The previously-recorded observation that
+"R6 grows linearly and unboundedly" for two different concrete `buffer[1]`
+values is not yet explained by this structure. **New leading candidate**:
+the loop's initial `R6` value (seeded from the dispatcher's still-unresolved
+caller argument — [`docs/investigations/trigger-input.md`](investigations/trigger-input.md))
+or another upstream register/memory-seeding choice in that whole-function
+test may be the actual cause, not the opaque-callee memory model. Both
+explanations remain open; a concrete Unicorn run (see "Next steps") is
+needed to distinguish them before touching the Crucible model.
 
-## Open research questions
+## Next steps
 
-Protocol-level (see [`docs/protocol/open-questions.md`](protocol/open-questions.md)
-for the full, curated list): naming event-7's 11 fields, resolving the
-`I<channel><mode>` numeric semantic, naming the `a0/a1/a2` states, whether
-events 2/3/8/9/11/12/14 are truly unreachable, reconciling Remote-transmitted
-packets (`MS|`, `MR|`, `N|`, `KK|`, ...) that don't fit the previously-assumed
-dispatch tree.
+1. ~~**Ghidra**: statically determine what `0x5274`/`0x5448` actually write
+   to memory.~~ **Done** — see
+   [`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md).
+   Result: no overlap found between what they write and what the loop
+   reads, which redirects the next step below.
+2. **Unicorn**: run the dispatcher loop concretely (seeded at `0x8259` or
+   directly at `0x827e`) with a real `&|` packet, and capture: the actual
+   initial `R6` value, `buffer[1]` and the resulting exit threshold, `R7`
+   and real `TABLE[]` entries, iteration count to termination, and
+   `0x200024cc`/`0x2000309d`/`0x20002524`/`0x20003098` before/after a few
+   iterations. This directly tests whether the loop concretely terminates
+   quickly (supporting a harness-seeding explanation) or genuinely runs long
+   (pointing to something not yet identified) — see
+   [`docs/investigations/dispatcher-loop-callees.md`](investigations/dispatcher-loop-callees.md)'s
+   "What Unicorn should capture next."
+3. **Crucible**: adjust the harness's model based on (2) — this may now be
+   a register/memory-seeding fix (how `R6`/`R0` is established at the
+   dispatcher's true entry) rather than an opaque-callee memory-effect
+   model. Only decide once (2) gives concrete data; the lazy real-CFG
+   execution mechanism (`MS.LookupFunctionHandle`; see
+   [`docs/harness/execution-model.md`](harness/execution-model.md)) remains
+   the fallback if a genuine memory-effect dependency is still found.
+4. Once the loop terminates: confirm `pending[5]` becomes 1 from a real
+   `&` packet run through the *unmodified* whole dispatcher function.
+5. Hook `0x8c10`/`0x7f84` and verify the emitted bytes equal `V01R39` —
+   closes the AutoPilot milestone.
+6. Independently verify `G`/`!`/`S`'s handlers perform their claimed
+   event-scheduling writes (currently only entry *reachability* is
+   solver-verified for these three).
+7. **Only after (1)-(5)**: begin Remote (`mando`) harness work per
+   [`docs/harness/roadmap.md`](harness/roadmap.md), building on the
+   existing static research rather than starting from nothing.
 
-Harness-level: what `0x5274`/`0x5448` actually do and whether they need to be
-genuinely executed (not stubbed) to unblock the whole-function replay; whether
-the `0x801c` ARM-mode anomaly is a Macaw/dismantle decode limitation worth
-reporting upstream, or reflects genuinely dead/unreachable code.
+Do not resume the dispatcher experiment without following this order —
+notably, do not jump to step 3 before 1-2. Fuller backlogs (protocol open
+questions, tooling gaps like SVD/MMIO labeling) are tracked in
+[`docs/protocol/open-questions.md`](protocol/open-questions.md) and
+[`docs/tooling/tool-selection.md`](tooling/tool-selection.md), not
+duplicated here.
 
-## Explicit do-not-start-yet items
+## Tool architecture
 
-- **Do not move to the Remote (`mando`) firmware** until the AutoPilot-only
-  `&` -> event 5 -> `V01R39` transaction works end to end (see "Current
-  milestone").
-- **Do not resume the parser/dispatcher symbolic-execution experiment**
-  itself without first deciding, deliberately, how to unblock it — see
-  "Next 3-5 concrete steps" below, which now includes a Unicorn-based option
-  that wasn't available when this pause point was first set.
-- Ghidra and Unicorn integration is **done** as of this pass (see "Known-good
-  capabilities" above and [`docs/tooling/tool-selection.md`](tooling/tool-selection.md));
-  this bullet previously deferred that work and no longer applies.
-
-## Next 3-5 concrete steps
-
-1. **New option, worth trying first**: use Unicorn
-   (`tools/unicorn/run_concrete.py`) to concretely execute `0x5274` and
-   `0x5448` from a plausible caller state and observe their *actual* memory
-   writes, rather than continuing to opaquely stub them in Crucible. If
-   their real behavior is simple enough, this may let the whole-function
-   Crucible replay use a narrow, evidence-based memory-effect model instead
-   of requiring the larger lazy-real-CFG-execution mechanism. See
-   [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)'s decision
-   guidance (concrete execution is the right tool for "what does this code
-   do from a known state," which is exactly this question).
-2. If (1) doesn't fully resolve it: implement lazy real-CFG execution for
-   called functions in Crucible (architecturally correct, more
-   implementation work — see
-   [`docs/harness/execution-model.md`](harness/execution-model.md)).
-3. Once the loop terminates: confirm `pending[5]` becomes 1 from a real
-   in-memory `&` packet run through the *unmodified* whole dispatcher
-   function (not just the isolated `0x888c` block).
-4. Hook outbound transmission at `0x8c10`/`0x7f84` and verify the emitted
-   bytes equal `V01R39` for the `&` transaction — this closes the AutoPilot
-   milestone.
-5. Independently verify `G`/`!`/`S`'s handlers perform their claimed
-   event-scheduling writes (currently only handler-entry *reachability* is
-   solver-verified for these three; the writes themselves were read
-   statically from `pending-writes.csv`, not independently confirmed via
-   the harness).
-6. Only after (1)-(4): begin the Remote (`mando`) firmware work per
-   [`docs/harness/roadmap.md`](harness/roadmap.md).
-
-## Project direction: APTrace as a workbench, not a monolith
-
-APTrace wraps specialized tools rather than forcing Macaw/Crucible to do
-everything a full RE workflow needs. All four backends are now integrated:
+APTrace orchestrates specialist tools rather than reimplementing them:
 
 | Tool | Role | Status |
 |---|---|---|
-| Ghidra | static RE / decompiler / xrefs / tables / structures / MMIO naming | Integrated — [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) |
-| Macaw | independent CFG and machine-code lifting | In use, proven |
-| Unicorn | concrete Thumb execution and state snapshots | Integrated — [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md) |
+| Ghidra | static RE / decompiler / xrefs / tables / MMIO naming | Integrated — [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) |
+| Unicorn | concrete Thumb execution / state snapshots | Integrated — [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md) |
+| Macaw | independent CFG discovery / machine-code lifting | In use, proven |
 | Crucible + What4 + Z3 | targeted symbolic reachability / input solving | In use, proven |
-| APTrace | orchestration, evidence model, scenarios, traces, UI/workbench | This repo |
+| APTrace | orchestration, evidence model, scenarios, traces, UI | This repo |
 
 See [`docs/tooling/tool-selection.md`](tooling/tool-selection.md) for when
-to use which, and [`docs/architecture.md`](architecture.md) for the fuller
-rationale.
+to use which, and [`docs/architecture.md`](architecture.md) for rationale.

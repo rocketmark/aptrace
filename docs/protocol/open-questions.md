@@ -44,13 +44,19 @@ about the protocol itself.
 
 ## Raised by APTrace's symbolic-execution work
 
-10. **What do `0x5274` and `0x5448` actually do?** These per-channel
-    "motor state" functions are called from inside the indexed-lookup loop
-    near `0x8258`; they are currently believed to have memory side effects
-    the harness doesn't model (opaque stubbing), which is the leading
-    explanation for the whole-function replay not terminating. See
-    [`docs/project-status.md`](../project-status.md) and
-    [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md).
+10. ~~What do `0x5274` and `0x5448` actually do?~~ **Largely resolved
+    (2026-09-07) via Ghidra decompilation** — see
+    [`docs/investigations/dispatcher-loop-callees.md`](../investigations/dispatcher-loop-callees.md)
+    for the full read/write breakdown. Summary: at their loop call sites,
+    `0x5274` writes `0x200024cc[channel]` and `0x2000309d[channel]`
+    unconditionally; `0x5448` writes `0x20000134[channel]`,
+    `0x200023d8[channel]`, `0x20002524[channel]` unconditionally plus two
+    conditional writes. **None of these overlap the loop's own reads**
+    (buffer bytes and `TABLE[channel]` at `0x20000180`), which is now in
+    tension with the "memory side effects explain non-termination"
+    hypothesis rather than confirming it — see that document's "Tool/evidence
+    disagreement" section and [`docs/project-status.md`](../project-status.md)'s
+    current blocker.
 11. ~~Is the `0x801c` ARM/A32-mode lift a real Macaw/dismantle discovery
     limitation, or dead code on real hardware?~~ **Resolved (2026-09-07),
     in favor of "decode limitation."** A Ghidra cross-check (`ARM:LE:32:Cortex`,

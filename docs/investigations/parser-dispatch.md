@@ -51,12 +51,14 @@ not a `CMP`+branch pair — it:
 
 This is the shape of a **hash-table or lookup-table probe** — compute a
 key, index into a table, compare, advance on mismatch — not a linear string
-of character comparisons. It is not yet known what this loop is looking up
-(a command-ID-to-handler table? a per-channel state slot?) or exactly how
-many iterations it runs before falling through to the character-level
-checks that v0.1 documented. See
+of character comparisons. See
 [`docs/investigations/trigger-input.md`](trigger-input.md) for what's known
-about how R4/R5/R6/R7 get established going into this loop.
+about how R4/R5/R6/R7 get established going into this loop, and
+[`docs/investigations/dispatcher-loop-callees.md`](dispatcher-loop-callees.md)
+for the loop's now fully-decoded structure (it's a per-channel scan over the
+buffer comparing a shared table entry against a packed target value, calling
+`0x5274` or `0x5448` per channel) and what those two callees actually
+read/write.
 
 **Revised model**: entry -> indexed-lookup loop (`0x827e`-`0x82c4`,
 mechanism not fully understood) -> *then*, at some point, code resembling
