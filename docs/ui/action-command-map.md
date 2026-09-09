@@ -455,56 +455,96 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 
 ### 8. Limit-setting -> `LL1`/`LL2` (workflow 12)
 
-- **User-guide action**: `"SET LIMITS"` -> detect first limit -> move to
-  second limit -> detect second limit -> centering/finish.
-- **Visible Remote text/screen**: `"SET LIMITS"`, `"Detecting first /
-  limit..."`, `"Move to the / second limit"`, `"Detecting second"`,
-  `"Centering..."`, `"Finished!"`, `"No limits set"`, `"Process failed"`,
-  `"Limits successfully"` `[firmware string]`.
+- **User-guide action**: enter the Manual-Mode-cluster screen (via the
+  `"MANUAL MODE"`-titled screen's row menu) -> select the Set-Limits row
+  -> jog to first position -> click to confirm -> jog to second position
+  -> click to confirm -> exit.
+- **Visible Remote text/screen**: `"SET LIMITS"`, `"Limit points for the /
+  cablecam movement / are going to be set"`, `"Click the knob / to
+  start"`, `"Use the joystick to / move the cablecam"` (alt: `"Use the
+  knob to..."`), `"Click the knob to / confirm the / limit point"`,
+  `"Setting first / limit..."`, `"Setting second / limit..."`, `"No
+  limits set"`, `"Press knob to exit"` — all **CONFIRMED**, read directly
+  from the exact flash literal-pool slot each render call uses, not
+  inferred from string-table proximity. `"Detecting first/second
+  limit..."`, `"Centering..."`, `"Finished!"`, `"Process failed"`,
+  `"Limits successfully"` remain **UNKNOWN**-placement — not found
+  referenced anywhere in the traced functions this slice covered (they
+  may belong to an un-disassembled outcome branch, `0xe234` — see below).
 - **Preconditions**: none (reachable pre-`MC4`, like every ASCII command).
-- **Remote state/function**: **`LL1|`'s real sender is now found**
-  (`manual-mode-wire-provenance.md` Part 3): `FUN_0000de3c`, the same
-  screen that hosts the live-jog loop reached via the `"Direction"` row
-  of the `"MANUAL MODE"`-titled screen, sends `"LL1|"` once on entry and
-  renders `"Use the joystick to..."` — a real, disassembly-confirmed
-  connection between this workflow and Manual Mode's own live-jog
-  primitive. **`LL2|`'s sender remains UNKNOWN**, and this slice did not
-  confirm whether the *position-capture* itself (which the row below
-  shows never reaches `posA`/`posB` via any ASCII-protocol path) instead
-  flows through the same binary `0xF0`/`0xE0` mechanism the joystick
-  loop sends — a real, precisely bounded next question, not chased
-  further here.
-- **Wire command(s)**: `LL1|` (clear), `LL2|` (order and validate).
+- **Remote state/function**: **Both `LL1|` and `LL2|`'s real senders are
+  now found, and they are the same function**
+  (`ll2-set-limits-provenance.md`): `FUN_0000de3c`, the shared live-jog
+  engine already tied to Manual Mode's `"Direction"` row
+  (`manual-mode-wire-provenance.md`). A new, exhaustive whole-image raw
+  byte scan plus an independent Ghidra xref scan both converge on exactly
+  one `LL2|` reference, at `0xe114`, inside this same function — no other
+  candidate sender exists anywhere in the image. **A genuine surprise**:
+  `LL1|` is sent **twice** — the already-known 3x entry preamble, and a
+  second 3x resend later in the same function, both gated on a real,
+  newly-found position-query mechanism: `FUN_0000b834` sends
+  `command-inventory.md`'s previously-unattributed `I9|`/`I1|` short
+  forms, parses a signed numeric response, and only on success does
+  `FUN_0000de3c` (re)send `LL1`/`LL2`. **The queried position value is
+  never forwarded to `LL1`/`LL2` or anywhere else** — confirmed by an
+  exhaustive xref of its storage slot and by decompiling the shared
+  sender (`FUN_000058a8`, one bare string-pointer argument, no numeric
+  payload) — so this real position-query mechanism is a confirmed dead
+  end, not a path to `posA`/`posB`. Also found: Manual Mode's
+  `"Direction"` row and Set Limits are two rows of the *same* screen
+  (`FUN_0000e314`, reached from the same `FUN_0000d988`/`FUN_0000db34`
+  cluster), not merely two features sharing a jog primitive — and
+  `"SET LIMITS"`'s prior placement (this doc's sibling,
+  `user-guide-workflows.md` §11) as a possible member of the trigger/relay
+  settings family is **disproven** (its sole code reference traces
+  cleanly to this cluster instead).
+- **Wire command(s)**: `LL1|` (clear, sent 3x as an entry preamble AND
+  3x again after Phase-1 positioning, each occurrence gated on a
+  successful `I9|`/`I1|` position query), `LL2|` (order and validate,
+  sent 3x after Phase-2 positioning, same gate). `I9|`/`I1|` (position
+  query, mode-selected by `*0x200018e7`) — Remote-only traffic; response
+  parsed but discarded before any `LL` send.
 - **AutoPilot handler/function**: shared `'L'`-family handler
   `FUN_000054e0`. `LL1`: unconditionally clears two globals (`posA`
   `0x20003114`, `posB` `0x20002414`) plus a validity flag
   (`0x20002458`). `LL2`: compares/reorders `posA`/`posB` into
   `minDest`/`posB`, sets the validity flag **only if they differ**.
-- **AutoPilot state effect**: as above. **CONFIRMED, exhaustively**: no
-  other code anywhere in this firmware image writes `posA`/`posB` with a
-  real (nonzero) value — meaning the mechanism that is supposed to
-  *capture* a real limit position (presumably from live position during
-  the "Detecting first/second limit..." UI sequence) is **not reachable
-  through this firmware's ASCII protocol by any direct-literal-referenced
-  instruction**. This is the same class of external/unprovisioned-data
-  boundary as the blank `0x12000` motor-target default (workflow 4/11).
+- **AutoPilot state effect**: as above. **CONFIRMED, exhaustively, from
+  two independent directions now**: no other code anywhere in the
+  AutoPilot image writes `posA`/`posB` with a real value (AutoPilot-side
+  scan, `ll-limit-workflow.md`), and the Remote's own real position-query
+  mechanism (`I9|`/`I1|` via `FUN_0000b834`) exists but its result is
+  discarded before reaching the wire at all (Remote-side scan,
+  `ll2-set-limits-provenance.md`) — both traces agree the capture
+  mechanism the command names imply is not reachable through this
+  firmware's real protocol traffic. Same class of external/unprovisioned-
+  data boundary as the blank `0x12000` motor-target default (workflow
+  4/11).
 - **Persistent-state effect**: none — pure `.bss` RAM, not part of the
   `0x12000`-backed persisted struct.
-- **Hardware/motion effect**: none — no GPIO/MMIO dependency at all
-  (confirmed both by disassembly and by a live `--watch-mem-write` run).
+- **Hardware/motion effect**: none from `LL1`/`LL2`/`I9`/`I1` themselves —
+  no GPIO/MMIO dependency at all (confirmed both by disassembly and by a
+  live `--watch-mem-write` run). The jog phases between them use the same
+  binary `0xF0`/`0xE0` mechanism as Manual Mode (workflow 3) and inherit
+  its same open questions (channel/value source, dead-man timeout).
 - **Confidence**: **CONFIRMED** for everything on the AutoPilot side
-  (schema, effects, and the negative result that no real position ever
-  reaches `posA`/`posB` via any static path this project can find).
-  **CONFIRMED** for `LL1|`'s Remote-side sender and its connection to the
-  joystick-jog screen. **UNKNOWN** for `LL2|`'s sender and the exact
-  UI-input mapping beyond `LL1`.
+  (unchanged), for `LL1|`/`LL2|`'s Remote-side senders (both now found,
+  both in `FUN_0000de3c`), for the full send sequence and its gating on
+  `FUN_0000b834`, and for the real on-screen text listed above.
+  **PROBABLE** for the exact row-click/menu-index that selects the
+  Set-Limits sub-flow inside `FUN_0000e314` (structurally confirmed as
+  one of a small number of internal selector values, not traced to a
+  specific labeled row). **UNKNOWN** for the outcome branch beyond `"No
+  limits set"`/`"Press knob to exit"` (an un-disassembled `0xe234` arm
+  likely holds `"Limits successfully"`/`"Process failed"`).
 - **Evidence**: [`ll-limit-workflow.md`](../investigations/ll-limit-workflow.md),
-  [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
-- **Open question**: find the Remote-side `LL2` sender and confirm
-  whether the "Detecting first/second limit..." screens actually send
-  these two commands, or whether they send something else entirely that
-  a static scan of the AutoPilot
-  side alone couldn't reveal a producer for.
+  [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md),
+  [`ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md).
+- **Open question**: the exact outcome-branch text/logic past the traced
+  "No limits set" arm; the precise row-selector-to-label mapping inside
+  `FUN_0000e314`; whether any *other*, entirely untraced mechanism (e.g.
+  the `LH1`-`LH4` family sharing `FUN_000054e0`) ever populates `posA`/
+  `posB` with a real value.
 
 ### 9. Persistence field -> `D<value>,|` (workflow 10, partially)
 
@@ -657,6 +697,24 @@ holding real, distinct captured positions) has no confirmed producer
 anywhere in this firmware image. Treat any workflow narrative describing
 "the AutoPilot remembers where you set the limits" with caution — the
 mechanism that would make that true has not been found.
+
+**Now traced from the Remote side too** (`ll2-set-limits-provenance.md`):
+both are sent from the same function, `FUN_0000de3c`, as part of a real
+sequence —
+
+```
+FUN_0000de3c entry -> LL1| x3 (preamble)
+  -> Phase-1 jog (shared 0xF0/0xE0 binary stream) -> click
+  -> I1|/I9| position query (FUN_0000b834) -> if success: LL1| x3 again
+  -> Phase-2 jog -> click
+  -> I1|/I9| position query again -> if success: LL2| x3
+```
+
+The position query's own parsed numeric result is discarded before
+either `LL` send (`LL1`/`LL2` are always bare, argument-less frames,
+confirmed at the sender) — a third, independent confirmation, from the
+Remote side, of the same "no real producer for posA/posB" conclusion
+above.
 
 ### `D` -> dirty -> save: independent of the motion-command stack entirely
 
@@ -847,30 +905,24 @@ NORMAL RUNTIME
 ## Part 5 — Next highest-value unknowns
 
 Ranked by how many downstream mappings each would unlock, not by ease.
-Six items from this list's earlier drafts — the screen-5 call-site
+Seven items from this list's earlier drafts — the screen-5 call-site
 identity, whether `FUN_00005474` renders different strings per
 screen-index, the `MC<0-3>`/`MC4` Remote sender, the `MT` AutoPilot-side
-scheduling trigger, the `FUN_0000c440` bulk-push trigger, and the Manual
-Mode jog wire mechanism — are now closed (Part 3,
+scheduling trigger, the `FUN_0000c440` bulk-push trigger, the Manual
+Mode jog wire mechanism, and `LL2`'s Remote sender/position-capture
+question — are now closed (Part 3,
 [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
 [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md),
 [`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
-and [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md))
+[`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md),
+and [`ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md))
 and removed; the ranking below reflects what remains.
 
-1. **What Remote function builds `LL2`, and does the "Detecting
-   first/second limit..." UI sequence's own position-capture reach
-   `posA`/`posB`?** `LL1`'s own real sender is now found
-   (`manual-mode-wire-provenance.md` Part 3, the same screen that hosts
-   the live-jog loop) — `LL2`'s sender and the position-capture question
-   remain open. Unlocks: workflow 12, and would either close or
-   definitively reopen the "posA/posB never gets a real value" negative
-   result from the AutoPilot side.
-2. **What does persisted offset `0x15` (the `D` command's field)
+1. **What does persisted offset `0x15` (the `D` command's field)
    represent to the user?** Unlocks: workflow 9/11's connection to a
    concrete settings screen — currently `D` is fully characterized
    mechanically with zero user-facing meaning attached.
-3. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
+2. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
    on menu entry) resolve, in `FUN_00005474`'s own highlight-selection
    logic, to row 7 for screen 10 and row 6 for screen 9** — closing the
    one remaining gap in Part 3's C/D verdicts (currently PROBABLE by
@@ -878,7 +930,7 @@ and removed; the ranking below reflects what remains.
    directly observed for 9/10)? Unlocks: promoting call sites C and D
    from PROBABLE to CONFIRMED, matching what this pass already closed for
    A/B.
-4. **Trace the `param_4==1` record-field-to-wire-position mapping
+3. **Trace the `param_4==1` record-field-to-wire-position mapping
    precisely** — the captured call-site-A/B frame
    (`b'+1,1,1,2,0,1,0,50,0,0,0,0|'`) shows the seeded `+0x14` value (50)
    land on the wire but not the `+0x10 - +0xc` delta (500) this
@@ -886,16 +938,16 @@ and removed; the ranking below reflects what remains.
    already attributes to that branch — a real, disassembly-answerable
    discrepancy between two of this project's own documents, not yet
    reconciled.
-5. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
+4. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
    2-row motor-settings variant) represent, and who writes it?** Lower
    priority than the above — likely a fixed product/hardware-variant
    identifier rather than user-configurable state, but not confirmed.
-6. **What clears `0x20000fa0` (the "has real programmed Auto-Mode data"
+5. **What clears `0x20000fa0` (the "has real programmed Auto-Mode data"
    flag gating `FUN_0000c440`'s own bulk-`'+'` loop) after a push, and
    what role does its second setter, `FUN_0000d218`, play?** Unlocks: a
    complete account of when the boot/reconnect sync in workflow 6
    actually sends anything beyond `MC4`.
-7. **Concretely deliver a real `MT` frame through the Remote's
+6. **Concretely deliver a real `MT` frame through the Remote's
    `FUN_0000c340`/`FUN_00010ce4` per-character inbound state machine** to
    reconfirm the already-disassembly-CONFIRMED Quick-Setup-flag effect
    concretely — assessed this pass as a materially larger, structurally
@@ -903,7 +955,7 @@ and removed; the ranking below reflects what remains.
    `REMOTE_*_ENTRY` anchors; see
    [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md)'s
    own "Remaining unknowns."
-8. **What does the `0xF0`/`0xE0` binary jog frame's per-channel value
+7. **What does the `0xF0`/`0xE0` binary jog frame's per-channel value
    actually represent** (accumulated jog delta vs. live/target position —
    `FUN_0000be94`'s own prologue calls not decoded), **and does the
    AutoPilot side stop or decay motion when frames stop arriving?**

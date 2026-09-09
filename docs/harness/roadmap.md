@@ -877,3 +877,36 @@ closing recommendation.
     own joystick-positioning step — both readings are consistent with
     the user guide, not mutually exclusive. See
     [`docs/investigations/manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
+36. **`LL2|`'s Remote sender found — the other half of
+    `ll-limit-workflow.md`'s open question, closed.** An exhaustive
+    whole-image raw-byte scan (exactly one `"LL2|"` literal anywhere in
+    the ~160KB Mando image) cross-checked by an independent Ghidra xref
+    scan (exactly one reference, at `0xe114`) both converge: `LL2|` is
+    sent by **the same function that sends `LL1|`**,
+    `FUN_0000de3c` — confirming this is one shared Set-Limits/Manual-Mode
+    live-jog engine, not two implementations. A genuine surprise fell out
+    alongside it: `LL1|` is sent **twice** (the already-known 3x entry
+    preamble, and a second 3x resend later in the same function), both
+    gated on a real, previously-unattributed mechanism this slice also
+    closed — `FUN_0000b834`, the real sender of `command-inventory.md`'s
+    own long-unexplained `I9|`/`I1|` short forms, which queries the
+    AutoPilot's current position and parses a signed numeric response;
+    only a successful query lets `FUN_0000de3c` (re)send `LL1`/`LL2`.
+    **The queried value itself is never forwarded**: an exhaustive xref
+    of its storage slot (`0x200027f0`) found no other reader, and the
+    shared ASCII sender (`FUN_000058a8`) takes only a bare string
+    pointer — so no wire path exists from this real query to `LL1`/
+    `LL2`'s payload (they carry none) or to the AutoPilot's `posA`/
+    `posB`, sharpening `ll-limit-workflow.md`'s existing negative result
+    with a third, independent (Remote-side) confirmation. Also corrected
+    a standing hedge: `"SET LIMITS"`'s placement near trigger/relay
+    strings in the flash string table (`user-guide-workflows.md` §11) is
+    disproven — its one real code reference traces to the Manual-Mode
+    screen cluster instead, which now also shown to render Manual Mode's
+    `"Direction"` row and the Set-Limits row from the *same* function
+    (`FUN_0000e314`). Concretely reproduced: all three real `LL1`/`LL2`
+    send sites and both arms (`I9|`/`I1|`) of the position-query sender,
+    entering directly at each real send address
+    (`capture_tx_bytes`/`ConcreteMachine`) — no fabricated packet bytes.
+    See
+    [`docs/investigations/ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md).

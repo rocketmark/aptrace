@@ -6,7 +6,43 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (Manual Mode wire provenance closed: no prior
+Last updated: 2026-09-09 (`LL2|`'s Remote sender found, closing the
+Set-Limits workflow's last open sender question): `LL2|` is sent from
+**the same function that sends `LL1|`** — `FUN_0000de3c`, the shared
+Manual-Mode/Set-Limits live-jog engine — found by an exhaustive raw-byte
+scan (one literal `"LL2|"` in the whole image) cross-checked by a
+whole-image Ghidra xref scan (exactly one reference, at `0xe114`, inside
+`FUN_0000de3c`), both independently converging with zero ambiguity. A
+genuine surprise fell out alongside it: **`LL1|` is sent twice, not
+once** — the already-known entry preamble, and a second resend later in
+the same function, both gated on a real, previously-uncharacterized
+position-query mechanism this slice also closed: `FUN_0000b834`, the
+real sender of `command-inventory.md`'s own long-unattributed `I9|`/`I1|`
+short forms, which sends one of them, parses a signed numeric response,
+and only on success lets `FUN_0000de3c` (re)send `LL1`/`LL2`. **The
+queried position value itself is never forwarded** — confirmed by an
+exhaustive xref of its storage slot and by decompiling the shared ASCII
+sender (`FUN_000058a8`), which takes only a bare string pointer, no
+numeric argument — so no wire path exists from this real position query
+to `LL1`/`LL2`'s payload (they have none) or to the AutoPilot's `posA`/
+`posB`. This sharpens, rather than reopens, `ll-limit-workflow.md`'s
+existing "no producer for `posA`/`posB`" negative result: a third,
+independent trace (the Remote's own query mechanism) now confirms the
+same conclusion from the opposite direction. Also found and corrected:
+`user-guide-workflows.md`'s own hedge that `"SET LIMITS"` might belong to
+the trigger/relay settings-screen family (based on string-table
+proximity) is **disproven** — `"SET LIMITS"`'s sole code reference
+traces cleanly to the Manual-Mode-cluster screen family instead, and
+Manual Mode's `"Direction"` row and Set Limits are now shown to be two
+rows of the *same* screen (`FUN_0000e314`), not merely two features that
+happen to share a jog primitive. Concretely reproduced: all three real
+`LL1`/`LL2` send sites, and both arms (`I9|`/`I1|`) of the position-query
+sender, entering directly at each real send address with
+`ConcreteMachine`/`capture_tx_bytes` — no fabricated packet bytes. See
+[`docs/investigations/ll2-set-limits-provenance.md`](investigations/ll2-set-limits-provenance.md).
+No AutoPilot-side conclusion changed.
+
+Previous update (Manual Mode wire provenance closed: no prior
 slice had identified any wire command for Manual Mode's live jog. This
 slice found it is **not** any known ASCII command — it is a previously-
 uncharacterized **binary** frame family (`0xF0`/`0xE0`, already listed in

@@ -440,41 +440,60 @@ only on explicit user request.
    baseline (less sensitive, less false-triggering); connecting it
    *after* power-up is more sensitive but more prone to false triggers.
    `[firmware string]` `"Relay contact"`, `"12/24Vdc"`, `"Start"`,
-   `"Current"`, `"Delay"`, `"Pingpong mode"` are all found near a
-   `"SET LIMITS"` string in the table and plausibly belong to the
-   trigger/relay settings screen family, but this placement is
-   `[inferred]` from string proximity only — exactly the kind of
-   inference this project's own standing caution warns against treating
-   as proof (see `action-command-map.md`'s confidence-scale note).
+   `"Current"`, `"Delay"`, `"Pingpong mode"` sit near a `"SET LIMITS"`
+   string in the flash string table. **This proximity-based placement is
+   now disproven** (`ll2-set-limits-provenance.md`): `"SET LIMITS"`'s
+   sole real code reference traces cleanly to `FUN_0000cb70`, called only
+   from `FUN_0000e314` — part of the Manual-Mode-cluster screen family
+   (workflow 3/12), not this trigger/relay family. Treat
+   `"Relay contact"`/`"12/24Vdc"`/`"Start"`/`"Current"`/`"Delay"`/
+   `"Pingpong mode"` as still-`[inferred]` trigger/relay settings, now
+   confirmed unconnected to Set Limits specifically.
 
 ---
 
 ## 12. Limit-setting workflow
 
-**Entry condition**: `[inferred]` a channel selected, not yet limit-set.
+**Entry condition**: `[CONFIRMED]` reached from the same
+Manual-Mode-cluster screen as workflow 3 (`FUN_0000d988`/
+`FUN_0000db34`/`FUN_0000d570` -> `FUN_0000e314`) — Set Limits is a
+second row of that same screen/menu, not a separately-rooted top-level
+feature (`ll2-set-limits-provenance.md`). The exact click/menu-index that
+selects this row over the plain "Direction" jog row is `[PROBABLE]`, not
+fully decoded (an internal selector byte equal to `1` or `8`).
 
-**Steps**:
-1. `[firmware string]` `"SET LIMITS"`.
-2. `[firmware string]` `"Make sure that / the slider can / move freely."`,
-   `"Click the knob / to continue"`.
-3. `[firmware string]` `"Setting first"` / `"Detecting first / limit..."`
-   / `"Done!"`.
-4. `[firmware string]` `"Move to the"` / `"second limit"` / `"Setting
-   second"` / `"Detecting second"` / `"Centering..."` / `"Finished!"`.
-5. `[firmware string]` Failure/empty states: `"No limits set"`,
-   `"Process failed"`; success: `"Limits successfully"` (string appears
-   truncated in the table — likely continues on a second line not
-   separately extracted).
-6. `[firmware string]` `"Press knob to start"` / `"using the cablecam"` /
-   `"Press knob to exit"`.
-7. `[firmware string]` Related settings found nearby: `"Reset limits"`,
-   `"Set limits"`, `"Surpass limits"`, `"Speed limit"`.
+**Steps** (real control-flow, from `FUN_0000de3c`; text `[CONFIRMED]` by
+direct literal-pool reads, not proximity):
+1. `"SET LIMITS"` (title, `FUN_0000cb70`); menu row `"Set limits"` (or
+   `"Reset limits"` if already set) alongside `"Surpass limits"`/
+   `"Speed limit"` (`FUN_0000dd38`).
+2. `"Limit points for the"` / `"cablecam movement"` / `"are going to be
+   set"` / `"Click the knob"` / `"to start"` -> on click: `LL1|` sent 3x
+   (a wake-preamble idiom, same as `MC`/`MT`).
+3. `"Use the joystick to"` (or `"Use the knob to"`, mode-dependent) /
+   `"move the cablecam"` / `"Click the knob to"` / `"confirm the"` /
+   `"limit point"` -> the same binary `0xF0`/`0xE0` jog stream as Manual
+   Mode (workflow 3), every tick, until click.
+4. On click: `"Setting first"` / `"limit..."` -> a real position query
+   (`I1|` or `I9|`, via `FUN_0000b834`) -> **only if it succeeds**:
+   `LL1|` sent 3x *again*.
+5. Second jog phase, same mechanism as step 3.
+6. On click: `"Setting second"` / `"limit..."` -> position query again ->
+   **only if it succeeds**: `LL2|` sent 3x.
+7. Outcome: `"No limits set"` / `"Press knob to exit"` observed on one
+   traced branch; a second, un-disassembled branch (`0xe234`) likely
+   holds `"Process failed"`/`"Limits successfully"` — `[UNKNOWN]`, not
+   yet traced.
 
-**Resulting state**: `[inferred]` two limit positions established for the
-selected channel/context, matching this project's own firmware-side
-finding (see `action-command-map.md`'s `LL1`/`LL2` entry) that a real
-protocol pair exists for exactly "first limit" / "second limit"
-recording, with a validity flag set only once the two differ.
+**Resulting state**: `[CONFIRMED]`, and more precisely negative than
+previously stated — the position values queried in steps 4/6 are parsed
+but **discarded**, never appended to the `LL1|`/`LL2|` frames (both are
+always bare, argument-less strings) and never found reaching the
+AutoPilot's `posA`/`posB` by any other path. The AutoPilot-side pair
+(`LL1` clears, `LL2` orders-and-validates only if the two values differ)
+exists exactly as before, but no traced real sequence populates it with
+anything but `0`/`0`. See `action-command-map.md`'s `LL1`/`LL2` entry and
+[`ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md).
 
 **What becomes possible next**: `[user manual]` "surpass limits" implies
 Auto Mode / cablecam motion can be configured to continue past a limit
