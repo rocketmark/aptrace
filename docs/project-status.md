@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (resolved the zero-page-size stall — the driver object's `+0xc` field is real `NVMCTRL.PARAM` hardware, not a missed firmware initializer — and completed the full `D` round trip: a real flash mutation at `0x12000` and a fresh boot that recovers it).
+Last updated: 2026-09-08 (found the real, protocol-reachable writer that reconnects `0x12000` persistence to the motor target: a previously undocumented `'+'` command copies a wire-controlled, unclamped delta into the exact struct field `FUN_00006fd8`'s move-distance computation reads — statically confirmed complete; concrete confirmation blocked by a precisely-named, newly-discovered boot-cost gap, not a logic uncertainty).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -651,6 +651,42 @@ re-proving:
   dirty -> real save -> real flash mutation -> real reboot recovery, all
   concretely demonstrated. See
   [`docs/investigations/nvm-param-and-full-roundtrip.md`](investigations/nvm-param-and-full-roundtrip.md).
+- **The persistent-record <-> motor-target mapping closed, and the real,
+  protocol-reachable producer `target-config-provenance.md` asked for is
+  found: a previously undocumented `'+'` command (roadmap M6)**:
+  `FUN_00004b64`'s already-known bulk load (persisted logical offsets
+  `500`-`1651` -> the whole 4-channel `0x20001b40` struct) has a real
+  write-back counterpart, **`FUN_000043f0`**, found by pulling every
+  caller of the shared config-write accessor from the Ghidra call graph
+  rather than searching for one specific offset. Its only caller is a
+  real ASCII command, **`'+'`**, reached via a tail-jumped region
+  (`0x806c`) `FUN_00008258`'s decompile silently follows — the same
+  class of correction this project has made before. Full disassembly,
+  with every address resolved directly against the compiled image (not
+  guessed from decompiler naming), shows `'+'`'s mode`>50` branch calls
+  **`FUN_00004ca8`** (chains `target = start + delta` across a channel's
+  mode sub-records — the multi-record generalization of `FUN_00004b24`'s
+  already-known single-record version) and **`FUN_000046c8`/
+  `FUN_00004910`** (two unit-family variants that copy a **wire-supplied,
+  unclamped signed delta** straight from the packet into the exact
+  struct field `FUN_00007cc0`'s `G`-command target lookup reads for mode
+  `1`), then `FUN_000043f0` persists the result. Arithmetically, this
+  means a real `'+'` write followed by a real `G<channel>1<seq>|` should
+  compute `distance = wire_delta` — a complete, disassembly-grounded
+  answer to why `FUN_00006fd8` is designed to receive a real distance
+  `> 8`. **Concrete confirmation was attempted and is incomplete**: two
+  real, fixable gaps were found along the way (the disclosed `PA22` GPIO
+  seed conflicting with `FUN_00005dd0`'s own already-documented
+  hold-triggers-a-real-intentional-halt path once a run continues far
+  enough into the main loop; a `SERCOM` `SYNCBUSY`/`INTFLAG` bit-breadth
+  gap for a real, `CONFIRMED_ADAFRUIT_CORE` `SPIClass` construction not
+  previously exercised), both fixed, but even so, reaching `'+'`'s own
+  dispatch from a fresh boot now costs far more instructions than any
+  previous single-command injection in this project — real, finite
+  (not looping) `SERCOM` device-probe activity this session's boot
+  recipe doesn't yet budget for, precisely named but not yet
+  characterized or resolved. See
+  [`docs/investigations/persistent-record-motor-target-mapping.md`](investigations/persistent-record-motor-target-mapping.md).
 
 ## Corrected assumptions
 

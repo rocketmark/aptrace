@@ -551,3 +551,50 @@ closing recommendation.
     second, later save was not directly observed this pass, and the
     `D12345,|` (8-byte) dispatch-failure curiosity from (26) is still
     unchased.
+28. ~~Reconnect `0x12000` persistence to the motor target~~ — the
+    mapping and the real writer are found; concrete confirmation is
+    attempted but incomplete, for a precisely-named reason. Pulling
+    every caller of the shared config-write accessor (`FUN_0000977c`,
+    via its thunk) from the Ghidra call graph — a broader method than
+    (25)'s single-offset immediate scan — found `FUN_000043f0`: the
+    exact write-back counterpart to `FUN_00004b64`'s already-known bulk
+    load, persisting the whole 4-channel `0x20001b40` struct (persisted
+    logical offsets `500`-`1651`) back into the flash-backed buffer.
+    Its only caller is a previously undocumented ASCII command, `'+'`,
+    reached via a tail-jumped region (`0x806c`) `FUN_00008258`'s
+    decompile silently follows into — the same class of correction
+    (22)'s `FUN_00007e2c`/`0x7cc0` case already established. Full
+    disassembly, every address resolved directly against the compiled
+    image: `'+'`'s mode`>50` branch calls **`FUN_00004ca8`** (chains
+    `target = start + delta` across a channel's mode sub-records, the
+    multi-record generalization of (22)'s `FUN_00004b24`) and
+    **`FUN_000046c8`/`FUN_00004910`** (copies a **wire-supplied,
+    unclamped signed delta** into the exact struct field `FUN_00007cc0`
+    reads for mode `1`), then `FUN_000043f0` persists it. Arithmetically:
+    a real `'+'` write followed by a real `G<channel>1<seq>|` should
+    compute `distance = wire_delta` for `FUN_00006fd8` — closing (22)'s
+    "why is this always `<=1`" question with a real, protocol-reachable
+    producer, not a fabricated one. **Concrete delivery attempted, not
+    completed**: found and fixed two real gaps (the disclosed `PA22`
+    seed, held for an entire run, eventually trips (25)/(26)'s own
+    already-documented "held past 1000 ticks -> save then an intentional
+    halt" path before a later command can be processed — fixed by
+    clearing it via a second injection at the same one-time main-loop
+    trigger once homing no longer needs it; a `SERCOM`
+    `SYNCBUSY`/`INTFLAG` bit-breadth gap for a real, newly-classified
+    `CONFIRMED_ADAFRUIT_CORE` `SPIClass` construction, (17)'s narrower
+    bits not being broad enough for it — broadened, same class of fix).
+    Even so, reaching `'+'`'s own dispatch from a fresh boot costs far
+    more instructions than any single-command injection in this
+    project's history (real, finite, non-looping `SERCOM` device
+    activity — PC visibly advances across attempts — that this
+    project's existing boot-recipe calibration doesn't budget for). See
+    [`docs/investigations/persistent-record-motor-target-mapping.md`](../investigations/persistent-record-motor-target-mapping.md).
+    **Next**: an `--log-mmio` diagnostic pass across the window between
+    the main-loop-entry trigger and `'+'`'s own dispatch, to name the
+    specific real device-probe sequence responsible (the same method
+    (18) used for the earlier radio-ID stall), then either model its one
+    real completion condition or budget for its real cost explicitly —
+    after which the originally planned `'+'`(delta)->`MC4`->`G...1...`
+    chain should produce this project's first fully concrete, nonzero
+    real motor move.
