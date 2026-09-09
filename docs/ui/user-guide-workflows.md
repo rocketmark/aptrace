@@ -86,15 +86,24 @@ setup has already been completed and persisted (workflow 10).
 
 ## 2. Quick Setup (first-time motor configuration)
 
-**Entry condition**: `[inferred]` A first-time or reset device — the
-handoff doc does not name this flow "Quick Setup" explicitly, but section
-8 ("Motor Configuration Constants") describes exactly this data (current,
-max speed, microstepping, return speed, motor type selection with
-auto-current for built-in rig types), and the Remote's own string table
-contains a clean, self-consistent per-motor "choose type -> not-connected
-alternative -> Continue" sequence, repeated identically for all four
-motor channels. This document uses "Quick Setup" as a descriptive label
-for that sequence — **not a term proven to appear on screen**.
+**Entry condition**: **`[firmware, CONFIRMED by disassembly]`** — not
+`[inferred]` as an earlier pass of this document had it. Quick Setup is
+opened **by the AutoPilot, not by a Remote menu action**: the AutoPilot
+detects, via four real GPIO probes, which of its four motor connectors
+currently have a motor attached, sends the Remote a real
+`MT<b0><b1><b2><b3><x>|` frame encoding that, and the Remote's inbound
+radio-command handler reacts by assigning type `"Not connected"` to any
+absent connector and opening the `"Motor <N>: Choose type"` screen
+automatically. No Remote-side menu entry point into Quick Setup was
+found by an exhaustive search. The AutoPilot-side function that decides
+*when* to send this (most plausibly boot, but not confirmed precisely)
+was not identified — see
+[`action-command-map.md`](action-command-map.md) for the exact gap. The
+handoff doc's own section 8 ("Motor Configuration Constants") still
+correctly describes the settings *data* this flow edits (current, max
+speed, microstepping, return speed, motor type with auto-current for
+built-in rig types); "Quick Setup" remains this document's own
+descriptive label, not a term proven to appear on screen.
 
 **Steps** (per motor channel, 1 through 4):
 1. `[firmware string]` Screen prompts `"Motor <N>: Choose type"`.
@@ -109,19 +118,34 @@ for that sequence — **not a term proven to appear on screen**.
 3. `[user manual]` (section 8) If a built-in type is chosen, current is
    auto-selected; "Other" requires the user to set current manually, in
    milliamps.
-4. `[firmware string]` Per-motor settings screen: `"MOTOR <N> SETTINGS"`,
-   with fields `"CURRENT (mA)"`, `"STEPS/S MAX"`, `"MICRO-STEPPING"`,
-   `"RETURN SPEED"`.
-   `[user manual]` (section 8) Max speed default 10,000 steps/second;
-   microstepping choices `1,2,4,8,16,32,64,128,256`; return speed default
-   `25`, user range up to `99`.
-5. `[firmware string]` `"Continue"` — advances to the next motor channel,
-   or (after motor 4) out of Quick Setup.
+4. **`[firmware, CONFIRMED]`** A per-motor settings page (header
+   `"MOTOR <N>"`) exposes four numeric rows — `"CURRENT (mA)"` (200-5000,
+   step 50), `"STEPS/S MAX"` (1000-20000, step 20), `"MICRO-STEPPING"`
+   (1-256), `"RETURN SPEED"` (0-100) — matching the manual's own
+   quantities (section 8) closely, though only the Remote-side row
+   identity is proven; what these four numbers mean to the AutoPilot's
+   own motor driver remains PROBABLE, not proven (see
+   `action-command-map.md`). **The Remote sends a wire command
+   (`MC<0-3>`) every time the user clicks into a row, adjusts it with the
+   jog wheel, and clicks out again** — not once per motor, and not tied
+   to a "finish this motor" action. A motor's settings can be revisited
+   and resent any number of times.
+5. `[firmware string, CONFIRMED]` `"Continue"` exists exactly once in the
+   Remote's entire string table, on the `"Motor <N>: Choose type"`
+   screen (not on the per-motor settings page, whose equivalent row is
+   labeled `"BACK"`). Clicking it, once all four motors have an assigned
+   type, sends the all-channels wire command (`MC4`) and exits Quick
+   Setup.
 
 **Resulting state**: `[user manual]` per-channel motor type/current/speed/
 microstepping/return-speed configuration established for up to 4 motors.
 `[user manual]` (section 7) this configuration is stated to persist
-across power-off.
+across power-off (though no persistence mechanism connecting `MC0`-`MC4`
+to the flash-backed config this project has otherwise characterized has
+been found — see `action-command-map.md`'s Quick Setup entry).
+**`[firmware, CONFIRMED]`** the `"Continue"` click additionally sends
+`MC4`, which is the real, sole condition that lets the AutoPilot's own
+`setup()` routine exit its internal loop and reach normal runtime.
 
 **What becomes possible next**: `[inferred]` Normal Runtime (Manual Mode
 / Auto Mode) for any channel now configured as connected; also the

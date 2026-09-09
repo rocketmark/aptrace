@@ -754,3 +754,32 @@ closing recommendation.
     `'+'` call site A (screen 5)?"), not a mandate to reverse everything
     remaining. See that document's own "Part 5 — Next highest-value
     unknowns" for the full ranked list.
+32. **`MC0`-`MC4` Remote-side provenance, closed.** The prior item's
+    top-ranked open question — zero confirmed Remote-side sender for
+    `MC0`-`MC4`, despite `MC4` being the sole boot-loop unlock — is now
+    closed. A single Remote function, `FUN_00005a8c`, builds every `"MC"`
+    frame in the image (confirmed the sole builder by four independent
+    full-image scans; `"MC"` is never a contiguous literal, so a plain
+    string search would have missed it, same lesson as `'+'`'s own
+    provenance pass). Its exactly three call sites were confirmed two
+    independent ways (Ghidra's call graph and a from-scratch decode of
+    every `BL`/`BLX` in the image). `MC<0-3>` is sent from the Remote's
+    motor-settings row editor every time an edited numeric row
+    (`"CURRENT (mA)"`/`"STEPS/S MAX"`/`"MICRO-STEPPING"`/`"RETURN SPEED"`)
+    is clicked out of — not once per motor. `MC4` has two real call
+    sites: the already-known `'S'`-handler bulk push, and a newly-found
+    one fired by clicking the Remote's single `"Continue"` string on the
+    `"Motor <N>: Choose type"` screen once all four motors have a type.
+    Both `MC<0-3>` and the new `MC4` site close the full chain (displayed
+    string -> input gesture -> state -> sender -> exact wire bytes),
+    confirmed statically and concretely — including reconfirming the
+    AutoPilot's `setup()`-unlock effect from a **Remote-produced**, not
+    fabricated, `MC4` frame for the first time. `MC` frames are sent
+    three times each with no ack, unlike `'+'`. The standout finding:
+    **Quick Setup is opened by the AutoPilot, not any Remote menu
+    action** — a real `MT<b0><b1><b2><b3><x>|` frame, built from live
+    GPIO motor-connector presence detection, that the Remote's inbound
+    handler reacts to automatically; no Remote-side menu entry exists.
+    What schedules the AutoPilot's `MT` send was not identified — the
+    next named gap. See
+    [`docs/investigations/mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md).

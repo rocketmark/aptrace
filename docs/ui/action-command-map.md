@@ -72,26 +72,56 @@ Evidence, Open question.
 
 ### 2. Quick Setup / per-motor configuration -> `MC<0-3>` / `MC4` (workflow 2)
 
+**Correction to the workflow's own entry condition**: Quick Setup is
+**AutoPilot-initiated, not opened from a Remote menu**. The Remote's
+inbound radio-command handler (`FUN_00010ce4`) is the only writer of the
+Remote's Quick-Setup-in-progress flag, and it fires in response to a real
+AutoPilot-built `MT<b0><b1><b2><b3><x>|` frame, itself built from four
+real GPIO motor-connector presence probes on the AutoPilot side (flash
+`0x74ae`-`0x74d6`). No Remote-side menu entry point into Quick Setup was
+found. See
+[`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
+Part 4 — the AutoPilot-side function that schedules this `MT` send was
+not identified this slice.
+
 - **User-guide action**: choose each motor's type (or "Not connected"),
   set current/steps-per-second/microstepping/return-speed, press
   `"Continue"` through all four motors.
-- **Visible Remote text/screen**: `"Motor <N>: Choose type"`, `"MOTOR <N>
-  SETTINGS"`, `"CURRENT (mA)"`, `"STEPS/S MAX"`, `"MICRO-STEPPING"`,
-  `"RETURN SPEED"`, `"Continue"` `[firmware string]`.
-- **Preconditions**: none (reachable pre-boot-unlock, like every ASCII
-  command).
-- **Remote state/function**: not traced this pass (no investigation has
-  found the Remote-side sender for `MC<0-3>`/`MC4` — only the AutoPilot
-  side has been characterized). **UNKNOWN**.
-- **User input/event**: `[inferred]` pressing `"Continue"` after the 4th
-  motor's settings screen is the most plausible trigger for the `MC4`
-  all-channels form; per-motor `"Continue"` presses before that are the
-  most plausible trigger for the per-channel `MC<0-3>` form. **Not
-  proven** — no Remote-side disassembly has confirmed which UI event
-  calls the `MC` family sender.
+- **Visible Remote text/screen**: `"Motor <N>: Choose type"`, `"MOTOR <N>"`
+  (settings page header), `"CURRENT (mA)"`, `"STEPS/S MAX"`,
+  `"MICRO-STEPPING"`, `"RETURN SPEED"`, `"Continue"`, `"BACK"`
+  `[firmware string, CONFIRMED co-located with the sender — see below]`.
+- **Preconditions**: for `MC<0-3>`: a motor-settings page must be open
+  (`*0x200018e7` in `0x32`-`0x35`) and a numeric row actually clicked
+  into. For `MC4`: all four motors must already have an assigned type
+  (including "Not connected").
+- **Remote state/function**: **CONFIRMED**. A single function,
+  `FUN_00005a8c`, builds every `"MC"` frame in the image (proven the sole
+  builder by four independent full-image scans, not just a literal
+  search) — it has exactly three call sites, confirmed by both the
+  Ghidra call graph and an independent from-scratch decode of every
+  `BL`/`BLX` in the image: `0xcb4c` (`FUN_0000c440`, the already-known
+  `'S'`-handler bulk push), `0x1039e` (`FUN_00010258`, the "Choose type"
+  screen's `"Continue"` handler), `0x10cbe` (`FUN_00010698`, the
+  motor-settings numeric-row editor).
+- **User input/event**: **CONFIRMED** for two of the three call sites.
+  `MC<0-3>`: clicking out of an edited numeric row on the `"MOTOR <N>"`
+  settings page (a real jog-wheel button press, `FUN_000171f0(0x2d)`, a
+  direct `PORT.IN` read). `MC4` (via `0x1039e`): clicking the
+  `"Continue"` row on the `"Motor <N>: Choose type"` screen, gated on all
+  four motor-type bytes (`0x20001811`) being nonzero. `MC4` (via
+  `0xcb4c`, the `'S'`-handler bulk push): **UNKNOWN**, unchanged — see
+  workflow 6 below.
 - **Wire command(s)**: `MC<0-3><a>,<b>,<c>,<d>,|` (per-channel, does not
   unlock anything); `MC4<a0>,<b0>,<c0>,<d0>,...|` (all four channels, 16
-  fields total).
+  fields total). Real captured frames at factory defaults: `MC1` ->
+  `b'MC120,2400,1,25,|'`; `MC4` ->
+  `b'MC420,2400,1,25,20,2400,1,25,20,2400,1,25,20,2400,1,25,|'`.
+  **Mechanically distinct from every other command in this table**:
+  `FUN_00005a8c` sends its frame **three times, with no ack wait** —
+  matching this firmware's wake-preamble idiom, not `'+'`'s
+  request/ack pattern. Any harness or model built on `MC` frames should
+  expect up to three identical transmissions and no acknowledgement.
 - **AutoPilot handler/function**: `FUN_00008258`'s `M`/`C` branch
   (`0x86f0`-`0x872a`) -> `FUN_00007a98` x4, writing
   `0x2000006c`/`0x200000dc`/`0x200000f0`/`0x20000138` per channel. `MC4`
@@ -104,27 +134,36 @@ Evidence, Open question.
   concretely-confirmed condition that lets `FUN_00009464`'s internal boot
   loop exit and hand control to `FUN_000093fc` (the sketch's real
   `loop()`), making `FUN_00007e2c`/`FUN_00008e18`/`FUN_00006338`/
-  `FUN_00008a80` reachable on every iteration from then on.
+  `FUN_00008a80` reachable on every iteration from then on. This slice
+  reconfirmed the unlock concretely using a **Remote-produced** `MC4`
+  frame (not an AutoPilot-side-fabricated one) for the first time, and
+  confirmed a single-channel `MC1` frame does *not* trigger it.
 - **Persistent-state effect**: none identified for `MC<0-3>`/`MC4`
   themselves (distinct from `'+'`'s persisted motor-target struct).
 - **Hardware/motion effect**: none directly; `MC4` is a pure unlock —
   every subsequent motion-committing command (`G`, `I`, `'+'`-then-`G`)
   is meaningless without it having run first.
-- **Confidence**: **CONFIRMED** (concrete) for everything on the
-  AutoPilot side: the frame schema, the per-channel field writes, and
-  `MC4`'s unique role in unlocking `FUN_000093fc`/reaching
-  `FUN_00006fd8` for the first time in this project. **UNKNOWN** for the
-  entire Remote-side sender/UI-trigger question — no investigation has
-  looked for the Remote function that builds `MC<0-3>`/`MC4`.
+- **Confidence**: **CONFIRMED**, full chain (displayed string -> input
+  gesture -> state -> sender -> exact wire bytes), for `MC<0-3>` and for
+  `MC4`'s `0x1039e` call site. **PROBABLE** that the Remote's own field
+  identities (`"CURRENT (mA)"`/`"STEPS/S MAX"`/`"MICRO-STEPPING"`/
+  `"RETURN SPEED"`, CONFIRMED on the Remote side) carry the same meaning
+  into the AutoPilot's own `0x2000006c`/`0x200000dc`/`0x200000f0`/
+  `0x20000138` — structurally consistent, not proven; note in particular
+  that the AutoPilot side uses field 4 (the Remote's own `"RETURN
+  SPEED"` value) as a **table index**, not read directly as a speed,
+  a real but unresolved cross-purpose worth flagging rather than
+  smoothing over. **UNKNOWN** for `MC4`'s second call site's own trigger
+  (the `'S'`-handler bulk push) — pre-existing, unchanged.
 - **Evidence**: [`mc4-transition.md`](../investigations/mc4-transition.md),
-  [`g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md).
-- **Open question**: find the Remote-side `MC<0-3>`/`MC4` sender (same
-  method `plus-command-remote-provenance.md` used for `'+'`: full-image
-  scan for the literal `'M'`,`'C'` pair or for callers of the numeric-field
-  encoder with a 16-field pattern) and its UI call site — this is the
-  single highest-value missing edge for this workflow, since it currently
-  has zero Remote-side evidence despite being the most consequential
-  command in the whole protocol (the sole boot-loop unlock).
+  [`g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md),
+  [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
+  (this slice — full disassembly, independent scan methodology, and
+  concrete captures for everything above).
+- **Open question**: (1) what AutoPilot function builds and schedules the
+  `MT<...>|` frame that actually starts Quick Setup (flash
+  `0x7232`-`0x7514`, unattributed in the current Ghidra cache); (2) what
+  writes `*0x2000027d` (selects a 4-row vs. 2-row settings-page variant).
 
 ### 3. Manual Mode jog -> (no confirmed wire command)
 
@@ -719,15 +758,19 @@ NORMAL RUNTIME
 ## Part 5 — Next highest-value unknowns
 
 Ranked by how many downstream mappings each would unlock, not by ease.
-Two items from this list's first draft — the screen-5 call-site identity,
-and whether `FUN_00005474` renders different strings per screen-index —
-are now closed (Part 3) and removed; the ranking below reflects what
-remains.
+Three items from this list's earlier drafts — the screen-5 call-site
+identity, whether `FUN_00005474` renders different strings per
+screen-index, and the `MC<0-3>`/`MC4` Remote sender — are now closed
+(Part 3, and [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md))
+and removed; the ranking below reflects what remains.
 
-1. **What Remote function builds `MC<0-3>`/`MC4`, and what UI event calls
-   it?** Unlocks: the entire Quick Setup workflow's command mapping,
-   currently 100% UNKNOWN on the Remote side despite `MC4` being the
-   single most consequential command in the protocol.
+1. **What AutoPilot function builds and schedules the `MT<b0><b1><b2><b3><x>|`
+   frame** that actually starts Quick Setup (flash `0x7232`-`0x7514`,
+   unattributed in the current Ghidra cache)? Unlocks: the one remaining
+   edge in the Quick Setup workflow, now that every Remote-side `MC`
+   sender is closed — and plausibly shares a root cause with item 2
+   below, since both are AutoPilot-initiated events this project hasn't
+   traced from the AutoPilot's own side.
 2. **What real Remote-side event calls `FUN_0000c440`'s bulk-push branch
    (mode `0x62`)?** Unlocks: turning this project's single strongest
    concrete result (the `500`-distance round trip) from "triggered by a
@@ -761,6 +804,10 @@ remains.
    already attributes to that branch — a real, disassembly-answerable
    discrepancy between two of this project's own documents, not yet
    reconciled.
+8. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
+   2-row motor-settings variant) represent, and who writes it?** Lower
+   priority than the above — likely a fixed product/hardware-variant
+   identifier rather than user-configurable state, but not confirmed.
 
 Each of these is phrased as a single bounded question with a specific
 function/address/mechanism named, not "reverse Manual Mode" or
@@ -777,5 +824,6 @@ against open-ended reversing campaigns.
   [`../investigations/plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md),
   [`../investigations/auto-mode-plus-callsite-identity.md`](../investigations/auto-mode-plus-callsite-identity.md),
   [`../investigations/mc4-transition.md`](../investigations/mc4-transition.md),
+  [`../investigations/mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
   [`../investigations/ll-limit-workflow.md`](../investigations/ll-limit-workflow.md) —
   primary evidence sources.

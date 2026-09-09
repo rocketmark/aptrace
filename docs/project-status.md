@@ -6,27 +6,32 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (user-guide workflow/state model, a modeling and
-provenance slice, not new firmware-behavior evidence: two new documents,
-[`docs/ui/user-guide-workflows.md`](ui/user-guide-workflows.md) and
-[`docs/ui/action-command-map.md`](ui/action-command-map.md), reorganize
-this project's existing command-by-command findings around how a human
-actually operates the product — entry state, screen, input, wire-command
-stack, AutoPilot state effect, physical result — instead of a flat command
-list. Key correction this pass makes explicit, from evidence this project
-already had but had not stated this plainly: **the interactive Auto-Mode
-`'+'` confirm screens and the mechanism that actually arms a drivable
-motor target are not the same event** — only the separate `'S'`-handler
-bulk-push call (mode `0x62`) crosses AutoPilot's compute+persist
-threshold; the three interactive screen confirmations write a delta field
-but do not themselves populate anything a later `G` can consume. Also
-newly explicit: `MC4`/`LL1`/`LL2` have zero confirmed Remote-side sender
-or UI-trigger evidence despite `MC4` being the single most consequential
-command in the protocol (the sole boot-loop unlock) — a gap this
-project's command-by-command investigations never had reason to surface
-before now. No firmware-behavior conclusion from any prior slice changed;
-see "Tooling" below for the toolchain-cleanup hardening pass this slice
-follows.).
+Last updated: 2026-09-09 (`MC0`-`MC4` Remote-side provenance closed: a
+single Remote function, `FUN_00005a8c`, builds every `MC` frame in the
+image, confirmed the sole such builder by four independent full-image
+scans, with exactly three call sites. `MC<0-3>` is sent every time the
+user clicks out of an edited row on the motor-settings page
+(`"CURRENT (mA)"`/`"STEPS/S MAX"`/`"MICRO-STEPPING"`/`"RETURN SPEED"`),
+not once per motor; `MC4` is sent when the user clicks `"Continue"` on
+the `"Motor <N>: Choose type"` screen once all four motors have a type —
+both closed end to end (displayed string -> input gesture -> state ->
+sender -> exact wire bytes), concretely reconfirming the AutoPilot's
+already-known `setup()`-unlock effect using a **Remote-produced**, not
+fabricated, `MC4` frame for the first time. A genuine surprise fell out
+alongside this: **Quick Setup is opened by the AutoPilot, not by any
+Remote menu action** — a real `MT<...>|` frame, built from live GPIO
+motor-connector presence detection, that the Remote's inbound handler
+reacts to automatically; no Remote-side Quick-Setup menu entry point
+exists. See
+[`docs/investigations/mc-command-remote-provenance.md`](investigations/mc-command-remote-provenance.md).
+Builds on the prior slice's user-guide workflow/state model
+([`docs/ui/user-guide-workflows.md`](ui/user-guide-workflows.md),
+[`docs/ui/action-command-map.md`](ui/action-command-map.md)), which
+reorganized this project's command-by-command findings around how a
+human actually operates the product and surfaced this exact gap (zero
+confirmed Remote-side sender for `MC0`-`MC4`) as a top-ranked open
+question — now closed. No firmware-behavior conclusion from any prior
+slice changed.).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -893,6 +898,40 @@ re-proving:
   behavior conclusion from any prior slice was revisited or changed by
   this pass — it is a reorganization and gap analysis of already-
   established evidence, plus this one bounded new disassembly pass.
+- **`MC0`-`MC4` Remote-side provenance closed — a single sender, two
+  distinct real UI actions, and a genuine surprise about how Quick Setup
+  even starts**: a single Remote function, `FUN_00005a8c`, builds every
+  `"MC"` frame in the image — confirmed the sole such builder by four
+  independent full-image scans (not just a literal-string search, since
+  `"MC"` is never stored as a contiguous literal), with exactly three
+  call sites confirmed two independent ways (the Ghidra call graph and a
+  from-scratch decode of every `BL`/`BLX` in the image). **`MC<0-3>`** is
+  sent from the Remote's motor-settings numeric-row editor
+  (`FUN_00010698`) every time the user clicks out of an edited
+  `"CURRENT (mA)"`/`"STEPS/S MAX"`/`"MICRO-STEPPING"`/`"RETURN SPEED"`
+  row — not once per motor, and not tied to finishing a motor's setup.
+  **`MC4`** has two real call sites: the already-known `'S'`-handler bulk
+  push, and a newly-found one (`FUN_00010258`) fired when the user clicks
+  the Remote's one and only `"Continue"` string, on the
+  `"Motor <N>: Choose type"` screen, once all four motors have an
+  assigned type. Both `MC<0-3>` and this `MC4` site close the full
+  evidence chain — displayed string -> input gesture -> state -> sender
+  -> exact wire bytes — confirmed both statically and concretely,
+  including reconfirming the AutoPilot's already-known `setup()`-unlock
+  effect using a **Remote-produced**, not AutoPilot-side-fabricated,
+  `MC4` frame for the first time in this project. Also found: `MC` frames
+  are sent three times each with **no acknowledgement wait** — mechanically
+  different from `'+'`'s request/ack pattern, and worth remembering for
+  any future harness work. The genuine surprise: **Quick Setup is opened
+  by the AutoPilot, not by any Remote menu action** — the Remote's own
+  Quick-Setup-in-progress flag has exactly one writer, and it's the
+  Remote's *inbound* radio-command handler, reacting to a real,
+  disassembly-confirmed AutoPilot-built `MT<b0><b1><b2><b3><x>|` frame
+  encoding four live GPIO motor-connector presence probes. No Remote-side
+  menu entry point into Quick Setup exists. The AutoPilot-side function
+  that decides when to send `MT` was not identified this slice — a
+  precisely-named remaining gap, not guessed at. See
+  [`docs/investigations/mc-command-remote-provenance.md`](investigations/mc-command-remote-provenance.md).
 
 ## Corrected assumptions
 

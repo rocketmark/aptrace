@@ -27,8 +27,8 @@ Everything else below is static-analysis-only.
 | `TR0\|` / `TR1\|` | Remote -> AutoPilot | Boolean family (false/true) | inline state change |
 | `W0\|` / `W1\|` | Remote -> AutoPilot | W-family subcommand | `W1` -> up to five `#` (event 17), conditional |
 | `R0\|` / `R1\|` / `R2\|` | Remote -> AutoPilot | R-family state | `R0`->`@`, `R1`->`@@` (event 4) |
-| `MC<0-3><a>,<b>,<c>,<d>,\|` | Remote -> AutoPilot | Motor configuration, one channel — does **not** unlock the motor subsystem (see next row) | — |
-| `MC4<a0>,<b0>,<c0>,<d0>,...\|` | Remote -> AutoPilot | Motor configuration, all four channels; **the only command in this firmware image that ends the boot-phase loop and hands control to the loop containing the motor-phase/ramp/monitor subsystem** (clears `0x20000060`) — execution-confirmed, concretely, including the real handoff to `FUN_000093fc`. Of its 4 per-channel fields, only the 4th is consumed by that subsystem (an index into a secondary table); the other 3 feed unrelated boot-time/display functions. See [`mc4-transition.md`](../investigations/mc4-transition.md). **User-guide mapping: UNKNOWN** — no Remote-side sender has been found for `MC<0-3>`/`MC4` yet, despite this being the single most consequential command in the protocol; see [`action-command-map.md`](../ui/action-command-map.md)'s "Quick Setup" entry and its #2-ranked open question | — |
+| `MC<0-3><a>,<b>,<c>,<d>,\|` | Remote -> AutoPilot | Motor configuration, one channel — does **not** unlock the motor subsystem (see next row). **Remote sender confirmed**: a single function, `FUN_00005a8c` (mando868), builds every `MC` frame in the image (the sole such builder, confirmed by four independent full-image scans) — the `<0-3>` call site is `0x10cbe` in `FUN_00010698`, the Remote's motor-settings numeric-row editor, sent every time the user clicks out of an edited row (`"CURRENT (mA)"`/`"STEPS/S MAX"`/`"MICRO-STEPPING"`/`"RETURN SPEED"`), not once per motor. Sent three times with no ack wait, unlike `'+'`. See [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md) | — |
+| `MC4<a0>,<b0>,<c0>,<d0>,...\|` | Remote -> AutoPilot | Motor configuration, all four channels; **the only command in this firmware image that ends the boot-phase loop and hands control to the loop containing the motor-phase/ramp/monitor subsystem** (clears `0x20000060`) — execution-confirmed, concretely, including the real handoff to `FUN_000093fc`, and reconfirmed this pass using a real **Remote-produced** frame (not AutoPilot-side-fabricated). Of its 4 per-channel fields, only the 4th is consumed by that subsystem (an index into a secondary table); the other 3 feed unrelated boot-time/display functions. See [`mc4-transition.md`](../investigations/mc4-transition.md). **Remote sender confirmed, two call sites**: `FUN_00005a8c(4)` at `0x1039e` in `FUN_00010258` — sent when the user clicks `"Continue"` on the `"Motor <N>: Choose type"` screen once all four motors have an assigned type (the full displayed-string -> input -> sender -> bytes chain is closed for this site); and the already-known `0xcb4c` in the `'S'`-handler's bulk-push tail (that call site's own real-world trigger remains UNKNOWN, unchanged). A genuine surprise found alongside this: **Quick Setup itself is opened by the AutoPilot** (a real `MT<...>|` frame reacting to GPIO motor-connector presence detection), not by any Remote menu action — no Remote-side Quick-Setup menu entry point exists. See [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md) and [`action-command-map.md`](../ui/action-command-map.md)'s "Quick Setup" entry | — |
 | `I<1-4><0-1>\|` | Remote -> AutoPilot | Per-channel async/query state machine | `<signed-number>,` (event 15) |
 | `LL1\|` / `LL2\|` | Remote -> AutoPilot | First/second limit workflow — **execution-confirmed**: `LL1` clears two globals + a validity flag; `LL2` orders them and sets the flag only if they differ. Neither touches live position, target/config, or `0x20001b14`; no GPIO/MMIO dependency; no other firmware code writes either global with a real value — see [`ll-limit-workflow.md`](../investigations/ll-limit-workflow.md). **User-guide mapping: UNKNOWN** on the Remote side (no sender found) — see [`action-command-map.md`](../ui/action-command-map.md)'s limit-setting entry | — |
 | `H\|` / `J\|` | Remote -> AutoPilot | Toggle a global flag (opposite directions) | — |
@@ -52,6 +52,17 @@ Everything else below is static-analysis-only.
   didn't find). Tracked in [`open-questions.md`](open-questions.md).
 - `I9\|` / `I1\|` short forms — used by a separate Remote routine, don't
   cleanly match the three-character `I<channel><mode>` parser.
+- `MT<b0><b1><b2><b3><x>\|` — **newly found, AutoPilot -> Remote**
+  (opposite direction from every other row in this table). Real,
+  disassembly-confirmed AutoPilot builder at flash `0x74ae`-`0x74d6`,
+  encoding four real GPIO motor-connector presence probes as one digit
+  each; the Remote's inbound handler (`FUN_00010ce4`) turns each `'0'`
+  into per-motor type `"Not connected"` and opens the Quick Setup
+  "Choose type" screen. **What schedules this send on the AutoPilot
+  side is UNKNOWN** — the enclosing function (flash `0x7232`-`0x7514`)
+  is unattributed in the current Ghidra cache. See
+  [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
+  Part 4.
 
 ## See also
 
