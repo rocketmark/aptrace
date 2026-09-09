@@ -176,6 +176,16 @@ function (`FUN_00006fd8`) fires for the first time in this project.
 `distance=0` explains why, via `FUN_00006fd8`'s own documented no-op
 branch, not a missing mechanism. See
 [`docs/investigations/mc4-transition.md`](docs/investigations/mc4-transition.md).
+Tracing that `distance=0` further found the real reason it can never
+currently be otherwise: the motor target/position config is bulk-loaded
+from a compiled-in default-configuration blob at a specific flash
+address, and that blob is genuinely blank in this firmware image
+(confirmed by reading the raw `.bin` directly) — a real external-data
+provisioning boundary, the same evidence class as the unmodeled radio-ID
+chip, not a missing mechanism. Exhaustively trying every legal value of
+the command's own "type" digit confirms `distance` is always `0` or
+`-1`, never enough to cross the real move threshold. See
+[`docs/investigations/target-config-provenance.md`](docs/investigations/target-config-provenance.md).
 `!`/`I`'s own protocol transactions remain queued for whenever M4
 resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).

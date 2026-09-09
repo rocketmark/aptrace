@@ -327,3 +327,42 @@ closing recommendation.
     to end, concretely, for the first time. `0x20001b14` remains
     unwritten through every path exercised across (14)-(21); no further
     setter search is expected to find one.
+22. ~~Trace the target/position config producer and try for a real
+    nonzero move~~ — done, and it's a real external-data boundary, not a
+    missing mechanism. `FUN_00006fd8`'s config struct base is
+    `0x20001b40` (a same-session decompiler-vs-disassembly correction:
+    `FUN_00007e2c`'s tail body silently jumps to `0x7cc0`, which
+    `APTraceDecompileFunctions` presents as if it were `FUN_00007e2c`'s
+    own code, misattributing which literal is the struct base versus a
+    separate small "this cycle's target" array). `FUN_00004b64`
+    bulk-loads all 4 channels' `0x120`-byte blocks from a
+    lazily-initialized RAM buffer (`FUN_00009724`), sourced from a plain
+    flash-address read (register-captured: `src=0x00012000`, no
+    driver/peripheral indirection) — and that exact flash address is, in
+    this firmware image, **entirely `0x00`** (confirmed by reading the
+    raw `.bin` directly — the strongest possible evidence tier, no
+    execution needed). The loader's own real fallback (fully
+    disassembled, including a genuine ARM void-return subtlety the
+    decompiled pseudo-C got wrong) then fills the struct with `0xFF`; a
+    separate, one-shot, `.data`-driven resync (`FUN_00004b24`, gated on a
+    real `.data`-initialized flag, confirmed to fire exactly once per
+    boot across all 4 channels) immediately overwrites each channel's
+    mode-0 target with that channel's own live position
+    (`0x20002064[channel]`, cold-zero) — a real "no move commanded yet"
+    default, not a bug. Exhaustively trying every `G` "type" digit
+    (`0`-`9`) after a real `MC4`, with real register-captured
+    `FUN_00006fd8` calls, gives exactly two outcomes: mode `0` ->
+    `distance=0`; modes `1`-`9` -> `distance=-1` (the untouched
+    blank-fill pattern) — **never `>8` in magnitude**, so
+    `FUN_00006fd8`'s real-move branch is never reached by any input this
+    firmware's current configuration can produce. This is the same
+    evidence class as the unmodeled radio-ID chip in (18): a real
+    external-data/provisioning gap, not something to model or fabricate
+    around. See
+    [`docs/investigations/target-config-provenance.md`](../investigations/target-config-provenance.md).
+    **Next**: try `LL1|`/`LL2|` (the "limit workflow," unresolved
+    semantics) as the most plausible remaining real command for
+    advancing `0x20002064[channel]` or writing a genuine target, without
+    fabricating data; independently, `FUN_00004c20` (the sibling
+    bulk-config-loader named alongside `FUN_00004b64` since (15)) has not
+    yet been traced for other fields it might populate.

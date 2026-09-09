@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (a real `MC4` command concretely unlocks the motor-phase subsystem; sequenced with a real `G`, the real "commit a move" function fires for the first time).
+Last updated: 2026-09-08 (traced the motor target/position config to a compiled-in default-configuration blob that is genuinely blank in this firmware image — a real external-data boundary, not a missing mechanism).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -484,6 +484,29 @@ re-proving:
   takes its documented "8 units or fewer, no real move" branch — a
   concrete, register-level explanation, not an open question. See
   [`docs/investigations/mc4-transition.md`](investigations/mc4-transition.md).
+- **Traced the motor target/position config to a real, blank compiled-in
+  default-configuration blob — a genuine external-data boundary, not a
+  missing mechanism (roadmap M6)**: `FUN_00004b64` bulk-loads the
+  `0x20001b40` per-channel struct from a lazily-initialized RAM buffer
+  (`FUN_00009724`), itself sourced from a plain flash-address read (no
+  driver/peripheral indirection — confirmed by register capture,
+  `src=0x00012000`) — and that exact flash address is, in this firmware
+  image, **entirely `0x00`** (confirmed by reading the raw `.bin` file
+  directly, the strongest possible evidence tier). The loader's own real
+  fallback (fully disassembled, including a genuine ARM void-return
+  subtlety the decompiled pseudo-C got wrong) then fills the struct with
+  `0xFF`; a separate, one-shot, `.data`-driven resync
+  (`FUN_00004b24`) immediately overwrites each channel's mode-0 target
+  with that channel's own live position (`0x20002064[channel]`, cold-
+  zero) — a real "no move commanded yet" default. Exhaustively trying
+  every `G` "type" digit (`0`-`9`) after a real `MC4` gives exactly two
+  concrete, register-captured outcomes — `distance=0` (mode 0) or
+  `distance=-1` (modes 1-9) — neither of which crosses `FUN_00006fd8`'s
+  `8`-unit real-move threshold. This is the same evidence class as the
+  unanswered radio-ID chip in `post-homing-radio-probe.md`: a real
+  external-data/provisioning gap, not something this harness can close
+  without fabricating motor-position data. See
+  [`docs/investigations/target-config-provenance.md`](investigations/target-config-provenance.md).
 
 ## Corrected assumptions
 
@@ -721,6 +744,22 @@ separately and immediately afterward, also on 2026-09-08.
    documented no-op branch. `0x200025e1` (`G`'s arm) and `0x20000060`
    (`MC4`'s unlock) are confirmed independent by both xref and control
    flow — no function touches both.
+   A seventh follow-up
+   ([`docs/investigations/target-config-provenance.md`](investigations/target-config-provenance.md))
+   traced `distance=0`'s producer: `FUN_00006fd8`'s config struct
+   (`0x20001b40`, confirmed base — a same-session decompiler-vs-
+   disassembly correction after `FUN_00007e2c`'s tail-jump initially
+   mis-attributed it) is bulk-loaded from a lazily-initialized buffer
+   sourced from a plain flash-address read (`0x00012000`, register-
+   captured, no driver indirection) — and that exact flash address is,
+   in this firmware image, entirely `0x00` (confirmed by reading the raw
+   `.bin`). The real loader fallback fills the struct with `0xFF`; a
+   one-shot, `.data`-driven resync then overwrites each channel's mode-0
+   target with its own live position (cold-zero). Exhaustively trying
+   every `G` "type" digit (`0`-`9`) gives only `distance=0` or `-1`,
+   never `>8` in magnitude — a real, external-data provisioning boundary
+   (the same evidence class as the unmodeled radio-ID chip), not a
+   missing mechanism.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and
