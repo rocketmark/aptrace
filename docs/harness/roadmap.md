@@ -598,3 +598,37 @@ closing recommendation.
     after which the originally planned `'+'`(delta)->`MC4`->`G...1...`
     chain should produce this project's first fully concrete, nonzero
     real motor move.
+29. ~~Trace `'+'` backward through the Remote firmware~~ — done. A
+    full-image disassembly scan for the literal `'+'` (0x2b) byte,
+    cross-checked against every caller of the shared TX wrapper
+    (`FUN_000058a8`, 22 direct callers) and its numeric-field encoder
+    (`FUN_000043b0`, 4 callers), found exactly one real sender:
+    **`FUN_000049c4`**, confirmed by disassembly to build the identical
+    wire frame (28)'s AutoPilot-side analysis reconstructed field for
+    field — including the `confirm1 == confirm2` invariant every real
+    call site satisfies, and the same `+0xc`/`+0x10` delta-computation
+    convention as the AutoPilot side (independent cross-confirmation,
+    not just internal consistency within one side's own analysis). Its
+    callers: the **Auto-Mode configuration screen state machine**
+    (`FUN_0000e670`), three call sites each gated behind a real,
+    blocking user-confirmation wait (`FUN_0000cd70`); and a **bulk
+    "push all channels' stored config" path** inside the already-known
+    `'S'` handler (`FUN_0000c440`, mode `0x62` — the same mode value
+    that triggers both the AutoPilot-side position resync and the
+    compute+persist branch). Correlating the Remote's own embedded UI
+    strings (`"TEST A-B"`/`"TEST B-C"`/`"TEST C-D"`, `"DURATION"`,
+    `"to rec C"`/`"to rec D"`, `"NO MOVEMENT"`) against the user
+    manual's Auto Mode section (A/B/C/D points; duration/ramp/delay/
+    loop segment parameters; persisted after power-off) gives a
+    **probable**, not byte-exact-proven, mapping: `'+'` is sent when
+    the user confirms/saves a programmed Auto Mode move segment.
+    **Ruled out**: `'+'` is not host/service/internal-only — a real,
+    disassembly-confirmed Remote sender exists. See
+    [`docs/investigations/plus-command-remote-provenance.md`](../investigations/plus-command-remote-provenance.md).
+    **Next**: trace what writes the Remote's own local per-channel
+    record data before `'+'` sends it (almost certainly the jog-wheel-
+    driven parameter-adjustment screens of `FUN_0000e670` itself, not
+    directly confirmed); if exact manual-page correspondence is wanted,
+    a concrete Unicorn run driving the jog wheel/button inputs and
+    watching which screen text renders would settle (5)'s remaining
+    "UNRESOLVED" row more precisely than static string correlation can.

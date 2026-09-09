@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (found the real, protocol-reachable writer that reconnects `0x12000` persistence to the motor target: a previously undocumented `'+'` command copies a wire-controlled, unclamped delta into the exact struct field `FUN_00006fd8`'s move-distance computation reads — statically confirmed complete; concrete confirmation blocked by a precisely-named, newly-discovered boot-cost gap, not a logic uncertainty).
+Last updated: 2026-09-08 (traced `'+'` backward through the Remote firmware: found the exact sender function, confirmed it's a real Remote-generated command driven by the Auto-Mode configuration screen state machine and a bulk config-push path, and built a probable — not yet proven — mapping to the user manual's "confirm/save a programmed Auto Mode move segment" action).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -687,6 +687,31 @@ re-proving:
   recipe doesn't yet budget for, precisely named but not yet
   characterized or resolved. See
   [`docs/investigations/persistent-record-motor-target-mapping.md`](investigations/persistent-record-motor-target-mapping.md).
+- **`'+'` traced backward through the Remote firmware — confirmed
+  Remote-generated, with a real UI caller and a probable user-guide
+  mapping (roadmap M6)**: a full-image disassembly scan for the literal
+  `'+'` (0x2b) byte, checked against every caller of the shared TX
+  wrapper and its numeric-field encoder, found exactly one real sender:
+  **`FUN_000049c4`**, which builds the identical wire frame this
+  project's AutoPilot-side analysis reconstructed field for field
+  (confirm1/confirm2/channel/mode/records), including the
+  `confirm1 == confirm2` invariant and the same `+0xc`/`+0x10`
+  delta-computation convention as the AutoPilot side — strong,
+  independent cross-confirmation, not merely internal consistency.
+  **Confirmed UI caller**: the Auto-Mode configuration screen state
+  machine (`FUN_0000e670`), three call sites each gated behind a real
+  user confirmation wait (`FUN_0000cd70`); a fourth context, a bulk
+  "push all channels' stored config" path inside the already-known
+  `'S'` handler (`FUN_0000c440`), fires on reconnect/status-refresh
+  rather than interactive UI. Correlating the Remote's own embedded
+  strings (`"TEST A-B"`/`"TEST B-C"`/`"TEST C-D"`, `"DURATION"`,
+  `"to rec C"`/`"to rec D"`, `"NO MOVEMENT"`) against the user manual's
+  Auto Mode section (A/B/C/D points, duration/ramp/delay/loop segment
+  parameters, persisted after power-off) gives a **probable** — not
+  byte-exact-proven — mapping: `'+'` is sent when the user confirms/
+  saves a programmed Auto Mode move segment. Ruled out: `'+'` is not
+  host/service/internal-only — a real Remote sender exists. See
+  [`docs/investigations/plus-command-remote-provenance.md`](investigations/plus-command-remote-provenance.md).
 
 ## Corrected assumptions
 
