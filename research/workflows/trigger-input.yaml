@@ -1,0 +1,145 @@
+# Purpose-built symbolic-execution target spec for the AutoPilot 3.5mm
+# trigger-input investigation. Unlike research/workflows/auto-mode.yaml
+# (a UI-workflow index over already-closed findings), this file exists to
+# let a future Macaw/Crucible/What4/Z3 slice start building a query
+# directly, without redoing the static analysis in
+# docs/investigations/trigger-input-concrete-path.md -- read that doc
+# first for the full evidence chain; this is the machine-readable
+# boundary summary it hands off.
+#
+# Everything under `confirmed_state` is disassembly- and/or
+# concretely-Unicorn-confirmed (see the investigation doc's confidence
+# table for which). Everything under `symbolic_target` is a proposal for
+# the next slice, not itself proven.
+
+firmware:
+  key: autopilot868
+  path: research/firmware/originals/firmware_autopilot868.bin
+  load_base: "0x4000"
+
+mechanism_summary: >
+  The 3.5mm trigger input is polled via plain digitalRead(), not EIC
+  (EIC is compiled in but never armed -- proven by an exhaustive
+  whole-image scan, not assumed). Two physical pins are involved: PA02
+  (pin-descriptor index 0x25, sampled once at boot to select a mode
+  flag) and PB05 (index 0x39 / analog alias 0x3b, the live signal). The
+  only confirmed runtime consequence is a previously undocumented
+  outbound frame, "T<field1>,<field2>,|", sent every ~500 ticks via the
+  real TX wrapper (0x8c10) from inside the MC4-gated motor-phase/ramp
+  state machine.
+
+confirmed_state:
+  pin_descriptor_table:
+    base: "0x00014284"
+    stride: "0x18"
+    entry_layout: "{port: u8 @+0, bit: u32 @+4, valid: u8 @+8 (0xFF = invalid)}"
+  pins:
+    PA02:
+      pin_index: "0x25"
+      port: 0
+      bit: 2
+      mmio_in: "0x41008020"   # PORT.GROUP0.IN
+      mmio_in_bit: 2
+      role: "boot-time mode-select sample (read exactly once)"
+      read_site: "0x6976 (FUN_00006968)"
+      pinmode_site: "0x6970, mode=2 (INPUT_PULLUP)"
+    PB05:
+      pin_index: "0x39"
+      analog_alias_index: "0x3b"
+      port: 1
+      bit: 5
+      mmio_in: "0x410080a0"   # PORT.GROUP1.IN
+      mmio_in_bit: 5
+      role: "live trigger signal, polled every ~500 ticks"
+      read_sites:
+        - "0x91ca (phase_ramp_state_machine__CUSTOM, the confirmed T-frame poll)"
+        - "0x9228 (same function, distinct gate -- NOT traced this slice, see open_questions)"
+      pinmode_site: "0x69d2, mode=0 (bare INPUT, no pull) -- CONCRETELY confirmed r1=0, only on the PA02-low boot arm"
+  functions:
+    digitalRead: "0x0000d3dc"
+    pinMode: "0x0000d300"
+    startup_reference_input_routine: "0x00006968"   # this project's own name; NOT "homing"
+    adc_baseline_dead_end: "0x00005d44"
+    analogRead_wrapper: "0x000042a4"
+    analogRead_core: "0x0000d1b4"
+    trigger_poll_and_send: "0x00009160-0x00009244"   # inside phase_ramp_state_machine__CUSTOM
+    phase_ramp_state_machine: "0x00008e18"           # already known MC4-gated (mc4-transition.md)
+    integer_append_helper: "0x00004644"
+    tx_wrapper: "0x00008c10"                         # already proven (dispatcher-loop-concrete-trace.md / tx-hook-verification.md)
+    millis: "0x0000ccd0"
+  ram:
+    mode_flag: "0x20001fc0"            # 1 = PA02 read high at boot, 2 = PA02 read low
+    mc4_unlock_byte: "0x20000060"      # already fully characterized -- 0 unlocks phase_ramp_state_machine
+    tick_variable: "0x200052ec"        # millis()'s backing store -- this project's existing --fake-tick target
+    rate_limit_last_check: "0x20002410"
+    tx_buffer_base: "0x20002548"
+    tx_buffer_index: "0x200025ac"
+    adc_baseline_dead_ram: ["0x20002098", "0x2000313c", "0x20001fc4", "0x20003128", "0x200023c0"]
+  eic_negative_result:
+    callback_table: "0x2000525c"   # exactly one xref anywhere in the image: the handler's own load
+    line_count: "0x200052e4"       # same
+    per_line_mask: "0x200052a0"    # same
+    handler: "0x0000cb6c"
+    conclusion: "never armed; not the trigger mechanism"
+
+symbolic_target:
+  # The bounded question worth a solver: does the trigger pin's live
+  # state ever reach anything beyond the outbound "T..." frame -- i.e.
+  # does the second digitalRead(0x39) site, or the 0x8f98 branch it can
+  # reach, ever arm a real motor action? This is narrower than "prove
+  # the one-shot bug" (which needs no solver -- see the investigation
+  # doc's "self-correcting one-shot explanation", a disassembly-level
+  # argument).
+  entry_address: "0x00009160"
+  entry_preconditions:
+    - "MC4 already run (0x20000060 == 0) -- phase_ramp_state_machine__CUSTOM is unreachable otherwise"
+    - >
+      registers r4-r11 must hold this state machine's own real,
+      earlier-established pointers (tx buffer, counter, enable-byte
+      addresses) -- NOT fresh literal loads at 0x9160 itself. This is
+      the exact gap this slice left open: either (a) trace backward
+      through FUN_00008e18's own dispatch to find where r4-r11 are set
+      (bounded, Ghidra/Unicorn work, not itself symbolic), or (b) drive
+      a real MC4-unlocked boot to this state naturally (expensive, but
+      this project already has the recipe pieces -- see
+      docs/investigations/mc4-transition.md,
+      docs/investigations/post-probe-main-loop.md).
+  success_states_to_check:
+    - address: "0x00009244"
+      meaning: "the confirmed T-frame poll's own exit (return) -- reachability already CONFIRMED by disassembly, not itself the target"
+    - address: "0x00008f98"
+      meaning: "the UNTRACED branch target from the second digitalRead(0x39) at 0x9226 -- the actual open question"
+  symbolic_candidates:
+    - name: PB05_live_level
+      where: "PORT.GROUP1.IN (0x410080a0) bit 5"
+      why: "the only genuinely external input to this whole mechanism"
+    - name: gate_condition_at_0x9202
+      where: "RAM bytes at [r5+0..3], [0x20001b38]-deref, [0x200000d8]-deref, [r6+0]"
+      why: >
+        the four-way AND gate before the second digitalRead(0x39) --
+        not yet named to real RAM addresses beyond what's listed here;
+        resolving r5/r6's real identity is a prerequisite, likely via
+        the same backward trace as the entry-state gap above
+  keep_concrete:
+    - "tx_buffer_base, tx_buffer_index, tick_variable addresses -- already resolved literals, no reason to symbolize"
+    - "the rate-limit timestamp (0x20002410) and millis() (0x200052ec) -- model via --fake-tick if timing matters, not as solver-symbolic values"
+    - "PA02's boot-time level -- already exhaustively covered concretely (both outcomes), no remaining question there"
+    - "the TX wrapper's own body (0x8c10) -- already proven; a --stub-call boundary is enough, no need to model the radio/SPI driver"
+  required_stubs_or_models:
+    - "0x8c10 (TX wrapper) -- --stub-call, matching this project's existing established boundary for AutoPilot's outbound path"
+    - "any SERCOM/driver-object dependency the real MC4-unlocked boot path hits before reaching this state -- see mc4-transition.md's own already-solved timing/sequencing notes if reconstructing entry via a real boot"
+  loop_bounds_and_exits:
+    - "the ~500-tick rate-limit gate at 0x91a4-0x91b0 should be treated as already-satisfied (seed the timestamp so `now - last >= 500` is trivially true) -- it is a rate limiter, not part of the interesting logic"
+    - "the 128-iteration ADC-averaging loop in FUN_00005d44 is a real but dead-end computation (Part 4 of the investigation doc) -- do not include it in this target; it has no reader"
+
+open_questions:
+  - "What real condition selects this specific case inside phase_ramp_state_machine__CUSTOM's own dispatch (i.e., what enable byte gates entry at all)?"
+  - "What does the second digitalRead(0x39) at 0x9226, and the 0x8f98 branch, actually do?"
+  - "Is PA02/PB05's physical identity as 'the 3.5mm trigger jack' confirmed against a schematic, or only behaviorally inferred?"
+  - "Does anything on the Remote side react to the 'T<>,<>,|' frame in a way that matches the user-reported 'one trigger' symptom? (Remote-side tracing is out of scope for this AutoPilot-only slice.)"
+
+evidence:
+  - docs/investigations/trigger-input-concrete-path.md
+  - docs/hardware/autopilot-research-handoff.md
+  - docs/investigations/mc4-transition.md
+  - docs/investigations/g-command-motor-subsystem-unlock.md

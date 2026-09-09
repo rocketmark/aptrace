@@ -6,7 +6,49 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (`LL2|`'s Remote sender found, closing the
+Last updated: 2026-09-09 (AutoPilot trigger-input concrete path closed,
+EIC ruled out): tracing a reported bug ("connecting a certain chain to
+the 3.5mm trigger input causes exactly one trigger, then normal
+operation continues") found the real mechanism is **plain polled
+`digitalRead()`, not EIC** — proven, not assumed, by two independent
+exhaustive whole-image scans showing the AutoPilot's compiled-in EIC
+dispatcher is never armed (its callback table and line count have
+exactly one reference anywhere in the image: the dispatcher's own load).
+Two physical pins were identified by decoding the real Arduino
+pin-descriptor table directly from the firmware image: **PA02**, sampled
+exactly once at boot (`FUN_00006968`) to set a mode flag
+(`0x20001fc0` — already known from `mt-quick-setup-trigger.md` as the
+`MT` frame's 5th field, now explained mechanically for the first time),
+and **PB05**, the live signal. Only when PA02 reads low at boot does the
+firmware explicitly configure PB05 as a plain digital input (concretely
+confirmed via `ConcreteMachine`, both PA02 outcomes); otherwise it runs a
+128-sample ADC baseline-averaging routine over the same pin
+(`FUN_00005d44`) whose result is **never read by anything else in the
+image** — a real, disassembly-confirmed dead end, the same class of
+finding as this project's other "computed but never consumed" results.
+The one live runtime consumer is a `digitalRead(PB05)`-gated branch
+inside the already-known `MC4`-gated motor-phase/ramp state machine
+(`phase_ramp_state_machine__CUSTOM`), rate-limited to once per ~500
+ticks, sending a **previously undocumented outbound frame,
+`"T<0 or 1023>,<1 or 0>,\|"`**, through the AutoPilot's already-proven TX
+wrapper (`0x8c10`). This is a level-sampled poll with no debounce and no
+history between checks — a real, disassembly-grounded explanation for a
+self-correcting one-shot symptom falls straight out of that structure (a
+transient level on a floating, no-pull input sampled during exactly one
+~500-tick window reads once, then the next independent poll reverts) —
+**PROBABLE**, not concretely reproduced end to end, as the explanation
+for the specific reported bug. A precise, bounded gap was left for a
+Macaw/Crucible/What4/Z3 follow-up: the runtime poll's own register entry
+state (`r4`-`r11`) is established earlier in the same function by code
+this slice didn't trace backward, and a second, distinct
+`digitalRead(PB05)` site (gated behind an untraced four-way condition,
+branching to `0x8f98`) was found but not followed. See
+[`docs/investigations/trigger-input-concrete-path.md`](investigations/trigger-input-concrete-path.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+for the full evidence chain and the symbolic-target handoff. No prior
+conclusion changed.
+
+Previous update (`LL2|`'s Remote sender found, closing the
 Set-Limits workflow's last open sender question): `LL2|` is sent from
 **the same function that sends `LL1|`** — `FUN_0000de3c`, the shared
 Manual-Mode/Set-Limits live-jog engine — found by an exhaustive raw-byte
