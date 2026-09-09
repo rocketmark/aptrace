@@ -265,7 +265,14 @@ either source):
 
 **Resulting state**: `[user manual]` a programmed segment (point pair +
 duration/ramp/delay/loop) exists for this channel; `[user manual]`
-persists across power-off (workflow 10).
+persists across power-off (workflow 10). **`[firmware, CONFIRMED]`**
+Recording a segment alone does **not** make it AutoPilot-drivable —
+that requires a separate, non-interactive AutoPilot-side compute+persist
+step, which this project has traced to a specific, real trigger (the
+Remote's own boot sequence, or a reconnect after a communication gap —
+never this recording action itself). See
+[`action-command-map.md`](action-command-map.md)'s workflow 6 and
+[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md).
 
 **What becomes possible next**: testing the segment (workflow 6),
 executing it (workflow 7), recording the next segment (B->C, C->D),

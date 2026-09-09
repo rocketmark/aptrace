@@ -322,21 +322,45 @@ the full treatment (the three interactive `FUN_000049c4` call sites). Summary:
   digits 0 and 2-9 are also structurally available and untraced against
   any UI label.)
 
-### 6. Auto Mode: `'S'`-driven bulk config-push -> `'+'` mode `0x62` (workflow: reconnect/status refresh, not directly named in the guide)
+### 6. Boot/reconnect: `FUN_0000c440`'s `S|`->`P...` success -> bulk `'+'` mode `0x62` -> `MC4`
 
-- **User-guide action**: **UNKNOWN** — no explicit user-guide step names
-  this. Most plausibly an automatic reconnect/status-refresh event, not a
-  discrete button press.
+**Trigger — now CONFIRMED**, not "reconnect/status refresh" as a
+hypothesis. `FUN_0000c440` is called, unconditionally, **exactly once
+per Remote power-on/reset** (`Reset_Handler` -> `FUN_00016900` ->
+`FUN_0000fdf0`, immediately before the Remote's own `"&|"`
+firmware-version query), and again, later in the same session, if a real
+~5000-tick (multi-second) gap in inbound AutoPilot radio activity is
+followed by a fresh byte in `['a','x']`/`'B'` (a debounced retry, not a
+periodic timer). Whichever call reaches it, the bulk-push+`MC4` tail
+fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
+— independent of the response's actual value. See
+[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md).
+
+- **User-guide action**: **UNKNOWN/none** — this is not a discrete user
+  action; it is a connection-health event (boot, or a real communication
+  gap followed by reconnection).
 - **Visible Remote text/screen**: none identified.
-- **Preconditions**: this channel's locally-stored Auto Mode config must
-  be nonzero (the loop skips channels with all-zero stored data).
+- **Preconditions**: the `S|`->`P...` round trip inside this exact call
+  must succeed cleanly (any response shape); **separately**, the push
+  loop itself additionally requires a UI-set "has real programmed data"
+  flag (`0x20000fa0`) to be nonzero — set only by the interactive
+  Auto-Mode UI (`FUN_0000e670`) or `FUN_0000d218`, **never** by the boot
+  sequence itself. A literal cold/fresh-power-on boot therefore sends
+  zero `'+'` frames from this call (the flag is unset) — only `MC4`
+  fires. The per-channel record data (`0x20000b20`) is itself loaded
+  from Remote-local persisted flash storage during the same boot
+  sequence, before this call — real data can be present without the
+  push flag being set.
 - **Remote state/function**: `FUN_0000c440` (the same function that
-  handles `'S'`/`!0`/`!1` queries), a loop over channels 0-3.
-- **User input/event**: **UNKNOWN** — not gated behind a visible
-  confirmation dialog the way the interactive screens are.
-- **Wire command(s)**: `'+'` with `confirm1=confirm2=1`, `param_4=0`,
-  `mode=0x62` (98), once per nonzero-data channel, each followed by
-  `MC4` for all channels (per the disassembly of `FUN_0000c440`'s tail).
+  handles `'S'`/`!0`/`!1` queries), a loop over channels `0`..`*0x20000260-1`.
+- **User input/event**: none for the primary (boot) trigger; the
+  secondary (reconnect) trigger is gated on inbound AutoPilot bytes, not
+  user input.
+- **Wire command(s)**: `'+'` with `confirm1`=count of nonzero-data
+  channels, `confirm2`=a 1-based running send sequence, `param_4=0`,
+  `mode=0x62` (98), once per nonzero-data channel — followed
+  **unconditionally** by `MC4` for all channels, whether or not any
+  `'+'` was actually sent (per the disassembly of `FUN_0000c440`'s tail).
 - **AutoPilot handler/function**: same as workflow 4, but `mode=0x62`
   **does** cross the `>50` compute+persist threshold: `FUN_00004ca8`
   computes `target=start+delta` and `FUN_000043f0` persists the whole
@@ -348,19 +372,23 @@ the full treatment (the three interactive `FUN_000049c4` call sites). Summary:
   flash-backed buffer, dirtying it.
 - **Hardware/motion effect**: none by itself — sets up state that a
   subsequent `G` mode-1 (workflow 5) consumes.
-- **Confidence**: **CONFIRMED**, concretely and statically, that this
-  exact call (mode `0x62`) is the one and only `'+'` call site that
-  crosses the persist threshold, and that it fires from the `'S'`
-  handler's bulk-push loop, not from an interactive screen. **PROBABLE at
-  best** for what real-world event actually triggers `FUN_0000c440`'s
-  `'S'`-branch to run in bulk-push mode (reconnect is the working
-  hypothesis, not proven).
-- **Evidence**: [`plus-command-remote-provenance.md`](../investigations/plus-command-remote-provenance.md)
+- **Confidence**: **CONFIRMED**, both statically and concretely (real
+  `'+'`/`MC4` frames produced this pass from `FUN_0000c440(1)`, a
+  disassembly-confirmed-equivalent path to the real `param_1` values),
+  for the exact trigger condition, the shared success gate, and the
+  separate push-loop gate.
+- **Evidence**: [`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
+  [`plus-command-remote-provenance.md`](../investigations/plus-command-remote-provenance.md)
   section 4B, [`plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md).
-- **Open question**: what real Remote-side event calls `FUN_0000c440`
-  with the bulk-push argument (as opposed to an ordinary `'S'` status
-  query)? Reconnect-after-power-cycle is the leading hypothesis but
-  untraced.
+- **A structurally distinct sibling, not the same mechanism**:
+  `FUN_0000c340` (the Remote's background UI "pump," called from dozens
+  of screens) separately calls `FUN_0000b6f0` roughly every 250 ticks,
+  once first sync is done and Quick Setup isn't active — a genuinely
+  periodic bulk-`'+'` push, but it never sends `MC4`. Do not conflate the
+  two — see `bulk-push-trigger-provenance.md` Part 4d.
+- **Open question**: what clears the push-loop's own gating flag
+  (`0x20000fa0`) after a push, and `FUN_0000d218`'s own role as a second
+  setter — both named precisely, not chased this slice.
 
 ### 7. Motor-timer / GPIO hardware chain (workflow 7's physical consequence)
 
@@ -483,10 +511,12 @@ the full treatment (the three interactive `FUN_000049c4` call sites). Summary:
   event 6 -> `P...` built from `0x20002524` (device state/mode, 0-4).
 - **Confidence**: **CONFIRMED**, concretely, both response forms
   (`s-p-roundtrip.md`), including a real "don't downgrade" guard in the
-  Remote's own parser. **UNKNOWN** what UI action(s) trigger `S`/`!`
-  specifically (as opposed to them running automatically as part of
-  connection maintenance, which `FUN_0000c440`'s bulk-push tail — see
-  workflow 6 — suggests is at least part of the real picture).
+  Remote's own parser. **CONFIRMED** (not just suggestive) that at least
+  one real, non-UI trigger exists and runs automatically: `FUN_0000c440`
+  (the same function that builds this exact `S|` request) is called
+  unconditionally once per Remote boot and again after a real
+  communication-gap timeout — see workflow 6. Whether *any* discrete UI
+  action also triggers `S`/`!` independently of that remains **UNKNOWN**.
 - **Evidence**: [`s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
 - **Open question**: event-7's 11 named fields (per
   `docs/protocol/open-questions.md` item 1) and the 11-vs-10 mismatch's
@@ -562,9 +592,13 @@ Bulk push (FUN_0000c440's 'S'-handler tail, mode=0x62, once per
 Any workflow narrative that says "the user confirms a segment and it
 immediately becomes drivable" is **not proven** by current evidence — the
 one concretely-demonstrated path to a drivable target is the bulk-push
-path, whose real-world trigger is itself only PROBABLE (most likely
-reconnect/status-refresh, not a segment-confirm button press). This is
-one of the most important corrections this modeling pass makes explicit:
+path, whose real-world trigger is now **CONFIRMED**: the Remote's own
+boot sequence (unconditional, once per power-on) and, later in a session,
+a real communication-gap-then-reconnect event — never a segment-confirm
+button press (see workflow 6,
+[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md)).
+This is one of the most important corrections this modeling pass makes
+explicit:
 **the interactive Auto-Mode confirm screens and the mechanism that
 actually arms a move are not the same event**, contrary to what a naive
 reading of "user confirms segment -> segment becomes drivable" would
@@ -772,32 +806,29 @@ NORMAL RUNTIME
 ## Part 5 — Next highest-value unknowns
 
 Ranked by how many downstream mappings each would unlock, not by ease.
-Four items from this list's earlier drafts — the screen-5 call-site
+Five items from this list's earlier drafts — the screen-5 call-site
 identity, whether `FUN_00005474` renders different strings per
-screen-index, the `MC<0-3>`/`MC4` Remote sender, and the `MT` AutoPilot-side
-scheduling trigger — are now closed (Part 3,
+screen-index, the `MC<0-3>`/`MC4` Remote sender, the `MT` AutoPilot-side
+scheduling trigger, and the `FUN_0000c440` bulk-push trigger — are now
+closed (Part 3,
 [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
-and [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md))
+[`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md),
+and [`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md))
 and removed; the ranking below reflects what remains.
 
-1. **What real Remote-side event calls `FUN_0000c440`'s bulk-push branch
-   (mode `0x62`)?** Unlocks: turning this project's single strongest
-   concrete result (the `500`-distance round trip) from "triggered by a
-   PROBABLE reconnect hypothesis" into a CONFIRMED user-visible or
-   protocol-level event.
-2. **What wire command(s), if any, does the Remote send while the jog
+1. **What wire command(s), if any, does the Remote send while the jog
    wheel is turning in Manual Mode?** Unlocks: workflow 3 entirely, one
    of the two top-level modes the manual describes, currently 0% mapped.
-3. **What Remote function builds `LL1`/`LL2`, and does the "Detecting
+2. **What Remote function builds `LL1`/`LL2`, and does the "Detecting
    first/second limit..." UI sequence actually send them?** Unlocks:
    workflow 12, and would either close or definitively reopen the
    "posA/posB never gets a real value" negative result from the
    AutoPilot side.
-4. **What does persisted offset `0x15` (the `D` command's field)
+3. **What does persisted offset `0x15` (the `D` command's field)
    represent to the user?** Unlocks: workflow 9/11's connection to a
    concrete settings screen — currently `D` is fully characterized
    mechanically with zero user-facing meaning attached.
-5. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
+4. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
    on menu entry) resolve, in `FUN_00005474`'s own highlight-selection
    logic, to row 7 for screen 10 and row 6 for screen 9** — closing the
    one remaining gap in Part 3's C/D verdicts (currently PROBABLE by
@@ -805,7 +836,7 @@ and removed; the ranking below reflects what remains.
    directly observed for 9/10)? Unlocks: promoting call sites C and D
    from PROBABLE to CONFIRMED, matching what this pass already closed for
    A/B.
-6. **Trace the `param_4==1` record-field-to-wire-position mapping
+5. **Trace the `param_4==1` record-field-to-wire-position mapping
    precisely** — the captured call-site-A/B frame
    (`b'+1,1,1,2,0,1,0,50,0,0,0,0|'`) shows the seeded `+0x14` value (50)
    land on the wire but not the `+0x10 - +0xc` delta (500) this
@@ -813,10 +844,15 @@ and removed; the ranking below reflects what remains.
    already attributes to that branch — a real, disassembly-answerable
    discrepancy between two of this project's own documents, not yet
    reconciled.
-7. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
+6. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
    2-row motor-settings variant) represent, and who writes it?** Lower
    priority than the above — likely a fixed product/hardware-variant
    identifier rather than user-configurable state, but not confirmed.
+7. **What clears `0x20000fa0` (the "has real programmed Auto-Mode data"
+   flag gating `FUN_0000c440`'s own bulk-`'+'` loop) after a push, and
+   what role does its second setter, `FUN_0000d218`, play?** Unlocks: a
+   complete account of when the boot/reconnect sync in workflow 6
+   actually sends anything beyond `MC4`.
 8. **Concretely deliver a real `MT` frame through the Remote's
    `FUN_0000c340`/`FUN_00010ce4` per-character inbound state machine** to
    reconfirm the already-disassembly-CONFIRMED Quick-Setup-flag effect
@@ -842,5 +878,6 @@ against open-ended reversing campaigns.
   [`../investigations/auto-mode-plus-callsite-identity.md`](../investigations/auto-mode-plus-callsite-identity.md),
   [`../investigations/mc4-transition.md`](../investigations/mc4-transition.md),
   [`../investigations/mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
+  [`../investigations/bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
   [`../investigations/ll-limit-workflow.md`](../investigations/ll-limit-workflow.md) —
   primary evidence sources.

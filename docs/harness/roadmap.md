@@ -814,3 +814,33 @@ closing recommendation.
     existing whole-packet `REMOTE_*_ENTRY` anchors — named as a bounded
     follow-up, not attempted this slice. See
     [`docs/investigations/mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md).
+34. **`FUN_0000c440`'s bulk `'+'`/`MC4` push trigger, closed.** This
+    function's real structure (two request/response rounds sharing one
+    success gate) is mapped by disassembly, cross-checked by the same
+    independent branch-decoder methodology item 33 introduced, re-run
+    against `firmware_mando868.bin`. **The primary trigger is the
+    Remote's own boot sequence**: `Reset_Handler` → `FUN_00016900` →
+    `FUN_0000fdf0` (a splash-screen routine that also triple-broadcasts
+    `"R0|"`) calls `FUN_0000c440(0)` unconditionally, exactly once per
+    power-on, immediately before the Remote's own `"&|"` version query —
+    confirmed exhaustively unique, zero indirect dispatch anywhere in the
+    image. **A secondary trigger** re-arms after a real ~5000-tick
+    radio-silence gap, via the same inbound-byte dispatcher
+    (`FUN_00010ce4`) item 33 already characterized — receiving a byte in
+    `['a','x']`/`'B'` retries the same call, debounced by a latch that
+    only resets on that timeout. The bulk-push tail fires whenever this
+    exact call's own `S|`→`P...` round trip succeeds, independent of the
+    response's value; `MC4` is unconditional once that gate passes,
+    whether or not any `'+'` was actually sent. The push loop itself
+    needs a separate, UI-set flag the boot sequence never sets — a
+    literal cold boot pushes nothing and only sends `MC4`. Found and
+    distinguished a structurally different sibling, `FUN_0000b6f0`
+    (genuinely periodic, ~every 250 ticks, never sends `MC4`) so it isn't
+    conflated with this mechanism. Concretely reproduced end to end
+    (`ConcreteMachine.call`, entering `FUN_0000c440` directly): given a
+    real `S->P` exchange and disclosed record/flag seeds, produces the
+    real frames `+1,1,1,0,98,1,0,0,0,500,0,0|` (byte-identical to the
+    already-AutoPilot-proven frame from
+    [`plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md))
+    and `MC40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,|`. See
+    [`docs/investigations/bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md).

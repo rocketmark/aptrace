@@ -6,8 +6,36 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (`MT<...>|` AutoPilot-side scheduling trigger
-closed: the flash `0x7232`-`0x7514` region `mc-command-remote-
+Last updated: 2026-09-09 (Remote `FUN_0000c440`'s bulk `'+'`/`MC4` push
+trigger closed: this function's real control-flow structure (two
+request/response rounds sharing one success gate, `cVar24`, computed
+purely from whether its own `S|`→`P...` round trip got a clean response)
+is now fully mapped by disassembly, cross-checked by an independent
+full-image branch decoder. **The primary trigger is the Remote's own
+boot sequence** — `Reset_Handler` → `FUN_00016900` → `FUN_0000fdf0`
+(a splash-screen routine that also triple-broadcasts `"R0|"`) calls
+`FUN_0000c440(0)` unconditionally, exactly once per power-on, immediately
+before the Remote's own `"&|"` version query — confirmed exhaustively
+unique, with zero indirect dispatch anywhere in the image. **A secondary
+trigger** re-arms after a real ~5000-tick radio-silence gap, via the same
+inbound-byte dispatcher (`FUN_00010ce4`) the `MT` investigation already
+characterized. The bulk-`'+'` loop itself is additionally gated on a
+UI-set flag the boot sequence never sets, so a literal cold boot sends
+zero `'+'` frames — only `MC4` fires; real `'+'` pushes require the
+interactive Auto-Mode UI to have run first in that session. A
+structurally distinct sibling (`FUN_0000b6f0`, genuinely periodic,
+~every 250 ticks) was found and shown to never send `MC4` — the two
+must not be conflated. Concretely reproduced end to end: entering
+`FUN_0000c440` directly (its own caller chain now proven unconditional),
+given a real `S->P` round trip and disclosed record/flag seeds, produces
+the real frames `+1,1,1,0,98,1,0,0,0,500,0,0|` (byte-identical to
+`plus-target-distance-roundtrip.md`'s own already-AutoPilot-proven frame)
+and `MC40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,|`. See
+[`docs/investigations/bulk-push-trigger-provenance.md`](investigations/bulk-push-trigger-provenance.md).
+No prior conclusion changed.
+
+Previous update (`MT<...>|` AutoPilot-side scheduling trigger closed):
+the flash `0x7232`-`0x7514` region `mc-command-remote-
 provenance.md` left unattributed in the Ghidra cache is now recovered by
 disassembly plus an independent full-image branch decoder — one literal
 pool, one unrelated sibling routine (tail-jumped from the ASCII command
