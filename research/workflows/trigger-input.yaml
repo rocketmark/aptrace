@@ -22,11 +22,18 @@ mechanism_summary: >
   (EIC is compiled in but never armed -- proven by an exhaustive
   whole-image scan, not assumed). Two physical pins are involved: PA02
   (pin-descriptor index 0x25, sampled once at boot to select a mode
-  flag) and PB05 (index 0x39 / analog alias 0x3b, the live signal). The
-  only confirmed runtime consequence is a previously undocumented
-  outbound frame, "T<field1>,<field2>,|", sent every ~500 ticks via the
-  real TX wrapper (0x8c10) from inside the MC4-gated motor-phase/ramp
-  state machine.
+  flag) and PB05 (index 0x39 / analog alias 0x3b, the live signal). Two
+  confirmed runtime consequences now exist, both reproduced concretely
+  from phase_ramp_state_machine__CUSTOM's own real entry (0x8e18, no
+  fabricated registers): (1) when trigger-status reporting is armed
+  (TR1| -> *0x20003120=1, an AutoPilot-side effect of an already-known
+  command closed this slice), a previously undocumented outbound frame,
+  "T<field1>,<field2>,|", is sent every ~500 ticks via the real TX
+  wrapper (0x8c10); (2) when disarmed (TR0|, the default) and the system
+  is otherwise idle, a second digitalRead(PB05) reading LOW reaches a
+  real reload of the persisted motor-target config (config_loader__
+  CUSTOM / FUN_00004b64), hitting the same lazy-init boundary already
+  named in target-config-provenance.md.
 
 confirmed_state:
   pin_descriptor_table:
@@ -52,8 +59,8 @@ confirmed_state:
       mmio_in_bit: 5
       role: "live trigger signal, polled every ~500 ticks"
       read_sites:
-        - "0x91ca (phase_ramp_state_machine__CUSTOM, the confirmed T-frame poll)"
-        - "0x9228 (same function, distinct gate -- NOT traced this slice, see open_questions)"
+        - "0x91ca (phase_ramp_state_machine__CUSTOM, the confirmed T-frame poll, digital arm)"
+        - "0x9228 (same function, second gate, CLOSED this slice -- reaches a real config reload on LOW)"
       pinmode_site: "0x69d2, mode=0 (bare INPUT, no pull) -- CONCRETELY confirmed r1=0, only on the PA02-low boot arm"
   functions:
     digitalRead: "0x0000d3dc"
@@ -62,19 +69,29 @@ confirmed_state:
     adc_baseline_dead_end: "0x00005d44"
     analogRead_wrapper: "0x000042a4"
     analogRead_core: "0x0000d1b4"
-    trigger_poll_and_send: "0x00009160-0x00009244"   # inside phase_ramp_state_machine__CUSTOM
-    phase_ramp_state_machine: "0x00008e18"           # already known MC4-gated (mc4-transition.md)
+    trigger_poll_and_send_digital_arm: "0x0000919e-0x00009244"   # inside phase_ramp_state_machine__CUSTOM
+    trigger_poll_and_send_analog_arm: "0x00008e68-0x00008f00"    # sibling arm, PA02-high/ADC mode
+    second_gate_and_config_reload: "0x00009202-0x00009244 / 0x00008f98"
+    phase_ramp_state_machine: "0x00008e18"           # sound entry point -- CONFIRMED this slice, no fabricated r4-r11
+    ascii_dispatcher_TR_handler: "0x000084fa-0x00008512"   # writes the enable byte, CLOSED this slice
+    config_loader: "0x00004b64"      # config_loader__CUSTOM, already named in target-config-provenance.md
+    config_reload_tail_jump_target: "0x00006e4c"   # inside FUN_00006b50
     integer_append_helper: "0x00004644"
     tx_wrapper: "0x00008c10"                         # already proven (dispatcher-loop-concrete-trace.md / tx-hook-verification.md)
     millis: "0x0000ccd0"
   ram:
     mode_flag: "0x20001fc0"            # 1 = PA02 read high at boot, 2 = PA02 read low
+    trigger_report_enable: "0x20003120"   # CLOSED this slice: TR1| writes 1, TR0| writes 0 (default)
     mc4_unlock_byte: "0x20000060"      # already fully characterized -- 0 unlocks phase_ramp_state_machine
     tick_variable: "0x200052ec"        # millis()'s backing store -- this project's existing --fake-tick target
     rate_limit_last_check: "0x20002410"
     tx_buffer_base: "0x20002548"
     tx_buffer_index: "0x200025ac"
     adc_baseline_dead_ram: ["0x20002098", "0x2000313c", "0x20001fc4", "0x20003128", "0x200023c0"]
+    per_channel_device_state: "0x20002524"   # [0..3] must all be 0 for the second-gate/config-reload path
+    second_gate_cell_1: "0x20001b38"   # must == 0x7b -- CLOSED this slice as a reachability requirement; own producer NOT traced
+    second_gate_cell_2: "0x200000d8"   # must == 9 -- same
+    config_reload_status_byte: "0x200025bc"   # +1 offset written =3 by 0x8f98; two other readers (0x7a50, 0x81f8) not traced
   eic_negative_result:
     callback_table: "0x2000525c"   # exactly one xref anywhere in the image: the handler's own load
     line_count: "0x200052e4"       # same
@@ -83,63 +100,65 @@ confirmed_state:
     conclusion: "never armed; not the trigger mechanism"
 
 symbolic_target:
-  # The bounded question worth a solver: does the trigger pin's live
-  # state ever reach anything beyond the outbound "T..." frame -- i.e.
-  # does the second digitalRead(0x39) site, or the 0x8f98 branch it can
-  # reach, ever arm a real motor action? This is narrower than "prove
-  # the one-shot bug" (which needs no solver -- see the investigation
-  # doc's "self-correcting one-shot explanation", a disassembly-level
-  # argument).
-  entry_address: "0x00009160"
+  # UPDATED this slice: the entry-state gap is closed (0x8e18 is a sound
+  # entry, no r4-r11 fabrication needed -- both the T-frame poll and the
+  # 0x8f98 config-reload path are now reproduced concretely, entering
+  # there). The remaining question worth a solver is narrower and purely
+  # about REACHABILITY of two specific RAM cells, not about entry state.
+  entry_address: "0x00008e18"   # phase_ramp_state_machine__CUSTOM's own real start -- CHANGED from 0x9160
   entry_preconditions:
-    - "MC4 already run (0x20000060 == 0) -- phase_ramp_state_machine__CUSTOM is unreachable otherwise"
+    - "MC4 already run (0x20000060 == 0) if reconstructing via a real boot; NOT required for direct entry at 0x8e18 (this project's established precedent -- callers' own gate is bypassed by entering directly, matching ll-limit-workflow.md's own approach)"
     - >
-      registers r4-r11 must hold this state machine's own real,
-      earlier-established pointers (tx buffer, counter, enable-byte
-      addresses) -- NOT fresh literal loads at 0x9160 itself. This is
-      the exact gap this slice left open: either (a) trace backward
-      through FUN_00008e18's own dispatch to find where r4-r11 are set
-      (bounded, Ghidra/Unicorn work, not itself symbolic), or (b) drive
-      a real MC4-unlocked boot to this state naturally (expensive, but
-      this project already has the recipe pieces -- see
-      docs/investigations/mc4-transition.md,
-      docs/investigations/post-probe-main-loop.md).
+      NO register fabrication needed: r4, r5, r8, r9 are freshly loaded
+      from literals in the function's own prologue; r6, r7, r10, r11 are
+      established by real, executed control flow before they are ever
+      read. Concretely verified this slice (trigger-input-concrete-
+      path.md Part 9/10) -- this is no longer an open item.
   success_states_to_check:
-    - address: "0x00009244"
-      meaning: "the confirmed T-frame poll's own exit (return) -- reachability already CONFIRMED by disassembly, not itself the target"
+    - address: "0x00008c10"
+      meaning: "the real TX wrapper -- CONFIRMED reached concretely, both PB05 states, real frames 'T0,1,|' and 'T1023,0,|' captured"
     - address: "0x00008f98"
-      meaning: "the UNTRACED branch target from the second digitalRead(0x39) at 0x9226 -- the actual open question"
+      meaning: "the config-reload branch from the second digitalRead(0x39) -- CONFIRMED reachable concretely (with 2 disclosed test seeds, see below) and CONFIRMED to call config_loader__CUSTOM (FUN_00004b64)"
   symbolic_candidates:
     - name: PB05_live_level
       where: "PORT.GROUP1.IN (0x410080a0) bit 5"
       why: "the only genuinely external input to this whole mechanism"
-    - name: gate_condition_at_0x9202
-      where: "RAM bytes at [r5+0..3], [0x20001b38]-deref, [0x200000d8]-deref, [r6+0]"
+    - name: gate_cell_0x20001b38
+      where: "RAM word at 0x20001b38 (must == 0x7b to reach 0x8f98 via either arm)"
       why: >
-        the four-way AND gate before the second digitalRead(0x39) --
-        not yet named to real RAM addresses beyond what's listed here;
-        resolving r5/r6's real identity is a prerequisite, likely via
-        the same backward trace as the entry-state gap above
+        this slice used it as a disclosed TEST value to reach and
+        characterize 0x8f98 -- whether any real code path drives it to
+        exactly 0x7b naturally is the actual open reachability question,
+        well suited to a solver over "what real firmware states make
+        this cell equal 0x7b"
+    - name: gate_cell_0x200000d8
+      where: "RAM byte at 0x200000d8 (must == 9 to reach 0x8f98)"
+      why: "same as above -- disclosed test value, real producer not traced"
   keep_concrete:
-    - "tx_buffer_base, tx_buffer_index, tick_variable addresses -- already resolved literals, no reason to symbolize"
+    - "tx_buffer_base, tx_buffer_index, tick_variable, trigger_report_enable (0x20003120) addresses -- already resolved literals with known real producers (TR0|/TR1|), no reason to symbolize"
     - "the rate-limit timestamp (0x20002410) and millis() (0x200052ec) -- model via --fake-tick if timing matters, not as solver-symbolic values"
-    - "PA02's boot-time level -- already exhaustively covered concretely (both outcomes), no remaining question there"
+    - "PA02's boot-time level and *0x20001fc0 -- already exhaustively covered concretely (both outcomes), no remaining question there"
+    - "per_channel_device_state (0x20002524[0..3]) -- confirmed cold-zero satisfies this gate; no need to symbolize unless a non-idle scenario becomes relevant"
     - "the TX wrapper's own body (0x8c10) -- already proven; a --stub-call boundary is enough, no need to model the radio/SPI driver"
   required_stubs_or_models:
     - "0x8c10 (TX wrapper) -- --stub-call, matching this project's existing established boundary for AutoPilot's outbound path"
-    - "any SERCOM/driver-object dependency the real MC4-unlocked boot path hits before reaching this state -- see mc4-transition.md's own already-solved timing/sequencing notes if reconstructing entry via a real boot"
+    - "config_loader__CUSTOM (0x4b64)'s own lazy-init dependency (the same boundary target-config-provenance.md already named -- a plain flash-address read at 0x12000, gated behind a lazily-initialized buffer object) -- either stub the object's construction or accept the crash as the real, already-understood boundary and stop there"
   loop_bounds_and_exits:
-    - "the ~500-tick rate-limit gate at 0x91a4-0x91b0 should be treated as already-satisfied (seed the timestamp so `now - last >= 500` is trivially true) -- it is a rate limiter, not part of the interesting logic"
+    - "the ~500-tick rate-limit gate (0x8e94-0x8e9c analog arm, 0x91a4-0x91b0 digital arm) should be treated as already-satisfied (seed millis()/last-check so the delta is trivially >= 500) -- it is a rate limiter, not part of the interesting logic"
     - "the 128-iteration ADC-averaging loop in FUN_00005d44 is a real but dead-end computation (Part 4 of the investigation doc) -- do not include it in this target; it has no reader"
+    - "the per-channel ramp loop (0x8e26-0x8e66) needs no special bounding under cold/idle RAM -- concretely confirmed this slice to complete all 4 iterations and reach the trigger-poll region without intervention"
 
 open_questions:
-  - "What real condition selects this specific case inside phase_ramp_state_machine__CUSTOM's own dispatch (i.e., what enable byte gates entry at all)?"
-  - "What does the second digitalRead(0x39) at 0x9226, and the 0x8f98 branch, actually do?"
+  - "Do 0x20001b38 and 0x200000d8 ever naturally reach 0x7b/9 through real code elsewhere, or is 0x8f98 only reachable via this slice's disclosed test values? (the actual symbolic target)"
   - "Is PA02/PB05's physical identity as 'the 3.5mm trigger jack' confirmed against a schematic, or only behaviorally inferred?"
   - "Does anything on the Remote side react to the 'T<>,<>,|' frame in a way that matches the user-reported 'one trigger' symptom? (Remote-side tracing is out of scope for this AutoPilot-only slice.)"
+  - "What is 0x200025bc's full role (config-reload status byte, +1 offset written =3 here; two other readers at 0x7a50/0x81f8 not traced)?"
+  - "What is the narrow per-channel-loop combination (0x20002014[channel]==1 and 0x20001b40[channel]+0x44 != 0) that this slice found is the only way to skip the trigger-poll region entirely -- does it ever fire in practice?"
 
 evidence:
   - docs/investigations/trigger-input-concrete-path.md
   - docs/hardware/autopilot-research-handoff.md
   - docs/investigations/mc4-transition.md
   - docs/investigations/g-command-motor-subsystem-unlock.md
+  - docs/investigations/target-config-provenance.md
+  - docs/investigations/manual-mode-wire-provenance.md

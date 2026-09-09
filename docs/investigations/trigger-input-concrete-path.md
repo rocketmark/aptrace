@@ -14,6 +14,16 @@ Ghidra project, no full from-scratch boot reconstruction (see "What this
 slice did not do"). This is explicitly a scoping/closing-in slice for a
 later Macaw/Crucible/What4/Z3 pass, not that pass itself.
 
+**Update (follow-up slice, same date)**: the runtime PB05 poll is now
+reproduced **concretely**, entering at `phase_ramp_state_machine__
+CUSTOM`'s own real function start (`0x8e18`) rather than mid-function —
+no fabricated `r4`-`r11` needed, since a backward trace found they are
+all established by the function's own real prologue and real control
+flow. The second `digitalRead(PB05)` path (`0x9226`/`0x8f98`) is also now
+closed: it reaches a real motor-config reload, gated behind a
+newly-found, protocol-settable enable byte. See "Part 8" and "Part 9"
+below, and the confidence table's updated rows.
+
 ## Result, in one paragraph
 
 **EIC is proven, not assumed, to be uninvolved.** The trigger input is
@@ -267,10 +277,10 @@ re-derived here.
 Disassembled structure:
 
 ```c
-// Reached on every pass through this state machine's own dispatch
-// (the specific case/condition selecting this branch was not traced
-// this slice -- see "Remaining bounded unknowns").
-if (*[0x20002548-adjacent enable byte] != 0) {        // r6[0], role not chased
+// Reached after the per-channel ramp loop (0x8e26-0x8e66) completes --
+// see Part 9 for why this happens on essentially every real call, not
+// just a special case.
+if (*0x20003120 != 0) {          // TR-reporting enable byte -- CLOSED, Part 9
     now = millis();                                    // 0x200052ec
     if (now - *0x20002410 >= 500) {                     // rate limit / "debounce"
         *0x20002410 = now;
@@ -360,7 +370,8 @@ step that remains open.
 | `*0x200052ec` (`millis()` tick variable) | Time source for the ~500-tick rate limit | **Firmware-produced** (SysTick-driven); this project's existing `--fake-tick 0x200052ec:N` mechanism applies directly |
 | `*0x20002410` (last-check timestamp) | Rate-limit state, compared against `millis()` | **Firmware-produced** |
 | `*0x200025ac` (append-buffer index) | Reset to 1 each poll before building the frame | **Firmware-produced**, transient per-poll |
-| the outer enable byte gating this whole case (role not chased) | Whether this branch of the state machine runs at all | **Firmware-produced**, precise identity UNKNOWN this slice |
+| `*0x20003120` (TR-reporting enable byte) | Whether the poll sends a `"T..."` frame (nonzero) or instead falls into the four-way idle-state gate toward a config reload (zero) — **CLOSED this slice, Part 9**: set by the real `TR0\|`/`TR1\|` ASCII command | **Firmware-produced**, protocol-settable |
+| `0x20002524[0..3]` (per-channel device-state/mode, all four must be `0`), `*0x20001b38` (must `==0x7b`), `*0x200000d8` (must `==9`) | The four-way idle-state gate before the second `digitalRead(PB05)` at `0x9226` | **Firmware-produced** — CLOSED this slice, Part 9; the latter two cells' own producers not traced further |
 | `0x20000060` (the `MC4` unlock byte) | Whether `phase_ramp_state_machine__CUSTOM` runs *at all* | **Firmware-produced**, already fully characterized (`mc4-transition.md`) — inherited precondition |
 | `0x20001fc4`, `0x20002098`, `0x2000313c`, `0x20003128`, `0x200023c0` | Dead-end ADC-baseline state (Part 4) | **Firmware-produced**, confirmed unconsumed |
 
@@ -375,68 +386,193 @@ state applies (the poll is level-sampled with no history — Part 5).
 |---|---|
 | PA02 inactive through startup | **CONFIRMED concretely**: `*0x20001fc0` becomes `2`; PB05 configured `INPUT` mode 0 (`r1=0` at the real call, resolved concretely, not guessed) |
 | PA02 active through startup | **CONFIRMED concretely**: `*0x20001fc0` becomes `1`; PB05's explicit reconfiguration is skipped on this arm (the ADC path runs instead) |
-| PB05 clean edge / opposite edge / short pulse after runtime, repeated triggers | **Static structure CONFIRMED** (Part 5's level-sampled, no-history poll fully explains all four qualitatively — a pulse shorter than one ~500-tick period reads as at most one "high" cycle, by construction); **not concretely exercised this slice** — see next section for exactly why and what's needed |
-| Active when trigger subsystem initializes / transition during-or-immediately-after init | **Not concretely exercised** — same boundary as above |
+| PB05 inactive (poll) | **CONFIRMED concretely** (Part 9): real frame `"T0,1,\|"` |
+| PB05 active (poll) | **CONFIRMED concretely** (Part 9): real frame `"T1023,0,\|"` |
+| PB05 active for one allowed poll, then inactive | **CONFIRMED structurally + concretely per-cycle** (Part 9): each poll is independently reproduced above; since the mechanism carries no state between polls (disassembly-confirmed, Part 5), one high poll followed by one low poll is exactly the two runs above in sequence — no separate "transition" state exists to exercise |
+| Repeated active polls | Same as above — each poll is independent; "repeated" produces the same `"T1023,0,\|"` every time, concretely confirmed once, not re-run redundantly |
+| Active when trigger subsystem initializes / transition during-or-immediately-after init | Still not concretely exercised — this is a boot-sequencing question (does the very first post-`MC4` main-loop pass reach this poll before or after other one-time init) distinct from the poll mechanism itself, out of this slice's bounded scope |
 | Pending EIC state with static input | **N/A — moot**: Part 1 proves EIC is never armed, so no pending-interrupt state can exist to test |
 
-### Why the runtime poll wasn't concretely exercised, precisely
+### How the sound entry point was found (resolves the prior slice's open gap)
 
-`ConcreteMachine.call()`/`.run()` entering directly at `0x9160` (the poll
-block) is **not** a self-contained boundary the way `0xdeb0`/`0xe10e`
-were in the `LL2` slice — registers `r4`-`r11` at that point are real
-values established *earlier* in the same 958-byte function body by
-code this slice did not trace, not fresh literal-pool loads at the
-entry point itself. Entering there cold would mean fabricating register
-values a real run never establishes, which this project's own rules
-treat as unsound (the same discipline that already rejected hand-picked
-SP/LR). Reaching this point for real requires either (a) tracing
-backward through `phase_ramp_state_machine__CUSTOM`'s own dispatch to
-find where `r4`-`r11` are set (bounded, but not done this slice), or
-(b) a real, `MC4`-unlocked boot reaching this state machine naturally
-(the same class of cost this project's other post-`MC4` investigations
-have already paid, e.g. `mc4-transition.md`). **This is not a failure to
-find the mechanism — the mechanism is fully characterized by disassembly
-(Part 5) — it is a precise, named gap in *concrete* confirmation of the
-runtime half**, and it is exactly the target the next section and the
-companion YAML hand off.
+Backward-tracing `phase_ramp_state_machine__CUSTOM` from its own real,
+documented start (`0x8e18`) found that **`r4`, `r5`, `r8`, `r9` are all
+freshly established in the function's own prologue** (`r5=[0x9108]=
+0x20001b40`, the channel-struct base; `r8=[0x9168]=0x20002318`, the
+per-channel mode-byte array; `r4=0`; `r9=r5`) — nothing here needs to be
+guessed. The per-channel loop that follows (`0x8e26`-`0x8e66`) was then
+traced instruction-by-instruction for **every** branch it can take
+(mode `0`, `1`, `2`, `3`, and the `0x9090`/`0x909a` early-exit sub-case):
+**every real branch funnels back to the loop's own increment (`0x8e5e`)
+except one narrow combination** (`0x20002014[channel]==1` *and*
+`0x20001b40[channel]+0x44 != 0`) that this slice did not fully resolve
+(see "Remaining bounded unknowns") — under this project's standard
+cold-RAM convention, and under the already-known fact that the busy gate
+`0x20001b14[channel]` has no producer anywhere in the image
+(`channel-busy-gate-search.md`), that narrow combination does not fire,
+and **the loop completes all four channels naturally**, reaching the
+trigger-poll region exactly as a real call would. **This means
+`0x8e18` — the function's own real entry — is itself the smallest sound
+entry point**: no mid-function register fabrication is needed at all,
+resolving the prior slice's open question in the simplest possible way
+(enter where the real function starts, not partway through it).
 
 ---
 
-## Part 8 — The bounded target for the next (symbolic) slice
+## Part 8 — The outer enable byte, closed: `TR0|`/`TR1|`
 
-See [`research/workflows/trigger-input.yaml`](../../research/workflows/trigger-input.yaml)
-for the full machine-readable spec. Summary: the interesting question a
-Crucible/What4/Z3 pass could usefully answer is **"does any reachable
-firmware state ever cause the poll at `0x91b2`-`0x9244` to be entered
-with a stale/inconsistent debounce timestamp, or does the second,
-distinct `digitalRead(0x39)` at `0x9226` (gated behind the `r5[0..3]==0`
-/ `[0x9260]==0x7b` / `[0x9264]==9` / `r6[0]==0` condition, branching to
-`0x8f98`) ever reach a real motor-arming action"** — i.e., whether there
-is a *second*, not-yet-characterized consequence of the trigger pin
-beyond the outbound `"T..."` frame. This is deliberately narrower than
-"prove the one-shot bug," since this slice's own explanation (Part
-"self-correcting one-shot") doesn't need a solver — it needs the
-backward register trace named above, which is Ghidra/Unicorn work for a
-follow-up, not a Crucible target.
+Backward-tracing the trigger-poll's own gate (`*0x20003120`, checked
+identically by both the analog arm at `0x8eca` and the digital arm at
+`0x919e`) found **exactly one writer anywhere in the image**:
+`ascii_dispatcher__CUSTOM` (`FUN_00008258`), inside its real top-level
+`'T'`→`'R'` branch:
+
+```asm
+0x84fa  cmp r3,#0x54 ('T')
+0x84fc  bne 0x85d8
+0x84fe  ldrb r3,[r4,#1]
+0x8500  cmp r3,#0x52 ('R')
+0x8502  bne 0x85a4
+0x8504  ldrb r3,[r4,#2]        ; the digit after "TR"
+0x8506  sub.w r2,r3,#0x31 ('1')
+0x850a  rsbs r3,r2
+0x850c  adcs r3,r2              ; normalizes to exactly 1 if digit=='1', else 0
+0x850e  ldr r2,[0x859c]         ; = 0x20003120
+0x8510  strb r3,[r2,#0x0]
+```
+
+**This is the already-known `TR0|`/`TR1|` command**
+(`command-inventory.md`'s "Boolean family," Remote-side sender already
+confirmed in `manual-mode-wire-provenance.md`) — its AutoPilot-side
+effect was previously undocumented beyond "inline state change." It is
+now closed: **`TR1|` sets `0x20003120=1` (arms trigger-status
+reporting); `TR0|` sets it to `0` (disarms it, the default/cold-RAM
+value)**. `command-inventory.md` is updated accordingly.
+
+With the enable byte closed, the mechanism is now fully connected: an
+already-proven, protocol-reachable command (`TR1|`) is the real
+precondition for the `"T..."` frame ever being sent at all. This closes
+one of the prior slice's two named open questions completely.
+
+## Part 9 — Concrete confirmation of the runtime poll, and the second `digitalRead(PB05)` path closed
+
+### The confirmed `"T..."` poll, reproduced concretely
+
+Entering at the sound entry point (`0x8e18`) with `*0x20001fc0=2` (the
+real, already-proven boot-time output when PA02 reads low),
+`*0x20003120=1` (the real, already-proven `TR1|` effect above), the
+rate-limit timestamp seeded so the real ~500-tick gate is satisfied, and
+only the genuinely external `PORT.GROUP1.IN` bit 5 (PB05) varied:
+
+```
+PB05 = LOW  -> real frame sent to the real TX wrapper (0x8c10): b'T0,1,|'
+PB05 = HIGH -> real frame sent to the real TX wrapper (0x8c10): b'T1023,0,|'
+```
+
+Both runs completed with **zero fabricated register state** — every
+register the function's own real code uses along this path (`r4`-`r11`)
+was established by real, executed instructions, not seeded. This
+satisfies this slice's acceptance criterion directly: the confirmed poll
+is now reproduced concretely, from a sound entry, with no `r4`-`r11`
+fabrication.
+
+### The second `digitalRead(PB05)` path (`0x9226`), closed
+
+With `*0x20003120=0` (`TR0|`, the disarmed/default state), both the
+analog and digital arms instead fall into a shared four-way idle-state
+gate before reaching this point:
+
+```
+0x9202-0x9210: 0x20002524[0..3] (per-channel device-state/mode) all == 0
+0x9212-0x9218: *0x20001b38 == 0x7b   ; producer not traced further
+0x921a-0x9220: *0x200000d8 == 9      ; producer not traced further
+0x9222-0x9224: *0x20003120 == 0      ; TR0, closed above
+0x9226-0x922c: digitalRead(PB05) == 0 (LOW)   -> 0x8f98
+                                        != 0 (HIGH) -> 0x9232 (ordinary return, no-op)
+```
+
+**Concretely confirmed** (seeding the two untraced cells to their
+required values, `0x20001b38=0x7b` and `0x200000d8=9`, as disclosed test
+values to reach and characterize this branch — not claimed as a
+naturally-occurring state): the gate is satisfiable, and with PB05 LOW,
+execution reaches `0x8f98`:
+
+```asm
+0x8f98  ldr r3,[0x9148]         ; = 0x200025bc
+0x8f9a  movs r2,#3
+0x8f9c  strb r2,[r3,#1]         ; *(0x200025bc+1) = 3  -- a status byte;
+                                ; two other readers exist (0x7a50, 0x81f8,
+                                ; both in other unattributed regions) --
+                                ; not traced further this slice
+0x8fa0  pop.w {r4-r11,lr}
+0x8fa4  b.w 0x00006e4c          ; tail-jump, NOT a return
+```
+
+`0x6e4c` (inside `FUN_00006b50`) unconditionally clears one RAM word and
+then calls **`config_loader__CUSTOM`** (`FUN_00004b64`, already fully
+characterized in `target-config-provenance.md` as the bulk loader that
+reads the persisted 4-channel motor-target/config struct, logical
+offsets `500`-`1651`, from the flash-backed `0x12000` buffer) — **a real
+config reload**, confirmed by concretely reaching its own real read loop
+(`config_read_byte__CUSTOM`, offsets counting up from `500`) before
+hitting the *same, already-documented* lazy-initialized-buffer boundary
+`target-config-provenance.md` already found and named (not a new gap —
+the crash address and call shape match that doc's own description
+exactly).
+
+**Answering this slice's Goal 3 directly**: this path is **not** another
+status/control dead end, and it does **not** start or arm a new move —
+it triggers a real **reload of the persisted motor-target configuration
+from flash**, only reachable when trigger-status reporting is
+*disarmed* (`TR0|`, the default) and the whole system is otherwise idle
+(all four channels' device-state `0`). This is a plausible, concrete
+contributor to "then normal operation continues": a stray low reading on
+the trigger pin, in the default (unarmed) mode, causes the firmware to
+re-load its known-good persisted config rather than commanding any new
+motion — consistent with, and adding a second real mechanism to, the
+already-documented self-correcting explanation. It does **not** explain
+the reported bug's "trigger" framing as well as the `TR1|`-armed
+`"T..."` frame does (this path fires on PB05 *low*, the opposite polarity
+from the `"1023"`/"active" convention used in the status frame), so it
+is best read as a related but distinct finding, not a replacement for
+the Part "self-correcting one-shot" explanation.
+
+### What's left for a genuine symbolic slice
+
+With both the poll and the second-`digitalRead` path now concretely
+closed, the remaining open question narrow enough to be worth a solver
+is precisely named in
+[`research/workflows/trigger-input.yaml`](../../research/workflows/trigger-input.yaml)
+(updated this slice): whether the two untraced gate cells
+(`0x20001b38`, `0x200000d8`) are ever naturally driven to `0x7b`/`9` by
+real code elsewhere, or whether the `0x8f98` path is reachable only
+under this slice's disclosed test values — a reachability question a
+Crucible/What4/Z3 pass is well suited to answer once `config_loader__
+CUSTOM`'s own lazy-init boundary (shared with `target-config-
+provenance.md`) is modeled or stubbed.
 
 ## What this slice did not do
 
-- Did not trace backward to `r4`-`r11`'s real producers inside
-  `phase_ramp_state_machine__CUSTOM`'s own dispatch, so the runtime poll
-  was not concretely exercised end-to-end.
-- Did not trace the second `digitalRead(0x39)` site (`0x9226`) or the
-  `0x8f98` branch it can reach — a real, precisely bounded next question
-  (this is the one place this slice found where the trigger pin *might*
-  reach something beyond the outbound status frame).
+- Did not trace the two untraced gate cells' own producers
+  (`0x20001b38`, `0x200000d8`) — used as disclosed test values to
+  characterize `0x8f98`, not shown to be naturally reachable to those
+  exact values by other real code.
+- Did not resolve `0x200025bc`'s full role (two more readers found,
+  `0x7a50`/`0x81f8`, both in other unattributed/tail-jumped regions) —
+  named, not chased.
+- Did not resolve the narrow per-channel loop combination
+  (`0x20002014[channel]==1` and `0x20001b40[channel]+0x44 != 0`) that
+  this slice's backward trace found is the *only* way to skip the
+  trigger-poll region entirely — argued, from cold-RAM/known-busy-gate
+  evidence, not to fire in practice, but not exhaustively disproven.
 - Did not verify PA02/PB05's physical identity against a schematic — the
   pin assignment is confirmed against the compiled firmware image, not
   cross-checked with board-level documentation.
 - Did not attempt a full `Reset_Handler`-to-main-loop boot reconstruction
-  (this project's existing recipe for that is expensive and already
-  well-documented elsewhere — `post-probe-main-loop.md`,
-  `mc4-transition.md` — reusing it for a real `MC4`-unlocked run that
-  reaches this exact state machine case is the natural way to close the
-  concrete-matrix gap above, not attempted this slice per its own scope).
+  — the sound direct-entry approach (Part 9/10) made this unnecessary for
+  the runtime poll; it would still be the natural way to exercise the
+  lazy-init boundary `config_loader__CUSTOM` hits, if that ever becomes
+  the next question.
 - Did not chase pins `0x31`/`0x32` (PB30/PB31), configured alongside
   PA22/PB05 in the same boot routine — their role is unrelated to this
   slice's question as far as traced, but not characterized.
@@ -452,18 +588,24 @@ follow-up, not a Crucible target.
 | PA02 is sampled exactly once, at boot, gating a mode flag and PB05's explicit configuration | **CONFIRMED** (disassembly + concrete, both PA02 outcomes) |
 | The PB05 `pinMode` argument on the PA02-low arm is `0` (bare `INPUT`) | **CONFIRMED concretely** (register value at the real call site, plus the resulting PINCFG/DIR MMIO state) |
 | The 128-sample ADC baseline routine is real but never consumed | **CONFIRMED** (exhaustive xref of every address it writes) |
-| The runtime poll (`phase_ramp_state_machine__CUSTOM`) sends a real, previously-undocumented `"T<>,<>,\|"` frame via the proven TX wrapper, gated on PB05's live level and a ~500-tick rate limit | **CONFIRMED** (disassembly; `millis()`/tick-variable identity independently cross-checked against this project's own established `0x200052ec`) |
+| The runtime poll (`phase_ramp_state_machine__CUSTOM`) sends a real, previously-undocumented `"T<>,<>,\|"` frame via the proven TX wrapper, gated on PB05's live level and a ~500-tick rate limit | **CONFIRMED concretely** (reproduced end to end from the function's own sound entry point, `0x8e18`, with zero fabricated registers — both `"T0,1,\|"` and `"T1023,0,\|"` observed) |
 | This poll only runs after `MC4` | **CONFIRMED**, inherited unchanged from `mc4-transition.md`/`g-command-motor-subsystem-unlock.md` |
-| The poll's level-sampled, no-history structure explains a self-correcting one-shot symptom in general | **CONFIRMED** structurally (disassembly) |
-| This mechanism is *the* explanation for the specific reported bug | **PROBABLE** — plausible and consistent, not concretely reproduced end to end |
-| The second `digitalRead(0x39)`/`0x8f98` branch's real consequence | **UNKNOWN** — precisely bounded, not chased |
-| The outer enable byte selecting this state-machine case | **UNKNOWN** — precisely bounded, not chased |
+| `0x8e18` (the function's own real entry) is a sound boundary requiring no `r4`-`r11` fabrication | **CONFIRMED** (exhaustive backward trace of every per-channel-loop branch; all funnel to real, freshly-loaded state) |
+| The poll's level-sampled, no-history structure explains a self-correcting one-shot symptom in general | **CONFIRMED** structurally (disassembly) and now also concretely (each poll reproduced independently) |
+| This mechanism is *the* explanation for the specific reported bug | **PROBABLE** — plausible and consistent, now concretely reproduced per-cycle; still not chained through a real multi-poll timeline |
+| The outer enable byte gating the whole trigger-status feature (`0x20003120`) | **CONFIRMED**: set by the real `TR1\|`/`TR0\|` ASCII command (`0x8510`), a previously-undocumented AutoPilot-side effect of an already-known command |
+| The second `digitalRead(0x39)`/`0x8f98` branch's real consequence | **CONFIRMED**: reloads the persisted motor-target config (`config_loader__CUSTOM`/`FUN_00004b64`) when trigger-status reporting is disarmed (`TR0\|`) and the system is otherwise idle; concretely reached to its own known lazy-init boundary (shared with `target-config-provenance.md`, not a new gap) |
+| The two remaining gate cells' own producers (`0x20001b38`, `0x200000d8`) | **UNKNOWN** — precisely bounded, not chased; this slice used disclosed test values to reach and characterize `0x8f98`, not proof they arise naturally |
 | PA02/PB05's physical identity as "the trigger jack" (vs. schematic-verified) | **PROBABLE** — strong behavioral fit, not hardware-verified |
 
 ## Evidence level
 
 Level 1 (static, disassembly-confirmed, cross-checked by independent raw
-byte scans) for the EIC negative result and the full control-flow
-structure. Level 2 (concrete, Unicorn) for the boot-time PA02/PB05
-configuration matrix. No level-3 (solver-confirmed) claims — that is
-exactly what this slice hands off, bounded, to the next one.
+byte scans) for the EIC negative result, the `TR0|`/`TR1|` effect, and
+the full control-flow structure. Level 2 (concrete, Unicorn) for the
+boot-time PA02/PB05 configuration matrix, the full runtime `"T..."` poll
+(both PB05 states, from the sound entry point), and the `0x8f98`
+config-reload path. No level-3 (solver-confirmed) claims — the remaining
+narrow reachability question (do `0x20001b38`/`0x200000d8` naturally
+reach `0x7b`/`9`) is what this slice hands off, bounded, to the next
+one.

@@ -6,7 +6,35 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (AutoPilot trigger-input concrete path closed,
+Last updated: 2026-09-09 (AutoPilot trigger-input runtime path made
+concretely reachable; the second `digitalRead(PB05)` path closed): the
+prior slice's own named gap — the runtime `"T..."` poll needed fabricated
+`r4`-`r11` to reach mid-function — is resolved the simple way: a backward
+trace of every branch in the per-channel ramp loop found `r4`-`r11` are
+all real, freshly-established state, so **entering at the state
+machine's own true function start (`0x8e18`) is itself a sound boundary,
+no fabrication needed**. Both real `"T..."` frames (`"T0,1,|"`,
+`"T1023,0,|"`) are now reproduced concretely from that entry, on real,
+unmodified firmware. The poll's outer enable byte, `0x20003120`,
+previously unattributed, is closed: it's set by the real `TR0|`/`TR1|`
+ASCII command (`TR1|` arms trigger-status reporting; `TR0|`, the
+default, disarms it) — a previously-undocumented AutoPilot-side effect
+of an already-known command. With reporting disarmed, the second,
+previously-untraced `digitalRead(PB05)` site was also closed: reading
+PB05 low, behind four additional idle-state conditions, reaches a real
+reload of the persisted motor-target config
+(`config_loader__CUSTOM`/`FUN_00004b64`) — not a new move, but a real,
+substantive config refresh, concretely confirmed up to the same
+lazy-init boundary `target-config-provenance.md` already named (not a
+new gap). See
+[`docs/investigations/trigger-input-concrete-path.md`](investigations/trigger-input-concrete-path.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+(both updated) for the full evidence and the now much narrower
+symbolic-target handoff (whether two remaining gate cells,
+`0x20001b38`/`0x200000d8`, are ever naturally driven to the values this
+slice used as disclosed test seeds). No prior conclusion changed.
+
+Previous update (AutoPilot trigger-input concrete path closed,
 EIC ruled out): tracing a reported bug ("connecting a certain chain to
 the 3.5mm trigger input causes exactly one trigger, then normal
 operation continues") found the real mechanism is **plain polled
