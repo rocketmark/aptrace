@@ -1,0 +1,108 @@
+# Machine-readable companion to docs/ui/action-command-map.md's Auto Mode
+# entries. This is a convenience index for future automated scenario
+# checkpoints (e.g. a script that wants to know "what's the current
+# confidence and evidence doc for the '+' bulk-push scenario" without
+# parsing markdown) -- it is NOT a new source of truth. Every fact here
+# must trace to docs/ui/action-command-map.md and the investigation docs
+# it cites; if the two ever disagree, the markdown wins and this file is
+# stale and should be regenerated/fixed.
+#
+# confidence values: CONFIRMED | HIGH | PROBABLE | UNKNOWN
+# (see docs/ui/action-command-map.md's "Confidence scale" section)
+
+scenarios:
+  - scenario: auto_mode_record_point
+    description: >
+      User records a segment point (A/B/C/D) via FUN_0000e670's screen-5
+      point-recording dialog (call sites A 0xf40c / B 0xf5a6 -- two
+      structurally different gates reaching the same dialog).
+    preconditions:
+      - at least one motor channel configured (Quick Setup)
+      - Auto Mode selected, a channel selected
+    steps:
+      - user reaches screen 5 (exact prior navigation path UNKNOWN)
+      - screen shows "Click" / "to rec A".."to rec D" (segment-dependent) / "Long-click to end"
+      - a short jog-wheel click (FUN_0000cd70 returns 1) records the point and sends '+'
+      - a long click (FUN_0000cd70 returns 2) ends the dialog without sending
+    command: "'+' confirm1=confirm2=1 param_4=1 mode=0x00"
+    remote_function: FUN_0000e670 -> FUN_000049c4
+    autopilot_effect: >
+      writes per-record delta/ramp fields; does NOT cross the >50
+      compute+persist threshold; does NOT populate a live G-consumable
+      target
+    confidence: CONFIRMED
+    evidence:
+      - docs/investigations/plus-command-remote-provenance.md
+      - docs/investigations/auto-mode-plus-callsite-identity.md
+    open_question: none -- chain closed (string -> input -> state -> wire bytes)
+
+  - scenario: auto_mode_confirm_screen_9_or_10
+    description: >
+      User advances through FUN_0000e670's screens 9 (loop toggle) or 10
+      (test/preview), each also sending '+' before rendering "RUNNING".
+    preconditions:
+      - at least one motor channel configured (Quick Setup)
+      - Auto Mode selected, a channel selected, a segment recorded
+    steps:
+      - user navigates to screen 9 or 10 (exact prior navigation path UNKNOWN)
+      - a confirmed flag is set (mechanism not traced this pass)
+      - FUN_000049c4 is called, then FUN_0000b59c (ack wait)
+      - on ack, "RUNNING" renders
+    command: "'+' confirm1=confirm2=1 mode=0x14 (param_4=2 screen 10, param_4=0 screen 9)"
+    remote_function: FUN_0000e670 -> FUN_000049c4
+    autopilot_effect: >
+      writes per-record delta/ramp fields; does NOT cross the >50
+      compute+persist threshold; does NOT populate a live G-consumable
+      target
+    confidence: PROBABLE
+    evidence:
+      - docs/investigations/plus-command-remote-provenance.md
+      - docs/investigations/auto-mode-plus-callsite-identity.md
+    open_question: >
+      which screen text is highlighted at send time (extrapolated as the
+      LOOP row for screen 9 and the TEST A-B/B-C/C-D row for screen 10,
+      by row-index arithmetic, not directly observed -- see
+      action-command-map.md Part 5 item 6)
+
+  - scenario: auto_mode_bulk_config_push
+    description: >
+      AutoPilot config resync, most plausibly triggered on reconnect or
+      status refresh, driven by the Remote's 'S'-handler (FUN_0000c440).
+    preconditions:
+      - this channel's locally-stored Auto Mode config is nonzero
+    steps:
+      - UNKNOWN real-world trigger (leading hypothesis: reconnect)
+    command: "'+' confirm1=confirm2=1 param_4=0 mode=0x62"
+    remote_function: FUN_0000c440 -> FUN_000049c4
+    autopilot_effect: >
+      computes target = start + delta (concretely demonstrated: delta=500
+      -> target=500) and persists the whole 4-channel struct
+    confidence: CONFIRMED (mechanism) / PROBABLE (real-world trigger)
+    evidence:
+      - docs/investigations/plus-command-remote-provenance.md
+      - docs/investigations/plus-target-distance-roundtrip.md
+    open_question: >
+      what real Remote-side event calls FUN_0000c440's bulk-push branch
+
+  - scenario: auto_mode_execute_move
+    description: >
+      G mode-1 request resolves a previously '+'-populated target and
+      commits a real move if the resulting distance exceeds 8 units.
+    preconditions:
+      - MC4 already run (boot-loop unlock)
+      - a target already populated for this channel via '+' (mode 0x62 path)
+    steps:
+      - user selects "GO TO POINT" / "Move to A-D" (UI mapping UNKNOWN)
+    command: "G<channel>1<seq>|"
+    remote_function: "0xb680"
+    autopilot_handler: FUN_00008258 -> FUN_00007e2c -> FUN_00006fd8
+    autopilot_effect: >
+      distance = target - live_position; if |distance| > 8, move-committed
+      flag set (concretely demonstrated with distance=500)
+    confidence: CONFIRMED (mechanism, concrete) / PROBABLE (UI label)
+    evidence:
+      - docs/investigations/plus-target-distance-roundtrip.md
+      - docs/investigations/mc4-transition.md
+      - docs/investigations/target-config-provenance.md
+    open_question: >
+      which Remote UI action calls 0xb680 with type=1 specifically

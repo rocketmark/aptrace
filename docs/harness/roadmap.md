@@ -723,3 +723,34 @@ closing recommendation.
     not reached this slice, since `FUN_00008e18` has its own additional,
     not-yet-resolved preconditions (a per-channel loop, further internal
     state) beyond what `FUN_00007e2c` needed.
+31. **A user-guide-driven workflow/state model** — a modeling and
+    provenance slice, not new firmware-behavior evidence.
+    [`docs/ui/user-guide-workflows.md`](../ui/user-guide-workflows.md)
+    reconstructs the major user-visible workflows (power-on, Quick Setup,
+    Manual Mode, Auto Mode's record/test/execute cycle, limit-setting,
+    persistence, RF/settings, firmware update) from this project's
+    existing user-manual summary
+    ([`docs/hardware/autopilot-research-handoff.md`](../hardware/autopilot-research-handoff.md)),
+    cross-referenced against the Remote firmware's own 211 embedded UI
+    strings, with the two source types kept explicitly separate (a string
+    existing in the image does not by itself prove which workflow step
+    displays it).
+    [`docs/ui/action-command-map.md`](../ui/action-command-map.md)
+    overlays every command this project has characterized onto that
+    skeleton with an explicit CONFIRMED/HIGH/PROBABLE/UNKNOWN scale kept
+    separate from the firmware-evidence-level scale already in use
+    elsewhere. Makes explicit a correction that was already implicit in
+    (28)-(30)'s own evidence but never stated this plainly: **the three
+    interactive Auto-Mode `'+'` confirm screens and the mechanism that
+    actually arms a drivable motor target are not the same event** —
+    only the separate `'S'`-handler bulk-push call (mode `0x62`) crosses
+    AutoPilot's compute+persist threshold. Also surfaces, for the first
+    time, that `MC4`/`MC<0-3>`/`LL1`/`LL2` have zero confirmed Remote-side
+    sender or UI-input evidence despite `MC4` being the sole instruction
+    anywhere in the image that ends the boot-phase loop — a gap that
+    command-by-command investigation never had reason to surface. Ends
+    with a prioritized list of the next highest-value bounded questions
+    (e.g. "which Remote UI state/input transition reaches interactive
+    `'+'` call site A (screen 5)?"), not a mandate to reverse everything
+    remaining. See that document's own "Part 5 — Next highest-value
+    unknowns" for the full ranked list.

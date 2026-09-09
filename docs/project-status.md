@@ -6,7 +6,27 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (toolchain cleanup hardening pass, not a firmware-behavior slice: fixed two real isolation gaps in the cleanup's machine/project reuse — `fresh=True` now restores flash/MMIO/PPB in addition to RAM/registers, and `call()`'s return trampoline no longer lives inside real device RAM — plus two smaller ambiguities (Ghidra cache identity now hashes build scripts/provenance TSV content; `RunResult.success` split into explicit `error_free`/`completed`). See "Tooling" below. Prior firmware finding, unchanged: a full concrete, end-to-end path where a real Remote `'+'` send drives a real AutoPilot motor-target write that a real subsequent `G` mode-1 request turns into a real, nonzero `FUN_00006fd8` move-commit distance).
+Last updated: 2026-09-09 (user-guide workflow/state model, a modeling and
+provenance slice, not new firmware-behavior evidence: two new documents,
+[`docs/ui/user-guide-workflows.md`](ui/user-guide-workflows.md) and
+[`docs/ui/action-command-map.md`](ui/action-command-map.md), reorganize
+this project's existing command-by-command findings around how a human
+actually operates the product — entry state, screen, input, wire-command
+stack, AutoPilot state effect, physical result — instead of a flat command
+list. Key correction this pass makes explicit, from evidence this project
+already had but had not stated this plainly: **the interactive Auto-Mode
+`'+'` confirm screens and the mechanism that actually arms a drivable
+motor target are not the same event** — only the separate `'S'`-handler
+bulk-push call (mode `0x62`) crosses AutoPilot's compute+persist
+threshold; the three interactive screen confirmations write a delta field
+but do not themselves populate anything a later `G` can consume. Also
+newly explicit: `MC4`/`LL1`/`LL2` have zero confirmed Remote-side sender
+or UI-trigger evidence despite `MC4` being the single most consequential
+command in the protocol (the sole boot-loop unlock) — a gap this
+project's command-by-command investigations never had reason to surface
+before now. No firmware-behavior conclusion from any prior slice changed;
+see "Tooling" below for the toolchain-cleanup hardening pass this slice
+follows.).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -822,6 +842,57 @@ re-proving:
   Unicorn/ARMv7-M gotchas found while fixing this (implicit Execute-Never
   on Device-type memory; `UC_HOOK_MEM_WRITE` not firing for direct
   `mem_write()` API calls).
+- **A user-guide-driven workflow/state model, layered on top of the
+  existing flat command inventory (not a new firmware-behavior slice)**:
+  [`docs/ui/user-guide-workflows.md`](ui/user-guide-workflows.md)
+  reconstructs the major user-visible workflows (power-on, Quick Setup,
+  Manual Mode, Auto Mode's record/test/execute cycle, limit-setting,
+  persistence, RF/settings, firmware update) from
+  [`docs/hardware/autopilot-research-handoff.md`](hardware/autopilot-research-handoff.md)'s
+  existing user-manual summary, cross-referenced against the Remote
+  firmware's own 211 embedded UI strings — with the two source types kept
+  explicitly separate (`[user manual]` vs. `[firmware string]` tags), since
+  a string existing in the image does not by itself prove which workflow
+  step displays it. [`docs/ui/action-command-map.md`](ui/action-command-map.md)
+  overlays every command this project has characterized (`&`, `G`, `S`,
+  `!`, `I`, `D`, `'+'`, `MC0`-`MC4`, `LL1`/`LL2`) onto that skeleton, with
+  an explicit CONFIRMED/HIGH/PROBABLE/UNKNOWN scale kept separate from the
+  firmware-evidence-level scale already in use elsewhere — a command being
+  concretely CONFIRMED does not make its user-guide label CONFIRMED. The
+  single most important correction this pass makes explicit (from
+  evidence this project already had, just never stated this plainly
+  before): **the interactive Auto-Mode `'+'` confirm screens
+  (`FUN_0000e670`, modes `0`/`0x14`) and the mechanism that actually arms
+  a drivable motor target are not the same event** — only the separate
+  `'S'`-handler bulk config-push call (mode `0x62`) crosses AutoPilot's
+  `>50` compute+persist threshold; a naive "user confirms a segment ->
+  it becomes drivable" reading of the existing investigation docs would
+  be wrong. Also surfaced, for the first time, as a genuine gap rather
+  than an unasked question: `MC4`/`MC<0-3>`/`LL1`/`LL2` have **zero**
+  confirmed Remote-side sender or UI-input evidence, despite `MC4` being
+  the sole instruction anywhere in the image that ends the boot-phase
+  loop — every prior command-by-command investigation characterized these
+  from the AutoPilot side only, and framing the work as "one command at a
+  time" never surfaced that the Remote-side half was still completely
+  open. `docs/protocol/command-inventory.md` now links back to both new
+  documents. A bounded follow-up disassembly-plus-concrete-execution pass
+  into `FUN_0000e670`'s own `'+'` call sites found there are **four**, not
+  three (screen 5 has two mutually-exclusive sites, identical arguments,
+  collapsed into one by an earlier decompile-only reading) and closed the
+  full evidence chain — displayed string -> input gesture -> state
+  transition -> exact `'+'` wire bytes — for the two screen-5 sites for
+  the first time in this project: the point-recording dialog shows
+  exactly `"Click"` / `"to rec A"`-`"to rec D"` (segment-dependent) /
+  `"Long-click to end"`, and a short jog-wheel click (not a long one) is
+  the exact, disassembly-confirmed gesture that writes the recorded
+  point. The other two sites (screens 9/10) are confirmed to render
+  `"RUNNING"` after the send but their pre-send highlighted-row label
+  remains PROBABLE, one row-arithmetic extrapolation short of proof — see
+  [`docs/ui/action-command-map.md`](ui/action-command-map.md)'s Part 3
+  for the full chain and exactly what's still missing. No firmware-
+  behavior conclusion from any prior slice was revisited or changed by
+  this pass — it is a reorganization and gap analysis of already-
+  established evidence, plus this one bounded new disassembly pass.
 
 ## Corrected assumptions
 
