@@ -6,7 +6,37 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (`MC0`-`MC4` Remote-side provenance closed: a
+Last updated: 2026-09-09 (`MT<...>|` AutoPilot-side scheduling trigger
+closed: the flash `0x7232`-`0x7514` region `mc-command-remote-
+provenance.md` left unattributed in the Ghidra cache is now recovered by
+disassembly plus an independent full-image branch decoder — one literal
+pool, one unrelated sibling routine (tail-jumped from the ASCII command
+dispatcher, not part of this chain), and the real connector-probe/`MT`-
+builder function, entered by a single, unconditional, exhaustively-
+confirmed-unique static path: `sketch_setup()` (called exactly once,
+ever, by `main()`) → `BL FUN_00007770` (unconditional, branch-free from
+`setup()`'s own entry) → `B.W 0x7334` (unconditional tail-jump). **`MT`
+is therefore sent exactly once per physical boot/MCU reset, unconditionally,
+after the startup reference/input routine and the radio-ID handshake
+complete and before `setup()`'s own `MC4`-wait loop begins — never
+periodic, never edge/change-driven, never reconnect-driven; Quick Setup
+is boot/setup-only.** The four connector probes were also found to be a
+guarded 2-valued (boolean) read per channel, not an arbitrary digit, and
+their slot↔probe-object mapping (A→b0, C→b1, B→b2, D→b3) was confirmed
+both by disassembly and concretely — real `MT` frames (`MT10101|`,
+`MT00001|`) were produced from disclosed connector-GPIO inputs via
+`ConcreteMachine`, entering directly at `FUN_00007770`. The 5th field's
+source (`0x20001fc0`, written by the startup reference/input routine)
+was identified and bounded. Remote-side concrete delivery through
+`FUN_00010ce4` was assessed and deferred as a materially larger,
+structurally different undertaking (a per-character inbound state
+machine, not a whole-packet dispatch) — named as a follow-up, not
+silently skipped; the existing static confirmation of its Quick-Setup
+effect is unchanged. See
+[`docs/investigations/mt-quick-setup-trigger.md`](investigations/mt-quick-setup-trigger.md).
+No prior conclusion changed.
+
+Previous update (`MC0`-`MC4` Remote-side provenance closed): a
 single Remote function, `FUN_00005a8c`, builds every `MC` frame in the
 image, confirmed the sole such builder by four independent full-image
 scans, with exactly three call sites. `MC<0-3>` is sent every time the

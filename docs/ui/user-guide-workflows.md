@@ -95,10 +95,14 @@ currently have a motor attached, sends the Remote a real
 radio-command handler reacts by assigning type `"Not connected"` to any
 absent connector and opening the `"Motor <N>: Choose type"` screen
 automatically. No Remote-side menu entry point into Quick Setup was
-found by an exhaustive search. The AutoPilot-side function that decides
-*when* to send this (most plausibly boot, but not confirmed precisely)
-was not identified — see
-[`action-command-map.md`](action-command-map.md) for the exact gap. The
+found by an exhaustive search. **The AutoPilot-side scheduling trigger is
+now closed**: `MT` is sent exactly once per physical boot/MCU reset,
+unconditionally, as a plain step of `sketch_setup()` — not periodic, not
+change-driven, not reconnect-driven — so Quick Setup can only ever open in
+response to whichever connector state existed at the AutoPilot's most
+recent power-on/reset. See
+[`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md).
+The
 handoff doc's own section 8 ("Motor Configuration Constants") still
 correctly describes the settings *data* this flow edits (current, max
 speed, microstepping, return speed, motor type with auto-current for

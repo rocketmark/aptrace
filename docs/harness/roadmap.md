@@ -783,3 +783,34 @@ closing recommendation.
     What schedules the AutoPilot's `MT` send was not identified — the
     next named gap. See
     [`docs/investigations/mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md).
+33. **The `MT` AutoPilot-side scheduling trigger, closed.** The prior
+    item's named gap — flash `0x7232`-`0x7514` unattributed in the Ghidra
+    cache, no known caller into the connector-probe/`MT`-builder code — is
+    now closed by disassembly plus a from-scratch, cross-validated
+    full-image Thumb-2 branch decoder (Ghidra's own call-graph export has
+    no callers here because every real entry is an unconditional `B.W`
+    tail-jump, never a `BL`). The gap turns out to hold a literal pool, one
+    unrelated sibling routine (tail-jumped from the ASCII command
+    dispatcher, not part of this chain), and the real builder function.
+    The entry path is a single, exhaustively-confirmed-unique static
+    chain: `sketch_setup()` (called exactly once, ever, by `main()`) → an
+    unconditional `BL` into `FUN_00007770` (itself branch-free) → an
+    unconditional `B.W` tail-jump into the builder. **`MT` is therefore
+    sent exactly once per physical boot/MCU reset, unconditionally, after
+    the startup reference/input routine and radio-ID handshake complete
+    and before `setup()`'s own `MC4`-wait loop begins — never periodic,
+    edge/change-driven, or reconnect-driven; Quick Setup is strictly
+    boot/setup-only.** Also found along the way: the four connector
+    probes are a guarded 2-valued (boolean) read per channel, not an
+    arbitrary digit, with a slot↔probe-object mapping (`A→b0, C→b1, B→b2,
+    D→b3`) that is notably not naive order — confirmed both by
+    disassembly and concretely (`ConcreteMachine`, entering directly at
+    `FUN_00007770`, produced real frames `MT10101|` and `MT00001|` from
+    disclosed connector-GPIO inputs); and the 5th field's source
+    (`0x20001fc0`, written by the startup reference/input routine).
+    Remote-side concrete delivery through `FUN_00010ce4` was assessed and
+    deferred: that handler turns out to be a 792-byte per-character
+    inbound state machine, structurally different from this project's
+    existing whole-packet `REMOTE_*_ENTRY` anchors — named as a bounded
+    follow-up, not attempted this slice. See
+    [`docs/investigations/mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md).

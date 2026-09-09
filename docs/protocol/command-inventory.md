@@ -52,15 +52,26 @@ Everything else below is static-analysis-only.
   didn't find). Tracked in [`open-questions.md`](open-questions.md).
 - `I9\|` / `I1\|` short forms — used by a separate Remote routine, don't
   cleanly match the three-character `I<channel><mode>` parser.
-- `MT<b0><b1><b2><b3><x>\|` — **newly found, AutoPilot -> Remote**
-  (opposite direction from every other row in this table). Real,
-  disassembly-confirmed AutoPilot builder at flash `0x74ae`-`0x74d6`,
-  encoding four real GPIO motor-connector presence probes as one digit
+- `MT<b0><b1><b2><b3><x>\|` — **AutoPilot -> Remote** (opposite direction
+  from every other row in this table). Real, disassembly-confirmed and
+  concretely-produced AutoPilot builder (`0x740c`-`0x74dc`), encoding four
+  real GPIO motor-connector presence probes (a guarded, 2-valued/boolean
+  read per channel, slot order `A→b0, C→b1, B→b2, D→b3`) as one digit
   each; the Remote's inbound handler (`FUN_00010ce4`) turns each `'0'`
   into per-motor type `"Not connected"` and opens the Quick Setup
-  "Choose type" screen. **What schedules this send on the AutoPilot
-  side is UNKNOWN** — the enclosing function (flash `0x7232`-`0x7514`)
-  is unattributed in the current Ghidra cache. See
+  "Choose type" screen. **Scheduling — CONFIRMED, exhaustively**: sent
+  exactly once per physical boot/MCU reset, unconditionally, as a plain
+  step of `sketch_setup()` (reached by a single, exhaustively-confirmed-
+  unique static path — `sketch_setup` → `FUN_00007770` →
+  tail-jump `0x7334` — with no other entry anywhere in the image), after
+  the startup reference/input routine and radio-ID handshake complete and
+  before `setup()`'s own `MC4`-wait loop begins. Never periodic, edge/
+  change-driven, or reconnect-driven — `setup()` itself runs exactly once,
+  ever. The 5th field (`<x>`) is a single byte at `0x20001fc0`, written by
+  the startup reference/input routine, always `'1'` or `'2'` in practice.
+  See
+  [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md)
+  and, for the Remote-side reaction (unchanged this pass),
   [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
   Part 4.
 

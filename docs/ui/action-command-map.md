@@ -78,11 +78,26 @@ inbound radio-command handler (`FUN_00010ce4`) is the only writer of the
 Remote's Quick-Setup-in-progress flag, and it fires in response to a real
 AutoPilot-built `MT<b0><b1><b2><b3><x>|` frame, itself built from four
 real GPIO motor-connector presence probes on the AutoPilot side (flash
-`0x74ae`-`0x74d6`). No Remote-side menu entry point into Quick Setup was
-found. See
+`0x740c`-`0x74ac`, frame written at `0x74ac`-`0x74dc`). No Remote-side
+menu entry point into Quick Setup was found. See
 [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
-Part 4 — the AutoPilot-side function that schedules this `MT` send was
-not identified this slice.
+Part 4.
+
+**The AutoPilot-side scheduling trigger, closed**: `MT` is sent exactly
+once per physical boot/MCU reset, unconditionally, as a plain step of
+`sketch_setup()` (`FUN_00009464`) — reached by a single, exhaustively-
+confirmed-unique static path (`sketch_setup` → `BL FUN_00007770`
+→ `B.W 0x7334`, with zero branches anywhere on that path and no other
+entry anywhere in the compiled image), after the startup reference/input
+routine and radio-ID handshake complete and before `setup()`'s own
+`MC4`-wait loop begins. Never periodic, edge/change-driven, or
+reconnect-driven — `setup()` itself is called exactly once, ever
+(standard Arduino `main()` idiom), so Quick Setup is strictly
+boot/setup-only. The four connector probes are a guarded 2-valued
+(boolean) read per channel (not an arbitrary digit); their slot↔probe-
+object mapping (`A→b0, C→b1, B→b2, D→b3` — not naive order) and the 5th
+field's source (`0x20001fc0`) are both identified. See
+[`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md).
 
 - **User-guide action**: choose each motor's type (or "Not connected"),
   set current/steps-per-second/microstepping/return-speed, press
@@ -160,10 +175,9 @@ not identified this slice.
   [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
   (this slice — full disassembly, independent scan methodology, and
   concrete captures for everything above).
-- **Open question**: (1) what AutoPilot function builds and schedules the
-  `MT<...>|` frame that actually starts Quick Setup (flash
-  `0x7232`-`0x7514`, unattributed in the current Ghidra cache); (2) what
-  writes `*0x2000027d` (selects a 4-row vs. 2-row settings-page variant).
+- **Open question**: what writes `*0x2000027d` (selects a 4-row vs. 2-row
+  settings-page variant). (The `MT` scheduling question is now closed —
+  see above.)
 
 ### 3. Manual Mode jog -> (no confirmed wire command)
 
@@ -758,37 +772,32 @@ NORMAL RUNTIME
 ## Part 5 — Next highest-value unknowns
 
 Ranked by how many downstream mappings each would unlock, not by ease.
-Three items from this list's earlier drafts — the screen-5 call-site
+Four items from this list's earlier drafts — the screen-5 call-site
 identity, whether `FUN_00005474` renders different strings per
-screen-index, and the `MC<0-3>`/`MC4` Remote sender — are now closed
-(Part 3, and [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md))
+screen-index, the `MC<0-3>`/`MC4` Remote sender, and the `MT` AutoPilot-side
+scheduling trigger — are now closed (Part 3,
+[`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
+and [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md))
 and removed; the ranking below reflects what remains.
 
-1. **What AutoPilot function builds and schedules the `MT<b0><b1><b2><b3><x>|`
-   frame** that actually starts Quick Setup (flash `0x7232`-`0x7514`,
-   unattributed in the current Ghidra cache)? Unlocks: the one remaining
-   edge in the Quick Setup workflow, now that every Remote-side `MC`
-   sender is closed — and plausibly shares a root cause with item 2
-   below, since both are AutoPilot-initiated events this project hasn't
-   traced from the AutoPilot's own side.
-2. **What real Remote-side event calls `FUN_0000c440`'s bulk-push branch
+1. **What real Remote-side event calls `FUN_0000c440`'s bulk-push branch
    (mode `0x62`)?** Unlocks: turning this project's single strongest
    concrete result (the `500`-distance round trip) from "triggered by a
    PROBABLE reconnect hypothesis" into a CONFIRMED user-visible or
    protocol-level event.
-3. **What wire command(s), if any, does the Remote send while the jog
+2. **What wire command(s), if any, does the Remote send while the jog
    wheel is turning in Manual Mode?** Unlocks: workflow 3 entirely, one
    of the two top-level modes the manual describes, currently 0% mapped.
-4. **What Remote function builds `LL1`/`LL2`, and does the "Detecting
+3. **What Remote function builds `LL1`/`LL2`, and does the "Detecting
    first/second limit..." UI sequence actually send them?** Unlocks:
    workflow 12, and would either close or definitively reopen the
    "posA/posB never gets a real value" negative result from the
    AutoPilot side.
-5. **What does persisted offset `0x15` (the `D` command's field)
+4. **What does persisted offset `0x15` (the `D` command's field)
    represent to the user?** Unlocks: workflow 9/11's connection to a
    concrete settings screen — currently `D` is fully characterized
    mechanically with zero user-facing meaning attached.
-6. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
+5. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
    on menu entry) resolve, in `FUN_00005474`'s own highlight-selection
    logic, to row 7 for screen 10 and row 6 for screen 9** — closing the
    one remaining gap in Part 3's C/D verdicts (currently PROBABLE by
@@ -796,7 +805,7 @@ and removed; the ranking below reflects what remains.
    directly observed for 9/10)? Unlocks: promoting call sites C and D
    from PROBABLE to CONFIRMED, matching what this pass already closed for
    A/B.
-7. **Trace the `param_4==1` record-field-to-wire-position mapping
+6. **Trace the `param_4==1` record-field-to-wire-position mapping
    precisely** — the captured call-site-A/B frame
    (`b'+1,1,1,2,0,1,0,50,0,0,0,0|'`) shows the seeded `+0x14` value (50)
    land on the wire but not the `+0x10 - +0xc` delta (500) this
@@ -804,10 +813,18 @@ and removed; the ranking below reflects what remains.
    already attributes to that branch — a real, disassembly-answerable
    discrepancy between two of this project's own documents, not yet
    reconciled.
-8. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
+7. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
    2-row motor-settings variant) represent, and who writes it?** Lower
    priority than the above — likely a fixed product/hardware-variant
    identifier rather than user-configurable state, but not confirmed.
+8. **Concretely deliver a real `MT` frame through the Remote's
+   `FUN_0000c340`/`FUN_00010ce4` per-character inbound state machine** to
+   reconfirm the already-disassembly-CONFIRMED Quick-Setup-flag effect
+   concretely — assessed this pass as a materially larger, structurally
+   different undertaking than this project's existing whole-packet
+   `REMOTE_*_ENTRY` anchors; see
+   [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md)'s
+   own "Remaining unknowns."
 
 Each of these is phrased as a single bounded question with a specific
 function/address/mechanism named, not "reverse Manual Mode" or
