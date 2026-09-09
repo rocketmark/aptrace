@@ -127,6 +127,43 @@ were exactly what closed M1 above — not deferred any further. See
 [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md) for the
 current, durable guidance on when to use which tool.
 
+**Toolchain cleanup (2026-09-09, not a firmware-behavior slice)**: the
+mechanics both backends required got a focused refactor once M6's own
+investigation docs started documenting harness friction *as if it were a
+finding* (repeated Ghidra re-import/re-analysis for one query, a
+two-run pattern to dereference one register, hand-built stack frames for
+direct function calls, a real `--reg` hex/decimal ambiguity that produced
+a genuine false investigative path in item 30 below). See
+[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)
+for the full writeup:
+
+- `tools/ghidra/aptrace_ghidra.py` — a persistent, cache-identity-checked
+  per-firmware Ghidra project (`build` once; `decompile`/`disasm` reopen
+  it without re-analyzing; `callers`/`xrefs`/`containing`/`symbol`
+  answered from a cached export with no Ghidra invocation at all).
+- `tools/unicorn/concrete.py` — the Unicorn setup/hook/snapshot logic
+  extracted into a reusable `ConcreteMachine` class; `run_concrete.py`
+  is now a thin CLI wrapper over it, and `virtual_link.py` uses it
+  directly (one machine per firmware, reused across every scenario leg,
+  instead of a subprocess per leg — all four `virtual_link.py`
+  scenarios together now run in ~0.1s).
+- A proper ARM-AAPCS direct-function-call helper (`ConcreteMachine.call`
+  / CLI `--call`/`--arg`), replacing hand-picked stack pointers,
+  manually-placed stack arguments, and invented LR-crash-to-infer-return
+  patterns with a real trampoline and a genuine clean-return signal.
+- `--reg`/`--arg`/length values now parse as `int(value, 0)` (28 decimal,
+  0x28 hex) instead of always-hex — the direct fix for the bug named
+  above.
+- Structured, never-thrown-away failure snapshots, a bounded always-on
+  recent-PC trace (`--trace-last`), and explicit, visibly-tagged state
+  carry-forward between runs (`RunResult.carry`).
+
+All four existing regressions (`tools/doctor.sh`,
+`virtual_link.py all`/`plus`) pass unchanged; two new regression scripts
+(`tools/unicorn/test_concrete.py`, `tools/ghidra/test_aptrace_ghidra.py`)
+cover the new mechanics. No firmware-behavior conclusion from any prior
+M6 item was revisited.
+
 ### M6 — Behavior-to-hardware provenance (new, 2026-09-08)
 
 A deliberate pivot from protocol mapping toward physical hardware:

@@ -10,8 +10,8 @@ version of the same rules; this is the reasoning behind them.
 
 | Tool | Role | Invoked via |
 |---|---|---|
-| **Ghidra** | Static RE: decompilation, cross-references, structure/table recovery, naming MMIO registers and globals | `tools/ghidra/analyze_firmware.sh` |
-| **Unicorn** | Concrete Cortex-M/Thumb execution and state capture | `tools/unicorn/run_concrete.py` |
+| **Ghidra** | Static RE: decompilation, cross-references, structure/table recovery, naming MMIO registers and globals | `tools/ghidra/aptrace_ghidra.py` (persistent per-firmware project cache; `analyze_firmware.sh` remains for a genuine one-shot query) |
+| **Unicorn** | Concrete Cortex-M/Thumb execution and state capture | `tools/unicorn/run_concrete.py` (CLI) / `tools/unicorn/concrete.py`'s `ConcreteMachine` (reusable Python library — see `virtual_link.py`) |
 | **Macaw** | Independent machine-code CFG discovery and ARM/Thumb lifting | the `aptrace` CLI (`APTrace.FirmwareLoader`, `APTrace.VectorTable`) |
 | **Crucible + What4 + Z3** | Targeted symbolic reachability and input solving | `APTrace.SymbolicRunner`, `APTrace.ProtocolHarness` |
 | **APTrace** | Orchestration: evidence model, scenarios, traces, snapshots, (eventually) UI | this repo |

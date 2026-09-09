@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
-"""APTrace: minimal Unicorn-based concrete Cortex-M/Thumb execution backend.
+"""APTrace: CLI wrapper around tools/unicorn/concrete.py's ConcreteMachine.
 
 See docs/tooling/tool-selection.md for when to reach for this instead of
 Crucible: whenever the question is "what does this code concretely do from
-a known starting state" rather than "what input satisfies this property" --
-Unicorn runs actual Thumb-2 instructions natively (fast), while Crucible
-pays for full symbolic evaluation of an already-fixed input, which is the
-wrong tool for that job. This script deliberately does NOT try to be a
-scenario/harness framework -- it is one reusable building block (load,
-seed, run, hook, snapshot), following the same "orchestrate mature tools"
-principle as tools/ghidra/analyze_firmware.sh.
+a known starting state" rather than "what input satisfies this property".
+
+This script is a thin translation layer: parse CLI strings into Python
+ints/bytes, build a ConcreteMachine, call `.run()` or `.call()` once, and
+print the resulting RunResult/CallResult as JSON. All the actual
+Unicorn setup/hook/snapshot logic lives in concrete.py, which
+tools/unicorn/virtual_link.py also uses directly (as a Python library,
+without a subprocess per call) -- see that module for the
+multi-leg-scenario layer built on top of this.
 
 Usage example (concretely single-step the '&' character check block that
 docs/harness/protocol-harness-results.md solver-confirmed symbolically):
@@ -19,6 +21,28 @@ docs/harness/protocol-harness-results.md solver-confirmed symbolically):
         --entry 0x888c --reg r3=0x26 \\
         --stop-at 0x8890 --stop-at 0x889e \\
         --trace --out /tmp/snapshot.json
+
+Direct-function-call example (ARM AAPCS argument placement, a real
+return trampoline, no hand-picked SP/LR -- see concrete.py's
+ConcreteMachine.call for what this replaces):
+
+    tools/unicorn/run_concrete.py \\
+        --firmware research/firmware/originals/firmware_mando868.bin \\
+        --call 0x49c4 --arg 1 --arg 1 --arg 0 --arg 0 --arg 0x62 \\
+        --out /tmp/call_snapshot.json
+
+Numeric CLI semantics (see docs/tooling/unicorn-backend.md's "Numeric CLI
+semantics" section for the full rationale and migration note): values
+that represent a general-purpose quantity (--reg, --arg, lengths/counts
+inside ADDR:LEN-style specs) use ordinary `int(value, 0)` parsing --
+`28` means decimal 28, `0x28` means hexadecimal 0x28. Address-shaped
+values (--entry, --stop-at, --watch, the ADDR half of ADDR:LEN/
+ADDR:HEXBYTES specs, --map-page) are still always read as hex regardless
+of an 0x prefix, matching how every address in this project's own docs
+and scripts is already written. Values that represent a raw hardware bit
+pattern (--force-reg's HEX, --mmio-force-bits/--mmio-clear-bits' MASK)
+are deliberately kept hex-only, since a bitmask is conventionally always
+written in hex and there's no decimal reading anyone would intend there.
 
 Known limitations (see docs/tooling/tool-selection.md and
 docs/project-status.md's "Tooling gaps"):
@@ -30,81 +54,70 @@ docs/project-status.md's "Tooling gaps"):
     Use --log-mmio to record every access into the MMIO window, then resolve
     the addresses with tools/svd/resolve_mmio.py (see
     docs/tooling/tool-selection.md's "SVD / MMIO labeling" section).
-  - This is a single-shot script (one process per run), not a persistent
-    session -- fine for scenario-style concrete replay, not for interactive
-    step debugging.
+  - This is a single-shot script (one process per run) at the CLI layer --
+    fine for ad-hoc/manual investigation. Python code that wants to reuse
+    one machine across many runs without process-per-call overhead should
+    import concrete.ConcreteMachine directly (see virtual_link.py).
 """
 import argparse
 import json
 import sys
 
-from unicorn import (
-    Uc,
-    UC_ARCH_ARM,
-    UC_MODE_THUMB,
-    UC_MODE_MCLASS,
-    UC_HOOK_CODE,
-    UC_HOOK_MEM_UNMAPPED,
-    UC_HOOK_MEM_READ,
-    UC_HOOK_MEM_WRITE,
-    UC_MEM_READ,
-    UcError,
-)
-from unicorn.arm_const import (
-    UC_ARM_REG_R0, UC_ARM_REG_R1, UC_ARM_REG_R2, UC_ARM_REG_R3,
-    UC_ARM_REG_R4, UC_ARM_REG_R5, UC_ARM_REG_R6, UC_ARM_REG_R7,
-    UC_ARM_REG_R8, UC_ARM_REG_R9, UC_ARM_REG_R10, UC_ARM_REG_R11,
-    UC_ARM_REG_R12, UC_ARM_REG_SP, UC_ARM_REG_LR, UC_ARM_REG_PC,
-    UC_ARM_REG_CPSR, UC_CPU_ARM_CORTEX_M4,
-)
-
-REG_BY_NAME = {
-    "r0": UC_ARM_REG_R0, "r1": UC_ARM_REG_R1, "r2": UC_ARM_REG_R2, "r3": UC_ARM_REG_R3,
-    "r4": UC_ARM_REG_R4, "r5": UC_ARM_REG_R5, "r6": UC_ARM_REG_R6, "r7": UC_ARM_REG_R7,
-    "r8": UC_ARM_REG_R8, "r9": UC_ARM_REG_R9, "r10": UC_ARM_REG_R10, "r11": UC_ARM_REG_R11,
-    "r12": UC_ARM_REG_R12, "sp": UC_ARM_REG_SP, "lr": UC_ARM_REG_LR, "pc": UC_ARM_REG_PC,
-    "cpsr": UC_ARM_REG_CPSR,
-}
-NAME_BY_REG = {v: k for k, v in REG_BY_NAME.items()}
-
-PAGE = 0x1000
+from concrete import ConcreteMachine, DEFAULT_TRACE_LAST, REG_BY_NAME
 
 
-def align_down(x, page=PAGE):
-    return x & ~(page - 1)
+def parse_hexaddr(s):
+    """Addresses are always hex, 0x prefix optional -- unambiguous by
+    convention throughout this project (nobody writes an address in
+    decimal), unlike general-purpose values (see module docstring)."""
+    return int(s, 16)
 
 
-def align_up(x, page=PAGE):
-    return (x + page - 1) & ~(page - 1)
+def parse_value(s):
+    """General-purpose numeric CLI value: ordinary int(s, 0) semantics.
+    '28' -> decimal 28, '0x28' -> hex 0x28. This is the fix for the
+    exact ambiguity that produced a false investigative path in
+    docs/investigations/plus-target-distance-roundtrip.md (a `--reg
+    r0=28` meant to seed decimal 28, silently read as hex 0x28=40)."""
+    return int(s, 0)
 
 
-def parse_hex(s):
-    return int(s, 16) if s.lower().startswith("0x") else int(s, 16)
-
-
-def parse_kv_hex(spec):
+def parse_reg_value(spec):
     name, value = spec.split("=", 1)
-    return name.strip().lower(), parse_hex(value.strip())
+    return name.strip().lower(), parse_value(value.strip())
 
 
 def parse_addr_bytes(spec):
     addr_s, data_s = spec.split(":", 1)
-    return parse_hex(addr_s), bytes.fromhex(data_s)
+    return parse_hexaddr(addr_s), bytes.fromhex(data_s)
 
 
 def parse_addr_len(spec):
     addr_s, len_s = spec.split(":", 1)
-    return parse_hex(addr_s), int(len_s, 0)
+    return parse_hexaddr(addr_s), parse_value(len_s)
 
 
-def parse_addr_reg_value(spec):
+def parse_reg_len(spec):
+    reg_s, len_s = spec.split(":", 1)
+    return reg_s.strip().lower(), parse_value(len_s)
+
+
+def parse_addr_reg_hexvalue(spec):
     addr_s, reg_s, value_s = spec.split(":", 2)
-    return parse_hex(addr_s), reg_s.strip().lower(), parse_hex(value_s)
+    # HEX by design (a forced register value stands in for a raw bit
+    # pattern/external-device response) -- see module docstring.
+    return parse_hexaddr(addr_s), reg_s.strip().lower(), int(value_s, 16)
 
 
 def parse_addr_addr_bytes(spec):
     trigger_s, mem_s, data_s = spec.split(":", 2)
-    return parse_hex(trigger_s), parse_hex(mem_s), bytes.fromhex(data_s)
+    return parse_hexaddr(trigger_s), parse_hexaddr(mem_s), bytes.fromhex(data_s)
+
+
+def parse_addr_hexmask(spec):
+    addr_s, mask_s = spec.split(":", 1)
+    # HEX by design (a bitmask) -- see module docstring.
+    return parse_hexaddr(addr_s), int(mask_s, 16)
 
 
 def build_argparser():
@@ -115,16 +128,20 @@ def build_argparser():
     p.add_argument("--ram-size", default="0x30000", help="RAM size (default 0x30000, 192KB)")
     p.add_argument("--mmio-base", default="0x40000000", help="MMIO window base (default 0x40000000)")
     p.add_argument("--mmio-size", default="0x100000", help="MMIO window size (default 1MB; zero-behavior, see module docstring)")
-    p.add_argument("--entry", required=True, help="start address (hex); Thumb bit ignored, mode is fixed Thumb/M-class")
-    p.add_argument("--sp", default=None, help="initial SP (default: top of RAM)")
-    p.add_argument("--reg", action="append", default=[], metavar="NAME=HEX", help="seed a register before execution (repeatable)")
+    p.add_argument("--entry", default=None, help="start address (hex); Thumb bit ignored, mode is fixed Thumb/M-class. Mutually exclusive with --call.")
+    p.add_argument("--call", default=None, metavar="HEXADDR", help="call this function directly per ARM AAPCS (see concrete.py ConcreteMachine.call) instead of a raw jump-and-run -- args come from --arg, a real return trampoline and clean-return detection are automatic. Mutually exclusive with --entry.")
+    p.add_argument("--arg", action="append", default=[], metavar="VALUE", help="one AAPCS argument for --call (repeatable, in order); int(VALUE,0) semantics (28 decimal, 0x28 hex). First 4 go in r0-r3, the rest on the stack.")
+    p.add_argument("--sp", default=None, help="initial SP (default: top of RAM, minus a small reserved trampoline page)")
+    p.add_argument("--reg", action="append", default=[], metavar="NAME=VALUE", help="seed a register before execution (repeatable); int(VALUE,0) semantics -- 28 is decimal 28, 0x28 is hex 0x28 (see module docstring)")
     p.add_argument("--seed-mem", action="append", default=[], metavar="ADDR:HEXBYTES", help="write concrete bytes into memory before execution (repeatable)")
     p.add_argument("--map-page", action="append", default=[], metavar="ADDR:SIZE", help="map an additional page-aligned region before execution (repeatable), for a real fixed memory region outside flash/RAM/MMIO -- e.g. the SAMD51 NVM Software Calibration Row (0x00800080), a real, factory-programmed, per-die area the firmware genuinely reads. Use with --seed-mem to fill it; the seeded bytes are then a disclosed placeholder for real silicon-specific data this harness cannot know, not a claim about the true calibration values.")
     p.add_argument("--stop-at", action="append", default=[], metavar="HEXADDR", help="halt when this address is reached (repeatable)")
     p.add_argument("--max-instructions", type=lambda s: int(s, 0), default=200000, help="hard instruction cap (default 200000)")
     p.add_argument("--trace", action="store_true", help="log every N instructions to stderr (see --trace-every)")
     p.add_argument("--trace-every", type=int, default=1, help="instruction-log frequency when --trace is set (default 1)")
+    p.add_argument("--trace-last", type=int, default=DEFAULT_TRACE_LAST, metavar="N", help=f"always keep the last N program counters in a cheap ring buffer, included in the snapshot as 'recent_pcs' regardless of success/failure (default {DEFAULT_TRACE_LAST}) -- cheap enough to leave on for normal use; use --trace --trace-every 1 only for the rare case that genuinely needs every instruction. 0 disables.")
     p.add_argument("--dump-mem", action="append", default=[], metavar="ADDR:LEN", help="include this memory range (hex bytes) in the snapshot (repeatable)")
+    p.add_argument("--dump-reg-pointee", action="append", default=[], metavar="REG:LEN", help="repeatable: at the stop point, read REG's value and dump LEN bytes from that address, in this SAME run -- both the register value and the dereferenced memory land in the snapshot's 'reg_pointee' field. The pointer is whatever the real firmware computed; this does not pre-suppose an address. Replaces the old two-run 'discover R0, then dump *R0' pattern (see concrete.py's module docstring).")
     p.add_argument("--watch", action="append", default=[], metavar="HEXADDR", help="record full register state (+ --watch-mem ranges) every time this address is hit, without stopping (repeatable) -- for per-iteration traces of a loop, unlike --stop-at which halts")
     p.add_argument("--watch-mem", action="append", default=[], metavar="ADDR:LEN", help="memory range to capture at every --watch hit, in addition to registers (repeatable)")
     p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
@@ -132,12 +149,12 @@ def build_argparser():
     p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
     p.add_argument("--watch-mem-write", action="append", default=[], metavar="ADDR:LEN", help="true memory watchpoint (repeatable): record every WRITE that lands in [ADDR, ADDR+LEN), anywhere in the address space, with PC/instruction/old+new bytes -- unlike --watch (which triggers on a CODE address), this catches a store to a RAM range regardless of which instruction or function performs it, including a computed/indirect address a static xref search can't attribute to the range's own literal. Does not stop execution.")
     p.add_argument("--max-mem-write-log", type=int, default=2000, help="cap on recorded hits per --watch-mem-write range (default 2000)")
-    p.add_argument("--fake-tick", action="append", default=[], metavar="ADDR:PERIOD", help="repeatable: every PERIOD instructions, increment the 4-byte little-endian counter at ADDR by 1. Deliberately NOT a SysTick/timer peripheral model -- it is a direct, labeled stand-in for a firmware-maintained tick/millis variable (identify the real one first: find the real millis()-equivalent function, e.g. via its literal-pool DAT_ symbol, and fake-tick *that* RAM address, not a SysTick MMIO register) so real elapsed-time delay/timeout loops in the firmware can terminate. Advances on an INSTRUCTION-COUNT cadence, not real time -- results obtained this way are 'firmware behavior observed after time was advanced by the harness', not 'real hardware timing behavior modeled'. See docs/investigations/channel-busy-gate-search.md and its concrete follow-up for the real use case this was added for.")
-    p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee (e.g. a hardware driver call) whose return value this scenario doesn't depend on -- the concrete-execution equivalent of the opaque function-call override already used on the Crucible side (see docs/project-status.md). Does not fabricate a return value; R0 is left exactly as the caller set it up.")
-    p.add_argument("--mmio-force-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is OR'd with MASK before the CPU sees it (a status/ready bit forced set). This is NOT a peripheral model -- it never touches the register on a write, never clears the bit, and applies to exactly the named register. Use it only for a specific, SVD-identified completion/ready bit that real hardware predictably asserts once the firmware's own preceding write takes effect (e.g. an oscillator-ready or PLL-lock flag on a board already confirmed to boot) -- not for a bit whose real value depends on something this harness can't establish (an external signal, a value this scenario should instead seed via --seed-mem). Document, per address, which SVD register/field this is and why forcing it is justified. See docs/investigations/reset-handler-clock-init.md.")
-    p.add_argument("--mmio-clear-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is AND'd with ~MASK before the CPU sees it (a bit forced clear) -- the complement of --mmio-force-bits, for a self-clearing bit the firmware itself just set (e.g. a software-reset or SYNCBUSY bit real hardware clears within a few cycles of the triggering write) that the plain read/write memory model otherwise leaves stuck set forever. Same justification discipline applies: only a real, SVD-identified, predictably-self-clearing bit, never a stand-in for genuine external state.")
-    p.add_argument("--force-reg", action="append", default=[], metavar="ADDR:REG:HEX", help="repeatable: immediately before executing the instruction at ADDR, set register REG to HEX. Unlike --mmio-force-bits/--mmio-clear-bits (which model a documented, predictable MCU-internal completion bit), this DOES fabricate a value -- use it only as a disclosed environmental/external-device assumption at one exact, narrow program point (e.g. 'the byte an external chip's ID register read returned'), never as a stand-in for real silicon behavior. Scope it to the single instruction after a specific call site returns, not to the callee's every invocation, so unrelated calls to the same function are unaffected. State plainly, wherever this run's results are reported, that the value at ADDR is harness-supplied external-device state, not observed or firmware-produced.")
-    p.add_argument("--force-mem", action="append", default=[], metavar="TRIGGER:MEMADDR:HEXBYTES", help="repeatable: immediately before executing the instruction at TRIGGER, write HEXBYTES into memory at MEMADDR. This is the memory-range counterpart to --force-reg -- use it to inject externally-arriving bytes (e.g. real protocol command bytes into a real RX ring buffer) at one exact, narrow program point in an otherwise fully real, unmodified control-flow run, never as a general peripheral/DMA model. Pick TRIGGER so it fires exactly once in the run (e.g. a one-time boot-init instruction executed before the target loop's first iteration), since this hook fires every time TRIGGER is reached, not just the first. State plainly, wherever this run's results are reported, that the bytes at MEMADDR are harness-injected input, not observed or firmware-produced.")
+    p.add_argument("--fake-tick", action="append", default=[], metavar="ADDR:PERIOD", help="repeatable: every PERIOD instructions, increment the 4-byte little-endian counter at ADDR by 1. Deliberately NOT a SysTick/timer peripheral model -- it is a direct, labeled stand-in for a firmware-maintained tick/millis variable. Advances on an INSTRUCTION-COUNT cadence, not real time.")
+    p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee whose return value this scenario doesn't depend on. Does not fabricate a return value; R0 is left exactly as the caller set it up.")
+    p.add_argument("--mmio-force-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is OR'd with MASK (hex) before the CPU sees it. See docs/investigations/reset-handler-clock-init.md for the justification discipline this requires.")
+    p.add_argument("--mmio-clear-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is AND'd with ~MASK (hex) before the CPU sees it -- the complement of --mmio-force-bits, for a self-clearing bit.")
+    p.add_argument("--force-reg", action="append", default=[], metavar="ADDR:REG:HEX", help="repeatable: immediately before executing the instruction at ADDR, set register REG to HEX. Unlike --mmio-force-bits/--mmio-clear-bits, this DOES fabricate a value -- use only as a disclosed environmental/external-device assumption at one exact, narrow program point.")
+    p.add_argument("--force-mem", action="append", default=[], metavar="TRIGGER:MEMADDR:HEXBYTES", help="repeatable: immediately before executing the instruction at TRIGGER, write HEXBYTES into memory at MEMADDR. Fires every time TRIGGER is reached, not just the first.")
     p.add_argument("--out", default=None, help="write JSON snapshot here (default: stdout)")
     return p
 
@@ -145,259 +162,69 @@ def build_argparser():
 def main(argv):
     args = build_argparser().parse_args(argv)
 
-    flash_base = parse_hex(args.flash_base)
-    ram_base = parse_hex(args.ram_base)
-    ram_size = parse_hex(args.ram_size)
-    mmio_base = parse_hex(args.mmio_base)
-    mmio_size = parse_hex(args.mmio_size)
-    # Unicorn (like real hardware BX/BLX) reads the *start address's* low bit
-    # to decide ARM vs. Thumb state at entry -- UC_MODE_THUMB alone is not
-    # enough; the address passed to emu_start (and the initial PC) must carry
-    # the Thumb bit. Cortex-M is Thumb-only, so this is always set here.
-    entry = parse_hex(args.entry) | 1
+    if (args.entry is None) == (args.call is None):
+        print("error: specify exactly one of --entry or --call", file=sys.stderr)
+        return 2
 
-    with open(args.firmware, "rb") as f:
-        firmware = f.read()
+    machine = ConcreteMachine(
+        args.firmware,
+        flash_base=parse_hexaddr(args.flash_base),
+        ram_base=parse_hexaddr(args.ram_base),
+        ram_size=parse_hexaddr(args.ram_size),
+        mmio_base=parse_hexaddr(args.mmio_base),
+        mmio_size=parse_hexaddr(args.mmio_size),
+        extra_maps=[parse_addr_len(spec) for spec in args.map_page],
+    )
 
-    uc = Uc(UC_ARCH_ARM, UC_MODE_THUMB | UC_MODE_MCLASS)
-    uc.ctl_set_cpu_model(UC_CPU_ARM_CORTEX_M4)
-
-    flash_map_size = align_up(len(firmware))
-    uc.mem_map(align_down(flash_base), flash_map_size)
-    uc.mem_write(flash_base, firmware)
-
-    uc.mem_map(align_down(ram_base), align_up(ram_size))
-    uc.mem_map(align_down(mmio_base), align_up(mmio_size))
-
-    # The ARM-architected Private Peripheral Bus (SysTick, NVIC, SCB, MPU,
-    # etc. at 0xE0000000-0xE00FFFFF) is part of every Cortex-M's address map,
-    # not board-specific MMIO -- map it too (same zero-behavior stub) so
-    # ordinary startup/delay code that touches SysTick/NVIC doesn't fault.
-    # Skipped if a custom --mmio-base/--mmio-size already covers it.
-    ppb_base, ppb_size = 0xE0000000, 0x100000
-    mmio_lo, mmio_hi = align_down(mmio_base), align_down(mmio_base) + align_up(mmio_size)
-    if not (mmio_lo <= ppb_base and ppb_base + ppb_size <= mmio_hi):
-        uc.mem_map(ppb_base, ppb_size)
-
-    for spec in args.map_page:
-        addr, size = parse_addr_len(spec)
-        uc.mem_map(align_down(addr), align_up(size))
-
-    sp = parse_hex(args.sp) if args.sp else (ram_base + ram_size)
-    uc.reg_write(UC_ARM_REG_SP, sp)
-    uc.reg_write(UC_ARM_REG_PC, entry)
-
-    for spec in args.reg:
-        name, value = parse_kv_hex(spec)
+    reg_seed = [parse_reg_value(spec) for spec in args.reg]
+    for name, _ in reg_seed:
         if name not in REG_BY_NAME:
             print(f"error: unknown register '{name}'", file=sys.stderr)
             return 2
-        uc.reg_write(REG_BY_NAME[name], value)
 
-    for spec in args.seed_mem:
-        addr, data = parse_addr_bytes(spec)
-        uc.mem_write(addr, data)
+    seed_mem = [parse_addr_bytes(spec) for spec in args.seed_mem]
+    stop_at = [parse_hexaddr(a) for a in args.stop_at]
+    watch = [parse_hexaddr(a) for a in args.watch]
+    stub_calls = [parse_hexaddr(a) for a in args.stub_call]
+    watch_mem = [parse_addr_len(spec) for spec in args.watch_mem]
+    watch_mem_write = [parse_addr_len(spec) for spec in args.watch_mem_write]
+    dump_mem = [parse_addr_len(spec) for spec in args.dump_mem]
+    dump_reg_pointee = [parse_reg_len(spec) for spec in args.dump_reg_pointee]
+    fake_tick = [parse_addr_len(spec) for spec in args.fake_tick]
+    mmio_force_bits = [parse_addr_hexmask(spec) for spec in args.mmio_force_bits]
+    mmio_clear_bits = [parse_addr_hexmask(spec) for spec in args.mmio_clear_bits]
+    force_reg = [parse_addr_reg_hexvalue(spec) for spec in args.force_reg]
+    force_mem = [parse_addr_addr_bytes(spec) for spec in args.force_mem]
 
-    stop_addrs = {parse_hex(a) & ~1 for a in args.stop_at}
-    watch_addrs = {parse_hex(a) & ~1 for a in args.watch}
-    stub_addrs = {parse_hex(a) & ~1 for a in args.stub_call}
-    watch_mem_ranges = [parse_addr_len(spec) for spec in args.watch_mem]
-    mem_write_ranges = [parse_addr_len(spec) for spec in args.watch_mem_write]
-    fake_ticks = [parse_addr_len(spec) for spec in args.fake_tick]  # (addr, period)
-    force_bits = [parse_addr_len(spec) for spec in args.mmio_force_bits]  # (addr, mask)
-    clear_bits = [parse_addr_len(spec) for spec in args.mmio_clear_bits]  # (addr, mask)
-    force_regs = [parse_addr_reg_value(spec) for spec in args.force_reg]  # (addr, reg, value)
-    for addr, reg_name, _ in force_regs:
-        if reg_name not in REG_BY_NAME:
-            print(f"error: unknown register '{reg_name}' in --force-reg", file=sys.stderr)
-            return 2
-    force_reg_by_addr = {}
-    for addr, reg_name, value in force_regs:
-        force_reg_by_addr.setdefault(addr, []).append((reg_name, value))
-    force_mems = [parse_addr_addr_bytes(spec) for spec in args.force_mem]  # (trigger, mem_addr, data)
-    force_mem_by_addr = {}
-    for trigger, mem_addr, data in force_mems:
-        force_mem_by_addr.setdefault(trigger, []).append((mem_addr, data))
-    state = {
-        "instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [],
-        "mem_write_hits": [], "fake_tick_count": [0] * len(fake_ticks),
-        "mmio_force_count": [0] * len(force_bits),
-        "mmio_clear_count": [0] * len(clear_bits),
-        "force_reg_hits": [],
-        "force_mem_hits": [],
-    }
+    common_kwargs = dict(
+        seed_mem=seed_mem, stub_calls=stub_calls, dump_mem=dump_mem,
+        dump_reg_pointee=dump_reg_pointee, watch=watch, watch_mem=watch_mem,
+        max_watch_hits=args.max_watch_hits, max_instructions=args.max_instructions,
+        trace=args.trace, trace_every=args.trace_every, trace_last=args.trace_last,
+        fake_tick=fake_tick, mmio_force_bits=mmio_force_bits, mmio_clear_bits=mmio_clear_bits,
+        force_reg=force_reg, force_mem=force_mem, log_mmio=args.log_mmio,
+        max_mmio_log=args.max_mmio_log, watch_mem_write=watch_mem_write,
+        max_mem_write_log=args.max_mem_write_log,
+    )
 
-    def capture_registers():
-        return {NAME_BY_REG[r]: f"0x{uc.reg_read(r):08x}" for r in NAME_BY_REG}
-
-    def capture_watch_memory():
-        mem = {}
-        for addr, length in watch_mem_ranges:
-            try:
-                mem[f"0x{addr:08x}"] = uc.mem_read(addr, length).hex()
-            except UcError as e:
-                mem[f"0x{addr:08x}"] = f"error: {e}"
-        return mem
-
-    def hook_code(uc_, address, size, _user_data):
-        state["instructions"] += 1
-        if args.trace and state["instructions"] % args.trace_every == 0:
-            print(f"  [unicorn] #{state['instructions']} pc=0x{address:08x}", file=sys.stderr)
-        for i, (tick_addr, period) in enumerate(fake_ticks):
-            if period > 0 and state["instructions"] % period == 0:
-                cur = int.from_bytes(uc_.mem_read(tick_addr, 4), "little")
-                uc_.mem_write(tick_addr, ((cur + 1) & 0xFFFFFFFF).to_bytes(4, "little"))
-                state["fake_tick_count"][i] += 1
-        if address in force_reg_by_addr:
-            hit = {"instruction": state["instructions"], "address": f"0x{address:08x}", "set": []}
-            for reg_name, value in force_reg_by_addr[address]:
-                uc_.reg_write(REG_BY_NAME[reg_name], value)
-                hit["set"].append({"reg": reg_name, "value": f"0x{value:08x}"})
-            state["force_reg_hits"].append(hit)
-        if address in force_mem_by_addr:
-            hit = {"instruction": state["instructions"], "address": f"0x{address:08x}", "writes": []}
-            for mem_addr, data in force_mem_by_addr[address]:
-                uc_.mem_write(mem_addr, data)
-                hit["writes"].append({"addr": f"0x{mem_addr:08x}", "bytes": data.hex(), "len": len(data)})
-            state["force_mem_hits"].append(hit)
-        if address in stub_addrs:
-            lr = uc_.reg_read(UC_ARM_REG_LR)
-            state["stub_hits"].append({
-                "instruction": state["instructions"], "address": f"0x{address:08x}", "lr": f"0x{lr:08x}",
-            })
-            uc_.reg_write(UC_ARM_REG_PC, lr)
-            return
-        if address in watch_addrs:
-            if len(state["watch_hits"]) >= args.max_watch_hits:
-                state["stop_reason"] = f"max watch hits ({args.max_watch_hits}) reached at 0x{address:08x}"
-                uc_.emu_stop()
-                return
-            state["watch_hits"].append({
-                "hit": len(state["watch_hits"]),
-                "instruction": state["instructions"],
-                "address": f"0x{address:08x}",
-                "registers": capture_registers(),
-                "memory": capture_watch_memory(),
-            })
-        if address in stop_addrs:
-            state["stop_reason"] = f"reached stop address 0x{address:08x}"
-            uc_.emu_stop()
-
-    def hook_mem_unmapped(uc_, access, address, size, value, _user_data):
-        state["stop_reason"] = f"unmapped memory access (type={access}) at 0x{address:08x} size={size}"
-        return False  # let Unicorn raise UcError, caught below
-
-    def hook_mmio(uc_, access, address, size, value, _user_data):
-        if len(state["mmio_log"]) >= args.max_mmio_log:
-            return
-        state["mmio_log"].append({
-            "instruction": state["instructions"],
-            "pc": f"0x{uc_.reg_read(UC_ARM_REG_PC):08x}",
-            "address": f"0x{address:08x}",
-            "size": size,
-            "direction": "read" if access == UC_MEM_READ else "write",
-            "value": f"0x{value:x}" if access != UC_MEM_READ else None,
-        })
-
-    def make_mmio_force_hook(i, addr, mask):
-        def hook_mmio_force(uc_, access, address, size, value, _user_data):
-            cur = int.from_bytes(uc_.mem_read(addr, 4), "little")
-            forced = (cur | mask) & 0xFFFFFFFF
-            if forced != cur:
-                uc_.mem_write(addr, forced.to_bytes(4, "little"))
-                state["mmio_force_count"][i] += 1
-        return hook_mmio_force
-
-    def make_mmio_clear_hook(i, addr, mask):
-        def hook_mmio_clear(uc_, access, address, size, value, _user_data):
-            cur = int.from_bytes(uc_.mem_read(addr, 4), "little")
-            cleared = cur & (~mask & 0xFFFFFFFF)
-            if cleared != cur:
-                uc_.mem_write(addr, cleared.to_bytes(4, "little"))
-                state["mmio_clear_count"][i] += 1
-        return hook_mmio_clear
-
-    def make_mem_write_hook(range_addr, range_len):
-        def hook_mem_write(uc_, access, address, size, value, _user_data):
-            if len(state["mem_write_hits"]) >= args.max_mem_write_log:
-                return
-            state["mem_write_hits"].append({
-                "range": f"0x{range_addr:08x}:{range_len}",
-                "instruction": state["instructions"],
-                "pc": f"0x{uc_.reg_read(UC_ARM_REG_PC):08x}",
-                "lr": f"0x{uc_.reg_read(UC_ARM_REG_LR):08x}",
-                "address": f"0x{address:08x}",
-                "size": size,
-                "value": f"0x{value:x}",
-            })
-        return hook_mem_write
-
-    uc.hook_add(UC_HOOK_CODE, hook_code)
-    uc.hook_add(UC_HOOK_MEM_UNMAPPED, hook_mem_unmapped)
-    if args.log_mmio:
-        uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_mmio,
-                    begin=align_down(mmio_base), end=align_down(mmio_base) + align_up(mmio_size) - 1)
-    for addr, length in mem_write_ranges:
-        uc.hook_add(UC_HOOK_MEM_WRITE, make_mem_write_hook(addr, length),
-                    begin=addr, end=addr + length - 1)
-    for i, (addr, mask) in enumerate(force_bits):
-        uc.hook_add(UC_HOOK_MEM_READ, make_mmio_force_hook(i, addr, mask),
-                    begin=addr, end=addr + 3)
-    for i, (addr, mask) in enumerate(clear_bits):
-        uc.hook_add(UC_HOOK_MEM_READ, make_mmio_clear_hook(i, addr, mask),
-                    begin=addr, end=addr + 3)
-
-    error = None
-    try:
-        uc.emu_start(entry, 0, count=args.max_instructions)
-        if state["stop_reason"] is None:
-            state["stop_reason"] = (
-                "instruction limit reached" if state["instructions"] >= args.max_instructions
-                else "returned (fell off emu_start)"
-            )
-    except UcError as e:
-        error = str(e)
-        if state["stop_reason"] is None:
-            state["stop_reason"] = f"error: {error}"
-
-    registers_hex = capture_registers()
-
-    memory = {}
-    for spec in args.dump_mem:
-        addr, length = parse_addr_len(spec)
-        try:
-            data = uc.mem_read(addr, length)
-            memory[f"0x{addr:08x}"] = data.hex()
-        except UcError as e:
-            memory[f"0x{addr:08x}"] = f"error: {e}"
-
-    snapshot = {
-        "firmware": args.firmware,
-        "entry": f"0x{entry:08x}",
-        "instructions_executed": state["instructions"],
-        "stop_reason": state["stop_reason"],
-        "error": error,
-        "registers": registers_hex,
-        "memory": memory,
-        "watch_hits": state["watch_hits"],
-        "mmio_log": state["mmio_log"],
-        "stub_hits": state["stub_hits"],
-        "mem_write_hits": state["mem_write_hits"],
-        "fake_ticks_applied": [
-            {"addr": f"0x{addr:08x}", "period": period, "count": state["fake_tick_count"][i]}
-            for i, (addr, period) in enumerate(fake_ticks)
-        ],
-        "mmio_force_bits_applied": [
-            {"addr": f"0x{addr:08x}", "mask": f"0x{mask:x}", "count": state["mmio_force_count"][i]}
-            for i, (addr, mask) in enumerate(force_bits)
-        ],
-        "mmio_clear_bits_applied": [
-            {"addr": f"0x{addr:08x}", "mask": f"0x{mask:x}", "count": state["mmio_clear_count"][i]}
-            for i, (addr, mask) in enumerate(clear_bits)
-        ],
-        "force_reg_hits": state["force_reg_hits"],
-        "force_mem_hits": state["force_mem_hits"],
-    }
+    if args.call is not None:
+        call_args = [parse_value(a) for a in args.arg]
+        sp = parse_hexaddr(args.sp) if args.sp else None
+        call_result = machine.call(parse_hexaddr(args.call), args=call_args, sp=sp, reg_seed=reg_seed,
+                                    **common_kwargs)
+        result = call_result.result
+        snapshot = result.to_dict()
+        snapshot["call"] = {
+            "function": f"0x{parse_hexaddr(args.call):08x}",
+            "args": [f"0x{a & 0xFFFFFFFF:08x}" for a in call_args],
+            "returned": call_result.returned,
+            "return_registers": {r: f"0x{call_result.result.registers[r]:08x}" for r in ("r0", "r1", "r2", "r3")},
+        }
+    else:
+        sp = parse_hexaddr(args.sp) if args.sp else None
+        result = machine.run(parse_hexaddr(args.entry), sp=sp, reg_seed=reg_seed, stop_at=stop_at,
+                              **common_kwargs)
+        snapshot = result.to_dict()
 
     text = json.dumps(snapshot, indent=2)
     if args.out:
@@ -407,7 +234,7 @@ def main(argv):
     else:
         print(text)
 
-    return 0 if error is None else 1
+    return 0 if result.error is None else 1
 
 
 if __name__ == "__main__":

@@ -22,3 +22,7 @@ dist-newstyle/
 /tools/unicorn/.venv/
 
 .DS_Store
+
+# Persistent Ghidra project cache (tools/ghidra/aptrace_ghidra.py) -- fully
+# regenerable via `aptrace_ghidra.py build <firmware-key>`; not distributed.
+/research/runs/ghidra_cache/

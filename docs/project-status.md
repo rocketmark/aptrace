@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (closed a full concrete, end-to-end path: a real Remote `'+'` send drives a real AutoPilot motor-target write that a real subsequent `G` mode-1 request turns into a real, nonzero `FUN_00006fd8` move-commit distance — a new reusable regression fixture, `virtual_link.py plus`).
+Last updated: 2026-09-09 (toolchain cleanup, not a firmware-behavior slice: a persistent Ghidra project cache, a reusable `ConcreteMachine` Unicorn library, a proper ARM-AAPCS direct-call helper, structured failure snapshots, explicit state carry-forward, and a fixed `--reg` hex/decimal ambiguity — see "Tooling" below. Prior firmware finding, unchanged: a full concrete, end-to-end path where a real Remote `'+'` send drives a real AutoPilot motor-target write that a real subsequent `G` mode-1 request turns into a real, nonzero `FUN_00006fd8` move-commit distance).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -749,6 +749,42 @@ re-proving:
   already independently concretely-proven mechanism from
   `motor-timer-survey.md`/`i-command-motor-chain.md`. See
   [`docs/investigations/plus-target-distance-roundtrip.md`](investigations/plus-target-distance-roundtrip.md).
+- **Toolchain cleanup: a persistent Ghidra project cache, a reusable
+  Unicorn library, and a proper direct-function-call helper (not a
+  firmware-behavior finding)**: `tools/ghidra/aptrace_ghidra.py` builds
+  a per-firmware Ghidra project once (cache-identity-checked against
+  firmware SHA-256/load base/language/Ghidra version/analysis version,
+  never silently reused if stale) and answers later `decompile`/`disasm`
+  queries by reopening it (`-process -noanalysis`, skipping re-analysis)
+  or, for `callers`/`xrefs`/`containing`/`symbol`, from a cached export
+  with no Ghidra invocation at all. `tools/unicorn/concrete.py` extracts
+  `run_concrete.py`'s Unicorn setup/hook/snapshot logic into a reusable
+  `ConcreteMachine` class; `virtual_link.py` now builds one machine per
+  firmware and reuses it across every scenario leg (all four scenarios
+  together run in ~0.1s, down from several seconds of subprocess-spawn
+  overhead) instead of a fresh subprocess per call. New capabilities:
+  `ConcreteMachine.call` (a real ARM-AAPCS direct-function-call helper —
+  correct stack-argument placement, a real trampoline return address,
+  a genuine clean-return signal, replacing hand-picked SP/LR values and
+  inferring success from where a fabricated return crashed);
+  `dump_reg_pointee` (dereference a register in the same run that
+  reaches it, eliminating a real two-run pattern `capture_tx_bytes` used
+  to need); structured failure snapshots (a failed run is never
+  discarded — the full `RunResult`, including a bounded always-on
+  `recent_pcs` ring buffer, is available without a second manual rerun);
+  and `RunResult.carry` (explicit, visibly-tagged state transfer between
+  runs, replacing manual hex round-tripping). Also fixed a real CLI
+  ambiguity this same cleanup effort surfaced: `--reg`/`--arg`/length
+  values now parse as `int(value, 0)` (`28` decimal, `0x28` hex) instead
+  of always-hex — the direct fix for the exact bug that produced a false
+  investigative path in `plus-target-distance-roundtrip.md` (`--reg
+  r0=28` meant as decimal, silently read as hex `0x28`=40). **No
+  firmware-behavior conclusion changed** — `tools/doctor.sh` and
+  `virtual_link.py all`/`plus` both still pass, byte-identical results;
+  two new regression scripts
+  (`tools/unicorn/test_concrete.py`, `tools/ghidra/test_aptrace_ghidra.py`)
+  cover the new mechanics. See
+  [`docs/investigations/toolchain-cleanup.md`](investigations/toolchain-cleanup.md).
 
 ## Corrected assumptions
 

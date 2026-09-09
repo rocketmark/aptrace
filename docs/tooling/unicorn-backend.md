@@ -19,7 +19,40 @@ tools/unicorn/.venv/bin/pip install -r tools/unicorn/requirements.txt   # unicor
 correctly, and runs a real functional smoke test (below) if the AutoPilot
 firmware is present.
 
-## Usage
+## Two layers: `concrete.py` (library) and `run_concrete.py` (CLI)
+
+`tools/unicorn/concrete.py` holds all the actual Unicorn setup/hook/
+snapshot logic, as a `ConcreteMachine` class. `run_concrete.py` is now a
+thin CLI translation layer over it (parse strings, call `.run()`/
+`.call()` once, print JSON); `tools/unicorn/virtual_link.py`'s
+multi-leg scenarios import `concrete.py` directly and build one
+`ConcreteMachine` per firmware image, reused across every leg, rather
+than spawning a `run_concrete.py` subprocess per call. See
+[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)
+for the specific frictions this replaced and
+`tools/unicorn/test_concrete.py` for the regression coverage.
+
+```python
+from concrete import ConcreteMachine
+
+machine = ConcreteMachine("research/firmware/originals/firmware_mando868.bin", mmio_size=0x4000000)
+result = machine.run(0x888c, reg_seed=[("r3", 0x26)], stop_at=[0x8890, 0x889e])
+result.stopped_at(0x8890)          # True/False
+result.registers["r3"]              # plain int, no hex parsing needed
+call = machine.call(0x49c4, args=[1, 1, 0, 0, 0x62])  # ARM AAPCS, see below
+call.returned                       # True if the function's own real epilogue returned cleanly
+```
+
+Reuse is explicit and safe: `run()`/`call()` default to `fresh=True`,
+resetting RAM and registers to pristine before every call (matching the
+old one-subprocess-per-call isolation exactly), while still reusing the
+firmware bytes and the flash/RAM/MMIO memory mapping already built into
+the `Uc` instance — the expensive part of "start fresh" without the
+expensive part of "rebuild everything". MMIO is *not* reset by default
+(see `ConcreteMachine.reset()`'s own docstring for why, and how to force
+it) — "clear/reset semantics must be explicit," not an assumption.
+
+### CLI usage (`run_concrete.py`)
 
 ```sh
 tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
@@ -29,11 +62,150 @@ tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
     --trace
 ```
 
-Key flags: `--reg NAME=HEX` seeds a register before execution (repeatable);
-`--seed-mem ADDR:HEXBYTES` writes concrete bytes into memory (repeatable);
-`--stop-at HEXADDR` halts when reached (repeatable); `--dump-mem ADDR:LEN`
-includes a memory range in the output snapshot; `--trace` logs each
-instruction's address to stderr. Full flag list: `run_concrete.py --help`.
+Key flags: `--reg NAME=VALUE` seeds a register before execution
+(repeatable); `--seed-mem ADDR:HEXBYTES` writes concrete bytes into
+memory (repeatable); `--stop-at HEXADDR` halts when reached (repeatable);
+`--dump-mem ADDR:LEN` includes a memory range in the output snapshot;
+`--trace` logs each instruction's address to stderr. Full flag list:
+`run_concrete.py --help`.
+
+### Numeric CLI semantics: hex-by-default is gone for general values
+
+**`--reg`, `--arg`, and the length/count half of `ADDR:LEN`-style specs
+now use ordinary `int(value, 0)` parsing: `28` means decimal 28, `0x28`
+means hexadecimal 0x28.** This replaces the previous behavior (`--reg`
+always parsed its value as hex regardless of an `0x` prefix), which
+silently produced a real false investigative path: a `--reg r0=28`
+meant to seed decimal 28 (a packet length) was read as hex `0x28`=40,
+corrupting a real retransmission-dedup guard and producing a plausible-
+looking-but-wrong early return (documented in
+[`docs/investigations/plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md)'s
+own "concrete techniques this slice needed" section). `--force-reg`'s
+`HEX` and `--mmio-force-bits`/`--mmio-clear-bits`'s `MASK` are
+**deliberately kept hex-only** — a bitmask/forced-register value stands
+in for a raw hardware bit pattern, which is conventionally always
+written in hex, so there's no decimal reading anyone would intend there.
+Address-shaped values (`--entry`, `--stop-at`, `--watch`, the `ADDR` half
+of every `ADDR:...` spec, `--map-page`) are unchanged: always hex,
+`0x` prefix optional, matching how every address in this project's own
+docs and scripts is already written. `tools/unicorn/test_concrete.py`
+regression-tests `28 != 0x28` through the actual CLI, not just the
+parsing function in isolation.
+
+If you have an existing script that relied on a *bare* (no `0x` prefix)
+hex digit string for a `--reg` value (e.g. `--reg r0=1e` meaning `0x1e`),
+it will now be parsed as invalid decimal and raise — add the `0x` prefix.
+Every call site in this project's own `virtual_link.py`/`run_concrete.py`
+already always emits an explicit `0x` prefix for register values
+constructed from Python ints, so this project's own scripts needed no
+changes.
+
+### Calling a function directly: `--call`/`ConcreteMachine.call()`
+
+Every prior investigation that needed to execute a real function without
+going through its real caller ended up hand-computing a stack pointer,
+manually writing any 5th-or-later AAPCS argument at the right `[sp+N]`
+offset, and inventing an LR value pointing at *some* firmware address —
+accepting a crash once execution got there and reading whatever memory
+effects happened first, rather than a clean return. `ConcreteMachine.call`
+(CLI: `--call HEXADDR --arg VALUE [--arg VALUE ...]`, one `--arg` per
+AAPCS argument in order) does this properly:
+
+```sh
+tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
+    --firmware research/firmware/originals/firmware_mando868.bin \
+    --call 0x49c4 --arg 1 --arg 1 --arg 0 --arg 0 --arg 0x62 \
+    --seed-mem 0x20000b20:f4010000 \
+    --dump-mem 0x2000183c:32
+```
+
+- `r0`-`r3` get `args[0:4]`; anything past the 4th argument is placed on
+  an 8-byte-aligned stack allocation at `[sp+0]`, `[sp+4]`, ... exactly
+  where a real caller's own `str` sequence would put it before a `bl` --
+  no manual offset arithmetic.
+- The stack allocation is carved out of a region below a small (4KB)
+  page this class reserves at the top of RAM specifically so a called
+  function's own (possibly deep) stack usage can never collide with the
+  return mechanism below.
+- LR is set to a real, harmless, *decodable* Thumb instruction (a
+  `b .` self-branch this class installs once, in that same reserved
+  page) with the Thumb bit correctly set — not an arbitrary firmware
+  address chosen to crash predictably. `--stop-at` (used internally)
+  only intercepts a PC *after* Unicorn has already decoded the
+  instruction there, so a synthetic return address pointing at data
+  (not code) crashes with `UC_ERR_INSN_INVALID` before the stop check
+  ever fires, and one without the Thumb bit set makes `bx lr` switch to
+  ARM mode and crash the same way even over genuinely valid Thumb code
+  — both real gotchas this class's trampoline was built to avoid, not
+  theoretical ones (see `docs/investigations/plus-target-distance-roundtrip.md`
+  for exactly this failure mode, hit and fixed, before this helper
+  existed).
+- The result's `returned` field is `True` only if the function's own
+  real epilogue reached that trampoline — a genuinely clean return, not
+  an inferred one. A non-clean outcome (a crash, an unrelated stop, the
+  instruction cap) is still fully reported via the attached result
+  (`recent_pcs`, `stop_reason`, etc.), never silently swallowed.
+- Does not assume the callee is leaf/simple: it may push/pop its own
+  registers, call further real functions (stub the irrelevant ones with
+  `--stub-call`/`stub_calls=`, exactly as with a plain `run()`), and use
+  stack space below its own entry SP.
+
+### Reading a register's own pointee in the same run: `--dump-reg-pointee`
+
+The old two-run pattern for "find the real address this code computed,
+then read what's there" (`capture_tx_bytes` in `virtual_link.py`) is
+gone. `--dump-reg-pointee REG:LEN` (repeatable; `dump_reg_pointee=` at
+the library level) reads `REG`'s value at the stop point and dumps `LEN`
+bytes from that address, **in the same run** that reached the stop --
+both the pointer and the dereferenced memory land in the snapshot's
+`reg_pointee` field. The pointer is still always whatever the real
+firmware computed; this does not pre-suppose or require knowing the
+address in advance.
+
+### A cheap always-on failure trace: `--trace-last`
+
+`--trace-last N` (default 64; `trace_last=` at the library level) keeps
+a bounded ring buffer of the last N program counters, included in
+**every** result (success or failure) as `recent_pcs` -- cheap enough to
+leave on for ordinary use, so "what was it doing right before it died"
+no longer needs a separate `--trace --trace-every 1` rerun of the whole
+scenario just to see the last few instructions. Full instruction-by-
+instruction tracing (`--trace --trace-every N`, printed live to stderr)
+is still available for the rare case that genuinely needs every step,
+not just the tail.
+
+### A failed run is still a fully analyzable result
+
+`ConcreteMachine.run()`/`.call()` never raise on a Unicorn error or an
+unexpected stop condition unless a caller opts in
+(`raise_on_error=True`, which raises `ConcreteExecutionError` -- still
+carrying the *complete* result via `.result`, not just a message).
+Every field a successful run would have populated (`stop_reason`,
+`error`, `registers`, `recent_pcs`, any requested `dump_mem`/
+`dump_reg_pointee`, `watch_hits`, `mmio_log`, etc.) is populated on
+failure too, from the same single execution -- no second manual run
+needed to see why something died. `RunResult.expect_stop(addr)` is the
+direct replacement for the old bare "did we stop where expected"
+assertion pattern; it raises `ConcreteExecutionError` (result attached)
+on a mismatch instead of a bare string comparison.
+
+### Explicit state carry-forward between runs: `RunResult.carry()`
+
+Feeding bytes one concrete run produced into a later, logically separate
+run (e.g. a struct `'+'` wrote, read back by the run that delivers a
+`G` command) used to mean: dump memory, parse the JSON, `bytes.fromhex`
+it, paste it into the next call's `--seed-mem`. `result.carry(addr,
+length, label=...)` packages exactly the bytes that run's own `dump_mem`
+captured, and passing that `Carried` object as a `seed_mem` entry in a
+later `run()`/`call()` tags it in that run's own `applied_seeds` log as
+`carried:<label>` -- visibly distinct from an ordinary, disclosed
+harness seed (tagged `seed`, or whatever tag you pass). **The evidence
+rule stays the same as before this existed**: only ever wrap bytes a
+prior `RunResult` actually produced, never hand-picked ones -- `Carried`
+existing as a real type makes this rule mechanically checkable (a
+`carried:...` tag in a report's `applied_seeds` log is either backed by
+a real prior run or it isn't) rather than a convention a comment has to
+assert.
 
 **`--watch HEXADDR`** (repeatable): records full register state every time
 an address is hit, **without halting** — unlike `--stop-at`. Combine with
@@ -227,8 +399,15 @@ lists (address, mask, and how many reads actually changed a value —
 never had to do anything), (with `--force-reg`) a `force_reg_hits`
 list (instruction count, address, and which register was set to what),
 and (with `--force-mem`) a `force_mem_hits` list (instruction count,
-address, and which memory writes were applied). Written to `--out PATH`
-or stdout.
+address, and which memory writes were applied). Additionally, always:
+a `recent_pcs` list (the last `--trace-last` program counters, see
+above) and an `applied_seeds` list (every `seed_mem` entry actually
+written, each tagged `seed` or `carried:<label>` -- see
+`RunResult.carry()` above); with `--dump-reg-pointee`, a `reg_pointee`
+map (register name -> pointer value + dereferenced bytes); and, for a
+`--call` invocation specifically, a `call` object (function address,
+arguments, whether it returned cleanly, and the AAPCS return registers).
+Written to `--out PATH` or stdout.
 
 ## Confirmed smoke test: reproduces the solver-confirmed `&` branch
 
@@ -316,13 +495,20 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   cycle-counter (`DWT->CYCCNT`) busy-wait is a separate case (see
   `--fake-tick`'s entry above) — `--stub-call` remains the right tool
   when a callee's internal timing genuinely doesn't matter.
-- Single-shot process per run, not a persistent/interactive session — fine
-  for scenario-style concrete replay (load, seed, run, snapshot), not for
-  step-through debugging.
+- The **CLI** (`run_concrete.py`) is still single-process-per-invocation
+  — fine for ad-hoc/manual use. Python code that wants to reuse one
+  machine across many runs without process-per-call overhead should
+  import `concrete.ConcreteMachine` directly (see `virtual_link.py`,
+  which does this for every scenario). Neither layer is an
+  interactive/step-through debugger; both are "load, seed, run, snapshot"
+  scenario replay.
 - No reusable snapshot *format* beyond plain JSON yet — sufficient for this
   pass's smoke tests; if APTrace later wants to feed a Unicorn-captured
   state into a Crucible run (e.g. to seed a symbolic query from a genuinely
   reached concrete state), that hand-off format doesn't exist yet.
+  `RunResult.carry()` (above) solves the narrower, already-real problem
+  of carrying real memory bytes between two *Unicorn* runs; it is not a
+  cross-tool (Unicorn -> Crucible) hand-off format.
 - **`--watch-mem-write` can crash the run (`UC_ERR_INSN_INVALID`,
   immediately, not gracefully) when the watched write happens inside a
   Thumb-2 conditional (`IT`-block) instruction** — found in

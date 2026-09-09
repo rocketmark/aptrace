@@ -18,12 +18,15 @@ recommended: capture the exact bytes a real, unmodified TX call is about
 to hand to the (unmodeled) radio, and deliver those exact bytes into the
 other firmware's real RX state (a packet buffer, or a ring buffer plus its
 pointers), then let that firmware's own real, unmodified code consume
-them. Every step below is a real `tools/unicorn/run_concrete.py`
-invocation (the project's existing, sole concrete-execution backend) --
-this module only orchestrates them; it adds no new Unicorn/emulation
-logic.
+them. Every step below runs on `tools/unicorn/concrete.py`'s
+`ConcreteMachine` (the project's existing, sole concrete-execution
+backend, now used as a reusable Python object -- one machine per
+firmware image, reset between legs -- rather than a fresh
+`run_concrete.py` subprocess per call; see concrete.py's own module
+docstring for why). This module only orchestrates it; it adds no new
+Unicorn/emulation logic.
 
-Two reusable primitives fall out of doing this for real, not a
+Reusable primitives fall out of doing this for real, not a
 transaction-specific script:
 
   capture_tx_bytes(...)   -- run a firmware's real code until it calls a
@@ -31,16 +34,16 @@ transaction-specific script:
                              wrapper(char *s)` convention both firmwares'
                              TX wrappers use: AutoPilot's 0x8c10, Remote's
                              0x58a8), and return exactly the bytes it is
-                             about to hand that wrapper. Two real Unicorn
-                             runs (not one): the first discovers what
-                             address the firmware itself computed as the
-                             argument (R0) at the wrapper's entry, without
-                             assuming it; the second dumps memory there.
-                             This is what makes the technique reusable for
-                             a transaction whose output isn't already
-                             known in advance (unlike this module's own
-                             "&|" demo, where the output happens to be
-                             already-proven).
+                             about to hand that wrapper -- in ONE real
+                             Unicorn run (`dump_reg_pointee`: the register
+                             the firmware computed as the argument is
+                             read, and memory at that address dumped, in
+                             the same stop). The pointer is still always
+                             whatever the real firmware computed, never
+                             pre-supplied; only the old "one run to learn
+                             R0, a second to dump *R0" duplication is
+                             gone (see concrete.py's module docstring,
+                             point 2).
 
   deliver_and_observe(...) -- seed a firmware's real RX state with bytes
                              already captured from the other side, run its
@@ -54,6 +57,15 @@ transaction-specific script:
                              added for the G -> # transaction, whose
                              AutoPilot-side response is one byte ('#'),
                              not a string.
+
+  call(...)/carry(...)   -- (used by run_plus_target_distance_roundtrip)
+                             thin re-exports of concrete.py's ABI-correct
+                             direct-function-call helper and its explicit,
+                             logged state-carry-forward mechanism -- see
+                             that scenario's own comments for what they
+                             replaced (hand-picked SP/LR/trampoline
+                             addresses, manual hex round-tripping between
+                             runs).
 
 Three transactions are implemented on top of these primitives:
   run_ampersand_roundtrip() -- "&|" -> "V01R39" (roadmap M3's own scenario)
@@ -82,15 +94,13 @@ Usage:
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py ampersand  # "&|" -> "V01R39" only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
 """
-import json
-import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).parent
-RUN_CONCRETE = HERE / "run_concrete.py"
-VENV_PYTHON = HERE / ".venv" / "bin" / "python3"
+sys.path.insert(0, str(HERE))
+from concrete import ConcreteMachine  # noqa: E402
+
 REPO_ROOT = HERE.parent.parent
 
 AUTOPILOT_FW = REPO_ROOT / "research/firmware/originals/firmware_autopilot868.bin"
@@ -99,16 +109,32 @@ MANDO_FW = REPO_ROOT / "research/firmware/originals/firmware_mando868.bin"
 # Default MMIO window: covers the SAMD51 peripheral bridge (0x40000000+)
 # used by both firmwares' startup/driver code paths -- see
 # docs/investigations/mando-first-execution.md ("New harness capability").
-MMIO_BASE = "0x40000000"
-MMIO_SIZE = "0x4000000"
+MMIO_BASE = 0x40000000
+MMIO_SIZE = 0x4000000
+
+# One ConcreteMachine per firmware image, built once and reused across
+# every leg of every transaction in this module -- see concrete.py's own
+# module docstring for why (this used to be a fresh `run_concrete.py`
+# subprocess -- fresh Uc instance, fresh firmware read, fresh memory map
+# -- per single call). `run_concrete()` below always calls `.run(...)`
+# with its default fresh=True, so this reuse is safe: RAM and registers
+# are reset to pristine before every one of these calls, exactly
+# replicating the old subprocess-per-call isolation, just without
+# rebuilding the flash/RAM/MMIO mapping and re-reading the firmware file
+# every time.
+_machines = {}
 
 
-def _hexaddr(addr):
-    return addr if isinstance(addr, str) else f"0x{addr:x}"
+def _machine_for(firmware):
+    key = str(firmware)
+    if key not in _machines:
+        _machines[key] = ConcreteMachine(firmware, mmio_base=MMIO_BASE, mmio_size=MMIO_SIZE)
+    return _machines[key]
 
 
 def _norm(addr):
-    """Match run_concrete.py's own JSON key formatting (f"0x{addr:08x}")."""
+    """Match the JSON-snapshot key formatting this module's callers were
+    already written against (f"0x{addr:08x}")."""
     if isinstance(addr, str):
         addr = int(addr, 0)
     return f"0x{addr:08x}"
@@ -116,50 +142,41 @@ def _norm(addr):
 
 def run_concrete(firmware, entry, seed_mem=(), reg_seed=(), stub_calls=(), stop_at=None,
                   dump_mem=(), max_instructions=5000,
-                  mmio_base=MMIO_BASE, mmio_size=MMIO_SIZE, sp=None):
-    """Invoke the existing tools/unicorn/run_concrete.py CLI -- the same
-    command a human would type -- and return its parsed JSON snapshot.
-    This is the only place this module talks to Unicorn; every other
-    function here just chooses arguments for this one.
+                  mmio_base=MMIO_BASE, mmio_size=MMIO_SIZE, sp=None, dump_reg_pointee=()):
+    """Run concretely on this firmware's shared, reusable ConcreteMachine
+    (see `_machine_for`) and return a JSON-snapshot-shaped dict -- the
+    same shape `tools/unicorn/run_concrete.py`'s CLI has always produced,
+    so every scenario function below that does `probe["registers"]["r0"]`-
+    style dict access is unaffected by this now talking to a Python
+    library instead of a subprocess.
 
-    'sp' overrides the default initial stack pointer (top of RAM, one
-    byte past the mapped region -- fine for ordinary entry points, which
-    push before they read their own stack, but wrong for entering
+    'sp' overrides the default initial stack pointer (top of RAM, minus a
+    small reserved trampoline page -- fine for ordinary entry points,
+    which push before they read their own stack, but wrong for entering
     directly at a function that reads a 5th-or-later AAPCS stack argument
-    at [sp+0] before any push of its own has run)."""
-    with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
-        out_path = tmp.name
-    args = [str(VENV_PYTHON), str(RUN_CONCRETE),
-            "--firmware", str(firmware),
-            "--entry", _hexaddr(entry),
-            "--mmio-base", mmio_base, "--mmio-size", mmio_size,
-            "--max-instructions", str(max_instructions),
-            "--out", out_path]
-    if sp is not None:
-        args += ["--sp", _hexaddr(sp)]
-    for addr, data in seed_mem:
-        args += ["--seed-mem", f"{_hexaddr(addr)}:{data}"]
-    for name, value in reg_seed:
-        args += ["--reg", f"{name}={_hexaddr(value)}"]
-    for addr in stub_calls:
-        args += ["--stub-call", _hexaddr(addr)]
-    if stop_at is not None:
-        args += ["--stop-at", _hexaddr(stop_at)]
-    for addr, length in dump_mem:
-        args += ["--dump-mem", f"{_hexaddr(addr)}:{length}"]
-    result = subprocess.run(args, capture_output=True, text=True)
-    if result.returncode != 0:
-        raise RuntimeError(f"run_concrete.py failed:\n{result.stderr}")
-    with open(out_path) as f:
-        snapshot = json.load(f)
-    Path(out_path).unlink(missing_ok=True)
-    return snapshot
+    at [sp+0] before any push of its own has run; `call()` below handles
+    that case properly instead)."""
+    machine = _machine_for(firmware)
+    seed_mem_ints = [(a if isinstance(a, int) else int(a, 0), bytes.fromhex(d) if isinstance(d, str) else d)
+                      for a, d in seed_mem]
+    reg_seed_ints = [(name, v if isinstance(v, int) else int(v, 0)) for name, v in reg_seed]
+    stub_calls_ints = [a if isinstance(a, int) else int(a, 0) for a in stub_calls]
+    dump_mem_ints = [(a if isinstance(a, int) else int(a, 0), int(n)) for a, n in dump_mem]
+    result = machine.run(
+        entry if isinstance(entry, int) else int(entry, 0),
+        sp=sp if sp is None or isinstance(sp, int) else int(sp, 0),
+        reg_seed=reg_seed_ints, seed_mem=seed_mem_ints, stub_calls=stub_calls_ints,
+        stop_at=[stop_at if isinstance(stop_at, int) else int(stop_at, 0)] if stop_at is not None else [],
+        dump_mem=dump_mem_ints, dump_reg_pointee=dump_reg_pointee,
+        max_instructions=max_instructions,
+    )
+    return result.to_dict()
 
 
 def _expect_stop(snap, stop_at):
     expected_stop = f"reached stop address {_norm(stop_at)}"
     if snap["stop_reason"] != expected_stop:
-        raise RuntimeError(f"expected to stop at {_hexaddr(stop_at)}, got: {snap['stop_reason']}")
+        raise RuntimeError(f"expected to stop at 0x{int(stop_at):x}, got: {snap['stop_reason']}")
 
 
 def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=(),
@@ -168,9 +185,13 @@ def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=()
     (a `void wrapper(char *s)`-convention TX call, entered fresh -- not
     stepped into, so none of its own not-yet-modeled body runs), and
     return exactly the NUL-terminated bytes it is about to hand that
-    wrapper. Does not assume or hardcode the content -- only the calling
-    convention, which is independently confirmed for both of this
-    project's string-argument TX wrappers (AutoPilot's 0x8c10:
+    wrapper -- in ONE real concrete run (`dump_reg_pointee`, see
+    concrete.py's module docstring point 2): the register the firmware
+    computed as the argument is read, and memory at that address dumped,
+    at the same stop, instead of one run to learn R0 and a second to
+    dump *R0. Does not assume or hardcode the content -- only the
+    calling convention, which is independently confirmed for both of
+    this project's string-argument TX wrappers (AutoPilot's 0x8c10:
     tx-hook-verification.md; Remote's 0x58a8: mando-first-execution.md).
 
     'stub_calls' lets a caller skip real-but-irrelevant driver-touching
@@ -182,14 +203,11 @@ def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=()
     the TX wrapper, so both are safe to stub)."""
     probe = run_concrete(firmware, entry, seed_mem=seed_mem, reg_seed=reg_seed,
                           stub_calls=stub_calls, sp=sp,
-                          stop_at=tx_wrapper_entry, max_instructions=max_instructions)
+                          stop_at=tx_wrapper_entry, max_instructions=max_instructions,
+                          dump_reg_pointee=[("r0", max_len)])
     _expect_stop(probe, tx_wrapper_entry)
-    arg_ptr = int(probe["registers"]["r0"], 0)
-    dump = run_concrete(firmware, entry, seed_mem=seed_mem, reg_seed=reg_seed,
-                         stub_calls=stub_calls, sp=sp,
-                         stop_at=tx_wrapper_entry, max_instructions=max_instructions,
-                         dump_mem=[(arg_ptr, str(max_len))])
-    raw = bytes.fromhex(dump["memory"][_norm(arg_ptr)])
+    arg_ptr = int(probe["reg_pointee"]["r0"]["pointer"], 0)
+    raw = bytes.fromhex(probe["reg_pointee"]["r0"]["data"])
     return raw.split(b"\x00", 1)[0] + b"\x00", arg_ptr
 
 
@@ -555,29 +573,27 @@ def run_s_roundtrip(verbose=True):
 # distance anchors (all independently confirmed by execution this pass;
 # see docs/investigations/plus-target-distance-roundtrip.md) -------------
 
-REMOTE_PLUS_BUILD_ENTRY = 0x000049c4   # real '+' frame builder
-REMOTE_PLUS_BUILD_RETURN = 0x00004b32  # its own real return -- UNLIKE every
-                                         # other Remote sender this module
-                                         # captures, FUN_000049c4 does NOT
-                                         # itself call the TX wrapper
-                                         # (0x58a8); it only builds the frame
-                                         # into the shared buffer and
-                                         # returns, leaving its real caller
-                                         # (FUN_0000e670/FUN_0000c440) to
-                                         # hand it to 0x58a8 via a separate
-                                         # ack/retry call (FUN_0000b59c) --
-                                         # confirmed by disassembly, not
-                                         # assumed.
+REMOTE_PLUS_BUILD_ENTRY = 0x000049c4   # real '+' frame builder -- called
+                                         # directly through concrete.py's
+                                         # ConcreteMachine.call (ARM AAPCS:
+                                         # its 5th argument, mode, is
+                                         # placed on the stack automatically;
+                                         # no hand-picked SP, no fabricated
+                                         # LR -- see that helper's own
+                                         # docstring for what this replaced).
+                                         # UNLIKE every other Remote sender
+                                         # this module captures,
+                                         # FUN_000049c4 does NOT itself call
+                                         # the TX wrapper (0x58a8); it only
+                                         # builds the frame into the shared
+                                         # buffer and returns, leaving its
+                                         # real caller (FUN_0000e670/
+                                         # FUN_0000c440) to hand it to 0x58a8
+                                         # via a separate ack/retry call
+                                         # (FUN_0000b59c) -- confirmed by
+                                         # disassembly, not assumed.
 REMOTE_PLUS_TX_BUFFER = 0x2000183c     # the shared outgoing-packet buffer
                                          # (also used by the G builder)
-REMOTE_PLUS_SP = 0x2002ff00            # a custom stack pointer: entering
-                                         # directly at FUN_000049c4 means its
-                                         # 5th AAPCS argument (mode, passed
-                                         # on the stack) must be placed at
-                                         # [sp+0] before the call -- the
-                                         # default SP (top of RAM) is exactly
-                                         # one page past the mapped region,
-                                         # unusable for this.
 REMOTE_PLUS_RECORD0_DELTA = 0x20000b20  # Remote's own local per-channel
                                          # per-mode mirror struct, channel 0
                                          # record 0 (the A->B segment), +0x0
@@ -639,35 +655,6 @@ AUTOPILOT_G_DISPLAY_STUBS = (0xb23a, 0xb2fe)  # the state machine's own
                                                 # refresh calls -- same class
                                                 # of stub as
                                                 # AUTOPILOT_PLUS_DISPLAY_STUB
-RETURN_SENTINEL = AUTOPILOT_RX_ENTRY   # a harmless, real, valid-code return
-                                         # address for entering directly at a
-                                         # real function with a fabricated LR:
-                                         # must be genuine, decodable Thumb
-                                         # code (Unicorn decodes at the stop
-                                         # address before the stop-at hook can
-                                         # intercept it, so an arbitrary/data
-                                         # address there raises UC_ERR_INSN_
-                                         # INVALID instead of cleanly
-                                         # stopping) and must carry the Thumb
-                                         # bit (bit 0) when placed in LR itself,
-                                         # or `bx lr` switches to ARM mode and
-                                         # the same decode failure follows.
-                                         # Reusing this module's own already-
-                                         # proven entry point costs nothing
-                                         # extra to justify.
-
-
-def _blank_channel_struct():
-    """The real, disassembly-confirmed blank-config-fallback pattern
-    target-config-provenance.md found: 0xFF everywhere except the +0x40/
-    +0x44 'valid' bytes (0, until '+' or a resync sets them) -- used only
-    to give FUN_00007e2c's OTHER, non-target-bearing struct reads (record
-    0's own #+0x44 etc. for OTHER channels/records this scenario doesn't
-    touch) a realistic pattern rather than all-zero, matching how a real
-    device's cold, never-provisioned config actually reads. Channel 0's
-    own record 0 is overwritten by the real '+' delivery before this
-    matters."""
-    return b"\xff" * 0x120
 
 
 def run_plus_target_distance_roundtrip(verbose=True):
@@ -705,26 +692,29 @@ def run_plus_target_distance_roundtrip(verbose=True):
         if verbose:
             print(msg)
 
+    mando = _machine_for(MANDO_FW)
+    autopilot = _machine_for(AUTOPILOT_FW)
+
     log("=== Leg 1: Remote's real '+' frame builder (FUN_000049c4) ===")
     # Reproduces FUN_0000c440's own real call exactly: confirm1=confirm2=1
     # (the universal invariant every real caller satisfies), channel=0,
     # param_4=0 (the real "loop over FUN_00004998(channel) segments"
     # branch), mode=0x62 (the only mode value confirmed, by AutoPilot-side
     # disassembly, to cross the ">50" threshold into FUN_00004ca8/
-    # FUN_000043f0's compute+persist path).
-    snap_build = run_concrete(
-        MANDO_FW, REMOTE_PLUS_BUILD_ENTRY,
-        seed_mem=[
-            (REMOTE_PLUS_SP, "62000000"),              # param_5 (mode) at [sp+0]
-            (REMOTE_PLUS_RECORD0_DELTA, "f4010000"),   # record0 (+0x0, delta) = 500
-        ],
-        reg_seed=[("r0", 1), ("r1", 1), ("r2", 0), ("r3", 0)],
-        sp=REMOTE_PLUS_SP,
-        stop_at=REMOTE_PLUS_BUILD_RETURN,
-        dump_mem=[(REMOTE_PLUS_TX_BUFFER, "64")],
+    # FUN_000043f0's compute+persist path). Called through
+    # ConcreteMachine.call: no hand-picked SP, no manual [sp+0] write for
+    # the 5th argument (mode) -- the ABI helper places it.
+    call1 = mando.call(
+        REMOTE_PLUS_BUILD_ENTRY,
+        args=[1, 1, 0, 0, 0x62],
+        seed_mem=[(REMOTE_PLUS_RECORD0_DELTA, b"\xf4\x01\x00\x00")],  # record0 (+0x0, delta) = 500
+        dump_mem=[(REMOTE_PLUS_TX_BUFFER, 64)],
+        label="leg1-plus-build",
     )
-    _expect_stop(snap_build, REMOTE_PLUS_BUILD_RETURN)
-    raw = bytes.fromhex(snap_build["memory"][_norm(REMOTE_PLUS_TX_BUFFER)])
+    if not call1.returned:
+        raise RuntimeError(f"FUN_000049c4 did not return cleanly: {call1.result.stop_reason}\n"
+                            f"recent PCs: {[hex(pc) for pc in call1.result.recent_pcs]}")
+    raw = call1.result.mem(REMOTE_PLUS_TX_BUFFER, 64)
     wire_plus = raw.split(b"\x00", 1)[0]
     log(f"  Remote's real, unmodified FUN_000049c4 builds: {wire_plus!r}")
     assert wire_plus.startswith(b"+") and wire_plus.endswith(b"|")
@@ -738,18 +728,18 @@ def run_plus_target_distance_roundtrip(verbose=True):
     # packet[param_1-1] as part of a real retransmission-dedup guard that
     # the real receive loop would normally have set up.
     packet_plus = wire_plus.ljust(32, b"\x00")
-    snap_plus = run_concrete(
-        AUTOPILOT_FW, AUTOPILOT_RX_ENTRY,
+    result_plus = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
         reg_seed=[("r0", len(wire_plus))],
-        seed_mem=[(AUTOPILOT_RX_BUFFER, packet_plus.hex())],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, packet_plus)],
         stub_calls=[AUTOPILOT_PLUS_DISPLAY_STUB],
-        stop_at=0x8a38,
-        dump_mem=[(AUTOPILOT_CH0_STRUCT, "0x120"), (AUTOPILOT_DIRTY_AREA, "8")],
+        stop_at=[0x8a38],
+        dump_mem=[(AUTOPILOT_CH0_STRUCT, 0x120), (AUTOPILOT_DIRTY_AREA, 8)],
         max_instructions=200000,
-    )
-    _expect_stop(snap_plus, 0x8a38)
-    ch0_struct = bytes.fromhex(snap_plus["memory"][_norm(AUTOPILOT_CH0_STRUCT)])
-    dirty_area = bytes.fromhex(snap_plus["memory"][_norm(AUTOPILOT_DIRTY_AREA)])
+        label="leg2-plus-deliver",
+    ).expect_stop(0x8a38)
+    ch0_struct = result_plus.mem(AUTOPILOT_CH0_STRUCT, 0x120)
+    dirty_area = result_plus.mem(AUTOPILOT_DIRTY_AREA, 8)
     delta = int.from_bytes(ch0_struct[0x0:0x4], "little", signed=True)
     target = int.from_bytes(ch0_struct[0xc:0x10], "little", signed=True)
     dirty_flag = dirty_area[3]
@@ -781,52 +771,62 @@ def run_plus_target_distance_roundtrip(verbose=True):
     # advances 1->2 and calls FUN_00006fd8 with that real, resolved
     # distance. Both calls read the G request's channel/type digits
     # directly from AUTOPILOT_RX_BUFFER, which Leg 3's real bytes are
-    # seeded into once, before either call.
+    # seeded into once, before either call. Both are `.call()`s with no
+    # arguments (this state machine takes none -- it reads its state from
+    # RAM), so what's actually being exercised is `.call()`'s clean-
+    # return/trampoline machinery on a *zero-argument* real function,
+    # plus the explicit state-carry-forward below.
+    #
+    # ch0_struct_carried is explicit, visible state carry-forward
+    # (priority 8): exactly the bytes Leg 2's own real execution produced
+    # for AUTOPILOT_CH0_STRUCT, tagged 'carried:...' in every run's
+    # applied_seeds log below -- never hand-picked, never re-derived.
+    ch0_struct_carried = result_plus.carry(AUTOPILOT_CH0_STRUCT, 0x120, label="leg2-plus-deliver")
     packet_g = wire_g.ljust(16, b"\x00")
     common_seed = [
-        (AUTOPILOT_RX_BUFFER, packet_g.hex()),
-        (AUTOPILOT_G_STATE_MACHINE_ARM, "02"),
-        (AUTOPILOT_CH0_STRUCT, ch0_struct.hex()),  # <-- real bytes from Leg 2, not fabricated
-        (AUTOPILOT_LIVE_POSITION, "00000000"),
+        (AUTOPILOT_RX_BUFFER, packet_g),
+        (AUTOPILOT_G_STATE_MACHINE_ARM, b"\x02"),
+        ch0_struct_carried,
+        (AUTOPILOT_LIVE_POSITION, b"\x00\x00\x00\x00"),
     ]
-    snap_state0 = run_concrete(
-        AUTOPILOT_FW, AUTOPILOT_G_STATE_MACHINE_ENTRY,
-        reg_seed=[("lr", RETURN_SENTINEL | 1)],  # a harmless, real, valid-code
-                                                   # address (Thumb bit set) --
-                                                   # this call's own real
-                                                   # "pop {...,pc}" return
-                                                   # naturally lands here,
-                                                   # well before any of its
-                                                   # own logic would ever
-                                                   # reach it for real
-        seed_mem=common_seed + [(AUTOPILOT_G_STATE_MACHINE_STATE, "00")],
+    call_state0 = autopilot.call(
+        AUTOPILOT_G_STATE_MACHINE_ENTRY,
+        seed_mem=common_seed + [(AUTOPILOT_G_STATE_MACHINE_STATE, b"\x00")],
         stub_calls=list(AUTOPILOT_G_DISPLAY_STUBS),
-        stop_at=RETURN_SENTINEL,
-        dump_mem=[(AUTOPILOT_G_MODE1_TARGET_STAGE, "4"), (AUTOPILOT_G_STATE_MACHINE_STATE, "1")],
+        dump_mem=[(AUTOPILOT_G_MODE1_TARGET_STAGE, 4), (AUTOPILOT_G_STATE_MACHINE_STATE, 1)],
         max_instructions=5000,
+        label="leg4-call1-state0",
     )
+    if not call_state0.returned:
+        raise RuntimeError(f"FUN_00007e2c (state 0->1) did not return cleanly: {call_state0.result.stop_reason}\n"
+                            f"recent PCs: {[hex(pc) for pc in call_state0.result.recent_pcs]}")
     staged_target = int.from_bytes(
-        bytes.fromhex(snap_state0["memory"][_norm(AUTOPILOT_G_MODE1_TARGET_STAGE)]), "little", signed=True)
-    state_after = bytes.fromhex(snap_state0["memory"][_norm(AUTOPILOT_G_STATE_MACHINE_STATE)])[0]
+        call_state0.result.mem(AUTOPILOT_G_MODE1_TARGET_STAGE, 4), "little", signed=True)
+    state_after = call_state0.result.mem(AUTOPILOT_G_STATE_MACHINE_STATE, 1)[0]
     log(f"  Call 1 (state 0->1): resolves target={staged_target} from the real channel-0"
         f" struct, state -> {state_after}")
     assert staged_target == 500, f"expected the real resolved target (500), got {staged_target}"
     assert state_after == 1
 
-    snap_state1 = run_concrete(
-        AUTOPILOT_FW, AUTOPILOT_G_STATE_MACHINE_ENTRY,
-        seed_mem=common_seed + [
-            (AUTOPILOT_G_STATE_MACHINE_STATE, "01"),
-            (AUTOPILOT_G_MODE1_TARGET_STAGE, "f4010000"),  # carried forward from call 1
-        ],
+    # The staging-array value call 1 itself just produced is carried
+    # forward the same explicit way, not re-typed as a literal.
+    staged_target_carried = call_state0.result.carry(AUTOPILOT_G_MODE1_TARGET_STAGE, 4, label="leg4-call1-state0")
+    # This second call's real path reaches FUN_00006fd8 but does not
+    # itself return from FUN_00007e2c until well after -- use `.run()`
+    # with an explicit stop_at right at that call, rather than `.call()`'s
+    # own wait-for-clean-return (which would run past the point this leg
+    # actually wants to inspect).
+    result_state1 = autopilot.run(
+        AUTOPILOT_G_STATE_MACHINE_ENTRY,
+        reg_seed=[("lr", autopilot.trampoline_addr | 1)],
+        seed_mem=common_seed + [(AUTOPILOT_G_STATE_MACHINE_STATE, b"\x01"), staged_target_carried],
         stub_calls=list(AUTOPILOT_G_DISPLAY_STUBS),
-        stop_at=AUTOPILOT_FUN_00006fd8,
+        stop_at=[AUTOPILOT_FUN_00006fd8],
         max_instructions=5000,
-    )
-    _expect_stop(snap_state1, AUTOPILOT_FUN_00006fd8)
-    r = snap_state1["registers"]
-    channel, const_arg, distance, rate = (int(r["r0"], 0), int(r["r1"], 0),
-                                           int(r["r2"], 0), int(r["r3"], 0))
+        label="leg4-call2-state1-to-6fd8",
+    ).expect_stop(AUTOPILOT_FUN_00006fd8)
+    r = result_state1.registers
+    channel, const_arg, distance, rate = r["r0"], r["r1"], r["r2"], r["r3"]
     if distance & 0x80000000:
         distance -= 1 << 32
     log(f"  Call 2 (state 1->2): FUN_00006fd8(channel={channel}, const=0x{const_arg:x},"
@@ -836,17 +836,19 @@ def run_plus_target_distance_roundtrip(verbose=True):
     assert abs(distance) > 8, "expected the real move-commit threshold to be crossed"
 
     log("\n=== Leg 5: FUN_00006fd8 itself takes the real move branch (not the <=8 no-op) ===")
-    snap_committed = run_concrete(
-        AUTOPILOT_FW, AUTOPILOT_FUN_00006fd8,
-        reg_seed=[("r0", channel), ("r1", const_arg), ("r2", distance & 0xFFFFFFFF), ("r3", rate),
-                  ("lr", RETURN_SENTINEL | 1)],
+    call_committed = autopilot.call(
+        AUTOPILOT_FUN_00006fd8,
+        args=[channel, const_arg, distance & 0xFFFFFFFF, rate],
         seed_mem=common_seed,
         stub_calls=list(AUTOPILOT_G_DISPLAY_STUBS),
-        stop_at=RETURN_SENTINEL,
-        dump_mem=[(AUTOPILOT_MOVE_COMMITTED_FLAG, "1")],
+        dump_mem=[(AUTOPILOT_MOVE_COMMITTED_FLAG, 1)],
         max_instructions=10000,
+        label="leg5-fun6fd8",
     )
-    committed = bytes.fromhex(snap_committed["memory"][_norm(AUTOPILOT_MOVE_COMMITTED_FLAG)])[0]
+    if not call_committed.returned:
+        raise RuntimeError(f"FUN_00006fd8 did not return cleanly: {call_committed.result.stop_reason}\n"
+                            f"recent PCs: {[hex(pc) for pc in call_committed.result.recent_pcs]}")
+    committed = call_committed.result.mem(AUTOPILOT_MOVE_COMMITTED_FLAG, 1)[0]
     log(f"  FUN_00006fd8's own real distance-threshold check sets the move-committed"
         f" flag (0x20002524[0]) = {committed}")
     assert committed == 1, "expected the real move branch (not the documented <=8 no-op) to fire"
