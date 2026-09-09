@@ -366,3 +366,41 @@ closing recommendation.
     fabricating data; independently, `FUN_00004c20` (the sibling
     bulk-config-loader named alongside `FUN_00004b64` since (15)) has not
     yet been traced for other fields it might populate.
+23. ~~Characterize `LL1|`/`LL2|` and try it as the missing target
+    producer~~ — done: it isn't, and this is a second, independent
+    negative result of the same class as (22). Both commands reach a
+    single shared handler, `FUN_000054e0` (disassembly-corrected — an
+    initial decompile misattributed which branch does what across the
+    `'H'`/`'L'` split), via the top-level `'L'` dispatch character,
+    reachable pre-`MC4` exactly like `&`/`G`/`S`. `LL1` unconditionally
+    clears two fixed globals (`0x20003114`, `0x20002414`) plus a
+    validity flag (`0x20002458`); `LL2` compares and reorders them,
+    writing the smaller into a third global (`0x20002424`) and setting
+    the validity flag **only if they differ**. Neither touches live
+    position (`0x20002064`), the target/config struct (`0x20001b40`+),
+    `0x20001b14`, or any timer/rate register — confirmed by full
+    disassembly (no MMIO/GPIO address appears anywhere in either
+    command) and by a real `--watch-mem-write` run. An exhaustive
+    literal-pool scan (the same method that found (22)'s blank flash
+    blob) found **no other code anywhere in the firmware writes either
+    of `LL`'s two globals** — this workflow cannot capture a real
+    physical position through the ASCII protocol at all. Delivering
+    `LL1` then `LL2` concretely surfaced a *third* real receive-path
+    behavior (distinct from (20)'s cumulative timeout and (22)'s
+    per-byte cost): right after recognizing a `'|'` terminator, the
+    receive routine drains and silently discards any bytes already
+    sitting in the ring, checking each only for a literal `'O'`
+    (`0x4f`) byte, before dispatching — meaning two commands queued
+    back-to-back in one buffer always lose the second one, regardless
+    of `--fake-tick` calibration. Fixed the same way (20) sequenced `G`
+    after `MC4`: a second injection at the point right after the first
+    command's dispatch returns. With only `LL1`'s cleared state feeding
+    it, `LL2` concretely takes its own documented "values equal, no-op"
+    branch. See
+    [`docs/investigations/ll-limit-workflow.md`](../investigations/ll-limit-workflow.md).
+    **Next**: `FUN_00004c20` (still untraced) or accept this firmware
+    image's real motor-position data as a genuine, unmodelable
+    external-provisioning boundary — the same evidence class as the
+    unanswered radio-ID chip in (18) — and treat the `distance`/
+    `0x20001b14` question as closed pending real provisioning data this
+    harness has no way to supply.

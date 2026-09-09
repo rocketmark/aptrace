@@ -25,7 +25,7 @@ Everything else below is static-analysis-only.
 | `MC<0-3><a>,<b>,<c>,<d>,\|` | Remote -> AutoPilot | Motor configuration, one channel — does **not** unlock the motor subsystem (see next row) | — |
 | `MC4<a0>,<b0>,<c0>,<d0>,...\|` | Remote -> AutoPilot | Motor configuration, all four channels; **the only command in this firmware image that ends the boot-phase loop and hands control to the loop containing the motor-phase/ramp/monitor subsystem** (clears `0x20000060`) — execution-confirmed, concretely, including the real handoff to `FUN_000093fc`. Of its 4 per-channel fields, only the 4th is consumed by that subsystem (an index into a secondary table); the other 3 feed unrelated boot-time/display functions. See [`mc4-transition.md`](../investigations/mc4-transition.md) | — |
 | `I<1-4><0-1>\|` | Remote -> AutoPilot | Per-channel async/query state machine | `<signed-number>,` (event 15) |
-| `LL1\|` / `LL2\|` | Remote -> AutoPilot | First/second limit workflow | — |
+| `LL1\|` / `LL2\|` | Remote -> AutoPilot | First/second limit workflow — **execution-confirmed**: `LL1` clears two globals + a validity flag; `LL2` orders them and sets the flag only if they differ. Neither touches live position, target/config, or `0x20001b14`; no GPIO/MMIO dependency; no other firmware code writes either global with a real value — see [`ll-limit-workflow.md`](../investigations/ll-limit-workflow.md) | — |
 | `H\|` / `J\|` | Remote -> AutoPilot | Toggle a global flag (opposite directions) | — |
 | `0xF0 <payload>` | ? -> AutoPilot | Binary motor/control frame | — |
 | `0xE0 <payload>` | ? -> AutoPilot | Binary motor/control frame (2nd variant) | — |

@@ -186,6 +186,13 @@ chip, not a missing mechanism. Exhaustively trying every legal value of
 the command's own "type" digit confirms `distance` is always `0` or
 `-1`, never enough to cross the real move threshold. See
 [`docs/investigations/target-config-provenance.md`](docs/investigations/target-config-provenance.md).
+`LL1|`/`LL2|` (the "limit workflow") was characterized and delivered
+concretely as the next candidate — it's a real, self-contained pair
+(clear, then order-and-validate) over two globals nothing else in the
+firmware ever populates, with no GPIO dependency and no touch on live
+position, target/config, or `0x20001b14`. A second, independent
+confirmation of the same provisioning gap, not a new mechanism. See
+[`docs/investigations/ll-limit-workflow.md`](docs/investigations/ll-limit-workflow.md).
 `!`/`I`'s own protocol transactions remain queued for whenever M4
 resumes. Full roadmap:
 [`docs/harness/roadmap.md`](docs/harness/roadmap.md).

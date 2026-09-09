@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (traced the motor target/position config to a compiled-in default-configuration blob that is genuinely blank in this firmware image — a real external-data boundary, not a missing mechanism).
+Last updated: 2026-09-08 (characterized the real `LL1`/`LL2` limit workflow concretely — a second, independent confirmation that this firmware image has no reachable path to real motor-position data).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -507,6 +507,29 @@ re-proving:
   external-data/provisioning gap, not something this harness can close
   without fabricating motor-position data. See
   [`docs/investigations/target-config-provenance.md`](investigations/target-config-provenance.md).
+- **`LL1`/`LL2` characterized fully and exercised concretely — a second,
+  independent confirmation of the same provisioning gap (roadmap M6)**:
+  `LL1`/`LL2` reach a shared "L-family" handler (`FUN_000054e0`,
+  disassembly-corrected after an initially misleading decompile) via the
+  top-level `'L'` dispatch branch, reachable pre-`MC4`. `LL1`
+  unconditionally clears two fixed globals plus a validity flag; `LL2`
+  compares and reorders them, setting the validity flag only if they
+  differ. Neither touches live position (`0x20002064`), the target/
+  config struct (`0x20001b40`), `0x20001b14`, or any timer/rate state —
+  confirmed both by disassembly and by a real `--watch-mem-write` run.
+  **No GPIO or MMIO dependency at all** — pure RAM bookkeeping. An
+  exhaustive literal-pool scan (the same method used for `0x20001b14`/
+  `0x20000060`) found **no other code anywhere in the firmware writes
+  either of `LL`'s two globals with a real value** — a second genuine
+  negative result. Delivering `LL1` then `LL2` concretely hit a real,
+  non-timing framing behavior (the receive routine drains and discards
+  any bytes immediately available right after a `'|'` terminator, unless
+  one is literal `'O'`) — fixed by sequencing the second command's
+  injection after the first's dispatch returns, the same technique
+  `mc4-transition.md` used for `G` after `MC4`. Concretely confirmed:
+  with only `LL1`'s cleared (zero) state feeding it, `LL2` takes its own
+  documented "values are equal, no-op" branch. See
+  [`docs/investigations/ll-limit-workflow.md`](investigations/ll-limit-workflow.md).
 
 ## Corrected assumptions
 
@@ -760,6 +783,19 @@ separately and immediately afterward, also on 2026-09-08.
    never `>8` in magnitude — a real, external-data provisioning boundary
    (the same evidence class as the unmodeled radio-ID chip), not a
    missing mechanism.
+   An eighth follow-up
+   ([`docs/investigations/ll-limit-workflow.md`](investigations/ll-limit-workflow.md))
+   characterized `LL1`/`LL2` fully (shared `FUN_000054e0` handler,
+   reachable pre-`MC4`; `LL1` clears two globals + a validity flag,
+   `LL2` orders and validates them) and confirmed, both statically
+   (exhaustive literal-pool scan) and concretely (`--watch-mem-write`
+   across a real `LL1`-then-`LL2` run, sequenced past a real
+   `'O'`-byte framing drain this slice also found), that neither
+   command touches live position, the target/config struct,
+   `0x20001b14`, or any GPIO/MMIO — and that nothing else in the
+   firmware ever writes `LL`'s two globals with a real value either.
+   A second, independent confirmation of the same provisioning gap, not
+   a new mechanism.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and
