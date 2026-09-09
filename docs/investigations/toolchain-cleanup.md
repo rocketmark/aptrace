@@ -175,6 +175,123 @@ tools/unicorn/.venv/bin/python3 tools/unicorn/test_concrete.py      # concrete.p
 python3 tools/ghidra/test_aptrace_ghidra.py                          # aptrace_ghidra.py regressions
 ```
 
+## Hardening pass
+
+The cleanup above reused a single `ConcreteMachine`/persistent Ghidra
+project across many calls for speed — reuse the old fresh-subprocess/
+fresh-import model never had to justify. A follow-up hardening pass
+checked that reuse against the exact guarantee it replaced (a fresh
+process/fresh Ghidra import per call) and fixed two real isolation gaps
+plus two smaller ambiguities, all in `concrete.py`/`aptrace_ghidra.py`;
+no firmware-behavior conclusion from this slice or any prior one changed.
+
+**1. `fresh=True` now restores every mapped mutable region, not just
+RAM/registers.** The initial cleanup's `run()`/`call()` reset RAM and
+registers before each call but left flash, the MMIO window, and the PPB
+(SysTick/NVIC/SCB/MPU) however a prior call on the same reused machine
+had left them — not equivalent to the old subprocess model, which got a
+genuinely fresh address space every time. Fixed with page-granularity
+dirty-page tracking rather than a blind re-zero (which would be
+prohibitively slow against a multi-megabyte MMIO window): a single
+`UC_HOOK_MEM_WRITE` hook records every 4KB page any CPU-executed store
+touches, and `reset()` restores only those pages from a pristine
+snapshot taken once at construction. One non-obvious follow-up gap:
+**`UC_HOOK_MEM_WRITE` never fires for this class's own direct
+`uc.mem_write()` calls** — only for the CPU's own instruction-driven
+stores during `emu_start()`. Every harness-side injection this class
+does directly (`seed_mem`, `--fake-tick`, `--force-mem`,
+`--mmio-force-bits`/`--mmio-clear-bits`) bypasses the hook entirely and
+had to be marked dirty explicitly at each call site — found by testing
+dirty-tracking with an actual `seed_mem`-bearing `run()` rather than
+trusting the mechanism from a synthetic `uc.mem_write()` probe alone.
+Regression-tested in `test_concrete.py`
+(`test_fresh_isolation_across_mutable_state`): a single run mutates RAM,
+flash, MMIO, and PPB via every one of those injection paths, and a
+subsequent `fresh=True` run observes the same bytes a brand-new
+`ConcreteMachine` would; `fresh=False` is confirmed to still carry state
+forward intentionally.
+
+**2. Ordinary `run()` now starts from the real device SP again; `call()`'s
+return trampoline moved outside real RAM.** The cleanup's `call()` helper
+carved its return trampoline out of the *top of real, mapped RAM*, which
+had two side effects nothing had caught: an ordinary `run()`'s default SP
+was no longer the real SAMD51 RAM top (`0x20030000`), and real device RAM
+permanently carried harness-only trampoline bytes no real boot would ever
+produce. Fixed by moving the trampoline to a dedicated harness-only page
+(`HARNESS_BASE = 0x2FFF0000`) entirely outside any real SAM D5x/E5x
+variant's RAM footprint, restoring `run()`'s default SP to the real RAM
+top. The first placement tried for this page was `0xFFFF0000` (the
+ARMv7-M "vendor-specific"/reserved region) — that failed outright:
+Device-type memory is implicitly Execute-Never under the architecture,
+and Unicorn's Cortex-M4 model enforces it, faulting every `call()` with
+`UC_ERR_EXCEPTION` the instant execution reached the trampoline (not a
+decode error — a modeled CPU exception). `0x2FFF0000` sits inside the
+architected "SRAM" memory-type region (Normal/executable by the default
+Cortex-M memory map) but still far past real silicon, which is what
+makes it usable. Regression-tested in `test_concrete.py`
+(`test_real_default_sp_and_no_trampoline_in_ram`).
+
+**3. Ghidra cache identity now hashes the actual build-time scripts and
+provenance TSV, not just a manually-bumped version constant.** The
+cleanup's cache identity already caught firmware/Ghidra-version drift but
+relied on a human remembering to bump `ANALYSIS_VERSION` for an ordinary
+edit to `APTraceSeedVectorTable.java`, `APTraceApplyProvenance.java`,
+`APTraceExportStaticAnalysis.java`, or a firmware's own provenance-labels
+TSV — exactly the kind of manual discipline this project's own "don't
+rely on a human remembering" principle (already applied to firmware
+evidence) had not yet been applied to the tooling itself. Fixed by
+hashing each of those four inputs directly into `meta.json`'s recorded
+identity, so any edit invalidates the cache automatically.
+`ANALYSIS_VERSION` remains as an explicit manual override for a semantic
+change the content hashes can't see (e.g. a change to how Ghidra itself
+is invoked). Regression-tested in `test_aptrace_ghidra.py`: a modified
+build script and a modified provenance TSV are both independently
+confirmed to flip a fresh cache to `stale`, without ever touching the
+real, committed script/TSV files (both tests monkeypatch `SCRIPTS_DIR`/
+`FIRMWARE_REGISTRY` to point at a temporary modified copy instead).
+
+**4. `RunResult.success` was ambiguous; replaced by `error_free` and
+`completed`.** A single `success` property meant "no Unicorn exception,"
+which made an instruction-limit result (ran out of budget, reached
+nothing in particular) look indistinguishable from a properly reached
+stop. Split into two explicit properties: `error_free` (no Unicorn
+exception — says nothing about *why* execution stopped) and `completed`
+(the run's actual execution objective was reached — every requested
+`stop_at`, or, if none was requested, simply not having exhausted the
+instruction budget). Regression-tested in `test_concrete.py`
+(`test_error_free_vs_completed_semantics`) across all four combinations:
+an expected stop reached, an instruction limit hit with no exception, a
+genuine Unicorn error, and a clean `call()` return.
+
+**5. `virtual_link.py`'s failure paths now carry the full structured
+snapshot, not just a message string.** `_expect_stop`'s bare `RuntimeError`
+and three `call()`-based "did not return cleanly" raises all discarded
+the `RunResult`/snapshot they had in hand at the point of failure. Fixed
+with a small `UnexpectedStopError(RuntimeError)` carrying `.snapshot` (the
+full `to_dict()` snapshot, or the real `RunResult` for a `call()`-based
+leg) — the same information a caller could already read from a
+successful run (`stop_reason`, `error`, `registers`, `recent_pcs`,
+requested memory, watch/mmio/stub hits) stays inspectable on a failed one
+too, without rerunning the scenario by hand. No scenario function itself
+needed rewriting — this is purely in the shared failure path.
+
+**6. Reused-machine scenario order is now regression-tested.** The
+cleanup's biggest behavioral change — one `ConcreteMachine`/one
+`virtual_link._machines` cache reused across every leg of every scenario,
+in one process — is exactly the class of change a subprocess-per-call
+model could never have gotten wrong, and so had never needed a test for.
+`test_concrete.py`'s `test_virtual_link_scenario_order_independence` runs
+all four scenarios (`plus`, `g`, `s`, `ampersand`) in two different
+orders, in the same process, against the same reused machine cache, and
+confirms every one still produces its own already-known-good result
+regardless of what ran before it. Building this test surfaced one minor
+test-writing bug of its own (not a harness bug): `run_s_roundtrip()`
+deliberately returns a descriptive `dict`, not `True` — an earlier draft
+of the order-independence test used `ok is True`, which failed for the
+'s' scenario in every order tried, and looked at first like a real
+leakage regression before the return-type mismatch was found. Comparing
+truthiness instead resolved it once the actual cause was identified.
+
 ## New workflow
 
 ```

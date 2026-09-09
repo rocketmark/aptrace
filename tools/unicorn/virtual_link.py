@@ -117,11 +117,13 @@ MMIO_SIZE = 0x4000000
 # module docstring for why (this used to be a fresh `run_concrete.py`
 # subprocess -- fresh Uc instance, fresh firmware read, fresh memory map
 # -- per single call). `run_concrete()` below always calls `.run(...)`
-# with its default fresh=True, so this reuse is safe: RAM and registers
-# are reset to pristine before every one of these calls, exactly
-# replicating the old subprocess-per-call isolation, just without
-# rebuilding the flash/RAM/MMIO mapping and re-reading the firmware file
-# every time.
+# with its default fresh=True, so this reuse is safe: every mapped
+# mutable region a prior leg could have touched -- RAM, flash, the MMIO
+# window, PPB -- is restored to pristine before every one of these calls
+# (via ConcreteMachine's dirty-page tracking, not a blind re-zero),
+# exactly replicating the old subprocess-per-call isolation, just
+# without rebuilding the flash/RAM/MMIO mapping and re-reading the
+# firmware file every time.
 _machines = {}
 
 
@@ -173,10 +175,25 @@ def run_concrete(firmware, entry, seed_mem=(), reg_seed=(), stub_calls=(), stop_
     return result.to_dict()
 
 
+class UnexpectedStopError(RuntimeError):
+    """A scenario leg didn't stop/return the way it expected. Carries the
+    full structured snapshot (a run_concrete()-style to_dict() snapshot,
+    or a real RunResult for a call()-based leg) as `.snapshot`, so a
+    caller can inspect stop reason, error, registers, recent PCs,
+    requested memory, and watch/mmio/stub logs without rerunning the
+    experiment by hand -- a failed leg here should be exactly as
+    analyzable as a failed ConcreteMachine.run()/call() is on its own."""
+
+    def __init__(self, message, snapshot):
+        super().__init__(message)
+        self.snapshot = snapshot
+
+
 def _expect_stop(snap, stop_at):
     expected_stop = f"reached stop address {_norm(stop_at)}"
     if snap["stop_reason"] != expected_stop:
-        raise RuntimeError(f"expected to stop at 0x{int(stop_at):x}, got: {snap['stop_reason']}")
+        raise UnexpectedStopError(
+            f"expected to stop at 0x{int(stop_at):x}, got: {snap['stop_reason']}", snap)
 
 
 def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=(),
@@ -712,8 +729,9 @@ def run_plus_target_distance_roundtrip(verbose=True):
         label="leg1-plus-build",
     )
     if not call1.returned:
-        raise RuntimeError(f"FUN_000049c4 did not return cleanly: {call1.result.stop_reason}\n"
-                            f"recent PCs: {[hex(pc) for pc in call1.result.recent_pcs]}")
+        raise UnexpectedStopError(
+            f"FUN_000049c4 did not return cleanly: {call1.result.stop_reason}\n"
+            f"recent PCs: {[hex(pc) for pc in call1.result.recent_pcs]}", call1.result)
     raw = call1.result.mem(REMOTE_PLUS_TX_BUFFER, 64)
     wire_plus = raw.split(b"\x00", 1)[0]
     log(f"  Remote's real, unmodified FUN_000049c4 builds: {wire_plus!r}")
@@ -798,8 +816,9 @@ def run_plus_target_distance_roundtrip(verbose=True):
         label="leg4-call1-state0",
     )
     if not call_state0.returned:
-        raise RuntimeError(f"FUN_00007e2c (state 0->1) did not return cleanly: {call_state0.result.stop_reason}\n"
-                            f"recent PCs: {[hex(pc) for pc in call_state0.result.recent_pcs]}")
+        raise UnexpectedStopError(
+            f"FUN_00007e2c (state 0->1) did not return cleanly: {call_state0.result.stop_reason}\n"
+            f"recent PCs: {[hex(pc) for pc in call_state0.result.recent_pcs]}", call_state0.result)
     staged_target = int.from_bytes(
         call_state0.result.mem(AUTOPILOT_G_MODE1_TARGET_STAGE, 4), "little", signed=True)
     state_after = call_state0.result.mem(AUTOPILOT_G_STATE_MACHINE_STATE, 1)[0]
@@ -846,8 +865,9 @@ def run_plus_target_distance_roundtrip(verbose=True):
         label="leg5-fun6fd8",
     )
     if not call_committed.returned:
-        raise RuntimeError(f"FUN_00006fd8 did not return cleanly: {call_committed.result.stop_reason}\n"
-                            f"recent PCs: {[hex(pc) for pc in call_committed.result.recent_pcs]}")
+        raise UnexpectedStopError(
+            f"FUN_00006fd8 did not return cleanly: {call_committed.result.stop_reason}\n"
+            f"recent PCs: {[hex(pc) for pc in call_committed.result.recent_pcs]}", call_committed.result)
     committed = call_committed.result.mem(AUTOPILOT_MOVE_COMMITTED_FLAG, 1)[0]
     log(f"  FUN_00006fd8's own real distance-threshold check sets the move-committed"
         f" flag (0x20002524[0]) = {committed}")

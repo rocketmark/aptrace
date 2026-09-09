@@ -65,14 +65,26 @@ there, not by hand-rolling a new `analyzeHeadless` command.
 A cached project is only reused if **all** of these still match what's
 recorded in the cache's own `research/runs/ghidra_cache/<key>/meta.json`:
 the firmware's own SHA-256, the load base, the processor/language, the
-installed Ghidra version, and this module's own `ANALYSIS_VERSION`
-constant (bumped by hand when `APTraceSeedVectorTable.java`/
-`APTraceExportStaticAnalysis.java`/`APTraceApplyProvenance.java` change
-in a way that would make an existing export stale). Any mismatch is
-reported as `stale`, never silently reused — `build`/a Ghidra-backed
-query both refuse and tell you to `rebuild`. `tools/ghidra/
-test_aptrace_ghidra.py` regression-tests this (including a deliberately
-tampered `meta.json`).
+installed Ghidra version, this module's own `ANALYSIS_VERSION` constant
+(an explicit manual override for a semantic change identity can't
+otherwise see), **and the actual content hashes of every script/data
+input `build()` feeds to `analyzeHeadless`** — `APTraceSeedVectorTable
+.java`, `APTraceApplyProvenance.java`, `APTraceExportStaticAnalysis
+.java`, and the firmware's own provenance-labels TSV, if it has one
+(`None` for a firmware with no TSV configured). A hardening pass added
+these content hashes specifically so an ordinary edit to a provenance
+label or one of those scripts invalidates the cache **automatically** —
+no human needs to remember to bump `ANALYSIS_VERSION` for that class of
+change; `ANALYSIS_VERSION` remains available for the rarer case identity
+can't see on its own (e.g. how Ghidra itself is invoked). `decompile`/
+`disasm`'s own scripts are deliberately excluded from identity: they run
+read-only against an already-built project and never affect what's
+persisted, so hashing them would invalidate caches for no reason. Any
+mismatch is reported as `stale`, never silently reused — `build`/a
+Ghidra-backed query both refuse and tell you to `rebuild`. `tools/ghidra/
+test_aptrace_ghidra.py` regression-tests this (a deliberately tampered
+`meta.json`, a modified build script, and a modified provenance TSV all
+correctly detected as stale).
 
 ### Why callers/xrefs/containing/symbol don't need Ghidra at query time
 
@@ -192,13 +204,14 @@ fly by the headless analyzer; no separate build step.
   [`tool-selection.md`](tool-selection.md)'s "SVD / MMIO labeling" section
   for the identified mechanism and why it isn't wired up yet.
 - `aptrace_ghidra.py`'s cache is keyed on firmware SHA-256 + load base +
-  language + Ghidra version + `ANALYSIS_VERSION`, checked against
+  language + Ghidra version + `ANALYSIS_VERSION` + the content hashes of
+  `APTraceSeedVectorTable.java`/`APTraceApplyProvenance.java`/
+  `APTraceExportStaticAnalysis.java`/the provenance TSV, checked against
   `meta.json` on every use — a mismatch is reported as `stale` and
-  refused, never silently reused. If you edit
-  `APTraceSeedVectorTable.java`/`APTraceExportStaticAnalysis.java`/
-  `APTraceApplyProvenance.java` in a way that changes what a cached
-  project/export should contain, bump `ANALYSIS_VERSION` in
-  `aptrace_ghidra.py` so existing caches are correctly treated as stale.
+  refused, never silently reused. Editing any of those four files
+  already invalidates the cache automatically via its own hash;
+  `ANALYSIS_VERSION` only needs a manual bump for a change identity
+  can't see on its own (e.g. how Ghidra itself is invoked).
 - The persistent cache lives under `research/runs/ghidra_cache/` (in
   `.gitignore` — not distributed, fully regenerable via `build`).
   `analyze_firmware.sh` (the one-shot path) still always creates a

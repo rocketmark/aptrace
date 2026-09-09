@@ -174,6 +174,7 @@ def main(argv):
         mmio_base=parse_hexaddr(args.mmio_base),
         mmio_size=parse_hexaddr(args.mmio_size),
         extra_maps=[parse_addr_len(spec) for spec in args.map_page],
+        track_dirty=False,  # exactly one run()/call() per process here -- nothing to isolate
     )
 
     reg_seed = [parse_reg_value(spec) for spec in args.reg]

@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (toolchain cleanup, not a firmware-behavior slice: a persistent Ghidra project cache, a reusable `ConcreteMachine` Unicorn library, a proper ARM-AAPCS direct-call helper, structured failure snapshots, explicit state carry-forward, and a fixed `--reg` hex/decimal ambiguity — see "Tooling" below. Prior firmware finding, unchanged: a full concrete, end-to-end path where a real Remote `'+'` send drives a real AutoPilot motor-target write that a real subsequent `G` mode-1 request turns into a real, nonzero `FUN_00006fd8` move-commit distance).
+Last updated: 2026-09-09 (toolchain cleanup hardening pass, not a firmware-behavior slice: fixed two real isolation gaps in the cleanup's machine/project reuse — `fresh=True` now restores flash/MMIO/PPB in addition to RAM/registers, and `call()`'s return trampoline no longer lives inside real device RAM — plus two smaller ambiguities (Ghidra cache identity now hashes build scripts/provenance TSV content; `RunResult.success` split into explicit `error_free`/`completed`). See "Tooling" below. Prior firmware finding, unchanged: a full concrete, end-to-end path where a real Remote `'+'` send drives a real AutoPilot motor-target write that a real subsequent `G` mode-1 request turns into a real, nonzero `FUN_00006fd8` move-commit distance).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -785,6 +785,43 @@ re-proving:
   (`tools/unicorn/test_concrete.py`, `tools/ghidra/test_aptrace_ghidra.py`)
   cover the new mechanics. See
   [`docs/investigations/toolchain-cleanup.md`](investigations/toolchain-cleanup.md).
+- **Toolchain cleanup hardening pass (not a firmware-behavior finding)**:
+  the reuse the cleanup above introduced (one `ConcreteMachine`/one
+  persistent Ghidra project reused across many calls) was checked against
+  the exact isolation guarantee it replaced (a fresh subprocess/fresh
+  Ghidra import per call) and two real gaps were found and fixed, plus two
+  smaller ambiguities. **(1)** `fresh=True` now restores *every* mapped
+  mutable region between runs — RAM, flash, the MMIO window, and the PPB —
+  not just RAM/registers, via page-granularity dirty tracking (not a
+  blind re-zero); this also required explicitly marking every direct
+  harness-side memory write (`seed_mem`, `--fake-tick`, `--force-mem`,
+  `--mmio-force-bits`/`--mmio-clear-bits`) as dirty, since Unicorn's
+  write hook only ever fires for the CPU's own executed stores. **(2)**
+  `ConcreteMachine.call()`'s return trampoline moved to a dedicated
+  harness-only page entirely outside real device RAM (it had been carved
+  out of the top of real RAM, which silently lowered an ordinary
+  `run()`'s default SP below the real SAMD51 RAM top and left harness
+  bytes inside what should be pristine real RAM). **(3)** the Ghidra
+  cache's identity now hashes the actual content of every build-time
+  script and provenance TSV, so an ordinary edit to one of them
+  invalidates the cache automatically rather than depending on a human
+  remembering to bump `ANALYSIS_VERSION`. **(4)** `RunResult.success` (an
+  ambiguous "no Unicorn exception" flag that could make an
+  instruction-limit result look like a properly reached stop) was split
+  into explicit `error_free`/`completed` properties. Also: `virtual_link
+  .py`'s failure paths now attach the full structured snapshot to the
+  exception they raise, and a new regression test runs all four
+  `virtual_link.py` scenarios in two different orders against the same
+  reused machine cache to confirm scenario order doesn't change results —
+  exactly the class of bug a fresh-subprocess-per-call model could never
+  have had. **No firmware-behavior conclusion changed** — `tools/doctor
+  .sh`, `virtual_link.py all`/`plus`, `test_concrete.py`, and
+  `test_aptrace_ghidra.py` all still pass, byte-identical results. See
+  [`docs/investigations/toolchain-cleanup.md`](investigations/toolchain-cleanup.md)'s
+  "Hardening pass" section for the full detail, including two real
+  Unicorn/ARMv7-M gotchas found while fixing this (implicit Execute-Never
+  on Device-type memory; `UC_HOOK_MEM_WRITE` not firing for direct
+  `mem_write()` API calls).
 
 ## Corrected assumptions
 

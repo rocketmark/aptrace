@@ -17,12 +17,17 @@ without invoking Ghidra at all.
 
 Cache identity: a query only reuses a cached project if the firmware's
 own SHA-256, the load base, the processor/language, the installed Ghidra
-version, and this module's own ANALYSIS_VERSION (bump it when
-APTraceSeedVectorTable/APTraceExportStaticAnalysis/ApplyProvenance
-change meaningfully) all still match what's recorded in the cache's own
-`meta.json`. Any mismatch is treated as stale -- this module refuses to
-silently reuse a stale cache; it reports the mismatch and asks for
-`rebuild`.
+version, ANALYSIS_VERSION (an explicit manual override, for a semantic
+change this identity can't otherwise see), AND the actual content hashes
+of every script/data input `build()` feeds to analyzeHeadless --
+APTraceSeedVectorTable.java, APTraceApplyProvenance.java,
+APTraceExportStaticAnalysis.java, and the firmware's own provenance
+labels TSV if it has one -- all still match what's recorded in the
+cache's own `meta.json`. This means an ordinary edit to a provenance
+label or one of those scripts invalidates the cache on its own, with no
+human needing to remember to bump ANALYSIS_VERSION. Any mismatch is
+treated as stale -- this module refuses to silently reuse a stale cache;
+it reports the mismatch and asks for `rebuild`.
 
 Usage:
     tools/ghidra/aptrace_ghidra.py build       autopilot868
@@ -57,9 +62,13 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 CACHE_ROOT = REPO_ROOT / "research" / "runs" / "ghidra_cache"
 
-# Bump when APTraceSeedVectorTable.java, APTraceExportStaticAnalysis.java,
-# or APTraceApplyProvenance.java change in a way that would make an
-# existing cached project's analysis/export stale.
+# An explicit, manual override for a semantic change that content-hashing
+# below can't see on its own (e.g. a change to how Ghidra itself is
+# invoked, or an intentional "treat every cache as stale" reset). Ordinary
+# edits to APTraceSeedVectorTable.java, APTraceApplyProvenance.java,
+# APTraceExportStaticAnalysis.java, or a firmware's provenance TSV already
+# invalidate the cache automatically via their own content hashes in
+# expected_identity() -- bumping this is not required for those.
 ANALYSIS_VERSION = 1
 
 PROCESSOR = "ARM:LE:32:Cortex"
@@ -129,10 +138,29 @@ def cache_dir(key):
     return CACHE_ROOT / key
 
 
+# Every script/data input `build()` actually feeds to analyzeHeadless (see
+# its -preScript/-postScript args below) -- hashed into cache identity so
+# an edit to any of them invalidates the cache automatically, without
+# relying on a human remembering to bump ANALYSIS_VERSION. Scripts that
+# only ever run against an already-built, read-only project (decompile/
+# disasm) are deliberately excluded: they don't change what's persisted,
+# so hashing them would invalidate caches for no reason.
+BUILD_SCRIPTS = ("APTraceSeedVectorTable.java", "APTraceApplyProvenance.java",
+                  "APTraceExportStaticAnalysis.java")
+
+
+def _file_identity_hash(path):
+    """sha256 of a real file, or a stable sentinel if it's missing --
+    "missing" must still differ from any real content hash, so a script
+    or TSV that's deleted (or that only starts existing later) also
+    invalidates the cache rather than silently comparing equal."""
+    return sha256_of(path) if path.exists() else "missing"
+
+
 def expected_identity(key):
-    path, base, _ = firmware_info(key)
+    path, base, labels_tsv = firmware_info(key)
     headless = resolve_headless()
-    return {
+    identity = {
         "firmware_key": key,
         "firmware_path": str(path.relative_to(REPO_ROOT)),
         "firmware_sha256": sha256_of(path),
@@ -142,6 +170,11 @@ def expected_identity(key):
         "ghidra_version": ghidra_version(headless),
         "analysis_version": ANALYSIS_VERSION,
     }
+    for script in BUILD_SCRIPTS:
+        identity[f"script_sha256:{script}"] = _file_identity_hash(SCRIPTS_DIR / script)
+    identity["provenance_tsv_sha256"] = (
+        _file_identity_hash(labels_tsv) if labels_tsv is not None else None)
+    return identity
 
 
 def read_meta(key):

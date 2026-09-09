@@ -164,6 +164,16 @@ All four existing regressions (`tools/doctor.sh`,
 cover the new mechanics. No firmware-behavior conclusion from any prior
 M6 item was revisited.
 
+A follow-up hardening pass (same date) checked the reuse this cleanup
+introduced against the exact isolation the old fresh-subprocess/
+fresh-import model gave for free, and fixed two real gaps it found
+(`fresh=True` wasn't restoring flash/MMIO/PPB; `call()`'s trampoline
+briefly lived inside real device RAM) plus two smaller ambiguities
+(Ghidra cache identity now hashes build-script/provenance-TSV content;
+`RunResult.success` split into explicit `error_free`/`completed`) — see
+[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)'s
+"Hardening pass" section. Also not a firmware-behavior slice.
+
 ### M6 — Behavior-to-hardware provenance (new, 2026-09-08)
 
 A deliberate pivot from protocol mapping toward physical hardware:

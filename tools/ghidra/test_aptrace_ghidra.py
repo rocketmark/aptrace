@@ -69,6 +69,53 @@ def main():
     out = captured(ag.literal, key, "0x49c0")
     check("literal reads the real struct-base pointer (0x20000b20)", "0x20000b20" in out, out)
 
+    print("staleness detection: a changed build script must invalidate the cache (hardening pass)")
+    import tempfile
+    import shutil as _shutil
+    fresh_meta = ag.read_meta(key)
+    orig_scripts_dir = ag.SCRIPTS_DIR
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_scripts = Path(tmp)
+        for name in ag.BUILD_SCRIPTS:
+            _shutil.copy(orig_scripts_dir / name, tmp_scripts / name)
+        seed_script = tmp_scripts / "APTraceSeedVectorTable.java"
+        seed_script.write_text(seed_script.read_text() + "\n// hardening-pass staleness test\n")
+        ag.SCRIPTS_DIR = tmp_scripts
+        try:
+            expected = ag.expected_identity(key)
+            check("modified script's own hash differs from the fresh cache's recorded hash",
+                  expected["script_sha256:APTraceSeedVectorTable.java"]
+                  != fresh_meta["script_sha256:APTraceSeedVectorTable.java"])
+            state, _, _ = ag.cache_status(key)
+            check("modifying a build script is detected as 'stale', not silently reused", state == "stale", state)
+        finally:
+            ag.SCRIPTS_DIR = orig_scripts_dir
+    state, _, _ = ag.cache_status(key)
+    check("cache is 'fresh' again once the real scripts are restored", state == "fresh", state)
+
+    print("staleness detection: a changed provenance-labels TSV must invalidate the cache (hardening pass)")
+    akey = "autopilot868"
+    a_rel_path, a_base, a_labels = ag.FIRMWARE_REGISTRY[akey]
+    assert a_labels is not None, f"test assumes '{akey}' has a provenance TSV configured"
+    real_tsv_path = ag.REPO_ROOT / a_labels
+    a_expected_before = ag.expected_identity(akey)
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp_tsv = Path(tmp) / "ghidra_labels.tsv"
+        tmp_tsv.write_text(real_tsv_path.read_text() + "\n0x0\tSTALENESS_TEST\n")
+        # An absolute Path here survives firmware_info()'s `REPO_ROOT / labels`
+        # unchanged (pathlib: dividing by an absolute path returns that path),
+        # so this never touches the real, committed provenance TSV.
+        ag.FIRMWARE_REGISTRY[akey] = (a_rel_path, a_base, tmp_tsv)
+        try:
+            a_expected_after = ag.expected_identity(akey)
+            check("modified TSV's own hash differs from the unmodified TSV's hash",
+                  a_expected_after["provenance_tsv_sha256"] != a_expected_before["provenance_tsv_sha256"])
+        finally:
+            ag.FIRMWARE_REGISTRY[akey] = (a_rel_path, a_base, a_labels)
+    a_expected_restored = ag.expected_identity(akey)
+    check("identity is unchanged once the real provenance TSV path is restored",
+          a_expected_restored == a_expected_before)
+
     print("staleness detection: a tampered meta.json must be refused, not silently reused")
     meta_path = ag.cache_dir(key) / "meta.json"
     import json

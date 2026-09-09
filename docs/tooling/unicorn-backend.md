@@ -44,13 +44,27 @@ call.returned                       # True if the function's own real epilogue r
 ```
 
 Reuse is explicit and safe: `run()`/`call()` default to `fresh=True`,
-resetting RAM and registers to pristine before every call (matching the
-old one-subprocess-per-call isolation exactly), while still reusing the
-firmware bytes and the flash/RAM/MMIO memory mapping already built into
-the `Uc` instance — the expensive part of "start fresh" without the
-expensive part of "rebuild everything". MMIO is *not* reset by default
-(see `ConcreteMachine.reset()`'s own docstring for why, and how to force
-it) — "clear/reset semantics must be explicit," not an assumption.
+restoring **every mapped mutable region** — RAM, flash, the MMIO window,
+and the PPB (SysTick/NVIC/SCB/MPU) — to the same pristine state a
+brand-new `ConcreteMachine` would have, before every call. This matches
+the old one-subprocess-per-call isolation exactly (a hardening pass
+tightened this from an earlier version that only reset RAM/registers —
+see
+[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)'s
+hardening-pass note), while still reusing the firmware bytes and the
+flash/RAM/MMIO memory mapping already built into the `Uc` instance — the
+expensive part of "start fresh" without the expensive part of "rebuild
+everything." Restoration is page-granularity dirty-tracking, not a blind
+re-zero of potentially tens-of-megabytes MMIO windows: a single
+`UC_HOOK_MEM_WRITE` hook (plus explicit marking at every harness-side
+`mem_write` call this class itself makes — seeding, `--fake-tick`,
+`--force-mem`, `--mmio-force-bits`/`--mmio-clear-bits`, none of which the
+CPU-instruction-only write hook can see on its own) tracks exactly which
+4KB pages were touched, and `reset()` restores only those, from a
+pristine snapshot taken once at construction. Continuing state
+intentionally is still explicit and opt-in: pass `fresh=False`, or use
+`RunResult.carry()` (below) to hand specific, visibly-tagged bytes
+forward.
 
 ### CLI usage (`run_concrete.py`)
 
@@ -122,15 +136,28 @@ tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
 - `r0`-`r3` get `args[0:4]`; anything past the 4th argument is placed on
   an 8-byte-aligned stack allocation at `[sp+0]`, `[sp+4]`, ... exactly
   where a real caller's own `str` sequence would put it before a `bl` --
-  no manual offset arithmetic.
-- The stack allocation is carved out of a region below a small (4KB)
-  page this class reserves at the top of RAM specifically so a called
-  function's own (possibly deep) stack usage can never collide with the
-  return mechanism below.
+  no manual offset arithmetic. The stack itself starts at the real
+  device RAM top (`0x20030000` for this project's SAMD51 configuration —
+  the same value an ordinary `run()` with no explicit `sp` uses).
 - LR is set to a real, harmless, *decodable* Thumb instruction (a
-  `b .` self-branch this class installs once, in that same reserved
-  page) with the Thumb bit correctly set — not an arbitrary firmware
-  address chosen to crash predictably. `--stop-at` (used internally)
+  `b .` self-branch this class installs once) with the Thumb bit
+  correctly set — not an arbitrary firmware address chosen to crash
+  predictably. This trampoline deliberately lives **outside real device
+  RAM** (`HARNESS_BASE = 0x2FFF0000`, a page still inside the ARMv7-M
+  architected "SRAM" memory-type region — Normal/executable by the
+  default Cortex-M memory map — but far past any real SAM D5x/E5x
+  variant's actual RAM footprint). An earlier version of this class
+  carved the trampoline out of the *top of real, mapped RAM* instead,
+  which meant an ordinary `run()`'s default SP was no longer the real
+  SAMD51 RAM top and real device RAM permanently carried harness-only
+  bytes no real boot would ever produce — both fixed in the same
+  hardening pass that tightened `fresh=True` (above). Placing the
+  trampoline in the architecturally Device-type/Execute-Never region
+  above `0xE0100000` was tried first and does **not** work — Unicorn's
+  Cortex-M4 model enforces implicit XN there, faulting with
+  `UC_ERR_EXCEPTION` the instant execution reaches it, not a decode
+  error; see the toolchain-cleanup investigation doc's hardening-pass
+  note for how this was root-caused. `--stop-at` (used internally)
   only intercepts a PC *after* Unicorn has already decoded the
   instruction there, so a synthetic return address pointing at data
   (not code) crashes with `UC_ERR_INSN_INVALID` before the stop check
@@ -188,6 +215,22 @@ needed to see why something died. `RunResult.expect_stop(addr)` is the
 direct replacement for the old bare "did we stop where expected"
 assertion pattern; it raises `ConcreteExecutionError` (result attached)
 on a mismatch instead of a bare string comparison.
+
+### Two separate questions, two separate properties: `error_free` vs. `completed`
+
+A `RunResult` answers two genuinely different questions, and conflating
+them into one `success` flag (an earlier version of this class did)
+made an instruction-limit result look indistinguishable from a properly
+reached stop. **`error_free`** is `True` iff Unicorn itself raised no
+exception — it says nothing about *why* execution stopped.
+**`completed`** is `True` iff the run's actual execution objective was
+reached: every requested `stop_at` address, if any were given; otherwise,
+simply not having exhausted the instruction budget. A run that hits
+`max_instructions` with no Unicorn error is `error_free` but **not**
+`completed` — it ran out of budget, it didn't finish. A `call()`'s clean
+AAPCS return is both (its own trampoline `stop_at` was reached). Always
+check the one the question actually needs — "did anything crash" is
+`error_free`; "did we get where we meant to go" is `completed`.
 
 ### Explicit state carry-forward between runs: `RunResult.carry()`
 
@@ -501,7 +544,11 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   import `concrete.ConcreteMachine` directly (see `virtual_link.py`,
   which does this for every scenario). Neither layer is an
   interactive/step-through debugger; both are "load, seed, run, snapshot"
-  scenario replay.
+  scenario replay. `run_concrete.py` constructs its `ConcreteMachine`
+  with `track_dirty=False` — dirty-page tracking exists to make
+  `fresh=True` isolation safe across *reused* machines, and a CLI
+  invocation never reuses one (exactly one `run()`/`call()` per process),
+  so tracking it there is pure overhead with nothing to isolate.
 - No reusable snapshot *format* beyond plain JSON yet — sufficient for this
   pass's smoke tests; if APTrace later wants to feed a Unicorn-captured
   state into a Crucible run (e.g. to seed a symbolic query from a genuinely

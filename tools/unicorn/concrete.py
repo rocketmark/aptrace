@@ -85,6 +85,31 @@ DEFAULT_TRACE_LAST = 64
 # map, so ordinary startup/delay code that touches it doesn't fault.
 PPB_BASE, PPB_SIZE = 0xE0000000, 0x100000
 
+# A dedicated, harness-only scratch page for ConcreteMachine.call()'s
+# return trampoline -- outside the real SAMD51's actual RAM footprint
+# (0x20000000-0x20030000 for the ATSAMD51J19A's 192KB; no real SAM D5x/
+# E5x variant reaches anywhere near 0x2FFF0000), but still inside the
+# ARMv7-M architected "SRAM" memory-TYPE region (0x20000000-0x3FFFFFFF),
+# which the default Cortex-M memory map marks Normal/executable. This
+# matters concretely, not just semantically: Unicorn's Cortex-M4 model
+# enforces the ARMv7-M default memory attributes, including implicit
+# Execute-Never on Device-type regions -- an earlier attempt at this
+# fix placed the trampoline at 0xFFFF0000 (the "Vendor-specific"/
+# 0xE0100000-0xFFFFFFFF region, Device by default) and every call()
+# faulted with UC_ERR_EXCEPTION the instant execution reached it, not a
+# decode error. 0x2FFF0000 is real, silicon-plausible address space no
+# actual chip populates, so nothing here is "real device RAM" any more
+# than 0xFFFF0000 was -- it is simply also executable under the model.
+# Earlier versions of this class carved the trampoline out of the top of
+# *real, mapped* RAM instead, which meant a plain `run()`'s default SP
+# was no longer the real SAMD51 RAM top (0x20030000) and real device RAM
+# permanently carried harness-only bytes no real boot would ever
+# produce -- both fixed by moving the trampoline out of the mapped RAM
+# region entirely. See docs/investigations/toolchain-cleanup.md's
+# hardening-pass note.
+HARNESS_BASE = 0x2FFF0000
+HARNESS_SIZE = 0x1000
+
 # A single "b ." (branch-to-self) Thumb16 instruction (encoding 0xE7FE,
 # little-endian bytes FE E7): a real, validly-decodable instruction used
 # as a return trampoline for direct-entry calls (see ConcreteMachine.call).
@@ -124,20 +149,46 @@ class Carried:
 class RunResult:
     """Everything about one concrete run -- successful or not. A failed
     run (Unicorn exception, unmapped access, hit an unexpected address)
-    is still a fully analyzable result: `success` is False and
-    `stop_reason`/`error`/`registers`/`recent_pcs`/whatever was requested
-    via dump_mem/watch/etc. are all populated exactly as they would be on
-    success. Callers that want exception-based control flow can pass
-    raise_on_error=True to `ConcreteMachine.run`, which raises
+    is still a fully analyzable result: `error_free`/`completed` are
+    False and `stop_reason`/`error`/`registers`/`recent_pcs`/whatever was
+    requested via dump_mem/watch/etc. are all populated exactly as they
+    would be on success. Callers that want exception-based control flow
+    can pass raise_on_error=True to `ConcreteMachine.run`, which raises
     `ConcreteExecutionError(result)` -- the result is still fully
-    inspectable via the exception's own `.result` attribute."""
+    inspectable via the exception's own `.result` attribute.
+
+    Two deliberately distinct properties, not one ambiguous `success`
+    (see docs/investigations/toolchain-cleanup.md's hardening-pass note
+    for why the old single `success` property was replaced):
+
+      `error_free`  -- no Unicorn exception occurred. This says nothing
+                       about whether the run *achieved* anything -- a run
+                       that silently exhausted its instruction budget
+                       without reaching any requested stop address is
+                       still `error_free`.
+      `completed`   -- the run's actual objective was reached: if
+                       `stop_at` addresses were requested, this is True
+                       only if execution stopped at one of them; if none
+                       were requested, this is True only if execution
+                       ended for a real reason (a clean fall-through, a
+                       watch-hit cap, an explicit emu_stop) rather than
+                       merely running out of instructions.
+    """
 
     def __init__(self, **fields):
         self.__dict__.update(fields)
 
     @property
-    def success(self):
+    def error_free(self):
         return self.error is None
+
+    @property
+    def completed(self):
+        if self.error is not None:
+            return False
+        if self.requested_stop_at:
+            return bool(self.stop_reason) and self.stop_reason.startswith("reached stop address")
+        return self.stop_reason != "instruction limit reached"
 
     def stopped_at(self, addr):
         return self.stop_reason == f"reached stop address 0x{addr & ~1:08x}"
@@ -199,6 +250,9 @@ class RunResult:
             "instructions_executed": self.instructions_executed,
             "stop_reason": self.stop_reason,
             "error": self.error,
+            "error_free": self.error_free,
+            "completed": self.completed,
+            "requested_stop_at": [f"0x{a:08x}" for a in self.requested_stop_at],
             "registers": {k: f"0x{v:08x}" for k, v in self.registers.items()},
             "memory": {f"0x{a:08x}": data.hex() for (a, _n), data in self.memory.items()},
             "reg_pointee": {
@@ -268,26 +322,37 @@ class CallResult:
 
 class ConcreteMachine:
     """One firmware image's memory map, built once and reused across many
-    runs. `run()` resets RAM+registers to a pristine state before each
-    call by default (matching the old one-process-per-scenario-leg
-    behavior every existing investigation already relied on) -- pass
-    fresh=False for the rarer case of genuinely continuing execution
-    state across two calls in the same scenario (see `call()`'s own use
-    of this for multi-state-machine-transition scenarios).
+    runs. `run()`/`call()` reset *all* mutable mapped state (RAM, flash,
+    MMIO, the PPB, any extra-mapped pages) to exactly what a brand-new
+    `ConcreteMachine` for this firmware/configuration would show, before
+    each call, by default (`fresh=True`) -- matching the old one-
+    subprocess-per-scenario-leg isolation every existing investigation
+    already relied on, but without rebuilding the memory map or
+    re-reading the firmware file each time. Pass `fresh=False` for the
+    rarer case of genuinely continuing execution state across two calls
+    in the same scenario (see `call()`'s own two-call use in
+    `virtual_link.py`'s '+' -> `G` scenario) -- 'intentional continuation
+    stays explicit', never the default.
 
-    MMIO is NOT reset by run()'s default fresh=True -- only RAM and
-    registers are (see `reset()`'s own doc for why: MMIO regions are
-    frequently mapped at tens of megabytes for --mmio-force-bits/
-    --mmio-clear-bits coverage, and copying that on every run would
-    reintroduce exactly the setup churn this class exists to remove).
-    Call `reset(mmio=True)` explicitly when a scenario's MMIO state must
-    not leak into the next one -- 'clear/reset semantics must be
-    explicit', not an assumption callers have to verify by reading this
-    class's internals.
+    **How isolation is achieved efficiently** (not by re-zeroing a
+    possibly-tens-of-megabytes MMIO window on every run): a single
+    `UC_HOOK_MEM_WRITE` hook spanning the whole address space, installed
+    once in `_build()`, records the *page* (4KB-aligned) of every write
+    into `_dirty_pages`. `reset()` restores only those pages from a
+    pristine snapshot taken once, right after the machine is built, and
+    clears the set -- the isolation is complete (every writable region is
+    covered, including flash, since a real NVM erase/write scenario can
+    genuinely mutate it) while the cost of resetting is proportional to
+    how much a run actually touched, not to how large the mapped address
+    space is. This tracking can be disabled (`track_dirty=False`) for a
+    machine that will only ever run exactly once before being discarded
+    (the CLI does this -- see `run_concrete.py`) -- `reset()` refuses
+    (raises) rather than silently skipping isolation if a `track_dirty=
+    False` machine is asked to reset after it has already run.
     """
 
     def __init__(self, firmware_path, flash_base=0x4000, ram_base=0x20000000, ram_size=0x30000,
-                 mmio_base=0x40000000, mmio_size=0x100000, extra_maps=()):
+                 mmio_base=0x40000000, mmio_size=0x100000, extra_maps=(), track_dirty=True):
         self.firmware_path = str(firmware_path)
         with open(firmware_path, "rb") as f:
             self.firmware = f.read()
@@ -297,52 +362,135 @@ class ConcreteMachine:
         self.mmio_base = mmio_base
         self.mmio_size = mmio_size
         self.extra_maps = list(extra_maps)
+        self.track_dirty = track_dirty
 
-        # The top 0x1000 bytes of RAM are reserved for this class's own
-        # bookkeeping (the return trampoline) -- never handed out as the
-        # default call-stack top, so a deep/careless stack usage in a
-        # called function can't stomp on it (see call()'s stack
-        # allocation, which stays below stack_ceiling).
-        self.stack_ceiling = ram_base + ram_size - 0x1000
-        self.trampoline_addr = ram_base + ram_size - 0x10
+        # The real SAMD51 RAM top -- the default SP for an ordinary run()
+        # (real firmware's own Reset_Handler expects exactly this: the
+        # documented ATSAMD51J19A RAM top, not a value lowered to make
+        # room for harness bookkeeping) and call()'s default call-stack
+        # top (a real AAPCS call also uses real device RAM for its stack
+        # on real hardware; whatever it writes there is cleaned up by the
+        # next fresh=True reset like any other dirtied RAM).
+        self.ram_top = ram_base + ram_size
 
+        # The return trampoline lives in a dedicated, harness-only page
+        # OUTSIDE every real address region (see HARNESS_BASE) -- never
+        # inside real device RAM, so `ram_top`/pristine RAM never carry
+        # synthetic bytes no real boot would produce.
+        self.trampoline_addr = HARNESS_BASE + 0x10
+
+        self._run_count = 0
         self._build()
+
+    def _device_regions(self):
+        """(base, size) for every region modeling real device address
+        space -- used both to map them in `_build()` and to know what to
+        pristine-snapshot/restore. Deliberately excludes the harness-only
+        trampoline page: it is not part of "this firmware/configuration's
+        observable state", so fresh=True neither touches nor needs to
+        restore it (nothing but this class itself ever writes there)."""
+        regions = [
+            (align_down(self.flash_base), align_up(len(self.firmware))),
+            (align_down(self.ram_base), align_up(self.ram_size)),
+            (align_down(self.mmio_base), align_up(self.mmio_size)),
+        ]
+        mmio_lo = align_down(self.mmio_base)
+        mmio_hi = mmio_lo + align_up(self.mmio_size)
+        if not (mmio_lo <= PPB_BASE and PPB_BASE + PPB_SIZE <= mmio_hi):
+            regions.append((PPB_BASE, PPB_SIZE))
+        for addr, size in self.extra_maps:
+            regions.append((align_down(addr), align_up(size)))
+        return regions
 
     def _build(self):
         uc = Uc(UC_ARCH_ARM, UC_MODE_THUMB | UC_MODE_MCLASS)
         uc.ctl_set_cpu_model(UC_CPU_ARM_CORTEX_M4)
 
-        flash_map_size = align_up(len(self.firmware))
-        uc.mem_map(align_down(self.flash_base), flash_map_size)
+        for base, size in self._device_regions():
+            uc.mem_map(base, size)
         uc.mem_write(self.flash_base, self.firmware)
 
-        uc.mem_map(align_down(self.ram_base), align_up(self.ram_size))
-        uc.mem_map(align_down(self.mmio_base), align_up(self.mmio_size))
-
-        mmio_lo = align_down(self.mmio_base)
-        mmio_hi = mmio_lo + align_up(self.mmio_size)
-        if not (mmio_lo <= PPB_BASE and PPB_BASE + PPB_SIZE <= mmio_hi):
-            uc.mem_map(PPB_BASE, PPB_SIZE)
-
-        for addr, size in self.extra_maps:
-            uc.mem_map(align_down(addr), align_up(size))
-
+        # The harness-only trampoline page -- mapped separately, never
+        # part of _device_regions()/pristine snapshotting.
+        uc.mem_map(HARNESS_BASE, HARNESS_SIZE)
         uc.mem_write(self.trampoline_addr, TRAMPOLINE_BYTES)
 
         self.uc = uc
-        self._pristine_ram = bytes(uc.mem_read(align_down(self.ram_base), align_up(self.ram_size)))
 
-    def reset(self, ram=True, mmio=False, registers=True):
-        """Explicit state reset -- see the class docstring for why MMIO
-        defaults to NOT being touched. `run(fresh=True)` (the default)
-        calls this with its own defaults before every run; call it
-        yourself first if you want a clean slate without immediately
-        running anything."""
-        if ram:
-            self.uc.mem_write(align_down(self.ram_base), self._pristine_ram)
-        if mmio:
-            zeros = bytes(align_up(self.mmio_size))
-            self.uc.mem_write(align_down(self.mmio_base), zeros)
+        # Pristine snapshot of every device-modeled region, taken now --
+        # after the firmware is loaded into flash, before any run/call
+        # ever executes -- so reset() has real ground truth for "what a
+        # brand-new machine for this firmware/configuration looks like",
+        # across all of RAM, flash, MMIO, the PPB, and any extra maps.
+        self._regions = [(base, size, bytes(uc.mem_read(base, size)))
+                          for base, size in self._device_regions()]
+
+        self._dirty_pages = set()
+        self._dirty_hook = None
+        if self.track_dirty:
+            self._dirty_hook = uc.hook_add(UC_HOOK_MEM_WRITE, self._on_dirty_write)
+
+    def _on_dirty_write(self, uc_, access, address, size, value, user_data):
+        self._mark_dirty(address, max(size, 1))
+
+    def _mark_dirty(self, address, length):
+        """Record every page touched by [address, address+length) as
+        dirty. UC_HOOK_MEM_WRITE (`_on_dirty_write`) only fires for the
+        CPU's own store instructions -- it does NOT fire for this class's
+        own direct `mem_write()` calls (seed_mem, --force-mem,
+        --fake-tick, --mmio-force-bits/--mmio-clear-bits), since those
+        bypass the CPU pipeline entirely. Every such call site must mark
+        its own writes explicitly, or `track_dirty`'s isolation guarantee
+        silently has a hole -- exactly the class of gap this hardening
+        pass exists to close, not reintroduce."""
+        if not self.track_dirty:
+            return
+        page = align_down(address)
+        end = align_down(address + length - 1)
+        while page <= end:
+            self._dirty_pages.add(page)
+            page += PAGE
+
+    def _restore_page(self, page_addr):
+        for base, size, pristine in self._regions:
+            if base <= page_addr < base + size:
+                offset = page_addr - base
+                length = min(PAGE, size - offset)
+                self.uc.mem_write(page_addr, pristine[offset:offset + length])
+                return
+        # A dirtied page outside every known pristine region (e.g. the
+        # harness-only trampoline page, which the global write hook can
+        # see but _device_regions() deliberately excludes) -- nothing to
+        # restore it *to*, and nothing legitimate should ever write there
+        # besides this class's own one-time trampoline install.
+
+    def reset(self, registers=True):
+        """Restore every mapped, device-modeled region to exactly what a
+        freshly-built machine for this firmware/configuration would show
+        (every page any run/call has dirtied since the last reset, across
+        RAM/flash/MMIO/PPB/extra maps alike -- see the class docstring
+        for how this stays cheap), then optionally zero all registers.
+        `run(fresh=True)`/`call(fresh=True)` (the default for both) call
+        this before every execution; call it yourself first for a clean
+        slate without immediately running anything.
+
+        Raises if this machine was built with `track_dirty=False` and has
+        already executed at least once -- such a machine has no record of
+        what to restore, so silently "resetting" it would silently fail
+        to isolate rather than actually isolating (the exact regression
+        this hardening pass fixes). `track_dirty=False` is only valid for
+        a machine that runs exactly once before being discarded."""
+        if not self.track_dirty and self._run_count > 0:
+            raise RuntimeError(
+                "reset() cannot guarantee isolation on this machine: it was constructed "
+                "with track_dirty=False (only valid for a machine that executes exactly "
+                "once, e.g. run_concrete.py's CLI, which builds a fresh machine per "
+                "process) and has already run. Construct with track_dirty=True (the "
+                "default) to reuse a machine across multiple run()/call() invocations."
+            )
+        for page in sorted(self._dirty_pages):
+            self._restore_page(page)
+        self._dirty_pages.clear()
         if registers:
             for reg in NAME_BY_REG:
                 self.uc.reg_write(reg, 0)
@@ -350,9 +498,9 @@ class ConcreteMachine:
     def rebuild(self):
         """Full teardown/rebuild of the underlying Uc instance -- for the
         rare case where even a full reset() isn't enough assurance (e.g.
-        after a scenario that mapped extra pages via seed_mem tricks this
-        class doesn't track). Prefer reset() for ordinary use; this is
-        the 'when in doubt' escape hatch, not the common path."""
+        this machine's own extra_maps need to change). Prefer reset() for
+        ordinary use; this is the 'when in doubt' escape hatch, not the
+        common path."""
         self._build()
 
     # -- core execution -----------------------------------------------
@@ -385,12 +533,13 @@ class ConcreteMachine:
         wrapping the same RunResult).
         """
         if fresh:
-            self.reset(ram=True, mmio=False, registers=True)
+            self.reset(registers=True)
+        self._run_count += 1
 
         uc = self.uc
         entry_addr = (entry | 1)
 
-        stack_top = sp if sp is not None else self.stack_ceiling
+        stack_top = sp if sp is not None else self.ram_top
         uc.reg_write(UC_ARM_REG_SP, stack_top)
         uc.reg_write(UC_ARM_REG_PC, entry_addr)
 
@@ -410,6 +559,7 @@ class ConcreteMachine:
                 addr, data = entry_spec
                 tag = "seed"
             uc.mem_write(addr, data)
+            self._mark_dirty(addr, len(data))
             applied_seeds.append({"addr": f"0x{addr:08x}", "len": len(data), "tag": tag})
 
         stop_addrs = {a & ~1 for a in stop_at}
@@ -456,6 +606,7 @@ class ConcreteMachine:
                 if period > 0 and state["instructions"] % period == 0:
                     cur = int.from_bytes(uc_.mem_read(tick_addr, 4), "little")
                     uc_.mem_write(tick_addr, ((cur + 1) & 0xFFFFFFFF).to_bytes(4, "little"))
+                    self._mark_dirty(tick_addr, 4)
                     state["fake_tick_count"][i] += 1
             if address in force_reg_by_addr:
                 hit = {"instruction": state["instructions"], "address": f"0x{address:08x}", "set": []}
@@ -467,6 +618,7 @@ class ConcreteMachine:
                 hit = {"instruction": state["instructions"], "address": f"0x{address:08x}", "writes": []}
                 for mem_addr, data in force_mem_by_addr[address]:
                     uc_.mem_write(mem_addr, data)
+                    self._mark_dirty(mem_addr, len(data))
                     hit["writes"].append({"addr": f"0x{mem_addr:08x}", "bytes": data.hex(), "len": len(data)})
                 state["force_mem_hits"].append(hit)
             if address in stub_addrs:
@@ -514,6 +666,7 @@ class ConcreteMachine:
                 forced = (cur | mask) & 0xFFFFFFFF
                 if forced != cur:
                     uc_.mem_write(addr, forced.to_bytes(4, "little"))
+                    self._mark_dirty(addr, 4)
                     state["mmio_force_count"][i] += 1
             return hook
 
@@ -523,6 +676,7 @@ class ConcreteMachine:
                 cleared = cur & (~mask & 0xFFFFFFFF)
                 if cleared != cur:
                     uc_.mem_write(addr, cleared.to_bytes(4, "little"))
+                    self._mark_dirty(addr, 4)
                     state["mmio_clear_count"][i] += 1
             return hook
 
@@ -600,6 +754,7 @@ class ConcreteMachine:
             instructions_executed=state["instructions"],
             stop_reason=state["stop_reason"],
             error=error,
+            requested_stop_at=sorted(stop_addrs),
             registers=registers,
             memory=memory,
             _reg_pointee=reg_pointee,
@@ -640,13 +795,19 @@ class ConcreteMachine:
             [sp+4], ... exactly where a real caller's own `str`
             sequence would put them before a `bl`)
           - an 8-byte-aligned stack allocation sized to the extra
-            arguments, carved out of the space below stack_ceiling (never
-            colliding with this machine's own reserved trampoline page)
+            arguments, carved out of real device RAM below `ram_top` --
+            the same RAM a real AAPCS call would use on real hardware;
+            whatever it writes there is cleaned up by the next
+            `fresh=True` reset like any other dirtied RAM, so this does
+            not need (and does not use) any harness-reserved region
+            inside real RAM
           - Thumb entry (the entry address's Thumb bit is set the same
             way `run()` always sets it)
-          - a real, valid, harmless return address (this machine's
-            trampoline instruction) instead of an arbitrary firmware
-            address chosen to crash predictably
+          - a real, valid, harmless return address in a dedicated
+            harness-only page OUTSIDE real device RAM (`trampoline_addr`,
+            see HARNESS_BASE) instead of an arbitrary firmware address
+            chosen to crash predictably, and instead of synthetic bytes
+            planted inside real RAM
           - stopping cleanly the moment the function's own real epilogue
             reaches that trampoline (CallResult.returned is True), rather
             than inferring a return from an intentional PC=0 crash
@@ -666,7 +827,7 @@ class ConcreteMachine:
         reg_args = args[:4]
         stack_args = args[4:]
 
-        stack_top = sp if sp is not None else self.stack_ceiling
+        stack_top = sp if sp is not None else self.ram_top
         if stack_args:
             extra_bytes = align_up(len(stack_args) * 4, 8)
             call_sp = align_down(stack_top - extra_bytes, 8)
