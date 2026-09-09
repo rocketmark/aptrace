@@ -481,3 +481,41 @@ closing recommendation.
     true `--watch-mem-write`; then reach a real `FUN_00005be8` completion
     condition and watch whether the real erase/write actually fires
     against flash `0x12000`.
+26. ~~Deliver a real `D` command concretely and trace dirty -> save~~ —
+    done, outcome A as far as the existing concrete model supports, plus
+    a precise identification of the exact remaining edge. `D` needs a
+    trailing comma (`D1234,|`) to parse cleanly — a bare `D<value>|`
+    dispatches but its field parser (whose only real terminator,
+    confirmed by disassembly, is a literal `,`) runs past the packet
+    into adjacent memory for a full 1000-tick timeout; an 8-byte
+    `D12345,|` failed to dispatch at all (an unexplored framing
+    curiosity, not chased). With `D1234,|`, the real value (`1234`) and
+    `0xDE` marker land exactly where predicted, byte-for-byte confirmed
+    before/after. Running the boot further, with **no new GPIO
+    seeding, no seeded state, and no forced call**, found the real save
+    path fires on its own: `FUN_0000d3dc(1)` (a real `digitalRead()`-
+    shaped call, the read-side sibling of the already-classified
+    `digitalWrite`-shaped helper) reads `PA22`
+    (`PORT.GROUP0.IN` bit 22) — resolved directly from the real
+    pin-descriptor table in the firmware image — **the exact same GPIO
+    signal this project has disclosed and carried forward since (16)**,
+    not a new assumption. That real signal satisfies `FUN_00005dd0`'s
+    "held past 1000 ticks" branch, calling `FUN_0000449c` ->
+    `FUN_000097a4` for real, which issues a real NVM erase call with
+    **`dest=0x00012000, len=0x1001`** — matching (22)'s read path
+    exactly, confirmed by register capture rather than static
+    disassembly alone. It then stalls forever: `*(0x20004148+0xc)` (the
+    driver object's own page-size field) is `0`, the same class of
+    real, already-known NVM stall (19) found and didn't chase, now
+    reconfirmed with real arguments in this specific context. No flash
+    byte at `0x12000` was actually written, so the reboot/recovery half
+    of the round trip wasn't reached. Also found, in passing: a real
+    boot-time "clamp an out-of-range setting to a default" step
+    (`FUN_00004c20`) dirties the buffer on every cold boot with blank
+    config — a real producer this project hadn't enumerated. See
+    [`docs/investigations/d-command-persistence-roundtrip.md`](../investigations/d-command-persistence-roundtrip.md).
+    **Next**: determine whether `0x20004148+0xc` should be populated
+    from a real, silicon-guaranteed SAMD51 register (a legitimate
+    completion-bit-style fix) or an untraced driver-construction step —
+    not fabricated — before attempting to observe a real flash write and
+    the reboot/recovery half of this round trip.

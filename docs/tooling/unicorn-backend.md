@@ -306,3 +306,21 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   pass's smoke tests; if APTrace later wants to feed a Unicorn-captured
   state into a Crucible run (e.g. to seed a symbolic query from a genuinely
   reached concrete state), that hand-off format doesn't exist yet.
+- **`--watch-mem-write` can crash the run (`UC_ERR_INSN_INVALID`,
+  immediately, not gracefully) when the watched write happens inside a
+  Thumb-2 conditional (`IT`-block) instruction** — found in
+  [`docs/investigations/d-command-persistence-roundtrip.md`](../investigations/d-command-persistence-roundtrip.md)
+  watching a `strb.ne` inside an `itttt ne` block (this project's
+  `0x20001b14`/`0x20001b50`/`0x20002064` watchpoints in earlier slices
+  all happened to land on unconditional `strb`s, which is why this
+  wasn't hit before). Neither narrowing the range to the exact byte nor
+  widening it to a 4-byte-aligned word avoided it — the trigger is the
+  conditional instruction shape, not the address/alignment. **Workaround,
+  not yet a fix**: watch the known code address of the write instruction
+  itself with `--watch` (a `UC_HOOK_CODE` hook, unaffected) plus
+  `--watch-mem` to read the value before/after, instead of a live
+  `UC_HOOK_MEM_WRITE` trap on that exact address. Root cause not
+  investigated (a Unicorn engine interaction with `IT`-state tracking
+  across a hooked memory access, plausibly a known upstream issue) —
+  flagged here so a future user doesn't re-diagnose the same crash from
+  scratch.

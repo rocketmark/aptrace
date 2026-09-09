@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (traced the `0x12000` persistence dirty flag to its exact address, its sole setter, and a real protocol command — `D<value>|` — that writes through it; `0x12000` is now confirmed real firmware-owned read/write storage, not external provisioning).
+Last updated: 2026-09-08 (concretely delivered a real `D` command through the live RX path and traced dirty->save->real NVM erase call with real arguments matching the `0x12000` read path — stalling at an already-known zero-page-size gap before the actual flash write).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -589,6 +589,35 @@ re-proving:
   search.md`), not a new per-channel design; the dirty flag and buffer
   themselves are global across all four channels. See
   [`docs/investigations/dirty-flag-persistence.md`](investigations/dirty-flag-persistence.md).
+- **A real `D<value>,|` command delivered concretely through the live RX
+  path, tracing dirty -> save -> real NVM erase call, using only the
+  already-disclosed PA22 assumption (roadmap M6)**: found, concretely,
+  that `D` needs a trailing comma before `|` to parse cleanly (a bare
+  `D<value>|` dispatches but its field parser runs past the packet into
+  adjacent memory, since its only real terminator is a literal comma —
+  a real protocol fact, not a harness artifact). With `D1234,|`, the
+  real value (`1234`) and marker (`0xDE`) land exactly where
+  `dirty-flag-persistence.md` predicted. Running the boot further (no
+  new commands, no seeding) found the real save path
+  (`FUN_00005dd0`->`FUN_0000449c`->`FUN_000097a4`) fires **naturally**:
+  `FUN_0000d3dc(1)` (a real `digitalRead()`-shaped call) reads `PA22`
+  (`PORT.GROUP0.IN` bit 22) — **the exact same GPIO signal this project
+  has disclosed and carried forward since `systick-tick-injection.md`**,
+  not a new assumption. The resulting real erase call
+  (`FUN_000098f0(obj=0x20004148, dest=0x00012000, len=0x1001)`) uses the
+  identical destination and length the `0x12000` read path consumes —
+  concretely confirming, by register capture, that the write path
+  targets the same flash region. It then stalls forever: the driver
+  object's own page-size field (`0x20004148+0xc`) reads `0`, the same
+  class of gap `post-probe-main-loop.md` already found and didn't chase,
+  now reconfirmed with real arguments in this exact context. No flash
+  byte at `0x12000` was actually written this pass, so the reboot/
+  recovery half of the round trip wasn't reached. Also found, in the
+  process: `FUN_00004c20`'s own "clamp an out-of-range setting to a
+  default" boot logic dirties the buffer on every cold boot with blank
+  config — a real, previously-unenumerated producer, added to the dirty-
+  flag producer list. See
+  [`docs/investigations/d-command-persistence-roundtrip.md`](investigations/d-command-persistence-roundtrip.md).
 
 ## Corrected assumptions
 
@@ -886,6 +915,18 @@ separately and immediately afterward, also on 2026-09-08.
    external provisioning, per the task's own explicit caution. Next:
    deliver a real `D` command concretely and watch the dirty flag: see
    that doc's own "Next step."
+   An eleventh follow-up
+   ([`docs/investigations/d-command-persistence-roundtrip.md`](investigations/d-command-persistence-roundtrip.md))
+   did exactly that: delivered `D1234,|` concretely, confirmed the real
+   buffer/marker writes, and — running the boot further with no new
+   fabrication — found the real save path fires naturally via the
+   already-disclosed PA22 signal, reaching a real NVM erase call with
+   arguments matching the `0x12000` read path exactly, before stalling
+   at an already-known (now reconfirmed) zero-page-size gap. No flash
+   byte was actually written; the reboot/recovery half of the round trip
+   awaits resolving that gap. Next: determine whether the page-size
+   field should come from a real SAMD51 register or an untraced
+   driver-construction step — see that doc's own "Next step."
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

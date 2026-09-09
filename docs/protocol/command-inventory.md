@@ -8,6 +8,9 @@ table with confidence ratings and notes, read the CSV/MD directly.
 **Execution-confirmed** (see [`docs/protocol/protocol-overview.md`](protocol-overview.md)):
 `&`, `G`, `!`, `S` — the AutoPilot dispatcher's real comparison instructions
 require exactly these ASCII values to reach each command's handler.
+**Also execution-confirmed, concretely, through the real live RX path**
+(a separate, later line of investigation — see each command's own row
+below for its specific evidence doc): `MC4`, `LL1`/`LL2`, and `D`.
 Everything else below is static-analysis-only.
 
 ## High-confidence single/short commands
@@ -29,7 +32,7 @@ Everything else below is static-analysis-only.
 | `H\|` / `J\|` | Remote -> AutoPilot | Toggle a global flag (opposite directions) | — |
 | `0xF0 <payload>` | ? -> AutoPilot | Binary motor/control frame | — |
 | `0xE0 <payload>` | ? -> AutoPilot | Binary motor/control frame (2nd variant) | — |
-| `D<value>\|` | Remote -> AutoPilot | Writes a 32-bit numeric field into the persisted config buffer (the same buffer backing the `0x12000` flash region) at logical offset `0x15`, then writes a `0xDE` marker byte at offset `0x19`; a real boot-time reader (`FUN_00004c20`) checks that marker and, if present, reads the value back. If the written value differs from what's already stored, this also sets the buffer's dirty/save-pending flag — see [`dirty-flag-persistence.md`](../investigations/dirty-flag-persistence.md) | — |
+| `D<value>,\|` | Remote -> AutoPilot | Writes a 32-bit numeric field into the persisted config buffer (the same buffer backing the `0x12000` flash region) at logical offset `0x15`, then writes a `0xDE` marker byte at offset `0x19`; a real boot-time reader (`FUN_00004c20`) checks that marker and, if present, reads the value back. If the written value differs from what's already stored, this also sets the buffer's dirty/save-pending flag. **Execution-confirmed, concretely**: requires the trailing comma (`D1234,\|` parses cleanly and writes the exact value; a bare `D1234\|` dispatches but the field parser runs past the packet into adjacent memory since its only real terminator is a literal comma; an 8-byte `D12345,\|` failed to dispatch at all, an unexplored framing curiosity) — see [`dirty-flag-persistence.md`](../investigations/dirty-flag-persistence.md) and [`d-command-persistence-roundtrip.md`](../investigations/d-command-persistence-roundtrip.md) | — |
 
 ## Lower-confidence / unresolved
 
