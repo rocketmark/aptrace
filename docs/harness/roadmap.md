@@ -440,3 +440,44 @@ closing recommendation.
     next persistence slice should trace what sets the `+0x1002` "dirty"
     byte that gates the save, and whether the handler's apparent
     channel-0-only scope is real, before attempting a concrete run.
+25. ~~Trace the `+0x1002` dirty byte to its setter/clearer~~ — done,
+    entirely statically, per the task's explicit "don't exercise the
+    write yet." The byte is `0x20004147` (buffer base `0x20003145` +
+    `0x1002`) — found only by a full-image disassembly scan for the
+    16-bit immediate `#0x1002` used in a `movw` instruction (the offset
+    exceeds Thumb-2's encodable `ldrb.w` immediate range, so it's
+    materialized in a register rather than ever appearing in the flash
+    literal pool — an ordinary xref search, the method used for every
+    other address in this project, would have found **nothing**). Exactly
+    three sites reference this immediate anywhere in the image: the
+    setter, the save-gate reader, and one clearer. **The setter is
+    `FUN_0000977c`**, a single shared "write one byte into the persisted
+    config buffer" accessor used by several callers — it sets the flag
+    only when the new byte value genuinely differs from what's already
+    stored (`cmp`+`itttt ne`), a real change-detection guard, not a
+    channel- or event-specific trigger. Found, in the process, **a
+    previously undocumented ASCII command, `D<value>|`**, that writes
+    through this exact accessor (a 32-bit value at logical offset `0x15`
+    then a `0xDE` marker at `0x19`, read back at boot by the already-
+    known `FUN_00004c20`) — a real, protocol-native way to dirty the
+    buffer, not delivered concretely this pass. `FUN_000097a4` (the
+    save-if-dirty path `FUN_0000449c` calls) never clears the flag after
+    saving; the only function that does, `FUN_000097f4`, has **no
+    confirmed caller anywhere in the image** (checked via both the calls
+    graph and a full-image branch-target scan) — a genuine open question,
+    not guessed at. The save trigger's channel-0 association traces to a
+    real, already-documented TC0-ISR asymmetry (`channel-busy-gate-
+    search.md`'s own original finding), not a new per-channel design;
+    the dirty flag and the buffer itself are global, covering all four
+    channels together. **This settles the task's central caution**:
+    `0x12000` is confirmed real, firmware-owned, round-trip persistent
+    storage — not an external-provisioning boundary — since a real,
+    protocol-reachable write path (`D`) into it now exists in evidence.
+    See
+    [`docs/investigations/dirty-flag-persistence.md`](../investigations/dirty-flag-persistence.md).
+    **Next**: deliver a real `D<value>|` command concretely through the
+    live RX path (the same injection technique already proven for `G`/
+    `MC4`/`LL1`/`LL2`) and watch `0x20004147` transition `0`->`1` with a
+    true `--watch-mem-write`; then reach a real `FUN_00005be8` completion
+    condition and watch whether the real erase/write actually fires
+    against flash `0x12000`.

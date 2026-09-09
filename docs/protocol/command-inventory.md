@@ -29,11 +29,13 @@ Everything else below is static-analysis-only.
 | `H\|` / `J\|` | Remote -> AutoPilot | Toggle a global flag (opposite directions) | — |
 | `0xF0 <payload>` | ? -> AutoPilot | Binary motor/control frame | — |
 | `0xE0 <payload>` | ? -> AutoPilot | Binary motor/control frame (2nd variant) | — |
+| `D<value>\|` | Remote -> AutoPilot | Writes a 32-bit numeric field into the persisted config buffer (the same buffer backing the `0x12000` flash region) at logical offset `0x15`, then writes a `0xDE` marker byte at offset `0x19`; a real boot-time reader (`FUN_00004c20`) checks that marker and, if present, reads the value back. If the written value differs from what's already stored, this also sets the buffer's dirty/save-pending flag — see [`dirty-flag-persistence.md`](../investigations/dirty-flag-persistence.md) | — |
 
 ## Lower-confidence / unresolved
 
-- `Y...,`, `+...`, `D...`, `A...`, `X1`/`X2` — top-level parser branches
-  exist; command semantics only partially understood.
+- `Y...,`, `+...`, `A...`, `X1`/`X2` — top-level parser branches exist;
+  command semantics only partially understood. (`D...` moved up to the
+  high-confidence table above this pass.)
 - `V<decimal>,\|` — construction confirmed on the Remote side, but no
   matching top-level branch found in the AutoPilot's main text dispatcher.
 - `MS\|`, `MR\|`, `MM\|`, `N\|`, `KK\|`, `E1,...\|`, bare `W\|` — the Remote

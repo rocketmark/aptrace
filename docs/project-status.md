@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (a bounded standard-library provenance pass classified the real Adafruit-core/toolchain infrastructure and, while sharpening the `0x12000` question, found a real but unexercised flash write path).
+Last updated: 2026-09-08 (traced the `0x12000` persistence dirty flag to its exact address, its sole setter, and a real protocol command — `D<value>|` — that writes through it; `0x12000` is now confirmed real firmware-owned read/write storage, not external provisioning).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -564,6 +564,31 @@ re-proving:
   that gates the save was not traced to its setter — a precise pointer
   for the next persistence slice. See
   [`docs/investigations/standard-library-provenance.md`](investigations/standard-library-provenance.md).
+- **The `0x1002` dirty flag traced to its exact address, sole setter,
+  and a real protocol-reachable writer — `0x12000` is confirmed
+  firmware-owned persistent storage, not external provisioning (roadmap
+  M6)**: the dirty byte is `0x20004147` (`0x20003145` buffer base +
+  `0x1002`) — found only by a full-image disassembly scan for the
+  16-bit immediate `#0x1002` in a `movw` instruction, since the offset
+  exceeds Thumb-2's encodable immediate range and never appears in the
+  flash literal pool (an ordinary xref search would have missed it
+  entirely). **`FUN_0000977c`, a single shared "write one config byte,
+  only if it actually changed" accessor, is the sole setter** — real
+  change-detection (`cmp`+`itttt ne`), not a channel- or event-specific
+  trigger. A previously undocumented ASCII command, **`D<value>|`**,
+  writes through this exact accessor (a 32-bit value at logical offset
+  `0x15`, then a `0xDE` marker at `0x19`, read back at boot by
+  `FUN_00004c20`) — a real, protocol-native way to dirty the buffer,
+  not delivered concretely this pass. `FUN_000097a4` (the save-if-dirty
+  path `FUN_0000449c` calls) never clears the flag after saving; only
+  `FUN_000097f4` does, and it has **no confirmed caller anywhere in the
+  image** (checked via both the calls graph and a full-image
+  branch-target scan) — left as a genuine open question, not guessed.
+  The save trigger's channel-0 association is confirmed to come from a
+  real, already-documented TC0-ISR asymmetry (`channel-busy-gate-
+  search.md`), not a new per-channel design; the dirty flag and buffer
+  themselves are global across all four channels. See
+  [`docs/investigations/dirty-flag-persistence.md`](investigations/dirty-flag-persistence.md).
 
 ## Corrected assumptions
 
@@ -844,6 +869,23 @@ separately and immediately afterward, also on 2026-09-08.
    (`FUN_0000449c`->`FUN_000097a4`->NVM erase/write, from a channel-0
    move-completion handler) — not exercised concretely, and its "dirty"
    flag's own setter not traced; the precise next persistence target.
+   A tenth follow-up
+   ([`docs/investigations/dirty-flag-persistence.md`](investigations/dirty-flag-persistence.md))
+   found that setter: the dirty byte (`0x20004147`) is set by a single
+   shared, change-detecting "write one config byte" accessor
+   (`FUN_0000977c`), found only via a full-image scan for the `movw
+   #0x1002` immediate (the offset exceeds Thumb-2's immediate-encoding
+   range and never appears in the flash literal pool, so an ordinary
+   xref search would have missed it). A previously undocumented ASCII
+   command, `D<value>|`, writes through this exact accessor — a real,
+   protocol-reachable way to dirty the persisted-config buffer, not
+   delivered concretely this pass. The save-if-dirty path never clears
+   the flag after saving; the one function that does (`FUN_000097f4`)
+   has no confirmed caller anywhere in the image. `0x12000` is now
+   confirmed real, firmware-owned, round-trip persistent storage — not
+   external provisioning, per the task's own explicit caution. Next:
+   deliver a real `D` command concretely and watch the dirty flag: see
+   that doc's own "Next step."
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and
