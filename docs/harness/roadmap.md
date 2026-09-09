@@ -519,3 +519,35 @@ closing recommendation.
     completion-bit-style fix) or an untraced driver-construction step —
     not fabricated — before attempting to observe a real flash write and
     the reboot/recovery half of this round trip.
+27. ~~Resolve the page-size field and complete the `D` round trip~~ —
+    done, Option B confirmed. Meet-in-the-middle found `0x20004148+0xc`
+    is not stale/uninitialized firmware state at all: **`FUN_0000981c`**
+    (previously mis-filed as opaque NVM plumbing) is the real constructor
+    called fresh before every save, and it computes the field from
+    **`NVMCTRL.PARAM`** (`0x41004008`) — a real, read-only SAMD51 register,
+    confirmed via this project's own vendored SVD, whose `PSZ`-to-byte-size
+    enumeration matches, byte-for-byte, a lookup table read directly out of
+    the firmware image at flash `0x14000`. The harness's zero-behavior MMIO
+    model returns `0` for this never-written hardware register, so the
+    field always computed to `0` — not a missing firmware initializer.
+    Modeled the one real value this exact, physically-confirmed part
+    (ATSAMD51J19A, 512KB flash) guarantees (`PSZ=6`, `NVMP=0x400` ->
+    `0x00060400`) via the existing `--mmio-force-bits` mechanism — no new
+    tooling, no generic NVM emulator. A second stall on
+    `NVMCTRL.INTFLAG.DONE` was the same bit `post-probe-main-loop.md`
+    already modeled, just missing from this recipe. With both in place,
+    the real erase (`FUN_000098f0`->`FUN_000098d8`) and real write
+    (`FUN_0000984c`) both execute against flash `0x12000`, confirmed by a
+    direct memory dump matching the RAM buffer's `D1234,|` value (`1234`)
+    and marker (`0xDE`) byte-for-byte. A disclosed harness step (patching a
+    firmware-image copy with those real, Unicorn-produced bytes, standing
+    in for a power cycle) let a genuinely fresh boot — zero commands
+    injected — recover the same value through the real
+    `FUN_00004c20`/`FUN_000043ac` load path. See
+    [`docs/investigations/nvm-param-and-full-roundtrip.md`](../investigations/nvm-param-and-full-roundtrip.md).
+    **This closes the `0x12000` persistence investigation's core round
+    trip** (items 22/24/25/26/27). Two minor loose ends remain, neither
+    blocking: `FUN_000097a4`'s post-save dirty-clear behavior on a
+    second, later save was not directly observed this pass, and the
+    `D12345,|` (8-byte) dispatch-failure curiosity from (26) is still
+    unchased.

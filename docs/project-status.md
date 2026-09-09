@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (concretely delivered a real `D` command through the live RX path and traced dirty->save->real NVM erase call with real arguments matching the `0x12000` read path — stalling at an already-known zero-page-size gap before the actual flash write).
+Last updated: 2026-09-08 (resolved the zero-page-size stall — the driver object's `+0xc` field is real `NVMCTRL.PARAM` hardware, not a missed firmware initializer — and completed the full `D` round trip: a real flash mutation at `0x12000` and a fresh boot that recovers it).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -618,6 +618,39 @@ re-proving:
   config — a real, previously-unenumerated producer, added to the dirty-
   flag producer list. See
   [`docs/investigations/d-command-persistence-roundtrip.md`](investigations/d-command-persistence-roundtrip.md).
+- **The zero-page-size stall resolved — a real hardware register, not a
+  missed firmware step; the full `D` round trip now completes, byte-for-
+  byte (roadmap M6)**: the driver object's `+0xc` field is computed fresh
+  before every save by `FUN_0000981c` — previously mis-filed as opaque
+  "NVM plumbing" — which reads `NVMCTRL.PARAM` (`0x41004008`, confirmed
+  via this project's own vendored SVD), extracts `PSZ` via the exact same
+  mask/shift the SVD's own field layout implies, and looks up the real
+  byte-size through a flash-resident table at `0x14000` that — read
+  directly from the firmware image — matches the SVD's `PSZ` enumeration
+  exactly (`[8,16,32,64,128,256,512,1024]`). The harness's zero-behavior
+  MMIO model returns `0` for this real, read-only register, so the field
+  computed to `0`. **Resolved as Option B**: modeled the one real,
+  documented value this exact, physically-confirmed part (ATSAMD51J19A,
+  512KB flash) guarantees — `PSZ=6` (512-byte pages) with `NVMP=0x400`
+  (1024 pages, a direct consequence of the already-confirmed flash size)
+  — via `--mmio-force-bits 0x41004008:0x00060400`, the same established
+  mechanism as every other MCU-completion-bit fix in this project, no new
+  tooling. A second stall, on `NVMCTRL.INTFLAG.DONE`, was the *same*
+  already-known bit `post-probe-main-loop.md` modeled for a different NVM
+  call — simply missing from this specific recipe. With both in place,
+  the real erase (`FUN_000098f0`->`FUN_000098d8`) and real write
+  (`FUN_0000984c`) both execute, and dumping flash `0x12000` directly from
+  Unicorn's own memory confirms the exact bytes `D1234,|`'s value (`1234`)
+  and marker (`0xDE`) landed, byte-for-byte matching the RAM buffer at
+  save time. A disclosed harness step (patching a copy of the firmware
+  image with those real, Unicorn-produced bytes, standing in for a power
+  cycle Unicorn cannot otherwise model) then let a genuinely fresh boot —
+  **zero commands injected** — reach `FUN_00004c20`'s real load path and
+  recover `r0=0x000004d2=1234` exactly. **This closes the `0x12000`
+  persistence investigation's core round trip**: real command -> real
+  dirty -> real save -> real flash mutation -> real reboot recovery, all
+  concretely demonstrated. See
+  [`docs/investigations/nvm-param-and-full-roundtrip.md`](investigations/nvm-param-and-full-roundtrip.md).
 
 ## Corrected assumptions
 

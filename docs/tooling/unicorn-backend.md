@@ -133,6 +133,23 @@ during real clock-init). Never use it for a bit whose true value depends
 on something this harness can't establish — an external signal, or
 state that belongs in `--seed-mem` instead.
 
+A second use: `NVMCTRL.PARAM` (`0x41004008:0x00060400`) — a real,
+read-only register (never written by any firmware code path) whose
+`PSZ`/`NVMP` fields a real driver-object constructor (`FUN_0000981c`)
+reads to compute an NVM erase/write routine's page-size geometry. The
+zero-behavior model's default `0` for this register left that geometry
+field permanently `0`, stalling the erase loop forever with no
+observable progress. The value modeled is not a plausible guess: `PSZ=6`
+(512-byte pages) and `NVMP=0x400` (1024 pages) both follow deterministically
+from this project's already-confirmed real part (ATSAMD51J19A, 512KB
+flash) and the firmware's own embedded PSZ-to-bytes lookup table
+(flash `0x14000`), which matches the SVD's `PSZ` enumeration exactly. A
+real NVM write of this class also needs `NVMCTRL.INTFLAG.DONE`
+(`0x41004010:1`, already documented above from
+`post-probe-main-loop.md`) — include both together for any run that
+reaches a real save/erase/write path. See
+[`docs/investigations/nvm-param-and-full-roundtrip.md`](../investigations/nvm-param-and-full-roundtrip.md).
+
 **`--mmio-clear-bits ADDR:MASK`** (repeatable): the complement — every
 read is AND'd with `~MASK`, forcing a bit clear. For a bit the firmware
 itself just *set* that real hardware self-clears within a few cycles (a

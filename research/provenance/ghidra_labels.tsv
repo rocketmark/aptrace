@@ -49,4 +49,4 @@ address	name	classification
 0x000097f4	config_save_now__CUSTOM	CUSTOM_APPLICATION
 0x000098f0	nvm_erase_call__UNKNOWN	UNKNOWN
 0x0000984c	nvm_write_call__UNKNOWN	UNKNOWN
-0x0000981c	nvm_raw_write__UNKNOWN	UNKNOWN
+0x0000981c	nvm_param_object_ctor__CUSTOM	CUSTOM_APPLICATION
