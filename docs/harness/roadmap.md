@@ -844,3 +844,36 @@ closing recommendation.
     [`plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md))
     and `MC40,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,|`. See
     [`docs/investigations/bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md).
+35. **Manual Mode's wire mechanism, closed — a new binary command
+    family, not any known ASCII command.** No prior slice had identified
+    any wire command for Manual Mode. Traced independently from two
+    directions that converge exactly: the physical-input side (the real
+    SAMD51 EIC peripheral — both firmwares share this MCU family — with a
+    genuine `attachInterrupt`-equivalent registration, `FUN_00007c3c` →
+    `FUN_0001240c` → callback `FUN_00007de8`, a real velocity-sensitive
+    quadrature decoder on pins `0x31`/`0x32`, feeding a shared, system-
+    wide rotation signal `0x20001818`/`0x2000181c` every UI pump tick)
+    and the UI side (the `"Direction"` row of the `"MANUAL MODE"`-titled
+    screen, leading to a live-jog loop, `FUN_0000de3c`, that sends
+    `"LL1|"` once on entry, shows `"Use the joystick to..."`, then calls
+    a real frame sender, `FUN_0000be94`, **every tick for as long as the
+    wheel is not clicked** — a continuous stream, not a discrete
+    command). The frame is `0xF0`/`0xE0` — already listed in
+    `command-inventory.md` as "Binary motor/control frame" with
+    unconfirmed direction, now resolved to Remote→AutoPilot with a fully
+    decoded `0xF0` grammar (`<type><len><0xFF x4>[<channel><sign+23-bit
+    value>]*<'|'><seq>`), checked by the AutoPilot's `ascii_dispatcher`
+    **before any ASCII command** and routed into `FUN_00005274`/
+    `FUN_00004d18` — the **same** entry point `i-command-motor-chain.md`
+    already proved the `I` command uses, cross-confirmed via a shared
+    per-channel array (`0x20000180`). Real frames captured concretely,
+    both idle (`\xf0\x07\xff\xff\xff\xff|`) and with one real record
+    (`\xf0\x0b\xff\xff\xff\xff\x00LK@|`, channel 0, value 5,000,000).
+    Closed three other previously-`UNKNOWN`-sender commands (`N|`,
+    `B0|`, `TR0|`) as a side effect, and half of `ll-limit-workflow.md`'s
+    own open question (`LL1|`'s real sender). One question stays
+    PROBABLE: whether this is Manual Mode's *only* live-jog entry point,
+    since the traced path is also concretely the Set-Limits workflow's
+    own joystick-positioning step — both readings are consistent with
+    the user guide, not mutually exclusive. See
+    [`docs/investigations/manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).

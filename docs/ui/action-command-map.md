@@ -179,36 +179,66 @@ field's source (`0x20001fc0`) are both identified. See
   settings-page variant). (The `MT` scheduling question is now closed —
   see above.)
 
-### 3. Manual Mode jog -> (no confirmed wire command)
+### 3. Manual Mode jog -> real-time binary `0xF0`/`0xE0` frame stream
+
+**Wire mechanism — now CONFIRMED**: Manual Mode does not use any known
+ASCII command. It uses a previously-uncharacterized **binary** frame
+family (`0xF0 <len> <0xFF x4> [<channel><sign+23-bit value>]* | <seq>`,
+already listed in `command-inventory.md` as "Binary motor/control frame"
+with unconfirmed direction), sent **continuously — once per UI tick,
+for as long as the jog wheel is not clicked** — not a discrete
+per-gesture command. Direction is now resolved: Remote → AutoPilot.
 
 - **User-guide action**: rotate jog wheel to move motor in real time;
   click to stop; double-click to cycle channel.
 - **Visible Remote text/screen**: `"MANUAL MODE"`, `"Direction"`, `"MOTOR
-  1"`.."MOTOR 4"` `[firmware string]`.
+  1"`.."MOTOR 4"` `[firmware string]`; also `"Use the joystick to..."`,
+  shown at entry to the live-jog screen (see below).
 - **Preconditions**: `[user manual]` a motor connected on the selected
   channel.
-- **Wire command(s)**: **UNKNOWN**. No investigation in this project has
-  identified a real-time "jog" wire command. `I<channel><mode>|` is the
-  closest candidate structurally (per-channel, async) but
-  `i-command-motor-chain.md` characterizes it as writing a per-channel
-  mode/signal byte and (conditionally) a direction sign — not obviously a
-  continuous streaming command a jog wheel's rotation would emit at a
-  UI-interaction rate. `G<d><d><seq>|` is a synchronous, discrete
-  request/ack, not a natural fit for continuous jogging either.
-- **Confidence**: **UNKNOWN** for the wire-level mapping. The motor-side
-  mechanism Manual Mode would eventually drive (`FUN_00006338`'s
-  phase/velocity executor, `FUN_00005c00`'s TC rate-register writer, the
-  TC0-3 ISR -> GPIO pulse chain) is independently CONFIRMED to exist and
-  work — see workflow 7's evidence — but nothing yet connects it
-  backward to a live jog-wheel-rate wire command.
-- **Evidence**: [`i-command-motor-chain.md`](../investigations/i-command-motor-chain.md)
-  (closest candidate, not confirmed as "the jog command"),
-  [`motor-timer-survey.md`](../investigations/motor-timer-survey.md).
-- **Open question**: what wire command(s), if any, does the Remote send
-  while the jog wheel is actively turning in Manual Mode? (Candidate
-  bounded question, not "reverse Manual Mode": does `I<channel><mode>|`
-  repeat at a rate matching jog-wheel rotation speed, or is Manual Mode
-  driven by a completely different, not-yet-catalogued command?)
+- **Remote state/function**: a real quadrature encoder (SAMD51 EIC,
+  pins `0x31`/`0x32`), decoded by a genuine registered interrupt callback
+  (`FUN_00007de8`), feeding a shared, system-wide rotation signal
+  (`0x20001818` sign / `0x2000181c` magnitude) that a live-jog loop
+  (`FUN_0000de3c`) accumulates and sends via `FUN_0000be94` on every UI
+  pump tick. `FUN_0000de3c` is reached from the `"Direction"` row
+  (`FUN_0000e314`) of the `"MANUAL MODE"`-titled screen (`FUN_0000d988`)
+  — **CONFIRMED** as a real path; **PROBABLE**, not proven exhaustive,
+  as the *only* path (see evidence doc).
+- **User input/event**: wheel rotation (any tick) keeps the loop sending;
+  a wheel **click** (`FUN_000171f0(0x2d)`) is the sole exit — stop is
+  implicit (frames simply stop), not an explicit stop command.
+- **Wire command(s)**: `0xF0`/`0xE0 <len> <0xFF x4> [<channel
+  nibble><sign+23-bit value>]* | <seq>` — real captured frames: idle
+  `b'\xf0\x07\xff\xff\xff\xff|'`, one real record
+  `b'\xf0\x0b\xff\xff\xff\xff\x00LK@|'` (channel 0, value `5,000,000`).
+- **AutoPilot handler/function**: `ascii_dispatcher` (`FUN_00008258`)
+  checks for `0xF0`/`0xE0` **before any ASCII command**; per record,
+  compares the value against `0x20000180[channel]` (the same "clamping
+  ceiling" array `i-command-motor-chain.md` already found) and calls
+  `FUN_00005274(channel, 4)` — **the same entry point the `I` command
+  uses** — or `FUN_00005448` → `FUN_00004d18` (also the same function
+  `I`'s own chain reaches).
+- **AutoPilot state effect**: `step_delta[channel]`'s sign, via the
+  already-proven `FUN_00005274`/`FUN_00004d18` chain — inherits, not
+  reopens, the still-unresolved `0x20001b14[channel]` "busy" gate
+  (`channel-busy-gate-search.md`) before any GPIO pulse is observable.
+- **Persistent-state effect**: none identified.
+- **Hardware/motion effect**: reaches the same real timer/ISR/GPIO
+  mechanism (`motor-timer-survey.md`/`i-command-motor-chain.md`) once the
+  busy gate is set — not re-verified concretely this slice.
+- **Confidence**: **CONFIRMED** for the wire grammar, sender, and
+  receiver (disassembly, cross-checked from both the physical-input side
+  and the AutoPilot-receiver side, plus concrete captures). **PROBABLE**
+  for "this is the sole Manual Mode entry point" and for the exact
+  per-channel value's semantic source (accumulated delta vs. live
+  position — not traced). **UNKNOWN** for AutoPilot-side stop/dead-man
+  timeout behavior when frames stop arriving.
+- **Evidence**: [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
+- **Open question**: the exact source of the encoded per-channel value;
+  whether Manual Mode has any live-jog entry point besides the
+  `"Direction"` row; the `0xE0` variant's exact field layout; AutoPilot-
+  side behavior on communication loss mid-jog.
 
 ### 4. Auto Mode: record/confirm a segment -> `'+'` (workflow 5)
 
@@ -432,12 +462,18 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
   `"Centering..."`, `"Finished!"`, `"No limits set"`, `"Process failed"`,
   `"Limits successfully"` `[firmware string]`.
 - **Preconditions**: none (reachable pre-`MC4`, like every ASCII command).
-- **Remote state/function**: **UNKNOWN** — no investigation has found the
-  Remote-side sender for `LL1`/`LL2` (only the AutoPilot side is
-  characterized, and only by inference from `commands.csv`'s note that
-  "remote UI strings around this command describe setting the first
-  limit" — itself a static, unverified note, not firmware-code
-  confirmation).
+- **Remote state/function**: **`LL1|`'s real sender is now found**
+  (`manual-mode-wire-provenance.md` Part 3): `FUN_0000de3c`, the same
+  screen that hosts the live-jog loop reached via the `"Direction"` row
+  of the `"MANUAL MODE"`-titled screen, sends `"LL1|"` once on entry and
+  renders `"Use the joystick to..."` — a real, disassembly-confirmed
+  connection between this workflow and Manual Mode's own live-jog
+  primitive. **`LL2|`'s sender remains UNKNOWN**, and this slice did not
+  confirm whether the *position-capture* itself (which the row below
+  shows never reaches `posA`/`posB` via any ASCII-protocol path) instead
+  flows through the same binary `0xF0`/`0xE0` mechanism the joystick
+  loop sends — a real, precisely bounded next question, not chased
+  further here.
 - **Wire command(s)**: `LL1|` (clear), `LL2|` (order and validate).
 - **AutoPilot handler/function**: shared `'L'`-family handler
   `FUN_000054e0`. `LL1`: unconditionally clears two globals (`posA`
@@ -459,12 +495,15 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 - **Confidence**: **CONFIRMED** for everything on the AutoPilot side
   (schema, effects, and the negative result that no real position ever
   reaches `posA`/`posB` via any static path this project can find).
-  **UNKNOWN** for the Remote-side sender and the exact UI-input mapping.
-- **Evidence**: [`ll-limit-workflow.md`](../investigations/ll-limit-workflow.md).
-- **Open question**: find the Remote-side `LL1`/`LL2` sender (same method
-  as `'+'`'s provenance pass) and confirm whether the "Detecting first/
-  second limit..." screens actually send these two commands, or whether
-  they send something else entirely that a static scan of the AutoPilot
+  **CONFIRMED** for `LL1|`'s Remote-side sender and its connection to the
+  joystick-jog screen. **UNKNOWN** for `LL2|`'s sender and the exact
+  UI-input mapping beyond `LL1`.
+- **Evidence**: [`ll-limit-workflow.md`](../investigations/ll-limit-workflow.md),
+  [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
+- **Open question**: find the Remote-side `LL2` sender and confirm
+  whether the "Detecting first/second limit..." screens actually send
+  these two commands, or whether they send something else entirely that
+  a static scan of the AutoPilot
   side alone couldn't reveal a producer for.
 
 ### 9. Persistence field -> `D<value>,|` (workflow 10, partially)
@@ -785,7 +824,9 @@ MC4 RECEIVED
   -> NORMAL RUNTIME
 
 NORMAL RUNTIME
-  -> Manual Mode jogging (wire-level mechanism UNKNOWN -- see workflow 3)
+  -> Manual Mode jogging (real-time binary 0xF0/0xE0 frame stream,
+     CONFIRMED -- see workflow 3; reaches the same FUN_00005274/
+     FUN_00004d18 entry the I command uses)
   -> Auto Mode
        -> record/confirm a segment (interactive '+', mode 0/0x14 --
           writes delta, does NOT populate a live target)
@@ -806,29 +847,30 @@ NORMAL RUNTIME
 ## Part 5 — Next highest-value unknowns
 
 Ranked by how many downstream mappings each would unlock, not by ease.
-Five items from this list's earlier drafts — the screen-5 call-site
+Six items from this list's earlier drafts — the screen-5 call-site
 identity, whether `FUN_00005474` renders different strings per
 screen-index, the `MC<0-3>`/`MC4` Remote sender, the `MT` AutoPilot-side
-scheduling trigger, and the `FUN_0000c440` bulk-push trigger — are now
-closed (Part 3,
+scheduling trigger, the `FUN_0000c440` bulk-push trigger, and the Manual
+Mode jog wire mechanism — are now closed (Part 3,
 [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
 [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md),
-and [`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md))
+[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
+and [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md))
 and removed; the ranking below reflects what remains.
 
-1. **What wire command(s), if any, does the Remote send while the jog
-   wheel is turning in Manual Mode?** Unlocks: workflow 3 entirely, one
-   of the two top-level modes the manual describes, currently 0% mapped.
-2. **What Remote function builds `LL1`/`LL2`, and does the "Detecting
-   first/second limit..." UI sequence actually send them?** Unlocks:
-   workflow 12, and would either close or definitively reopen the
-   "posA/posB never gets a real value" negative result from the
-   AutoPilot side.
-3. **What does persisted offset `0x15` (the `D` command's field)
+1. **What Remote function builds `LL2`, and does the "Detecting
+   first/second limit..." UI sequence's own position-capture reach
+   `posA`/`posB`?** `LL1`'s own real sender is now found
+   (`manual-mode-wire-provenance.md` Part 3, the same screen that hosts
+   the live-jog loop) — `LL2`'s sender and the position-capture question
+   remain open. Unlocks: workflow 12, and would either close or
+   definitively reopen the "posA/posB never gets a real value" negative
+   result from the AutoPilot side.
+2. **What does persisted offset `0x15` (the `D` command's field)
    represent to the user?** Unlocks: workflow 9/11's connection to a
    concrete settings screen — currently `D` is fully characterized
    mechanically with zero user-facing meaning attached.
-4. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
+3. **Does the highlight-cursor variable (`0x20000fae`, set to `screen-2`
    on menu entry) resolve, in `FUN_00005474`'s own highlight-selection
    logic, to row 7 for screen 10 and row 6 for screen 9** — closing the
    one remaining gap in Part 3's C/D verdicts (currently PROBABLE by
@@ -836,7 +878,7 @@ and removed; the ranking below reflects what remains.
    directly observed for 9/10)? Unlocks: promoting call sites C and D
    from PROBABLE to CONFIRMED, matching what this pass already closed for
    A/B.
-5. **Trace the `param_4==1` record-field-to-wire-position mapping
+4. **Trace the `param_4==1` record-field-to-wire-position mapping
    precisely** — the captured call-site-A/B frame
    (`b'+1,1,1,2,0,1,0,50,0,0,0,0|'`) shows the seeded `+0x14` value (50)
    land on the wire but not the `+0x10 - +0xc` delta (500) this
@@ -844,16 +886,16 @@ and removed; the ranking below reflects what remains.
    already attributes to that branch — a real, disassembly-answerable
    discrepancy between two of this project's own documents, not yet
    reconciled.
-6. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
+5. **What does `*0x2000027d` (the byte selecting the Remote's 4-row vs.
    2-row motor-settings variant) represent, and who writes it?** Lower
    priority than the above — likely a fixed product/hardware-variant
    identifier rather than user-configurable state, but not confirmed.
-7. **What clears `0x20000fa0` (the "has real programmed Auto-Mode data"
+6. **What clears `0x20000fa0` (the "has real programmed Auto-Mode data"
    flag gating `FUN_0000c440`'s own bulk-`'+'` loop) after a push, and
    what role does its second setter, `FUN_0000d218`, play?** Unlocks: a
    complete account of when the boot/reconnect sync in workflow 6
    actually sends anything beyond `MC4`.
-8. **Concretely deliver a real `MT` frame through the Remote's
+7. **Concretely deliver a real `MT` frame through the Remote's
    `FUN_0000c340`/`FUN_00010ce4` per-character inbound state machine** to
    reconfirm the already-disassembly-CONFIRMED Quick-Setup-flag effect
    concretely — assessed this pass as a materially larger, structurally
@@ -861,6 +903,12 @@ and removed; the ranking below reflects what remains.
    `REMOTE_*_ENTRY` anchors; see
    [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md)'s
    own "Remaining unknowns."
+8. **What does the `0xF0`/`0xE0` binary jog frame's per-channel value
+   actually represent** (accumulated jog delta vs. live/target position —
+   `FUN_0000be94`'s own prologue calls not decoded), **and does the
+   AutoPilot side stop or decay motion when frames stop arriving?**
+   Unlocks: closing `manual-mode-wire-provenance.md`'s own two largest
+   remaining gaps — see that document's "Remaining unknowns."
 
 Each of these is phrased as a single bounded question with a specific
 function/address/mechanism named, not "reverse Manual Mode" or
@@ -879,5 +927,6 @@ against open-ended reversing campaigns.
   [`../investigations/mc4-transition.md`](../investigations/mc4-transition.md),
   [`../investigations/mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
   [`../investigations/bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
+  [`../investigations/manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md),
   [`../investigations/ll-limit-workflow.md`](../investigations/ll-limit-workflow.md) —
   primary evidence sources.

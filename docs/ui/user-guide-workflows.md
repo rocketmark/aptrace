@@ -168,23 +168,45 @@ AutoPilot (workflow 8 — external input disables Auto Mode but Manual Mode
 
 **Steps**:
 1. `[firmware string]` Screen shows `"MANUAL MODE"`.
-2. `[user manual]` (section 4.1, 5) User rotates the jog wheel: motor
+2. **`[firmware, CONFIRMED]`** Selecting `"Direction"` reaches a real,
+   disassembly-traced live-jog loop that sends `"LL1|"` once and shows
+   `"Use the joystick to..."` `[firmware string]`, then streams a
+   previously-uncharacterized **binary** wire frame (`0xF0`/`0xE0`,
+   Remote -> AutoPilot) once per UI tick for as long as the wheel is not
+   clicked — not a discrete per-gesture command. See
+   [`action-command-map.md`](action-command-map.md) workflow 3 and
+   [`../investigations/manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
+   **PROBABLE, not exhaustively proven**, that this is the *only* live-jog
+   entry point (as opposed to Manual Mode possibly having its own,
+   separate path funneling into the same primitive).
+3. `[user manual]` (section 4.1, 5) User rotates the jog wheel: motor
    moves continuously in one direction; rotating the other way moves the
    other direction; speed is centered around zero (rotation amount/rate
-   maps to speed).
-3. `[user manual]` User clicks the jog wheel: motor stops immediately.
-4. `[user manual]` User double-clicks the jog wheel: cycles to the next
+   maps to speed). **`[firmware, CONFIRMED]`** The Remote's own decoder
+   is a real, velocity-sensitive quadrature encoder read via the SAMD51
+   EIC peripheral, independently traced from the physical-input side and
+   converging on the same live-jog loop above.
+4. `[user manual]` User clicks the jog wheel: motor stops immediately.
+   **`[firmware, CONFIRMED]`** Stop is implicit — the Remote simply stops
+   sending wire frames the instant the wheel is clicked; there is no
+   explicit stop/zero-rate command. Whether the AutoPilot independently
+   decays motion to zero when frames stop arriving is **UNKNOWN**, not
+   traced.
+5. `[user manual]` User double-clicks the jog wheel: cycles to the next
    *connected* motor channel (auto-detected; unconnected channels are
-   skipped). `[firmware string]` Screen shows `"Direction"` (a
-   configurable per-channel setting, presumed to be the A/B orientation
-   invert the manual describes) and `"MOTOR 1"`/`"MOTOR 2"`/`"MOTOR 3"`/
-   `"MOTOR 4"` channel labels.
-5. `[user manual]` Direction can be inverted between A/B orientation (a
-   configuration option, not a runtime jog-wheel gesture).
+   skipped). `[firmware string]` Screen shows `"MOTOR 1"`/`"MOTOR 2"`/
+   `"MOTOR 3"`/`"MOTOR 4"` channel labels.
+6. `[user manual]` Direction can be inverted between A/B orientation (a
+   configuration option, not a runtime jog-wheel gesture). Clockwise/
+   counter-clockwise correspondence to the wire frame's sign bit is
+   **not claimed** — that would need live hardware, per the evidence
+   doc's own caution.
 
 **Resulting state**: motor position changes live, in real time, with no
 persisted "programmed move" — this is direct manual jogging, not Auto
-Mode's stored-segment model.
+Mode's stored-segment model. **`[firmware, CONFIRMED]`** the AutoPilot
+side receives this through the same `FUN_00005274`/`FUN_00004d18` entry
+the `I<channel><mode>|` command uses, not a newly-invented motor path.
 
 **What becomes possible next**: switching to Auto Mode (workflow 4);
 double-click to another channel and repeat.

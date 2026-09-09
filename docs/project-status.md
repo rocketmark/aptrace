@@ -6,8 +6,41 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (Remote `FUN_0000c440`'s bulk `'+'`/`MC4` push
-trigger closed: this function's real control-flow structure (two
+Last updated: 2026-09-09 (Manual Mode wire provenance closed: no prior
+slice had identified any wire command for Manual Mode's live jog. This
+slice found it is **not** any known ASCII command — it is a previously-
+uncharacterized **binary** frame family (`0xF0`/`0xE0`, already listed in
+`command-inventory.md` with unconfirmed direction), sent **continuously,
+once per UI tick, for as long as the jog wheel is not clicked**, not a
+discrete per-gesture command. Traced from two independent directions
+that converge exactly: the physical-input side (a real SAMD51 EIC
+interrupt callback, `FUN_00007de8`, genuinely registered via
+`attachInterrupt`-equivalent `FUN_0001240c`, decoding real quadrature
+transitions on pins `0x31`/`0x32` with velocity-sensitive scaling) and
+the UI side (the `"Direction"` row of the `"MANUAL MODE"`-titled screen,
+leading to a live-jog loop, `FUN_0000de3c`, that sends `"LL1\|"` once on
+entry, shows `"Use the joystick to..."`, then calls the real frame
+sender `FUN_0000be94` every tick until clicked). The AutoPilot's
+`ascii_dispatcher` checks for this binary frame **before any ASCII
+command** and routes each per-channel record into `FUN_00005274`/
+`FUN_00004d18` — **the same entry point the `I` command already uses**
+(`i-command-motor-chain.md`), cross-confirmed via a shared per-channel
+array (`0x20000180`). Real, unmodified-firmware frames were captured
+concretely, both empty/idle (`MT`-adjacent heartbeat shape) and with one
+real per-channel record. Three other, previously-`UNKNOWN`-sender
+commands (`N\|`, `B0\|`, `TR0\|`) were closed as a side effect of tracing
+the same shared menu widget. **One attribution question stays
+PROBABLE, not CONFIRMED**: whether this is Manual Mode's *only*
+live-jog entry point, since the same code is concretely tied to the
+Set-Limits workflow's own "position with the joystick" step (also
+closing half of that workflow's own open `LL1` sender question) — both
+readings are consistent with the user guide and not mutually exclusive.
+See
+[`docs/investigations/manual-mode-wire-provenance.md`](investigations/manual-mode-wire-provenance.md).
+No prior conclusion changed.
+
+Previous update (Remote `FUN_0000c440`'s bulk `'+'`/`MC4` push
+trigger closed): this function's real control-flow structure (two
 request/response rounds sharing one success gate, `cVar24`, computed
 purely from whether its own `S|`→`P...` round trip got a clean response)
 is now fully mapped by disassembly, cross-checked by an independent
