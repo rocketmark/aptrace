@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (characterized the real `LL1`/`LL2` limit workflow concretely — a second, independent confirmation that this firmware image has no reachable path to real motor-position data).
+Last updated: 2026-09-08 (a bounded standard-library provenance pass classified the real Adafruit-core/toolchain infrastructure and, while sharpening the `0x12000` question, found a real but unexercised flash write path).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -530,6 +530,40 @@ re-proving:
   with only `LL1`'s cleared (zero) state feeding it, `LL2` takes its own
   documented "values are equal, no-op" branch. See
   [`docs/investigations/ll-limit-workflow.md`](investigations/ll-limit-workflow.md).
+- **Bounded standard-library/toolchain provenance classification pass
+  (roadmap M6)**: fetched the exact evidenced toolchain source
+  (Adafruit `ArduinoCore-samd` git tag `1.7.11`, named directly by
+  embedded build-path strings in `docs/firmware/firmware-layout.md`) and
+  structurally matched it against functions this project keeps
+  re-deriving. Confirmed: `Reset_Handler`, the shared default-handler
+  stub, `SysTick_Handler`, `millis()`, and — a new finding —
+  **`FUN_0000cd90` is `main()`, `FUN_00009464` is the AutoPilot sketch's
+  real `setup()` (with its own internal, permanent loop that only
+  returns once `MC4` clears `0x20000060`), and `FUN_000093fc` is the
+  sketch's real `loop()`** — the exact Arduino-idiom names for what
+  `g-command-motor-subsystem-unlock.md`/`mc4-transition.md` already
+  characterized behaviorally. Also classified (at LIKELY-STANDARD or
+  LIKELY-THIRD-PARTY tiers, honestly, where a byte-for-byte match wasn't
+  practical): SERCOM SPI reset, SPI transceive, the `digitalWrite`-shaped
+  GPIO pulse helper, `memcpy`/`memset`, a `libgcc`-shaped 64-bit
+  arithmetic cluster, an SX127x-register-map-matched radio driver
+  cluster, and a vtable-call-shaped LCD status function. Recorded in a
+  new, reusable CSV
+  ([`research/provenance/function_classification.csv`](../research/provenance/function_classification.csv))
+  and applied back into the Ghidra pipeline as a small, optional,
+  tested post-script
+  (`tools/ghidra/scripts/APTraceApplyProvenance.java`, 42 functions
+  renamed concretely against the real firmware image). **Sharpened the
+  `0x12000` question**: every decision-making function in the read chain
+  is confirmed `CUSTOM_APPLICATION` built on a standard `memcpy` — and,
+  while checking for other references to the same flash address, found
+  a **real, previously unexamined write path**
+  (`FUN_0000449c`->`FUN_000097a4`->NVM erase/write, reached from a
+  channel-0 move-completion handler) that this project hadn't
+  encountered before. Not exercised concretely, and the "dirty" flag
+  that gates the save was not traced to its setter — a precise pointer
+  for the next persistence slice. See
+  [`docs/investigations/standard-library-provenance.md`](investigations/standard-library-provenance.md).
 
 ## Corrected assumptions
 
@@ -796,6 +830,20 @@ separately and immediately afterward, also on 2026-09-08.
    firmware ever writes `LL`'s two globals with a real value either.
    A second, independent confirmation of the same provisioning gap, not
    a new mechanism.
+   A ninth follow-up
+   ([`docs/investigations/standard-library-provenance.md`](investigations/standard-library-provenance.md))
+   was a deliberate, bounded classification pass rather than continued
+   provisioning work: fetched Adafruit `ArduinoCore-samd@1.7.11` (the
+   exact evidenced toolchain) and structurally matched it against the
+   infrastructure functions this project keeps re-deriving, confirming
+   `Reset_Handler`/`main()`/`millis()`/`SysTick_Handler` and newly naming
+   `FUN_00009464`/`FUN_000093fc` as the sketch's real `setup()`/`loop()`.
+   Recorded in a reusable CSV plus an optional, tested Ghidra
+   post-script. While checking for other references to the `0x12000`
+   flash address, found a real, previously unexamined **write path**
+   (`FUN_0000449c`->`FUN_000097a4`->NVM erase/write, from a channel-0
+   move-completion handler) — not exercised concretely, and its "dirty"
+   flag's own setter not traced; the precise next persistence target.
 2. **Exercise `!`/`I` through the virtual link** (roadmap M4, deferred
    per (1)): `!0|`/`!1|` (`0xc440`, event 7 — already has a known
    11-vs-10 field mismatch to preserve, not normalize away) and

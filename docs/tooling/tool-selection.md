@@ -277,6 +277,44 @@ convenient enough (e.g. once heavy manual Ghidra browsing of
 peripheral-heavy functions becomes routine) — not chased down here per
 this project's "smallest useful slice" discipline.
 
+## Standard-library/toolchain provenance: source-backed classification
+
+**Goal**: separate high-confidence standard/platform/library code
+(Reset_Handler's `.data`/`.bss` copy, SysTick/millis, SERCOM SWRST
+self-clear, `digitalWrite`-shaped GPIO writes, memcpy/memset-shaped
+loops...) from AutoPilot-specific application logic, so RE effort
+focuses on the custom callers instead of repeatedly re-deriving known
+infrastructure.
+
+**Method, established in
+[`docs/investigations/standard-library-provenance.md`](../investigations/standard-library-provenance.md)**:
+identify the *exact* evidenced toolchain version first (this firmware
+embeds its own build-path strings naming Adafruit `ArduinoCore-samd`
+git tag `1.7.11` — see `docs/firmware/firmware-layout.md` — no need to
+guess), fetch the real source for that exact tag from its public
+repository, and compare structurally (control-flow shape, register/
+field-access order) against functions this project has already
+disassembled or decompiled. A `CONFIRMED_*` classification requires a
+real structural match against fetched source; role-only or
+cluster-level matches are labeled `LIKELY_*`, and anything without a
+plausible library candidate is left `UNKNOWN` rather than guessed.
+Recorded in a reusable CSV
+([`research/provenance/function_classification.csv`](../../research/provenance/function_classification.csv))
+and, optionally, applied into Ghidra's own database (renames + a
+one-line provenance comment) via
+[`tools/ghidra/scripts/APTraceApplyProvenance.java`](../../tools/ghidra/scripts/APTraceApplyProvenance.java),
+reading a minimal companion TSV
+([`research/provenance/ghidra_labels.tsv`](../../research/provenance/ghidra_labels.tsv)).
+Purely cosmetic to Ghidra's database — no firmware behavior change, and
+standard code is never removed from analysis or execution, only
+labeled.
+
+**Not a general framework**: this is a bounded, source-cited annotation
+layer over functions this project actually encountered, not an attempt
+to classify every function in every image, and not a heuristic
+similarity-matcher (e.g. no FLIRT-style signature database was built or
+used — every match here cites a specific fetched file and function).
+
 ## Reproducing the environment
 
 See [`docs/toolchain.md`](../toolchain.md) for exact install/build steps for

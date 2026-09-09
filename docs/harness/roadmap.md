@@ -404,3 +404,39 @@ closing recommendation.
     unanswered radio-ID chip in (18) — and treat the `distance`/
     `0x20001b14` question as closed pending real provisioning data this
     harness has no way to supply.
+24. ~~A bounded standard-library/provenance classification pass~~ —
+    done, deliberately not another provisioning slice: fetched the exact
+    evidenced toolchain (Adafruit `ArduinoCore-samd` git tag `1.7.11`,
+    named directly by embedded build-path strings) and structurally
+    matched it against the infrastructure functions this project keeps
+    re-deriving across investigations. Confirmed `Reset_Handler`, the
+    shared default-handler stub, `SysTick_Handler`, and `millis()`
+    against the fetched source; newly named `FUN_0000cd90` as `main()`
+    and, from its call order, **`FUN_00009464` as the AutoPilot sketch's
+    real `setup()`** (with its own internal, permanent loop that only
+    returns once `MC4` clears `0x20000060`) **and `FUN_000093fc` as the
+    sketch's real `loop()`** — the exact Arduino-idiom names for what
+    (20) already characterized behaviorally without naming. Classified
+    (honestly, at LIKELY tiers where a byte-for-byte match wasn't
+    practical) SERCOM SPI reset/SPI transceive, the `digitalWrite`-shaped
+    GPIO pulse helper, `memcpy`/`memset`, a `libgcc`-shaped 64-bit
+    arithmetic cluster, an SX127x-register-map-matched radio driver
+    cluster, and a vtable-call-shaped LCD status function — recorded in
+    a new, reusable CSV
+    (`research/provenance/function_classification.csv`) and applied
+    back into the Ghidra pipeline via a small, optional, concretely
+    tested post-script (`APTraceApplyProvenance.java`, 42 functions
+    renamed against the real firmware image, 2 correctly skipped).
+    **Sharpened the `0x12000` question** from (22): every decision-making
+    function in the read chain is confirmed custom application code
+    built on a standard `memcpy` — and, while checking for other
+    references to the same flash address, found a **real, previously
+    unexamined write path** (`FUN_0000449c` -> `FUN_000097a4` -> the
+    same NVM erase/write primitives, reached from a channel-0
+    move-completion handler called from `FUN_00005be8`/`FUN_00005dd0`).
+    See
+    [`docs/investigations/standard-library-provenance.md`](../investigations/standard-library-provenance.md).
+    **Next**: this write path was found statically, not exercised — the
+    next persistence slice should trace what sets the `+0x1002` "dirty"
+    byte that gates the save, and whether the handler's apparent
+    channel-0-only scope is real, before attempting a concrete run.
