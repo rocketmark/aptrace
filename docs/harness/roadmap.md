@@ -632,3 +632,47 @@ closing recommendation.
     a concrete Unicorn run driving the jog wheel/button inputs and
     watching which screen text renders would settle (5)'s remaining
     "UNRESOLVED" row more precisely than static string correlation can.
+30. ~~Close one concrete, end-to-end `'+'` -> motor-target -> `G` mode-1
+    -> `FUN_00006fd8` distance path~~ — done, with a new reusable
+    regression fixture. `tools/unicorn/virtual_link.py plus` (folded
+    into `... all`) drives, entirely with real, unmodified firmware
+    code and no full boot: the Remote's real `FUN_000049c4`, called
+    with (28)'s own real `'S'`-handler bulk-push parameters
+    (`confirm1=confirm2=1`, `param_4=0`, `mode=0x62` — the one mode
+    value confirmed to cross AutoPilot's `>50` compute+persist
+    threshold), produces `"+1,1,1,0,98,1,0,0,0,500,0,0|"`; AutoPilot's
+    real handler computes and persists `target=500`; the Remote's real
+    `0xb680` produces `"G010|"` (channel 0, type 1); AutoPilot's real
+    `FUN_00007e2c` state machine (entered directly, twice — once per
+    real internal state transition) resolves the same `target=500` and
+    calls `FUN_00006fd8(channel=0, distance=500, const=0x1e, rate=0)`;
+    `FUN_00006fd8`'s own real `>8` branch fires (move-committed flag
+    `0x20002524[0]` observed `=1`), the opposite of (21)'s `distance=0`
+    no-op result. **`500` is the same number throughout, never
+    hand-patched into motor-target RAM** — carried from a disclosed
+    Remote-side "already-recorded A->B segment" seed, through the
+    Remote's own real delta computation, through AutoPilot's own real
+    target computation, to `FUN_00006fd8`'s own real argument. Two
+    disclosed, narrowly-scoped harness boundaries made this possible
+    without the full boot (29)'s own concrete attempt was blocked by:
+    the Remote-side seed (above), and directly seeding
+    `FUN_00007e2c`'s own arm byte (`0x200025e1=2`) to the exact value a
+    real `G` dispatch is independently confirmed (by disassembly, at
+    `0x83de`) to set — bypassing the real MC4-unlocked main loop this
+    state machine is normally driven from, without fabricating the
+    distance itself. Also found and fixed, precisely: `FUN_000049c4`
+    doesn't call the TX wrapper itself (its real callers do, via
+    `0xb59c`); `--reg` values are hex, not decimal (a `28` meant to be
+    length silently became `0x28`, corrupting a real dedup guard); `G`'s
+    two digit fields are `(type, channel)` on the wire, not
+    `(channel, type)`; and entering a real function directly with a
+    fabricated `LR` needs a real, decodable, Thumb-bit-set return
+    address, or `run_concrete.py`'s own `--stop-at` hook never gets a
+    chance to fire before Unicorn's decoder crashes on it. See
+    [`docs/investigations/plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md).
+    **Next**: extend the same direct-entry technique to `FUN_00008e18`
+    (the phase state machine) to chain this exact `500`-distance
+    scenario all the way to a concretely observed real GPIO pulse —
+    not reached this slice, since `FUN_00008e18` has its own additional,
+    not-yet-resolved preconditions (a per-channel loop, further internal
+    state) beyond what `FUN_00007e2c` needed.

@@ -6,7 +6,7 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-08 (traced `'+'` backward through the Remote firmware: found the exact sender function, confirmed it's a real Remote-generated command driven by the Auto-Mode configuration screen state machine and a bulk config-push path, and built a probable — not yet proven — mapping to the user manual's "confirm/save a programmed Auto Mode move segment" action).
+Last updated: 2026-09-09 (closed a full concrete, end-to-end path: a real Remote `'+'` send drives a real AutoPilot motor-target write that a real subsequent `G` mode-1 request turns into a real, nonzero `FUN_00006fd8` move-commit distance — a new reusable regression fixture, `virtual_link.py plus`).
 
 **Before doing firmware-analysis work, read
 [`docs/tooling/tool-selection.md`](tooling/tool-selection.md)** (short
@@ -712,6 +712,43 @@ re-proving:
   saves a programmed Auto Mode move segment. Ruled out: `'+'` is not
   host/service/internal-only — a real Remote sender exists. See
   [`docs/investigations/plus-command-remote-provenance.md`](investigations/plus-command-remote-provenance.md).
+- **A full, concrete, end-to-end `'+'` -> motor-target -> `G` mode-1 ->
+  `FUN_00006fd8` distance round trip, closed with a new reusable
+  regression fixture (roadmap M6)**: `tools/unicorn/virtual_link.py
+  plus` demonstrates, entirely with real, unmodified firmware code: the
+  Remote's real `'+'` builder (`FUN_000049c4`, reproducing the `'S'`-
+  handler's real bulk config-push call exactly — `confirm1=confirm2=1`,
+  `param_4=0`, `mode=0x62`, the one mode value confirmed to cross
+  AutoPilot's compute+persist threshold) produces `"+1,1,1,0,98,1,0,0,0,
+  500,0,0|"`; AutoPilot's real handler computes and persists
+  `target=500`; the Remote's real `G`-request builder (`0xb680`)
+  produces `"G010|"` (channel 0, type 1); AutoPilot's real state machine
+  (`FUN_00007e2c`, entered twice — once per real internal state
+  transition) resolves that same `target=500` and calls
+  `FUN_00006fd8(channel=0, distance=500, ...)`; `FUN_00006fd8`'s own
+  real `>8` threshold check fires (move-committed flag observed = `1`),
+  not the documented `<=8` no-op `mc4-transition.md` found with
+  `distance=0`. **`500` is the same number throughout** — the Remote's
+  own computed value, never hand-patched into AutoPilot's motor-target
+  RAM. Two disclosed, narrowly-scoped harness boundaries make this
+  possible without a full boot (avoiding the unresolved `SERCOM`/radio
+  stall `persistent-record-motor-target-mapping.md` hit): a
+  representative "already-recorded A->B segment" seed on the Remote's
+  own local mirror struct, and directly seeding `FUN_00007e2c`'s own arm
+  byte to the exact value (`2`) a real `G` dispatch is independently
+  confirmed (by disassembly) to set — bypassing the real MC4-unlocked
+  main loop this state machine is normally driven from, without
+  fabricating the distance value itself, which is computed entirely
+  from the real `'+'`-written struct state. This specific scenario's
+  own trigger is confirmed to be the `'S'`-handler's bulk resync path,
+  not the interactive Auto-Mode segment-confirm screens (which use mode
+  values that don't cross the persist threshold) — the manual/UI label
+  for *that* interactive action remains **PROBABLE**, unchanged from
+  the prior slice. The phase-machine/timer/ISR/GPIO continuation for
+  this distance value was not re-verified this pass — it relies on the
+  already independently concretely-proven mechanism from
+  `motor-timer-survey.md`/`i-command-motor-chain.md`. See
+  [`docs/investigations/plus-target-distance-roundtrip.md`](investigations/plus-target-distance-roundtrip.md).
 
 ## Corrected assumptions
 

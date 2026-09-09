@@ -80,6 +80,7 @@ Usage:
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py g        # G -> # only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py s        # S -> P... only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py ampersand  # "&|" -> "V01R39" only
+    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
 """
 import json
 import subprocess
@@ -115,11 +116,17 @@ def _norm(addr):
 
 def run_concrete(firmware, entry, seed_mem=(), reg_seed=(), stub_calls=(), stop_at=None,
                   dump_mem=(), max_instructions=5000,
-                  mmio_base=MMIO_BASE, mmio_size=MMIO_SIZE):
+                  mmio_base=MMIO_BASE, mmio_size=MMIO_SIZE, sp=None):
     """Invoke the existing tools/unicorn/run_concrete.py CLI -- the same
     command a human would type -- and return its parsed JSON snapshot.
     This is the only place this module talks to Unicorn; every other
-    function here just chooses arguments for this one."""
+    function here just chooses arguments for this one.
+
+    'sp' overrides the default initial stack pointer (top of RAM, one
+    byte past the mapped region -- fine for ordinary entry points, which
+    push before they read their own stack, but wrong for entering
+    directly at a function that reads a 5th-or-later AAPCS stack argument
+    at [sp+0] before any push of its own has run)."""
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as tmp:
         out_path = tmp.name
     args = [str(VENV_PYTHON), str(RUN_CONCRETE),
@@ -128,6 +135,8 @@ def run_concrete(firmware, entry, seed_mem=(), reg_seed=(), stub_calls=(), stop_
             "--mmio-base", mmio_base, "--mmio-size", mmio_size,
             "--max-instructions", str(max_instructions),
             "--out", out_path]
+    if sp is not None:
+        args += ["--sp", _hexaddr(sp)]
     for addr, data in seed_mem:
         args += ["--seed-mem", f"{_hexaddr(addr)}:{data}"]
     for name, value in reg_seed:
@@ -154,7 +163,7 @@ def _expect_stop(snap, stop_at):
 
 
 def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=(),
-                      stub_calls=(), max_instructions=5000, max_len=64):
+                      stub_calls=(), max_instructions=5000, max_len=64, sp=None):
     """Run the real firmware from 'entry' until it reaches 'tx_wrapper_entry'
     (a `void wrapper(char *s)`-convention TX call, entered fresh -- not
     stepped into, so none of its own not-yet-modeled body runs), and
@@ -172,12 +181,12 @@ def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=()
     uninitialized driver object -- neither affects the bytes handed to
     the TX wrapper, so both are safe to stub)."""
     probe = run_concrete(firmware, entry, seed_mem=seed_mem, reg_seed=reg_seed,
-                          stub_calls=stub_calls,
+                          stub_calls=stub_calls, sp=sp,
                           stop_at=tx_wrapper_entry, max_instructions=max_instructions)
     _expect_stop(probe, tx_wrapper_entry)
     arg_ptr = int(probe["registers"]["r0"], 0)
     dump = run_concrete(firmware, entry, seed_mem=seed_mem, reg_seed=reg_seed,
-                         stub_calls=stub_calls,
+                         stub_calls=stub_calls, sp=sp,
                          stop_at=tx_wrapper_entry, max_instructions=max_instructions,
                          dump_mem=[(arg_ptr, str(max_len))])
     raw = bytes.fromhex(dump["memory"][_norm(arg_ptr)])
@@ -542,6 +551,314 @@ def run_s_roundtrip(verbose=True):
     return results
 
 
+# --- '+' (Auto-Mode segment) -> motor target -> G mode-1 -> FUN_00006fd8
+# distance anchors (all independently confirmed by execution this pass;
+# see docs/investigations/plus-target-distance-roundtrip.md) -------------
+
+REMOTE_PLUS_BUILD_ENTRY = 0x000049c4   # real '+' frame builder
+REMOTE_PLUS_BUILD_RETURN = 0x00004b32  # its own real return -- UNLIKE every
+                                         # other Remote sender this module
+                                         # captures, FUN_000049c4 does NOT
+                                         # itself call the TX wrapper
+                                         # (0x58a8); it only builds the frame
+                                         # into the shared buffer and
+                                         # returns, leaving its real caller
+                                         # (FUN_0000e670/FUN_0000c440) to
+                                         # hand it to 0x58a8 via a separate
+                                         # ack/retry call (FUN_0000b59c) --
+                                         # confirmed by disassembly, not
+                                         # assumed.
+REMOTE_PLUS_TX_BUFFER = 0x2000183c     # the shared outgoing-packet buffer
+                                         # (also used by the G builder)
+REMOTE_PLUS_SP = 0x2002ff00            # a custom stack pointer: entering
+                                         # directly at FUN_000049c4 means its
+                                         # 5th AAPCS argument (mode, passed
+                                         # on the stack) must be placed at
+                                         # [sp+0] before the call -- the
+                                         # default SP (top of RAM) is exactly
+                                         # one page past the mapped region,
+                                         # unusable for this.
+REMOTE_PLUS_RECORD0_DELTA = 0x20000b20  # Remote's own local per-channel
+                                         # per-mode mirror struct, channel 0
+                                         # record 0 (the A->B segment), +0x0
+                                         # (delta) -- seeding this to a
+                                         # nonzero value stands in for "the
+                                         # user has already recorded a real
+                                         # A->B segment," the same evidence
+                                         # tier as REMOTE_G_WAKE_FLAG's own
+                                         # precedent of seeding representative
+                                         # prior state rather than tracing the
+                                         # full jog-wheel chain from cold boot
+
+AUTOPILOT_CH0_STRUCT = 0x20001b40      # the per-channel-per-mode motor
+                                         # config struct, channel 0 (see
+                                         # docs/investigations/
+                                         # persistent-record-motor-target-mapping.md)
+AUTOPILOT_PLUS_DISPLAY_STUB = 0xb216   # a real but irrelevant uninitialized-
+                                         # display-object dereference inside
+                                         # the '+' handler's own unconditional
+                                         # display-refresh tail
+AUTOPILOT_DIRTY_AREA = 0x20004144      # +0x1002 (dirty flag) sits at byte 3
+                                         # of this 8-byte window -- see
+                                         # docs/investigations/
+                                         # dirty-flag-persistence.md
+
+AUTOPILOT_G_MODE1_TARGET_STAGE = 0x2000201c  # FUN_00007e2c's own "this
+                                               # cycle's resolved target"
+                                               # staging array (mc4-transition.md)
+AUTOPILOT_G_STATE_MACHINE_ENTRY = 0x00007e2c  # the real state machine that
+                                                # reads a G request's real
+                                                # channel/type digits and,
+                                                # two calls later, calls the
+                                                # real move-commit function
+AUTOPILOT_G_STATE_MACHINE_STATE = 0x200025e0  # its own state byte (0/1/2)
+AUTOPILOT_G_STATE_MACHINE_ARM = 0x200025e1    # the real arm byte a G
+                                                # dispatch sets to 2 (confirmed
+                                                # by disassembly at 0x83de,
+                                                # part of the same real 'G'
+                                                # handler g-ack-roundtrip.md
+                                                # already exercises) --
+                                                # seeded directly here to
+                                                # avoid needing the real
+                                                # MC4-unlocked main loop this
+                                                # state machine is normally
+                                                # driven from (a disclosed,
+                                                # precisely-scoped harness
+                                                # boundary, not a fabricated
+                                                # distance -- see the
+                                                # investigation doc's "what
+                                                # this boundary discloses"
+                                                # section)
+AUTOPILOT_LIVE_POSITION = 0x20002064   # per-channel live position array
+AUTOPILOT_MOVE_COMMITTED_FLAG = 0x20002524  # FUN_00006fd8's own "=1, on
+                                              # committing a real move" flag
+                                              # (i-command-motor-chain.md)
+AUTOPILOT_FUN_00006fd8 = 0x00006fd8    # the real move-commit call
+AUTOPILOT_G_DISPLAY_STUBS = (0xb23a, 0xb2fe)  # the state machine's own
+                                                # unconditional display-
+                                                # refresh calls -- same class
+                                                # of stub as
+                                                # AUTOPILOT_PLUS_DISPLAY_STUB
+RETURN_SENTINEL = AUTOPILOT_RX_ENTRY   # a harmless, real, valid-code return
+                                         # address for entering directly at a
+                                         # real function with a fabricated LR:
+                                         # must be genuine, decodable Thumb
+                                         # code (Unicorn decodes at the stop
+                                         # address before the stop-at hook can
+                                         # intercept it, so an arbitrary/data
+                                         # address there raises UC_ERR_INSN_
+                                         # INVALID instead of cleanly
+                                         # stopping) and must carry the Thumb
+                                         # bit (bit 0) when placed in LR itself,
+                                         # or `bx lr` switches to ARM mode and
+                                         # the same decode failure follows.
+                                         # Reusing this module's own already-
+                                         # proven entry point costs nothing
+                                         # extra to justify.
+
+
+def _blank_channel_struct():
+    """The real, disassembly-confirmed blank-config-fallback pattern
+    target-config-provenance.md found: 0xFF everywhere except the +0x40/
+    +0x44 'valid' bytes (0, until '+' or a resync sets them) -- used only
+    to give FUN_00007e2c's OTHER, non-target-bearing struct reads (record
+    0's own #+0x44 etc. for OTHER channels/records this scenario doesn't
+    touch) a realistic pattern rather than all-zero, matching how a real
+    device's cold, never-provisioned config actually reads. Channel 0's
+    own record 0 is overwritten by the real '+' delivery before this
+    matters."""
+    return b"\xff" * 0x120
+
+
+def run_plus_target_distance_roundtrip(verbose=True):
+    """The fourth acceptance scenario, and the one this project's M6
+    behavior-to-hardware provenance work has been building toward: a real
+    Remote Auto-Mode '+' send drives a real AutoPilot motor target update
+    that a real subsequent G-mode-1 request turns into a real, nonzero
+    FUN_00006fd8 move-commit distance -- with every byte on the '+' side
+    traced back to the Remote's own real frame builder (FUN_000049c4),
+    not hand-constructed. See
+    docs/investigations/plus-target-distance-roundtrip.md for the full
+    write-up, including exactly which two steps are harness-seeded state
+    (disclosed below) rather than observed real firmware output.
+
+    Two disclosed, minimal harness boundaries (neither fabricates the
+    resulting distance -- both are documented, narrowly-scoped inputs the
+    real code then computes from):
+      1. The Remote's own local per-channel record (REMOTE_PLUS_RECORD0_DELTA)
+         is seeded with a representative prior "recorded A->B segment"
+         value (500) -- standing in for jog-wheel-entered UI state this
+         investigation did not re-derive from scratch (the same evidence
+         tier as REMOTE_G_WAKE_FLAG elsewhere in this module).
+      2. FUN_00007e2c (the G-mode-1 state machine) is entered directly and
+         its own arm byte is seeded to the exact value (2) a real G
+         dispatch is independently confirmed (by disassembly, at 0x83de)
+         to set -- bypassing the real MC4-unlocked main loop this state
+         machine is normally driven from, which costs far more
+         instructions than this project's boot-recipe calibration budgets
+         for (see docs/investigations/persistent-record-motor-target-mapping.md's
+         own "exact remaining gap"). This does not affect the distance
+         value itself, which is computed entirely from the real '+'-
+         written AUTOPILOT_CH0_STRUCT state.
+    """
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    log("=== Leg 1: Remote's real '+' frame builder (FUN_000049c4) ===")
+    # Reproduces FUN_0000c440's own real call exactly: confirm1=confirm2=1
+    # (the universal invariant every real caller satisfies), channel=0,
+    # param_4=0 (the real "loop over FUN_00004998(channel) segments"
+    # branch), mode=0x62 (the only mode value confirmed, by AutoPilot-side
+    # disassembly, to cross the ">50" threshold into FUN_00004ca8/
+    # FUN_000043f0's compute+persist path).
+    snap_build = run_concrete(
+        MANDO_FW, REMOTE_PLUS_BUILD_ENTRY,
+        seed_mem=[
+            (REMOTE_PLUS_SP, "62000000"),              # param_5 (mode) at [sp+0]
+            (REMOTE_PLUS_RECORD0_DELTA, "f4010000"),   # record0 (+0x0, delta) = 500
+        ],
+        reg_seed=[("r0", 1), ("r1", 1), ("r2", 0), ("r3", 0)],
+        sp=REMOTE_PLUS_SP,
+        stop_at=REMOTE_PLUS_BUILD_RETURN,
+        dump_mem=[(REMOTE_PLUS_TX_BUFFER, "64")],
+    )
+    _expect_stop(snap_build, REMOTE_PLUS_BUILD_RETURN)
+    raw = bytes.fromhex(snap_build["memory"][_norm(REMOTE_PLUS_TX_BUFFER)])
+    wire_plus = raw.split(b"\x00", 1)[0]
+    log(f"  Remote's real, unmodified FUN_000049c4 builds: {wire_plus!r}")
+    assert wire_plus.startswith(b"+") and wire_plus.endswith(b"|")
+    assert b",500," in wire_plus, f"expected the seeded delta (500) in the real frame: {wire_plus!r}"
+
+    log("\n=== Leg 2: AutoPilot's real '+' handler updates the real motor-config struct ===")
+    # AUTOPILOT_RX_ENTRY (0x8a34) is the same already-established boundary
+    # run_ampersand_roundtrip/run_g_ack_roundtrip/run_s_roundtrip all use --
+    # no Reset_Handler boot needed. R0 (the dispatcher's own param_1) must
+    # be seeded to the packet's real length -- '+'`s handler reads
+    # packet[param_1-1] as part of a real retransmission-dedup guard that
+    # the real receive loop would normally have set up.
+    packet_plus = wire_plus.ljust(32, b"\x00")
+    snap_plus = run_concrete(
+        AUTOPILOT_FW, AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(wire_plus))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, packet_plus.hex())],
+        stub_calls=[AUTOPILOT_PLUS_DISPLAY_STUB],
+        stop_at=0x8a38,
+        dump_mem=[(AUTOPILOT_CH0_STRUCT, "0x120"), (AUTOPILOT_DIRTY_AREA, "8")],
+        max_instructions=200000,
+    )
+    _expect_stop(snap_plus, 0x8a38)
+    ch0_struct = bytes.fromhex(snap_plus["memory"][_norm(AUTOPILOT_CH0_STRUCT)])
+    dirty_area = bytes.fromhex(snap_plus["memory"][_norm(AUTOPILOT_DIRTY_AREA)])
+    delta = int.from_bytes(ch0_struct[0x0:0x4], "little", signed=True)
+    target = int.from_bytes(ch0_struct[0xc:0x10], "little", signed=True)
+    dirty_flag = dirty_area[3]
+    log(f"  AutoPilot's real, unmodified '+' handler computes: channel0 record0"
+        f" delta(+0x0)={delta}, target(+0xc)={target}, dirty flag={dirty_flag}")
+    assert delta == 500, f"expected the real wire delta (500), got {delta}"
+    assert target == 500, f"expected the real computed target (500), got {target}"
+    assert dirty_flag == 1, "expected the real '+' handler to dirty the persisted buffer"
+
+    log("\n=== Leg 3: Remote's real G-request builder (channel=0, type=1) ===")
+    wire_g, _ = capture_tx_bytes(
+        MANDO_FW, REMOTE_G_BUILD_ENTRY, REMOTE_TX_WRAPPER,
+        seed_mem=[(REMOTE_G_WAKE_FLAG, "01")],
+        reg_seed=[("r0", 1), ("r1", 0)],  # (type=1, channel=0) -- confirmed by
+                                            # the real wire byte order this
+                                            # produces, opposite of
+                                            # g-ack-roundtrip.md's own
+                                            # unlabeled (0,0) baseline
+        stub_calls=[0xb440],
+    )
+    wire_g = wire_g[:-1]
+    log(f"  Remote's real, unmodified 0xb680 builds: {wire_g!r}")
+    assert wire_g[:1] == b"G" and wire_g[-1:] == b"|"
+
+    log("\n=== Leg 4: AutoPilot's real G-mode-1 state machine reaches FUN_00006fd8 ===")
+    # FUN_00007e2c is a real, plain (non-loop-resident) function: called
+    # once, it advances its own state 0->1 (resolving the real target from
+    # AUTOPILOT_CH0_STRUCT into its staging array); called again, it
+    # advances 1->2 and calls FUN_00006fd8 with that real, resolved
+    # distance. Both calls read the G request's channel/type digits
+    # directly from AUTOPILOT_RX_BUFFER, which Leg 3's real bytes are
+    # seeded into once, before either call.
+    packet_g = wire_g.ljust(16, b"\x00")
+    common_seed = [
+        (AUTOPILOT_RX_BUFFER, packet_g.hex()),
+        (AUTOPILOT_G_STATE_MACHINE_ARM, "02"),
+        (AUTOPILOT_CH0_STRUCT, ch0_struct.hex()),  # <-- real bytes from Leg 2, not fabricated
+        (AUTOPILOT_LIVE_POSITION, "00000000"),
+    ]
+    snap_state0 = run_concrete(
+        AUTOPILOT_FW, AUTOPILOT_G_STATE_MACHINE_ENTRY,
+        reg_seed=[("lr", RETURN_SENTINEL | 1)],  # a harmless, real, valid-code
+                                                   # address (Thumb bit set) --
+                                                   # this call's own real
+                                                   # "pop {...,pc}" return
+                                                   # naturally lands here,
+                                                   # well before any of its
+                                                   # own logic would ever
+                                                   # reach it for real
+        seed_mem=common_seed + [(AUTOPILOT_G_STATE_MACHINE_STATE, "00")],
+        stub_calls=list(AUTOPILOT_G_DISPLAY_STUBS),
+        stop_at=RETURN_SENTINEL,
+        dump_mem=[(AUTOPILOT_G_MODE1_TARGET_STAGE, "4"), (AUTOPILOT_G_STATE_MACHINE_STATE, "1")],
+        max_instructions=5000,
+    )
+    staged_target = int.from_bytes(
+        bytes.fromhex(snap_state0["memory"][_norm(AUTOPILOT_G_MODE1_TARGET_STAGE)]), "little", signed=True)
+    state_after = bytes.fromhex(snap_state0["memory"][_norm(AUTOPILOT_G_STATE_MACHINE_STATE)])[0]
+    log(f"  Call 1 (state 0->1): resolves target={staged_target} from the real channel-0"
+        f" struct, state -> {state_after}")
+    assert staged_target == 500, f"expected the real resolved target (500), got {staged_target}"
+    assert state_after == 1
+
+    snap_state1 = run_concrete(
+        AUTOPILOT_FW, AUTOPILOT_G_STATE_MACHINE_ENTRY,
+        seed_mem=common_seed + [
+            (AUTOPILOT_G_STATE_MACHINE_STATE, "01"),
+            (AUTOPILOT_G_MODE1_TARGET_STAGE, "f4010000"),  # carried forward from call 1
+        ],
+        stub_calls=list(AUTOPILOT_G_DISPLAY_STUBS),
+        stop_at=AUTOPILOT_FUN_00006fd8,
+        max_instructions=5000,
+    )
+    _expect_stop(snap_state1, AUTOPILOT_FUN_00006fd8)
+    r = snap_state1["registers"]
+    channel, const_arg, distance, rate = (int(r["r0"], 0), int(r["r1"], 0),
+                                           int(r["r2"], 0), int(r["r3"], 0))
+    if distance & 0x80000000:
+        distance -= 1 << 32
+    log(f"  Call 2 (state 1->2): FUN_00006fd8(channel={channel}, const=0x{const_arg:x},"
+        f" distance={distance}, rate=0x{rate:x})")
+    assert channel == 0
+    assert distance == 500, f"expected FUN_00006fd8's real distance to equal the real '+' delta (500), got {distance}"
+    assert abs(distance) > 8, "expected the real move-commit threshold to be crossed"
+
+    log("\n=== Leg 5: FUN_00006fd8 itself takes the real move branch (not the <=8 no-op) ===")
+    snap_committed = run_concrete(
+        AUTOPILOT_FW, AUTOPILOT_FUN_00006fd8,
+        reg_seed=[("r0", channel), ("r1", const_arg), ("r2", distance & 0xFFFFFFFF), ("r3", rate),
+                  ("lr", RETURN_SENTINEL | 1)],
+        seed_mem=common_seed,
+        stub_calls=list(AUTOPILOT_G_DISPLAY_STUBS),
+        stop_at=RETURN_SENTINEL,
+        dump_mem=[(AUTOPILOT_MOVE_COMMITTED_FLAG, "1")],
+        max_instructions=10000,
+    )
+    committed = bytes.fromhex(snap_committed["memory"][_norm(AUTOPILOT_MOVE_COMMITTED_FLAG)])[0]
+    log(f"  FUN_00006fd8's own real distance-threshold check sets the move-committed"
+        f" flag (0x20002524[0]) = {committed}")
+    assert committed == 1, "expected the real move branch (not the documented <=8 no-op) to fire"
+
+    log("\nEND-TO-END PATH CONFIRMED: real Remote '+' (delta=500) -> real AutoPilot"
+        " target write -> real G mode-1 -> FUN_00006fd8 distance=500 (>8) -> real"
+        " move-committed flag set. The subsequent phase-machine/timer/ISR/GPIO chain"
+        " is the already independently concretely-proven path from"
+        " motor-timer-survey.md and i-command-motor-chain.md, not re-verified this pass.")
+    return True
+
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which == "ampersand":
@@ -550,12 +867,16 @@ if __name__ == "__main__":
         ok = run_g_ack_roundtrip()
     elif which == "s":
         ok = bool(run_s_roundtrip())
+    elif which == "plus":
+        ok = run_plus_target_distance_roundtrip()
     elif which == "all":
         ok = run_ampersand_roundtrip()
         print()
         ok = run_g_ack_roundtrip() and ok
         print()
         ok = bool(run_s_roundtrip()) and ok
+        print()
+        ok = run_plus_target_distance_roundtrip() and ok
     else:
-        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|all]")
+        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|plus|all]")
     sys.exit(0 if ok else 1)
