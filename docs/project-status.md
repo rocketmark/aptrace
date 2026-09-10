@@ -40,9 +40,16 @@ paths with no radio hardware modeled; and `aptrace census`
 fully mechanical, no-LLM-in-the-loop static+dynamic evidence database
 (functions, basic blocks, CFG edges, RAM/MMIO accesses, vectors, pins,
 Unicorn dynamic coverage) built and run against all four known firmware
-images, with a deterministic query CLI and closure/warning report.
-Semantic classification of the residual (uncovered functions, unresolved
-indirect edges, etc.) is a later, separate phase, not yet started.
+images, with a deterministic query CLI and closure/warning report, PLUS
+a closure-reduction layer (`census reduce`) on top of it: mechanical
+reachability from justified roots, indirect-edge resolution (static/
+dynamic/finite-candidate-set/unresolved), cross-image library/platform
+fingerprinting, per-function feature records, deterministic component
+grouping, and an honestly-labeled hardware-init snapshot. Run against
+all four images, it mechanically narrows AutoPilot868's 414 discovered
+functions to a 142-function residual (Mando868: 561 → 295) — still no
+"understood %" invented; semantic classification of that residual is
+the next, separate phase, not yet started.
 
 ## Current milestone: the core protocol pipeline
 

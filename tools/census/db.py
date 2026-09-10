@@ -39,10 +39,12 @@ def connect(db_path=None, create=True):
 
 
 def _ensure_schema(conn):
-    have_tables = {row[0] for row in conn.execute(
-        "SELECT name FROM sqlite_master WHERE type='table'")}
-    if "firmware" in have_tables:
-        return
+    """Every statement in schema.sql is CREATE TABLE/INDEX IF NOT EXISTS,
+    so this always runs (not gated behind "does the DB already exist") --
+    that's what lets an existing database created by an older version of
+    schema.sql pick up new tables (e.g. the closure-reduction layer's)
+    without a separate migration step or a lost `firmware`/`functions`
+    table full of prior census data."""
     conn.executescript(SCHEMA_PATH.read_text())
     conn.commit()
 
@@ -59,10 +61,40 @@ def get_firmware_id(conn, key):
 # DELETE from top-to-bottom (children before the parents they reference)
 # -- see clear_firmware_data. Keep in sync with schema.sql's FOREIGN KEYs.
 _TABLES_CHILD_FIRST = (
+    # Closure-reduction layer (all reference `functions`, directly or via
+    # another reduction table) -- cleared first so a static `census
+    # build` rebuild never trips a foreign-key error against stale
+    # function ids, and so `census reduce` itself can cleanly redo its
+    # own tables independently of a static rebuild.
+    "component_members", "components", "function_features", "library_matches",
+    "function_fingerprints", "indirect_edge_candidates", "indirect_edge_resolutions",
+    "function_reachability", "reachability_roots", "pin_snapshot", "hardware_snapshot",
+    "hardware_snapshot_runs",
+    # Base evidence layer (tools/census/build.py).
     "dynamic_tx_rx", "dynamic_mmio", "dynamic_memory", "dynamic_coverage", "dynamic_runs",
     "pins", "mmio_accesses", "memory_accesses", "literal_refs", "edges", "basic_blocks",
     "function_pointers", "vectors", "strings", "peripherals", "scan_warnings", "functions",
 )
+
+# The subset of _TABLES_CHILD_FIRST that tools/census/reduce.py owns --
+# cleared by clear_reduction_data() without touching the base evidence
+# layer (build.py's own tables), so `census reduce` can be rerun after
+# nothing but its own inputs changed, without forcing a static rebuild.
+_REDUCTION_TABLES_CHILD_FIRST = (
+    "component_members", "components", "function_features", "library_matches",
+    "function_fingerprints", "indirect_edge_candidates", "indirect_edge_resolutions",
+    "function_reachability", "reachability_roots", "pin_snapshot", "hardware_snapshot",
+    "hardware_snapshot_runs",
+)
+
+
+def clear_reduction_data(conn, firmware_id):
+    """Like clear_firmware_data, but scoped to only the closure-reduction
+    layer's own tables -- used at the top of `census reduce` so re-
+    running it doesn't require (or disturb) a static `census build`."""
+    for table in _REDUCTION_TABLES_CHILD_FIRST:
+        conn.execute(f"DELETE FROM {table} WHERE firmware_id = ?", (firmware_id,))
+    conn.commit()
 
 
 def clear_firmware_data(conn, firmware_id):

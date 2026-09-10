@@ -10,8 +10,15 @@ a read-only query against that database -- no tool invocation, no LLM
 interpretation, just SQL. See docs/tooling/census.md for the full design
 writeup, what each table means, and current limitations.
 
+`reduce` runs the closure-reduction layer on top of an existing `build`
+(reachability, indirect-edge resolution, library/platform
+fingerprinting, function feature records, component grouping, a
+hardware-init snapshot) -- see docs/tooling/census.md's "Closure
+reduction" section.
+
 Usage:
     aptrace_census.py build autopilot868
+    aptrace_census.py reduce autopilot868
     aptrace_census.py summary autopilot868
     aptrace_census.py function autopilot868 0x8258
     aptrace_census.py callers autopilot868 0x8258
@@ -21,9 +28,14 @@ Usage:
     aptrace_census.py peripheral autopilot868 TC1
     aptrace_census.py pin autopilot868 PB05
     aptrace_census.py uncovered autopilot868
-    aptrace_census.py indirect-edges autopilot868
+    aptrace_census.py indirect-edges autopilot868 [--classification C]
     aptrace_census.py warnings autopilot868 [--category CATEGORY]
     aptrace_census.py ingest-dynamic <export.json-or-dir> [--firmware KEY]
+    aptrace_census.py reachable autopilot868 [--status S]
+    aptrace_census.py residual autopilot868
+    aptrace_census.py components autopilot868 [--id N]
+    aptrace_census.py library-matches autopilot868 [--confidence C]
+    aptrace_census.py hardware-snapshot autopilot868 [--peripheral P]
 """
 import sys
 from pathlib import Path
@@ -46,6 +58,11 @@ def hx(n):
 def cmd_build(args):
     import build as build_mod
     build_mod.build(args.firmware, db_path=args.db, ghidra_build=not args.no_ghidra_build)
+
+
+def cmd_reduce(args):
+    import reduce as reduce_mod
+    reduce_mod.reduce_firmware(args.firmware, db_path=args.db)
 
 
 # --- summary / closure report ------------------------------------------
@@ -107,6 +124,76 @@ def cmd_summary(args):
     print(f"Scan warnings/disagreements: {sum(n for _c, n in warn_rows)} total")
     for category, n in warn_rows:
         print(f"  {category}: {n}")
+
+    has_reduction = count("SELECT COUNT(*) FROM function_reachability WHERE firmware_id=?", fw) > 0
+    if not has_reduction:
+        print(f"\n(no closure-reduction data yet -- run 'census reduce {args.firmware}')")
+        return
+
+    print("\n=== Closure reduction ===")
+    reach_rows = c.execute(
+        "SELECT status, COUNT(*) FROM function_reachability WHERE firmware_id=? GROUP BY status", (fw,)).fetchall()
+    reach = {s: n for s, n in reach_rows}
+    print(f"Reachability: DEFINITELY_REACHABLE={reach.get('DEFINITELY_REACHABLE', 0)}  "
+          f"POSSIBLY_REACHABLE_VIA_UNRESOLVED_INDIRECT={reach.get('POSSIBLY_REACHABLE_VIA_UNRESOLVED_INDIRECT', 0)}  "
+          f"NO_KNOWN_PATH={reach.get('NO_KNOWN_PATH', 0)}")
+
+    ind_rows = c.execute(
+        "SELECT classification, COUNT(*) FROM indirect_edge_resolutions WHERE firmware_id=? "
+        "GROUP BY classification", (fw,)).fetchall()
+    ind = {s: n for s, n in ind_rows}
+    print(f"Indirect edges: STATICALLY_RESOLVED={ind.get('STATICALLY_RESOLVED', 0)}  "
+          f"DYNAMICALLY_OBSERVED={ind.get('DYNAMICALLY_OBSERVED', 0)}  "
+          f"FINITE_CANDIDATE_SET={ind.get('FINITE_CANDIDATE_SET', 0)}  UNRESOLVED={ind.get('UNRESOLVED', 0)}")
+
+    lib_rows = c.execute(
+        "SELECT confidence, COUNT(*) FROM library_matches WHERE firmware_id=? GROUP BY confidence", (fw,)).fetchall()
+    lib = {s: n for s, n in lib_rows}
+    print(f"Library/platform matches: EXACT={lib.get('EXACT', 0)}  STRONG_MATCH={lib.get('STRONG_MATCH', 0)}  "
+          f"POSSIBLE_MATCH={lib.get('POSSIBLE_MATCH', 0)}  NO_MATCH={lib.get('NO_MATCH', 0)}")
+
+    # A match against a same-product frequency-variant sibling (e.g.
+    # autopilot868 vs autopilot915) does not, by itself, prove
+    # "library/platform plumbing" -- application logic is just as
+    # likely to be byte-identical across those two. Only a CROSS-family
+    # match (method NOT LIKE '%-same-product', see fingerprint.py's
+    # `_family`) counts toward the library/residual split below.
+    LIBRARY_FILTER = "l.confidence IN ('EXACT','STRONG_MATCH') AND l.method NOT LIKE '%-same-product'"
+    n_reachable = reach.get("DEFINITELY_REACHABLE", 0) + reach.get("POSSIBLY_REACHABLE_VIA_UNRESOLVED_INDIRECT", 0)
+    n_reachable_library = count(
+        "SELECT COUNT(*) FROM function_reachability r JOIN library_matches l "
+        "ON l.firmware_id=r.firmware_id AND l.function_id=r.function_id "
+        f"WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' AND {LIBRARY_FILTER}", fw)
+    n_reachable_covered = count(
+        "SELECT COUNT(DISTINCT r.function_id) FROM function_reachability r "
+        "JOIN dynamic_coverage dc ON dc.firmware_id=r.firmware_id AND dc.function_id=r.function_id "
+        "WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH'", fw)
+    n_residual = count(
+        "SELECT COUNT(*) FROM function_reachability r WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' "
+        "AND r.function_id NOT IN (SELECT l.function_id FROM library_matches l WHERE l.firmware_id=? "
+        f"AND {LIBRARY_FILTER}) "
+        "AND r.function_id NOT IN (SELECT function_id FROM dynamic_coverage WHERE firmware_id=? "
+        "AND function_id IS NOT NULL)", fw, fw, fw)
+    print(f"Reachable functions: {n_reachable}  (of which {n_reachable_library} are cross-product EXACT/"
+          f"STRONG_MATCH library/platform code, {n_reachable_covered} are dynamically exercised)")
+    print(f">>> Residual reachable, non-library, dynamically-unexercised application functions: {n_residual} <<<")
+
+    n_components = count("SELECT COUNT(*) FROM components WHERE firmware_id=?", fw)
+    print(f"Components: {n_components}")
+
+    hw = c.execute("SELECT * FROM hardware_snapshot_runs WHERE firmware_id=?", (fw,)).fetchone()
+    if hw:
+        n_hw_peripherals = count(
+            "SELECT COUNT(DISTINCT peripheral) FROM hardware_snapshot WHERE firmware_id=?", fw)
+        n_hw_regs = count("SELECT COUNT(*) FROM hardware_snapshot WHERE firmware_id=?", fw)
+        n_pins_out = count("SELECT COUNT(*) FROM pin_snapshot WHERE firmware_id=? AND direction='OUT'", fw)
+        n_pins_in = count("SELECT COUNT(*) FROM pin_snapshot WHERE firmware_id=? AND direction='IN'", fw)
+        n_pins_muxed = count("SELECT COUNT(*) FROM pin_snapshot WHERE firmware_id=? AND pmuxen=1", fw)
+        print(f"Hardware snapshot: boot_method={hw['boot_method']}  completed_init={bool(hw['completed_init'])}  "
+              f"{n_hw_regs} register(s) across {n_hw_peripherals} peripheral(s)")
+        print(f"  pins: {n_pins_out} configured OUT, {n_pins_in} configured IN, {n_pins_muxed} PMUX-enabled")
+    else:
+        print("Hardware snapshot: not taken")
 
 
 # --- function / callers / callees --------------------------------------
@@ -285,15 +372,45 @@ def cmd_uncovered(args):
 def cmd_indirect_edges(args):
     conn = census_db.connect(args.db, create=False)
     fw = census_db.get_firmware_id(conn, args.firmware)
-    rows = conn.execute(
-        "SELECT e.from_addr, e.kind, e.source, f.name AS from_name FROM edges e "
-        "LEFT JOIN functions f ON f.id = e.from_function_id "
-        "WHERE e.firmware_id=? AND e.resolved=0 ORDER BY e.from_addr", (fw,))
+    has_reduction = conn.execute(
+        "SELECT COUNT(*) FROM indirect_edge_resolutions WHERE firmware_id=?", (fw,)).fetchone()[0] > 0
+    if not has_reduction:
+        rows = conn.execute(
+            "SELECT e.from_addr, e.kind, e.source, f.name AS from_name FROM edges e "
+            "LEFT JOIN functions f ON f.id = e.from_function_id "
+            "WHERE e.firmware_id=? AND e.resolved=0 ORDER BY e.from_addr", (fw,))
+        n = 0
+        for r in rows:
+            n += 1
+            print(f"{hx(r['from_addr'])}  {r['from_name'] or '(unattributed)'}  [{r['kind']}, {r['source']}]")
+        print(f"({n} unresolved indirect edge(s) -- run 'census reduce {args.firmware}' for full "
+              f"STATICALLY_RESOLVED/DYNAMICALLY_OBSERVED/FINITE_CANDIDATE_SET/UNRESOLVED classification)")
+        return
+
+    q = ("SELECT r.from_addr, r.instr_mnemonic, r.instr_shape, r.classification, r.note, "
+         "f.name AS from_name FROM indirect_edge_resolutions r "
+         "LEFT JOIN functions f ON f.id = r.from_function_id WHERE r.firmware_id=?")
+    params = [fw]
+    if args.classification:
+        q += " AND r.classification=?"
+        params.append(args.classification.upper())
+    q += " ORDER BY r.from_addr"
     n = 0
-    for r in rows:
+    counts = {}
+    for r in conn.execute(q, params):
         n += 1
-        print(f"{hx(r['from_addr'])}  {r['from_name'] or '(unattributed)'}  [{r['kind']}, {r['source']}]")
-    print(f"({n} unresolved indirect edge(s))")
+        counts[r["classification"]] = counts.get(r["classification"], 0) + 1
+        cands = conn.execute(
+            "SELECT candidate_addr, confidence, source FROM indirect_edge_candidates "
+            "WHERE firmware_id=? AND from_addr=? ORDER BY confidence, candidate_addr",
+            (fw, r["from_addr"])).fetchall()
+        cand_str = "; ".join(f"{hx(c['candidate_addr'])}[{c['confidence']}/{c['source']}]" for c in cands[:6])
+        if len(cands) > 6:
+            cand_str += f"; +{len(cands) - 6} more"
+        print(f"{hx(r['from_addr'])}  {r['from_name'] or '(unattributed)'}  {r['instr_mnemonic']} "
+              f"({r['instr_shape']})  [{r['classification']}]" + (f"  candidates: {cand_str}" if cand_str else "")
+              + (f"  -- {r['note']}" if r["note"] else ""))
+    print(f"({n} indirect edge(s): {counts})")
 
 
 def cmd_warnings(args):
@@ -327,6 +444,132 @@ def cmd_ingest_dynamic(args):
         print(f"Ingested {nruns} dynamic run(s).")
 
 
+# --- reachable / residual / components / library-matches / hardware-snapshot --
+
+def cmd_reachable(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    q = ("SELECT f.entry, f.name, r.status, r.nearest_root_addr, r.nearest_root_kind, r.hops "
+         "FROM function_reachability r JOIN functions f ON f.id=r.function_id WHERE r.firmware_id=?")
+    params = [fw]
+    if args.status:
+        q += " AND r.status=?"
+        params.append(args.status.upper())
+    q += " ORDER BY f.entry"
+    n = 0
+    for r in conn.execute(q, params):
+        n += 1
+        root = f"{hx(r['nearest_root_addr'])} ({r['nearest_root_kind']})" if r["nearest_root_addr"] is not None else "-"
+        print(f"{hx(r['entry'])}  {r['name']}  [{r['status']}]  hops={r['hops']}  nearest_root={root}")
+    print(f"({n} function(s))")
+
+
+def cmd_residual(args):
+    """The residual queue: reachable, non-EXACT/STRONG_MATCH-library,
+    dynamically-unexercised functions -- the small set later semantic
+    analysis should actually look at."""
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    rows = conn.execute(
+        "SELECT f.entry, f.name, f.size, r.status, l.confidence AS lib_confidence, "
+        "ff.n_callers, ff.n_callees, ff.peripherals_json, ff.pins_json "
+        "FROM function_reachability r "
+        "JOIN functions f ON f.id = r.function_id "
+        "LEFT JOIN library_matches l ON l.firmware_id=r.firmware_id AND l.function_id=r.function_id "
+        "LEFT JOIN function_features ff ON ff.firmware_id=r.firmware_id AND ff.function_id=r.function_id "
+        "WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' "
+        "AND (l.confidence IS NULL OR l.confidence NOT IN ('EXACT','STRONG_MATCH') "
+        "     OR l.method LIKE '%-same-product') "
+        "AND r.function_id NOT IN (SELECT function_id FROM dynamic_coverage WHERE firmware_id=? "
+        "AND function_id IS NOT NULL) ORDER BY f.entry", (fw, fw))
+    n = 0
+    for r in rows:
+        n += 1
+        print(f"{hx(r['entry'])}  {r['name']}  size={r['size']}  [{r['status']}]  "
+              f"library={r['lib_confidence'] or 'NO_MATCH'}  callers={r['n_callers']} callees={r['n_callees']}  "
+              f"peripherals={r['peripherals_json']}  pins={r['pins_json']}")
+    print(f"({n} residual function(s) -- reachable, not an EXACT/STRONG_MATCH library/platform match, "
+          f"never dynamically exercised)")
+
+
+def cmd_components(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    if args.id is not None:
+        comps = conn.execute(
+            "SELECT * FROM components WHERE firmware_id=? AND component_index=?", (fw, args.id)).fetchall()
+    else:
+        comps = conn.execute(
+            "SELECT * FROM components WHERE firmware_id=? ORDER BY component_index", (fw,)).fetchall()
+    for comp in comps:
+        members = conn.execute(
+            "SELECT f.entry, f.name FROM component_members cm JOIN functions f ON f.id=cm.function_id "
+            "WHERE cm.component_id=? ORDER BY f.entry", (comp["id"],)).fetchall()
+        print(f"component {comp['component_index']}  ({comp['n_functions']} functions)")
+        print(f"  functions: {', '.join(f'{hx(m[0])}:{m[1]}' for m in members[:12])}"
+              + (f"  (+{len(members) - 12} more)" if len(members) > 12 else ""))
+        print(f"  peripherals: {comp['peripherals_json']}")
+        print(f"  pins: {comp['pins_json']}")
+        print(f"  RAM addrs: {comp['ram_addrs_json']}")
+        print(f"  scenarios: {comp['scenarios_json']}")
+    print(f"({len(comps)} component(s))")
+
+
+def cmd_library_matches(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    q = ("SELECT f.entry, f.name, l.confidence, l.method, l.matched_firmware_key, l.matched_function_name "
+         "FROM library_matches l JOIN functions f ON f.id=l.function_id WHERE l.firmware_id=?")
+    params = [fw]
+    if args.confidence:
+        q += " AND l.confidence=?"
+        params.append(args.confidence.upper())
+    q += " ORDER BY f.entry"
+    n = 0
+    counts = {}
+    for r in conn.execute(q, params):
+        n += 1
+        counts[r["confidence"]] = counts.get(r["confidence"], 0) + 1
+        match = f"{r['matched_firmware_key']}:{r['matched_function_name']}" if r["matched_firmware_key"] else "-"
+        print(f"{hx(r['entry'])}  {r['name']}  [{r['confidence']}/{r['method']}]  matched={match}")
+    print(f"({n} function(s): {counts})")
+
+
+def cmd_hardware_snapshot(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    run = conn.execute("SELECT * FROM hardware_snapshot_runs WHERE firmware_id=?", (fw,)).fetchone()
+    if run is None:
+        print(f"No hardware snapshot for '{args.firmware}' -- run 'census reduce {args.firmware}'.")
+        return
+    print(f"boot_method={run['boot_method']}  instructions_executed={run['instructions_executed']}  "
+          f"stop_reason={run['stop_reason']}  completed_init={bool(run['completed_init'])}")
+    print(f"notes: {run['notes']}")
+    print()
+    q = "SELECT * FROM hardware_snapshot WHERE firmware_id=?"
+    params = [fw]
+    if args.peripheral:
+        q += " AND peripheral=?"
+        params.append(args.peripheral.upper())
+    q += " ORDER BY addr"
+    n = 0
+    for r in conn.execute(q, params):
+        n += 1
+        print(f"{hx(r['addr'])}  {r['peripheral']}.{r['register_name']}  = 0x{r['raw_value']}  "
+              f"(width={r['width']})")
+    print(f"({n} register(s))")
+    if not args.peripheral:
+        print()
+        pin_rows = conn.execute(
+            "SELECT * FROM pin_snapshot WHERE firmware_id=? AND (direction IS NOT NULL OR pmuxen=1) "
+            "ORDER BY group_index, pin_index", (fw,)).fetchall()
+        for r in pin_rows:
+            pincfg_s = f"0x{r['pincfg_raw']:02x}" if r["pincfg_raw"] is not None else "-"
+            print(f"{r['pin_name']}  dir={r['direction']}  out={r['output_value']}  in={r['input_value']}  "
+                  f"pincfg={pincfg_s}  pmuxen={r['pmuxen']}  pmux_nibble={r['pmux_nibble']}")
+        print(f"({len(pin_rows)} configured pin(s) shown -- pass a pin name to 'pin' for full evidence detail)")
+
+
 def main(argv):
     import argparse
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -336,6 +579,9 @@ def main(argv):
     b = sub.add_parser("build", help="run the full census pipeline for one firmware image")
     b.add_argument("firmware")
     b.add_argument("--no-ghidra-build", action="store_true")
+
+    rd_cmd = sub.add_parser("reduce", help="run the closure-reduction layer on top of an existing build")
+    rd_cmd.add_argument("firmware")
 
     s = sub.add_parser("summary", help="mechanical closure-report counts")
     s.add_argument("firmware")
@@ -371,8 +617,10 @@ def main(argv):
     un = sub.add_parser("uncovered", help="functions discovered but never dynamically exercised")
     un.add_argument("firmware")
 
-    ie = sub.add_parser("indirect-edges", help="every unresolved indirect call/jump")
+    ie = sub.add_parser("indirect-edges", help="every indirect call/jump, classified if 'reduce' has run")
     ie.add_argument("firmware")
+    ie.add_argument("--classification", default=None,
+                     help="STATICALLY_RESOLVED / DYNAMICALLY_OBSERVED / FINITE_CANDIDATE_SET / UNRESOLVED")
 
     wa = sub.add_parser("warnings", help="every scan disagreement/anomaly")
     wa.add_argument("firmware")
@@ -382,13 +630,36 @@ def main(argv):
     ig.add_argument("path")
     ig.add_argument("--firmware", default=None)
 
+    rc = sub.add_parser("reachable", help="every function's reachability status")
+    rc.add_argument("firmware")
+    rc.add_argument("--status", default=None,
+                     help="DEFINITELY_REACHABLE / POSSIBLY_REACHABLE_VIA_UNRESOLVED_INDIRECT / NO_KNOWN_PATH")
+
+    res = sub.add_parser("residual", help="the residual queue for later semantic analysis")
+    res.add_argument("firmware")
+
+    cm = sub.add_parser("components", help="deterministic function groupings")
+    cm.add_argument("firmware")
+    cm.add_argument("--id", type=int, default=None, dest="id")
+
+    lm = sub.add_parser("library-matches", help="library/platform fingerprint matches")
+    lm.add_argument("firmware")
+    lm.add_argument("--confidence", default=None,
+                     help="EXACT / STRONG_MATCH / POSSIBLE_MATCH / NO_MATCH")
+
+    hw = sub.add_parser("hardware-snapshot", help="MCU register/pin state snapshot")
+    hw.add_argument("firmware")
+    hw.add_argument("--peripheral", default=None)
+
     args = p.parse_args(argv)
     {
-        "build": cmd_build, "summary": cmd_summary, "function": cmd_function,
+        "build": cmd_build, "reduce": cmd_reduce, "summary": cmd_summary, "function": cmd_function,
         "callers": cmd_callers, "callees": cmd_callees, "readers": cmd_readers,
         "writers": cmd_writers, "peripheral": cmd_peripheral, "pin": cmd_pin,
         "uncovered": cmd_uncovered, "indirect-edges": cmd_indirect_edges,
         "warnings": cmd_warnings, "ingest-dynamic": cmd_ingest_dynamic,
+        "reachable": cmd_reachable, "residual": cmd_residual, "components": cmd_components,
+        "library-matches": cmd_library_matches, "hardware-snapshot": cmd_hardware_snapshot,
     }[args.command](args)
     return 0
 
