@@ -61,6 +61,20 @@ mechanism_summary: >
   real downstream paths are now closed as motion causes -- no
   firmware-only bridge to phase_ramp_arm_byte/motor_move_commit__CUSTOM
   has been found via either one.
+  NEW (transient-propagation slice): the two consequences above are
+  specific to mode_flag==2 (PA02 read LOW at boot). On the OTHER boot arm
+  (mode_flag==1, PA02 read HIGH), a full second, previously-
+  uncharacterized set of the SAME two consequences exists, keyed on
+  analogRead(PB05) (ram.live_analog_value) compared against a RAM
+  threshold band instead of digitalRead -- see
+  analog_second_gate_and_config_reload above. Its load-bearing property:
+  ram.live_analog_value is permanently latched to the first-ever sample
+  taken during the already-known dead 128-sample boot loop and never
+  updates again for the rest of the power cycle (ram.adc_filter_alpha is
+  cold/unwritten, permanently 0.0f) -- concretely confirmed by chaining a
+  real boot run into a real runtime poll. A post-boot insertion transient
+  cannot reach this path at all, regardless of shape. See
+  docs/investigations/trigger-input-transient-propagation.md.
 
 confirmed_state:
   pin_descriptor_table:
@@ -97,7 +111,8 @@ confirmed_state:
     analogRead_wrapper: "0x000042a4"
     analogRead_core: "0x0000d1b4"
     trigger_poll_and_send_digital_arm: "0x0000919e-0x00009244"   # inside phase_ramp_state_machine__CUSTOM
-    trigger_poll_and_send_analog_arm: "0x00008e68-0x00008f00"    # sibling arm, PA02-high/ADC mode
+    trigger_poll_and_send_analog_arm: "0x00008e68-0x00008f00"    # CLOSED (transient-propagation slice): a full second accept/T-status path, mirroring the digital arm exactly -- see analog_second_gate below and docs/investigations/trigger-input-transient-propagation.md Part 3.
+    analog_second_gate_and_config_reload: "0x00008f48-0x00008f98"   # NEW (transient-propagation slice): the analog arm's own second gate, structurally identical to second_gate_and_config_reload below (same 4-way idle + TR0 + accept target 0x8f98), but keyed on the boot-latched analog value (ram.live_analog_value) vs. a threshold band (ram.threshold_upper/threshold_lower) instead of digitalRead.
     second_gate_and_config_reload: "0x00009202-0x00009244 / 0x00008f98"
     phase_ramp_state_machine: "0x00008e18"           # sound entry point -- CONFIRMED this slice, no fabricated r4-r11
     ascii_dispatcher_TR_handler: "0x000084fa-0x00008512"   # writes the enable byte, CLOSED this slice
@@ -112,6 +127,8 @@ confirmed_state:
     integer_append_helper: "0x00004644"
     tx_wrapper: "0x00008c10"                         # already proven (dispatcher-loop-concrete-trace.md / tx-hook-verification.md)
     millis: "0x0000ccd0"
+    boot_config_reader: "0x00004c20"   # NEW (transient-propagation slice): boot_config_reader__CUSTOM -- reads persisted config into ram.sensitivity_selector (among other fields), among its 2 producers.
+    exponential_adc_filter: "0x000042a4"   # == analogRead_wrapper above, renamed in the transient-propagation doc for what it actually is: a real ~500-tick-gated, exponentially-smoothed filter around FUN_0000d1b4 -- NOT a raw per-call sample. Smoothing coefficient (ram.adc_filter_alpha) is cold/unwritten -> permanently 0.0f -> the blend step is a real no-op once the one-shot init latch (ram.adc_filter_init_flag) is set.
   ram:
     mode_flag: "0x20001fc0"            # 1 = PA02 read high at boot, 2 = PA02 read low
     trigger_report_enable: "0x20003120"   # CLOSED this slice: TR1| writes 1, TR0| writes 0 (default)
@@ -128,12 +145,39 @@ confirmed_state:
     phase_ramp_arm_byte: "0x20002318"   # [0..3] -- CLOSED (motion-causality slice): phase_ramp_state_machine__CUSTOM's OWN per-channel arm/mode byte (0=idle,1=armed,2=compute+commit,...) -- the ONLY gate before motor_move_commit__CUSTOM. Exactly 3 writers total: config_reload_motion_profile_compute (writes 0), phase_ramp_state_machine's own self-transitions, and phase_ramp_arm_producer (writes 1, the sole armer). The PB05/reload path only ever writes 0 here.
     reload_busy_flag: "0x2000310c"   # [0..3] -- NEW: written 1 by config_reload_motion_profile_compute when a channel's reloaded config has a real nonzero delta; its only other reference anywhere in the image is a read inside motor_move_commit__CUSTOM -- but since phase_ramp_arm_byte never reaches 2 from this path, that reader is never exercised. Computed, functionally never consumed via the PB05 route.
     reload_motion_profile_dead_arrays: ["0x20002908", "0x20000e90", "0x200014d0", "0x200025e8"]   # NEW: velocity/target/period arrays config_reload_motion_profile_compute writes -- exhaustive xref: no reader anywhere else in the image. Same "computed, never consumed" pattern as adc_baseline_dead_ram.
+    live_analog_value: "0x20000190"   # NEW (transient-propagation slice): analogRead(PB05)'s stored result, consumed by analog_second_gate's threshold compare and the analog T-status frame's field 1 -- but see adc_filter_init_flag/adc_filter_alpha: permanently latched to the FIRST-EVER sample (taken during the boot-time adc_baseline_dead_end loop), never updates again.
+    sensitivity_selector: "0x20000194"   # NEW: 0=custom(threshold cells left as-is)/1=preset A/2=preset B. Exactly 2 producers: boot_config_reader (persisted config offset 0x33, blank-config default resolves to 1) and ascii_dispatcher_TR_handler's own sibling region (0x892a/0x892e, a live protocol command -- identity not pinned down).
+    threshold_upper: "0x200000a8"   # NEW: preset A=0x244(580), preset B=0x2ee(750). Rewritten unconditionally every poll while sensitivity_selector is 1 or 2.
+    threshold_lower: "0x200000c0"   # NEW: preset A=0xc8(200), preset B=0xfa(250).
+    adc_filter_init_flag: "0x20003118"   # NEW: FUN_000042a4's own one-shot "already sampled" latch -- exactly 2 xrefs in the whole image, both inside FUN_000042a4, never reset by anything else. Set once, forever, per power cycle.
+    adc_filter_alpha: "0x20000014"   # NEW: the exponential filter's smoothing coefficient -- exactly 1 xref in the whole image (a read, inside FUN_000042a4), NO WRITER ANYWHERE. Cold .bss -> permanently 0.0f -> every post-init blend is a real no-op.
+    adc_filter_last_check: "0x20003124"   # NEW: FUN_000042a4's own ~500-tick rate-limit cell for whether it resamples at all on a given call.
   eic_negative_result:
     callback_table: "0x2000525c"   # exactly one xref anywhere in the image: the handler's own load
     line_count: "0x200052e4"       # same
     per_line_mask: "0x200052a0"    # same
     handler: "0x0000cb6c"
     conclusion: "never armed; not the trigger mechanism"
+  peripheral_negative_results:   # NEW (transient-propagation slice): EVSYS/AC/DMA, checked for the first time this slice via raw whole-image literal scans for each peripheral's SVD base address, cross-checked against every trigger-cell RAM xref list above.
+    evsys:
+      base_address: "0x4100e000"
+      raw_literal_hits: 0
+      conclusion: "never referenced anywhere in the 70,768-byte image -- not a trigger mechanism, not used for anything"
+    ac_comparator:
+      base_address: "0x42002000"
+      raw_literal_hits: 1
+      hit_site: "0x0000cfc0"
+      conclusion: "the one hit is inside the already-documented one-time Reset_Handler/sketch_setup clock-and-analog-block bring-up chain (reset-handler-clock-init.md), not a live per-channel comparator config; absent from every trigger-cell RAM xref"
+    dmac:
+      base_address: "0x4100a000"
+      raw_literal_hits: 6
+      hit_region: "0x0000a300-0x0000a400 (approx)"
+      conclusion: "a single generic channel-dispatch driver (already implicated as 'a real SERCOM/DMA driver constructor' in reset-handler-clock-init.md); structurally unrelated to ADC1/PB05; absent from every trigger-cell RAM xref"
+    dac:
+      base_address: "0x43002400"
+      conclusion: "touched unconditionally inside analogRead_core (FUN_0000d1b4), before the ADC RESULT read in program order -- cannot depend on PB05's own value; no path from DAC state back to trigger acceptance"
+    timer_capture:
+      conclusion: "TC0-TC3/TCC1 pin assignments already exhaustively resolved (motor-timer-survey.md/pin-index-provenance.md) to PB10/PA08/PB12/PA10/PB22 -- none is PB05; pinMode()'s own disassembly (0xd300-0xd33a) never writes PMUX at all, only PINCFG, confirming PB05's digital-input config leaves PMUXEN clear"
 
 # NEW (trigger-status-remote-feedback slice): the Remote's own (mando868,
 # NOT autopilot868) real handling of the T-status frame -- CLOSED, no
@@ -245,8 +289,13 @@ open_questions:
   - "With BOTH of PB05's real downstream paths now closed as motion causes (the reload, trigger-input-motion-causality.md; the T-status broadcast, trigger-status-remote-feedback.md), no firmware-only (AutoPilot+Remote protocol) explanation for the reported one-time motor trigger remains open within this project's own established command set. Remaining candidates are the already-documented self-correcting level-sampled-poll explanation (trigger-input-concrete-path.md, unrelated to motion) or something outside firmware entirely (physical/electrical) -- explicitly out of scope per instruction, not chased."
   - "CLOSED (symbolic-crosscheck slice): the trigger gate (0x9202-0x9228) and the digitalRead-return branch (0x922c) are now solver-confirmed, not just concretely/statically established -- Z3 independently derives the exact gate values Ghidra/Unicorn already found, and proves (7 separate UNSAT checks) that no other combination of the seven free cells reaches the gate, and that no digitalRead return value other than 0 reaches 0x8f98. Does not change any prior firmware-behavior conclusion -- adds a stronger evidence tier to standing results. See docs/investigations/trigger-input-symbolic-crosscheck.md."
   - "NEW (mitigation-patchability slice, design-only -- does not touch the physical root cause): the narrowest safe software rejection point for this gate is the 4-byte beq.w at 0x922e (before 0x8f98's own first RAM mutation), replaceable in place with a b.w to a trampoline -- the 48-byte gate plus its immediately-following literal pool has zero free bytes for anything beyond a bare branch-target change. Consecutive-sample debounce ranked strongest of six evaluated candidates (reuses confirmed-dead RAM 0x20001fc4 for its counter) and was prototyped as a real, capstone-verified Thumb-2 trampoline, concretely executed in Unicorn via a harness-only scratch page (not a real flash address -- no verified in-image code cave was found this slice; three candidate zero-byte regions were checked and each turned out to be real content, not slack). Full 9-scenario regression matrix passes. See docs/investigations/trigger-input-mitigation-patchability.md and tools/unicorn/trigger_mitigation_prototype.py."
+  - "CLOSED (transient-propagation slice): the analog arm (trigger_poll_and_send_analog_arm, 0x8e68-0x8f00) is now fully disassembled and concretely exercised -- a complete second accept/T-status path sharing the digital arm's own accept target (0x8f98, already proven non-motion-arming) and CFG shape, keyed on a threshold-band compare (ram.threshold_upper/threshold_lower, default [200,580]) against ram.live_analog_value instead of digitalRead. The load-bearing new result: ram.live_analog_value is permanently latched to the FIRST-EVER sample taken during the already-known dead 128-sample boot loop (ram.adc_filter_init_flag never reset; ram.adc_filter_alpha is cold/unwritten, permanently 0.0f, so every later blend is a real no-op) -- concretely confirmed by chaining a real boot run into a real runtime poll: an obviously out-of-band runtime ADC1.RESULT injection has zero effect on the gate. A post-boot insertion transient (any shape) therefore cannot reach this path at all. See docs/investigations/trigger-input-transient-propagation.md Part 3."
+  - "NEW (transient-propagation slice): a digital-arm fault-injection matrix (the task's own H/L bounce sequences) concretely demonstrates that one bouncy insertion event CAN produce multiple accepted config-reload actions (one per LOW-reading poll -- no rate limit on the accept gate), but AT MOST ONE T-status frame per ~500-tick rate-limit window (zero if the window is already spent). See docs/investigations/trigger-input-transient-propagation.md Part 5.2."
+  - "NEW (transient-propagation slice): EVSYS (zero raw literal references anywhere in the 70,768-byte image), AC (one reference, inside the already-documented one-time boot analog-block bring-up), and DMA (a generic channel-dispatch driver, absent from every trigger-cell RAM xref) are ruled out as trigger-fault mechanisms for the first time this slice -- neither peripheral had been explicitly checked before. See ram.peripheral_negative_results above and docs/investigations/trigger-input-transient-propagation.md Part 6."
+  - "NEW (transient-propagation slice, bounded not chased): the exact wire identity of the ascii_dispatcher__CUSTOM command that writes ram.sensitivity_selector (0x892a/0x892e); whether pinPeripheral()'s 4 generic-driver call sites outside the ADC/digital chain (FUN_0000a1f4 x3, FUN_0000c7c0 x3) ever pass PB05's own pin index; the final sink of the 'TRIGGER: <val>' debug-log string (0xb23a/0xb2ea builders, flash literal at 0x11121) -- plausibly USB-serial, not traced to a Serial.print() call site."
 
 evidence:
+  - docs/investigations/trigger-input-transient-propagation.md
   - docs/investigations/trigger-input-mitigation-patchability.md
   - docs/investigations/trigger-input-concrete-path.md
   - docs/investigations/trigger-input-symbolic-reachability.md

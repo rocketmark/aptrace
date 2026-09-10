@@ -6,7 +6,60 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (trigger-input software-mitigation design and
+Last updated: 2026-09-10 (a full PB05 consumer sweep finds a second, real,
+previously-uncharacterized trigger-accept/status path — and shows it is
+immune to a post-boot transient, for a firmware reason distinct from
+"no debounce"): tasked with exhaustively inventorying every PB05 consumer
+(digital, analog, direct-register, EIC/EVSYS/AC/timer-capture/DMA) and
+concretely fault-injecting the two dynamic paths, this slice fully
+disassembled a region the project's own workflow file had already named
+but never opened — `trigger_poll_and_send_analog_arm`
+(`0x8e68`-`0x8f00`) — and found it is a **complete second route into the
+same config-reload accept target** the already-known digital gate reaches
+(`0x8f98`, already proven non-motion-arming), keyed on a real
+`analogRead(PB05)` compared against a RAM-resident `[200,580]`-default
+threshold band (provenance-traced to `boot_config_reader__CUSTOM`), plus a
+previously-undocumented analog T-status frame,
+`"T<raw ADC1.RESULT>,<band flag>,\|"`, through the same proven TX wrapper.
+**The load-bearing result**: `analogRead(PB05)` on this path runs through
+a real exponential filter whose smoothing coefficient (`0x20000014`) is
+cold `.bss` RAM with exactly one reference in the whole image — a read, no
+writer anywhere — and whose one-shot "already sampled" latch
+(`0x20003118`) likewise has exactly two references, both self-contained,
+never reset. Net effect, **concretely confirmed** by chaining a real boot
+run into a real runtime poll on the same machine: the analog path's live
+value is permanently fixed by the very first sample taken during the
+already-known dead 128-sample boot-time baseline loop — milliseconds into
+`sketch_setup()`, before a user could plausibly have inserted anything —
+and a later runtime injection of an obviously out-of-band value
+(seeded directly into `ADC1.RESULT`) has **zero** effect. A digital
+fault-injection matrix (the task's own H/L/bounce sequences) concretely
+demonstrates the complementary result for the already-known digital gate:
+**one bouncy insertion event can produce multiple accepted config-reload
+actions (one per LOW-reading poll), but at most one T-status frame per
+~500-tick rate-limit window**. ADC synthetic-stream injection (steady,
+spike, several spikes, alternating extremes, settling ramp) against the
+already-known *dead* 128-sample baseline reconfirms, under adversarial
+input this time rather than the single steady-state case previously
+tested, that only the same two already-documented dead RAM cells ever
+change. EVSYS, AC, and DMA are ruled out with fresh whole-image evidence
+this slice (EVSYS: zero raw literal references anywhere in the image; AC:
+one reference, inside the already-documented one-time boot analog-block
+bring-up; DMA: a generic channel-dispatch driver) — neither peripheral
+had been explicitly checked by any prior trigger-input slice. DAC (touched
+as unconditional pin-mux/analog-bias boilerplate with no data dependency
+on PB05) and timer capture (already-exhaustively resolved to other pins
+by `motor-timer-survey.md`/`pin-index-provenance.md`) are also ruled out.
+**No prior firmware-behavior conclusion is overturned — the reload target
+both paths reach was already proven not to arm motor motion — but the
+analog path itself, and its specific immunity mechanism, are new.** A
+reusable regression, `tools/unicorn/trigger_transient_propagation.py`,
+reproduces every result above end to end. See
+[`docs/investigations/trigger-input-transient-propagation.md`](investigations/trigger-input-transient-propagation.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+(updated).
+
+Previous update (2026-09-09, trigger-input software-mitigation design and
 binary patchability assessed — a design/prototyping slice, not a new
 firmware-behavior finding): building on the already-closed gate at
 `0x9202`-`0x9231` and the solver-confirmed `digitalRead`-return branch at
