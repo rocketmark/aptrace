@@ -1,170 +1,427 @@
-# Investigation: What Triggers the Dispatcher, and With What Input?
+# Trigger-Input Investigation — Current Model
 
-Tracing the real caller into the AutoPilot protocol dispatcher (flash
-`0x8258`) and how its input registers (R0, R4-R7) get established — asked
-because the dispatcher's own entry code assumes several registers already
-hold specific things (a buffer pointer, a table base, a caller-supplied
-argument), and getting those wrong was the proximate cause of a long,
-confusing debugging session (see
-[`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md)).
+Reported bug: connecting a certain chain to the AutoPilot's 3.5mm trigger
+input causes exactly one trigger, then normal operation continues. The
+firmware-side mechanism is now fully characterized, cross-checked by
+disassembly, concrete (Unicorn) execution, and solver (Crucible/What4/Z3)
+proof: the trigger pin is polled, not interrupt-driven, has two
+mutually-exclusive boot-selected arms (digital and analog), and neither
+arm's accept path can arm motor motion or bridge back into motion via the
+Remote. A software mitigation (consecutive-sample debounce) has been
+designed and prototyped in Unicorn, but **no firmware has been patched or
+flashed** — the physical root cause of the transient itself remains
+unmeasured.
 
-**Status**: resolved. R4/R5/R7's setup is understood and confirmed (they're
-established by the dispatcher's *own* entry code, not by the caller). The
-`0x801c` anomaly that originally blocked tracing R0 was cross-checked with
-Ghidra and is a Macaw/dismantle decode limitation, not dead code — and R0's
-real value at the call site was subsequently pinned down directly via
-Unicorn (`R0 = 0`, from `*(byte*)0x20001fd4`), without needing to fully
-resolve `0x801c`'s own computation. See the two "Update" sections below.
+## Current model
 
-## The real call site
+**Boot-time mode select.** `FUN_00006968` ("startup reference/input
+routine"), called once from `sketch_setup__CUSTOM` before any trigger
+logic runs, configures **PA02** (pin index `0x25`, port A bit 2)
+`INPUT_PULLUP` and reads it exactly once. HIGH → mode flag `0x20001fc0=1`
+(the **analog arm**); LOW → mode flag `0x20001fc0=2` (the **digital
+arm**), and only on this arm is **PB05** (pin index `0x39` / analog alias
+`0x3b`, port B bit 5) explicitly configured as a bare digital `INPUT`
+(`pinMode` mode `0`, no pull). The two arms are mutually exclusive for
+the entire power cycle — decided once, by PA02's level at boot, never
+re-evaluated. EIC is proven uninvolved (Evidence, below): the trigger is
+read by plain polled `digitalRead()`/`analogRead()`, not an interrupt.
 
-Seeding Macaw discovery at `0x8a35` (Thumb entry near the LoRa RX area, per
-`research/autopilot_static_inventory/rf-boundaries.md`) reaches `0x8259` as
-a properly call-classified function — a genuine `BL` with a matching return,
-not a tail-jump:
+**The digital arm** (mode flag `2`). PB05 is a floating (no-pull) digital
+input. `phase_ramp_state_machine__CUSTOM` (`FUN_00008e18`, reachable only
+after `MC4` unlocks it) polls it every main-loop iteration with no
+history between polls — level-sampled, not edge-latched, no debounce.
+Two consumers of that poll: (1) a `TR1|`-gated, ~500-tick-rate-limited
+**T-status** send (`"T<0 or 1023>,<1 or 0>,|"`) to the Remote; (2) a
+**seven-guard accept gate** (four idle-channel bytes, two provenance-
+traced state cells, the `TR0|`/`TR1|` enable byte, then the PB05 read
+itself) that, when satisfied and PB05 reads LOW, reaches a shared
+**accept target** at `0x8f98`.
 
-```
-0x8a34: BL 0x8259    ; call and return to 0x8a39
-```
+**The analog arm** (mode flag `1`) has two consumers of PB05, one dead,
+one live and previously unknown. The **dead** one is a 128-sample ADC
+baseline average (`FUN_00005d44`) computed once at boot and never read
+by anything else in the image — structurally matches the user guide's
+"establish a noise baseline" language but is disassembly-confirmed
+unconsumed. The **live** one — found and fully characterized only in
+this cluster's later work — is a second, complete accept/status path
+inside the same state machine (`0x8e68`-`0x8f98`): it calls
+`analogRead(PB05)` (really ADC1, not ADC0), compares the result against
+a `[lower, upper]` RAM-resident threshold band (default `[200, 580]` on
+the raw 12-bit scale), and on out-of-band reads either sends an analog
+T-status frame (`"T<raw ADC1.RESULT>,<0 or 1 band flag>,|"`) or falls
+through to the **same** `0x8f98` accept target the digital arm uses.
 
-This confirms the dispatcher is invoked as an ordinary function call from
-somewhere in the RX-processing path, which is what one would expect.
+The analog arm's `analogRead()` runs through a real exponentially-
+smoothed filter (`FUN_000042a4`) whose blend coefficient (`0x20000014`)
+is cold, unwritten RAM — permanently `0.0f` — combined with a one-shot
+"already sampled" latch (`0x20003118`) that is set once and never
+cleared. The practical effect: the very first sample this function ever
+takes, during the already-dead 128-sample boot loop milliseconds into
+`sketch_setup()`, is **permanently latched** for the rest of the power
+cycle; every later call re-executes the filter's math but the coefficient
+being zero makes every subsequent blend a no-op. **A transient occurring
+after boot cannot affect the analog path at all — it never resamples.**
+But a trigger chain **already connected / electrically present at
+power-up** *can* influence that first boot-time sample, and therefore the
+latched analog-path state for the whole session — it is specifically a
+**post-boot** insertion event this path is immune to, not a "connected
+before insertion is physically possible" claim. If that one boot-time
+sample happened to fall outside the threshold band, the accept path fires
+on every subsequent idle poll for the rest of the session (still
+non-motion-arming) — a consequence of a bad boot-time reading, not of a
+post-boot transient.
 
-## R4, R5, R7: established by the dispatcher itself, not the caller
+**Why neither arm's accept path can arm motion.** `0x8f98`, the shared
+accept target for both arms, writes a status byte and unconditionally
+tail-jumps into a real config-reload chain (`config_loader__CUSTOM` →
+`FUN_00006b50` → `FUN_00006952`): it re-reads the persisted motor-target
+config, computes per-channel motion-profile arrays, and toggles a GPIO
+pulse (PB30 high / PB31 low). But it **clears**, and never sets,
+`phase_ramp_arm_byte` (`0x20002318[channel]`) — the *only* byte
+`phase_ramp_state_machine__CUSTOM`'s own per-channel loop checks before
+ever calling `motor_move_commit__CUSTOM`. An exhaustive cross-reference
+of `0x20002318` finds exactly three writers in the whole image: the
+reload itself (clears to idle), the state machine's own internal
+self-transitions (only reachable once already armed), and one *other*,
+structurally unrelated ASCII command (`0x865a`, part of the `'W'`
+family, gated on the idle-check cell — not PB05 or the `'+'`-push cell).
+That command is the sole `0`→`1` (armed) producer anywhere in the image.
+**Neither trigger arm can reach it.**
 
-Within `0x8259`'s own entry sequence (before the indexed-lookup loop
-discussed in [`parser-dispatch.md`](parser-dispatch.md)):
+**Why the T-status frame can't bridge back to motion either.** The
+Remote's own inbound dispatcher (`FUN_00010ce4`) has a plain `'T'` branch
+that parses both frame fields, stores them plus a "received" flag into
+three RAM cells, and returns — no send call anywhere in the branch. The
+only consumer of those three cells anywhere in the Remote's image is a
+UI screen's render loop, which scales and redraws the value on screen.
+Pure telemetry, concretely confirmed by delivering both real frame
+shapes into the Remote's real inbound path and watching its TX wrapper
+never fire.
 
-- `0x825c`: `LDR R4, [0x8528]` — loads the literal at flash `0x8528`, which
-  is the RX packet buffer address `0x2000232a`.
-- `0x8264`: `MOV R5, R4` — R5 is simply an alias of R4.
-- `0x8278`: `LDR R7, [0x8534]` — loads a second literal, `0x20000180`.
+**The self-correcting one-shot explanation.** With both accept paths
+proven non-motion-arming and the T-status path proven to have no return
+path, the mechanism that best matches the reported symptom is purely a
+transient artifact of a floating, no-pull digital input: physically
+connecting a chain to the jack is itself a transient electrical event
+(bounce, coupling, partial seating) on a pin with nothing holding it
+steady. If that transient overlaps a poll, the digital arm can accept
+(reload the persisted config, harmless) and/or, if `TR1|` reporting is
+armed and the rate-limit window happens to be open, send exactly one
+T-status frame. Fault injection (Evidence, below) shows a bouncy
+insertion can produce **multiple** accepted config-reloads (one per
+LOW-reading poll) but **at most one** T-status frame per ~500-tick
+window — "normal operation continues" is just the next ordinary,
+independent poll of a mechanism with no memory, not a recovery path.
 
-None of these depend on anything the caller passed in — they're fixed
-literals and a register copy, established fresh on every call. This part
-is solid.
+**Recommended mitigation.** Of six mitigation shapes evaluated,
+**consecutive-sample debounce** (require PB05 LOW for *N* consecutive
+polls of the accept gate before accepting) is the strongest: it protects
+both boot-time and mid-session connection events without a real-time
+clock, and — uniquely among the candidates — preserves the firmware's
+own confirmed repeat-refire-while-held behavior exactly, so it changes
+nothing about legitimate held-trigger use. It has been prototyped as a
+34-byte Thumb-2 trampoline and exercised concretely in Unicorn against a
+9-scenario regression matrix; it has not been flashed to any real device.
 
-## R0/R6: does depend on the caller, and this is where it gets uncertain
+## Evidence
 
-`0x8262`: `MOV R6, R0` — R6 (used as the lookup loop's counter/search key)
-is seeded directly from R0, the caller's argument.
+Confidence tags follow this project's standard scale: **CONFIRMED**
+(disassembly and/or concrete Unicorn execution), **SOLVER-CONFIRMED**
+(Crucible/What4/Z3), **PROBABLE**/**INFERENCE**, **UNKNOWN**.
 
-Tracing backward from the call site to find what sets R0: `0x8a1b -> 0x896a
--> BL 0x801c -> CBZ R0` (i.e. R0 checked immediately after a call, strongly
-suggesting R0 = that call's return value).
+**Pins.** PA02 = pin-descriptor index `0x25` (port A, bit 2). PB05 = pin
+index `0x39` (digital) / `0x3b` (analog alias), port B bit 5. Both
+resolved directly from the real Arduino-core pin-descriptor table
+(`0x00014284`, stride `0x18` bytes) — **CONFIRMED**. An exhaustive
+call-site enumeration finds PA02 read in exactly one place in the whole
+image, PB05 in exactly the paths named here (`digitalRead` twice,
+`analogRead` via `FUN_000042a4`'s two total callers) — **CONFIRMED**.
 
-### The `0x801c` anomaly
+**EIC ruled out.** The AutoPilot's EIC vector table stubs all tail-jump
+into one shared handler whose three support addresses (callback table
+`0x2000525c`, line count `0x200052e4`, per-line mask `0x200052a0`) each
+have **exactly one** reference anywhere in the image — the handler's own
+load. Nothing ever writes the line count, so the handler's loop body
+never executes on any real interrupt. **CONFIRMED** by two independent
+exhaustive whole-image scans.
 
-**`0x801c` is lifted by Macaw as ARM (A32) mode code**: `BL_i_A1`, `BX_A1`,
-and the semantics explicitly set `PSTATE_T => 0` (ARM mode, not Thumb).
+**The seven-guard gate**, `0x9202`-`0x9228` (48 bytes, zero slack,
+instruction-for-instruction from the raw firmware bytes):
 
-**This is architecturally impossible on a Cortex-M4F.** M-profile Cortex-M
-cores have no ARM execution state at all — they are Thumb-only. A real
-ATSAMD51 chip cannot execute A32-encoded instructions; attempting to would
-fault.
+| Addr | Instruction | Role |
+|---|---|---|
+| `0x9202`-`0x9211` | four `ldrb`/`cbnz` pairs | `0x20002524[0..3]` (per-channel device state) all `==0` |
+| `0x9212`-`0x9219` | `ldr`/`cmp #0x7b`/`bne` | gate cell 1, `0x20001b38 == 0x7b` |
+| `0x921a`-`0x9221` | `ldr`/`cmp #9`/`bne` | gate cell 2, `0x200000d8 == 9` |
+| `0x9222`-`0x9225` | `ldrb`/`cbnz` | `0x20003120 == 0` (`TR0\|`, reporting disarmed) |
+| `0x9226`-`0x922e` | `movs r0,#0x39; bl 0xd3dc (digitalRead); cmp r0,#0; beq.w 0x8f98` | the trigger read itself |
 
-`0x801c`'s second block (`0x8020`) also hits a Macaw discovery "classify
-failure" on an indirect `BX R11` — Macaw's own classifier could not
-determine the jump target and gave up, which is a strong independent signal
-that something is off about how this region is being interpreted.
+All seven guards, plus the `digitalRead` branch, are **SOLVER-CONFIRMED**
+(a targeted Crucible/What4/Z3 query, 175s wall-clock, 9 queries): Query A — the gate is SAT with Z3
+*independently deriving* `r5[0..3]=0, state32=0x7b, state8=0x9, r6[0]=0`,
+matching Ghidra-provenance/Unicorn exactly. Query B — UNSAT for each of
+the seven guards individually negated (no combination of the other six
+compensates). Query C — the `digitalRead` branch reaches `0x8f98` iff
+`R0=0`; `R0≠0` (fully symbolic, not a spot check) is UNSAT. An earlier,
+broader attempt to prove the same region hit a real, exhaustively-confirmed Macaw/dismantle
+classifier limitation (`CBZ_T1`/`CBNZ_T1` narrow compare-and-branch
+lifts to a doubly-nested mux Macaw's classifier doesn't pattern-match;
+4/4 classify failures in the function are this exact instruction,
+worked around by re-seeding discovery at each known successor) and did
+not converge to a SAT/UNSAT answer within a practical time budget (a
+41MB/267,385-assertion formula, ~73.5% of it the entire RAM region
+individually asserted `==0` byte-by-byte — a memory-model encoding
+overhead, not a correctness gap); the narrower crosscheck query above
+superseded it by dropping the RAM zero-overlay entirely, since this
+bounded region reads only the seven named cells.
 
-**Two explanations are consistent with the evidence, and it hasn't been
-determined which is correct:**
+**Gate cell provenance.** Gate cell 1 (`0x20001b38=0x7b`) is set by the
+already-known `'+'` command's `mode=0x62` bulk-push finalize path
+(`FUN_00004ca8`/`FUN_000043f0`) — the same real event this project has
+already proven fires on every Remote power-on/reconnect. Gate cell 2
+(`0x200000d8=9`) is set by a real "all four channels idle" check inside
+`phase_ramp_state_machine__CUSTOM` itself, and — a clean finding — is
+**unconditionally reset to `0`** by the config-reload function
+(`FUN_00006b50`) on every reload, a genuine self-clearing mechanism.
+Both **CONFIRMED** by exhaustive cross-reference and Unicorn replay.
 
-1. **A genuine Macaw/dismantle decode limitation** for this specific call
-   site or byte pattern — e.g. the call target address computation produced
-   the wrong value, or something about the surrounding bytes confused the
-   Thumb/ARM mode-selection logic that normally uses the low bit of the
-   target address (see
-   [`docs/firmware/cortexm-assessment.md`](../firmware/cortexm-assessment.md)
-   for how that mechanism is supposed to work).
-2. **This is genuinely dead or unreachable code on real hardware** — e.g. a
-   compatibility stub for a different chip variant, or padding/data bytes
-   that happen to disassemble as plausible-looking instructions but are
-   never actually executed by the real firmware.
+**Accept target `0x8f98`** (identical first instruction/address for both
+arms): `ldr r3,[0x9148]` (`=0x200025bc`); `movs r2,#3`; `strb r2,[r3,#1]`
+(status byte `=3`); `pop.w {r4-r11,lr}; b.w 0x00006e4c` (tail-jump into
+the reload chain). Confirmed **not** to arm motion: `FUN_00006b50` writes
+motion-profile arrays with no other reader anywhere in the image (dead,
+same pattern as the ADC baseline) except `0x2000310c[channel]`, whose one
+other reader (`motor_move_commit__CUSTOM`) is never reached from this
+chain; and it explicitly **clears** `0x20002318[channel]` and
+`0x20002014[channel]` rather than setting them. Concretely confirmed via
+a real `'+'`-push predecessor state (not fabricated): PB05 LOW reaches
+`0x8f98` (288 real memory writes, real PB30/PB31 GPIO pulse); PB05 HIGH
+(identical predecessor) touches none of the watched state; a labeled,
+non-PB05 control that force-arms `0x20002318` **does** reach
+`motor_move_commit__CUSTOM` two calls later, proving the missing
+ingredient is the actual blocker, not a harness limitation.
 
-**Practical consequence (as originally written)**: R0's "correct" value for
-a real dispatcher call cannot be reliably derived from this trace. See the
-update below for what's changed since.
+**T-status has no return path.** The Remote's `'T'` branch
+(`0x10f0a`-`0x10f32`) parses both fields and a received flag into
+`0x200002e8`/`0x200027f8`/`0x200027f9`, with **no** call to any send
+function anywhere in the branch (disassembly-complete). The only
+consumer of all three cells anywhere in the image is `FUN_0000fa10`, a
+UI screen's render loop, which scales the first field (`*3300/1023`) and
+redraws it in a color chosen by the second — a pure display readout.
+Concretely confirmed by delivering both real frame shapes
+(`"T1023,0,|"`, `"T0,1,|"`) into the Remote's real inbound ring buffer
+and watching its TX wrapper (`0x58a8`) never fire.
 
-## Update: Ghidra cross-check (2026-09-07)
+**Threshold band and its RAM cells.** Default `[lower=0x200000c0,
+upper=0x200000a8]` = `[200, 580]` (raw ADC1.RESULT, 10-bit-ish scale),
+selected via `*0x20000194` (0=custom, 1=preset A [200,580], 2=preset B
+[250,750]) defaulting to preset A because the persisted config blob is
+blank and `config_read_byte__CUSTOM`'s out-of-range handling resolves the
+selector to `1`. **CONFIRMED** by disassembly and reproduced concretely
+(seeding no threshold at all yields exactly 580/200 from the real preset
+code).
 
-Per [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md)'s rule
-to never trust a Macaw A32 lift on this target without cross-checking it,
-`0x801c` was re-examined with `tools/ghidra/analyze_firmware.sh`, seeding
-it as an extra function-start address. Ghidra's `ARM:LE:32:Cortex` language
-is architecturally incapable of decoding A32 (its processor spec forces
-Thumb mode across the whole address space) — so if this really were
-unreachable/non-code, Ghidra would be expected to produce garbage or fail
-to form a sensible function there. Instead it decoded a completely
-ordinary, well-formed 54-byte Thumb function:
+**`0x20000014` (filter smoothing coefficient)**: cold `.bss`, exactly one
+reference in the whole image (a read inside `FUN_000042a4`), no writer
+anywhere — permanently `0.0f`. **`0x20003118` (one-shot latch)**: exactly
+two references, both self-contained inside `FUN_000042a4` (one read, one
+write-only-to-`1`), never cleared. Both **CONFIRMED** by exhaustive
+cross-reference. The boot-then-runtime latch was confirmed end-to-end by
+chaining a real boot run (first sample forced to `77`, a floating-pin-
+like reading) into a real runtime poll (`ADC1.RESULT` forced to `4095`,
+full-scale, obviously out-of-band): the live-value cell (`0x20000190`)
+still reads `77` — the runtime injection has zero effect.
 
-```
-push {r3,lr}
-ldr  r3,[0x8054]
-ldrb r3,[r3,#0]
-cbz  r3,0x802e
-ldr  r0,[0x8058]
-bl   0xb71a
-uxtb r0,r0
-pop  {r3,pc}
-... (0x802e-0x8050: a second branch computing an elapsed-time-like value
-     via two loaded counters, `cmp`/`it lt`/`add.lt r0,#0x64` -- a
-     wraparound-safe subtraction pattern, i.e. "if the new count wrapped,
-     add 100 back before subtracting" -- then calling one of two more
-     helpers at 0xc93e/0x7fdc before falling through to the same
-     `uxtb r0,r0; pop {r3,pc}` return.)
-```
+**Fault-injection matrices** (`tools/unicorn/trigger_transient_
+propagation.py`), all **CONFIRMED concretely**:
 
-This function is called from **eight** real, cross-referenced sites in
-Ghidra's own analysis, including `0x896a`, `0x897e`, `0x8986`, `0x8a28`,
-`0x8a3c`, `0x8a54`, and `0x8b22` — all within the same caller region
-(`FUN_00008960`) that contains the `0x8a34 -> 0x8258` call Macaw found
-independently. This is strong, independent evidence that:
+- *Digital arm*, accept-gate counting vs. sequence (H=HIGH, L=LOW):
+  `H L H`→1 accept, `H L L H`→2, `H L H L H`→2, `H L L L H`→3, `L L L L`→4
+  — accepts equal the LOW-poll count exactly, no rate limit on this gate.
+  T-status sends: exactly 1 per sequence if the rate-limit window is open
+  at sequence start ("startup" context), 0 if it was already spent
+  ("runtime" context) — regardless of how many transitions occur inside
+  one window.
+- *Analog arm*, "burst" (single window) vs. "sustained" (gate forced
+  open every poll) conditions produce **byte-identical** results for
+  every tested stream (steady, single spike, several spikes, alternating
+  extremes, settling ramp) — direct confirmation that only poll 0's own
+  raw sample determines the outcome for the entire session; later
+  samples, however wild, change nothing.
+- *Dead ADC baseline* (`FUN_00005d44`), reconfirmed under five
+  adversarial streams: only the two already-known dead cells
+  (`0x20003128` average, `0x200023c0` low-baseline flag) ever change;
+  no third cell, no new consumer, under any tested shape.
 
-1. `0x801c` is real, reachable, ordinary Thumb code — not dead code, and
-2. Macaw's A32 lift for this address was a genuine decode limitation, not
-   a reflection of real firmware behavior.
+**Peripheral rule-outs**, all this cluster's own fresh evidence unless
+noted: **EIC** — inert (above), inherited unchanged. **EVSYS** — a raw
+whole-image literal scan for its base address (`0x4100E000`) finds
+**zero** occurrences anywhere in the 70,768-byte image. **AC** (analog
+comparator) — exactly one reference to its base (`0x42002000`), inside
+the already-documented one-time boot clock/analog-block bring-up, absent
+from every trigger-cell RAM cross-reference. **DAC** — touched
+unconditionally, in program order strictly *before* `RESULT` is ever
+read, so its configuration cannot depend on PB05's value; no output
+channel is data-dependent on the trigger state. **DMA** — six references,
+all inside one generic, unrelated channel-dispatch driver, absent from
+every trigger-cell cross-reference; no descriptor touches `ADC1.RESULT`
+or any trigger RAM cell. **Timer capture (TC/TCC)** — already exhaustively
+mapped elsewhere to other pins (TC0→PB10, TC1→PA08, TC2→PB12, TC3→PA10,
+TCC1→PB22), none PB05; `pinMode()`'s own body never writes `PMUX` on the
+digital-input configuration path, independently confirming no peripheral
+mux is engaged. **Direct/inline PORT access** — every PB05 touch goes
+through the shared, pin-descriptor-table-driven `digitalRead`/`pinMode`/
+`analogRead` functions; `pinPeripheral()` (the only function that writes
+`PMUX`) has 7 call sites total, 4 of which are generic driver helpers not
+traced to confirm they never pass PB05's index (named in Open/unknowns).
 
-**What this resolves**: the "is it dead code or a decode bug" question
-(previously open item #11 in
-[`docs/protocol/open-questions.md`](../protocol/open-questions.md)) —
-resolved in favor of "decode bug."
+## Mitigation design
 
-**What this does not resolve**: R0's *exact numeric value* at the real
-`0x8a34` call site. What's now known is that `0x801c` returns a small,
-`uxtb`-truncated (i.e. single-byte-range) value that looks like an elapsed
-tick/time count, not an arbitrary or complex control value — which
-significantly narrows what the subsequent `CBZ R0` at the caller is
-plausibly testing (a "has some time elapsed" style check), but doesn't pin
-down the exact number without either fully modeling the two callees
-(`0xb71a`, `0xc93e`/`0x7fdc`) or observing a real value via Unicorn/hardware.
+Six candidates were evaluated against the confirmed trigger semantics
+(level-sensitive, active-LOW at the accept gate, no debounce, no latch,
+repeat-refire while held, unreachable until `MC4` unlocks the state
+machine):
 
-## Update: R0 concretely resolved via Unicorn (2026-09-07)
+- **A — Startup arming** (require PB05 seen HIGH once after MC4-unlock
+  before ever accepting LOW): weak alone — only protects the one window
+  right after unlock, and conflicts with the user guide's own documented
+  "connect the trigger before power-up" workflow. Retained only as a
+  possible supplementary layer.
+- **B — Consecutive-sample debounce** (require PB05 LOW for *N*
+  consecutive polls before accepting): **the recommended candidate**.
+  General — protects boot-time *and* mid-session connection events — needs
+  no real-time clock (a plain poll counter, since this gate's own poll
+  cadence is untethered from the ~500-tick T-status throttle and runs
+  every main-loop iteration), and uniquely preserves the confirmed
+  repeat-refire-while-held behavior exactly: once qualified, every
+  subsequent LOW poll still accepts, unchanged from today.
+- **C — Edge qualification** (accept only on HIGH→LOW transition):
+  rejected — removes the confirmed repeat-refire behavior (an unforced
+  change) and can be *worse* on a bouncy line, since a bare edge check
+  accepts every transition in a bounce rather than filtering it.
+- **D — Dwell/re-arm state machine** (full `WAIT_INACTIVE → ARMED →
+  CANDIDATE_ACTIVE → ACCEPTED → WAIT_RELEASE`): strictly more capable
+  than B (also suppresses refire-while-held) but more state and code;
+  rejected as primary since nothing in the firmware's design or the
+  reported bug requires suppressing refire-while-held.
+- **E — Fixed startup delay**: rejected — doesn't address a connection
+  made later in the session, and this gate isn't even reachable until
+  `MC4` unlock, so "after boot" doesn't align with when the code first runs.
+- **F — One-shot suppression of the first trigger**: rejected —
+  confirmed unsafe against the user guide's own documented "trigger
+  connected before power-up" workflow, which relies on that first
+  trigger being legitimate.
 
-Per the follow-up below, R0 turned out not to require modeling `0x801c`'s
-full return-value computation at all. Tracing the actual `0x8a34` call site
-in `FUN_00008960` (the UART/serial receive state machine that assembles
-the packet into `0x2000232a` — confirmed by resolving its literal pool)
-found `R0` there is simply `*(byte*)0x20001fd4`, loaded fresh at `0x8a2e`
-(`ldrb r0,[r4,#0]`) just before the call — not the leftover return value of
-the preceding `0x801c()` call as first assumed. `0x20001fd4` is never
-written anywhere in `FUN_00008960`, so in the project's standard cold/zero
-RAM convention it's `0`. Running `0x801c()` alone via Unicorn from cold RAM
-separately (and concretely) confirmed *it* also returns `0` from that
-state, for what it's worth — but it isn't actually what feeds R0 here.
-**R0 = 0 at the real dispatcher call, demonstrated by tracing the actual
-source instruction, not assumed.** Full trace:
-[`docs/investigations/dispatcher-loop-concrete-trace.md`](dispatcher-loop-concrete-trace.md).
+**Patch site.** The narrowest safe rejection point is the 4-byte
+`beq.w 0x8f98` at `0x922e` — after the real `digitalRead(0x39)` call
+(so the mitigation still observes the real pin) but before `0x8f98`'s own
+first RAM write (the earliest irreversible action on the accept path).
+Replacing it in place with a same-size `b.w <cave>` requires no shift of
+anything else in the image (the 48-byte gate and the literal pool /
+next function immediately after it have zero slack). Registers `r2`/`r3`
+are free to clobber (confirmed dead at both landing points, `0x9232`
+reject and `0x8f98` accept); `r0` (the real `digitalRead` result) must be
+read, not destroyed before use; no stack push/pop needed.
 
-This resolves this document's remaining open question. It also turned out
-not to matter for the current milestone's blocker: the address R0 feeds
-(`R6`, the `0x827e` loop's counter) is on a code path
-(`buffer[0]==0xF0`) the real `&` command never reaches at all — see the
-linked document.
+**No verified real flash code cave was found.** Three candidate classes
+were checked and rejected: (1) the ~12KB zero-looking region at flash
+`0x1113f`-`0x14000` is not free — it's the persisted, flash-backed
+motor-target config blob (`0x12000`, currently blank but live NVM); (2)
+an 18-byte gap at `0x401a` is inside the vector table, a reserved slot,
+not code space; (3) three 12-13 byte zero runs (`0x48d8`, `0x4ab8`,
+`0x7238`) are all the same pattern — a function's own alignment pad plus
+its literal pool, compiler-emitted data, not slack. The most promising
+unexplored option — flash beyond the current 70,768-byte image's end, up
+to the part's real 512KB — was not verified this cluster (would need a
+real device flash dump or bootloader documentation).
 
-## Open follow-ups
+**The Unicorn-prototyped trampoline** (`tools/unicorn/trigger_
+mitigation_prototype.py`) lives only at a harness-only scratch address
+(`0x00020000`), not a real flash location. 34 bytes of Thumb-2, using
+`movw`/`movt` for the counter's RAM address (avoiding any literal-pool
+placement concern): re-checks `cmp r0,#0`, increments/resets a one-byte
+poll counter reusing already-dead RAM (`0x20001fc4`, confirmed
+unconditionally zeroed at boot and unread elsewhere on this exact arm),
+and branches directly to the firmware's own real `0x8f98` (accept) or
+`0x9232` (reject) — no synthetic return point needed. Every instruction
+was hand-encoded from the ARMv7-M reference manual and verified two ways:
+a capstone disassembly round-trip, and empirical execution landing on
+the intended PC in every regression run.
 
-- Consider reporting the A32 misdecode upstream to GaloisInc/macaw or
-  GaloisInc/dismantle with a minimal reproduction (the raw bytes at
-  `0x801c` plus the expected Thumb decode above).
+**9-scenario regression matrix** (threshold *N*=4 polls, poll-count not
+milliseconds — the real main-loop period is unmeasured): inactive
+throughout (never accepts); active throughout (accepts at poll 3, the
+4th consecutive LOW); a 1-poll startup transient then inactive (never
+accepts — nuisance correctly rejected); a 1-poll runtime transient
+(never accepts); a 3-poll transient, shorter than N (never accepts); a
+5-poll clean trigger (accepts, continues accepting); **a rejected 1-poll
+blip followed by a later 5-poll sustained trigger — accepts normally**
+(the single most important case: a nuisance transient does not poison a
+subsequent real trigger); held-active for 8 polls (accepts at poll 3,
+continues accepting every poll after — repeat-refire preserved exactly);
+release-then-second-trigger (first accepts at poll 3, counter resets on
+release, second accepts at poll 9). All nine **PROTOTYPE**-tier (real
+Unicorn execution of an in-memory candidate patch) — none is a claim
+about the real firmware or hardware.
+
+**No firmware has been patched or flashed.** Every patch above exists
+only inside an in-memory `ConcreteMachine` (Unicorn) copy of the image.
+This is a validated design, not a deployed fix, and no distributable
+image has been produced.
+
+## Test / repro
+
+- **`tools/unicorn/trigger_transient_propagation.py`** — the digital and
+  analog fault-injection matrices (bounce/spike/ramp streams against
+  both arms), the dead-ADC-baseline reconfirmation under adversarial
+  input, and the boot-then-runtime latch chain for the analog arm's
+  first-sample-only behavior. Run with `--only digital` / `--only
+  adc-live` / `--only adc-dead` / `--only all`.
+- **`tools/unicorn/trigger_mitigation_prototype.py`** — the Candidate B
+  debounce trampoline, hand-encoded and capstone-verified, exercised
+  against the 9-scenario regression matrix above. Run with
+  `--threshold N` (a free experiment parameter, not a claimed real-world
+  value).
+- **`tools/unicorn/virtual_link.py pb05`** — delivers a real `'+'`
+  bulk-push (establishing gate 1 for real) then forces PB05 LOW/HIGH,
+  confirming the reload fires and never reaches
+  `motor_move_commit__CUSTOM`, plus a labeled control that does reach it
+  when the arm byte is force-set.
+- **`tools/unicorn/virtual_link.py t-status`** — delivers both real
+  T-status frame shapes into the Remote's real inbound ring buffer and
+  confirms its TX wrapper is never reached.
+- **`aptrace explore` / `aptrace trigger`** (Crucible/What4/Z3 harness,
+  `src/APTrace/ProtocolHarness.hs`'s `runGateReachability` and
+  `SymbolicRunner.hs`'s `bqExcludeObserved`) — the solver-confirmed
+  seven-guard cross-check (Queries A/B/C) described in Evidence.
+- **`ConcreteMachine` direct entry at `0x8e18`** — the sound,
+  zero-fabricated-register entry point for
+  `phase_ramp_state_machine__CUSTOM` used by every concrete result above.
+
+## Open / physical unknowns
+
+- The real transient shape at the jack and at PB05 — polarity, duration,
+  bounce count, floating behavior, boot-only vs. runtime-insertion.
+- The real main-loop period, needed to translate any poll-count
+  threshold (the debounce's *N*) into real milliseconds.
+- The minimum legitimate trigger pulse width (bounds how large *N* can
+  safely be without rejecting a real short trigger).
+- Whether the analog boot-mode (PA02 HIGH at boot) is a real, commonly
+  used field configuration or a vestigial/rare one — this bears directly
+  on how much the boot-latch behavior matters in practice.
+- Whether any of `pinPeripheral()`'s 4 generic-driver call sites ever
+  passes PB05's own pin index (bounded, not exhaustively chased).
+- The sensitivity-selector protocol command's exact wire identity (the
+  `ascii_dispatcher__CUSTOM` writer of `0x20000194` at `0x892a`/`0x892e`).
+- The debug-log sink for the `"TRIGGER: <val>"` line (likely USB-serial,
+  not traced to its final destination).
+- Whether, and when, to actually flash a mitigation — contingent on the
+  physical measurements above, since the debounce threshold *N* cannot
+  be called correct, only possible, without them.
+- Smaller named-not-chased items inherited from this cluster: the two
+  other readers of the shared status byte (`0x200025bc+1`, at `0x7a50`/
+  `0x81f8`); the exact wire bytes for the `'W'`-family sub-case that
+  reaches the real arm-byte producer (`0x865a`) and the sibling `'W1'`
+  route into the same reload chain (`0x8624`); the other writer of
+  `0x20002014` (`0x80ec`, a config-invalidation path); PA22/PB30/PB31's
+  roles beyond their confirmed GPIO side effects.

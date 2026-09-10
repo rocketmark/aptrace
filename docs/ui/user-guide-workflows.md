@@ -11,7 +11,7 @@ addresses back into this file's own claims.
 
 No literal copy of `PerformingRigs_UserManual_AutoPilot.pdf` is present in
 this repository. A prior research pass (recorded in
-[`docs/hardware/autopilot-research-handoff.md`](../hardware/autopilot-research-handoff.md),
+[`docs/hardware/hardware-reference.md`](../hardware/hardware-reference.md),
 section 2 onward) read that PDF directly and produced a structured summary,
 page-cited (pages 5-25). **That summary is this document's primary source**
 — it is the "user guide material already in the repo" this document is
@@ -101,7 +101,7 @@ unconditionally, as a plain step of `sketch_setup()` — not periodic, not
 change-driven, not reconnect-driven — so Quick Setup can only ever open in
 response to whichever connector state existed at the AutoPilot's most
 recent power-on/reset. See
-[`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md).
+[`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md).
 The
 handoff doc's own section 8 ("Motor Configuration Constants") still
 correctly describes the settings *data* this flow edits (current, max
@@ -175,7 +175,7 @@ AutoPilot (workflow 8 — external input disables Auto Mode but Manual Mode
    Remote -> AutoPilot) once per UI tick for as long as the wheel is not
    clicked — not a discrete per-gesture command. See
    [`action-command-map.md`](action-command-map.md) workflow 3 and
-   [`../investigations/manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
+   [`../investigations/manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md).
    **PROBABLE, not exhaustively proven**, that this is the *only* live-jog
    entry point (as opposed to Manual Mode possibly having its own,
    separate path funneling into the same primitive).
@@ -294,7 +294,7 @@ step, which this project has traced to a specific, real trigger (the
 Remote's own boot sequence, or a reconnect after a communication gap —
 never this recording action itself). See
 [`action-command-map.md`](action-command-map.md)'s workflow 6 and
-[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md).
+[`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md).
 
 **What becomes possible next**: testing the segment (workflow 6),
 executing it (workflow 7), recording the next segment (B->C, C->D),
@@ -442,7 +442,7 @@ only on explicit user request.
    `[firmware string]` `"Relay contact"`, `"12/24Vdc"`, `"Start"`,
    `"Current"`, `"Delay"`, `"Pingpong mode"` sit near a `"SET LIMITS"`
    string in the flash string table. **This proximity-based placement is
-   now disproven** (`ll2-set-limits-provenance.md`): `"SET LIMITS"`'s
+   now disproven** (`manual-mode-and-limits.md`): `"SET LIMITS"`'s
    sole real code reference traces cleanly to `FUN_0000cb70`, called only
    from `FUN_0000e314` — part of the Manual-Mode-cluster screen family
    (workflow 3/12), not this trigger/relay family. Treat
@@ -458,7 +458,7 @@ only on explicit user request.
 Manual-Mode-cluster screen as workflow 3 (`FUN_0000d988`/
 `FUN_0000db34`/`FUN_0000d570` -> `FUN_0000e314`) — Set Limits is a
 second row of that same screen/menu, not a separately-rooted top-level
-feature (`ll2-set-limits-provenance.md`). The exact click/menu-index that
+feature (`manual-mode-and-limits.md`). The exact click/menu-index that
 selects this row over the plain "Direction" jog row is `[PROBABLE]`, not
 fully decoded (an internal selector byte equal to `1` or `8`).
 
@@ -493,7 +493,7 @@ AutoPilot's `posA`/`posB` by any other path. The AutoPilot-side pair
 (`LL1` clears, `LL2` orders-and-validates only if the two values differ)
 exists exactly as before, but no traced real sequence populates it with
 anything but `0`/`0`. See `action-command-map.md`'s `LL1`/`LL2` entry and
-[`ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md).
+[`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md).
 
 **What becomes possible next**: `[user manual]` "surpass limits" implies
 Auto Mode / cablecam motion can be configured to continue past a limit
@@ -562,7 +562,7 @@ discipline.
 
 - [`action-command-map.md`](action-command-map.md) — firmware evidence
   overlay on top of this document's workflows.
-- [`../hardware/autopilot-research-handoff.md`](../hardware/autopilot-research-handoff.md) —
+- [`../hardware/hardware-reference.md`](../hardware/hardware-reference.md) —
   this document's primary source (sections 2-13).
 - [`../protocol/command-inventory.md`](../protocol/command-inventory.md) —
   the flat command list this document's workflows are now layered on top

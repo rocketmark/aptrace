@@ -20,7 +20,7 @@ outbound dispatcher itself) concretely confirmed to consume `pending[5]`
 (observed going `1` -> `0`) and hand the real TX hook (`0x8c10`) a pointer
 to exactly `"V01R39\0"`, closing the whole AutoPilot milestone at the
 concrete evidence tier. See
-[`docs/investigations/tx-hook-verification.md`](../investigations/tx-hook-verification.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 and [`docs/project-status.md`](../project-status.md). No other event's
 producer has been checked by execution yet.
 

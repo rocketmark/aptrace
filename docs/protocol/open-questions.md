@@ -33,11 +33,11 @@ about the protocol itself.
    byte in *this* build, so there is still no producer here — but the
    question is now "does any AutoPilot build/config reach it," not
    "does the Remote support it." See
-   [`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
+   [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 8. **Reconcile Remote-transmitted packets not accepted by the visible
    AutoPilot dispatcher**: `MS|`, `MR|`, `MM|`, `N|`, `KK|`, `E1,...|`, bare
    `W|`, and the short `I9|`/`I1|` forms. **Note**: since
-   [`docs/investigations/parser-dispatch.md`](../investigations/parser-dispatch.md)
+   [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
    found the AutoPilot dispatcher's real structure is more complex than the
    flat model this question assumed, some of these may turn out to be
    reachable through the previously-unmodeled indexed-lookup mechanism.
@@ -55,7 +55,7 @@ about the protocol itself.
 
 10. ~~What do `0x5274` and `0x5448` actually do?~~ **Largely resolved
     (2026-09-07) via Ghidra decompilation** — see
-    [`docs/investigations/dispatcher-loop-callees.md`](../investigations/dispatcher-loop-callees.md)
+    [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
     for the full read/write breakdown. Summary: at their loop call sites,
     `0x5274` writes `0x200024cc[channel]` and `0x2000309d[channel]`
     unconditionally; `0x5448` writes `0x20000134[channel]`,

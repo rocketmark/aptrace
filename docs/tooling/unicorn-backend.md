@@ -28,8 +28,6 @@ thin CLI translation layer over it (parse strings, call `.run()`/
 multi-leg scenarios import `concrete.py` directly and build one
 `ConcreteMachine` per firmware image, reused across every leg, rather
 than spawning a `run_concrete.py` subprocess per call. See
-[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)
-for the specific frictions this replaced and
 `tools/unicorn/test_concrete.py` for the regression coverage.
 
 ```python
@@ -48,10 +46,8 @@ restoring **every mapped mutable region** — RAM, flash, the MMIO window,
 and the PPB (SysTick/NVIC/SCB/MPU) — to the same pristine state a
 brand-new `ConcreteMachine` would have, before every call. This matches
 the old one-subprocess-per-call isolation exactly (a hardening pass
-tightened this from an earlier version that only reset RAM/registers —
-see
-[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)'s
-hardening-pass note), while still reusing the firmware bytes and the
+tightened this from an earlier version that only reset RAM/registers),
+while still reusing the firmware bytes and the
 flash/RAM/MMIO memory mapping already built into the `Uc` instance — the
 expensive part of "start fresh" without the expensive part of "rebuild
 everything." Restoration is page-granularity dirty-tracking, not a blind
@@ -93,7 +89,7 @@ silently produced a real false investigative path: a `--reg r0=28`
 meant to seed decimal 28 (a packet length) was read as hex `0x28`=40,
 corrupting a real retransmission-dedup guard and producing a plausible-
 looking-but-wrong early return (documented in
-[`docs/investigations/plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md)'s
+[`docs/investigations/auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md)'s
 own "concrete techniques this slice needed" section). `--force-reg`'s
 `HEX` and `--mmio-force-bits`/`--mmio-clear-bits`'s `MASK` are
 **deliberately kept hex-only** — a bitmask/forced-register value stands
@@ -156,15 +152,14 @@ tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
   above `0xE0100000` was tried first and does **not** work — Unicorn's
   Cortex-M4 model enforces implicit XN there, faulting with
   `UC_ERR_EXCEPTION` the instant execution reaches it, not a decode
-  error; see the toolchain-cleanup investigation doc's hardening-pass
-  note for how this was root-caused. `--stop-at` (used internally)
+  error. `--stop-at` (used internally)
   only intercepts a PC *after* Unicorn has already decoded the
   instruction there, so a synthetic return address pointing at data
   (not code) crashes with `UC_ERR_INSN_INVALID` before the stop check
   ever fires, and one without the Thumb bit set makes `bx lr` switch to
   ARM mode and crash the same way even over genuinely valid Thumb code
   — both real gotchas this class's trampoline was built to avoid, not
-  theoretical ones (see `docs/investigations/plus-target-distance-roundtrip.md`
+  theoretical ones (see `docs/investigations/auto-mode-and-plus-command.md`
   for exactly this failure mode, hit and fixed, before this helper
   existed).
 - The result's `returned` field is `True` only if the function's own
@@ -255,7 +250,7 @@ an address is hit, **without halting** — unlike `--stop-at`. Combine with
 **`--watch-mem ADDR:LEN`** (repeatable) to also capture memory ranges at
 each hit. This is what a per-iteration loop trace needs (one `--stop-at`
 only ever gives you the *first* hit); see
-[`docs/investigations/dispatcher-loop-concrete-trace.md`](../investigations/dispatcher-loop-concrete-trace.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 for a real trace built this way. `--max-watch-hits N` (default 2000) caps
 total recorded hits as a safety net against a genuinely unbounded loop.
 
@@ -268,7 +263,7 @@ peripheral/register names with
 [`tools/svd/resolve_mmio.py`](../../tools/svd/resolve_mmio.py) — see
 [`tool-selection.md`](tool-selection.md)'s "SVD / MMIO labeling" section
 and
-[`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
 for a real use of this (and for what happened when the outbound TX path
 was probed this way: zero MMIO accesses on the path up to the TX hook
 itself — a genuine, informative negative result, not a tool failure).
@@ -285,7 +280,7 @@ that the zero-behavior MMIO stub can never satisfy) and whose return
 value is either unused (`void`) or doesn't matter for the property being
 checked. It does not fabricate a return value — registers are left
 exactly as the caller set them up. See
-[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 for a real use (stubbing a radio poll and a SysTick-based delay to let a
 real byte-consumption loop run to completion).
 
@@ -299,7 +294,7 @@ built from a *different* literal plus a runtime offset) that a
 literal-value search can't attribute to the target address — this is
 exactly the tool for confirming or ruling that out concretely, rather
 than reading more decompiles by hand. Added for
-[`docs/investigations/channel-busy-gate-search.md`](../investigations/channel-busy-gate-search.md),
+[`docs/investigations/motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
 which used it to get a genuine negative result (no write observed) after
 static search had already checked every function referencing the address
 via a direct literal. Each hit records the instruction count, PC, LR,
@@ -318,7 +313,7 @@ machinery than the question needs. **Find the real variable first**:
 locate the firmware's own tick-read function (its body is typically just
 `return *some_RAM_address;`) and disassemble the real `SysTick_Handler`
 (vector table index 15) to confirm it increments that same address — see
-[`docs/investigations/systick-tick-injection.md`](../investigations/systick-tick-injection.md)
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
 for a full worked example on this firmware (`FUN_0000ccd0`/`FUN_0000ccdc`
 both derive from a single RAM counter at `0x200052ec`, incremented by the
 real `SysTick_Handler` at `0xcca4`). Advancing on an instruction-count
@@ -341,7 +336,7 @@ name from the real SVD (`tools/svd/resolve_mmio.py`) as a documented
 completion/ready flag that real hardware sets predictably once the
 firmware's own preceding write takes effect — e.g. an oscillator-ready
 or PLL-lock bit on hardware already confirmed to boot (see
-[`docs/investigations/reset-handler-clock-init.md`](../investigations/reset-handler-clock-init.md),
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md),
 which used this for `OSC32KCTRL.STATUS.XOSC32KRDY`,
 `OSCCTRL.STATUS.DFLLRDY`, and both `DPLLx.DPLLSTATUS.{LOCK,CLKRDY}`
 during real clock-init). Never use it for a bit whose true value depends
@@ -361,15 +356,15 @@ flash) and the firmware's own embedded PSZ-to-bytes lookup table
 (flash `0x14000`), which matches the SVD's `PSZ` enumeration exactly. A
 real NVM write of this class also needs `NVMCTRL.INTFLAG.DONE`
 (`0x41004010:1`, already documented above from
-`post-probe-main-loop.md`) — include both together for any run that
+`boot-and-hardware-bringup.md`) — include both together for any run that
 reaches a real save/erase/write path. See
-[`docs/investigations/nvm-param-and-full-roundtrip.md`](../investigations/nvm-param-and-full-roundtrip.md).
+[`docs/investigations/motor-config-persistence.md`](../investigations/motor-config-persistence.md).
 
 **`--mmio-clear-bits ADDR:MASK`** (repeatable): the complement — every
 read is AND'd with `~MASK`, forcing a bit clear. For a bit the firmware
 itself just *set* that real hardware self-clears within a few cycles (a
 software-reset bit is the textbook case) and the plain read/write memory
-model otherwise leaves stuck forever. `reset-handler-clock-init.md` used
+model otherwise leaves stuck forever. `boot-and-hardware-bringup.md` used
 this for two SERCOM instances' `CTRLA.SWRST`/`SYNCBUSY.SWRST` (bit 0),
 both real, SVD-documented self-clearing bits triggered by the firmware's
 own reset write. Same discipline as `--mmio-force-bits`: name the real
@@ -384,7 +379,7 @@ case seen so far is the SAMD51 NVM Software Calibration Row
 `--seed-mem` to fill it; the seeded bytes are then a **disclosed
 placeholder** for real silicon-specific data this harness has no way to
 know, not a claim about the true calibration values — document what the
-placeholder feeds (in `reset-handler-clock-init.md`'s case, only analog
+placeholder feeds (in `boot-and-hardware-bringup.md`'s case, only analog
 ADC/DAC/USB trim registers, confirmed to have no path to the digital
 state that investigation cared about).
 
@@ -402,7 +397,7 @@ entry, so unrelated calls to the same function are unaffected), and say
 so plainly wherever the run's results are reported — "harness-supplied
 external-device state," never "observed" or "firmware-produced." First
 use:
-[`docs/investigations/post-homing-radio-probe.md`](../investigations/post-homing-radio-probe.md)'s
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)'s
 follow-up forces `r0 = 0x12` at the one instruction right after a real
 SPI chip-ID read returns, standing in for "a radio module is present and
 answers this specific read with the value real firmware requires" — not
@@ -424,7 +419,7 @@ wipe it. Pick `TRIGGER` so it fires exactly once during the run (a
 one-time, pre-loop instruction address, not a loop-body address) — the
 hook fires on *every* hit of `TRIGGER`, same as `--force-reg`, so a
 poorly chosen trigger re-injects the same bytes every iteration. See
-[`docs/investigations/g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md)
+[`docs/investigations/motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md)
 for a worked example, including a real per-byte-arrival-timeout
 dependency (`--fake-tick`'s period vs. the firmware's own real
 inter-byte timeout) this technique surfaced.
@@ -467,7 +462,7 @@ concrete run for one input, agreeing with a solver's proof over all inputs.
 
 Entering at the dispatcher's real caller (`0x8a34`) with a real `&|` packet
 and letting the firmware establish its own entry state (see
-[`docs/investigations/dispatcher-loop-concrete-trace.md`](../investigations/dispatcher-loop-concrete-trace.md))
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md))
 found, concretely, that the previously-suspected `0x827e` loop is not even
 on the execution path for this command — a `bne` branch at `0x8266`
 (`buffer[0] == 0xF0`?) routes around it entirely. This is exactly the kind
@@ -505,7 +500,7 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   status/ready/self-clearing flag** — confirmed for this firmware's real
   `Reset_Handler` clock-init chain and one SERCOM/DMA driver constructor,
   see
-  [`docs/investigations/reset-handler-clock-init.md`](../investigations/reset-handler-clock-init.md)
+  [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
   — use `--mmio-force-bits`/`--mmio-clear-bits` (above) rather than
   `--stub-call`ing the whole poll away; it lets the real surrounding logic
   run and produces a real result instead of skipping it. This is still not
@@ -519,11 +514,11 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   state — that's exactly the case `--force-reg` (above) is for, with its
   own, stricter disclosure requirement (it fabricates, it doesn't model).
   See
-  [`docs/investigations/post-homing-radio-probe.md`](../investigations/post-homing-radio-probe.md)'s
+  [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)'s
   follow-up for a worked example distinguishing the two.
 - The ARM Private Peripheral Bus (`0xE0000000`-`0xE00FFFFF` — SysTick,
   NVIC, SCB, MPU) was unmapped until
-  [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+  [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
   found real Cortex-M startup/delay code touching it; now mapped
   unconditionally with the same zero-behavior stub (skipped only if a
   custom `--mmio-base`/`--mmio-size` already covers it). Same caveat as
@@ -559,7 +554,7 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
 - **`--watch-mem-write` can crash the run (`UC_ERR_INSN_INVALID`,
   immediately, not gracefully) when the watched write happens inside a
   Thumb-2 conditional (`IT`-block) instruction** — found in
-  [`docs/investigations/d-command-persistence-roundtrip.md`](../investigations/d-command-persistence-roundtrip.md)
+  [`docs/investigations/motor-config-persistence.md`](../investigations/motor-config-persistence.md)
   watching a `strb.ne` inside an `itttt ne` block (this project's
   `0x20001b14`/`0x20001b50`/`0x20002064` watchpoints in earlier slices
   all happened to land on unconditional `strb`s, which is why this

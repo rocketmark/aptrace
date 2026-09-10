@@ -17,7 +17,7 @@ Remote TX wrapper (flash 0x58a8)
 AutoPilot parser (flash 0x8258)         <- one command byte confirmed
         |                                  by execution to require
         +--> command/state logic            exact ASCII value; see
-        |                                    docs/investigations/parser-dispatch.md
+        |                                    docs/investigations/protocol-pipeline.md
         +--> pending[event] @ RAM 0x200025bc
                       |
                       v
@@ -58,15 +58,15 @@ Both the AutoPilot side (parser -> event 5 -> TX hook -> `"V01R39"`) and
 the Remote side (TX construction and RX capture) are execution-confirmed
 at the concrete (Unicorn) evidence tier — see
 [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md),
-[`docs/investigations/tx-hook-verification.md`](../investigations/tx-hook-verification.md),
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md),
 and
-[`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 — **and now also connected into one live, harness-driven round trip**
 (`tools/unicorn/virtual_link.py`, no LoRa/SPI hardware modeled): Remote's
 real TX call, a harness-mediated byte transfer, AutoPilot's real parse
 and response, a second harness-mediated transfer, Remote's real capture,
 asserted end to end. See
-[`docs/investigations/virtual-rf-link.md`](../investigations/virtual-rf-link.md).
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 Not yet done: a solver-confirmed (Crucible) proof of either side's whole
 transaction — see [`docs/project-status.md`](../project-status.md).
 
@@ -86,7 +86,7 @@ harness-driven virtual link built for `&|` (M3), reusing its
 `capture_tx_bytes`/`deliver_and_observe` primitives plus a new
 byte-value `capture_tx_byte` (event 17's response is a single byte via
 `0x7f84`, not a string via `0x8c10`). See
-[`docs/investigations/g-ack-roundtrip.md`](../investigations/g-ack-roundtrip.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 for the full trace, including two AutoPilot-side helpers stubbed for the
 same reasons already documented for the RF drivers (one is architecturally
 identical: a driver-object virtual call only valid after real startup).
@@ -111,7 +111,7 @@ construction, not independently observed and coincidentally aligned; and
 the Remote has its own "don't downgrade" guard — a fresh device
 receiving the short form `"P1,"` does not update its stored state at
 all. See
-[`docs/investigations/s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 
 ### Bulk `!` transaction (known field-count mismatch)
 

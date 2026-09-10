@@ -97,7 +97,7 @@ without the Thumb bit") remains open; see "Questions for Galois" below.
 
 ## Repro 2: readonly-flash values are assumption-backed, not folded, during plain Crucible execution
 
-**Background**: `docs/investigations/whole-function-trace-divergence.md`
+**Background**: `docs/investigations/protocol-pipeline.md`
 already fully explained this (root cause: `Data.Macaw.Symbolic.Memory.
 populateSegmentChunk` always populates `readonly` memory via solver
 assumptions, never folded literals, so a branch condition built from a
@@ -123,7 +123,7 @@ and the difference is entirely explained by whether a solver is in the
 loop when a readonly-memory-derived value needs to become concrete** —
 not a bug in Macaw's decode (repro 1) or in `mkFunCFG`'s CFG wiring (both
 independently exonerated in
-[`docs/investigations/gate-block-crucible-isolation.md`](../investigations/gate-block-crucible-isolation.md)).
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)).
 
 **Not changed**: no memory-model redesign attempted, per the task and
 per this project's own already-recorded decision
@@ -199,7 +199,7 @@ Ok
    (all of `crucible-macaw-debug`'s macaw-specific commands) are built on
    `Data.Macaw.Symbolic.Regs.execStateRegs` — the *same* API this
    project's own `richTraceFeature` already uses independently
-   (`docs/investigations/whole-function-trace-divergence.md`) — real
+   (`docs/investigations/protocol-pipeline.md`) — real
    architectural alignment, not a coincidence.
 2. **`mregister r3` failed with "Couldn't find register struct" at the
    very start of execution.** `crucible-macaw-debug`'s own README already
@@ -332,7 +332,7 @@ with its direction, value, PC, and instruction count — no new peripheral
 modeling, purely a diagnostics convenience connecting two tools that
 already existed separately. Example (real output, `FUN_0000bc44`'s USB
 pin-mux setup from
-[`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)):
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)):
 
 ```
 $ python3 tools/svd/resolve_mmio.py --unicorn-log snapshot.json
@@ -387,7 +387,7 @@ write 0x4100803c = 0x7  PORT.GROUP0.PMUX12 (+0x3c)  (pc=0x0000bcaa, instr #134)
    model straight-line/callable code only — no NVIC, no interrupt
    preemption at arbitrary points. Given ATSAMD51's peripherals routinely
    drive behavior via ISRs (confirmed concretely in
-   `docs/investigations/samd51-peripheral-mapping.md` — a timer ISR
+   `docs/investigations/boot-and-hardware-bringup.md` — a timer ISR
    toggling a GPIO pin), what's Galois's recommended approach for
    symbolically/concretely reasoning about interrupt-driven control flow
    without building a full interrupt controller model?
@@ -407,8 +407,8 @@ write 0x4100803c = 0x7  PORT.GROUP0.PMUX12 (+0x3c)  (pc=0x0000bcaa, instr #134)
 9. **The RF/SPI driver-object boundary**: both AutoPilot and Remote hide
    their real RF/SPI behavior behind runtime driver objects and function
    pointers populated by code we deliberately haven't modeled (see
-   `docs/investigations/samd51-peripheral-mapping.md` and
-   `docs/investigations/mando-first-execution.md`) — reaching into them
+   `docs/investigations/boot-and-hardware-bringup.md` and
+   `docs/investigations/protocol-pipeline.md`) — reaching into them
    either means running full real startup, or building real SPI/radio
    peripheral behavior, both explicitly out of scope for our current
    goals. **What abstraction boundary would Galois recommend when we

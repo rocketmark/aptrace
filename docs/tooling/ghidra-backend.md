@@ -23,9 +23,7 @@ decompile/disassemble/callers/xrefs/symbol question.** Every prior
 investigation in this project imported and fully auto-analyzed the same
 raw firmware image (a real, ~10-15s cost, not just process startup) for
 a *single* query, then deleted the project — ten questions against one
-firmware meant ten full re-analyses. See
-[`docs/investigations/toolchain-cleanup.md`](../investigations/toolchain-cleanup.md)
-for the specific friction this replaced.
+firmware meant ten full re-analyses.
 
 ```sh
 # First use of a firmware: import, seed the vector table, auto-analyze,
@@ -167,7 +165,7 @@ how the `0x801c` cross-check in `tool-selection.md` was done.
   (at `build` time, before export) when a firmware has a
   `research/provenance/*.tsv` labels file — renames functions and adds
   plate comments from the provenance classification work (see
-  [`docs/investigations/standard-library-provenance.md`](../investigations/standard-library-provenance.md)).
+  [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)).
 - `tools/ghidra/scripts/APTraceExportStaticAnalysis.java` — `-postScript`,
   exports the JSON described above (post-provenance, so renamed symbols
   are what it captures). Hand-rolled JSON serialization (no external
@@ -186,7 +184,7 @@ how the `0x801c` cross-check in `tool-selection.md` was done.
   range. Decompiled C hides real instruction addresses; reach for this
   when a Unicorn scenario needs an exact call-site or loop-entry address
   (see
-  [`docs/investigations/mando-first-execution.md`](../investigations/mando-first-execution.md)
+  [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
   for a real use). Run per query via `aptrace_ghidra.py disasm`, same
   reopened-project mechanism as `decompile`.
 

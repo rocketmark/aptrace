@@ -202,7 +202,7 @@ the real concrete value implies. Confirmed concretely in this project: a
 branch on a literal-pool-derived byte took the wrong successor during
 whole-function execution despite the underlying byte being genuinely
 concrete — see
-[`docs/investigations/whole-function-trace-divergence.md`](../investigations/whole-function-trace-divergence.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 for the full trace.
 
 **Practical implication**: any whole-function Crucible target whose
@@ -242,7 +242,7 @@ sufficient for now.
 raw addresses like `0x40002000`) in Ghidra output, Unicorn traces, and any
 future Crucible MMIO modeling.
 
-**The part number is now confirmed**: `docs/hardware/autopilot-research-handoff.md`
+**The part number is now confirmed**: `docs/hardware/hardware-reference.md`
 identifies the AutoPilot's MCU directly (physical board inspection) as
 **ATSAMD51J19A-AU** (Remote: -AF — same silicon, different
 package/temperature grade). This confirmation did *not* come from the RAM-
@@ -263,7 +263,7 @@ address to `PERIPHERAL.REGISTER` (handling repeated/union structures like
 `PORT.GROUP0/1` and `TC.COUNT8/16/32`). `tools/unicorn/run_concrete.py
 --log-mmio` records every MMIO access from a concrete run so it can be fed
 through the same resolver. See
-[`docs/investigations/samd51-peripheral-mapping.md`](../investigations/samd51-peripheral-mapping.md)
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
 for a real worked example (startup peripheral survey, a first concretely-
 named pin-mux fact, and an honest negative result for the outbound TX
 path).
@@ -287,7 +287,7 @@ focuses on the custom callers instead of repeatedly re-deriving known
 infrastructure.
 
 **Method, established in
-[`docs/investigations/standard-library-provenance.md`](../investigations/standard-library-provenance.md)**:
+[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)**:
 identify the *exact* evidenced toolchain version first (this firmware
 embeds its own build-path strings naming Adafruit `ArduinoCore-samd`
 git tag `1.7.11` — see `docs/firmware/firmware-layout.md` — no need to

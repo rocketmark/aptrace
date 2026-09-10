@@ -90,11 +90,43 @@ behind each one.
   register/memory-aware, for finding an exact divergence point). Reach
   for the next level only once the current one can't answer the question.
 
-## Project sequencing
+## Start here
 
-**Do not move to the Remote (`mando`) firmware until the documented
-AutoPilot-only milestone is complete.** See
-[`docs/project-status.md`](docs/project-status.md) for the exact milestone,
-current blocker, and next steps — it is the single authoritative source of
-current project state; if anything else in the repo conflicts with it,
-`project-status.md` wins.
+[`docs/project-status.md`](docs/project-status.md) is the single
+authoritative source of current project state — what's proven, what's
+open, what's next. Read it before starting new work. If anything else in
+the repo conflicts with it, `project-status.md` wins; that's a docs bug,
+fix it there. [`docs/README.md`](docs/README.md) is the documentation
+index if you need to find something else first.
+
+## Evidence discipline
+
+Every finding gets an explicit evidence level; never let prose imply more
+confidence than the level supports:
+
+- **CONFIRMED** — static (Ghidra: disassembly, exhaustive xref) or concrete
+  (Unicorn: a real, unmodified run).
+- **Solver-confirmed** — a Crucible/What4/Z3 query, for a genuinely
+  symbolic question. Don't treat this as stronger than a concrete run for
+  a question that's actually concrete (see "Tool selection" above).
+- **PROBABLE / pattern-matched** — a strong correlation (e.g. a UI-string
+  match against the manual, a register value matching a well-known chip's
+  documented ID) that has not been independently proven. Say so; don't
+  round up to CONFIRMED.
+- **UNKNOWN / bounded, not chased** — named explicitly as an open question,
+  never silently dropped or guessed at.
+
+An exhaustive negative result (e.g. "no code path anywhere writes this
+byte") is a real finding, not a failure to report quietly — state it as
+plainly as a positive one.
+
+## Documentation discipline
+
+An investigation under `docs/investigations/` is a working notebook, not a
+permanent record. When it closes: fold its durable finding into the
+relevant canonical topic dossier (or start one, if none exists yet) and
+delete the slice document — git history preserves the process. Do not let
+`docs/investigations/` accumulate one file per session; do not add
+chronological "previous update" narration to `docs/project-status.md` or
+any reference doc — that belongs in git history, not in a hand-maintained
+document.

@@ -128,26 +128,10 @@ python3 tools/ghidra/test_aptrace_ghidra.py
 
 ## Documentation
 
-- [`docs/project-status.md`](docs/project-status.md) — **authoritative
-  current state.** Start here.
-- [`docs/harness/roadmap.md`](docs/harness/roadmap.md) — active research
-  priorities and milestone history.
-- [`docs/tooling/tool-selection.md`](docs/tooling/tool-selection.md) —
-  which tool to reach for and why; read before doing firmware-analysis
-  work (short version: [`CLAUDE.md`](CLAUDE.md)).
-- [`docs/architecture.md`](docs/architecture.md) — the workbench direction
-  in more depth.
-- [`docs/toolchain.md`](docs/toolchain.md) — full build/setup instructions.
-- [`docs/protocol/command-inventory.md`](docs/protocol/command-inventory.md) —
-  flat reference for "what does wire command X do."
-- [`docs/ui/action-command-map.md`](docs/ui/action-command-map.md) —
-  which user-visible action emits which command, and what state it needs.
-- [`docs/firmware/`](docs/firmware/), [`docs/hardware/`](docs/hardware/) —
-  the target firmware and the physical boards it runs on.
-- [`docs/investigations/`](docs/investigations/) — deep dives on specific
-  closed and open questions.
-- [`docs/history/`](docs/history/) — superseded material, kept for
-  provenance only.
+Start at [`docs/project-status.md`](docs/project-status.md) —
+**authoritative current state.** [`docs/README.md`](docs/README.md) is the
+full documentation index (system reference, protocol, tooling,
+investigations).
 
 ## Current status
 

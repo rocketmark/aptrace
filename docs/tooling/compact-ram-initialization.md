@@ -1,7 +1,7 @@
 # Compact RAM Zero-Initialization for Crucible/What4 Queries
 
 **Status: implemented and measured.** Follow-up to
-[`docs/investigations/trigger-input-symbolic-reachability.md`](../investigations/trigger-input-symbolic-reachability.md)'s
+[`docs/investigations/trigger-input.md`](../investigations/trigger-input.md)'s
 Part 6, which diagnosed (but deliberately did not fix) why that
 investigation's narrowed PB05 reachability query produced a 41MB,
 267,385-assertion SMT-LIB2 formula despite having only one genuine free
@@ -60,7 +60,7 @@ packet-buffer/register logic are completely unchanged.
 
 ## Measured impact: the exact narrowed PB05 -> 0x8f98 query
 
-Same query as `trigger-input-symbolic-reachability.md`'s Part 5/6 ("Query
+Same query as `trigger-input.md`'s Part 5/6 ("Query
 A": entry `0x9203`, both gate cells concrete, only PB05 free via the opaque
 `digitalRead` override, stop at `0x8fa4`), same firmware
 (`firmware_autopilot868.bin`), same solver-logging mechanism
@@ -103,7 +103,7 @@ query in this family solver-tractable.**
 Z3 returning `unknown` rather than timing out or crashing is a real, useful
 result in its own right (a bounded, terminating answer instead of an
 open-ended hang), but it is **not** a reachability finding — no claim in
-`trigger-input-symbolic-reachability.md` changes because of it, and no new
+`trigger-input.md` changes because of it, and no new
 solver-confirmed claim is made here either. The most plausible explanation,
 **not independently verified this pass**: `CLM.doArrayStore`'s own encoding
 of "overwrite this sub-range of a background array" produces a
@@ -128,11 +128,11 @@ segment.
 There is no automated Haskell test suite for this harness (`aptrace.cabal`
 has no `test-suite` stanza) — the project's own precedent for "regression"
 on the Crucible/Haskell side is a direct before/after comparison, not a new
-test file (see e.g. `toolchain-cleanup.md`'s "byte-identical results"
-language for the Python-side equivalent). Performed here: the
+test file (a direct before/after comparison is this project's own
+precedent for a Python-side regression too). Performed here: the
 already-existing `aptrace protocol` command's whole-function check (`&|` ->
 `pending[5]=1`, entering at the real caller `0x8a34`, matching
-`dispatcher-loop-concrete-trace.md`'s own scenario) was run against both the
+`protocol-pipeline.md`'s own scenario) was run against both the
 committed baseline (`ConcreteMutable`, via `git stash`) and this change
 (`SymbolicMutable` + compact overlay), same firmware, same inputs.
 

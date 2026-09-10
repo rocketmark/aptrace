@@ -59,11 +59,11 @@ checked the way the four commands above were.
 
 ## What's been corrected
 
-The static inventory's `parser-dispatch.md` (v0.1) modeled the AutoPilot
+The static inventory's `protocol-pipeline.md` (v0.1) modeled the AutoPilot
 dispatcher as a flat if/else-if character scan. Execution found the real
 entry sequence runs through an indexed-lookup loop first, and the whole
 region is much larger (~340 Macaw-discovered blocks) than a simple
-dispatcher. See [`docs/investigations/parser-dispatch.md`](../investigations/parser-dispatch.md)
+dispatcher. See [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 for the corrected picture. The individual character branches this model
 predicted are still correct — only the "it's just a flat scan" framing
 was wrong.

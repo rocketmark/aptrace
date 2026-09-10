@@ -1,6 +1,7 @@
 # Protocol Harness Results — `aptrace protocol` (roadmap M2/M3)
 
-Follow-up to the original roadmap (now [docs/history/protocol-harness-roadmap-v1.md](../history/protocol-harness-roadmap-v1.md); current roadmap is [roadmap.md](roadmap.md)). This is the
+Follow-up to the project's original protocol-harness roadmap, since
+superseded; current roadmap is [roadmap.md](roadmap.md). This is the
 first concrete execution of that roadmap: seed the AutoPilot inbound packet dispatcher
 directly, model its input as controlled/symbolic, and ask What4/Z3 for the byte values
 that reach specific command-scheduling code -- cross-checked against
@@ -18,7 +19,7 @@ that reach specific command-scheduling code -- cross-checked against
 
 ## Important correction to the static inventory's model
 
-`../../research/autopilot_static_inventory/parser-dispatch.md` models the dispatcher as a
+`../../research/autopilot_static_inventory/protocol-pipeline.md` models the dispatcher as a
 flat if/else-if chain on the packet's leading byte(s). **That is not what the compiled
 entry sequence actually does.** Seeding discovery at `0x8259` and running the *whole*
 merged function via `Data.Macaw.Symbolic.mkFunCFG` (with a from-scratch memory/register

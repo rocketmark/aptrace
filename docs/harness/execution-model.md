@@ -46,7 +46,7 @@ memory (e.g. a `push`/`STMDB` at block entry, writing `[SP-N..SP-1]`) and
 solver can choose that register so the write **aliases and overwrites** a
 value you seeded with `bqMemoryBytes` — silently defeating the seed rather
 than erroring. Confirmed concretely in
-[`docs/investigations/gate-block-crucible-isolation.md`](../investigations/gate-block-crucible-isolation.md):
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md):
 querying a block starting with a register-list push, with only the target
 byte seeded and `SP` left free, returned "reachable" for *both* branch
 targets with nonsense models — fixed by adding `SP` to
@@ -97,7 +97,7 @@ arbitrary side, which is not necessarily the one the "real" concrete value
 implies. This is the confirmed root cause of the AutoPilot dispatcher's
 `0x8266` gate branch being taken incorrectly in the whole-function replay
 — see
-[`docs/investigations/whole-function-trace-divergence.md`](../investigations/whole-function-trace-divergence.md)
+[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 for the full trace and reasoning. **Any future whole-function target whose
 control flow depends on a literal-pool-derived value should expect the
 same issue** until this is fixed (candidate fixes are in that document,

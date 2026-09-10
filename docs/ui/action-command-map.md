@@ -63,10 +63,10 @@ Evidence, Open question.
   actually triggers a real `&|` send (connect-time handshake vs. user
   opening the Info screen vs. periodic poll — no evidence distinguishes
   these).
-- **Evidence**: [`dispatcher-loop-concrete-trace.md`](../investigations/dispatcher-loop-concrete-trace.md),
-  [`tx-hook-verification.md`](../investigations/tx-hook-verification.md),
-  [`mando-first-execution.md`](../investigations/mando-first-execution.md),
-  [`virtual-rf-link.md`](../investigations/virtual-rf-link.md).
+- **Evidence**: [`protocol-pipeline.md`](../investigations/protocol-pipeline.md),
+  [`protocol-pipeline.md`](../investigations/protocol-pipeline.md),
+  [`protocol-pipeline.md`](../investigations/protocol-pipeline.md),
+  [`protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 - **Open question**: what Remote-side event calls `0xba98` for real (menu
   navigation to the Info screen? a fixed post-connect handshake? both?).
 
@@ -80,7 +80,7 @@ AutoPilot-built `MT<b0><b1><b2><b3><x>|` frame, itself built from four
 real GPIO motor-connector presence probes on the AutoPilot side (flash
 `0x740c`-`0x74ac`, frame written at `0x74ac`-`0x74dc`). No Remote-side
 menu entry point into Quick Setup was found. See
-[`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
+[`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md)
 Part 4.
 
 **The AutoPilot-side scheduling trigger, closed**: `MT` is sent exactly
@@ -97,7 +97,7 @@ boot/setup-only. The four connector probes are a guarded 2-valued
 (boolean) read per channel (not an arbitrary digit); their slot↔probe-
 object mapping (`A→b0, C→b1, B→b2, D→b3` — not naive order) and the 5th
 field's source (`0x20001fc0`) are both identified. See
-[`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md).
+[`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md).
 
 - **User-guide action**: choose each motor's type (or "Not connected"),
   set current/steps-per-second/microstepping/return-speed, press
@@ -170,9 +170,9 @@ field's source (`0x20001fc0`) are both identified. See
   a real but unresolved cross-purpose worth flagging rather than
   smoothing over. **UNKNOWN** for `MC4`'s second call site's own trigger
   (the `'S'`-handler bulk push) — pre-existing, unchanged.
-- **Evidence**: [`mc4-transition.md`](../investigations/mc4-transition.md),
-  [`g-command-motor-subsystem-unlock.md`](../investigations/g-command-motor-subsystem-unlock.md),
-  [`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md)
+- **Evidence**: [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+  [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+  [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md)
   (this slice — full disassembly, independent scan methodology, and
   concrete captures for everything above).
 - **Open question**: what writes `*0x2000027d` (selects a 4-row vs. 2-row
@@ -215,17 +215,17 @@ per-gesture command. Direction is now resolved: Remote → AutoPilot.
 - **AutoPilot handler/function**: `ascii_dispatcher` (`FUN_00008258`)
   checks for `0xF0`/`0xE0` **before any ASCII command**; per record,
   compares the value against `0x20000180[channel]` (the same "clamping
-  ceiling" array `i-command-motor-chain.md` already found) and calls
+  ceiling" array `motor-subsystem-unlock.md` already found) and calls
   `FUN_00005274(channel, 4)` — **the same entry point the `I` command
   uses** — or `FUN_00005448` → `FUN_00004d18` (also the same function
   `I`'s own chain reaches).
 - **AutoPilot state effect**: `step_delta[channel]`'s sign, via the
   already-proven `FUN_00005274`/`FUN_00004d18` chain — inherits, not
   reopens, the still-unresolved `0x20001b14[channel]` "busy" gate
-  (`channel-busy-gate-search.md`) before any GPIO pulse is observable.
+  (`motor-subsystem-unlock.md`) before any GPIO pulse is observable.
 - **Persistent-state effect**: none identified.
 - **Hardware/motion effect**: reaches the same real timer/ISR/GPIO
-  mechanism (`motor-timer-survey.md`/`i-command-motor-chain.md`) once the
+  mechanism (`boot-and-hardware-bringup.md`/`motor-subsystem-unlock.md`) once the
   busy gate is set — not re-verified concretely this slice.
 - **Confidence**: **CONFIRMED** for the wire grammar, sender, and
   receiver (disassembly, cross-checked from both the physical-input side
@@ -234,7 +234,7 @@ per-gesture command. Direction is now resolved: Remote → AutoPilot.
   per-channel value's semantic source (accumulated delta vs. live
   position — not traced). **UNKNOWN** for AutoPilot-side stop/dead-man
   timeout behavior when frames stop arriving.
-- **Evidence**: [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md).
+- **Evidence**: [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md).
 - **Open question**: the exact source of the encoded per-channel value;
   whether Manual Mode has any live-jog entry point besides the
   `"Direction"` row; the `0xE0` variant's exact field layout; AutoPilot-
@@ -303,8 +303,8 @@ the full treatment (the three interactive `FUN_000049c4` call sites). Summary:
   screens 9/10 correspond to "confirm/save an Auto Mode segment" the way
   the user-guide action label implies — see Part 3 for exactly what
   remains unresolved there.
-- **Evidence**: [`plus-command-remote-provenance.md`](../investigations/plus-command-remote-provenance.md),
-  [`persistent-record-motor-target-mapping.md`](../investigations/persistent-record-motor-target-mapping.md).
+- **Evidence**: [`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`motor-config-persistence.md`](../investigations/motor-config-persistence.md).
 - **Open question**: see Part 3.
 
 ### 5. Auto Mode: execute a move -> `G<d><d><seq>|` mode-1 (workflow 7)
@@ -335,18 +335,18 @@ the full treatment (the three interactive `FUN_000049c4` call sites). Summary:
 - **Hardware/motion effect**: `FUN_00006fd8`'s move-commit arms the
   phase-machine (`0x2000310c[channel]=1`); the subsequent phase/timer/ISR/
   GPIO chain is independently CONFIRMED as a mechanism
-  (`motor-timer-survey.md`/`i-command-motor-chain.md`) but was **not**
+  (`boot-and-hardware-bringup.md`/`motor-subsystem-unlock.md`) but was **not**
   re-verified in the same concrete run as this specific `distance=500`
-  value (see `plus-target-distance-roundtrip.md`'s own "what this does
+  value (see `auto-mode-and-plus-command.md`'s own "what this does
   not yet demonstrate" section).
 - **Confidence**: **CONFIRMED**, concretely, for the entire chain from a
   real `'+'`-populated target through `G` mode-1 to a real move-commit
   decision — this project's single most complete concrete result.
   **PROBABLE** for the UI-label mapping ("Move to A" etc.) — no string has
   been traced to `0xb680`'s call site.
-- **Evidence**: [`plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md),
-  [`mc4-transition.md`](../investigations/mc4-transition.md),
-  [`target-config-provenance.md`](../investigations/target-config-provenance.md).
+- **Evidence**: [`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+  [`motor-config-persistence.md`](../investigations/motor-config-persistence.md).
 - **Open question**: which Remote UI action (of "GO TO POINT" / "Move to
   A-D" / a Test action) actually calls `0xb680` with `type=1`? (`type`
   digits 0 and 2-9 are also structurally available and untraced against
@@ -364,7 +364,7 @@ followed by a fresh byte in `['a','x']`/`'B'` (a debounced retry, not a
 periodic timer). Whichever call reaches it, the bulk-push+`MC4` tail
 fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 — independent of the response's actual value. See
-[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md).
+[`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md).
 
 - **User-guide action**: **UNKNOWN/none** — this is not a discrete user
   action; it is a connection-health event (boot, or a real communication
@@ -407,15 +407,15 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
   disassembly-confirmed-equivalent path to the real `param_1` values),
   for the exact trigger condition, the shared success gate, and the
   separate push-loop gate.
-- **Evidence**: [`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
-  [`plus-command-remote-provenance.md`](../investigations/plus-command-remote-provenance.md)
-  section 4B, [`plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md).
+- **Evidence**: [`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md)
+  section 4B, [`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md).
 - **A structurally distinct sibling, not the same mechanism**:
   `FUN_0000c340` (the Remote's background UI "pump," called from dozens
   of screens) separately calls `FUN_0000b6f0` roughly every 250 ticks,
   once first sync is done and Quick Setup isn't active — a genuinely
   periodic bulk-`'+'` push, but it never sends `MC4`. Do not conflate the
-  two — see `bulk-push-trigger-provenance.md` Part 4d.
+  two — see `auto-mode-and-plus-command.md` Part 4d.
 - **Open question**: what clears the push-loop's own gating flag
   (`0x20000fa0`) after a push, and `FUN_0000d218`'s own role as a second
   setter — both named precisely, not chased this slice.
@@ -438,18 +438,18 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 - **Confidence**: **CONFIRMED** as a standalone mechanism. **NOT
   re-verified** in the same concrete run as any specific `'+'`/`G`-driven
   distance value (e.g. this project's own `500`-distance scenario stops
-  at `FUN_00006fd8`'s decision, per `plus-target-distance-roundtrip.md`'s
+  at `FUN_00006fd8`'s decision, per `auto-mode-and-plus-command.md`'s
   explicit scope note) — the connective tissue between "a move was
   committed" and "these exact GPIO pulses fired for this move" is
   believed to hold (same firmware, same functions) but has not been
   chained in one continuous run.
-- **Evidence**: [`motor-timer-survey.md`](../investigations/motor-timer-survey.md),
-  [`pin-index-provenance.md`](../investigations/pin-index-provenance.md),
-  [`i-command-motor-chain.md`](../investigations/i-command-motor-chain.md).
+- **Evidence**: [`boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md),
+  [`boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md),
+  [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md).
 - **Open question**: chain a real `'+'`/`G`-driven nonzero distance
   through `FUN_00008e18`'s phase state machine into a concretely observed
   GPIO pulse, in one continuous run — the next step
-  `plus-target-distance-roundtrip.md` itself names and does not take.
+  `auto-mode-and-plus-command.md` itself names and does not take.
   Also unresolved (exhaustively searched, not found): what sets
   `0x20001b14[channel]` nonzero in the first place — see Part 4.
 
@@ -474,9 +474,9 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 - **Preconditions**: none (reachable pre-`MC4`, like every ASCII command).
 - **Remote state/function**: **Both `LL1|` and `LL2|`'s real senders are
   now found, and they are the same function**
-  (`ll2-set-limits-provenance.md`): `FUN_0000de3c`, the shared live-jog
+  (`manual-mode-and-limits.md`): `FUN_0000de3c`, the shared live-jog
   engine already tied to Manual Mode's `"Direction"` row
-  (`manual-mode-wire-provenance.md`). A new, exhaustive whole-image raw
+  (`manual-mode-and-limits.md`). A new, exhaustive whole-image raw
   byte scan plus an independent Ghidra xref scan both converge on exactly
   one `LL2|` reference, at `0xe114`, inside this same function — no other
   candidate sender exists anywhere in the image. **A genuine surprise**:
@@ -512,10 +512,10 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 - **AutoPilot state effect**: as above. **CONFIRMED, exhaustively, from
   two independent directions now**: no other code anywhere in the
   AutoPilot image writes `posA`/`posB` with a real value (AutoPilot-side
-  scan, `ll-limit-workflow.md`), and the Remote's own real position-query
+  scan, `manual-mode-and-limits.md`), and the Remote's own real position-query
   mechanism (`I9|`/`I1|` via `FUN_0000b834`) exists but its result is
   discarded before reaching the wire at all (Remote-side scan,
-  `ll2-set-limits-provenance.md`) — both traces agree the capture
+  `manual-mode-and-limits.md`) — both traces agree the capture
   mechanism the command names imply is not reachable through this
   firmware's real protocol traffic. Same class of external/unprovisioned-
   data boundary as the blank `0x12000` motor-target default (workflow
@@ -537,9 +537,9 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
   specific labeled row). **UNKNOWN** for the outcome branch beyond `"No
   limits set"`/`"Press knob to exit"` (an un-disassembled `0xe234` arm
   likely holds `"Limits successfully"`/`"Process failed"`).
-- **Evidence**: [`ll-limit-workflow.md`](../investigations/ll-limit-workflow.md),
-  [`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md),
-  [`ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md).
+- **Evidence**: [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md),
+  [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md),
+  [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md).
 - **Open question**: the exact outcome-branch text/logic past the traced
   "No limits set" arm; the precise row-selector-to-label mapping inside
   `FUN_0000e314`; whether any *other*, entirely untraced mechanism (e.g.
@@ -568,9 +568,9 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
   recovery). **UNKNOWN** for any Remote-side sender or user-guide
   meaning — this command's *value* is understood; its *purpose* (what
   setting `0x15`-`0x18` actually represents to the user) is not.
-- **Evidence**: [`dirty-flag-persistence.md`](../investigations/dirty-flag-persistence.md),
-  [`d-command-persistence-roundtrip.md`](../investigations/d-command-persistence-roundtrip.md),
-  [`nvm-param-and-full-roundtrip.md`](../investigations/nvm-param-and-full-roundtrip.md).
+- **Evidence**: [`motor-config-persistence.md`](../investigations/motor-config-persistence.md),
+  [`motor-config-persistence.md`](../investigations/motor-config-persistence.md),
+  [`motor-config-persistence.md`](../investigations/motor-config-persistence.md).
 - **Open question**: what user-facing setting does the value at persisted
   offset `0x15` represent? (candidates, unconfirmed: brightness, RF
   channel, return speed, a global default — any of workflow 11's settings
@@ -589,14 +589,14 @@ fires whenever that call's own `S|`->`P...` round trip succeeds cleanly
 - **AutoPilot handler/function**: `FUN_0000083b2`/`0x87be` `S` branch;
   event 6 -> `P...` built from `0x20002524` (device state/mode, 0-4).
 - **Confidence**: **CONFIRMED**, concretely, both response forms
-  (`s-p-roundtrip.md`), including a real "don't downgrade" guard in the
+  (`protocol-pipeline.md`), including a real "don't downgrade" guard in the
   Remote's own parser. **CONFIRMED** (not just suggestive) that at least
   one real, non-UI trigger exists and runs automatically: `FUN_0000c440`
   (the same function that builds this exact `S|` request) is called
   unconditionally once per Remote boot and again after a real
   communication-gap timeout — see workflow 6. Whether *any* discrete UI
   action also triggers `S`/`!` independently of that remains **UNKNOWN**.
-- **Evidence**: [`s-p-roundtrip.md`](../investigations/s-p-roundtrip.md).
+- **Evidence**: [`protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 - **Open question**: event-7's 11 named fields (per
   `docs/protocol/open-questions.md` item 1) and the 11-vs-10 mismatch's
   real consequence — not pursued this slice, per this task's own
@@ -646,11 +646,11 @@ G<channel>1<seq>|  (type digit = 1, "mode 1" in this project's own
 `G` mode-1 **cannot be understood in isolation** from how the target was
 populated — a `G` mode-1 sent against a blank/never-`'+'`-written channel
 resolves `distance=0` (mode 0) or `distance=-1` (modes 1-9), per
-`target-config-provenance.md`'s own exhaustive exercise of every type
+`motor-config-persistence.md`'s own exhaustive exercise of every type
 digit against unpopulated config. This project has now demonstrated both
 ends of this dependency concretely: the "nothing populated" case
-(`mc4-transition.md`) and the "'+' populated it for real" case
-(`plus-target-distance-roundtrip.md`).
+(`motor-subsystem-unlock.md`) and the "'+' populated it for real" case
+(`auto-mode-and-plus-command.md`).
 
 ### `'+'`'s three interactive call sites vs. its one bulk-push call site
 
@@ -675,7 +675,7 @@ path, whose real-world trigger is now **CONFIRMED**: the Remote's own
 boot sequence (unconditional, once per power-on) and, later in a session,
 a real communication-gap-then-reconnect event — never a segment-confirm
 button press (see workflow 6,
-[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md)).
+[`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md)).
 This is one of the most important corrections this modeling pass makes
 explicit:
 **the interactive Auto-Mode confirm screens and the mechanism that
@@ -698,7 +698,7 @@ anywhere in this firmware image. Treat any workflow narrative describing
 "the AutoPilot remembers where you set the limits" with caution — the
 mechanism that would make that true has not been found.
 
-**Now traced from the Remote side too** (`ll2-set-limits-provenance.md`):
+**Now traced from the Remote side too** (`manual-mode-and-limits.md`):
 both are sent from the same function, `FUN_0000de3c`, as part of a real
 sequence —
 
@@ -739,8 +739,8 @@ A dedicated disassembly-plus-concrete-execution pass closed most of this
 section (against `mando868`'s persistent Ghidra cache and
 `ConcreteMachine`, no re-import/re-analysis, no hand-picked SP/LR); full
 disassembly excerpts and proof are in
-[`../investigations/auto-mode-plus-callsite-identity.md`](../investigations/auto-mode-plus-callsite-identity.md),
-summarized here. It corrects `plus-command-remote-provenance.md` on one
+[`../investigations/auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+summarized here. It corrects `auto-mode-and-plus-command.md` on one
 structural point:
 **there are four `'+'` call sites in `FUN_0000e670`, not three** — screen
 5 has two mutually-exclusive call sites with identical arguments, which
@@ -797,7 +797,7 @@ and B:
 - **`'+'` bytes (CONFIRMED, concrete)**: entering `FUN_000049c4` directly
   with the real arguments captured at `0xf40c`/`0xf5a6` (a disclosed
   representative per-channel record, the same evidence tier this
-  project's `plus-target-distance-roundtrip.md` already uses) produces
+  project's `auto-mode-and-plus-command.md` already uses) produces
   the real frame `b'+1,1,1,2,0,1,0,50,0,0,0,0|'` for a seeded channel-2,
   segment-2 scenario.
 
@@ -851,7 +851,7 @@ inferring on-screen co-location from proximity alone.
 - `"NO MOVEMENT"` (`0x1c56a`) is rendered only in `FUN_00005474`'s
   "no channel anywhere has recorded data" branch (`FUN_00005450()==0`,
   `param_2==1`) — **not** on any `'+'` call path, interactive or
-  bulk-push. `plus-command-remote-provenance.md`'s listing of it as a
+  bulk-push. `auto-mode-and-plus-command.md`'s listing of it as a
   candidate landmark near the `'+'` call sites is superseded by this more
   precise placement.
 - `"COMMIT!"`/`"COMMIT2!"` are definitively **not** shown at any of the
@@ -911,11 +911,11 @@ screen-index, the `MC<0-3>`/`MC4` Remote sender, the `MT` AutoPilot-side
 scheduling trigger, the `FUN_0000c440` bulk-push trigger, the Manual
 Mode jog wire mechanism, and `LL2`'s Remote sender/position-capture
 question — are now closed (Part 3,
-[`mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
-[`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md),
-[`bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
-[`manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md),
-and [`ll2-set-limits-provenance.md`](../investigations/ll2-set-limits-provenance.md))
+[`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+[`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+[`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+[`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md),
+and [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md))
 and removed; the ranking below reflects what remains.
 
 1. **What does persisted offset `0x15` (the `D` command's field)
@@ -934,7 +934,7 @@ and removed; the ranking below reflects what remains.
    precisely** — the captured call-site-A/B frame
    (`b'+1,1,1,2,0,1,0,50,0,0,0,0|'`) shows the seeded `+0x14` value (50)
    land on the wire but not the `+0x10 - +0xc` delta (500) this
-   project's other `'+'` analysis (`persistent-record-motor-target-mapping.md`)
+   project's other `'+'` analysis (`motor-config-persistence.md`)
    already attributes to that branch — a real, disassembly-answerable
    discrepancy between two of this project's own documents, not yet
    reconciled.
@@ -953,13 +953,13 @@ and removed; the ranking below reflects what remains.
    concretely — assessed this pass as a materially larger, structurally
    different undertaking than this project's existing whole-packet
    `REMOTE_*_ENTRY` anchors; see
-   [`mt-quick-setup-trigger.md`](../investigations/mt-quick-setup-trigger.md)'s
+   [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md)'s
    own "Remaining unknowns."
 7. **What does the `0xF0`/`0xE0` binary jog frame's per-channel value
    actually represent** (accumulated jog delta vs. live/target position —
    `FUN_0000be94`'s own prologue calls not decoded), **and does the
    AutoPilot side stop or decay motion when frames stop arriving?**
-   Unlocks: closing `manual-mode-wire-provenance.md`'s own two largest
+   Unlocks: closing `manual-mode-and-limits.md`'s own two largest
    remaining gaps — see that document's "Remaining unknowns."
 
 Each of these is phrased as a single bounded question with a specific
@@ -973,12 +973,12 @@ against open-ended reversing campaigns.
   skeleton this file overlays evidence onto.
 - [`../protocol/command-inventory.md`](../protocol/command-inventory.md) —
   the flat command list.
-- [`../investigations/plus-command-remote-provenance.md`](../investigations/plus-command-remote-provenance.md),
-  [`../investigations/plus-target-distance-roundtrip.md`](../investigations/plus-target-distance-roundtrip.md),
-  [`../investigations/auto-mode-plus-callsite-identity.md`](../investigations/auto-mode-plus-callsite-identity.md),
-  [`../investigations/mc4-transition.md`](../investigations/mc4-transition.md),
-  [`../investigations/mc-command-remote-provenance.md`](../investigations/mc-command-remote-provenance.md),
-  [`../investigations/bulk-push-trigger-provenance.md`](../investigations/bulk-push-trigger-provenance.md),
-  [`../investigations/manual-mode-wire-provenance.md`](../investigations/manual-mode-wire-provenance.md),
-  [`../investigations/ll-limit-workflow.md`](../investigations/ll-limit-workflow.md) —
+- [`../investigations/auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`../investigations/auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`../investigations/auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`../investigations/motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+  [`../investigations/motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
+  [`../investigations/auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md),
+  [`../investigations/manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md),
+  [`../investigations/manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md) —
   primary evidence sources.
