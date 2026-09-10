@@ -6,7 +6,52 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (a targeted Crucible/What4/Z3 cross-check of
+Last updated: 2026-09-09 (trigger-input software-mitigation design and
+binary patchability assessed — a design/prototyping slice, not a new
+firmware-behavior finding): building on the already-closed gate at
+`0x9202`-`0x9231` and the solver-confirmed `digitalRead`-return branch at
+`0x922c`/`0x922e` (below), this slice asks a different question —
+assuming the real electrical root cause at the physical trigger port
+remains **unresolved and out of scope**, what software mitigation is
+possible, minimal, and testable at the narrowest safe patch point?
+Byte-exact disassembly (direct file reads, cross-checked against the
+already-published Ghidra/Macaw block structure) confirms the region has
+**zero free bytes** — any mitigation beyond redirecting the existing 4-byte
+branch requires a trampoline. Three classes of apparently-unused flash
+were checked directly and each turned out to be real content, not slack:
+the large zero run at `0x1113f`-`~0x14000` is the already-documented
+flash-backed persisted config blob (`0x12000`,
+`target-config-provenance.md`); a small gap at `0x401a` is a reserved
+vector-table slot; three ~12-byte gaps elsewhere are per-function literal
+pools (confirmed by inspecting all three directly, same recurring
+pattern each time) — a genuine negative result, not an assumption. Six
+mitigation families were evaluated against the firmware's own confirmed
+semantics (level-sampled, no debounce, no latch, main-loop-rate polling,
+no minimum pulse width established); **consecutive-sample debounce**
+ranked strongest — general across boot-time and mid-session connection
+events, and the only candidate that preserves the CONFIRMED
+repeat-refire-while-held behavior unchanged. A real, hand-encoded,
+capstone-verified 34-byte Thumb-2 trampoline was built and **concretely
+executed in Unicorn** (not just modeled) against the real gate, via a
+harness-only scratch page — not a real flash address, since no verified
+in-image cave was found and no distributable image is produced this
+slice — passing all 9 required regression scenarios, including the
+critical "nuisance transient → no accepted trigger, then a later
+intentional trigger → accepted normally." The prototype's own first
+version had a real bug (patches written before `run(fresh=True)` were
+silently reverted by `ConcreteMachine.reset()`, which restores any dirty
+page — including one dirtied before `run()` was ever called — to its
+pristine snapshot); fixed by routing every patch through `run()`'s own
+`seed_mem`, and recorded as a reusable lesson for future Unicorn-patch
+work in this project, not specific to this gate. **No prior
+firmware-behavior conclusion changes, and the physical trigger-port fault
+remains explicitly untouched** — this is a mitigation-design and
+tooling-capability result, layered on top of already-closed findings. See
+[`docs/investigations/trigger-input-mitigation-patchability.md`](investigations/trigger-input-mitigation-patchability.md)
+and the new
+[`tools/unicorn/trigger_mitigation_prototype.py`](../tools/unicorn/trigger_mitigation_prototype.py).
+
+Previous update (2026-09-09, a targeted Crucible/What4/Z3 cross-check of
 the trigger gate converges, solver-confirming the values Ghidra/Unicorn
 already established): the prior whole-region symbolic attempt
 (`trigger-input-symbolic-reachability.md`) did not converge to a useful

@@ -1,1 +1,2 @@
 unicorn==2.1.4
+capstone==5.0.9  # optional: static disassembly cross-check in trigger_mitigation_prototype.py only
