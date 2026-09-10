@@ -60,6 +60,7 @@ _COLUMN_MIGRATIONS = (
     ("hardware_snapshot_runs", "assumptions_json", "TEXT"),
     ("library_matches", "reference_source_confirmed", "INTEGER NOT NULL DEFAULT 0"),
     ("library_matches", "reference_source_citation", "TEXT"),
+    ("components", "strings_json", "TEXT"),
 )
 
 
@@ -83,6 +84,10 @@ def get_firmware_id(conn, key):
 # DELETE from top-to-bottom (children before the parents they reference)
 # -- see clear_firmware_data. Keep in sync with schema.sql's FOREIGN KEYs.
 _TABLES_CHILD_FIRST = (
+    # Residual-prioritization/hardware-contract layer (tools/census/
+    # residual_priority.py, hardware_contract.py) -- a re-aggregation ON
+    # TOP of the closure-reduction layer below, so cleared first.
+    "residual_priority", "hardware_contract_runs",
     # Closure-reduction layer (all reference `functions`, directly or via
     # another reduction table) -- cleared first so a static `census
     # build` rebuild never trips a foreign-key error against stale
@@ -103,6 +108,7 @@ _TABLES_CHILD_FIRST = (
 # layer (build.py's own tables), so `census reduce` can be rerun after
 # nothing but its own inputs changed, without forcing a static rebuild.
 _REDUCTION_TABLES_CHILD_FIRST = (
+    "residual_priority", "hardware_contract_runs",
     "component_members", "components", "function_features", "library_matches",
     "function_fingerprints", "indirect_edge_candidates", "indirect_edge_resolutions",
     "function_reachability", "reachability_roots", "pin_snapshot", "hardware_snapshot",

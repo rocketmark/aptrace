@@ -71,7 +71,39 @@ discovered functions to 102, AutoPilot915 to 123; Mando868 narrowed to
 58 (29 newly `DYNAMICALLY_OBSERVED` via boot capture), Mando868/915 146
 → 127 (19 newly `DYNAMICALLY_OBSERVED`). Still no "understood %"
 invented; semantic classification of the residual is the next,
-separate phase, not yet started. A real Unicorn correctness bug
+separate phase, not yet started.
+
+**A fourth census layer now turns that residual set into a prioritized,
+component-grouped, evidence-disclosed queue** (`residual_priority.py`,
+extended `components.py`, see census.md's "Residual prioritization,
+component reduction, and hardware contract"): a fixed, disclosed-reasons
+priority score (9 positive + 4 negative mechanical signals — MMIO/pin/
+IRQ/NVM/protocol-RAM access, unresolved-indirect involvement, dynamic-
+coverage proximity vs. isolated-leaf/confirmed-platform-code) sorts each
+residual function into `HIGH`/`MEDIUM`/`LOW`; `HIGH` counts: AutoPilot868
+32, AutoPilot915 21, Mando868 40, Mando915 12. Two new component union
+rules (shared low-fan-out caller; shared string/constant) were added,
+and a real over-collapse bug in the PRIOR unbounded resource-sharing
+rules was found and fixed (`RESOURCE_UNION_MAX_OWNERS=8`) — one
+mando868 RAM address alone was statically touched by 46 reachable
+functions and, left unbounded, collapsed nearly the whole reachable set
+into one component. Even fixed, one large "core" component still
+dominates mando868/915 — confirmed this pass to be a property of the
+CALL-GRAPH union rules alone (not the resource-sharing fix), i.e. a
+real, disclosed finding about this firmware's dense interconnection,
+not a bug (see census.md's Limitations). A machine-readable, per-image
+hardware contract (`hardware_contract.py`, persisted to
+`hardware_contract_runs`) was also added — MCU/clock-tree/PORT/ADC/TC-
+TCC/SERCOM/EIC/DMAC/USB/WDT/NVMCTRL/IRQ-vector state, raw register
+values always alongside whatever decode is actually available, with
+peripheral/pin ownership resolved to owning functions/components — plus
+a structured, mechanical 868-vs-915 diff (`firmware_diff.py`,
+`census diff`) that correctly and specifically isolated mando868/915's
+real RF-band difference at the string level (`"868MHz band"` vs.
+`"915MHz band"`) with zero hardware-register/MMIO/pin differences
+(both images reach the identical post-init MCU configuration).
+
+A real Unicorn correctness bug
 (`log_ram=True` corrupting long/RAM-heavy runs via a cross-hook
 reentrancy hazard) was found and partially fixed along the way — see
 `tools/unicorn/concrete.py`'s `_ranges_excluding` and

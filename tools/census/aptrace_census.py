@@ -36,6 +36,10 @@ Usage:
     aptrace_census.py components autopilot868 [--id N]
     aptrace_census.py library-matches autopilot868 [--confidence C]
     aptrace_census.py hardware-snapshot autopilot868 [--peripheral P]
+    aptrace_census.py residual-ranked autopilot868 [--tier HIGH|MEDIUM|LOW]
+    aptrace_census.py residual-components autopilot868
+    aptrace_census.py hardware-contract autopilot868 [--out FILE.json]
+    aptrace_census.py diff autopilot868 autopilot915 [--json]
 """
 import sys
 from pathlib import Path
@@ -173,12 +177,8 @@ def cmd_summary(args):
         "SELECT COUNT(DISTINCT r.function_id) FROM function_reachability r "
         "JOIN dynamic_coverage dc ON dc.firmware_id=r.firmware_id AND dc.function_id=r.function_id "
         "WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH'", fw)
-    n_residual = count(
-        "SELECT COUNT(*) FROM function_reachability r WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' "
-        "AND r.function_id NOT IN (SELECT l.function_id FROM library_matches l WHERE l.firmware_id=? "
-        "AND l.reference_source_confirmed=1) "
-        "AND r.function_id NOT IN (SELECT function_id FROM dynamic_coverage WHERE firmware_id=? "
-        "AND function_id IS NOT NULL)", fw, fw, fw)
+    import residual_priority
+    n_residual = len(residual_priority.residual_function_ids(conn, fw))
     print(f"Reachable functions: {n_reachable}  (of which {n_reachable_ref_confirmed} are reference-source-"
           f"confirmed TRUE library code, {n_reachable_covered} are dynamically exercised)")
     print(f">>> Residual reachable, non-reference-confirmed, dynamically-unexercised functions: {n_residual} <<<")
@@ -186,6 +186,18 @@ def cmd_summary(args):
 
     n_components = count("SELECT COUNT(*) FROM components WHERE firmware_id=?", fw)
     print(f"Components: {n_components}")
+
+    tier_rows = c.execute(
+        "SELECT tier, COUNT(*) FROM residual_priority WHERE firmware_id=? GROUP BY tier", (fw,)).fetchall()
+    if tier_rows:
+        tiers = {t: n for t, n in tier_rows}
+        n_residual_components = count(
+            "SELECT COUNT(DISTINCT c.component_index) FROM residual_priority rp "
+            "JOIN component_members cm ON cm.firmware_id=rp.firmware_id AND cm.function_id=rp.function_id "
+            "JOIN components c ON c.id=cm.component_id WHERE rp.firmware_id=?", fw)
+        print(f"Residual priority: HIGH={tiers.get('HIGH', 0)}  MEDIUM={tiers.get('MEDIUM', 0)}  "
+              f"LOW={tiers.get('LOW', 0)}  ({n_residual_components} component(s) contain >=1 residual function "
+              f"-- see 'residual-ranked'/'residual-components')")
 
     hw = c.execute("SELECT * FROM hardware_snapshot_runs WHERE firmware_id=?", (fw,)).fetchone()
     if hw:
@@ -200,6 +212,13 @@ def cmd_summary(args):
         print(f"  pins: {n_pins_out} configured OUT, {n_pins_in} configured IN, {n_pins_muxed} PMUX-enabled")
     else:
         print("Hardware snapshot: not taken")
+
+    contract_row = c.execute("SELECT * FROM hardware_contract_runs WHERE firmware_id=?", (fw,)).fetchone()
+    if contract_row:
+        print(f"Hardware contract: generated {contract_row['generated_at']}  "
+              f"({len(contract_row['contract_json'])} bytes JSON -- see 'hardware-contract')")
+    else:
+        print("Hardware contract: not generated")
 
 
 # --- function / callers / callees --------------------------------------
@@ -475,9 +494,19 @@ def cmd_residual(args):
     library code, dynamically-unexercised functions -- the small set
     later semantic analysis should actually look at. A cross-image
     fingerprint match (shown here for context) is NOT, by itself,
-    grounds for exclusion -- see docs/tooling/census.md's evidence rule."""
+    grounds for exclusion -- see docs/tooling/census.md's evidence rule.
+    Uses residual_priority.residual_function_ids -- the ONE place this
+    definition lives, so this command and `residual-ranked`/
+    `residual-components` can never silently drift apart."""
+    import residual_priority
     conn = census_db.connect(args.db, create=False)
     fw = census_db.get_firmware_id(conn, args.firmware)
+    ids = residual_priority.residual_function_ids(conn, fw)
+    if not ids:
+        print("(0 residual function(s) -- reachable, not reference-source-confirmed library code, "
+              "never dynamically exercised)")
+        return
+    placeholders = ",".join("?" for _ in ids)
     rows = conn.execute(
         "SELECT f.entry, f.name, f.size, r.status, l.confidence AS lib_confidence, "
         "l.reference_source_confirmed, ff.n_callers, ff.n_callees, ff.peripherals_json, ff.pins_json "
@@ -485,10 +514,7 @@ def cmd_residual(args):
         "JOIN functions f ON f.id = r.function_id "
         "LEFT JOIN library_matches l ON l.firmware_id=r.firmware_id AND l.function_id=r.function_id "
         "LEFT JOIN function_features ff ON ff.firmware_id=r.firmware_id AND ff.function_id=r.function_id "
-        "WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' "
-        "AND (l.reference_source_confirmed IS NULL OR l.reference_source_confirmed=0) "
-        "AND r.function_id NOT IN (SELECT function_id FROM dynamic_coverage WHERE firmware_id=? "
-        "AND function_id IS NOT NULL) ORDER BY f.entry", (fw, fw))
+        f"WHERE r.firmware_id=? AND r.function_id IN ({placeholders}) ORDER BY f.entry", (fw, *ids))
     n = 0
     for r in rows:
         n += 1
@@ -585,6 +611,213 @@ def cmd_hardware_snapshot(args):
         print(f"({len(pin_rows)} configured pin(s) shown -- pass a pin name to 'pin' for full evidence detail)")
 
 
+# --- residual-ranked / residual-components / hardware-contract / diff ------
+
+def cmd_residual_ranked(args):
+    """The residual queue, RANKED: every residual function's deterministic
+    priority score plus the individual signals that produced it -- never
+    just the number. Grouped into the three disclosed tiers."""
+    import json as _json
+    import residual_priority
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    q = ("SELECT rp.*, f.entry, f.name FROM residual_priority rp "
+         "JOIN functions f ON f.id = rp.function_id WHERE rp.firmware_id=?")
+    params = [fw]
+    if args.tier:
+        q += " AND rp.tier=?"
+        params.append(args.tier.upper())
+    q += " ORDER BY rp.score DESC, f.entry"
+    rows = conn.execute(q, params).fetchall()
+    if not rows:
+        has_any = conn.execute("SELECT COUNT(*) FROM residual_priority WHERE firmware_id=?", (fw,)).fetchone()[0]
+        if has_any == 0:
+            print(f"No residual-priority data for '{args.firmware}' -- run 'census reduce {args.firmware}'.")
+        else:
+            print(f"(0 function(s) in tier {args.tier!r})")
+        return
+
+    by_tier = {}
+    for r in rows:
+        by_tier.setdefault(r["tier"], []).append(r)
+    for tier in ("HIGH", "MEDIUM", "LOW"):
+        if tier not in by_tier:
+            continue
+        print(f"=== {residual_priority.TIER_LABELS[tier]} ({len(by_tier[tier])}) ===")
+        for r in by_tier[tier]:
+            print(f"{hx(r['entry'])}  {r['name']}  score={r['score']}")
+            for reason in _json.loads(r["reasons_json"]):
+                sign = "+" if reason["points"] >= 0 else ""
+                print(f"    {sign}{reason['points']}  [{reason['signal']}] {reason['description']}"
+                      f" -- {reason['evidence']}")
+        print()
+    print(f"({len(rows)} residual function(s) scored -- see docs/tooling/census.md's "
+          f"'Residual prioritization' section for the fixed signal table)")
+
+
+def cmd_residual_components(args):
+    """Residual functions collapsed into components (tools/census/
+    components.py's existing deterministic grouping, restricted to
+    components with >=1 residual member) -- the actual small,
+    evidence-rich unit a later semantic phase should look at instead of
+    hundreds of individual functions."""
+    import json as _json
+    import residual_priority
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+
+    residual_rows = conn.execute(
+        "SELECT rp.function_id, rp.score, rp.tier FROM residual_priority rp WHERE rp.firmware_id=?", (fw,)).fetchall()
+    if not residual_rows:
+        print(f"No residual-priority data for '{args.firmware}' -- run 'census reduce {args.firmware}'.")
+        return
+    residual_by_fid = {r["function_id"]: r for r in residual_rows}
+
+    comp_of_fid = {}
+    for r in conn.execute(
+            "SELECT cm.function_id, c.id AS component_id, c.component_index FROM component_members cm "
+            "JOIN components c ON c.id = cm.component_id WHERE cm.firmware_id=?", (fw,)):
+        comp_of_fid[r["function_id"]] = (r["component_id"], r["component_index"])
+
+    residual_component_ids = sorted({comp_of_fid[fid][1] for fid in residual_by_fid if fid in comp_of_fid})
+
+    summaries = []
+    for comp_idx in residual_component_ids:
+        comp = conn.execute(
+            "SELECT * FROM components WHERE firmware_id=? AND component_index=?", (fw, comp_idx)).fetchone()
+        members = conn.execute(
+            "SELECT f.id, f.entry, f.name FROM component_members cm JOIN functions f ON f.id=cm.function_id "
+            "WHERE cm.component_id=? ORDER BY f.entry", (comp["id"],)).fetchall()
+        member_ids = [m["id"] for m in members]
+        placeholders = ",".join("?" for _ in member_ids)
+
+        roots = sorted({r[0] for r in conn.execute(
+            f"SELECT DISTINCT nearest_root_kind FROM function_reachability WHERE firmware_id=? "
+            f"AND function_id IN ({placeholders}) AND nearest_root_kind IS NOT NULL", (fw, *member_ids))})
+        tier_dist = {}
+        for m in members:
+            rp = residual_by_fid.get(m["id"])
+            if rp:
+                tier_dist[rp["tier"]] = tier_dist.get(rp["tier"], 0) + 1
+        n_unresolved_indirect = conn.execute(
+            f"SELECT COUNT(*) FROM indirect_edge_resolutions WHERE firmware_id=? AND from_function_id IN "
+            f"({placeholders}) AND classification IN ('UNRESOLVED','FINITE_CANDIDATE_SET')",
+            (fw, *member_ids)).fetchone()[0]
+        lib_rows = conn.execute(
+            f"SELECT confidence, reference_source_confirmed FROM library_matches WHERE firmware_id=? "
+            f"AND function_id IN ({placeholders})", (fw, *member_ids)).fetchall()
+        lib_counts = {}
+        n_ref_confirmed = 0
+        for lr in lib_rows:
+            lib_counts[lr["confidence"]] = lib_counts.get(lr["confidence"], 0) + 1
+            n_ref_confirmed += lr["reference_source_confirmed"]
+
+        max_score = max((residual_by_fid[m["id"]]["score"] for m in members if m["id"] in residual_by_fid),
+                         default=None)
+        comp_tier = residual_priority.tier_for(max_score) if max_score is not None else "LOW"
+
+        summaries.append({
+            "component_index": comp_idx, "comp": comp, "members": members, "roots": roots,
+            "tier_dist": tier_dist, "n_unresolved_indirect": n_unresolved_indirect, "lib_counts": lib_counts,
+            "n_ref_confirmed": n_ref_confirmed, "max_score": max_score, "comp_tier": comp_tier,
+        })
+
+    summaries.sort(key=lambda s: (-(s["max_score"] if s["max_score"] is not None else -999), s["component_index"]))
+
+    by_tier = {}
+    for s in summaries:
+        by_tier.setdefault(s["comp_tier"], []).append(s)
+    for tier in ("HIGH", "MEDIUM", "LOW"):
+        if tier not in by_tier:
+            continue
+        print(f"=== {residual_priority.TIER_LABELS[tier]} COMPONENTS ({len(by_tier[tier])}) ===")
+        for s in by_tier[tier]:
+            comp = s["comp"]
+            n_residual_members = sum(s["tier_dist"].values())
+            print(f"component {s['component_index']}  ({comp['n_functions']} function(s), "
+                  f"{n_residual_members} residual)  max_score={s['max_score']}")
+            print(f"  functions: " + ", ".join(f"{hx(m['entry'])}:{m['name']}" for m in s["members"][:12])
+                  + (f"  (+{len(s['members']) - 12} more)" if len(s["members"]) > 12 else ""))
+            print(f"  reachability roots: {s['roots']}")
+            print(f"  priority distribution (residual members only): {s['tier_dist']}")
+            print(f"  peripherals: {comp['peripherals_json']}")
+            print(f"  pins: {comp['pins_json']}")
+            print(f"  RAM addrs: {comp['ram_addrs_json']}")
+            print(f"  strings/constants: {comp['strings_json']}")
+            print(f"  dynamic scenarios: {comp['scenarios_json']}")
+            print(f"  unresolved/finite-candidate-set indirect edges from members: {s['n_unresolved_indirect']}")
+            print(f"  cross-image fingerprint matches: {s['lib_counts']}  "
+                  f"(reference-source-confirmed: {s['n_ref_confirmed']})")
+        print()
+    print(f"({sum(len(s) for s in by_tier.values())} component(s) contain >=1 residual function, out of "
+          f"{len(residual_by_fid)} residual function(s) total -- see 'components' for the full, "
+          f"non-residual-filtered grouping)")
+
+
+def cmd_hardware_contract(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    row = conn.execute("SELECT * FROM hardware_contract_runs WHERE firmware_id=?", (fw,)).fetchone()
+    if row is None:
+        print(f"No hardware contract for '{args.firmware}' -- run 'census reduce {args.firmware}'.")
+        return
+    import json as _json
+    contract = _json.loads(row["contract_json"])
+    text = _json.dumps(contract, indent=2, sort_keys=False)
+    if args.out:
+        Path(args.out).write_text(text)
+        print(f"Wrote hardware contract ({len(text)} bytes, generated_at={row['generated_at']}) to {args.out}")
+    else:
+        print(text)
+
+
+def cmd_diff(args):
+    import firmware_diff
+    conn = census_db.connect(args.db, create=False)
+    result = firmware_diff.diff_firmwares(conn, args.firmware_a, args.firmware_b)
+    if args.json:
+        import json as _json
+        print(_json.dumps(result, indent=2, sort_keys=False))
+        return
+
+    print(f"=== census diff: {args.firmware_a} vs {args.firmware_b} ===")
+    c = result["counts"]
+    print(f"Hardware register diffs: {c['hardware_register_diffs']}")
+    for d in result["hardware_register_diffs"][:30]:
+        print(f"  {d['peripheral']}.{d['register']} @{d['addr']}: A=0x{d['value_a']} B=0x{d['value_b']}")
+    if c["hardware_register_diffs"] > 30:
+        print(f"  (+{c['hardware_register_diffs'] - 30} more)")
+
+    print(f"\nMMIO sites only in A: {c['mmio_sites_only_in_a']}   only in B: {c['mmio_sites_only_in_b']}")
+    for d in result["mmio_site_diffs"]["only_in_a"][:15]:
+        print(f"  A only: {d['peripheral']}.{d['register']}")
+    for d in result["mmio_site_diffs"]["only_in_b"][:15]:
+        print(f"  B only: {d['peripheral']}.{d['register']}")
+
+    print(f"\nPin config diffs: {c['pin_config_diffs']}")
+    for d in result["pin_config_diffs"][:30]:
+        if "only_in" in d:
+            print(f"  {d['pin_name']}: only configured in {d['only_in'].upper()}")
+        else:
+            print(f"  {d['pin_name']}: {d['changed_fields']}")
+
+    rd = result["residual_diffs"]
+    print(f"\nResidual/function diffs (paired by EXACT byte-identical fingerprint):")
+    print(f"  byte-identical function pairs: {rd['byte_identical_function_count']}")
+    print(f"  functions only in A: {c['functions_only_in_a']}   only in B: {c['functions_only_in_b']}")
+    print(f"  residual priority diffs (same code, different residual score/tier): {c['residual_priority_diffs']}")
+    for d in rd["residual_priority_diffs"][:15]:
+        print(f"    {d['name_a']} ({d['entry_a']}/{d['entry_b']}): A={d['priority_a']} B={d['priority_b']}")
+
+    print(f"\nString/constant diffs: only in A: {c['strings_only_in_a']}   only in B: {c['strings_only_in_b']}")
+    print(f"Hardware-relevant constant diffs (MMIO-touching, byte-identical functions with differing "
+          f"literal-ref counts): {c['hardware_relevant_constant_diffs']}")
+    for d in result["hardware_relevant_constant_diffs"][:15]:
+        print(f"  {d['name_a']} ({d['entry_a']}/{d['entry_b']}): "
+              f"n_literal_refs A={d['n_literal_refs_a']} B={d['n_literal_refs_b']}")
+    print(f"\n({result['note']})")
+
+
 def main(argv):
     import argparse
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -666,6 +899,22 @@ def main(argv):
     hw.add_argument("firmware")
     hw.add_argument("--peripheral", default=None)
 
+    rr = sub.add_parser("residual-ranked", help="the residual queue, ranked by deterministic priority score")
+    rr.add_argument("firmware")
+    rr.add_argument("--tier", default=None, help="HIGH / MEDIUM / LOW")
+
+    rcomp = sub.add_parser("residual-components", help="residual functions collapsed into components")
+    rcomp.add_argument("firmware")
+
+    hc = sub.add_parser("hardware-contract", help="machine-readable hardware contract (JSON)")
+    hc.add_argument("firmware")
+    hc.add_argument("--out", default=None, help="write JSON to this file instead of stdout")
+
+    df = sub.add_parser("diff", help="structured mechanical diff between two firmware images (e.g. 868 vs 915)")
+    df.add_argument("firmware_a")
+    df.add_argument("firmware_b")
+    df.add_argument("--json", action="store_true", help="print the full structured diff as JSON")
+
     args = p.parse_args(argv)
     {
         "build": cmd_build, "reduce": cmd_reduce, "summary": cmd_summary, "function": cmd_function,
@@ -675,6 +924,8 @@ def main(argv):
         "warnings": cmd_warnings, "ingest-dynamic": cmd_ingest_dynamic,
         "reachable": cmd_reachable, "residual": cmd_residual, "components": cmd_components,
         "library-matches": cmd_library_matches, "hardware-snapshot": cmd_hardware_snapshot,
+        "residual-ranked": cmd_residual_ranked, "residual-components": cmd_residual_components,
+        "hardware-contract": cmd_hardware_contract, "diff": cmd_diff,
     }[args.command](args)
     return 0
 

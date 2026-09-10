@@ -15,11 +15,35 @@ into one component through common utility functions like memcpy/delay
   2. A direct call edge to a LOW-FAN-IN callee (in-degree <=
      CALL_UNION_MAX_CALLERS) -- a "private-ish" helper relationship,
      not a shared utility hub.
-  3. Sharing at least one resolved MMIO peripheral access.
-  4. Sharing at least one exact RAM address access.
-  5. Sharing at least one pin (from the `pins` table).
+  3. Sharing at least one resolved MMIO peripheral access, LOW-FAN-IN
+     only (<= RESOURCE_UNION_MAX_OWNERS distinct owning functions).
+  4. Sharing at least one exact RAM address access, LOW-FAN-IN only
+     (same bound). Empirically necessary: an UNBOUNDED version of this
+     rule (the original implementation) was found this pass to collapse
+     nearly an entire firmware's reachable set into ONE component
+     through a handful of pervasively-shared global-state addresses
+     (mando868: one RAM address alone is touched by 46 distinct
+     reachable functions) -- exactly the "shared utility hub" failure
+     mode rules 1/2 already guard against for the call graph, just not
+     previously guarded for resource-sharing. See RESOURCE_UNION_MAX_OWNERS.
+  5. Sharing at least one pin (from the `pins` table), LOW-FAN-IN only
+     (same bound).
   6. Co-occurring in at least one same dynamic_run (real co-execution
      during the same scenario leg).
+  7. Two DISTINCT callees of the SAME LOW-FAN-OUT caller (out-degree <=
+     CALL_UNION_MAX_CALLEES) -- the "common caller" case: a small
+     setup/dispatch function that calls only a tight few siblings is
+     real evidence those siblings belong together, symmetric to rule 2
+     (which unions on the common-CALLEE side); bounded the same way so
+     a high-fan-out dispatcher (e.g. a big switch/vtable caller) does
+     not collapse unrelated callees into one component.
+  8. Sharing at least one string/constant reference (a `literal_refs`
+     row whose `to_addr` is a real `strings` row), LOW-FAN-IN only
+     (same bound) -- two functions that both format/compare against the
+     SAME string literal are real, mechanical evidence of a shared
+     purpose, the same category of signal as sharing a peripheral or
+     RAM address (and the same hub risk, e.g. a generic shared format
+     string referenced from many unrelated call sites).
 
 Component IDs (`component_index`) are small integers, stable for a
 GIVEN evidence state: assigned by sorting each component's members by
@@ -32,6 +56,15 @@ grouping, not a bug.
 import json
 
 CALL_UNION_MAX_CALLERS = 3
+CALL_UNION_MAX_CALLEES = 3
+# Same "private-ish, not a shared hub" discipline as the call-graph
+# rules above, applied to resource-sharing rules 3/4/5/8. Chosen against
+# mando868's own real distribution of RAM-address owner counts (a
+# natural break: 1-9 owners is a smooth, dense distribution of real
+# small clusters; 10+ owners jumps straight to isolated outliers at
+# 11/14/15/16/19/36/46 -- pervasive global-state addresses, not a
+# meaningful grouping signal) -- see components.py's module docstring.
+RESOURCE_UNION_MAX_OWNERS = 8
 
 
 class DSU:
@@ -48,6 +81,17 @@ class DSU:
         ra, rb = self.find(a), self.find(b)
         if ra != rb:
             self.parent[max(ra, rb)] = min(ra, rb)
+
+
+def _union_low_fan_in_owners(dsu, owners_by_resource, max_owners):
+    """Union every pair of owners of a shared resource (peripheral/RAM
+    address/pin/string), UNLESS that resource has more than
+    `max_owners` distinct owners -- see RESOURCE_UNION_MAX_OWNERS."""
+    for owners in owners_by_resource.values():
+        if len(owners) > max_owners:
+            continue
+        for o in owners[1:]:
+            dsu.union(owners[0], o)
 
 
 def _sccs(adjacency, nodes):
@@ -152,9 +196,7 @@ def compute(conn, firmware_id):
             (firmware_id,)):
         if row["from_function_id"] in node_set:
             peripheral_owners.setdefault(row["peripheral"], []).append(row["from_function_id"])
-    for owners in peripheral_owners.values():
-        for o in owners[1:]:
-            dsu.union(owners[0], o)
+    _union_low_fan_in_owners(dsu, peripheral_owners, RESOURCE_UNION_MAX_OWNERS)
 
     # Rule 4: shared exact RAM address.
     ram_owners = {}
@@ -163,9 +205,7 @@ def compute(conn, firmware_id):
             "WHERE firmware_id=? AND from_function_id IS NOT NULL", (firmware_id,)):
         if row["from_function_id"] in node_set:
             ram_owners.setdefault(row["to_addr"], []).append(row["from_function_id"])
-    for owners in ram_owners.values():
-        for o in owners[1:]:
-            dsu.union(owners[0], o)
+    _union_low_fan_in_owners(dsu, ram_owners, RESOURCE_UNION_MAX_OWNERS)
 
     # Rule 5: shared pin.
     pin_owners = {}
@@ -174,9 +214,7 @@ def compute(conn, firmware_id):
             "AND from_function_id IS NOT NULL", (firmware_id,)):
         if row["from_function_id"] in node_set:
             pin_owners.setdefault(row["pin_name"], []).append(row["from_function_id"])
-    for owners in pin_owners.values():
-        for o in owners[1:]:
-            dsu.union(owners[0], o)
+    _union_low_fan_in_owners(dsu, pin_owners, RESOURCE_UNION_MAX_OWNERS)
 
     # Rule 6: dynamic co-execution (same dynamic_run).
     run_owners = {}
@@ -188,6 +226,28 @@ def compute(conn, firmware_id):
     for owners in run_owners.values():
         for o in owners[1:]:
             dsu.union(owners[0], o)
+
+    # Rule 7: two callees of the SAME low-fan-out caller (the "common
+    # caller" case -- symmetric to rule 2's "common callee"). Fan-out is
+    # measured over ALL resolved callees (not just those in node_set),
+    # same conservative convention rule 2 uses for fan-in.
+    out_degree = {f: len(callees) for f, callees in call_adj.items()}
+    for f, callees in call_adj.items():
+        if out_degree.get(f, 0) > CALL_UNION_MAX_CALLEES:
+            continue
+        siblings = [t for t in callees if t in node_set]
+        for o in siblings[1:]:
+            dsu.union(siblings[0], o)
+
+    # Rule 8: shared string/constant reference.
+    string_owners = {}
+    for row in conn.execute(
+            "SELECT DISTINCT l.from_function_id, l.to_addr FROM literal_refs l JOIN strings s "
+            "ON s.firmware_id=l.firmware_id AND s.addr=l.to_addr "
+            "WHERE l.firmware_id=? AND l.from_function_id IS NOT NULL", (firmware_id,)):
+        if row["from_function_id"] in node_set:
+            string_owners.setdefault(row["to_addr"], []).append(row["from_function_id"])
+    _union_low_fan_in_owners(dsu, string_owners, RESOURCE_UNION_MAX_OWNERS)
 
     groups = {}
     for fid in node_set:
@@ -213,12 +273,17 @@ def compute(conn, firmware_id):
         scenarios = sorted({r[0] for r in conn.execute(
             f"SELECT DISTINCT dr.scenario FROM dynamic_coverage dc JOIN dynamic_runs dr ON dr.id=dc.dynamic_run_id "
             f"WHERE dc.firmware_id=? AND dc.function_id IN ({placeholders})", (firmware_id, *members))})
+        strings = sorted({r[0] for r in conn.execute(
+            f"SELECT DISTINCT s.value FROM literal_refs l JOIN strings s ON s.firmware_id=l.firmware_id "
+            f"AND s.addr=l.to_addr WHERE l.firmware_id=? AND l.from_function_id IN ({placeholders})",
+            (firmware_id, *members))})
 
         component_rows.append({
             "firmware_id": firmware_id, "component_index": idx, "n_functions": len(members),
             "peripherals_json": json.dumps(peripherals), "pins_json": json.dumps(pins),
             "ram_addrs_json": json.dumps([f"0x{a:08x}" for a in ram_addrs]),
-            "scenarios_json": json.dumps(scenarios), "source": "components",
+            "scenarios_json": json.dumps(scenarios), "strings_json": json.dumps(strings),
+            "source": "components",
         })
         for m in members_sorted:
             member_rows.append({"firmware_id": firmware_id, "component_index": idx, "function_id": m})

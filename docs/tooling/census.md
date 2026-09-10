@@ -120,7 +120,14 @@ so no fact is ever presented without a way to trace it back:
   `reference_source_confirmed`/`reference_source_citation` (see
   "Closure reduction" below) — both added via `db.py`'s column
   migration (`ALTER TABLE ... ADD COLUMN`, applied automatically on
-  connect to an older database, same as new tables).
+  connect to an older database, same as new tables); `components`
+  additionally carries `strings_json` (same migration mechanism — see
+  "Residual prioritization, component reduction, and hardware contract"
+  below). Two further tables (same `census reduce` run, same section):
+  `residual_priority` (one row per residual function: `score`, `tier`,
+  and the full `reasons_json` list of individual signals) and
+  `hardware_contract_runs` (one row per firmware: the complete
+  machine-readable `contract_json` document).
 - A `census build` run **replaces** that firmware's own rows in every
   base-evidence table (see `tools/census/db.py`'s `clear_firmware_data`/
   `replace_firmware_rows`) — it reflects the current Ghidra
@@ -128,9 +135,9 @@ so no fact is ever presented without a way to trace it back:
   This also clears previously-ingested dynamic coverage AND any
   closure-reduction data (both reference `functions`/`basic_blocks` ids
   a rebuild just replaced) — re-run `ingest-dynamic` and `census reduce`
-  after any `build`. A `census reduce` run replaces only its own twelve
-  tables (`clear_reduction_data`), so it can be rerun on its own without
-  forcing a static rebuild.
+  after any `build`. A `census reduce` run replaces only its own
+  fourteen tables (`clear_reduction_data`), so it can be rerun on its
+  own without forcing a static rebuild.
 
 ## CLI usage
 
@@ -159,6 +166,10 @@ tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual autopilo
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py components autopilot868 [--id N]
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py library-matches autopilot868 [--confidence C]
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py hardware-snapshot autopilot868 [--peripheral P]
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual-ranked autopilot868 [--tier HIGH|MEDIUM|LOW]
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual-components autopilot868
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py hardware-contract autopilot868 [--out FILE.json]
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py diff autopilot868 autopilot915 [--json]
 ```
 
 Addresses are hex (`0x` prefix optional), matching every other address
@@ -229,10 +240,16 @@ reduction" section — still mechanical counts only, no invented
   reported but NOT subtracted here — inspect it separately via
   `aptrace census library-matches`.
 - Component count (`aptrace census components`).
+- Residual priority: `HIGH`/`MEDIUM`/`LOW` counts and how many
+  components contain >=1 residual function (`aptrace census
+  residual-ranked`/`residual-components` — see "Residual
+  prioritization, component reduction, and hardware contract" below).
 - Hardware-snapshot summary: `init_status` (`complete` /
   `partial-justified` / `blocked`), boot method (which reference
   recipe), register/peripheral counts, and configured-pin counts
   (`aptrace census hardware-snapshot`).
+- Hardware-contract generation timestamp, if one has been built
+  (`aptrace census hardware-contract`).
 
 ## Residual queues (`scan_warnings` categories)
 
@@ -268,11 +285,15 @@ comparison, or a real (unmodified/non-invasively-instrumented) replay
 of Unicorn execution — either the existing scenario corpus or a cited
 boot recipe. Run order (`reduce.py`): fingerprinting → boot capture →
 reference-source confirmation → indirect-edge resolution → reachability
-→ feature records → components → hardware snapshot — each stage after
-the first can use the previous stage's output (fingerprinting has to
-come first because both boot-recipe sibling remapping and reference-
-source propagation need it; reachability treats a newly-resolved
-indirect target, static OR dynamic, as a real edge).
+→ feature records → components → hardware snapshot → residual priority
+scoring → hardware contract — each stage after the first can use the
+previous stage's output (fingerprinting has to come first because both
+boot-recipe sibling remapping and reference-source propagation need it;
+reachability treats a newly-resolved indirect target, static OR
+dynamic, as a real edge; residual priority scoring needs components;
+the hardware contract reuses the hardware snapshot). The last two
+stages are covered in their own section below ("Residual
+prioritization, component reduction, and hardware contract").
 
 **1. Fingerprinting** (`fingerprint.py`) — see "3. Library/platform
 fingerprinting vs. reference-source confirmation" below; runs first
@@ -597,6 +618,162 @@ defaults `log_ram=False` for its own (long) capture — `log_mmio` and
 `concrete.py`'s `run()` docstring and `boot_recipes.py`'s
 `apply_recipe` docstring.
 
+## Residual prioritization, component reduction, and hardware contract
+
+A fourth layer, built entirely on top of an already-completed `census
+reduce` (steps 9-10 of the ten now listed above), whose job is to turn
+"hundreds of residual functions" into what a later semantic phase can
+actually work from: a small, ranked, evidence-disclosed queue; those
+functions collapsed into components; and a machine-readable per-image
+hardware contract. Still no LLM interpretation and no semantic naming
+anywhere in this layer — every output is a deterministic re-weighting
+or re-aggregation of evidence the earlier layers already collected.
+
+**9. Residual priority scoring** (`residual_priority.py`) — every
+function in the residual queue (`residual_priority.residual_function_ids`
+— the SAME definition `census residual` reports; `census residual` was
+refactored this pass to call this one shared function so the two can
+never silently drift apart) gets a deterministic integer `score` plus a
+`reasons_json` list of every individual signal that fired (name, point
+value, fixed description, and the CONCRETE per-function evidence that
+triggered it — e.g. which peripherals, which caller). The score is
+never presented as a single opaque number — every reason stays
+inspectable. Positive signals bias toward likely externally-interacting
+application code; negative signals bias toward isolated/leaf/confirmed-
+platform code:
+
+| Signal | Points | What it mechanically checks |
+|---|---|---|
+| `mmio_access` | +3 | `function_features.n_mmio_reads`/`n_mmio_writes` > 0 |
+| `pin_access` | +3 | `function_features.n_pins` > 0 |
+| `irq_relationship` | +4 | is itself a populated IRQ-vector target, or has a resolved call edge to/from one |
+| `nvm_access` | +2 | touches the NVMCTRL peripheral |
+| `protocol_data_path` | +3 | shares a static RAM address with a dynamic run that actually captured real TX/RX bytes (`dynamic_tx_rx`'s mere existence on that run, not a guess about which buffer) |
+| `called_from_covered_code` | +3 | has a resolved caller that IS dynamically exercised — one hop downstream of confirmed-live code |
+| `unresolved_indirect_involvement` | +2 | is the site of, or a candidate target of, an `UNRESOLVED`/`FINITE_CANDIDATE_SET` indirect call/jump |
+| `shared_ram_with_covered_code` | +2 | shares a static RAM address with a dynamically-exercised function |
+| `component_partial_dynamic_coverage` | +2 | belongs to a `components.py` component that has >=1 dynamically-exercised member |
+| `isolated_leaf_utility` | −2 | no resolved callees, <=2 basic blocks, zero MMIO/RAM/pin footprint |
+| `no_external_state_interaction` | −2 | zero MMIO AND zero pin accesses |
+| `cross_product_platform_match` | −3 | an EXACT/STRONG_MATCH fingerprint match that is CROSS-product (not same-product — see the evidence rule above; a same-product sibling match is NOT platform evidence) |
+| `only_reached_via_confirmed_library` | −2 | every resolved caller is itself `reference_source_confirmed=1` |
+
+Every point value is a small, fixed, deliberately modest integer chosen
+once and applied identically across every firmware image — never tuned
+per image. Tiers (`residual_priority.tier_for`): `HIGH` (score >= 5),
+`MEDIUM` (1-4), `LOW` (<=0) — labeled in reports as `HIGH-PRIORITY
+APPLICATION RESIDUAL` / `MEDIUM-PRIORITY RESIDUAL` / `LOW / LIKELY
+PLATFORM-UTILITY`. `aptrace_census.py residual-ranked <firmware>
+[--tier T]` prints the ranked queue, grouped by tier, with every
+disclosed reason.
+
+**10. Hardware contract** (`hardware_contract.py`) — a single
+machine-readable JSON document per firmware, persisted to
+`hardware_contract_runs.contract_json` and reused (never recomputed)
+by `census diff`. Assembled entirely from the ALREADY-COMPLETED
+hardware snapshot (steady-state, `init_status=complete`, for all four
+known images this pass), static `mmio_accesses`, the vector table, and
+`pins`/`pin_snapshot` — never a new Unicorn run. Top-level sections:
+`mcu` (part/architecture, cited to the vendored SVD), `hardware_snapshot_
+status` (`init_status`/`boot_method`/the complete disclosed
+`assumptions` list), `clock_tree`, `port` (full per-pin decode from
+`pin_snapshot`), `adc`/`tc_tcc`/`sercom`/`eic`/`dmac`/`usb`/`wdt`/
+`nvmctrl` (raw register bytes grouped by exact peripheral name), and
+`irq_vectors`. Every register entry carries its RAW value (exactly as
+`hardware_snapshot` stored it) alongside a `decoded` field — full
+field-level decode for `port` (direction/output/input/PINCFG/PMUXEN/
+PMUX-nibble, reusing `pin_snapshot`'s own decode); for every other
+peripheral, `decoded` is an explicit disclosure note that no per-bit-
+field semantics are invented (this project has no vendored bit-field
+enumeration beyond the SVD's own peripheral/register NAMES) — never a
+fabricated field. Every peripheral and pin also carries
+`owned_by_functions`/`owned_by_components` — real static-access
+evidence (`mmio_accesses`/`pins` joined against `component_members`),
+answering "which function/component owns this register" mechanically.
+`aptrace_census.py hardware-contract <firmware> [--out FILE.json]`
+prints or saves it.
+
+**"MCU pin/peripheral fact" vs "physical connector identity"** stays
+exactly the two separate evidence classes documented elsewhere in this
+file — the contract carries only the former; a curated connector
+mapping, if one is ever added, is a different source this module does
+not read.
+
+**Component extension** (`components.py`) — two new union rules on top
+of the six from the prior pass:
+
+  7. Two DISTINCT callees of the SAME low-fan-out caller (out-degree <=
+     `CALL_UNION_MAX_CALLEES=3`) — the "common caller" case, symmetric
+     to the existing rule 2 ("common callee").
+  8. Sharing at least one string/constant reference (a `literal_refs`
+     row whose target is a real `strings` row).
+
+**A real over-collapse bug was found and fixed while building this**:
+the ORIGINAL resource-sharing rules (shared MMIO peripheral / RAM
+address / pin) had NO bound on how many owners a shared resource could
+have — exactly the "shared utility hub" failure mode rules 1/2 already
+guard against for the call graph, just never guarded for resource
+sharing. On mando868's now-`complete` (442-function-reachable) state,
+one RAM address alone is statically touched by 46 distinct reachable
+functions; left unbounded, this collapsed nearly the ENTIRE reachable
+set into one component. Fixed by bounding rules 3/4/5, and the new rule
+8, to `RESOURCE_UNION_MAX_OWNERS=8` distinct owners (chosen against
+mando868's own real owner-count distribution — a natural break: 1-9
+owners is dense and smooth, 10+ jumps straight to isolated outliers at
+11/14/15/16/19/36/46) — regression-tested
+(`test_components_shared_ram_respects_owner_threshold`).
+
+**This bound narrows, but does NOT eliminate, one large "core"
+component** — see "Limitations" below; it is a genuine, disclosed
+finding about this reducer's current behavior, not swept under the
+`strings_json`/owner-threshold fix.
+
+**Residual components** (`aptrace_census.py residual-components
+<firmware>`) — the existing `components` table filtered to components
+containing >=1 residual function, with per-component evidence: member
+functions, reachability roots, priority distribution (tier counts among
+residual members), peripherals, pins, RAM addresses, strings/constants
+(the new `components.strings_json` column), dynamic scenarios,
+unresolved/finite-candidate-set indirect-edge count, and cross-image
+fingerprint-match/reference-source-confirmed counts. A component's own
+displayed tier is the tier of its highest-scoring residual member
+(disclosed as such, never averaged into a fake single number). Computed
+live from persisted tables (like `components`/`residual` before it) —
+nothing new is persisted here.
+
+**868 vs 915 structured diff** (`firmware_diff.py`,
+`aptrace_census.py diff <a> <b> [--json]`) — five mechanical fact
+comparisons between two already-`reduce`d images, never a semantic
+interpretation of WHY something differs:
+
+  - **Hardware register diffs** — `hardware_snapshot` rows compared by
+    exact `(peripheral, register, addr)`; identical values are silent,
+    a differing or one-sided value is reported with both raw values
+    (never fabricated — a missing side prints `null`).
+  - **MMIO site diffs** — the distinct `(peripheral, register)` access
+    sets from `mmio_accesses`, set-differenced.
+  - **Pin config diffs** — `pin_snapshot` rows compared field-by-field.
+  - **Residual/function diffs** — functions PAIRED across the two
+    images by an EXACT function-fingerprint match (byte-identical code
+    — the SAME pairing mechanism `boot_recipes.py`'s sibling remap
+    already relies on): which functions have no such pairing in the
+    other image at all (`only_in_a`/`only_in_b`), and which
+    byte-identical pairs have a DIFFERENT `residual_priority`
+    score/tier (same code, different surrounding evidence — e.g.
+    different dynamic-coverage extent between the two captures).
+  - **String/constant diffs** — the full `strings` value sets,
+    set-differenced (confirmed this pass to correctly and specifically
+    isolate mando868/915's real RF-band difference: `only_in_a`
+    includes `"868MHz band"`, `only_in_b` includes `"915MHz band"` —
+    alongside an honestly-reported, semantically-uninteresting build-
+    timestamp string difference, disclosed exactly as found, not
+    filtered out by guesswork).
+  - **Hardware-relevant constant diffs** — for EXACT-fingerprint-paired
+    functions that ALSO touch MMIO, flags pairs whose
+    `function_features.n_literal_refs` count differs — a real, coarse,
+    mechanical signal (never a claim about WHICH constant differs) that
+    per-image data reaches otherwise-identical hardware-touching code.
+
 ## Limitations
 
 - **"Reachable" in `uncovered` means "discovered by Ghidra as a
@@ -671,11 +848,45 @@ defaults `log_ram=False` for its own (long) capture — `log_mmio` and
   cross-image match, however strong, should not be read as more than
   "shared code" evidence.
 - **Component grouping's thresholds are a documented, not a uniquely
-  correct, choice.** `CALL_UNION_MAX_CALLERS` (default 3) trades off
-  under-grouping (a genuinely tight helper relationship above the
-  threshold stays split) against over-grouping (a shared low-fan-in
-  callee incorrectly implies two callers belong together) — see
-  `components.py`'s module docstring for the exact rules and rationale.
+  correct, choice.** `CALL_UNION_MAX_CALLERS`/`CALL_UNION_MAX_CALLEES`
+  (3) and `RESOURCE_UNION_MAX_OWNERS` (8) trade off under-grouping (a
+  genuinely tight relationship above the threshold stays split) against
+  over-grouping (a shared low-fan-in resource incorrectly implies
+  unrelated functions belong together) — see `components.py`'s module
+  docstring for the exact rules and rationale.
+- **Even with every union-rule threshold in place, one large "core"
+  component still dominates a densely-interconnected image
+  (mando868/915) — a real, disclosed finding, not a bug swept under the
+  `RESOURCE_UNION_MAX_OWNERS` fix.** Confirmed empirically this pass: on
+  mando868, even sweeping `RESOURCE_UNION_MAX_OWNERS` down to 2 (far
+  tighter than the deployed 8), or disabling every resource-sharing rule
+  (3/4/5/8) entirely, still leaves a single component covering roughly
+  80% of the reachable set — the CALL-GRAPH rules alone (1: SCC, 2: low-
+  fan-in callee, 7: low-fan-out caller) are sufficient to percolate
+  through the graph, a known property of locally-bounded union rules
+  applied to a real, densely-interconnected small-embedded-C call graph
+  with no strong modular boundaries (most application functions
+  eventually route through a handful of shared "private-ish" helpers).
+  This is NOT something a resource-sharing threshold can fix without
+  also re-tuning the call-graph thresholds (out of this pass's scope —
+  those are an existing, already-tested, already-documented value from
+  a prior pass). Practical consequence: `residual-components`' per-
+  component evidence summary is still fully accurate and useful for
+  the ONE dominant component, but the COUNT of residual-containing
+  components does not shrink dramatically (`mando868`: 309 residual
+  functions across 52 components, but 51 of those 52 contain >=1
+  residual function, because nearly the whole reachable set is one
+  component). **The real size reduction this layer delivers is in
+  PRIORITY SCORING, not component count** — see `residual-ranked`'s
+  HIGH/MEDIUM/LOW split.
+- **Priority scores are a re-weighting of ALREADY-CONSERVATIVE evidence,
+  not a correctness claim.** A LOW-scoring residual function can still
+  be real, important application logic that happens not to touch any
+  of the fixed signal table's mechanical checks (e.g. it only computes
+  in registers/stack, with no MMIO/pin/RAM/dynamic footprint at all) —
+  see `residual_priority.py`'s module docstring. The signal table and
+  point values are fixed once and applied uniformly; they are not
+  re-tuned per firmware image or to hit a particular tier distribution.
 - **The hardware-init snapshot is `complete` for all four known
   images.** `autopilot868`/`915` and `mando868`/`915` all now reach
   real main-loop steady state (`init_status='complete'`) and their
@@ -698,6 +909,13 @@ defaults `log_ram=False` for its own (long) capture — `log_mmio` and
   own EXACT-match offset and is flagged in the reported gaps as
   best-effort, not guaranteed-exact; an address further away than that
   is still rejected and dropped, never guessed.
+- **The hardware contract decodes PORT/pins fully but NOT per-bit-field
+  semantics for every other peripheral** (ADC/TC/TCC/SERCOM/EIC/DMAC/
+  USB/WDT/NVMCTRL/clock-tree registers) — this project has no vendored
+  bit-field enumeration beyond the SVD's own peripheral/register NAMES,
+  which the contract already carries; each such register's `decoded`
+  field is an explicit disclosure note, never a fabricated per-bit
+  value. The RAW register byte is always present regardless.
 - **`pin_snapshot`'s `pmux_nibble` is a raw register field, not a named
   peripheral function.** SAMD5x/E5x's PMUX-to-peripheral-function
   letter mapping (A-H) is fixed silicon-wide, but WHICH peripheral
@@ -728,10 +946,18 @@ import dynamic_export; dynamic_export.capture(['all'])
 "
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py ingest-dynamic research/runs/census/dynamic
 
-# Closure reduction -- run AFTER build + ingest-dynamic, for each image:
+# Closure reduction -- run AFTER build + ingest-dynamic, for each image.
+# This now ALSO scores the residual queue and builds the hardware
+# contract (steps 9-10) -- nothing further to run separately.
 for fw in autopilot868 autopilot915 mando868 mando915; do
   tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reduce "$fw"
 done
+
+# Residual/component/hardware-contract/diff reports (read-only, no recompute):
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual-ranked mando868
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual-components mando868
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py hardware-contract mando868 --out mando868.json
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py diff mando868 mando915
 
 # Regression tests:
 tools/unicorn/.venv/bin/python3 tools/census/test_census.py

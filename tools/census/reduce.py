@@ -31,6 +31,12 @@ build`'s base evidence (tools/census/build.py). Orchestrates, in order:
      components over reachable functions.
   8. Hardware-init snapshot (hardware_snapshot.py) -- reuses the SAME
      machine/result step 2 already produced; never a second boot run.
+  9. Residual priority scoring (residual_priority.py) -- a deterministic,
+     disclosed-reasons priority score for every function in the
+     residual queue, on top of steps 5-7's evidence.
+ 10. Hardware contract (hardware_contract.py) -- a machine-readable JSON
+     document assembled from step 8's snapshot plus static MMIO/vector/
+     pin evidence, persisted for direct reuse by `census diff`.
 
 Requires `census build <firmware>` to have already run (this module
 reads, never recomputes, the base evidence tables) -- see
@@ -55,6 +61,8 @@ import boot_recipes  # noqa: E402
 import reference_library  # noqa: E402
 import dynamic_ingest  # noqa: E402
 import pins as pins_mod  # noqa: E402
+import residual_priority  # noqa: E402
+import hardware_contract  # noqa: E402
 import aptrace_ghidra as ghidra  # noqa: E402
 from build import FunctionRanges  # noqa: E402
 
@@ -204,7 +212,7 @@ def reduce_firmware(key, db_path=None, verbose=True):
 
     log(f"=== census reduce: {key} ===")
 
-    log("[1/8] Fingerprinting functions...")
+    log("[1/10] Fingerprinting functions...")
     fingerprint.compute_fingerprints(conn, firmware_id, firmware_bytes, flash_base)
     fingerprint.recompute_all_matches(conn)
     lib_counts = {}
@@ -214,7 +222,7 @@ def reduce_firmware(key, db_path=None, verbose=True):
         lib_counts[row["confidence"]] = row["c"]
     log(f"  cross-image matches (NOT library truth by themselves): {lib_counts}")
 
-    log("[2/8] Running boot capture...")
+    log("[2/10] Running boot capture...")
     # Every currently-unresolved register-indirect site is watched
     # DURING boot too, not just during the scenario corpus (step 4
     # reuses this same result).
@@ -236,31 +244,42 @@ def reduce_firmware(key, db_path=None, verbose=True):
     if boot_deliveries:
         log(f"  delivered {len(boot_deliveries)} real interrupt(s) during boot: {boot_deliveries}")
 
-    log("[3/8] Applying reference-source confirmations...")
+    log("[3/10] Applying reference-source confirmations...")
     n_ref = reference_library.apply_reference_confirmations(conn, firmware_id, key)
     log(f"  {n_ref} function(s) reference-source-confirmed (real 'library truth')")
 
-    log("[4/8] Resolving indirect control flow...")
+    log("[4/10] Resolving indirect control flow...")
     resolve_indirect_edges(conn, firmware_id, key, firmware_bytes, flash_base, func_ranges, boot_result, verbose)
 
-    log("[5/8] Computing reachability...")
+    log("[5/10] Computing reachability...")
     reach_rows = reachability.compute(conn, firmware_id, func_ranges)
     reach_counts = {}
     for r in reach_rows:
         reach_counts[r["status"]] = reach_counts.get(r["status"], 0) + 1
     log(f"  reachability: {reach_counts}")
 
-    log("[6/8] Building function feature records...")
+    log("[6/10] Building function feature records...")
     features.compute(conn, firmware_id)
 
-    log("[7/8] Grouping into components...")
+    log("[7/10] Grouping into components...")
     comp_rows = components.compute(conn, firmware_id)
     log(f"  {len(comp_rows)} component(s)")
 
-    log("[8/8] Recording hardware-init snapshot...")
+    log("[8/10] Recording hardware-init snapshot...")
     svd_map = pins_mod._samd51_map()
     hardware_snapshot.compute(conn, firmware_id, key, boot_machine, boot_result, boot_recipe, init_status,
                                 svd_map, verbose=verbose, delivery_log=boot_deliveries)
+
+    log("[9/10] Scoring the residual queue...")
+    priority_rows = residual_priority.compute(conn, firmware_id)
+    tier_counts = {}
+    for r in priority_rows:
+        tier_counts[r["tier"]] = tier_counts.get(r["tier"], 0) + 1
+    log(f"  {len(priority_rows)} residual function(s) scored: {tier_counts}")
+
+    log("[10/10] Building hardware contract...")
+    hardware_contract.compute(conn, firmware_id, key)
+    log("  hardware contract persisted (hardware_contract_runs)")
 
     log(f"Census reduce for '{key}' complete (init_status={init_status}).")
     return firmware_id

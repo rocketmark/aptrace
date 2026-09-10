@@ -494,6 +494,7 @@ CREATE TABLE IF NOT EXISTS components (
     pins_json                    TEXT,
     ram_addrs_json                 TEXT,
     scenarios_json                   TEXT,
+    strings_json                       TEXT,  -- distinct string values referenced by any member (rule 8 below)
     source                             TEXT NOT NULL,
     UNIQUE(firmware_id, component_index)
 );
@@ -581,3 +582,52 @@ CREATE TABLE IF NOT EXISTS pin_snapshot (
     UNIQUE(firmware_id, pin_name)
 );
 CREATE INDEX IF NOT EXISTS idx_pinsnap_fw ON pin_snapshot(firmware_id);
+
+-- ===========================================================================
+-- Residual-prioritization / hardware-contract layer (tools/census/
+-- residual_priority.py, hardware_contract.py, firmware_diff.py). Built ON
+-- TOP of everything above -- purely a deterministic re-aggregation of
+-- already-collected evidence, never a new evidence-collection pass. See
+-- docs/tooling/census.md's "Residual prioritization" and "Hardware
+-- contract" sections.
+-- ===========================================================================
+
+-- One row per RESIDUAL function (see residual_priority.residual_function_ids
+-- -- same definition `aptrace_census.py residual` reports): a deterministic
+-- priority score plus the FULL list of individual signals that produced it
+-- (reasons_json: [{signal, points, description, evidence}, ...]) -- never
+-- collapsed to just the number. Purely a re-weighting of evidence already
+-- in function_features/edges/mmio_accesses/etc; no new fact is collected
+-- here. See residual_priority.py's module docstring for the fixed signal
+-- table.
+CREATE TABLE IF NOT EXISTS residual_priority (
+    id                INTEGER PRIMARY KEY,
+    firmware_id         INTEGER NOT NULL REFERENCES firmware(id),
+    function_id           INTEGER NOT NULL REFERENCES functions(id),
+    score                    INTEGER NOT NULL,
+    tier                       TEXT NOT NULL,  -- HIGH / MEDIUM / LOW -- see residual_priority.tier_for
+    reasons_json                 TEXT NOT NULL,
+    source                          TEXT NOT NULL,
+    UNIQUE(firmware_id, function_id)
+);
+CREATE INDEX IF NOT EXISTS idx_respri_fw ON residual_priority(firmware_id);
+CREATE INDEX IF NOT EXISTS idx_respri_tier ON residual_priority(firmware_id, tier);
+
+-- One deterministic, machine-readable hardware-contract JSON document per
+-- firmware image (tools/census/hardware_contract.py), regenerated every
+-- `census reduce` from the SAME hardware_snapshot/mmio_accesses/vectors/
+-- pins/components evidence already persisted above -- never a second
+-- Unicorn run, never a new fact. Kept as one row so `census diff` can
+-- compare two firmware images' contracts directly without re-deriving
+-- them, and so the contract is inspectable/exportable without
+-- recomputation. See hardware_contract.py's module docstring for the
+-- exact JSON shape (every field ships its raw register value alongside
+-- any decoded field, and is explicitly null/omitted rather than guessed
+-- when evidence is missing).
+CREATE TABLE IF NOT EXISTS hardware_contract_runs (
+    id                INTEGER PRIMARY KEY,
+    firmware_id         INTEGER NOT NULL REFERENCES firmware(id),
+    contract_json         TEXT NOT NULL,
+    generated_at            TEXT NOT NULL,
+    UNIQUE(firmware_id)
+);
