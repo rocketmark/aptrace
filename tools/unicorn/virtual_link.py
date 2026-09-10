@@ -93,6 +93,7 @@ Usage:
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py s        # S -> P... only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py ampersand  # "&|" -> "V01R39" only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
+    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py pb05     # PB05-low reload -> does it reach motor_move_commit__CUSTOM?
 """
 import sys
 from pathlib import Path
@@ -881,6 +882,275 @@ def run_plus_target_distance_roundtrip(verbose=True):
     return True
 
 
+# --- PB05 config-reload -> motion-causality anchors (all independently
+# confirmed by execution this pass; see
+# docs/investigations/trigger-input-motion-causality.md) --------------------
+
+AUTOPILOT_GATE1 = 0x20001b38          # already known: the '+' mode=0x62
+                                        # finalize path's own real side effect
+                                        # (trigger-input-symbolic-
+                                        # reachability.md)
+AUTOPILOT_GATE2 = 0x200000d8          # all-4-idle status; provenance-closed
+                                        # value 9 (trigger-input-symbolic-
+                                        # reachability.md Part 3) -- disclosed
+                                        # here per that same precedent, not
+                                        # re-derived live this pass (this
+                                        # function's own idle-check is a
+                                        # separate, not yet re-traced, branch)
+AUTOPILOT_PERSIST_BUF = 0x20003145    # RAM staging buffer FUN_00004b64's
+                                        # bulk-load (config_loader__CUSTOM)
+                                        # reads from -- the SAME buffer
+                                        # FUN_000043f0's real persist writes
+                                        # through to (dirty-flag-
+                                        # persistence.md), confirmed this
+                                        # pass to carry a real '+' push's
+                                        # target/delta forward into a later
+                                        # reload with no NVM flush needed
+PERSIST_LEN = 1660                     # covers persisted logical offsets
+                                        # 0..1659 (Step A needs up to 1652)
+
+AUTOPILOT_PHASE_RAMP_ENTRY = 0x00008e18  # phase_ramp_state_machine__CUSTOM's
+                                           # own sound entry point (trigger-
+                                           # input-concrete-path.md Part 9/10)
+AUTOPILOT_MODE_FLAG = 0x20001fc0       # PA02 boot-time mode flag (2 = PA02 low)
+AUTOPILOT_TR_ENABLE = 0x20003120       # trigger-status reporting enable (0 = default)
+AUTOPILOT_PER_CHAN_DEVICE_STATE = 0x20002524  # 4 bytes; also the 0x8f98
+                                                # path's own idle precondition
+AUTOPILOT_PHASE_MODE = 0x20002318      # 4 bytes -- phase_ramp's OWN per-
+                                         # channel arm/state byte (0=idle,
+                                         # 1=armed, 2=compute+commit, ...).
+                                         # Exhaustive xref found exactly 3
+                                         # writers in the whole image: the
+                                         # reload itself (writes 0), this
+                                         # function's own internal self-
+                                         # transitions (once already armed),
+                                         # and exactly one OTHER command
+                                         # handler (0x865a, part of the 'W'
+                                         # command family, gated on GATE2 --
+                                         # not GATE1/PB05) that is the SOLE
+                                         # producer of the 0->1 (armed)
+                                         # transition anywhere in this image.
+AUTOPILOT_FLAG_2014 = 0x20002014       # 4 bytes; the reload's own real
+                                         # writer, closing trigger-input-
+                                         # concrete-path.md's own open
+                                         # "0x20002014[channel]" question --
+                                         # it CLEARS this to 0 for a valid
+                                         # channel, it never sets it
+AUTOPILOT_FLAG_310C = 0x2000310c       # 4 bytes -- a previously-uncharacterized
+                                         # per-channel "has a nonzero delta"
+                                         # flag the reload's own per-record
+                                         # loop sets to 1; its only other
+                                         # reference anywhere in the image is
+                                         # a read inside motor_move_commit__
+                                         # CUSTOM itself -- but since
+                                         # AUTOPILOT_PHASE_MODE never reaches
+                                         # 2 from this path, that reader is
+                                         # never reached either
+AUTOPILOT_STATUS_BYTE = 0x200025bc     # +1 becomes 3 at 0x8f98 (already known)
+AUTOPILOT_TICK_VAR = 0x200052ec
+AUTOPILOT_RATE_LAST_CHECK = 0x20002410
+AUTOPILOT_PB05_MMIO = 0x410080a0       # PORT.GROUP1.IN
+AUTOPILOT_PB05_BIT = 0x20              # bit 5
+AUTOPILOT_PB3031_PULSE_MMIO = 0x41008094  # PORT.GROUP1.OUTCLR(+0)/OUTSET(+4);
+                                            # the reload's own shared epilogue
+                                            # (FUN_00006952, also called from
+                                            # motor_move_commit__CUSTOM itself)
+                                            # unconditionally pulses PB30
+                                            # high / PB31 low here -- a real,
+                                            # confirmed GPIO side effect,
+                                            # distinct from any per-channel
+                                            # step/DIR pin (motor-timer-
+                                            # survey.md/pin-index-
+                                            # provenance.md already named
+                                            # those separately) and not
+                                            # itself investigated further
+                                            # this pass
+
+WIRE_PLUS_500 = b"+1,1,1,0,98,1,0,0,0,500,0,0|"  # byte-identical to the
+                                                    # already-proven real
+                                                    # Remote frame (plus-
+                                                    # target-distance-
+                                                    # roundtrip.md)
+
+
+def _hexb(b):
+    return " ".join(f"{x:02x}" for x in b)
+
+
+def run_pb05_reload_motion_check(verbose=True):
+    """Does the PB05-low config-reload (trigger-input-symbolic-
+    reachability.md's own confirmed 0x8f98 path) naturally cause motor
+    motion, given a real, already-proven, non-blank persisted target
+    sitting in the config it reloads from?
+
+    Builds the SAME real predecessor state run_plus_target_distance_
+    roundtrip's own Leg 1/2 already establishes (a real '+' mode=0x62
+    bulk-push, delta=target=500 for channel 0) -- which, per trigger-
+    input-symbolic-reachability.md, is *also* the real, already-proven
+    producer of GATE1 (0x20001b38=0x7b), one of the two preconditions
+    the PB05-low path itself needs. GATE2 (0x200000d8=9) is the OTHER
+    precondition; its own provenance was closed by disassembly in that
+    same investigation (an all-4-channels-idle check inside this same
+    function) and is disclosed-seeded here rather than re-derived live,
+    exactly as that investigation's own Unicorn replay did.
+
+    Then runs phase_ramp_state_machine__CUSTOM (0x8e18, the already-
+    established sound entry point) from that one real predecessor state
+    twice, varying ONLY the genuinely external input (PB05's live level),
+    and continues into a follow-up call simulating the next main-loop
+    iteration -- looking, throughout, for whether execution ever reaches
+    motor_move_commit__CUSTOM (0x00006fd8). A final, clearly-separated,
+    explicitly-disclosed control (NOT part of the PB05 chain) confirms
+    the state machine's own commit path is real and reachable in general
+    by independently forcing the one byte this investigation found is
+    missing -- so a negative result above is not mistaken for "the
+    harness can't reach FUN_00006fd8 at all."
+    """
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    autopilot = _machine_for(AUTOPILOT_FW)
+
+    log("=== Leg 1: real '+' delivery (byte-identical to plus-target-distance-roundtrip.md) ===")
+    packet_plus = WIRE_PLUS_500.ljust(32, b"\x00")
+    result_plus = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(WIRE_PLUS_500))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, packet_plus)],
+        stub_calls=[AUTOPILOT_PLUS_DISPLAY_STUB],
+        stop_at=[0x8a38],
+        dump_mem=[(AUTOPILOT_CH0_STRUCT, 0x120), (AUTOPILOT_DIRTY_AREA, 8),
+                  (AUTOPILOT_GATE1, 4), (AUTOPILOT_PERSIST_BUF, PERSIST_LEN)],
+        max_instructions=200000,
+        label="pb05-leg1-plus-deliver",
+    ).expect_stop(0x8a38)
+
+    ch0 = result_plus.mem(AUTOPILOT_CH0_STRUCT, 0x120)
+    delta = int.from_bytes(ch0[0x0:0x4], "little", signed=True)
+    target = int.from_bytes(ch0[0xc:0x10], "little", signed=True)
+    gate1 = result_plus.mem(AUTOPILOT_GATE1, 4)
+    dirty = result_plus.mem(AUTOPILOT_DIRTY_AREA, 8)[3]
+    log(f"  channel0 record0: delta={delta} target={target} dirty={dirty}; gate1={_hexb(gate1)}")
+    assert delta == 500 and target == 500 and dirty == 1
+    assert gate1[0] == 0x7b, f"expected the real '+' side effect gate1==0x7b, got {gate1.hex()}"
+
+    ch0_carried = result_plus.carry(AUTOPILOT_CH0_STRUCT, 0x120, label="pb05-leg1-plus-deliver")
+    gate1_carried = result_plus.carry(AUTOPILOT_GATE1, 4, label="pb05-leg1-plus-deliver")
+    persist_carried = result_plus.carry(AUTOPILOT_PERSIST_BUF, PERSIST_LEN, label="pb05-leg1-plus-deliver")
+
+    def base_seed(ch0=None):
+        return [
+            ch0 or ch0_carried, gate1_carried, persist_carried,
+            (AUTOPILOT_PERSIST_BUF, b"\x01"),  # disclosed: config-loader
+                                                 # already initialized this
+                                                 # session (the lazy-init
+                                                 # marker byte) -- a boot-
+                                                 # completion fact every
+                                                 # scenario reaching this
+                                                 # deep into firmware
+                                                 # operation implies, not a
+                                                 # motion value
+            (AUTOPILOT_MODE_FLAG, bytes([2])),
+            (AUTOPILOT_TR_ENABLE, bytes([0])),
+            (AUTOPILOT_PER_CHAN_DEVICE_STATE, bytes(4)),
+            (AUTOPILOT_STATUS_BYTE, bytes(2)),
+            (AUTOPILOT_RATE_LAST_CHECK, b"\x00\x00\x00\x00"),
+        ]
+
+    def run_phase_ramp(tag, pb05_high, tick, extra_seed, ch0=None):
+        mmio_kw = {"mmio_force_bits": [(AUTOPILOT_PB05_MMIO, AUTOPILOT_PB05_BIT)]} if pb05_high \
+            else {"mmio_clear_bits": [(AUTOPILOT_PB05_MMIO, AUTOPILOT_PB05_BIT)]}
+        return autopilot.run(
+            AUTOPILOT_PHASE_RAMP_ENTRY,
+            seed_mem=base_seed(ch0) + [(AUTOPILOT_TICK_VAR, tick.to_bytes(4, "little"))] + list(extra_seed),
+            reg_seed=[("lr", autopilot.trampoline_addr | 1)],
+            stop_at=[autopilot.trampoline_addr, AUTOPILOT_FUN_00006fd8],
+            watch_mem_write=[(AUTOPILOT_GATE2, 1), (AUTOPILOT_PHASE_MODE, 4),
+                              (AUTOPILOT_FLAG_2014, 4), (AUTOPILOT_FLAG_310C, 4),
+                              (AUTOPILOT_STATUS_BYTE, 2), (AUTOPILOT_PB3031_PULSE_MMIO, 8)],
+            dump_mem=[(AUTOPILOT_PHASE_MODE, 4), (AUTOPILOT_FLAG_2014, 4),
+                      (AUTOPILOT_FLAG_310C, 4), (AUTOPILOT_STATUS_BYTE, 2),
+                      (AUTOPILOT_GATE2, 1), (AUTOPILOT_CH0_STRUCT, 0x120)],
+            max_instructions=400000,
+            label=f"pb05-{tag}",
+            **mmio_kw,
+        )
+
+    def gpio_pulse_hits(r):
+        return [h for h in r.mem_write_hits if h["range"].startswith(f"0x{AUTOPILOT_PB3031_PULSE_MMIO:08x}")]
+
+    log("\n=== Leg 2: PB05 LOW -- the reload should fire ===")
+    idle_seed = [(AUTOPILOT_PHASE_MODE, bytes(4)), (AUTOPILOT_FLAG_2014, bytes(4)),
+                 (AUTOPILOT_FLAG_310C, bytes(4)), (AUTOPILOT_GATE2, bytes([9]))]
+    r_low = run_phase_ramp("leg2-pb05-low", pb05_high=False, tick=10_000, extra_seed=idle_seed)
+    status_low = r_low.mem(AUTOPILOT_STATUS_BYTE, 2)
+    phase_mode_low = r_low.mem(AUTOPILOT_PHASE_MODE, 4)
+    flag310c_low = r_low.mem(AUTOPILOT_FLAG_310C, 4)
+    log(f"  stop_reason: {r_low.stop_reason}")
+    log(f"  status bytes = {_hexb(status_low)} (+1==3 means 0x8f98/the reload really ran)")
+    log(f"  PHASE_MODE after = {_hexb(phase_mode_low)}  0x2000310c after = {_hexb(flag310c_low)}")
+    log(f"  GPIO (PB30/PB31) pulse hits: {len(gpio_pulse_hits(r_low))}")
+    assert status_low[1] == 3, "expected the real 0x8f98 write (status byte -> 3) -- reload did not fire"
+    assert not r_low.stopped_at(AUTOPILOT_FUN_00006fd8), \
+        "unexpected: PB05-low reload alone reached motor_move_commit__CUSTOM"
+    assert phase_mode_low[0] == 0, "expected PHASE_MODE to stay/return to idle (the reload never arms it)"
+    assert flag310c_low[0] == 1, "expected the reload to flag channel0's cached nonzero delta"
+    assert len(gpio_pulse_hits(r_low)) == 2, "expected the reload's own real PB30/PB31 pulse"
+
+    log("\n=== Leg 3: PB05 HIGH -- same predecessor state, the control ===")
+    r_high = run_phase_ramp("leg3-pb05-high", pb05_high=True, tick=10_000, extra_seed=idle_seed)
+    status_high = r_high.mem(AUTOPILOT_STATUS_BYTE, 2)
+    log(f"  stop_reason: {r_high.stop_reason}")
+    log(f"  status bytes = {_hexb(status_high)}  mem_write_hits = {len(r_high.mem_write_hits)}")
+    assert status_high[1] == 0, "expected PB05-high to NOT reach 0x8f98 (control failed)"
+    assert not r_high.stopped_at(AUTOPILOT_FUN_00006fd8)
+    assert len(gpio_pulse_hits(r_high)) == 0, "expected NO GPIO pulse when the reload doesn't fire"
+
+    log("\n=== Leg 4: a second call, continuing from Leg 2's own post-reload state")
+    log("    (simulating the next real main-loop iteration) ===")
+    ch0_after_carried = r_low.carry(AUTOPILOT_CH0_STRUCT, 0x120, label="pb05-leg2-pb05-low")
+    followup_seed = [
+        r_low.carry(AUTOPILOT_PHASE_MODE, 4, label="pb05-leg2-pb05-low"),
+        r_low.carry(AUTOPILOT_FLAG_2014, 4, label="pb05-leg2-pb05-low"),
+        r_low.carry(AUTOPILOT_FLAG_310C, 4, label="pb05-leg2-pb05-low"),
+        r_low.carry(AUTOPILOT_GATE2, 1, label="pb05-leg2-pb05-low"),
+    ]
+    r_followup = run_phase_ramp("leg4-followup", pb05_high=True, tick=20_000,
+                                 extra_seed=followup_seed, ch0=ch0_after_carried)
+    log(f"  stop_reason: {r_followup.stop_reason}")
+    assert not r_followup.stopped_at(AUTOPILOT_FUN_00006fd8), \
+        "unexpected: a follow-up call reached motor_move_commit__CUSTOM"
+
+    log("\n=== Control (NOT part of the PB05 chain): the SAME post-reload state DOES")
+    log("    reach motor_move_commit__CUSTOM once PHASE_MODE[0] is independently")
+    log("    forced to 1 -- confirming arming is the only missing ingredient ===")
+    armed_seed = [followup_seed[1], followup_seed[2], followup_seed[3],  # 0x20002014/0x2000310c/GATE2 carried
+                  (AUTOPILOT_PHASE_MODE, bytes([1, 0, 0, 0]))]           # the ONE disclosed change
+    r_arm1 = run_phase_ramp("control-call1", pb05_high=True, tick=20_000,
+                             extra_seed=armed_seed, ch0=ch0_after_carried)
+    phase_mode_armed = r_arm1.mem(AUTOPILOT_PHASE_MODE, 4)
+    log(f"  call1 (mode 1->2): PHASE_MODE after = {_hexb(phase_mode_armed)}")
+    assert phase_mode_armed[0] == 2, "expected the real mode 1->2 self-transition"
+    r_arm2 = run_phase_ramp(
+        "control-call2", pb05_high=True, tick=30_000,
+        extra_seed=[followup_seed[1], followup_seed[2], followup_seed[3],
+                    r_arm1.carry(AUTOPILOT_PHASE_MODE, 4, label="pb05-control-call1")],
+        ch0=ch0_after_carried,
+    ).expect_stop(AUTOPILOT_FUN_00006fd8)
+    r = r_arm2.registers
+    log(f"  call2 reached FUN_00006fd8(channel={r['r0']}, const=0x{r['r1']:x},"
+        f" distance={r['r2'] - (1 << 32) if r['r2'] & 0x80000000 else r['r2']}, rate=0x{r['r3']:x})")
+
+    log("\nRESULT: the PB05-low reload (real gate1, disclosed-provenance gate2, a real")
+    log("non-blank persisted target) reaches 0x8f98 and reruns config_loader__CUSTOM +")
+    log("its motion-profile compute for real -- but never arms PHASE_MODE, so neither")
+    log("that call nor a follow-up ever reaches motor_move_commit__CUSTOM. The control")
+    log("above confirms the ONLY missing ingredient is PHASE_MODE's own arm byte, whose")
+    log("sole producer in this image (0x865a) is an unrelated command, not PB05.")
+    return True
+
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which == "ampersand":
@@ -891,6 +1161,8 @@ if __name__ == "__main__":
         ok = bool(run_s_roundtrip())
     elif which == "plus":
         ok = run_plus_target_distance_roundtrip()
+    elif which == "pb05":
+        ok = run_pb05_reload_motion_check()
     elif which == "all":
         ok = run_ampersand_roundtrip()
         print()
@@ -899,6 +1171,8 @@ if __name__ == "__main__":
         ok = bool(run_s_roundtrip()) and ok
         print()
         ok = run_plus_target_distance_roundtrip() and ok
+        print()
+        ok = run_pb05_reload_motion_check() and ok
     else:
-        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|plus|all]")
+        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|plus|pb05|all]")
     sys.exit(0 if ok else 1)

@@ -32,8 +32,20 @@ mechanism_summary: >
   wrapper (0x8c10); (2) when disarmed (TR0|, the default) and the system
   is otherwise idle, a second digitalRead(PB05) reading LOW reaches a
   real reload of the persisted motor-target config (config_loader__
-  CUSTOM / FUN_00004b64), hitting the same lazy-init boundary already
-  named in target-config-provenance.md.
+  CUSTOM / FUN_00004b64) plus a real per-channel motion-profile compute
+  (config_reload_motion_profile_compute / FUN_00006b50, CLOSED in the
+  motion-causality slice) and a real GPIO pulse (PB30 high / PB31 low).
+  CLOSED, motion-causality slice: this reload CANNOT by itself cause
+  motor motion -- it never arms phase_ramp_state_machine__CUSTOM's own
+  per-channel mode byte (phase_ramp_arm_byte / 0x20002318[channel]), the
+  one gate that function's per-channel loop checks before ever calling
+  motor_move_commit__CUSTOM. That byte's sole armer anywhere in the image
+  is a different, unrelated ASCII command (phase_ramp_arm_producer /
+  0x865a), gated on gate2, not PB05/gate1. Concretely confirmed via a
+  real predecessor state (a genuine '+' bulk-push, not a fabricated
+  target) and a real PB05-high control: see
+  docs/investigations/trigger-input-motion-causality.md and
+  tools/unicorn/virtual_link.py's `pb05` scenario.
 
 confirmed_state:
   pin_descriptor_table:
@@ -76,6 +88,12 @@ confirmed_state:
     ascii_dispatcher_TR_handler: "0x000084fa-0x00008512"   # writes the enable byte, CLOSED this slice
     config_loader: "0x00004b64"      # config_loader__CUSTOM, already named in target-config-provenance.md
     config_reload_tail_jump_target: "0x00006e4c"   # inside FUN_00006b50
+    config_reload_motion_profile_compute: "0x00006b50"   # NEW (motion-causality slice): the real function 0x6e4c tail-jumps into after the bulk load -- per-channel motion-profile compute (velocity/period arrays, 0x2000310c busy flag); clears (never sets) phase_ramp's own arm byte 0x20002318[channel] and 0x20002014[channel]; falls into config_reload_gpio_pulse below before returning. See docs/investigations/trigger-input-motion-causality.md Part 1.
+    config_reload_gpio_pulse: "0x00006952"   # NEW: shared epilogue (also called from motor_move_commit__CUSTOM itself) -- digitalWrite(0x31/*PB30*/,1); digitalWrite(0x32/*PB31*/,0). Real, concretely confirmed (2 MMIO writes), role otherwise uncharacterized.
+    phase_ramp_arm_producer: "0x0000865a"   # NEW: the SOLE writer anywhere in the image that sets phase_ramp's own per-channel arm byte (0x20002318[channel]) to 1 -- part of the 'W' command family (top-level dispatch at 0x85d8, cmp r3,#0x57), gated on gate2 ({0,1,2}), NOT gate1/PB05. Exact wire syntax not pinned down this slice.
+    w1_command_second_reload_route: "0x00008624"   # NEW: a second, real, protocol-driven route into config_reload_tail_jump_target (0x6e4c) -- the 'W1' sub-case of the same 'W' dispatch, gated on gate1==0x7b (not PB05). Found in passing, not characterized.
+    invalidate_config_command: "0x000080ec"   # NEW: the OTHER writer of 0x20002014 (clears it to 0 as part of invalidating the whole config struct, +0x44=0); command identity not pinned down this slice.
+    motor_move_commit: "0x00006fd8"   # motor_move_commit__CUSTOM, already named in mc4-transition.md/target-config-provenance.md; phase_ramp_state_machine__CUSTOM's own per-channel loop is confirmed this slice to be the ONLY thing that calls it from the MC4-gated subsystem, gated on 0x20002318[channel]==2
     integer_append_helper: "0x00004644"
     tx_wrapper: "0x00008c10"                         # already proven (dispatcher-loop-concrete-trace.md / tx-hook-verification.md)
     millis: "0x0000ccd0"
@@ -92,6 +110,9 @@ confirmed_state:
     second_gate_cell_1: "0x20001b38"   # must == 0x7b -- PROVENANCE CLOSED (symbolic-reachability slice): real writer 0x818e, the '+' command's mode=0x62 bulk-push finalize path (FUN_00004ca8/FUN_000043f0, already known -- bulk-push-trigger-provenance.md)
     second_gate_cell_2: "0x200000d8"   # must == 9 -- PROVENANCE CLOSED: real writer 0x9088, an all-4-channels-idle check inside phase_ramp_state_machine__CUSTOM itself; ALSO reset to 0 by the config-reload function's own real write (0x6b60, FUN_00006b50) -- a genuine self-clearing mechanism, Unicorn-confirmed
     config_reload_status_byte: "0x200025bc"   # +1 offset written =3 by 0x8f98; two other readers (0x7a50, 0x81f8) not traced
+    phase_ramp_arm_byte: "0x20002318"   # [0..3] -- CLOSED (motion-causality slice): phase_ramp_state_machine__CUSTOM's OWN per-channel arm/mode byte (0=idle,1=armed,2=compute+commit,...) -- the ONLY gate before motor_move_commit__CUSTOM. Exactly 3 writers total: config_reload_motion_profile_compute (writes 0), phase_ramp_state_machine's own self-transitions, and phase_ramp_arm_producer (writes 1, the sole armer). The PB05/reload path only ever writes 0 here.
+    reload_busy_flag: "0x2000310c"   # [0..3] -- NEW: written 1 by config_reload_motion_profile_compute when a channel's reloaded config has a real nonzero delta; its only other reference anywhere in the image is a read inside motor_move_commit__CUSTOM -- but since phase_ramp_arm_byte never reaches 2 from this path, that reader is never exercised. Computed, functionally never consumed via the PB05 route.
+    reload_motion_profile_dead_arrays: ["0x20002908", "0x20000e90", "0x200014d0", "0x200025e8"]   # NEW: velocity/target/period arrays config_reload_motion_profile_compute writes -- exhaustive xref: no reader anywhere else in the image. Same "computed, never consumed" pattern as adc_baseline_dead_ram.
   eic_negative_result:
     callback_table: "0x2000525c"   # exactly one xref anywhere in the image: the handler's own load
     line_count: "0x200052e4"       # same
@@ -166,14 +187,19 @@ open_questions:
   - "Is PA02/PB05's physical identity as 'the 3.5mm trigger jack' confirmed against a schematic, or only behaviorally inferred?"
   - "Does anything on the Remote side react to the 'T<>,<>,|' frame in a way that matches the user-reported 'one trigger' symptom? (Remote-side tracing is out of scope for this AutoPilot-only slice.)"
   - "What is 0x200025bc's full role (config-reload status byte, +1 offset written =3 here; two other readers at 0x7a50/0x81f8 not traced)?"
-  - "What is the narrow per-channel-loop combination (0x20002014[channel]==1 and 0x20001b40[channel]+0x44 != 0) that this slice found is the only way to skip the trigger-poll region entirely -- does it ever fire in practice?"
+  - "CLOSED (motion-causality slice): the narrow per-channel-loop combination (0x20002014[channel]==1 and 0x20001b40[channel]+0x44 != 0) -- 0x20002014's real producers are now both known (config_reload_motion_profile_compute clears it to 0; invalidate_config_command/0x80ec also clears it as part of a config-invalidation path). No real writer anywhere in the image sets it to 1 -- this combination is not just argued but confirmed not to fire via the PB05/reload route. See docs/investigations/trigger-input-motion-causality.md."
+  - "NEW (motion-causality slice): the exact wire syntax for the 'W' command family (0x84fc/0x85d8 top-level dispatch) -- W0 (0x72ac), W1 (0x8624, a second real route into the same config reload, gated on gate1 not PB05), and the third sub-case (0x8628/0x865a, the sole armer of phase_ramp_arm_byte, gated on gate2) are all disassembly-located but not named against command-inventory.md's own conventions."
+  - "NEW (motion-causality slice): why does the explicitly-synthetic positive control (phase_ramp_arm_byte forced to 1) yield FUN_00006fd8(distance=0) rather than the real '+'-pushed 500? A struct+0x40 mode-selector detail, not chased since it's outside the PB05 causal question -- would matter to a future slice that wants a full, real, nonzero-distance trace through phase_ramp_state_machine__CUSTOM specifically (plus-target-distance-roundtrip.md already has one through the G-command's own separate FUN_00007e2c path)."
+  - "NEW (motion-causality slice): PB30/PB31's real role -- config_reload_gpio_pulse (0x6952) pulses them unconditionally, and motor_move_commit__CUSTOM shares the same epilogue, but neither this slice nor any prior one has characterized what they actually drive (not one of the four channels' own step/DIR pins)."
 
 evidence:
   - docs/investigations/trigger-input-concrete-path.md
   - docs/investigations/trigger-input-symbolic-reachability.md
+  - docs/investigations/trigger-input-motion-causality.md
   - docs/hardware/autopilot-research-handoff.md
   - docs/investigations/mc4-transition.md
   - docs/investigations/g-command-motor-subsystem-unlock.md
   - docs/investigations/target-config-provenance.md
   - docs/investigations/manual-mode-wire-provenance.md
   - docs/investigations/bulk-push-trigger-provenance.md
+  - docs/investigations/plus-target-distance-roundtrip.md

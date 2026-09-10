@@ -6,7 +6,41 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (compact RAM zero-initialization implemented for
+Last updated: 2026-09-09 (the PB05-low config-reload cannot by itself
+cause the reported one-time motor trigger — proven, not just argued):
+disassembling the reload's own downstream chain (`0x8f98` -> `0x6e4c` ->
+`FUN_00006b50` -> `FUN_00006952`, none of it previously traced past
+`0x8f98`'s own tail-jump) found a real, substantial function that reruns
+`config_loader__CUSTOM`'s bulk load and computes a full per-channel motion
+profile (velocity/period arrays, a new busy flag `0x2000310c[channel]`) —
+but **never arms** `phase_ramp_state_machine__CUSTOM`'s own per-channel
+mode byte (`0x20002318[channel]`), the one gate that function's per-channel
+loop checks before ever calling `motor_move_commit__CUSTOM`. An exhaustive
+xref search finds that byte's `0`->`1` (armed) transition has exactly one
+producer anywhere in the image — a different, unrelated ASCII command
+(`0x865a`, part of the `'W'` family, gated on the all-idle status byte, not
+PB05/gate 1). **Concretely confirmed**, reusing this project's own
+already-proven real predecessor state (a genuine `'+'` bulk-push — not a
+fabricated target — whose real side effects already include the reload's
+own gate-1 precondition): PB05 LOW correctly reaches the reload (288 real
+memory writes, a real PB30/PB31 GPIO pulse) while an identical-predecessor
+PB05-HIGH control touches none of that state at all, and **neither that
+call nor a follow-up simulating the next main-loop iteration ever reaches
+`motor_move_commit__CUSTOM`** — confirmed via an explicit stop-at on that
+exact address, not inferred from a timeout or absence. A separate,
+clearly-labeled, non-PB05 control (the arm byte independently forced)
+confirms the commit path is real and reachable in general, so the negative
+result above is a finding about the PB05 path specifically, not a harness
+limitation. A second, real, protocol-driven route into the identical
+reload chain (`'W1'`, gated on gate 1) was found in passing and left
+uncharacterized, out of scope. A new, reusable regression,
+`tools/unicorn/virtual_link.py pb05`, reproduces the whole result
+end to end. See
+[`docs/investigations/trigger-input-motion-causality.md`](investigations/trigger-input-motion-causality.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+(updated).
+
+Previous update (2026-09-09, compact RAM zero-initialization implemented for
 Crucible/What4 queries, and measured against the real narrowed PB05 query
 diagnosed in the trigger-input investigation's own Part 6): the
 ~196,615-assert-per-byte RAM zero-initialization that investigation
