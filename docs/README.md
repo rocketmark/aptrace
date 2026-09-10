@@ -49,6 +49,8 @@ Describes current truth, not chronology:
   [`harness/protocol-harness-results.md`](harness/protocol-harness-results.md),
   [`harness/symbolic-execution-results.md`](harness/symbolic-execution-results.md) —
   harness internals and solver results.
+- [`tooling/census.md`](tooling/census.md) — `aptrace census`, the
+  mechanical firmware evidence database/closure report (`tools/census/`).
 - [`toolchain.md`](toolchain.md) — build/toolchain setup.
 
 ## Investigations

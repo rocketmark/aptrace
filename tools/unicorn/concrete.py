@@ -260,6 +260,9 @@ class RunResult:
                 for r, (p, data) in self._reg_pointee.items()
             },
             "recent_pcs": [f"0x{pc:08x}" for pc in self.recent_pcs],
+            "visited_pcs": (sorted(f"0x{pc:08x}" for pc in self.visited_pcs)
+                            if self.visited_pcs is not None else None),
+            "ram_log": self.ram_log,
             "applied_seeds": self.applied_seeds,
             "watch_hits": self.watch_hits,
             "mmio_log": self.mmio_log,
@@ -510,6 +513,7 @@ class ConcreteMachine:
             max_instructions=200000, trace=False, trace_every=1, trace_last=DEFAULT_TRACE_LAST,
             fake_tick=(), mmio_force_bits=(), mmio_clear_bits=(), force_reg=(), force_mem=(),
             log_mmio=False, max_mmio_log=5000, watch_mem_write=(), max_mem_write_log=2000,
+            collect_coverage=False, log_ram=False, max_ram_log=5000,
             fresh=True, label=None, raise_on_error=False):
         """Run concretely from `entry` (Thumb bit added automatically).
 
@@ -527,6 +531,14 @@ class ConcreteMachine:
         from that address, in this SAME run (see the module docstring's
         point 2 -- this is what let capture_tx_bytes drop from two runs
         to one).
+
+        `collect_coverage`: accumulate every unique PC this run executes
+        into the result's `visited_pcs` (a set, unlike `recent_pcs`'
+        bounded ring buffer -- this is for dynamic-coverage census
+        ingestion, tools/census/dynamic_ingest.py, not for "what was it
+        doing right before it died"). `log_ram`: like `log_mmio`, but for
+        the RAM window (self.ram_base..+ram_size) -- both default False
+        (additive, no behavior change for existing callers).
 
         Returns a RunResult always, even on failure, unless
         raise_on_error=True (then a failure raises ConcreteExecutionError
@@ -581,6 +593,8 @@ class ConcreteMachine:
             "mmio_clear_count": [0] * len(mmio_clear_bits),
             "force_reg_hits": [], "force_mem_hits": [],
             "recent_pcs": collections.deque(maxlen=trace_last) if trace_last else None,
+            "visited_pcs": set() if collect_coverage else None,
+            "ram_log": [],
         }
 
         def capture_registers():
@@ -599,6 +613,8 @@ class ConcreteMachine:
             state["instructions"] += 1
             if state["recent_pcs"] is not None:
                 state["recent_pcs"].append(address)
+            if state["visited_pcs"] is not None:
+                state["visited_pcs"].add(address)
             if trace and state["instructions"] % trace_every == 0:
                 import sys
                 print(f"  [unicorn] #{state['instructions']} pc=0x{address:08x}", file=sys.stderr)
@@ -660,6 +676,18 @@ class ConcreteMachine:
                 "value": f"0x{value:x}" if access != UC_MEM_READ else None,
             })
 
+        def hook_ram(uc_, access, address, size, value, _user_data):
+            if len(state["ram_log"]) >= max_ram_log:
+                return
+            state["ram_log"].append({
+                "instruction": state["instructions"],
+                "pc": f"0x{uc_.reg_read(UC_ARM_REG_PC):08x}",
+                "address": f"0x{address:08x}",
+                "size": size,
+                "direction": "read" if access == UC_MEM_READ else "write",
+                "value": f"0x{value:x}" if access != UC_MEM_READ else None,
+            })
+
         def make_mmio_force_hook(i, addr, mask):
             def hook(uc_, access, address, size, value, _user_data):
                 cur = int.from_bytes(uc_.mem_read(addr, 4), "little")
@@ -702,6 +730,10 @@ class ConcreteMachine:
             handles.append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_mmio,
                                         begin=align_down(self.mmio_base),
                                         end=align_down(self.mmio_base) + align_up(self.mmio_size) - 1))
+        if log_ram:
+            handles.append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_ram,
+                                        begin=align_down(self.ram_base),
+                                        end=align_down(self.ram_base) + align_up(self.ram_size) - 1))
         for addr, length in watch_mem_write:
             handles.append(uc.hook_add(UC_HOOK_MEM_WRITE, make_mem_write_hook(addr, length),
                                         begin=addr, end=addr + length - 1))
@@ -759,6 +791,8 @@ class ConcreteMachine:
             memory=memory,
             _reg_pointee=reg_pointee,
             recent_pcs=list(state["recent_pcs"]) if state["recent_pcs"] is not None else [],
+            visited_pcs=state["visited_pcs"],
+            ram_log=state["ram_log"],
             applied_seeds=applied_seeds,
             watch_hits=state["watch_hits"],
             mmio_log=state["mmio_log"],

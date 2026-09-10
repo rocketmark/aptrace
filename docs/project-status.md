@@ -35,7 +35,14 @@ disclosed hardware/timing assumptions (`--fake-tick`, `--mmio-force-bits`/
 `--log-mmio`), each scoped and justified individually, never a general
 peripheral model; a harness-driven virtual RF link
 (`tools/unicorn/virtual_link.py`) connecting both firmwares' real TX/RX
-paths with no radio hardware modeled.
+paths with no radio hardware modeled; and `aptrace census`
+(`tools/census/`, see [`docs/tooling/census.md`](tooling/census.md)) — a
+fully mechanical, no-LLM-in-the-loop static+dynamic evidence database
+(functions, basic blocks, CFG edges, RAM/MMIO accesses, vectors, pins,
+Unicorn dynamic coverage) built and run against all four known firmware
+images, with a deterministic query CLI and closure/warning report.
+Semantic classification of the residual (uncovered functions, unresolved
+indirect edges, etc.) is a later, separate phase, not yet started.
 
 ## Current milestone: the core protocol pipeline
 

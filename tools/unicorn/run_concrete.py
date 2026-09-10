@@ -147,6 +147,9 @@ def build_argparser():
     p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
     p.add_argument("--log-mmio", action="store_true", help="record every read/write into the MMIO window (address, size, direction, PC) in the snapshot -- observability only, does not change the zero-behavior MMIO model. Resolve addresses to peripheral/register names with tools/svd/resolve_mmio.py")
     p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
+    p.add_argument("--log-ram", action="store_true", help="like --log-mmio, but for the RAM window -- every read/write into RAM (address, size, direction, PC) in the snapshot's 'ram_log'.")
+    p.add_argument("--max-ram-log", type=int, default=5000, help="cap on recorded RAM accesses when --log-ram is set (default 5000)")
+    p.add_argument("--collect-coverage", action="store_true", help="accumulate every unique PC executed into the snapshot's 'visited_pcs' -- for tools/census/'s dynamic-coverage ingestion, distinct from --trace-last's bounded ring buffer.")
     p.add_argument("--watch-mem-write", action="append", default=[], metavar="ADDR:LEN", help="true memory watchpoint (repeatable): record every WRITE that lands in [ADDR, ADDR+LEN), anywhere in the address space, with PC/instruction/old+new bytes -- unlike --watch (which triggers on a CODE address), this catches a store to a RAM range regardless of which instruction or function performs it, including a computed/indirect address a static xref search can't attribute to the range's own literal. Does not stop execution.")
     p.add_argument("--max-mem-write-log", type=int, default=2000, help="cap on recorded hits per --watch-mem-write range (default 2000)")
     p.add_argument("--fake-tick", action="append", default=[], metavar="ADDR:PERIOD", help="repeatable: every PERIOD instructions, increment the 4-byte little-endian counter at ADDR by 1. Deliberately NOT a SysTick/timer peripheral model -- it is a direct, labeled stand-in for a firmware-maintained tick/millis variable. Advances on an INSTRUCTION-COUNT cadence, not real time.")
@@ -206,6 +209,8 @@ def main(argv):
         force_reg=force_reg, force_mem=force_mem, log_mmio=args.log_mmio,
         max_mmio_log=args.max_mmio_log, watch_mem_write=watch_mem_write,
         max_mem_write_log=args.max_mem_write_log,
+        log_ram=args.log_ram, max_ram_log=args.max_ram_log,
+        collect_coverage=args.collect_coverage,
     )
 
     if args.call is not None:

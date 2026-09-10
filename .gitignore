@@ -26,3 +26,9 @@ dist-newstyle/
 # Persistent Ghidra project cache (tools/ghidra/aptrace_ghidra.py) -- fully
 # regenerable via `aptrace_ghidra.py build <firmware-key>`; not distributed.
 /research/runs/ghidra_cache/
+
+# aptrace census database + dynamic-coverage capture files
+# (tools/census/) -- fully regenerable via
+# `aptrace_census.py build <firmware-key>` + dynamic_export.py; not
+# distributed. See docs/tooling/census.md.
+/research/runs/census/

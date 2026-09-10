@@ -74,6 +74,16 @@ ANALYSIS_VERSION = 1
 PROCESSOR = "ARM:LE:32:Cortex"
 CSPEC = "default"
 
+# Address-range defaults for APTraceExportCensus.java's RAM/MMIO
+# classification -- matches tools/unicorn/concrete.py's ram_base/ram_size
+# and tools/unicorn/virtual_link.py's (wider) MMIO window, so a static
+# memory/MMIO access and a dynamic (Unicorn) one are classified against
+# the same address ranges.
+CENSUS_RAM_BASE = "0x20000000"
+CENSUS_RAM_SIZE = "0x30000"
+CENSUS_MMIO_BASE = "0x40000000"
+CENSUS_MMIO_SIZE = "0x4000000"
+
 # firmware key -> (path relative to repo root, load base, provenance TSV or None)
 FIRMWARE_REGISTRY = {
     "autopilot868": ("research/firmware/originals/firmware_autopilot868.bin", "0x4000",
@@ -146,7 +156,7 @@ def cache_dir(key):
 # disasm) are deliberately excluded: they don't change what's persisted,
 # so hashing them would invalidate caches for no reason.
 BUILD_SCRIPTS = ("APTraceSeedVectorTable.java", "APTraceApplyProvenance.java",
-                  "APTraceExportStaticAnalysis.java")
+                  "APTraceExportStaticAnalysis.java", "APTraceExportCensus.java")
 
 
 def _file_identity_hash(path):
@@ -234,6 +244,7 @@ def build(key, force=False):
 
     path, base, labels_tsv = firmware_info(key)
     static_export = cdir / "static_export.json"
+    census_export = cdir / "census_export.json"
     args = [
         "-import", str(path),
         "-processor", PROCESSOR,
@@ -250,6 +261,11 @@ def build(key, force=False):
     if labels_tsv is not None and labels_tsv.exists():
         args += ["-postScript", "APTraceApplyProvenance.java", str(labels_tsv)]
     args += ["-postScript", "APTraceExportStaticAnalysis.java", str(static_export)]
+    # Basic-block/CFG-edge/RAM-MMIO-access export for `aptrace census`
+    # (tools/census/) -- see APTraceExportCensus.java's own docstring for
+    # why this is a separate script from APTraceExportStaticAnalysis.java.
+    args += ["-postScript", "APTraceExportCensus.java", str(census_export),
+              CENSUS_RAM_BASE, CENSUS_RAM_SIZE, CENSUS_MMIO_BASE, CENSUS_MMIO_SIZE]
     print(f"Building '{key}' ({path.name}) -- this runs full auto-analysis once...")
     _run_headless(key, args, f"build '{key}'")
 
@@ -257,7 +273,8 @@ def build(key, force=False):
     with open(cdir / "meta.json", "w") as f:
         json.dump(meta, f, indent=2)
     n_funcs = len(json.load(open(static_export))["functions"])
-    print(f"Built '{key}': {n_funcs} functions, cached at {cdir}")
+    n_blocks = len(json.load(open(census_export))["basicBlocks"])
+    print(f"Built '{key}': {n_funcs} functions, {n_blocks} basic blocks, cached at {cdir}")
     print(f"  (provenance labels {'applied' if labels_tsv and labels_tsv.exists() else 'not available for this image'})")
 
 
@@ -305,6 +322,15 @@ def disasm(key, start, end):
 def _load_static_export(key):
     ensure_fresh(key)
     with open(cache_dir(key) / "static_export.json") as f:
+        return json.load(f)
+
+
+def _load_census_export(key):
+    """The basic-block/CFG-edge/RAM-MMIO-access export from
+    APTraceExportCensus.java, for tools/census/ to build on -- same
+    cache-freshness contract as _load_static_export."""
+    ensure_fresh(key)
+    with open(cache_dir(key) / "census_export.json") as f:
         return json.load(f)
 
 
