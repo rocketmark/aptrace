@@ -248,6 +248,47 @@ def test_virtual_link_scenario_order_independence():
             check(f"scenario '{name}' passes in order {order}", ok, detail)
 
 
+def test_ranges_excluding():
+    print("test_ranges_excluding (log_ram's fake-tick/force-mem exclusion helper)")
+    from concrete import _ranges_excluding
+    check("no exclusions -> the whole range, unsplit",
+          _ranges_excluding(0x1000, 0x2000, []) == [(0x1000, 0x2000)])
+    check("one exclusion in the middle -> two sub-ranges",
+          _ranges_excluding(0x1000, 0x2000, [0x1500]) == [(0x1000, 0x14ff), (0x1504, 0x2000)])
+    check("an exclusion at the very start -> one sub-range after it",
+          _ranges_excluding(0x1000, 0x2000, [0x1000]) == [(0x1004, 0x2000)])
+    check("an exclusion outside the range is ignored",
+          _ranges_excluding(0x1000, 0x2000, [0x5000]) == [(0x1000, 0x2000)])
+    check("two exclusions -> three sub-ranges, in order",
+          _ranges_excluding(0x1000, 0x2000, [0x1800, 0x1200]) ==
+          [(0x1000, 0x11ff), (0x1204, 0x17ff), (0x1804, 0x2000)])
+
+
+def test_log_ram_does_not_corrupt_a_fake_tick_run():
+    print("test_log_ram_does_not_corrupt_a_fake_tick_run "
+          "(hardening: log_ram must not diverge a run that also uses --fake-tick)")
+    # A real cross-hook reentrancy hazard was found this pass: hook_code's
+    # own direct write to a --fake-tick address, while a log_ram hook is
+    # ALSO registered on that same address, corrupted later emulation on
+    # a long (~400K-instruction) boot run. This is a short (bounded, fast)
+    # regression case for the specific mechanism now fixed (excluding the
+    # fake-tick address from log_ram's hooked range) -- NOT a claim that
+    # every long/RAM-heavy run is provably safe (see boot_recipes.py's
+    # apply_recipe docstring, which still defaults log_ram=False for its
+    # own much longer capture).
+    tick_addr = 0x20000100
+    m1 = ConcreteMachine(str(MANDO_FW), track_dirty=False)
+    r1 = m1.run(0x16794, fake_tick=[(tick_addr, 5)], max_instructions=20000, log_ram=False)
+    m2 = ConcreteMachine(str(MANDO_FW), track_dirty=False)
+    r2 = m2.run(0x16794, fake_tick=[(tick_addr, 5)], max_instructions=20000, log_ram=True)
+    check("same stop_reason with log_ram off vs on", r1.stop_reason == r2.stop_reason,
+          (r1.stop_reason, r2.stop_reason))
+    check("same instruction count with log_ram off vs on",
+          r1.instructions_executed == r2.instructions_executed,
+          (r1.instructions_executed, r2.instructions_executed))
+    check("same final registers with log_ram off vs on", r1.registers == r2.registers)
+
+
 def main():
     test_numeric_cli_semantics()
     test_direct_call_with_stack_args()
@@ -257,6 +298,8 @@ def main():
     test_real_default_sp_and_no_trampoline_in_ram()
     test_error_free_vs_completed_semantics()
     test_virtual_link_scenario_order_independence()
+    test_ranges_excluding()
+    test_log_ram_does_not_corrupt_a_fake_tick_run()
     print()
     if FAILURES:
         print(f"FAILED: {len(FAILURES)} check(s): {FAILURES}")

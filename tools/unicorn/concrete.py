@@ -129,6 +129,28 @@ def align_up(x, page=PAGE):
     return (x + page - 1) & ~(page - 1)
 
 
+def _ranges_excluding(start, end, exclude_addrs, exclude_width=4):
+    """[start, end] (inclusive) split into sub-(start, end) pairs that
+    exclude each address in `exclude_addrs`'s [addr, addr+exclude_width)
+    span -- used by run()'s log_ram hook installation to avoid hooking
+    an address hook_code itself writes to directly (see the call site's
+    comment for why that reentrant combination corrupts emulation).
+    Addresses outside [start, end] are ignored. Returns [] if the whole
+    range is excluded."""
+    cuts = sorted({(a, a + exclude_width - 1) for a in exclude_addrs if start <= a <= end})
+    ranges = []
+    pos = start
+    for lo, hi in cuts:
+        if lo > pos:
+            ranges.append((pos, min(lo - 1, end)))
+        pos = max(pos, hi + 1)
+        if pos > end:
+            break
+    if pos <= end:
+        ranges.append((pos, end))
+    return ranges
+
+
 class Carried:
     """Wraps memory bytes that came from a PRIOR concrete run's own real
     output (see `RunResult.carry`), so `ConcreteMachine.run`'s seed_mem
@@ -731,9 +753,23 @@ class ConcreteMachine:
                                         begin=align_down(self.mmio_base),
                                         end=align_down(self.mmio_base) + align_up(self.mmio_size) - 1))
         if log_ram:
-            handles.append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_ram,
-                                        begin=align_down(self.ram_base),
-                                        end=align_down(self.ram_base) + align_up(self.ram_size) - 1))
+            # hook_code (a UC_HOOK_CODE callback) writes directly to
+            # fake_tick/force_mem target addresses via uc_.mem_write() --
+            # if a UC_HOOK_MEM_WRITE hook is ALSO registered on that same
+            # address, the reentrant hook dispatch this triggers corrupts
+            # later emulation (confirmed empirically: identical inputs
+            # diverge into a bogus low-address branch tens of thousands
+            # of instructions later, only when log_ram's range covers a
+            # fake_tick address -- not a log_ram-specific behavior change,
+            # a real cross-hook-type reentrancy hazard). Split the hooked
+            # range to exclude every such address's 4-byte span so
+            # log_ram stays a genuinely passive observer.
+            ram_start = align_down(self.ram_base)
+            ram_end = ram_start + align_up(self.ram_size) - 1
+            internal_write_addrs = [a for a, _p in fake_tick] + [m for _t, m, _d in force_mem]
+            for sub_start, sub_end in _ranges_excluding(ram_start, ram_end, internal_write_addrs):
+                handles.append(uc.hook_add(UC_HOOK_MEM_READ | UC_HOOK_MEM_WRITE, hook_ram,
+                                            begin=sub_start, end=sub_end))
         for addr, length in watch_mem_write:
             handles.append(uc.hook_add(UC_HOOK_MEM_WRITE, make_mem_write_hook(addr, length),
                                         begin=addr, end=addr + length - 1))

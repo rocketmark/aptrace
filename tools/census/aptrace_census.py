@@ -149,21 +149,26 @@ def cmd_summary(args):
     lib_rows = c.execute(
         "SELECT confidence, COUNT(*) FROM library_matches WHERE firmware_id=? GROUP BY confidence", (fw,)).fetchall()
     lib = {s: n for s, n in lib_rows}
-    print(f"Library/platform matches: EXACT={lib.get('EXACT', 0)}  STRONG_MATCH={lib.get('STRONG_MATCH', 0)}  "
+    n_ref_confirmed = count(
+        "SELECT COUNT(*) FROM library_matches WHERE firmware_id=? AND reference_source_confirmed=1", fw)
+    print(f"Cross-image fingerprint matches (shared/platform-code EVIDENCE ONLY -- see below): "
+          f"EXACT={lib.get('EXACT', 0)}  STRONG_MATCH={lib.get('STRONG_MATCH', 0)}  "
           f"POSSIBLE_MATCH={lib.get('POSSIBLE_MATCH', 0)}  NO_MATCH={lib.get('NO_MATCH', 0)}")
+    print(f"Reference-source-confirmed (TRUE library, matched against real fetched upstream source): "
+          f"{n_ref_confirmed}")
 
-    # A match against a same-product frequency-variant sibling (e.g.
-    # autopilot868 vs autopilot915) does not, by itself, prove
-    # "library/platform plumbing" -- application logic is just as
-    # likely to be byte-identical across those two. Only a CROSS-family
-    # match (method NOT LIKE '%-same-product', see fingerprint.py's
-    # `_family`) counts toward the library/residual split below.
-    LIBRARY_FILTER = "l.confidence IN ('EXACT','STRONG_MATCH') AND l.method NOT LIKE '%-same-product'"
+    # IMPORTANT EVIDENCE RULE: a cross-image fingerprint match (however
+    # strong, however cross-product) is NEVER converted into "library
+    # truth" here -- it is kept as shared/platform-code evidence only
+    # (queryable via `library-matches`). Only reference_source_confirmed
+    # (matched against REAL, FETCHED upstream source -- see
+    # reference_library.py) counts toward the residual-exclusion split
+    # below. See docs/tooling/census.md.
     n_reachable = reach.get("DEFINITELY_REACHABLE", 0) + reach.get("POSSIBLY_REACHABLE_VIA_UNRESOLVED_INDIRECT", 0)
-    n_reachable_library = count(
+    n_reachable_ref_confirmed = count(
         "SELECT COUNT(*) FROM function_reachability r JOIN library_matches l "
         "ON l.firmware_id=r.firmware_id AND l.function_id=r.function_id "
-        f"WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' AND {LIBRARY_FILTER}", fw)
+        "WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' AND l.reference_source_confirmed=1", fw)
     n_reachable_covered = count(
         "SELECT COUNT(DISTINCT r.function_id) FROM function_reachability r "
         "JOIN dynamic_coverage dc ON dc.firmware_id=r.firmware_id AND dc.function_id=r.function_id "
@@ -171,12 +176,13 @@ def cmd_summary(args):
     n_residual = count(
         "SELECT COUNT(*) FROM function_reachability r WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' "
         "AND r.function_id NOT IN (SELECT l.function_id FROM library_matches l WHERE l.firmware_id=? "
-        f"AND {LIBRARY_FILTER}) "
+        "AND l.reference_source_confirmed=1) "
         "AND r.function_id NOT IN (SELECT function_id FROM dynamic_coverage WHERE firmware_id=? "
         "AND function_id IS NOT NULL)", fw, fw, fw)
-    print(f"Reachable functions: {n_reachable}  (of which {n_reachable_library} are cross-product EXACT/"
-          f"STRONG_MATCH library/platform code, {n_reachable_covered} are dynamically exercised)")
-    print(f">>> Residual reachable, non-library, dynamically-unexercised application functions: {n_residual} <<<")
+    print(f"Reachable functions: {n_reachable}  (of which {n_reachable_ref_confirmed} are reference-source-"
+          f"confirmed TRUE library code, {n_reachable_covered} are dynamically exercised)")
+    print(f">>> Residual reachable, non-reference-confirmed, dynamically-unexercised functions: {n_residual} <<<")
+    print("    (cross-image shared-code evidence is NOT subtracted here -- see 'library-matches' to inspect it)")
 
     n_components = count("SELECT COUNT(*) FROM components WHERE firmware_id=?", fw)
     print(f"Components: {n_components}")
@@ -189,7 +195,7 @@ def cmd_summary(args):
         n_pins_out = count("SELECT COUNT(*) FROM pin_snapshot WHERE firmware_id=? AND direction='OUT'", fw)
         n_pins_in = count("SELECT COUNT(*) FROM pin_snapshot WHERE firmware_id=? AND direction='IN'", fw)
         n_pins_muxed = count("SELECT COUNT(*) FROM pin_snapshot WHERE firmware_id=? AND pmuxen=1", fw)
-        print(f"Hardware snapshot: boot_method={hw['boot_method']}  completed_init={bool(hw['completed_init'])}  "
+        print(f"Hardware snapshot: init_status={hw['init_status']}  boot_method={hw['boot_method']}  "
               f"{n_hw_regs} register(s) across {n_hw_peripherals} peripheral(s)")
         print(f"  pins: {n_pins_out} configured OUT, {n_pins_in} configured IN, {n_pins_muxed} PMUX-enabled")
     else:
@@ -465,30 +471,31 @@ def cmd_reachable(args):
 
 
 def cmd_residual(args):
-    """The residual queue: reachable, non-EXACT/STRONG_MATCH-library,
-    dynamically-unexercised functions -- the small set later semantic
-    analysis should actually look at."""
+    """The residual queue: reachable, not reference-source-confirmed
+    library code, dynamically-unexercised functions -- the small set
+    later semantic analysis should actually look at. A cross-image
+    fingerprint match (shown here for context) is NOT, by itself,
+    grounds for exclusion -- see docs/tooling/census.md's evidence rule."""
     conn = census_db.connect(args.db, create=False)
     fw = census_db.get_firmware_id(conn, args.firmware)
     rows = conn.execute(
         "SELECT f.entry, f.name, f.size, r.status, l.confidence AS lib_confidence, "
-        "ff.n_callers, ff.n_callees, ff.peripherals_json, ff.pins_json "
+        "l.reference_source_confirmed, ff.n_callers, ff.n_callees, ff.peripherals_json, ff.pins_json "
         "FROM function_reachability r "
         "JOIN functions f ON f.id = r.function_id "
         "LEFT JOIN library_matches l ON l.firmware_id=r.firmware_id AND l.function_id=r.function_id "
         "LEFT JOIN function_features ff ON ff.firmware_id=r.firmware_id AND ff.function_id=r.function_id "
         "WHERE r.firmware_id=? AND r.status != 'NO_KNOWN_PATH' "
-        "AND (l.confidence IS NULL OR l.confidence NOT IN ('EXACT','STRONG_MATCH') "
-        "     OR l.method LIKE '%-same-product') "
+        "AND (l.reference_source_confirmed IS NULL OR l.reference_source_confirmed=0) "
         "AND r.function_id NOT IN (SELECT function_id FROM dynamic_coverage WHERE firmware_id=? "
         "AND function_id IS NOT NULL) ORDER BY f.entry", (fw, fw))
     n = 0
     for r in rows:
         n += 1
         print(f"{hx(r['entry'])}  {r['name']}  size={r['size']}  [{r['status']}]  "
-              f"library={r['lib_confidence'] or 'NO_MATCH'}  callers={r['n_callers']} callees={r['n_callees']}  "
-              f"peripherals={r['peripherals_json']}  pins={r['pins_json']}")
-    print(f"({n} residual function(s) -- reachable, not an EXACT/STRONG_MATCH library/platform match, "
+              f"shared-code-evidence={r['lib_confidence'] or 'NO_MATCH'}  callers={r['n_callers']} "
+              f"callees={r['n_callees']}  peripherals={r['peripherals_json']}  pins={r['pins_json']}")
+    print(f"({n} residual function(s) -- reachable, not reference-source-confirmed library code, "
           f"never dynamically exercised)")
 
 
@@ -542,9 +549,17 @@ def cmd_hardware_snapshot(args):
     if run is None:
         print(f"No hardware snapshot for '{args.firmware}' -- run 'census reduce {args.firmware}'.")
         return
-    print(f"boot_method={run['boot_method']}  instructions_executed={run['instructions_executed']}  "
-          f"stop_reason={run['stop_reason']}  completed_init={bool(run['completed_init'])}")
+    print(f"init_status={run['init_status']}  boot_method={run['boot_method']}  "
+          f"instructions_executed={run['instructions_executed']}  stop_reason={run['stop_reason']}")
     print(f"notes: {run['notes']}")
+    if run["assumptions_json"]:
+        import json as _json
+        assumptions = _json.loads(run["assumptions_json"])
+        print(f"disclosed assumptions ({len(assumptions)}):")
+        for a in assumptions:
+            addr_s = hx(a["addr"]) if a.get("addr") is not None else "-"
+            print(f"  [{a['kind']}] {addr_s}  {a['detail']}")
+            print(f"      citation: {a['citation']}")
     print()
     q = "SELECT * FROM hardware_snapshot WHERE firmware_id=?"
     params = [fw]

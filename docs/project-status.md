@@ -44,12 +44,31 @@ images, with a deterministic query CLI and closure/warning report, PLUS
 a closure-reduction layer (`census reduce`) on top of it: mechanical
 reachability from justified roots, indirect-edge resolution (static/
 dynamic/finite-candidate-set/unresolved), cross-image library/platform
-fingerprinting, per-function feature records, deterministic component
-grouping, and an honestly-labeled hardware-init snapshot. Run against
-all four images, it mechanically narrows AutoPilot868's 414 discovered
-functions to a 142-function residual (Mando868: 561 → 295) — still no
-"understood %" invented; semantic classification of that residual is
-the next, separate phase, not yet started.
+fingerprinting kept as shared-code EVIDENCE only (never "library truth"
+by itself — only a curated match against real, fetched
+`ArduinoCore-samd` source counts as confirmed library), per-function
+feature records, deterministic component grouping, and a reusable boot
+recipe (`tools/census/boot_recipes.py`) that mechanically packages this
+project's own cited boot/hardware-bringup assumptions and feeds a real
+boot execution's coverage/indirect-call observations back into the
+reducer. AutoPilot868 now boots (in Unicorn) all the way to real
+main-loop steady state (`init_status=complete`, exactly reproducing
+`docs/investigations/boot-and-hardware-bringup.md`'s own milestones);
+Mando868's own boot recipe, built incrementally this pass, reaches
+`init_status=partial-justified` before stopping at a documented,
+unmodeled interrupt-delivery dependency (see census.md's "Remaining
+boot blockers"). Run against all four images: AutoPilot868's residual
+narrowed from 414 discovered functions to 102 (up from 142 pre-boot-
+integration — the drop is boot-driven dynamic coverage +7 reference-
+confirmed library functions, not a change in the exclusion rule);
+Mando868 561 → 333. Unresolved indirect edges: AutoPilot868 87 → 58
+(29 newly `DYNAMICALLY_OBSERVED` via the boot capture), Mando868 146 →
+140. Still no "understood %" invented; semantic classification of the
+residual is the next, separate phase, not yet started. A real Unicorn
+correctness bug (`log_ram=True` corrupting long/RAM-heavy runs via a
+cross-hook reentrancy hazard) was found and partially fixed along the
+way — see `tools/unicorn/concrete.py`'s `_ranges_excluding` and
+`test_concrete.py`'s new regression coverage.
 
 ## Current milestone: the core protocol pipeline
 

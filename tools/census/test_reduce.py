@@ -11,6 +11,7 @@ Covers isolated logic against small synthetic databases/byte buffers
 (no Ghidra/Unicorn needed for most checks) plus a handful of real-data
 sanity checks against the actual built census database, if present.
 """
+import json
 import struct
 import sys
 import tempfile
@@ -26,6 +27,8 @@ import indirect_resolve  # noqa: E402
 import fingerprint  # noqa: E402
 import components  # noqa: E402
 import hardware_snapshot  # noqa: E402
+import boot_recipes  # noqa: E402
+import reference_library  # noqa: E402
 
 FAILURES = []
 
@@ -417,6 +420,202 @@ def test_decode_pins():
         d.cleanup()
 
 
+# --- boot recipes -------------------------------------------------------
+
+def test_boot_recipe_reference_lookup():
+    print("test_boot_recipe_reference_lookup (reference images return their own recipe verbatim)")
+    d, conn = _scratch_db()
+    try:
+        recipe, gaps = boot_recipes.resolve_for_firmware(conn, "autopilot868")
+        check("autopilot868 gets its own reference recipe, no gaps", recipe is boot_recipes.AUTOPILOT_RECIPE and gaps == [])
+        recipe, gaps = boot_recipes.resolve_for_firmware(conn, "mando868")
+        check("mando868 gets its own reference recipe, no gaps", recipe is boot_recipes.MANDO_RECIPE and gaps == [])
+        recipe, gaps = boot_recipes.resolve_for_firmware(conn, "unknown-product123")
+        check("an unknown product family returns no recipe, with a gap explaining why",
+              recipe is None and len(gaps) == 1, gaps)
+    finally:
+        conn.close()
+        d.cleanup()
+
+
+def test_init_status_classification():
+    print("test_init_status_classification (complete / partial-justified / blocked)")
+
+    def fake_result(watch_hits, instructions):
+        return SimpleNamespace(watch_hits=watch_hits, instructions_executed=instructions)
+
+    steady_recipe = {"steady_state_addr": 0x8960, "steady_state_hits": 5}
+    hits = [{"address": "0x00008960"}] * 5
+    check("5 hits at the steady-state address -> complete",
+          boot_recipes.init_status_for(steady_recipe, fake_result(hits, 400000)) == "complete")
+
+    hits_short = [{"address": "0x00008960"}] * 3
+    check("fewer hits than required -> not complete (falls to partial-justified, real progress made)",
+          boot_recipes.init_status_for(steady_recipe, fake_result(hits_short, 400000)) == "partial-justified")
+
+    no_milestone_recipe = {"steady_state_addr": None, "steady_state_hits": None}
+    check("no watch hits, but real instruction progress -> partial-justified",
+          boot_recipes.init_status_for(no_milestone_recipe, fake_result([], 50000)) == "partial-justified")
+    check("no watch hits, negligible instruction progress -> blocked",
+          boot_recipes.init_status_for(no_milestone_recipe, fake_result([], 5)) == "blocked")
+    check("no recipe at all -> blocked", boot_recipes.init_status_for(None, fake_result([], 400000)) == "blocked")
+
+
+def test_remap_code_and_ram_addr():
+    print("test_remap_code_and_ram_addr (EXACT-fingerprint-based sibling address remapping)")
+    d, conn = _scratch_db()
+    try:
+        fw_ref = _make_firmware(conn, "refimg")
+        fw_sib = _make_firmware(conn, "sibimg")
+        # Reference: a code function at 0x1000 (16 bytes) and a tiny
+        # "tick reader" function at 0x2000 that touches RAM 0x20000100.
+        ref_code = _make_function(conn, fw_ref, 0x1000, "CodeFn", size=16)
+        ref_tick = _make_function(conn, fw_ref, 0x2000, "TickFn", size=8)
+        # Sibling: the SAME functions, shifted by +0x10 (simulating a
+        # real cross-build layout shift), touching a DIFFERENT RAM
+        # address for its own tick counter.
+        sib_code = _make_function(conn, fw_sib, 0x1010, "CodeFn", size=16)
+        sib_tick = _make_function(conn, fw_sib, 0x2010, "TickFn", size=8)
+
+        for fw, fid, entry in ((fw_ref, ref_code, 0x1000), (fw_sib, sib_code, 0x1010),
+                                 (fw_ref, ref_tick, 0x2000), (fw_sib, sib_tick, 0x2010)):
+            same_hash = "codehash" if fid in (ref_code, sib_code) else "tickhash"
+            conn.execute("INSERT INTO function_fingerprints (firmware_id, function_id, exact_hash, "
+                         "normalized_hash, byte_size, block_count, edge_count, callee_count, source) "
+                         "VALUES (?,?,?,?,4,1,0,0,'test')", (fw, fid, same_hash, same_hash))
+        conn.execute("INSERT INTO memory_accesses (firmware_id, from_addr, from_function_id, to_addr, "
+                     "width, direction, source) VALUES (?,0x2002,?,0x20000100,4,'READ','test')",
+                     (fw_ref, ref_tick))
+        conn.execute("INSERT INTO memory_accesses (firmware_id, from_addr, from_function_id, to_addr, "
+                     "width, direction, source) VALUES (?,0x2012,?,0x20000200,4,'READ','test')",
+                     (fw_sib, sib_tick))
+        conn.commit()
+
+        gaps = []
+        code_result = boot_recipes._remap_code_addr(conn, fw_sib, "refimg", 0x1004, gaps)
+        check("code address remaps via EXACT match + offset (0x1004 -> 0x1014)", code_result == 0x1014, code_result)
+        check("no gaps for a clean remap", gaps == [], gaps)
+
+        gaps2 = []
+        ram_result = boot_recipes._remap_ram_addr(conn, fw_sib, "refimg", 0x20000100, gaps2)
+        check("RAM address remaps via the matched function's OWN target, not offset arithmetic",
+              ram_result == 0x20000200, ram_result)
+        check("no gaps for a clean RAM remap", gaps2 == [], gaps2)
+
+        gaps3 = []
+        missing = boot_recipes._remap_code_addr(conn, fw_sib, "refimg", 0x9999, gaps3)
+        check("an address with no containing reference function fails closed (None + a gap note)",
+              missing is None and len(gaps3) == 1, gaps3)
+    finally:
+        conn.close()
+        d.cleanup()
+
+
+def test_reference_library_confirms_autopilot868_and_propagates():
+    print("test_reference_library_confirms_autopilot868_and_propagates "
+          "(curated CONFIRMED-tier tagging, mechanically propagated via EXACT fingerprint match)")
+    d, conn = _scratch_db()
+    try:
+        fw_a = _make_firmware(conn, "autopilot868")
+        fw_other = _make_firmware(conn, "otherimg")
+        reset_a = _make_function(conn, fw_a, 0xcc24, "Reset_Handler", size=4)
+        reset_o = _make_function(conn, fw_other, 0x5000, "FUN_00005000", size=4)
+        conn.execute("INSERT INTO function_fingerprints (firmware_id, function_id, exact_hash, "
+                     "normalized_hash, byte_size, block_count, edge_count, callee_count, source) "
+                     "VALUES (?,?,?,?,4,1,0,0,'test')", (fw_a, reset_a, "resethash", "resethash"))
+        conn.execute("INSERT INTO function_fingerprints (firmware_id, function_id, exact_hash, "
+                     "normalized_hash, byte_size, block_count, edge_count, callee_count, source) "
+                     "VALUES (?,?,?,?,4,1,0,0,'test')", (fw_other, reset_o, "resethash", "resethash"))
+        conn.commit()
+
+        n = reference_library.apply_reference_confirmations(conn, fw_a, "autopilot868")
+        # This scratch DB only created ONE of AUTOPILOT868_CONFIRMED's
+        # functions (Reset_Handler) -- apply_reference_confirmations
+        # correctly tags only what actually exists, not a fixed count.
+        check("apply_reference_confirmations tags exactly the CONFIRMED function that exists in this DB",
+              n == 1, n)
+        row = conn.execute("SELECT * FROM library_matches WHERE firmware_id=? AND function_id=?",
+                            (fw_a, reset_a)).fetchone()
+        check("Reset_Handler is reference_source_confirmed=1", row["reference_source_confirmed"] == 1)
+        check("its citation names the real upstream source", "ArduinoCore-samd" in row["reference_source_citation"])
+
+        reference_library.apply_reference_confirmations(conn, fw_other, "otherimg")
+        row2 = conn.execute("SELECT * FROM library_matches WHERE firmware_id=? AND function_id=?",
+                             (fw_other, reset_o)).fetchone()
+        check("the confirmation propagates to another image's EXACT-matched counterpart",
+              row2 is not None and row2["reference_source_confirmed"] == 1)
+        check("the propagated citation records it was mechanically derived, not independently confirmed",
+              "propagated via EXACT fingerprint match" in row2["reference_source_citation"])
+    finally:
+        conn.close()
+        d.cleanup()
+
+
+def test_recompute_all_matches_preserves_reference_confirmation():
+    print("test_recompute_all_matches_preserves_reference_confirmation "
+          "(hardening: fingerprinting a LATER firmware must not wipe an EARLIER one's confirmed=1 flag)")
+    d, conn = _scratch_db()
+    try:
+        fw_a = _make_firmware(conn, "autopilot868")
+        fw_m = _make_firmware(conn, "mando868")
+        fa = _make_function(conn, fw_a, 0xcc24, "Reset_Handler", size=4)
+        fm = _make_function(conn, fw_m, 0x9000, "F", size=4)
+        conn.execute("INSERT INTO function_fingerprints (firmware_id, function_id, exact_hash, "
+                     "normalized_hash, byte_size, block_count, edge_count, callee_count, source) "
+                     "VALUES (?,?,?,?,4,1,0,0,'test')", (fw_a, fa, "resethash", "resethash"))
+        conn.commit()
+        fingerprint.recompute_all_matches(conn)
+        reference_library.apply_reference_confirmations(conn, fw_a, "autopilot868")
+        before = conn.execute("SELECT reference_source_confirmed FROM library_matches WHERE firmware_id=? "
+                              "AND function_id=?", (fw_a, fa)).fetchone()
+        check("confirmed right after tagging", before["reference_source_confirmed"] == 1)
+
+        # Now fingerprint a SECOND, unrelated firmware -- this triggers
+        # recompute_all_matches, which rebuilds AUTOPILOT868's own
+        # library_matches rows too (it iterates every fingerprinted
+        # image). Before the fix, this silently reset the flag to 0.
+        conn.execute("INSERT INTO function_fingerprints (firmware_id, function_id, exact_hash, "
+                     "normalized_hash, byte_size, block_count, edge_count, callee_count, source) "
+                     "VALUES (?,?,?,?,4,1,0,0,'test')", (fw_m, fm, "unrelatedhash", "unrelatedhash"))
+        conn.commit()
+        fingerprint.recompute_all_matches(conn)
+
+        after = conn.execute("SELECT reference_source_confirmed, reference_source_citation FROM library_matches "
+                             "WHERE firmware_id=? AND function_id=?", (fw_a, fa)).fetchone()
+        check("still confirmed after a LATER firmware's fingerprinting rebuilds library_matches",
+              after["reference_source_confirmed"] == 1)
+        check("citation text also survives the rebuild", after["reference_source_citation"] is not None)
+    finally:
+        conn.close()
+        d.cleanup()
+
+
+def test_cross_image_match_alone_is_not_reference_confirmed():
+    print("test_cross_image_match_alone_is_not_reference_confirmed "
+          "(the important evidence rule: a plain fingerprint match must never set reference_source_confirmed)")
+    d, conn = _scratch_db()
+    try:
+        fw_a = _make_firmware(conn, "autopilot868")
+        fw_m = _make_firmware(conn, "mando868")
+        fa = _make_function(conn, fw_a, 0x9000, "F", size=4)
+        fm = _make_function(conn, fw_m, 0x9000, "F", size=4)
+        for fw, fid in ((fw_a, fa), (fw_m, fm)):
+            conn.execute("INSERT INTO function_fingerprints (firmware_id, function_id, exact_hash, "
+                         "normalized_hash, byte_size, block_count, edge_count, callee_count, source) "
+                         "VALUES (?,?,?,?,4,1,0,0,'test')", (fw, fid, "sharedhash", "sharedhash"))
+        conn.commit()
+        fingerprint.recompute_all_matches(conn)
+
+        row = conn.execute("SELECT * FROM library_matches WHERE firmware_id=? AND function_id=?",
+                            (fw_a, fa)).fetchone()
+        check("a plain cross-image EXACT match is recorded", row["confidence"] == "EXACT")
+        check("but reference_source_confirmed defaults to 0 -- NOT converted into library truth",
+              row["reference_source_confirmed"] == 0)
+    finally:
+        conn.close()
+        d.cleanup()
+
+
 # --- real-data sanity checks (skip quietly if the DB/firmware isn't built yet) --
 
 def test_real_reduce_data():
@@ -465,8 +664,12 @@ def test_real_reduce_data():
     hw_run = conn.execute("SELECT * FROM hardware_snapshot_runs WHERE firmware_id=?", (fw,)).fetchone()
     check("a hardware_snapshot_runs row exists", hw_run is not None)
     if hw_run:
-        check("boot_method is honestly labeled", hw_run["boot_method"] in
-              ("established-recipe-partial", "cold-run-bounded"), hw_run["boot_method"])
+        check("init_status is honestly one of the three documented states", hw_run["init_status"] in
+              ("complete", "partial-justified", "blocked"), hw_run["init_status"])
+        check("boot_method names a reference recipe", hw_run["boot_method"] in
+              ("autopilot868", "mando868"), hw_run["boot_method"])
+        check("assumptions_json is a non-empty disclosed list", hw_run["assumptions_json"] and
+              len(json.loads(hw_run["assumptions_json"])) > 0)
         n_hw_regs = conn.execute("SELECT COUNT(*) FROM hardware_snapshot WHERE firmware_id=?", (fw,)).fetchone()[0]
         check("hardware register rows were captured", n_hw_regs > 0, n_hw_regs)
     conn.close()
@@ -485,6 +688,12 @@ if __name__ == "__main__":
     test_components_resource_sharing()
     test_components_call_union_respects_fan_in_threshold()
     test_decode_pins()
+    test_boot_recipe_reference_lookup()
+    test_init_status_classification()
+    test_remap_code_and_ram_addr()
+    test_reference_library_confirms_autopilot868_and_propagates()
+    test_recompute_all_matches_preserves_reference_confirmation()
+    test_cross_image_match_alone_is_not_reference_confirmed()
     test_real_reduce_data()
 
     print()

@@ -423,12 +423,22 @@ CREATE TABLE IF NOT EXISTS library_matches (
     id                    INTEGER PRIMARY KEY,
     firmware_id             INTEGER NOT NULL REFERENCES firmware(id),
     function_id              INTEGER NOT NULL REFERENCES functions(id),
-    confidence                 TEXT NOT NULL,  -- EXACT / STRONG_MATCH / POSSIBLE_MATCH / NO_MATCH
-    method                       TEXT NOT NULL,  -- exact-byte-hash / ghidra-thunk / normalized-instruction-hash / structural-similarity
+    confidence                 TEXT NOT NULL,  -- EXACT / STRONG_MATCH / POSSIBLE_MATCH / NO_MATCH -- cross-image evidence ONLY, never "library truth" by itself
+    method                       TEXT NOT NULL,  -- exact-byte-hash[-same-product] / ghidra-thunk / normalized-instruction-hash[-same-product] / structural-similarity[-same-product]
     matched_firmware_key           TEXT,
     matched_function_id              INTEGER REFERENCES functions(id),
     matched_function_name              TEXT,
-    source                               TEXT NOT NULL,
+    -- A cross-image fingerprint match (however strong) proves "shared
+    -- code between OUR OWN products", not "confirmed external library".
+    -- reference_source_confirmed=1 is a stronger, separate, curated fact:
+    -- this function was structurally matched against REAL, FETCHED
+    -- upstream source (see tools/census/reference_library.py and
+    -- docs/investigations/boot-and-hardware-bringup.md's CONFIRMED
+    -- tier) -- the only thing this reducer treats as actual "library
+    -- truth" for residual-exclusion purposes.
+    reference_source_confirmed          INTEGER NOT NULL DEFAULT 0,
+    reference_source_citation             TEXT,
+    source                                  TEXT NOT NULL,
     UNIQUE(firmware_id, function_id)
 );
 CREATE INDEX IF NOT EXISTS idx_libmatch_fw ON library_matches(firmware_id);
@@ -513,12 +523,25 @@ CREATE TABLE IF NOT EXISTS hardware_snapshot_runs (
     id                  INTEGER PRIMARY KEY,
     firmware_id           INTEGER NOT NULL REFERENCES firmware(id),
     boot_method             TEXT NOT NULL,
+    -- Three-way status, distinct from the boolean completed_init below:
+    --   complete           -- reached the recipe's own defined steady-state criterion
+    --   partial-justified  -- reached at least one real named milestone via
+    --                         cited, provenance-tagged assumptions, then
+    --                         stalled at a documented, evidence-backed point
+    --   blocked            -- stalled with no citable evidence to justify
+    --                         a model for the blocking condition
+    init_status              TEXT,
     stop_addr                 INTEGER,
     instructions_executed       INTEGER,
     stop_reason                   TEXT,
     completed_init                  INTEGER NOT NULL,  -- 0/1 -- see note above
     notes                             TEXT,
-    ran_at                              TEXT NOT NULL,
+    -- JSON list of every environmental/model assumption applied to reach
+    -- this run's stop point: [{kind, addr, detail, citation}, ...] --
+    -- see tools/census/boot_recipes.py. Never hidden -- this is the
+    -- complete, auditable list of what was disclosed to get this far.
+    assumptions_json                   TEXT,
+    ran_at                                TEXT NOT NULL,
     UNIQUE(firmware_id)
 );
 

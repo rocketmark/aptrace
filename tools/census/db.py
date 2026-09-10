@@ -47,6 +47,28 @@ def _ensure_schema(conn):
     table full of prior census data."""
     conn.executescript(SCHEMA_PATH.read_text())
     conn.commit()
+    _ensure_columns(conn)
+
+
+# CREATE TABLE IF NOT EXISTS never adds a column to a table that already
+# exists (e.g. a database built before a column was added to schema.sql)
+# -- unlike table/index creation, SQLite has no "ADD COLUMN IF NOT
+# EXISTS", so new columns on existing tables are migrated explicitly
+# here: (table, column, "column-definition-suffix").
+_COLUMN_MIGRATIONS = (
+    ("hardware_snapshot_runs", "init_status", "TEXT"),
+    ("hardware_snapshot_runs", "assumptions_json", "TEXT"),
+    ("library_matches", "reference_source_confirmed", "INTEGER NOT NULL DEFAULT 0"),
+    ("library_matches", "reference_source_citation", "TEXT"),
+)
+
+
+def _ensure_columns(conn):
+    for table, column, coldef in _COLUMN_MIGRATIONS:
+        have = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+        if column not in have:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {coldef}")
+    conn.commit()
 
 
 def get_firmware_id(conn, key):

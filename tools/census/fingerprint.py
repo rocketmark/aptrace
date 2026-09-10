@@ -199,6 +199,24 @@ def compute_matches(conn, firmware_id, firmware_key):
             "matched_function_name": None, "source": "fingerprint",
         })
 
+    # reference_source_confirmed/reference_source_citation are set by a
+    # DIFFERENT authority (reference_library.py, run after this in
+    # reduce.py's own pipeline) -- this function rebuilds library_matches
+    # from scratch every time it runs (including via recompute_all_matches,
+    # triggered by fingerprinting ANY other firmware), so an existing
+    # confirmation must be carried forward here or a later firmware's
+    # reduce would silently wipe an earlier firmware's own confirmations.
+    existing_confirmed = {
+        row["function_id"]: (row["reference_source_confirmed"], row["reference_source_citation"])
+        for row in conn.execute(
+            "SELECT function_id, reference_source_confirmed, reference_source_citation "
+            "FROM library_matches WHERE firmware_id=? AND reference_source_confirmed=1", (firmware_id,))
+    }
+    for row in out:
+        confirmed, citation = existing_confirmed.get(row["function_id"], (0, None))
+        row["reference_source_confirmed"] = confirmed
+        row["reference_source_citation"] = citation
+
     from db import replace_firmware_rows
     replace_firmware_rows(conn, firmware_id, "library_matches", out)
     conn.commit()

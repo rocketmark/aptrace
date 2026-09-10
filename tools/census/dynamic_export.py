@@ -59,6 +59,28 @@ def _firmware_key_for_path(path_str):
     return stem
 
 
+def write_export(scenario, legs, out_dir=None, verbose=True):
+    """Write one scenario's captured legs to a dynamic_export.py-shaped
+    JSON file (the shape tools/census/dynamic_ingest.py reads) --
+    factored out so tools/census/boot_recipes.py's boot capture can
+    reuse the exact same file format/ingestion path instead of a
+    parallel one. `legs`: list of {firmware, label, snapshot, tx_rx}."""
+    out_dir = Path(out_dir) if out_dir else DEFAULT_OUT_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+    firmware_keys = sorted({_firmware_key_for_path(leg["firmware"]) for leg in legs})
+    export = {
+        "scenario": scenario,
+        "captured_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "firmware_keys": firmware_keys,
+        "legs": legs,
+    }
+    out_path = out_dir / f"{scenario}.json"
+    out_path.write_text(json.dumps(export, indent=2))
+    if verbose:
+        print(f"  wrote {out_path} ({len(legs)} legs)")
+    return out_path
+
+
 def capture(scenario_names, out_dir=None, verbose=True):
     """Run each named scenario (keys of SCENARIOS, or 'all') with
     coverage capture enabled, writing one JSON export file per scenario.
@@ -88,6 +110,15 @@ def capture(scenario_names, out_dir=None, verbose=True):
 
         def recording_run(self, *args, **kwargs):
             kwargs.setdefault("collect_coverage", True)
+            # log_ram is safe here specifically because these scenario
+            # legs are short (hundreds-low-thousands of instructions) --
+            # confirmed clean by each scenario's own assertions passing.
+            # A long (~10^5-10^6 instruction), RAM/stack-heavy run (e.g.
+            # tools/census/boot_recipes.py's boot capture) hit a real
+            # cross-hook reentrancy divergence with log_ram=True; that
+            # module defaults it to False instead -- see its own
+            # apply_recipe docstring before re-enabling it for anything
+            # long-running.
             kwargs.setdefault("log_ram", True)
             kwargs.setdefault("log_mmio", True)
             result = original_run(self, *args, **kwargs)
@@ -119,18 +150,7 @@ def capture(scenario_names, out_dir=None, verbose=True):
         finally:
             concrete.ConcreteMachine.run = original_run
 
-        firmware_keys = sorted({_firmware_key_for_path(leg["firmware"]) for leg in legs})
-        export = {
-            "scenario": scenario_name,
-            "captured_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-            "firmware_keys": firmware_keys,
-            "legs": legs,
-        }
-        out_path = out_dir / f"{scenario_name}.json"
-        out_path.write_text(json.dumps(export, indent=2))
-        written.append(out_path)
-        if verbose:
-            print(f"  wrote {out_path} ({len(legs)} legs)")
+        written.append(write_export(scenario_name, legs, out_dir=out_dir, verbose=verbose))
 
     return written
 
