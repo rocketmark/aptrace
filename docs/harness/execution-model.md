@@ -65,11 +65,18 @@ parser, set this pending-event byte?").
 Requirements this mode needs that single-block mode doesn't:
 - A real stack (the function may push/pop registers) — a small malloc'd,
   zero-filled region.
-- `ConcreteMutable` memory (not `SymbolicMutable`) as the base, so anything
-  you don't explicitly make symbolic — like the pending-event array — starts
-  at a *known* value. This matters for soundness: if that array were
-  symbolic too, "did it become 1" could be satisfied by guessing a favorable
-  initial value instead of by the code actually writing it.
+- Every writable segment (RAM) starting at a *known* value (zero, matching
+  `APTrace.FirmwareLoader.buildMemory`'s zero-filled RAM), so anything you
+  don't explicitly make symbolic — like the pending-event array — starts
+  concrete rather than free. This matters for soundness: if that array were
+  symbolic, "did it become 1" could be satisfied by guessing a favorable
+  initial value instead of by the code actually writing it. As of
+  2026-09-09, this is achieved with `SymbolicMutable` (not `ConcreteMutable`)
+  plus one explicit, compact zero overlay per writable segment (a single
+  SMT constant-array store, not one assertion per byte) — semantically
+  equivalent to the old `ConcreteMutable` setup, at a fraction of the
+  assertion count. See
+  [`docs/tooling/compact-ram-initialization.md`](../tooling/compact-ram-initialization.md).
 - A policy for calls the function makes to other, not-yet-lifted functions
   (see next section).
 

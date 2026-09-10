@@ -51,10 +51,11 @@ main = do
     ["explore", path, entryS]          -> runExplore path 0x4000 (parseHexWord entryS)
     ["explore", path, flashBaseS, entryS] -> runExplore path (parseHexWord flashBaseS) (parseHexWord entryS)
     ["protocol", path]                 -> runProtocol path 0x4000
+    ["trigger", path]                  -> runTrigger path 0x4000
     ["debug", path, entryS]            -> runDebug path 0x4000 (parseHexWord entryS)
     [path]                      -> run path 0x4000
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
-    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)"
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)"
 
 parseHexWord :: String -> Word32
 parseHexWord s =
@@ -304,7 +305,7 @@ runProtocol path flashBase = do
             { PH.rtLoAddr = 0x8258, PH.rtHiAddr = 0x8900
             , PH.rtWatchMem = Just bufAddr, PH.rtMaxHits = 500
             }
-      r0 <- PH.runPacketTransactionTraced mem fn bufAddr realPacket event5Addr 1 (Just traceCfg)
+      r0 <- PH.runPacketTransactionTraced mem fn bufAddr realPacket event5Addr 1 (Just traceCfg) [] Nothing Nothing
       case r0 of
         PH.ConcreteResult 1 -> putStrLn "  PASS: pending[5] = 1 (event 5 scheduled) via the real parser path"
         PH.ConcreteResult v -> putStrLn ("  FAIL: pending[5] = 0x" ++ showHex v "" ++ " (expected 1)")
@@ -339,6 +340,176 @@ runProtocol path flashBase = do
         , ("!", 0x87b2, 0x87b6, 0x21)
         , ("S", 0x87be, 0x87c2, 0x53)
         ]
+
+-- | @aptrace trigger FIRMWARE.bin@ -- bounded symbolic reachability for the
+-- AutoPilot's PB05 trigger-poll region, inside @phase_ramp_state_machine__
+-- CUSTOM@ (@FUN_00008e18@), per
+-- docs/investigations/trigger-input-symbolic-reachability.md.
+--
+-- Macaw's automatic whole-function discovery from the region's *own* real
+-- entry (0x8e18) cannot reach any of this region's interesting code: every
+-- one of the digital arm's real branches is a narrow @CBZ_T1@/@CBNZ_T1@
+-- instruction, and this Macaw version's ARM branch classifier fails to
+-- recognize the (semantically correct, just redundantly double-nested)
+-- mux shape its own ASL lifting produces for that instruction family --
+-- "IP is not a mux", cascading through every other classifier, leaving the
+-- block a 'ClassifyFailure' with no successor edges recorded. Confirmed
+-- exhaustively for this function (4/4 classify failures are CBZ_T1) via
+-- @aptrace explore@. This is a genuine, narrow Macaw discovery gap, not a
+-- Ghidra disagreement: Ghidra's own disassembly, and the prior slice's
+-- concrete Unicorn execution, already independently and exactly establish
+-- both of each CBZ's real successor addresses.
+--
+-- Workaround, not a Macaw patch: since each CBZ's two successors are
+-- already independently proven (disassembly + concrete execution, not
+-- assumed), this seeds Macaw discovery directly at each successor instead
+-- of trying to cross the CBZ automatically -- two separate, cleanly
+-- (re-)discovered whole-function regions, each confirmed classify-failure
+-- clean over the addresses this query actually touches (the only
+-- remaining failures are downstream, past the observed addresses, in the
+-- shared config-reload continuation this query never needs to reach):
+--
+--   0x9203 -- the TR0/disarmed four-way idle-state gate, the second
+--            digitalRead(PB05), and the 0x8f98 config-reload write.
+--   0x91a3 -- the TR1/armed continuation that builds and sends the real
+--            "T..." status frame.
+--
+-- Registers r5/r6 (the per-channel device-state array base and the
+-- TR-enable byte's own address) are seeded via 'PH.runPacketTransactionTraced'\'s
+-- register-override list to the real values Ghidra's disassembly resolves
+-- them to at each of these real predecessor points -- not fabricated;
+-- see the investigation doc for the exact literal-pool loads this
+-- reproduces. PB05 itself is never seeded: it is read through a real
+-- @bl digitalRead@ call, which this harness's existing opaque-call
+-- override always treats as a calling-convention-respecting black box
+-- (fresh symbolic R0-R3/R12) -- so PB05's value is already a free
+-- variable the solver can pick, with no special-casing needed.
+runTrigger :: FilePath -> Word32 -> IO ()
+runTrigger path flashBase = do
+  bytes <- BS.readFile path
+  case buildMemory bytes flashBase ramBase ramSize of
+    Left err -> die ("failed to build memory image: " ++ err)
+    Right mem -> do
+      let deviceStateArray = 0x20002524 :: Word32  -- r5 @ 0x9203: per-channel device-state, [0..3] must be 0
+          trEnableAddr     = 0x20003120 :: Word32  -- r6 @ both entries: the TR0|/TR1| enable byte
+          gateCell2Addr    = 0x200000d8 :: Word32  -- ldrb-checked == 9 before the second digitalRead
+          gateCell1Addr    = 0x20001b38 :: Word32  -- ldr(4)-checked == 0x7b before the second digitalRead
+          statusByteAddr   = 0x200025bc :: Word32  -- +1 becomes 3 at 0x8f98 (the config-reload write)
+          txBufBase        = 0x20002548 :: Word32  -- becomes 'T' (0x54) once the T-frame is being built
+
+      putStrLn "=== Query A: entry 0x9203 (TR0/disarmed four-way gate -> second digitalRead(PB05) -> 0x8f98) ==="
+      -- Macaw's own discovery from this entry eventually reaches a real ARM
+      -- VFP/NEON instruction (VSTMDB_T1) downstream, past the unconditional
+      -- jump at 0x8fa4 into 0x6e4c, that this Macaw version's semantics
+      -- table has no lifting for at all -- a genuine, unrelated gap (this
+      -- query never needs anything past 0x8f98's own write). Seeding 0x6e4c
+      -- as a second, simultaneous known-function entry does NOT avoid this:
+      -- Macaw's classifier treats a direct `B.W` by its own instruction
+      -- form (an ordinary intra-function jump) regardless of whether the
+      -- target is independently known, so it still gets inlined. The real
+      -- fix is the 'stopAtAddr' early-stop below: reaching 0x8f9e (right
+      -- after the write at 0x8f9c completes) answers this query's actual
+      -- question before Macaw's execution ever reaches the unmodeled
+      -- instruction, and the resulting exception (caught, not crashing the
+      -- process) is simply ignored once that answer is already in hand.
+      -- Observed cost, both queries in this function, this Macaw/Crucible/
+      -- Z3 version: the model builds correctly (mkFunCFG in ~10-20ms,
+      -- executeCrucible reaches the target address and hands the online
+      -- Z3 process a well-formed query), but the SAT check itself did not
+      -- converge within a practical session time budget (killed after
+      -- 17+ minutes for this query, 4+ for Query B below) -- likely the
+      -- symbolic-array memory model plus the accumulated ASL side-
+      -- condition state from a real, multi-instruction run, not a flaw in
+      -- the query's own logic. See
+      -- docs/investigations/trigger-input-symbolic-reachability.md for
+      -- the full accounting; this slice's actual answer to both queries
+      -- came from direct provenance tracing (Ghidra) plus a concrete
+      -- Unicorn replay using the real values that tracing found, not from
+      -- this solver call completing.
+      entryA <- maybe (die "could not resolve 0x9203 entry") pure (resolveEntry mem 0x9203)
+      let addrSymMapA = Map.singleton entryA (BSC.pack "trigger_gate")
+          discA = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMapA [entryA] []
+          funsA = discA ^. MD.funInfo
+      case Map.lookup entryA funsA of
+        Nothing -> putStrLn "  error: 0x9203 region was not discovered by Macaw"
+        Just (Some fnA) -> do
+          -- Narrowed per instruction: gate provenance is now closed (both
+          -- cells traced to real firmware producers -- see the
+          -- investigation doc), so both are seeded CONCRETE at their real
+          -- values here instead of symbolic. The only remaining free
+          -- variable is PB05 itself, via the existing opaque-call
+          -- override on `bl digitalRead` -- no buffer symbolism at all.
+          let (bufLoA, bufBytesA) = sparseBuffer gateCell2Addr (gateCell1Addr + 4)
+                [ (gateCell2Addr, Concrete 9)
+                , (gateCell1Addr,     Concrete 0x7b), (gateCell1Addr + 1, Concrete 0)
+                , (gateCell1Addr + 2, Concrete 0),    (gateCell1Addr + 3, Concrete 0)
+                ]
+              regOverridesA = [(AR.r5, deviceStateArray), (AR.r6, trEnableAddr)]
+          putStrLn ("  gate cell 2 (0x" ++ showHex gateCell2Addr "" ++ ") = 9 and gate cell 1 (0x"
+                    ++ showHex gateCell1Addr "" ++ ") = 0x7b, both CONCRETE (real, provenance-traced values); "
+                    ++ "only PB05 (via the opaque digitalRead call) is free; r5=0x"
+                    ++ showHex deviceStateArray "" ++ ", r6=0x" ++ showHex trEnableAddr "" ++ " seeded")
+          -- Stop once execution reaches 0x8fa4 -- the next *macaw-block*
+          -- boundary after 0x8f98 (Crucible/macaw-symbolic's own location
+          -- tracking is per discovered-block, not per-ARM-instruction, so
+          -- an address mid-block such as 0x8f9e -- right after the real
+          -- write at 0x8f9c -- never registers as a distinct location; a
+          -- rich-trace run confirmed this empirically). By the time 0x8fa4
+          -- is reached, the whole 0x8f98 block, including its write, has
+          -- already executed -- well before the unconditional jump into
+          -- the unmodeled-VSTMDB continuation this query never needs.
+          -- Solver-observability path: writes /tmp/aptrace_trigger_A.stop.*
+          -- (standalone .smt2 immediately, plus an incremental online-
+          -- interaction log) so the actual query can be inspected without
+          -- waiting for -- or instead of -- the online check converging.
+          resA <- PH.runPacketTransactionTraced mem fnA bufLoA bufBytesA (statusByteAddr + 1) 3 Nothing
+                    regOverridesA (Just 0x8fa4) (Just "/tmp/aptrace_trigger_A")
+          reportPacket "0x8f98 config-reload write (0x200025bc+1 == 3)" bufLoA resA
+
+      putStrLn "\n=== Query B: entry 0x91a3 (TR1/armed -- does reaching the 'T' write depend on PB05 or the gate cells?) ==="
+      entryB <- maybe (die "could not resolve 0x91a3 entry") pure (resolveEntry mem 0x91a3)
+      let addrSymMapB = Map.singleton entryB (BSC.pack "trigger_report")
+          discB = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMapB [entryB] []
+          funsB = discB ^. MD.funInfo
+      case Map.lookup entryB funsB of
+        Nothing -> putStrLn "  error: 0x91a3 region was not discovered by Macaw"
+        Just (Some fnB) -> do
+          -- No register overrides at all: every register this arm touches
+          -- before the 'T' write (r4, r7, r8) is a fresh literal-pool load
+          -- or immediate, confirmed by disassembly -- unlike Query A, this
+          -- entry needs nothing seeded. The write itself is at 0x91c4, but
+          -- (per Query A's own note on block-granular location tracking)
+          -- the next address that registers as its own location is 0x91ce
+          -- -- right after the digitalRead(PB05) call at 0x91ca returns,
+          -- which is irrelevant to *whether* the write happened; by 0x91ce
+          -- it already has.
+          putStrLn "  no buffer bytes and no register overrides seeded -- this arm's own registers are all fresh literal loads"
+          resB <- PH.runPacketTransactionTraced mem fnB txBufBase [] txBufBase 0x54 Nothing [] (Just 0x91ce)
+                    (Just "/tmp/aptrace_trigger_B")
+          reportPacket "'T' buffer write (0x20002548 == 0x54)" txBufBase resB
+
+-- | Build one contiguous 'PacketByte' buffer spanning [lo, hi), defaulting
+-- every position to @Concrete 0@ (matching this harness's real cold-RAM
+-- convention) except the given (address, byte) overrides -- for seeding
+-- several known-disjoint addresses in one 'PH.runPacketTransactionTraced'
+-- call, which only accepts a single contiguous region. Not a general
+-- sparse-memory facility: a purpose-built helper for this one investigation,
+-- same spirit as 'APTrace.SymbolicRunner.BranchQuery'\'s 'bqMemoryBytes'
+-- but supporting symbolic bytes too, which that record does not need.
+sparseBuffer :: Word32 -> Word32 -> [(Word32, PacketByte)] -> (Word32, [PacketByte])
+sparseBuffer lo hi overrides =
+  (lo, [ maybe (Concrete 0) id (lookup a overrides) | a <- [lo .. hi - 1] ])
+
+reportPacket :: String -> Word32 -> PH.PacketResult -> IO ()
+reportPacket label bufLo res = case res of
+  PH.ConcreteResult v -> putStrLn ("  " ++ label ++ ": CONCRETE, observed = 0x" ++ showHex v "")
+  PH.Reachable models -> do
+    putStrLn ("  " ++ label ++ ": SAT -- reachable. Model (buffer offset -> byte value, address = 0x"
+              ++ showHex bufLo "" ++ " + offset):")
+    mapM_ (\(i, v) -> putStrLn ("    +0x" ++ showHex i "" ++ " (0x" ++ showHex (bufLo + fromIntegral i) ""
+                                 ++ ") = 0x" ++ showHex v "")) models
+  PH.Unreachable -> putStrLn ("  " ++ label ++ ": UNSAT -- not reachable under any assignment of the symbolic bytes.")
+  PH.HarnessError e -> putStrLn ("  " ++ label ++ ": harness error: " ++ e)
 
 -- | Ask the solver what value of R3 reaches a given single-character
 -- command's handler, within the already-discovered dispatcher function 'fn'.

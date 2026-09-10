@@ -6,7 +6,70 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (AutoPilot trigger-input runtime path made
+Last updated: 2026-09-09 (compact RAM zero-initialization implemented for
+Crucible/What4 queries, and measured against the real narrowed PB05 query
+diagnosed in the trigger-input investigation's own Part 6): the
+~196,615-assert-per-byte RAM zero-initialization that investigation
+identified as ~73.5% of a real query's total assertion count is eliminated
+— `APTrace.ProtocolHarness.runPacketTransactionTraced` now builds its base
+memory `SymbolicMutable` (which asserts nothing about writable segments)
+and reasserts "every writable segment starts at zero" itself as one SMT
+constant-array store per segment (addresses/sizes read from the `MM.Memory`
+itself, not hardcoded), instead of one equality per byte — the same idiom
+already used, unchanged, for this module's own stack zeroing. On the exact
+narrowed PB05 -> `0x8f98` query: the standalone SMT-LIB2 file drops from
+41.3MB/267,385 asserts to **10.8MB/70,775 asserts** (-73.9%/-73.5%), and the
+online Z3 check — which previously had to be killed after ~9 minutes with
+no answer at all — now **converges in 367.7s**, though to `unknown`, not a
+reachability answer (a second query in the same investigation, not
+previously measured, still does not converge within an 18-minute budget
+even with the smaller encoding). **No prior firmware-behavior conclusion
+changes**: no solver witness was produced either before or after, so
+nothing here is promoted past what `trigger-input-symbolic-reachability.md`
+already established via Ghidra provenance and Unicorn replay. Verified as a
+real fix, not just by construction: the SMT-LIB2 output's RAM region is
+confirmed to carry zero per-byte assertions and exactly one
+`forall`-guarded equality covering the whole region; and a direct
+git-stash-based before/after comparison of the existing `aptrace protocol`
+whole-function check reproduced byte-identical execution (same step count,
+same cycling addresses) with and without this change, confirming it doesn't
+alter behavior for concrete execution either — the check's own failure is a
+separate, pre-existing, already-documented flash/Crucible gap, not
+something this change touches or introduces. Flash encoding is deliberately
+untouched. See
+[`docs/tooling/compact-ram-initialization.md`](tooling/compact-ram-initialization.md)
+and [`docs/harness/execution-model.md`](harness/execution-model.md) (updated).
+
+Previous update (2026-09-09, trigger-input gate-cell provenance closed via
+Ghidra + Unicorn; Macaw/Crucible/Z3 attempted, a real classifier
+limitation found, the SAT query itself did not converge): the two
+previously-unresolved gate cells behind the trigger's second
+`digitalRead(PB05)` path are now fully provenance-closed, not synthetic
+— gate cell 1 (`0x20001b38` = `0x7b`) is a real side effect of the
+already-known `'+'` command's `mode=0x62` bulk-push finalize path (the
+same mechanism `bulk-push-trigger-provenance.md` already proved fires on
+every Remote boot); gate cell 2 (`0x200000d8` = `9`) is set by a real
+all-four-channels-idle check inside the same function, and — a clean new
+finding — is unconditionally reset to `0` by the config-reload function
+itself once it fires, a genuine self-clearing mechanism, confirmed
+concretely (Unicorn) both ways. An attempt to cross-check the bounded
+region with Macaw and prove reachability with Crucible/What4/Z3 found a
+real, exhaustively-confirmed Macaw limitation (every `CBZ_T1`/`CBNZ_T1`
+instruction in this function fails Macaw's branch classifier), worked
+around by re-seeding discovery at each branch's own already-known
+successor rather than patching Macaw — but the resulting SAT query, in
+both a fully-symbolic and a narrowed (gate cells concrete, only PB05
+free) form, did not converge within a practical time budget, so no
+solver-confirmed claim is made; the reachability answer instead rests on
+direct Ghidra provenance tracing plus a concrete Unicorn replay (both
+PB05 polarities, and the config-reload's own self-clear), reproduced
+from the already-established sound entry point (`0x8e18`, zero
+fabricated registers). See
+[`docs/investigations/trigger-input-symbolic-reachability.md`](investigations/trigger-input-symbolic-reachability.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+(both updated). No prior conclusion changed.
+
+Previous update (AutoPilot trigger-input runtime path made
 concretely reachable; the second `digitalRead(PB05)` path closed): the
 prior slice's own named gap — the runtime `"T..."` poll needed fabricated
 `r4`-`r11` to reach mid-function — is resolved the simple way: a backward

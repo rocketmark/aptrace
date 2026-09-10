@@ -89,8 +89,8 @@ confirmed_state:
     tx_buffer_index: "0x200025ac"
     adc_baseline_dead_ram: ["0x20002098", "0x2000313c", "0x20001fc4", "0x20003128", "0x200023c0"]
     per_channel_device_state: "0x20002524"   # [0..3] must all be 0 for the second-gate/config-reload path
-    second_gate_cell_1: "0x20001b38"   # must == 0x7b -- CLOSED this slice as a reachability requirement; own producer NOT traced
-    second_gate_cell_2: "0x200000d8"   # must == 9 -- same
+    second_gate_cell_1: "0x20001b38"   # must == 0x7b -- PROVENANCE CLOSED (symbolic-reachability slice): real writer 0x818e, the '+' command's mode=0x62 bulk-push finalize path (FUN_00004ca8/FUN_000043f0, already known -- bulk-push-trigger-provenance.md)
+    second_gate_cell_2: "0x200000d8"   # must == 9 -- PROVENANCE CLOSED: real writer 0x9088, an all-4-channels-idle check inside phase_ramp_state_machine__CUSTOM itself; ALSO reset to 0 by the config-reload function's own real write (0x6b60, FUN_00006b50) -- a genuine self-clearing mechanism, Unicorn-confirmed
     config_reload_status_byte: "0x200025bc"   # +1 offset written =3 by 0x8f98; two other readers (0x7a50, 0x81f8) not traced
   eic_negative_result:
     callback_table: "0x2000525c"   # exactly one xref anywhere in the image: the handler's own load
@@ -100,12 +100,23 @@ confirmed_state:
     conclusion: "never armed; not the trigger mechanism"
 
 symbolic_target:
-  # UPDATED this slice: the entry-state gap is closed (0x8e18 is a sound
-  # entry, no r4-r11 fabrication needed -- both the T-frame poll and the
-  # 0x8f98 config-reload path are now reproduced concretely, entering
-  # there). The remaining question worth a solver is narrower and purely
-  # about REACHABILITY of two specific RAM cells, not about entry state.
-  entry_address: "0x00008e18"   # phase_ramp_state_machine__CUSTOM's own real start -- CHANGED from 0x9160
+  # UPDATED (symbolic-reachability slice): BOTH gate cells are now
+  # provenance-closed (see `ram` above) -- this is no longer a
+  # reachability-of-unknown-values question. A real Macaw/Crucible/Z3
+  # attempt was made (aptrace trigger), including a NARROWED variant
+  # (both gate cells concrete, only PB05 symbolic via the existing
+  # opaque-call override) -- neither the fully-symbolic nor the narrowed
+  # SAT query converged within a practical time budget (killed after 17+
+  # and ~9 minutes respectively; mkFunCFG itself is fast, ~10-20ms, in
+  # both cases -- the bottleneck is specifically the online Z3 SAT check).
+  # The actual answer to every question this section originally posed
+  # was obtained instead via direct Ghidra provenance tracing plus
+  # ConcreteMachine (Unicorn) replay -- see
+  # docs/investigations/trigger-input-symbolic-reachability.md. What
+  # remains here is a genuine, narrower TOOLING question (why doesn't
+  # even the single-free-variable query converge), not a reachability
+  # question about this firmware.
+  entry_address: "0x00008e18"   # phase_ramp_state_machine__CUSTOM's own real start
   entry_preconditions:
     - "MC4 already run (0x20000060 == 0) if reconstructing via a real boot; NOT required for direct entry at 0x8e18 (this project's established precedent -- callers' own gate is bypassed by entering directly, matching ll-limit-workflow.md's own approach)"
     - >
@@ -123,17 +134,18 @@ symbolic_target:
     - name: PB05_live_level
       where: "PORT.GROUP1.IN (0x410080a0) bit 5"
       why: "the only genuinely external input to this whole mechanism"
-    - name: gate_cell_0x20001b38
-      where: "RAM word at 0x20001b38 (must == 0x7b to reach 0x8f98 via either arm)"
-      why: >
-        this slice used it as a disclosed TEST value to reach and
-        characterize 0x8f98 -- whether any real code path drives it to
-        exactly 0x7b naturally is the actual open reachability question,
-        well suited to a solver over "what real firmware states make
-        this cell equal 0x7b"
-    - name: gate_cell_0x200000d8
-      where: "RAM byte at 0x200000d8 (must == 9 to reach 0x8f98)"
-      why: "same as above -- disclosed test value, real producer not traced"
+    # NOTE: both gate cells are now provenance-closed (see `ram` above)
+    # and were seeded CONCRETE, not symbolic, in the narrowed query --
+    # left here only as a record of what the fully-symbolic variant
+    # tried, and to bound scope if a future slice ever needs to
+    # re-derive their values from first principles instead of reusing
+    # this slice's own provenance tracing.
+    - name: gate_cell_0x20001b38 (superseded -- now concrete, see ram.second_gate_cell_1)
+      where: "RAM word at 0x20001b38 (== 0x7b, real value, real producer 0x818e)"
+      why: "closed by provenance tracing, not by this symbolic query -- kept concrete in the narrowed variant"
+    - name: gate_cell_0x200000d8 (superseded -- now concrete, see ram.second_gate_cell_2)
+      where: "RAM byte at 0x200000d8 (== 9, real value, real producer 0x9088)"
+      why: "closed by provenance tracing, not by this symbolic query -- kept concrete in the narrowed variant"
   keep_concrete:
     - "tx_buffer_base, tx_buffer_index, tick_variable, trigger_report_enable (0x20003120) addresses -- already resolved literals with known real producers (TR0|/TR1|), no reason to symbolize"
     - "the rate-limit timestamp (0x20002410) and millis() (0x200052ec) -- model via --fake-tick if timing matters, not as solver-symbolic values"
@@ -149,7 +161,8 @@ symbolic_target:
     - "the per-channel ramp loop (0x8e26-0x8e66) needs no special bounding under cold/idle RAM -- concretely confirmed this slice to complete all 4 iterations and reach the trigger-poll region without intervention"
 
 open_questions:
-  - "Do 0x20001b38 and 0x200000d8 ever naturally reach 0x7b/9 through real code elsewhere, or is 0x8f98 only reachable via this slice's disclosed test values? (the actual symbolic target)"
+  - "CLOSED (symbolic-reachability slice): 0x20001b38/0x200000d8 -- both are real, firmware-reachable via named producers (the '+' mode=0x62 bulk-push finalize path; an all-4-channels-idle check), not synthetic. See docs/investigations/trigger-input-symbolic-reachability.md."
+  - "NEW (symbolic-reachability slice, tooling not firmware): why does even the narrowed query (gate cells concrete, only PB05 symbolic) fail to converge in Z3 within a practical time budget? Candidate causes: the always-on useNonlinearArithmetic/useSymbolicArrays problem features, or per-access array-theory overhead in the symbolic memory model regardless of concreteness. Not chased this slice -- a real, bounded tooling question for whoever next needs a fast multi-instruction Crucible/Z3 query in this project."
   - "Is PA02/PB05's physical identity as 'the 3.5mm trigger jack' confirmed against a schematic, or only behaviorally inferred?"
   - "Does anything on the Remote side react to the 'T<>,<>,|' frame in a way that matches the user-reported 'one trigger' symptom? (Remote-side tracing is out of scope for this AutoPilot-only slice.)"
   - "What is 0x200025bc's full role (config-reload status byte, +1 offset written =3 here; two other readers at 0x7a50/0x81f8 not traced)?"
@@ -157,8 +170,10 @@ open_questions:
 
 evidence:
   - docs/investigations/trigger-input-concrete-path.md
+  - docs/investigations/trigger-input-symbolic-reachability.md
   - docs/hardware/autopilot-research-handoff.md
   - docs/investigations/mc4-transition.md
   - docs/investigations/g-command-motor-subsystem-unlock.md
   - docs/investigations/target-config-provenance.md
   - docs/investigations/manual-mode-wire-provenance.md
+  - docs/investigations/bulk-push-trigger-provenance.md
