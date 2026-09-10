@@ -138,13 +138,27 @@ def decode_pins(conn, firmware_id, machine, svd_map):
     return rows
 
 
-def compute(conn, firmware_id, firmware_key, machine, result, recipe, init_status, svd_map, verbose=True):
+def compute(conn, firmware_id, firmware_key, machine, result, recipe, init_status, svd_map, verbose=True,
+             delivery_log=()):
     """Persist the hardware snapshot from an ALREADY-RUN boot capture
-    (see boot_recipes.capture_boot) -- does not run Unicorn itself."""
+    (see boot_recipes.capture_boot) -- does not run Unicorn itself.
+    `delivery_log`: every real interrupt actually delivered during this
+    capture (see boot_recipes.run_with_interrupt_bridges) -- recorded
+    as part of the disclosed-assumption trail so "was a real exception
+    entry/return executed, and how many times" is always inspectable,
+    never implicit."""
     boot_method = recipe["reference_key"] if recipe else None
-    assumptions = recipe.get("assumptions", []) if recipe else []
+    assumptions = list(recipe.get("assumptions", [])) if recipe else []
+    for d in delivery_log:
+        assumptions.append({
+            "kind": "interrupt_delivered", "addr": d.get("bridge_wait_addr"),
+            "detail": f"REAL interrupt delivered this run: channel={d.get('channel')}, "
+                       f"table_addr=0x{d.get('table_addr', 0):08x}, at instruction {d.get('instruction')}, "
+                       f"handler returned cleanly={d.get('handler_returned_cleanly')}.",
+            "citation": "tools/census/boot_recipes.py's run_with_interrupt_bridges (this run)",
+        })
     notes = (f"reference recipe: {recipe['reference_key']}" if recipe else "no boot recipe available") + \
-        f"; init_status={init_status}"
+        f"; init_status={init_status}; real interrupts delivered this run: {len(delivery_log)}"
 
     conn.execute("DELETE FROM hardware_snapshot_runs WHERE firmware_id=?", (firmware_id,))
     conn.execute(

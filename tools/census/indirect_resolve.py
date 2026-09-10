@@ -54,6 +54,19 @@ def _md():
     return m
 
 
+# Capstone's ARM disassembly text uses the ARM EABI's conventional
+# aliases for r9/r10/r11/r12 (sb/sl/fp/ip) -- normalized here to the
+# canonical r-number names concrete.py's REG_BY_NAME/registers dict
+# actually uses (confirmed necessary this pass: Mando868 has a real
+# `bx sl` indirect-call site that a raw `insn.reg_name()` result would
+# otherwise silently fail to look up downstream).
+_CAPSTONE_REG_ALIASES = {"sb": "r9", "sl": "r10", "fp": "r11", "ip": "r12"}
+
+
+def _canonical_reg_name(name):
+    return _CAPSTONE_REG_ALIASES.get(name, name)
+
+
 def decode_instruction(firmware_bytes, flash_base, addr):
     """Decode the single Thumb instruction at `addr`. Returns
     (mnemonic, shape, target_reg_name) where shape is one of
@@ -76,11 +89,11 @@ def decode_instruction(firmware_bytes, flash_base, addr):
     m = insn.mnemonic.lower()
 
     if m in ("bx", "blx") and insn.operands and insn.operands[0].type == ARM_OP_REG:
-        return m, "reg-indirect", insn.reg_name(insn.operands[0].reg)
+        return m, "reg-indirect", _canonical_reg_name(insn.reg_name(insn.operands[0].reg))
     if m in ("mov", "mov.w") and len(insn.operands) == 2 and \
             insn.operands[0].type == ARM_OP_REG and insn.operands[0].reg == ARM_REG_PC and \
             insn.operands[1].type == ARM_OP_REG:
-        return m, "reg-indirect", insn.reg_name(insn.operands[1].reg)
+        return m, "reg-indirect", _canonical_reg_name(insn.reg_name(insn.operands[1].reg))
     if m in ("tbb", "tbb.w", "tbh", "tbh.w"):
         return m, "table-branch", None
     if m.startswith("ldr") and insn.operands and insn.operands[0].type == ARM_OP_REG and \

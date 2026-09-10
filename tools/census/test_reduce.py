@@ -169,6 +169,16 @@ def test_decode_instruction_shapes():
     mnem, shape, reg = indirect_resolve.decode_instruction(bytes(data), flash_base, flash_base + 2)
     check("blx r3 decodes as reg-indirect targeting r3", shape == "reg-indirect" and reg == "r3", (mnem, shape, reg))
 
+    # bx sl (r10) -- hardening: Capstone's ARM EABI register ALIAS text
+    # ("sl") must be normalized to the canonical "r10" concrete.py's
+    # registers dict actually keys on, or a real downstream lookup
+    # (extract_indirect_hits) raises KeyError -- confirmed this pass on
+    # a real Mando868 indirect-call site.
+    data[4:6] = b"\x50\x47"
+    mnem, shape, reg = indirect_resolve.decode_instruction(bytes(data), flash_base, flash_base + 4)
+    check("bx sl normalizes to reg-indirect targeting r10 (not the Capstone alias 'sl')",
+          shape == "reg-indirect" and reg == "r10", (mnem, shape, reg))
+
 
 def test_scan_pointer_table():
     print("test_scan_pointer_table (bounded flash-word pointer scan)")

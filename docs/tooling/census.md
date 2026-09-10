@@ -320,6 +320,14 @@ resolved or not) is classified into exactly one of:
 - `UNRESOLVED` — none of the above found anything. Left exactly as
   unresolved as it was.
 
+Register-indirect decoding (`indirect_resolve.decode_instruction`)
+normalizes Capstone's ARM EABI register-alias mnemonics (`sb`/`sl`/
+`fp`/`ip` for `r9`/`r10`/`r11`/`r12`) back to the canonical `rN` names
+`concrete.py`'s register table uses — `mando868` has a real `bx sl`
+indirect-call site that otherwise raised a `KeyError` during boot-
+capture indirect-hit extraction (regression-tested in
+`test_reduce.py`).
+
 Every candidate any method found is kept in `indirect_edge_candidates`
 (never deduplicated away — two methods disagreeing stays visible);
 `indirect_edge_resolutions` holds the single summary classification
@@ -445,23 +453,25 @@ mechanically — no new semantic RE work performed by this module:
   worked reproduction below) and reaches real main-loop steady state
   (5 confirmed `0x8960` iterations, matching that document's own
   success criterion) — `init_status` **`complete`**.
-- **`MANDO_RECIPE`** (reference `mando868`) — built incrementally THIS
-  pass: Reset_Handler (from the `vectors` table, cross-checked against
-  an EXACT fingerprint match to `autopilot868`'s own Reset_Handler —
-  both agree), the SAME clock/PLL completion bits (confirmed touched
-  by `mando868`'s own clock-init function, itself an EXACT byte match
-  to `autopilot868`'s `FUN_0000cdd8`, at the identical peripheral
-  addresses — direct static evidence, not assumed), and the DWT-delay
-  stub (EXACT match to `autopilot868`'s own). Two further stalls were
-  diagnosed by watching the exact register state at each wait loop
-  (never by skipping PCs or forcing an exit) and modeled the same
-  documented way once the evidence matched: a `SERCOM2` `SWRST`
-  self-clear and `INTFLAG.DRE` wait (register state at the stall showed
-  `r3=0x41012000`, the same peripheral/pattern `autopilot868`'s own
-  driver constructor uses). Progress then stops at a plain RAM-flag
-  wait (`0x20003b30`) whose only known writer has no resolved static or
-  dynamic caller anywhere in this census — see "Remaining boot
-  blockers" below. `init_status` **`partial-justified`**.
+- **`MANDO_RECIPE`** (reference `mando868`) — Reset_Handler (from the
+  `vectors` table, cross-checked against an EXACT fingerprint match to
+  `autopilot868`'s own Reset_Handler — both agree), the SAME clock/PLL
+  completion bits (confirmed touched by `mando868`'s own clock-init
+  function, itself an EXACT byte match to `autopilot868`'s
+  `FUN_0000cdd8`, at the identical peripheral addresses — direct static
+  evidence, not assumed), and the DWT-delay stub (EXACT match to
+  `autopilot868`'s own). Two further stalls were diagnosed by watching
+  the exact register state at each wait loop (never by skipping PCs or
+  forcing an exit) and modeled the same documented way once the
+  evidence matched: a `SERCOM2` `SWRST` self-clear and `INTFLAG.DRE`
+  wait (register state at the stall showed `r3=0x41012000`, the same
+  peripheral/pattern `autopilot868`'s own driver constructor uses). A
+  fourth stall, a plain RAM-flag wait at `0x20003b30`, was then closed
+  by modeling the REAL interrupt delivery that releases it — see
+  "Interrupt delivery (`interrupt_bridges`)" below — after which the
+  recipe runs on to a confirmed steady-state main loop (`FUN_00007abc`,
+  10 watch hits at an exact 33-instruction period). `init_status`
+  **`complete`**.
 
 **Sibling remapping.** For `autopilot915`/`mando915` (not themselves a
 reference recipe's own image), every CODE address in the family's
@@ -481,31 +491,96 @@ found) is DROPPED from the sibling's recipe and reported as a gap —
 never guessed; `boot_recipes.capture_boot` prints and the caller can
 inspect every such gap.
 
-**Remaining boot blockers.**
+### Interrupt delivery (`interrupt_bridges`)
 
-- **`mando868`/`mando915` stall at a RAM-flag wait, `0x20003b30`**
-  (`ldrb r3,[r5]; cmp r3,#0; bne ...`, `r5=0x20003b30`). Its only known
-  writer in this census's static evidence (`ldr r3,[...]; movs r2,#0;
-  strb r2,[r3]; bx lr`, target confirmed via Ghidra's own reference
-  manager) is a 6-byte orphaned code range with NO resolved static
-  call/jump edge, no vector-table entry, and no dynamic observation as
-  an indirect target either. **Evidence needed to model this**: either
-  (a) a NVIC/interrupt-delivery capability in the Unicorn harness (a
-  real, nontrivial addition `tools/unicorn/concrete.py` does not
-  currently have — out of scope for a mechanical reducer to add
-  unilaterally), or (b) independent evidence identifying the real
-  interrupt source that clears this flag and confirming it is safe to
-  model as a disclosed completion bit the way the SERCOM/clock bits
-  were.
-- **Beyond AutoPilot's own steady-state milestone, nothing further is
-  modeled.** `AUTOPILOT_RECIPE` now reproduces the cited document's
-  FULL recipe (PA22 seed and DWT stub both included this pass, on top
-  of what was already present) and reaches real main-loop steady
-  state. What remains unmodeled is explicitly out of scope, unchanged
-  from that same document's own "Open items": a second, deeper
-  NVM-erase-loop dependency that does not visibly advance over millions
-  of instructions, and the TX path's still-unnamed real transport
-  peripheral (gated behind a runtime driver-object pointer).
+The `0x20003b30` RAM-flag wait that previously blocked `mando868`/
+`mando915` at `init_status='partial-justified'` was closed mechanically,
+by tracing the REAL interrupt chain that releases it rather than
+force-writing the flag:
+
+- The flag's only writer (`ldr r3,[...]; movs r2,#0; strb r2,[r3]; bx
+  lr`, at `0x13764`/`0x13765`) has no resolved static call/jump edge and
+  no vector-table entry directly to it — but it IS reachable, as a data
+  value: `FUN_00013874` (real DMAC/TC2/EVSYS driver setup on the boot
+  path) registers it via a generic callback-registration helper,
+  `FUN_00011fd8(object, callback, slot)`, which writes
+  `*(object + (slot+2)*4) = callback` — placing this release routine at
+  `object+0xC` (slot 1, "transfer complete") for a driver object at
+  `0x200026f8`.
+- That object pointer is itself written into a DMA channel→object
+  lookup table (base `0x20003a60`, recovered from a literal pool at
+  `FUN_00011d20`+0x28) at index 2 — confirmed by watching the actual
+  memory write during boot replay (`instruction 67257`, `PC=0x11e2c`,
+  `LR=0x11d8f`).
+- IRQ vectors 47–51 (`DMAC_0`..`DMAC_OTHER`, IRQ31-35 per the SVD's own
+  `<interrupt>` elements) all target one real handler, `FUN_00011d20`:
+  it reads `DMAC.INTPEND` (`0x4100a020`) `& 0x1f` for the pending
+  channel, looks up `channel_table[channel]`, and — if non-null — calls
+  `FUN_00011cb8(object, channel)`, which reads
+  `DMAC.CHANNELn.CHINTFLAG` (`0x4100a000 + ch*0x10 + 0x4e`, SVD-
+  confirmed) and, for the `TCMPL` bit (bit 1), invokes the callback at
+  `object+0xC` — exactly the flag-release routine.
+
+This chain is executed for real, not stubbed, via a new, deliberately
+narrow `ConcreteMachine.deliver_interrupt(handler_entry, ...)` primitive
+(`tools/unicorn/concrete.py`): it runs the REAL compiled ISR body as a
+nested AAPCS subroutine call on the CURRENT stack at the CURRENT
+machine state, preserving `r0-r3`/`r12` around the call and relying on
+the ISR's own AAPCS callee-saved discipline for `r4-r11` — no
+`EXC_RETURN`, no NVIC priority/masking model, no vector-table dispatch
+simulation. It is NOT a general Cortex-M exception simulator, only
+enough to run one already-identified real handler and return.
+
+A recipe opts into this by declaring an `interrupt_bridges` list (see
+`MANDO_RECIPE`) — one entry per `{wait_check_addr, flag_addr,
+flag_released_value, handler_addr, release_callback_addr,
+callback_slot_offset, dmac_base, intpend_offset,
+channel_table_literal_offset, channel_table_count,
+chintflag_channel_stride, chintflag_offset, chintflag_tcmpl_bit,
+max_deliveries, citation}`. `boot_recipes.run_with_interrupt_bridges`
+drives it: on hitting a bridge's `wait_check_addr`, it identifies the
+channel whose table entry's own callback (at `object+
+callback_slot_offset`) matches `release_callback_addr` (a uniquely-
+identifying match — `mando868`'s channel table has multiple
+simultaneously-registered channels at this point, so "first non-null
+entry" is NOT a valid heuristic and was rejected after an early run
+picked the wrong channel), seeds `INTPEND`/`CHINTFLAG.TCMPL` for that
+channel, calls `deliver_interrupt`, then explicitly clears
+`CHINTFLAG`/`INTPEND` afterward (write-1-to-clear is the real hardware
+convention used consistently elsewhere in this SVD, e.g.
+`SERCOM.INTFLAG` — this MMIO model has no automatic W1C behavior of its
+own, so the bridge must do it, or the flags stay permanently "pending"
+and cause runaway spurious re-delivery). `max_deliveries` bounds this
+per bridge so an unexpected non-terminating loop stops honestly instead
+of running forever. Every real delivery is recorded (channel, table
+address, instruction count, whether the handler returned cleanly) and
+folded into `hardware_snapshot_runs.assumptions_json` as an
+`interrupt_delivered` entry — never a hidden side effect.
+
+One resume-correctness bug was found and fixed while building this:
+`machine.run(entry=X, stop_at=[..., X, ...])` immediately re-triggers
+on the very first about-to-execute instruction when resuming exactly AT
+a `stop_at` address, reporting `instructions_executed=1` with ZERO real
+forward progress. `run_with_interrupt_bridges` now always performs an
+unconditional `max_instructions=1` step (no `stop_at`) past a bridge's
+`wait_check_addr` before resuming the guarded run, both when the wait
+was already released and right after a delivery.
+
+For `mando868`, four real deliveries (all channel 2) release the flag
+and the recipe proceeds all the way to a confirmed steady-state main
+loop. `mando915`'s sibling-remapped recipe delivers the identical four
+interrupts at the identical instruction counts, confirming a faithful
+remap.
+
+**Beyond AutoPilot's and Mando's own steady-state milestones, nothing
+further is modeled.** `AUTOPILOT_RECIPE` reproduces the cited
+document's FULL recipe and reaches real main-loop steady state; what
+remains unmodeled there is explicitly out of scope, unchanged from that
+document's own "Open items": a second, deeper NVM-erase-loop dependency
+that does not visibly advance over millions of instructions, and the TX
+path's still-unnamed real transport peripheral (gated behind a runtime
+driver-object pointer). `MANDO_RECIPE` now also reaches real steady
+state; no further blocker is currently open for either family.
 
 **A real Unicorn correctness bug was found and fixed along the way**:
 `ConcreteMachine.run(..., log_ram=True)` corrupted later emulation on a
@@ -601,17 +676,28 @@ defaults `log_ram=False` for its own (long) capture — `log_mmio` and
   threshold stays split) against over-grouping (a shared low-fan-in
   callee incorrectly implies two callers belong together) — see
   `components.py`'s module docstring for the exact rules and rationale.
-- **The hardware-init snapshot is `complete` for the AutoPilot family
-  only.** `autopilot868`/`915` now reach real main-loop steady state
-  (`init_status='complete'`) and their snapshot reflects genuinely
-  post-init MCU state. `mando868`/`915` reach `init_status=
-  'partial-justified'` (real progress on cited/newly-justified
-  assumptions — clock init, SERCOM2 reset+DRE — see "Remaining boot
-  blockers" above) but stop well short of steady state at a documented,
-  unmodeled interrupt-delivery dependency; their snapshot is real
-  emulator state at that stopping point, not a claim about steady-state
-  configuration. See `hardware_snapshot_runs.assumptions_json` for the
-  complete, per-run disclosed-assumption list.
+- **The hardware-init snapshot is `complete` for all four known
+  images.** `autopilot868`/`915` and `mando868`/`915` all now reach
+  real main-loop steady state (`init_status='complete'`) and their
+  snapshots reflect genuinely post-init MCU state, including the DMAC
+  channel-2 registers as left by a REAL interrupt handler execution
+  (see "Interrupt delivery (`interrupt_bridges`)" above) for the Mando
+  pair. See `hardware_snapshot_runs.assumptions_json` for the complete,
+  per-run disclosed-assumption list, including every real interrupt
+  delivered during that run.
+- **Sibling remap for a code address just past its reference function's
+  own declared size falls back to a bounded, best-effort offset match.**
+  `_remap_code_addr` normally requires the reference address to fall
+  STRICTLY inside a matched function's own declared size; a handful of
+  real addresses used by `MANDO_RECIPE` (e.g. `0x13765`, the interrupt
+  bridge's release-callback address) land a small number of bytes past
+  their containing function's own end — inside a Ghidra-unattributed
+  ("exec-bytes-unowned") code gap, not a different function. Within a
+  bounded window (`NEARBY_GAP_WINDOW`, 0x400 bytes past the reference
+  function's declared end) the remap still proceeds via that function's
+  own EXACT-match offset and is flagged in the reported gaps as
+  best-effort, not guaranteed-exact; an address further away than that
+  is still rejected and dropped, never guessed.
 - **`pin_snapshot`'s `pmux_nibble` is a raw register field, not a named
   peripheral function.** SAMD5x/E5x's PMUX-to-peripheral-function
   letter mapping (A-H) is fixed silicon-wide, but WHICH peripheral

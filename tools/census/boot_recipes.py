@@ -18,23 +18,24 @@ investigation actually used:
   matching that document's own success criterion) -- `init_status`
   'complete'.
 
-  MANDO_RECIPE (reference: mando868) -- built incrementally THIS pass,
-  by running from Reset_Handler with only chip-architecture-level
-  assumptions (the clock/PLL bits, which the SVD and this image's own
-  static evidence confirm are touched by mando's clock-init function at
-  the SAME peripheral addresses as AutoPilot's) and diagnosing each
-  subsequent stall with `--watch` register captures, never by skipping
-  PCs or forcing a loop exit. Two real SERCOM2 completion-bit waits
-  were found and modeled the same documented way (SWRST self-clear,
-  INTFLAG.DRE); progress then stops at a plain RAM-flag wait
-  (`0x20003b30`) whose only known writer is an orphaned code range with
-  no resolved static or dynamic caller in this census -- likely an
-  interrupt-delivered completion, which this project's Unicorn harness
-  does not model. No existing repo evidence justifies a model for it,
-  so the recipe stops there, honestly -- `init_status`
-  'partial-justified' (real progress, on cited evidence, clearly
-  short of steady state). See MANDO_RECIPE['blocker'] for the full
-  mechanical detail.
+  MANDO_RECIPE (reference: mando868) -- built incrementally, by running
+  from Reset_Handler with only chip-architecture-level assumptions (the
+  clock/PLL bits, which the SVD and this image's own static evidence
+  confirm are touched by mando's clock-init function at the SAME
+  peripheral addresses as AutoPilot's) and diagnosing each subsequent
+  stall with `--watch` register captures, never by skipping PCs or
+  forcing a loop exit. Two real SERCOM2 completion-bit waits were found
+  and modeled the same documented way (SWRST self-clear, INTFLAG.DRE).
+  A later stall at a plain RAM-flag wait (`0x20003b30`) turned out to
+  be a REAL DMAC (DMA controller) transfer-complete interrupt,
+  confirmed end to end via Ghidra CFG/xrefs + the SVD + Unicorn traces
+  (see MANDO_RECIPE['resolved_blockers'] for the full mechanical chain)
+  and modeled via `interrupt_bridges` + `ConcreteMachine.
+  deliver_interrupt` -- a narrow, evidence-bounded interrupt-delivery
+  primitive (real handler execution, real peripheral-pending state,
+  no general Cortex-M exception simulator). See MANDO_RECIPE['blocker']
+  for whatever the CURRENT furthest blocker is (None if fully resolved
+  to steady state).
 
 For a SIBLING image in the same product family (`autopilot915`,
 `mando915`) that isn't itself a reference recipe's own firmware,
@@ -87,6 +88,8 @@ AUTOPILOT_RECIPE = {
     "steady_state_hits": 5,
     "max_instructions": 450_000,
     "blocker": None,
+    "resolved_blockers": [],
+    "interrupt_bridges": [],
     "assumptions": [
         A("fake_tick", 0x200052ec, "RAM-resident millis/tick counter, advanced on an instruction-count cadence "
           "(not a real SysTick MMIO model) -- diagnosed by disassembling the real tick-reading functions.",
@@ -133,12 +136,25 @@ MANDO_RECIPE = {
     "milestones": {
         0x14f74: "SERCOM2 SWRST self-clear wait (modeled, cited category)",
         0x14fda: "SERCOM2 INTFLAG.DRE wait (modeled, cited category)",
-        0x13f92: "documented blocker: RAM flag 0x20003b30 wait (no citable model -- see 'blocker' below)",
+        0x13f92: "DMAC channel-2 transfer-complete wait (modeled via interrupt_bridges -- see 'resolved_blockers')",
     },
-    "steady_state_addr": None,
-    "steady_state_hits": None,
-    "max_instructions": 300_000,
-    "blocker": {
+    # FUN_00007abc, mando868's own real loop() top (small, application-
+    # specific -- cross-product-matches nothing in AutoPilot, same-
+    # product-matches mando915 exactly, consistent with real per-product
+    # Arduino-core sketch code). Confirmed this pass via `--watch`: 10
+    # hits at a PERFECTLY regular 33-instruction period (0 variance) --
+    # the same steady-state evidence standard
+    # docs/investigations/boot-and-hardware-bringup.md's own AutoPilot
+    # criterion uses (there: ~2900-2940-instruction cadence, 5 hits).
+    "steady_state_addr": 0x7abc,
+    "steady_state_hits": 5,
+    "max_instructions": 600_000,
+    # RESOLVED this pass -- see `interrupt_bridges` below and
+    # docs/tooling/census.md's "Mando interrupt-delivery closure" for
+    # the full mechanical chain. Kept here (not deleted) as a record of
+    # what the earlier pass found and how it was closed.
+    "blocker": None,
+    "resolved_blockers": [{
         "addr": 0x20003b30,
         "wait_site": 0x13f92,
         "description": "A plain RAM byte flag (0x20003b30) polled by a tight busy-loop at 0x13f92 "
@@ -147,15 +163,82 @@ MANDO_RECIPE = {
                         "('ldr r3,[0x1376c]; movs r2,#0; strb r2,[r3]; bx lr', target confirmed = 0x20003b30 "
                         "via Ghidra's own reference manager) -- but that range has NO resolved static call/jump "
                         "edge, is not a vector target, and was not dynamically observed as an indirect target "
-                        "either. It is most likely reached only via NVIC interrupt delivery (an ISR clearing a "
-                        "completion flag), which this project's Unicorn harness does not model at all (no NVIC/"
-                        "interrupt-dispatch capability exists in tools/unicorn/concrete.py).",
-        "evidence_needed": "Either (a) a NVIC/interrupt-delivery model in the Unicorn harness (a real, "
-                            "nontrivial capability this project does not currently have -- out of scope for a "
-                            "mechanical reducer to add unilaterally), or (b) independent evidence identifying "
-                            "which real interrupt source clears 0x20003b30 and confirming it is safe to model "
-                            "as a disclosed completion bit the way the SERCOM/clock bits were.",
-    },
+                        "either.",
+        "resolution": "Confirmed a real DMAC (DMA controller) transfer-complete interrupt chain, entirely from "
+                       "existing evidence (no new source available, purely Ghidra CFG/xrefs + SVD + Unicorn "
+                       "traces): FUN_00013874 (a TC2/CCL/EVSYS driver-setup routine, visited during boot) calls "
+                       "FUN_00011fd8(object=0x200026f8, callback=0x13765, index=1) -- a generic 3-slot callback-"
+                       "table setter (`*(object+(index+2)*4)=callback`) -- registering our release routine into "
+                       "slot 1 ('transfer complete') of a driver object. A later, dynamically-confirmed write "
+                       "(Unicorn watch_mem_write, instruction 67257, PC=0x11e2c) stores that SAME object pointer "
+                       "into a DMA-channel-to-object lookup table at 0x20003a60, index 2 (address 0x20003a68) -- "
+                       "i.e. DMA channel 2. IRQ vectors 47-51 (DMAC_0..DMAC_OTHER, IRQ31-35 per the SVD's own "
+                       "<interrupt> elements) all point at the SAME real handler, FUN_00011d20, which reads "
+                       "DMAC.INTPEND (0x4100a020) & 0x1f for the pending channel, looks up "
+                       "channel_table[channel] (0x20003a60 + channel*4), and if non-null calls "
+                       "FUN_00011cb8(object, channel). That function reads DMAC.CHANNELn.CHINTFLAG "
+                       "(0x4100a000 + channel*0x10 + 0x4e, confirmed via the SVD) and dispatches to one of three "
+                       "registered callbacks by bit: TERR(bit0)->slot0, TCMPL(bit1)->slot1 (OUR callback), "
+                       "SUSP(bit2)->slot2. Empirically verified end to end in Unicorn "
+                       "(ConcreteMachine.deliver_interrupt): seeding INTPEND=2 and CHANNEL2.CHINTFLAG.TCMPL=1 "
+                       "and running the REAL FUN_00011d20 (not a stub) releases the flag exactly as this chain "
+                       "predicts.",
+    }],
+    # A general, reusable, data-driven bridge: "when execution reaches
+    # `wait_check_addr` with `flag_addr` still armed, deliver a real
+    # NVIC interrupt via `handler_addr` (never a stub) after seeding
+    # the minimal, disclosed peripheral-pending condition it needs,
+    # then resume exactly where the interrupted code was." See
+    # `run_with_interrupt_bridges` for the executor. Deliberately NOT a
+    # general Cortex-M exception simulator: no EXC_RETURN, no NVIC
+    # priority/masking, no real asynchronous preemption -- delivery is
+    # triggered only at this ONE well-defined synchronization point,
+    # exactly where the firmware itself already demonstrates it is
+    # waiting for this exact completion.
+    "interrupt_bridges": [{
+        "wait_check_addr": 0x13f92, "flag_addr": 0x20003b30, "flag_released_value": 0,
+        "handler_addr": 0x11d20,
+        # The channel table (see below) can have MULTIPLE simultaneously-
+        # registered channels at once (confirmed empirically: channels 0
+        # and 1 are ALSO populated by the time this wait is first
+        # reached, with their own, DIFFERENT registered callbacks, e.g.
+        # channel 0's own callback is 0x118cd, not ours) -- "any non-null
+        # entry" is NOT sufficient evidence for which channel this
+        # SPECIFIC wait is for. `release_callback_addr` is the ONE thing
+        # that uniquely identifies it: the release routine itself
+        # (0x13765, the same address confirmed in 'resolved_blockers' as
+        # OUR flag's real writer) -- the channel selected is the one
+        # whose own registered object has THIS EXACT callback in its
+        # slot-1 ("transfer complete") field, never merely "the first
+        # populated slot".
+        "release_callback_addr": 0x13765,
+        "callback_slot_offset": 0xc,
+        # DMAC.INTPEND/DMAC base address are chip-fixed (confirmed via
+        # this image's own SVD-resolved static evidence) -- reused as-is,
+        # no remapping needed for a sibling image.
+        "dmac_base": 0x4100a000, "intpend_offset": 0x20,
+        # The DMA channel-to-driver-object lookup table's OWN base
+        # address, by contrast, is a firmware-specific RAM global (like
+        # the tick counter) -- NOT stored as a fixed constant here.
+        # Instead: `channel_table_literal_offset` is the handler
+        # function's own literal-pool cell holding that address,
+        # relative to `handler_addr` (0x11d48-0x11d20 -- see the
+        # disassembly cited in 'resolved_blockers' above). Reading that
+        # cell directly from EACH image's own flash bytes at
+        # `handler_addr + channel_table_literal_offset` (handler_addr
+        # already correctly remapped via EXACT fingerprint match) gives
+        # that image's own real table address -- robust across siblings
+        # without needing a separate, fragile RAM-address remap.
+        "channel_table_literal_offset": 0x28, "channel_table_count": 32,
+        "chintflag_channel_stride": 0x10, "chintflag_offset": 0x4e, "chintflag_tcmpl_bit": 0x2,
+        # Only 4 real deliveries are actually needed to reach steady
+        # state (confirmed this pass); bounded well above that for
+        # margin without being unbounded.
+        "max_deliveries": 25,
+        "citation": "tools/census/boot_recipes.py's MANDO_RECIPE['resolved_blockers'] (this pass) + "
+                     "tools/svd/ATSAMD51J19A.svd's DMAC <interrupt> elements and CHANNELn.CHINTFLAG/INTPEND "
+                     "register definitions",
+    }],
     "assumptions": [
         A("fake_tick", 0x20005a08, "RAM-resident millis/tick counter -- mando868's own equivalent of "
           "autopilot868's 0x200052ec, identified via an EXACT function-fingerprint match to autopilot868's "
@@ -179,6 +262,11 @@ MANDO_RECIPE = {
           "tools/census/reduce.py's fingerprint-based remapping (this pass)"),
         A("map_page", 0x800080, "NVM Software Calibration Row -- same chip-architecture fact as AutoPilot's.",
           _CITATION + "#test--repro"),
+        A("interrupt_bridge", 0x11d20, "DMAC channel-2 transfer-complete interrupt, delivered by running the "
+          "REAL FUN_00011d20 handler (never stubbed) after seeding DMAC.INTPEND=2 and "
+          "DMAC.CHANNEL2.CHINTFLAG.TCMPL=1 -- the minimal disclosed peripheral-pending condition; see "
+          "'resolved_blockers' above for the full evidence chain.",
+          "tools/census/boot_recipes.py's MANDO_RECIPE['interrupt_bridges'] (this pass)"),
     ],
 }
 
@@ -198,13 +286,35 @@ def _remap_code_addr(conn, sibling_fw_id, reference_key, ref_addr, gaps):
     match also exists. Returns the remapped int address, or None
     (appending a note to `gaps`) if no EXACT match exists to remap
     through."""
+    NEARBY_GAP_WINDOW = 0x400  # see the fallback comment below
+
     ref_row = conn.execute(
         "SELECT f.id, f.entry FROM functions f JOIN firmware fw ON fw.id=f.firmware_id "
         "WHERE fw.key=? AND f.entry <= ? ORDER BY f.entry DESC LIMIT 1", (reference_key, ref_addr)).fetchone()
-    if ref_row is None or ref_addr >= ref_row["entry"] + conn.execute(
-            "SELECT size FROM functions WHERE id=?", (ref_row["id"],)).fetchone()[0]:
+    ref_size = conn.execute("SELECT size FROM functions WHERE id=?", (ref_row["id"],)).fetchone()[0] \
+        if ref_row is not None else 0
+    strictly_contained = ref_row is not None and ref_addr < ref_row["entry"] + ref_size
+    nearby_gap = ref_row is not None and not strictly_contained and \
+        ref_addr < ref_row["entry"] + ref_size + NEARBY_GAP_WINDOW
+    if ref_row is None or not (strictly_contained or nearby_gap):
         gaps.append(f"0x{ref_addr:08x}: no containing function found in reference image '{reference_key}'")
         return None
+    if not strictly_contained:
+        # `ref_addr` falls in a Ghidra-unattributed ("exec-bytes-
+        # unowned") gap just past the nearest preceding function's own
+        # declared body -- a real, documented census limitation (see
+        # scan_warnings' 'exec-bytes-unowned' category), not necessarily
+        # an absence of real correspondence. Fall back to the SAME
+        # nearest-preceding-function EXACT-match + fixed offset, without
+        # the strict size bound -- weaker (not guaranteed exact if the
+        # gap itself changed size between images), but still entirely
+        # evidence-based (still requires a real EXACT fingerprint match
+        # on the enclosing function), and confirmed empirically this
+        # pass to correctly track mando915's own uniform code-layout
+        # shift relative to mando868 for exactly this situation.
+        gaps.append(f"0x{ref_addr:08x}: falls {ref_addr - ref_row['entry']:#x} bytes past reference function "
+                     f"0x{ref_row['entry']:08x}'s own declared size -- remapped via that function's nearest-"
+                     f"preceding-EXACT-match offset anyway (best-effort, not a guaranteed-exact remap)")
     ref_fp = conn.execute(
         "SELECT exact_hash FROM function_fingerprints WHERE firmware_id="
         "(SELECT id FROM firmware WHERE key=?) AND function_id=?", (reference_key, ref_row["id"])).fetchone()
@@ -343,12 +453,31 @@ def resolve_for_firmware(conn, firmware_key):
             stub_calls.append(r)
     remapped["stub_calls"] = stub_calls
 
+    remapped["resolved_blockers"] = list(ref.get("resolved_blockers", []))
+
+    bridges = []
+    for b in ref.get("interrupt_bridges", []):
+        wait_check = remap(b["wait_check_addr"])
+        handler = remap(b["handler_addr"])
+        flag = _remap_ram_addr(conn, sibling_fw_id, reference_key, b["flag_addr"], gaps)
+        release_cb = remap(b["release_callback_addr"])
+        if wait_check is None or handler is None or flag is None or release_cb is None:
+            gaps.append(f"interrupt bridge at 0x{b['wait_check_addr']:08x} could not be fully remapped "
+                         f"(wait_check={wait_check}, handler={handler}, flag={flag}, "
+                         f"release_callback={release_cb}) -- dropped, not guessed")
+            continue
+        nb = dict(b)
+        nb["wait_check_addr"], nb["handler_addr"], nb["flag_addr"] = wait_check, handler, flag
+        nb["release_callback_addr"] = release_cb
+        bridges.append(nb)
+    remapped["interrupt_bridges"] = bridges
+
     def remap_display_addr(a):
         if a["addr"] is None:
             return None
         if a["kind"] == "fake_tick":
             return _remap_ram_addr(conn, sibling_fw_id, reference_key, a["addr"], gaps)
-        if a["kind"] in ("force_reg", "stub_call"):
+        if a["kind"] in ("force_reg", "stub_call", "interrupt_bridge"):
             return remap(a["addr"])
         return a["addr"]  # mmio_force_bits/mmio_clear_bits/map_page: chip-fixed, no remap
 
@@ -425,6 +554,213 @@ def apply_recipe(machine, recipe, extra_watch=(), collect_coverage=True, log_ram
     )
 
 
+def _merge_snapshots(dicts):
+    """Combine multiple RunResult.to_dict()-shaped dicts (one per leg:
+    the main thread's runs plus every delivered ISR's own run) into ONE
+    snapshot -- union of visited_pcs (so newly-reached functions/BLX
+    sites from EITHER the main thread or an ISR body count as real
+    coverage), concatenation of ram_log/mmio_log/watch_hits (so MMIO
+    touched during interrupt delivery is captured too), sum of
+    instructions_executed, and the LAST leg's stop_reason/registers/
+    entry (the final outcome)."""
+    if not dicts:
+        return {}
+    merged = dict(dicts[-1])
+    visited = set()
+    ram_log, mmio_log, watch_hits = [], [], []
+    total_instructions = 0
+    for d in dicts:
+        visited |= {p for p in (d.get("visited_pcs") or [])}
+        ram_log.extend(d.get("ram_log") or [])
+        mmio_log.extend(d.get("mmio_log") or [])
+        watch_hits.extend(d.get("watch_hits") or [])
+        total_instructions += d.get("instructions_executed") or 0
+    merged["visited_pcs"] = sorted(visited)
+    merged["ram_log"] = ram_log
+    merged["mmio_log"] = mmio_log
+    merged["watch_hits"] = watch_hits
+    merged["instructions_executed"] = total_instructions
+    merged["entry"] = dicts[0].get("entry")
+    return merged
+
+
+def run_with_interrupt_bridges(machine, recipe, extra_watch=(), collect_coverage=True, log_ram=False,
+                                 log_mmio=True, verbose=True):
+    """Like `apply_recipe`, but for a recipe with `interrupt_bridges`:
+    runs the main thread with `stop_at` set on every bridge's
+    `wait_check_addr`; each time execution actually stops there WHILE
+    the bridge's flag is still armed, discovers the real pending
+    channel by reading the SAME live channel-lookup table the firmware
+    itself populated (never guessed), seeds the minimal disclosed
+    peripheral-pending condition, delivers the real ISR
+    (`ConcreteMachine.deliver_interrupt` -- never a stub), and resumes
+    the main thread at the exact address it was stopped at. Stops
+    honestly (does not fabricate a channel or force the flag) if no
+    live table entry is found, or a bridge's own `max_deliveries` bound
+    is reached, or the overall instruction budget runs out.
+
+    Returns (merged_snapshot_dict, delivery_log) -- delivery_log is a
+    list of {bridge_wait_addr, channel, table_addr, instruction} for
+    every real interrupt actually delivered, kept as part of this
+    run's disclosed-assumption trail."""
+    sys.path.insert(0, str(HERE.parent / "unicorn"))
+    from unicorn.arm_const import UC_ARM_REG_SP, UC_ARM_REG_PC  # noqa: E402
+
+    bridges = {b["wait_check_addr"]: b for b in recipe.get("interrupt_bridges", [])}
+    milestones = set(recipe.get("milestones", {}))
+    if recipe.get("steady_state_addr") is not None:
+        milestones.add(recipe["steady_state_addr"])
+    watch = milestones | set(extra_watch)
+
+    budget = recipe.get("max_instructions", 300_000)
+    delivery_counts = {addr: 0 for addr in bridges}
+    legs, delivery_log = [], []
+    entry, sp, fresh = recipe["entry"], None, True
+    total_instructions = 0
+
+    while total_instructions < budget:
+        result = machine.run(
+            entry, sp=sp,
+            fake_tick=recipe.get("fake_tick", ()),
+            mmio_force_bits=recipe.get("mmio_force_bits", ()),
+            mmio_clear_bits=recipe.get("mmio_clear_bits", ()),
+            force_reg=recipe.get("force_reg", ()),
+            seed_mem=[(a, b, "boot-recipe-seed") for a, b in recipe.get("seed_mem", ())] if fresh else (),
+            stub_calls=recipe.get("stub_calls", ()),
+            stop_at=sorted(bridges), watch=sorted(watch), max_watch_hits=1_000_000,
+            max_instructions=budget - total_instructions,
+            collect_coverage=collect_coverage, log_ram=log_ram, log_mmio=log_mmio,
+            fresh=fresh, label="boot",
+        )
+        legs.append(result.to_dict())
+        total_instructions += result.instructions_executed
+        fresh = False
+
+        stopped_addr = None
+        if result.stop_reason and result.stop_reason.startswith("reached stop address "):
+            stopped_addr = int(result.stop_reason.rsplit(" ", 1)[-1], 16)
+
+        if stopped_addr not in bridges:
+            break  # a genuinely different outcome (steady state, budget, crash) -- done
+
+        bridge = bridges[stopped_addr]
+        flag_val = machine.uc.mem_read(bridge["flag_addr"], 1)[0]
+        entry, sp = stopped_addr, machine.uc.reg_read(UC_ARM_REG_SP)
+        if flag_val == bridge["flag_released_value"]:
+            # Already released (e.g. re-checked after a prior delivery in
+            # the SAME wait loop) -- resuming with `entry == stopped_addr`
+            # would immediately re-trigger this SAME stop_at on its very
+            # first (about-to-execute) instruction, with zero real
+            # progress (confirmed empirically this pass -- a real
+            # correctness hazard of resuming exactly ON a `stop_at`
+            # address, not specific to this bridge). Step exactly one
+            # real instruction with NO stop_at first, to genuinely move
+            # past the wait-check instruction, then resume the guarded
+            # run from wherever that really left PC.
+            step = machine.run(entry, sp=sp, max_instructions=1, fresh=False,
+                                 collect_coverage=collect_coverage, log_ram=log_ram, log_mmio=log_mmio,
+                                 label="boot-step-over")
+            legs.append(step.to_dict())
+            total_instructions += step.instructions_executed
+            entry, sp = machine.uc.reg_read(UC_ARM_REG_PC) & ~1, machine.uc.reg_read(UC_ARM_REG_SP)
+            continue
+
+        if delivery_counts[stopped_addr] >= bridge["max_deliveries"]:
+            if verbose:
+                print(f"  [boot] bridge at 0x{stopped_addr:08x}: max_deliveries "
+                      f"({bridge['max_deliveries']}) reached, stopping honestly")
+            break
+
+        table_addr = int.from_bytes(
+            machine.uc.mem_read(bridge["handler_addr"] + bridge["channel_table_literal_offset"], 4), "little")
+        channel = None
+        for ch in range(bridge["channel_table_count"]):
+            obj = int.from_bytes(machine.uc.mem_read(table_addr + ch * 4, 4), "little")
+            if obj == 0:
+                continue
+            callback = int.from_bytes(machine.uc.mem_read(obj + bridge["callback_slot_offset"], 4), "little")
+            if callback == bridge["release_callback_addr"]:
+                channel = ch
+                break
+        if channel is None:
+            if verbose:
+                print(f"  [boot] bridge at 0x{stopped_addr:08x}: no live channel-table entry whose registered "
+                      f"callback matches this bridge's release routine -- no evidence for which channel is "
+                      f"pending, stopping honestly")
+            break
+
+        intpend_addr = bridge["dmac_base"] + bridge["intpend_offset"]
+        chintflag_addr = bridge["dmac_base"] + channel * bridge["chintflag_channel_stride"] + bridge["chintflag_offset"]
+        machine.uc.mem_write(intpend_addr, channel.to_bytes(2, "little"))
+        cur = machine.uc.mem_read(chintflag_addr, 1)[0]
+        machine.uc.mem_write(chintflag_addr, bytes([cur | bridge["chintflag_tcmpl_bit"]]))
+
+        cr = machine.deliver_interrupt(bridge["handler_addr"], max_instructions=20_000,
+                                         label=f"dmac-isr-ch{channel}", collect_coverage=collect_coverage,
+                                         log_mmio=log_mmio, log_ram=log_ram)
+
+        # DMAC.CHANNELn.CHINTFLAG (like every other INTFLAG-style
+        # register in this chip family's SVD -- SERCOM.INTFLAG etc.) is
+        # write-1-to-clear on real hardware; this project's zero-
+        # behavior MMIO model doesn't emulate that write semantic
+        # automatically, so the bit this delivery just set would
+        # otherwise stay stuck "pending" forever, and DMAC.INTPEND would
+        # keep reporting this SAME channel to any later, genuinely
+        # UNRELATED reader -- confirmed empirically this pass: without
+        # clearing, the very same channel re-triggers a spurious
+        # "pending" read every ~70 instructions indefinitely (20,000+
+        # deliveries with zero sign of terminating), not a real,
+        # bounded firmware loop. Clearing both mirrors the one real,
+        # documented (not invented) architectural convention this whole
+        # SVD already uses everywhere else.
+        machine.uc.mem_write(chintflag_addr, bytes([cur & ~bridge["chintflag_tcmpl_bit"] & 0xFF]))
+        machine.uc.mem_write(intpend_addr, (0).to_bytes(2, "little"))
+
+        legs.append(cr.result.to_dict())
+        total_instructions += cr.result.instructions_executed
+        delivery_counts[stopped_addr] += 1
+        delivery_log.append({
+            "bridge_wait_addr": stopped_addr, "channel": channel, "table_addr": table_addr,
+            "instruction": total_instructions, "handler_returned_cleanly": cr.returned,
+        })
+        if verbose:
+            print(f"  [boot] delivered DMAC channel-{channel} interrupt at instruction {total_instructions} "
+                  f"(handler returned cleanly: {cr.returned})")
+
+        # Same step-over as above: `entry` is still `stopped_addr` (a
+        # `stop_at` address) -- move past it for real before the next
+        # guarded run, or it would instantly re-trigger with zero
+        # progress.
+        step = machine.run(stopped_addr, sp=machine.uc.reg_read(UC_ARM_REG_SP), max_instructions=1, fresh=False,
+                             collect_coverage=collect_coverage, log_ram=log_ram, log_mmio=log_mmio,
+                             label="boot-step-over")
+        legs.append(step.to_dict())
+        total_instructions += step.instructions_executed
+        entry, sp = machine.uc.reg_read(UC_ARM_REG_PC) & ~1, machine.uc.reg_read(UC_ARM_REG_SP)
+
+    return _merge_snapshots(legs), delivery_log
+
+
+class SnapshotResult:
+    """A minimal RunResult-shaped adapter around a merged snapshot dict
+    (see `_merge_snapshots`) -- so downstream code
+    (`init_status_for`/`extract_indirect_hits`/`reduce.py`) can treat a
+    multi-leg interrupt-bridge capture exactly like a single plain
+    RunResult, via the same `.watch_hits`/`.instructions_executed`/
+    `.stop_reason`/`.to_dict()` interface."""
+
+    def __init__(self, snapshot):
+        self._snapshot = snapshot
+        self.watch_hits = snapshot.get("watch_hits", [])
+        self.instructions_executed = snapshot.get("instructions_executed", 0)
+        self.stop_reason = snapshot.get("stop_reason")
+        self.firmware = snapshot.get("firmware")
+        self.label = snapshot.get("label")
+
+    def to_dict(self):
+        return self._snapshot
+
+
 def init_status_for(recipe, result):
     """The three-way status this pass introduced (see
     hardware_snapshot_runs.init_status): 'complete' (the recipe's own
@@ -449,13 +785,19 @@ def init_status_for(recipe, result):
 def capture_boot(conn, firmware_key, fw_path, flash_base, ram_base, ram_size, mmio_base, mmio_size,
                    extra_watch=(), out_dir=None, verbose=True):
     """Run this firmware's boot recipe (reference or fingerprint-
-    remapped sibling), capture coverage the same way
-    dynamic_export.py's scenario corpus does (reusing its own JSON
+    remapped sibling) -- via `run_with_interrupt_bridges` if the recipe
+    has any (delivering real, evidence-bounded interrupts along the
+    way), else the plain `apply_recipe` -- capture coverage the same
+    way dynamic_export.py's scenario corpus does (reusing its own JSON
     export/ingest format -- scenario name 'boot'), and return
     (out_path_or_None, machine_or_None, result_or_None, recipe_or_None,
-    gaps, init_status) for the caller (tools/census/reduce.py) to feed
-    into dynamic_ingest, indirect-edge resolution, and the hardware
-    snapshot -- all from this SAME execution, not a second run."""
+    gaps, init_status, delivery_log) for the caller (tools/census/
+    reduce.py) to feed into dynamic_ingest, indirect-edge resolution,
+    and the hardware snapshot -- all from this SAME execution, not a
+    second run. `result` exposes the same `.watch_hits`/
+    `.instructions_executed`/`.stop_reason`/`.to_dict()` interface
+    either way (see `SnapshotResult` for the interrupt-bridge case).
+    `delivery_log` is `[]` when no bridges fired (or none exist)."""
     sys.path.insert(0, str(HERE))
     import dynamic_export  # noqa: E402
 
@@ -463,10 +805,19 @@ def capture_boot(conn, firmware_key, fw_path, flash_base, ram_base, ram_size, mm
     if recipe is None:
         if verbose:
             print(f"  [boot] no boot recipe available for '{firmware_key}': {gaps}")
-        return None, None, None, None, gaps, "blocked"
+        return None, None, None, None, gaps, "blocked", []
 
     machine = build_machine(recipe, fw_path, flash_base, ram_base, ram_size, mmio_base, mmio_size)
-    result = apply_recipe(machine, recipe, extra_watch=extra_watch)
+
+    delivery_log = []
+    if recipe.get("interrupt_bridges"):
+        snapshot, delivery_log = run_with_interrupt_bridges(machine, recipe, extra_watch=extra_watch,
+                                                                verbose=verbose)
+        snapshot["firmware"] = str(fw_path)
+        snapshot["label"] = "boot"
+        result = SnapshotResult(snapshot)
+    else:
+        result = apply_recipe(machine, recipe, extra_watch=extra_watch)
     status = init_status_for(recipe, result)
 
     if verbose:
@@ -475,14 +826,14 @@ def capture_boot(conn, firmware_key, fw_path, flash_base, ram_base, ram_size, mm
             hit_summary[h["address"]] = hit_summary.get(h["address"], 0) + 1
         print(f"  [boot] {firmware_key}: reference={recipe['reference_key']} status={status} "
               f"instructions={result.instructions_executed} stop_reason={result.stop_reason!r} "
-              f"milestones_hit={len(hit_summary)}")
+              f"milestones_hit={len(hit_summary)} interrupts_delivered={len(delivery_log)}")
         if gaps:
             print(f"  [boot] {firmware_key}: {len(gaps)} recipe gap(s) (dropped, not guessed): {gaps}")
 
     leg = {"firmware": str(fw_path), "label": "boot", "snapshot": result.to_dict(), "tx_rx": []}
     out_path = dynamic_export.write_export("boot", [leg], out_dir=out_dir, verbose=verbose)
 
-    return out_path, machine, result, recipe, gaps, status
+    return out_path, machine, result, recipe, gaps, status, delivery_log
 
 
 def extract_indirect_hits(result, from_addrs_with_regs):

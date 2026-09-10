@@ -925,3 +925,43 @@ class ConcreteMachine:
         )
         returned = result.stopped_at(self.trampoline_addr)
         return CallResult(result, returned)
+
+    # -- minimal interrupt delivery (priority 4, boot-recipe motivated) --
+
+    def deliver_interrupt(self, handler_entry, stub_calls=(), max_instructions=20000, label=None,
+                            **run_kwargs):
+        """Deliver a real interrupt: run `handler_entry` (a real,
+        compiled ISR body -- never a stub) as a nested AAPCS subroutine
+        call on the CURRENT stack, at the CURRENT machine state (never
+        `fresh=True` -- this is not a new top-level run, it interrupts
+        whatever was already executing), then restore r0-r3/r12 (the
+        registers real Cortex-M exception entry/return automatically
+        saves and restores via the hardware exception frame) so the
+        interrupted code sees them unchanged, exactly as it would on
+        real hardware. r4-r11 need no explicit restoration: a real,
+        compiled ISR is itself AAPCS-compliant (any r4-r11 it uses, it
+        callee-saves via its own push/pop) -- deliberately relying on
+        that, rather than modeling a hardware-pushed exception frame,
+        is what keeps this a NARROW model instead of a full Cortex-M
+        exception simulator (no EXC_RETURN, no NVIC priority/masking,
+        no true nested-preemption timing).
+
+        The caller is responsible for (1) seeding whatever peripheral-
+        pending condition makes the handler's own body behave
+        correctly (e.g. an INTPEND/CHINTFLAG-style register) BEFORE
+        calling this, and (2) explicitly resuming the interrupted code
+        afterward (the machine's PC sits at the harness trampoline on a
+        clean return, same as `call()` -- resume with a plain `run()`
+        at the address the interrupted code was stopped at, `fresh=
+        False`, `sp` unchanged).
+
+        Returns a CallResult (`.returned` is True only if the handler's
+        own real epilogue reached the trampoline cleanly -- exactly
+        like `call()`)."""
+        saved = {name: self.uc.reg_read(REG_BY_NAME[name]) for name in ("r0", "r1", "r2", "r3", "r12")}
+        current_sp = self.uc.reg_read(UC_ARM_REG_SP)
+        result = self.call(handler_entry, sp=current_sp, stub_calls=stub_calls, fresh=False,
+                             max_instructions=max_instructions, label=label, **run_kwargs)
+        for name, value in saved.items():
+            self.uc.reg_write(REG_BY_NAME[name], value)
+        return result

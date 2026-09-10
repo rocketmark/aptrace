@@ -226,12 +226,15 @@ def reduce_firmware(key, db_path=None, verbose=True):
         if shape == "reg-indirect" and reg:
             unresolved_reg_indirect[r["from_addr"]] = reg
 
-    boot_out_path, boot_machine, boot_result, boot_recipe, boot_gaps, init_status = boot_recipes.capture_boot(
-        conn, key, fw_path, flash_base, fw_row["ram_base"], fw_row["ram_size"],
-        fw_row["mmio_base"], fw_row["mmio_size"], extra_watch=unresolved_reg_indirect, verbose=verbose)
+    boot_out_path, boot_machine, boot_result, boot_recipe, boot_gaps, init_status, boot_deliveries = \
+        boot_recipes.capture_boot(
+            conn, key, fw_path, flash_base, fw_row["ram_base"], fw_row["ram_size"],
+            fw_row["mmio_base"], fw_row["mmio_size"], extra_watch=unresolved_reg_indirect, verbose=verbose)
     if boot_out_path is not None:
         n_runs = dynamic_ingest.ingest_file(conn, boot_out_path, firmware_key_filter=key)
         log(f"  ingested {n_runs} boot dynamic run(s) into dynamic_coverage/memory/mmio")
+    if boot_deliveries:
+        log(f"  delivered {len(boot_deliveries)} real interrupt(s) during boot: {boot_deliveries}")
 
     log("[3/8] Applying reference-source confirmations...")
     n_ref = reference_library.apply_reference_confirmations(conn, firmware_id, key)
@@ -257,7 +260,7 @@ def reduce_firmware(key, db_path=None, verbose=True):
     log("[8/8] Recording hardware-init snapshot...")
     svd_map = pins_mod._samd51_map()
     hardware_snapshot.compute(conn, firmware_id, key, boot_machine, boot_result, boot_recipe, init_status,
-                                svd_map, verbose=verbose)
+                                svd_map, verbose=verbose, delivery_log=boot_deliveries)
 
     log(f"Census reduce for '{key}' complete (init_status={init_status}).")
     return firmware_id

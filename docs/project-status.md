@@ -51,23 +51,30 @@ feature records, deterministic component grouping, and a reusable boot
 recipe (`tools/census/boot_recipes.py`) that mechanically packages this
 project's own cited boot/hardware-bringup assumptions and feeds a real
 boot execution's coverage/indirect-call observations back into the
-reducer. AutoPilot868 now boots (in Unicorn) all the way to real
-main-loop steady state (`init_status=complete`, exactly reproducing
-`docs/investigations/boot-and-hardware-bringup.md`'s own milestones);
-Mando868's own boot recipe, built incrementally this pass, reaches
-`init_status=partial-justified` before stopping at a documented,
-unmodeled interrupt-delivery dependency (see census.md's "Remaining
-boot blockers"). Run against all four images: AutoPilot868's residual
-narrowed from 414 discovered functions to 102 (up from 142 pre-boot-
-integration — the drop is boot-driven dynamic coverage +7 reference-
-confirmed library functions, not a change in the exclusion rule);
-Mando868 561 → 333. Unresolved indirect edges: AutoPilot868 87 → 58
-(29 newly `DYNAMICALLY_OBSERVED` via the boot capture), Mando868 146 →
-140. Still no "understood %" invented; semantic classification of the
-residual is the next, separate phase, not yet started. A real Unicorn
-correctness bug (`log_ram=True` corrupting long/RAM-heavy runs via a
-cross-hook reentrancy hazard) was found and partially fixed along the
-way — see `tools/unicorn/concrete.py`'s `_ranges_excluding` and
+reducer, plus a minimal, narrow interrupt-delivery primitive
+(`ConcreteMachine.deliver_interrupt`, real ISR body, real AAPCS nested
+call — never a stub, never a full exception simulator). **All four
+known firmware images now boot (in Unicorn) all the way to real
+main-loop steady state (`init_status=complete`)**: AutoPilot868/915
+exactly reproduce `docs/investigations/boot-and-hardware-bringup.md`'s
+own milestones; Mando868's previously-open blocker — a RAM-flag wait at
+`0x20003b30` with no resolved static caller — was closed by mechanically
+tracing and modeling its real DMAC channel-2 transfer-complete interrupt
+chain (vector → `FUN_00011d20` → channel-table lookup → `FUN_00011cb8`
+→ registered callback), delivered for real via `interrupt_bridges` (see
+census.md's "Interrupt delivery"); Mando915 was then sibling-remapped
+from the same recipe via the existing exact-fingerprint machinery and
+delivers the identical four interrupts at identical instruction counts.
+Run against all four images: AutoPilot868's residual narrowed from 414
+discovered functions to 102, AutoPilot915 to 123; Mando868 narrowed to
+309, Mando915 to 323. Unresolved indirect edges: AutoPilot868/915 87 →
+58 (29 newly `DYNAMICALLY_OBSERVED` via boot capture), Mando868/915 146
+→ 127 (19 newly `DYNAMICALLY_OBSERVED`). Still no "understood %"
+invented; semantic classification of the residual is the next,
+separate phase, not yet started. A real Unicorn correctness bug
+(`log_ram=True` corrupting long/RAM-heavy runs via a cross-hook
+reentrancy hazard) was found and partially fixed along the way — see
+`tools/unicorn/concrete.py`'s `_ranges_excluding` and
 `test_concrete.py`'s new regression coverage.
 
 ## Current milestone: the core protocol pipeline
