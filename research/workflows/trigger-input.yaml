@@ -122,8 +122,8 @@ confirmed_state:
     tx_buffer_index: "0x200025ac"
     adc_baseline_dead_ram: ["0x20002098", "0x2000313c", "0x20001fc4", "0x20003128", "0x200023c0"]
     per_channel_device_state: "0x20002524"   # [0..3] must all be 0 for the second-gate/config-reload path
-    second_gate_cell_1: "0x20001b38"   # must == 0x7b -- PROVENANCE CLOSED (symbolic-reachability slice): real writer 0x818e, the '+' command's mode=0x62 bulk-push finalize path (FUN_00004ca8/FUN_000043f0, already known -- bulk-push-trigger-provenance.md)
-    second_gate_cell_2: "0x200000d8"   # must == 9 -- PROVENANCE CLOSED: real writer 0x9088, an all-4-channels-idle check inside phase_ramp_state_machine__CUSTOM itself; ALSO reset to 0 by the config-reload function's own real write (0x6b60, FUN_00006b50) -- a genuine self-clearing mechanism, Unicorn-confirmed
+    second_gate_cell_1: "0x20001b38"   # must == 0x7b -- PROVENANCE CLOSED (symbolic-reachability slice): real writer 0x818e, the '+' command's mode=0x62 bulk-push finalize path (FUN_00004ca8/FUN_000043f0, already known -- bulk-push-trigger-provenance.md). SOLVER-CONFIRMED (symbolic-crosscheck slice): Z3 independently derives 0x7b as the unique value reaching 0x9226 with the other six gate cells free, and UNSAT when only this one is excluded -- see docs/investigations/trigger-input-symbolic-crosscheck.md.
+    second_gate_cell_2: "0x200000d8"   # must == 9 -- PROVENANCE CLOSED: real writer 0x9088, an all-4-channels-idle check inside phase_ramp_state_machine__CUSTOM itself; ALSO reset to 0 by the config-reload function's own real write (0x6b60, FUN_00006b50) -- a genuine self-clearing mechanism, Unicorn-confirmed. SOLVER-CONFIRMED (symbolic-crosscheck slice): same as second_gate_cell_1, Z3 derives 0x9 independently and UNSAT when excluded.
     config_reload_status_byte: "0x200025bc"   # +1 offset written =3 by 0x8f98; two other readers (0x7a50, 0x81f8) not traced
     phase_ramp_arm_byte: "0x20002318"   # [0..3] -- CLOSED (motion-causality slice): phase_ramp_state_machine__CUSTOM's OWN per-channel arm/mode byte (0=idle,1=armed,2=compute+commit,...) -- the ONLY gate before motor_move_commit__CUSTOM. Exactly 3 writers total: config_reload_motion_profile_compute (writes 0), phase_ramp_state_machine's own self-transitions, and phase_ramp_arm_producer (writes 1, the sole armer). The PB05/reload path only ever writes 0 here.
     reload_busy_flag: "0x2000310c"   # [0..3] -- NEW: written 1 by config_reload_motion_profile_compute when a channel's reloaded config has a real nonzero delta; its only other reference anywhere in the image is a read inside motor_move_commit__CUSTOM -- but since phase_ramp_arm_byte never reaches 2 from this path, that reader is never exercised. Computed, functionally never consumed via the PB05 route.
@@ -165,10 +165,26 @@ symbolic_target:
   # The actual answer to every question this section originally posed
   # was obtained instead via direct Ghidra provenance tracing plus
   # ConcreteMachine (Unicorn) replay -- see
-  # docs/investigations/trigger-input-symbolic-reachability.md. What
-  # remains here is a genuine, narrower TOOLING question (why doesn't
-  # even the single-free-variable query converge), not a reachability
-  # question about this firmware.
+  # docs/investigations/trigger-input-symbolic-reachability.md.
+  #
+  # CLOSED (symbolic-crosscheck slice): the "narrow single-free-variable
+  # non-convergence" tooling question below is closed for a *different*,
+  # deliberately smaller query -- not the same one from the paragraph
+  # above (that whole-region, re-seeded-0x9203-through-0x8fa4 query was
+  # not retried, per this project's own "avoid the earlier solver
+  # failure mode" instruction). Isolating just the seven-guard gate
+  # (0x9202-0x9226, no RAM zero-overlay, no packet/event machinery --
+  # APTrace.ProtocolHarness.runGateReachability, new this slice) and the
+  # single-block digitalRead-return check at 0x922c (existing
+  # checkBranchModel, one new BranchQuery field) converges in seconds,
+  # with Z3 independently deriving every value Ghidra/Unicorn already
+  # established, plus seven new UNSAT proofs (one per guard) neither
+  # prior slice attempted. Strong evidence (not just hypothesis) that the
+  # RAM zero-overlay's own forall-quantified term -- entirely absent from
+  # this leaner query, confirmed in its own SMT-LIB2 output -- was the
+  # real blocker in the whole-region attempt, not raw formula size (this
+  # query's own artifact is comparably large, ~10.5MB, entirely from
+  # flash). See docs/investigations/trigger-input-symbolic-crosscheck.md.
   entry_address: "0x00008e18"   # phase_ramp_state_machine__CUSTOM's own real start
   entry_preconditions:
     - "MC4 already run (0x20000060 == 0) if reconstructing via a real boot; NOT required for direct entry at 0x8e18 (this project's established precedent -- callers' own gate is bypassed by entering directly, matching ll-limit-workflow.md's own approach)"
@@ -182,7 +198,9 @@ symbolic_target:
     - address: "0x00008c10"
       meaning: "the real TX wrapper -- CONFIRMED reached concretely, both PB05 states, real frames 'T0,1,|' and 'T1023,0,|' captured"
     - address: "0x00008f98"
-      meaning: "the config-reload branch from the second digitalRead(0x39) -- CONFIRMED reachable concretely (with 2 disclosed test seeds, see below) and CONFIRMED to call config_loader__CUSTOM (FUN_00004b64)"
+      meaning: "the config-reload branch from the second digitalRead(0x39) -- CONFIRMED reachable concretely (with 2 disclosed test seeds, see below) and CONFIRMED to call config_loader__CUSTOM (FUN_00004b64). SOLVER-CONFIRMED reachable from 0x922c iff R0 (digitalRead's own return value) == 0 -- checkBranchModel, symbolic-crosscheck slice."
+    - address: "0x00009226"
+      meaning: "NEW (symbolic-crosscheck slice): the real Macaw block-start address immediately preceding the bl-to-digitalRead at 0x9228 -- this project's own established proxy for '0x9228 reached', since 0x9228 itself is mid-block, not a location Crucible/macaw-symbolic's own per-block tracking can report. SOLVER-CONFIRMED reachable iff all seven gate cells hold their real, provenance-traced values (r5[0..3]=0, state32=0x7b, state8=9, r6[0]=0), and SOLVER-CONFIRMED unreachable if any single one is excluded -- APTrace.ProtocolHarness.runGateReachability, new this slice."
   symbolic_candidates:
     - name: PB05_live_level
       where: "PORT.GROUP1.IN (0x410080a0) bit 5"
@@ -215,7 +233,7 @@ symbolic_target:
 
 open_questions:
   - "CLOSED (symbolic-reachability slice): 0x20001b38/0x200000d8 -- both are real, firmware-reachable via named producers (the '+' mode=0x62 bulk-push finalize path; an all-4-channels-idle check), not synthetic. See docs/investigations/trigger-input-symbolic-reachability.md."
-  - "NEW (symbolic-reachability slice, tooling not firmware): why does even the narrowed query (gate cells concrete, only PB05 symbolic) fail to converge in Z3 within a practical time budget? Candidate causes: the always-on useNonlinearArithmetic/useSymbolicArrays problem features, or per-access array-theory overhead in the symbolic memory model regardless of concreteness. Not chased this slice -- a real, bounded tooling question for whoever next needs a fast multi-instruction Crucible/Z3 query in this project."
+  - "PARTIALLY CLOSED (symbolic-crosscheck slice): why does even the narrowed query (gate cells concrete, only PB05 symbolic) fail to converge in Z3 within a practical time budget? A deliberately smaller query targeting just the gate itself (not the whole re-seeded 0x9203 region through 0x8fa4) converges in seconds once the RAM zero-overlay is dropped entirely (APTrace.ProtocolHarness.runGateReachability) -- strong evidence the overlay's own forall-quantified term, not raw formula size, was the real blocker. The ORIGINAL whole-region query was not retried and its own non-convergence stands unexplained in full generality (a genuine remaining tooling question for whoever next needs a fast query spanning a call boundary or a larger region than this slice's own bounded gate). See docs/investigations/trigger-input-symbolic-crosscheck.md."
   - "Is PA02/PB05's physical identity as 'the 3.5mm trigger jack' confirmed against a schematic, or only behaviorally inferred?"
   - "CLOSED (trigger-status-remote-feedback slice): does anything on the Remote side react to the 'T<>,<>,|' frame in a way that could bridge back to motion? No -- the Remote's real handler (FUN_00010ce4's own 'T' branch) only stores two fields plus a flag; the sole consumer anywhere in the image (FUN_0000fa10) is a pure UI-screen redraw with no outbound call. Concretely confirmed: neither real frame shape ever reaches the Remote's TX wrapper. The narrower 'does it match the one-trigger symptom' framing is superseded -- T cannot bridge to motion regardless of UI symptom matching. See docs/investigations/trigger-status-remote-feedback.md."
   - "What is 0x200025bc's full role (config-reload status byte, +1 offset written =3 here; two other readers at 0x7a50/0x81f8 not traced)?"
@@ -225,10 +243,12 @@ open_questions:
   - "NEW (motion-causality slice): PB30/PB31's real role -- config_reload_gpio_pulse (0x6952) pulses them unconditionally, and motor_move_commit__CUSTOM shares the same epilogue, but neither this slice nor any prior one has characterized what they actually drive (not one of the four channels' own step/DIR pins)."
   - "NEW (trigger-status-remote-feedback slice): which specific Remote UI screen/menu FUN_0000fa10 (the T-status display consumer) belongs to, and whether it sends TR1|/TR0| itself on entry/exit (a plausible precondition-not-consequence link to TR1|'s already-known role) -- not chased, out of scope."
   - "With BOTH of PB05's real downstream paths now closed as motion causes (the reload, trigger-input-motion-causality.md; the T-status broadcast, trigger-status-remote-feedback.md), no firmware-only (AutoPilot+Remote protocol) explanation for the reported one-time motor trigger remains open within this project's own established command set. Remaining candidates are the already-documented self-correcting level-sampled-poll explanation (trigger-input-concrete-path.md, unrelated to motion) or something outside firmware entirely (physical/electrical) -- explicitly out of scope per instruction, not chased."
+  - "CLOSED (symbolic-crosscheck slice): the trigger gate (0x9202-0x9228) and the digitalRead-return branch (0x922c) are now solver-confirmed, not just concretely/statically established -- Z3 independently derives the exact gate values Ghidra/Unicorn already found, and proves (7 separate UNSAT checks) that no other combination of the seven free cells reaches the gate, and that no digitalRead return value other than 0 reaches 0x8f98. Does not change any prior firmware-behavior conclusion -- adds a stronger evidence tier to standing results. See docs/investigations/trigger-input-symbolic-crosscheck.md."
 
 evidence:
   - docs/investigations/trigger-input-concrete-path.md
   - docs/investigations/trigger-input-symbolic-reachability.md
+  - docs/investigations/trigger-input-symbolic-crosscheck.md
   - docs/investigations/trigger-input-motion-causality.md
   - docs/investigations/trigger-status-remote-feedback.md
   - docs/hardware/autopilot-research-handoff.md

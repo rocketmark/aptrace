@@ -6,7 +6,40 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (the Remote's reaction to AutoPilot's T-status
+Last updated: 2026-09-09 (a targeted Crucible/What4/Z3 cross-check of
+the trigger gate converges, solver-confirming the values Ghidra/Unicorn
+already established): the prior whole-region symbolic attempt
+(`trigger-input-symbolic-reachability.md`) did not converge to a useful
+answer — this slice does not retry it, and instead asks a deliberately
+small question: the exact seven-guard gate (`0x9202`-`0x9228`) and the
+`digitalRead`-return branch (`0x922c`) Unicorn has already concretely
+isolated, using two narrow harness additions
+(`APTrace.ProtocolHarness.runGateReachability`, no RAM zero-overlay
+since this bounded region needs none; a `bqExcludeObserved` field on
+`APTrace.SymbolicRunner.BranchQuery` for a true negative check). **Full
+convergence, 175s for all nine queries**: Z3 *independently derives*
+`r5[0..3]=0, state32=0x7b, state8=0x9, r6[0]=0` (SAT) — the exact values
+already on record, not assumed — and proves, via seven separate UNSAT
+checks, that **every one of those seven guards is independently
+necessary** (no other combination of the remaining six reaches the
+gate) — a genuinely new result neither Ghidra nor Unicorn established on
+their own. The `digitalRead`-return check confirms `0x8f98` is reached
+**iff** `R0=0`, with the true negative (`R0 != 0`, still fully symbolic)
+UNSAT. **All results agree with the existing Unicorn concrete findings —
+no disagreement, neither backend adjusted to force agreement.** A new,
+repeatable command, `aptrace trigger-crosscheck`, reproduces the whole
+result. Existing `checkBranchModel` call sites (`aptrace protocol`'s
+loop-probe/gate-block/single-character checks) were re-run and reproduce
+their exact prior output, confirming the `BranchQuery` extension is
+behavior-preserving. **No prior firmware-behavior conclusion changes** —
+this adds a solver-confirmed (level 3) tier to already-established
+findings; it does not touch the physical trigger-port fault, explicitly
+out of scope. See
+[`docs/investigations/trigger-input-symbolic-crosscheck.md`](investigations/trigger-input-symbolic-crosscheck.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+(updated).
+
+Previous update (2026-09-09, the Remote's reaction to AutoPilot's T-status
 frames closes the last open firmware-only motion-bridge hypothesis —
 negatively): `trigger-input-motion-causality.md` had already ruled out
 the PB05-low config-reload as a direct motion cause; this slice traces

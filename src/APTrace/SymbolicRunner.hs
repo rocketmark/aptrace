@@ -116,6 +116,15 @@ data BranchQuery = BranchQuery
     -- concrete model for (typically the register just loaded from memory
     -- immediately before the branch, or the register the branch condition
     -- itself was computed from).
+  , bqExcludeObserved :: [Integer]
+    -- ^ Extra "bqObserveReg's own symbolic value must not equal this" side
+    -- conditions, added as genuine solver assumptions (not a concrete
+    -- override) -- for a true negative reachability check ("given a real
+    -- SAT model at 'bqTargetAddr', is it still reachable if that exact
+    -- value is excluded, with 'bqObserveReg' otherwise still fully free?")
+    -- rather than a spot check at one alternate concrete value. Empty list
+    -- reproduces the original, unconstrained-except-for-overrides
+    -- behavior exactly.
   }
 
 data BranchResult
@@ -206,9 +215,14 @@ checkBranchModel mem block q
                 assumptions <- CB.assumptionsPred sym =<< CB.collectAssumptions bak
                 targetLit <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr (toInteger (bqTargetAddr q)))
                 reachedPred <- WI.bvEq sym pcOff targetLit
+                excludePreds <- mapM
+                  (\v -> do
+                     excludeLit <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr v)
+                     WI.notPred sym =<< WI.bvEq sym obsOff excludeLit)
+                  (bqExcludeObserved q)
                 (solverHandle :: WPO.SolverProcess t solver) <- WPO.startSolverProcess problemFeatures Nothing sym
                 msat <- WPO.checkWithAssumptionsAndModel solverHandle "branch reachability"
-                          [assumptions, reachedPred]
+                          ([assumptions, reachedPred] ++ excludePreds)
                 result <- case msat of
                   WSR.Sat evalFn -> do
                     v <- WE.groundEval evalFn obsOff

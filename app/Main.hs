@@ -52,10 +52,11 @@ main = do
     ["explore", path, flashBaseS, entryS] -> runExplore path (parseHexWord flashBaseS) (parseHexWord entryS)
     ["protocol", path]                 -> runProtocol path 0x4000
     ["trigger", path]                  -> runTrigger path 0x4000
+    ["trigger-crosscheck", path]       -> runTriggerCrossCheck path 0x4000
     ["debug", path, entryS]            -> runDebug path 0x4000 (parseHexWord entryS)
     [path]                      -> run path 0x4000
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
-    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)"
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)"
 
 parseHexWord :: String -> Word32
 parseHexWord s =
@@ -147,13 +148,13 @@ runSolve path flashBase = do
       putStrLn ("Query 1: is exit block 0x" ++ showHex exitAddr "" ++ " reachable?")
       exitResult <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = [(AR.r3, mmioBase)]
-                    , bqMemoryBytes = [], bqTargetAddr = exitAddr, bqObserveReg = AR.r2 }
+                    , bqMemoryBytes = [], bqTargetAddr = exitAddr, bqObserveReg = AR.r2, bqExcludeObserved = [] }
       reportResult "R2 (status word @ 0x40002008)" exitResult
 
       putStrLn ("\nQuery 2: is loop-continuation 0x" ++ showHex loopAddr "" ++ " reachable?")
       loopResult <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = [(AR.r3, mmioBase)]
-                    , bqMemoryBytes = [], bqTargetAddr = loopAddr, bqObserveReg = AR.r2 }
+                    , bqMemoryBytes = [], bqTargetAddr = loopAddr, bqObserveReg = AR.r2, bqExcludeObserved = [] }
       reportResult "R2 (status word @ 0x40002008)" loopResult
 
 -- | @aptrace explore FIRMWARE.bin [FLASH_BASE] ENTRY_ADDR_HEX@ -- seed a single,
@@ -226,11 +227,11 @@ runProtocol path flashBase = do
       putStrLn "Loop probe: block 0x827e, R4=R5=bufAddr, R6=0, R7=0x20000180 -- what is buffer[1] when the loop exits vs. continues?"
       lp1 <- checkBranchModel mem loopBody
         BranchQuery { bqPointerOverrides = [(AR.r4, bufAddr), (AR.r5, bufAddr), (AR.r6, 0), (AR.r7, 0x20000180)]
-                    , bqMemoryBytes = [], bqTargetAddr = 0x83ec, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = 0x83ec, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       putStr "  exit (0x83ec): " >> reportResult "buffer[1]" lp1
       lp2 <- checkBranchModel mem loopBody
         BranchQuery { bqPointerOverrides = [(AR.r4, bufAddr), (AR.r5, bufAddr), (AR.r6, 0), (AR.r7, 0x20000180)]
-                    , bqMemoryBytes = [], bqTargetAddr = 0x828e, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = 0x828e, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       putStr "  continue (0x828e): " >> reportResult "buffer[1]" lp2
 
       -- Isolate the dispatcher's real first decision (0x8258-0x8266, per
@@ -272,23 +273,23 @@ runProtocol path flashBase = do
       putStrLn "\nTest G1: seed buffer[0] = 0x26 ('&'), SP = top of RAM -- is 0x82c6 (skip-the-loop path) reachable?"
       g1 <- checkBranchModel mem gateBlock
         BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0x26)]
-                    , bqTargetAddr = 0x82c6, bqObserveReg = AR.r3 }
+                    , bqTargetAddr = 0x82c6, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3 (buffer[0])" g1
       putStrLn "Test G2: seed buffer[0] = 0x26, SP = top of RAM -- is 0x8268 (enter-the-loop path) reachable?"
       g2 <- checkBranchModel mem gateBlock
         BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0x26)]
-                    , bqTargetAddr = 0x8268, bqObserveReg = AR.r3 }
+                    , bqTargetAddr = 0x8268, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3 (buffer[0])" g2
 
       putStrLn "\nTest G3 (control): seed buffer[0] = 0xF0, SP = top of RAM -- is 0x82c6 reachable?"
       g3 <- checkBranchModel mem gateBlock
         BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0xF0)]
-                    , bqTargetAddr = 0x82c6, bqObserveReg = AR.r3 }
+                    , bqTargetAddr = 0x82c6, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3 (buffer[0])" g3
       putStrLn "Test G4 (control): seed buffer[0] = 0xF0, SP = top of RAM -- is 0x8268 reachable?"
       g4 <- checkBranchModel mem gateBlock
         BranchQuery { bqPointerOverrides = [(AR.sp, stackTop)], bqMemoryBytes = [(bufAddr, 0xF0)]
-                    , bqTargetAddr = 0x8268, bqObserveReg = AR.r3 }
+                    , bqTargetAddr = 0x8268, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3 (buffer[0])" g4
 
       -- The '|' is the wire-protocol frame terminator consumed by the LoRa
@@ -314,19 +315,19 @@ runProtocol path flashBase = do
       putStrLn "\nTest 1: concrete R3 = '&' (0x26)"
       r1 <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = [(AR.r3, 0x26)]
-                    , bqMemoryBytes = [], bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3" r1
 
       putStrLn "\nTest 2: R3 left fully symbolic -- what value reaches the '&' handler?"
       r2 <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = []
-                    , bqMemoryBytes = [], bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = ampersandHandler, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3" r2
 
       putStrLn "\nTest 3: R3 left fully symbolic -- what value takes the fallthrough (not '&') path?"
       r3 <- checkBranchModel mem block
         BranchQuery { bqPointerOverrides = []
-                    , bqMemoryBytes = [], bqTargetAddr = fallthroughTarget, bqObserveReg = AR.r3 }
+                    , bqMemoryBytes = [], bqTargetAddr = fallthroughTarget, bqObserveReg = AR.r3, bqExcludeObserved = [] }
       reportResult "R3" r3
 
       -- Same technique, same dispatcher, three more single-character command
@@ -488,6 +489,123 @@ runTrigger path flashBase = do
                     (Just "/tmp/aptrace_trigger_B")
           reportPacket "'T' buffer write (0x20002548 == 0x54)" txBufBase resB
 
+-- | @aptrace trigger-crosscheck FIRMWARE.bin@ -- a deliberately small,
+-- targeted Crucible/What4/Z3 cross-check of the exact trigger gate
+-- Unicorn has already isolated (trigger-input-concrete-path.md /
+-- trigger-input-motion-causality.md), per
+-- docs/investigations/trigger-input-symbolic-crosscheck.md. Unlike
+-- 'runTrigger' above (which enters the *whole* re-seeded
+-- @phase_ramp_state_machine__CUSTOM@ region and stops deep inside it,
+-- the approach already found not to converge for this Macaw/Crucible/Z3
+-- version), this targets only the seven-guard gate block chain
+-- (0x9202-0x9224) plus one single-block check at the post-call
+-- continuation (0x922c) -- both deliberately small, loop-free, and
+-- (until their own respective stop points) call-free.
+--
+-- Query A/B use the new 'PH.runGateReachability' (no RAM zero-overlay,
+-- since nothing in this bounded region needs "the rest of RAM starts at
+-- zero" to be sound -- every address this query ever touches is one of
+-- the seven named 'PH.GateVar's, explicitly and deliberately left free).
+-- Query C reuses the existing, unmodified single-block
+-- 'checkBranchModel' unchanged -- 0x922c is already a real Macaw
+-- block-start address in the same re-seeded discovery, so no new
+-- capability is needed there at all.
+runTriggerCrossCheck :: FilePath -> Word32 -> IO ()
+runTriggerCrossCheck path flashBase = do
+  bytes <- BS.readFile path
+  case buildMemory bytes flashBase ramBase ramSize of
+    Left err -> die ("failed to build memory image: " ++ err)
+    Right mem -> do
+      -- Every address below is a real, already-provenance-traced RAM cell
+      -- or literal-pool pointer from trigger-input-symbolic-
+      -- reachability.md / trigger-input-concrete-path.md -- not derived
+      -- fresh this pass. r5/r6 are seeded concrete (the pointers
+      -- themselves); everything they point at is left symbolic.
+      let deviceStateArray = 0x20002524 :: Word32  -- r5 @ 0x9203: per-channel device-state array base
+          trEnableAddr     = 0x20003120 :: Word32  -- r6 @ 0x9222: the TR0|/TR1| enable byte's own address
+          state32Addr      = 0x20001b38 :: Word32  -- loaded via the flash literal @ 0x9260; must == 0x7b
+          state8Addr       = 0x200000d8 :: Word32  -- loaded via the flash literal @ 0x9264; must == 0x09
+          entryRaw         = 0x9203 :: Word32      -- Thumb bit set -- see FirmwareLoader.resolveEntry's own note
+          stopAddr         = 0x9226 :: Word32      -- the real Macaw block-start address immediately
+                                                     -- preceding the "bl 0xd3dc" at 0x9228 -- reaching it
+                                                     -- is this project's own established proxy for "0x9228
+                                                     -- is reached" (block-granular location tracking, not
+                                                     -- per-instruction -- trigger-input-symbolic-
+                                                     -- reachability.md Part 2), since 0x9228 itself is
+                                                     -- mid-block, not a block boundary Crucible/macaw-
+                                                     -- symbolic's own location tracking can ever report
+          gateVars =
+            [ PH.GateVar "r5[0]"   (deviceStateArray + 0) 1
+            , PH.GateVar "r5[1]"   (deviceStateArray + 1) 1
+            , PH.GateVar "r5[2]"   (deviceStateArray + 2) 1
+            , PH.GateVar "r5[3]"   (deviceStateArray + 3) 1
+            , PH.GateVar "state32" state32Addr             4
+            , PH.GateVar "state8"  state8Addr              1
+            , PH.GateVar "r6[0]"   (trEnableAddr + 0)      1
+            ]
+          -- The real comparison values each guard's own CMP/CBNZ checks
+          -- for (Ghidra disassembly, not a solver assumption -- used only
+          -- to build Query B's "must NOT equal" negative checks below).
+          expectedGood =
+            [ ("r5[0]", 0), ("r5[1]", 0), ("r5[2]", 0), ("r5[3]", 0)
+            , ("state32", 0x7b), ("state8", 0x09), ("r6[0]", 0)
+            ]
+          regOverrides = [(AR.r5, deviceStateArray), (AR.r6, trEnableAddr)]
+
+      entry <- maybe (die "could not resolve 0x9203 entry") pure (resolveEntry mem entryRaw)
+      let addrSymMap = Map.singleton entry (BSC.pack "trigger_gate_crosscheck")
+          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
+          funs = discState ^. MD.funInfo
+      Some fn <- maybe (die "0x9203 region was not discovered by Macaw") pure (Map.lookup entry funs)
+
+      putStrLn "=== Query A: positive reachability, entry 0x9202 -> stop 0x9226 (all seven guards free) ==="
+      putStrLn ("  regOverrides: r5=0x" ++ showHex deviceStateArray "" ++ " (device-state array), r6=0x"
+                ++ showHex trEnableAddr "" ++ " (TR-enable byte address)")
+      putStrLn "  symbolic: r5[0..3], state32 (0x20001b38 via the 0x9260 literal), state8 (0x200000d8 via the 0x9264 literal), r6[0]"
+      resA <- PH.runGateReachability mem fn regOverrides gateVars stopAddr [] (Just "/tmp/aptrace_crosscheck_A")
+      reportGate "Query A (positive)" resA
+
+      putStrLn "\n=== Query B: one negative check per guard (each expected UNSAT) ==="
+      mapM_
+        (\gv -> do
+           let label = PH.gvLabel gv
+               good = maybe (error ("no expected-good value for " ++ label)) id (lookup label expectedGood)
+           putStrLn ("\n  -- " ++ label ++ " != 0x" ++ showHex good " (all other guards still free)")
+           r <- PH.runGateReachability mem fn regOverrides gateVars stopAddr [(label, good)]
+                  (Just ("/tmp/aptrace_crosscheck_B_" ++ label))
+           reportGate ("Query B (" ++ label ++ " violated)") r)
+        gateVars
+
+      putStrLn "\n=== Query C: single-block check at 0x922c (post-digitalRead continuation), R0 symbolic ==="
+      case MM.resolveAbsoluteAddr mem (MM.memWord 0x922c) of
+        Nothing -> putStrLn "  error: could not resolve 0x922c"
+        Just off -> case Map.lookup off (fn ^. MD.parsedBlocks) of
+          Nothing -> putStrLn "  error: 0x922c block not found in the re-seeded 0x9203 discovery"
+          Just block -> do
+            rC <- checkBranchModel mem block
+              BranchQuery { bqPointerOverrides = [], bqMemoryBytes = []
+                          , bqTargetAddr = 0x8f98, bqObserveReg = AR.r0
+                          , bqExcludeObserved = [] }
+            putStr "  0x8f98 (config-reload write) reachable from 0x922c: " >> reportResult "R0" rC
+            case rC of
+              Reachable satVal -> do
+                putStrLn ("\n  -- control: R0 != 0x" ++ showHex satVal
+                          " (R0 still fully symbolic otherwise) -- is 0x8f98 still reachable?")
+                rC2 <- checkBranchModel mem block
+                  BranchQuery { bqPointerOverrides = [], bqMemoryBytes = []
+                              , bqTargetAddr = 0x8f98, bqObserveReg = AR.r0
+                              , bqExcludeObserved = [satVal] }
+                reportResult "R0" rC2
+              _ -> pure ()
+
+reportGate :: String -> PH.GateResult -> IO ()
+reportGate label res = case res of
+  PH.GateSat model -> do
+    putStrLn ("  " ++ label ++ ": SAT. Model:")
+    mapM_ (\(nm, v) -> putStrLn ("    " ++ nm ++ " = 0x" ++ showHex v "")) model
+  PH.GateUnsat -> putStrLn ("  " ++ label ++ ": UNSAT.")
+  PH.GateError e -> putStrLn ("  " ++ label ++ ": error: " ++ e)
+
 -- | Build one contiguous 'PacketByte' buffer spanning [lo, hi), defaulting
 -- every position to @Concrete 0@ (matching this harness's real cold-RAM
 -- convention) except the given (address, byte) overrides -- for seeding
@@ -525,7 +643,7 @@ runSingleCharCheck mem fn (label, checkAddr, handlerAddr, expected) = do
       Just block -> do
         r <- checkBranchModel mem block
           BranchQuery { bqPointerOverrides = []
-                      , bqMemoryBytes = [], bqTargetAddr = handlerAddr, bqObserveReg = AR.r3 }
+                      , bqMemoryBytes = [], bqTargetAddr = handlerAddr, bqObserveReg = AR.r3, bqExcludeObserved = [] }
         reportResult "R3" r
         case r of
           Reachable v | v == expected -> putStrLn "  (matches expected ASCII value)"

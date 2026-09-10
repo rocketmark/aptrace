@@ -45,6 +45,9 @@ module APTrace.ProtocolHarness
   , runPacketTransaction
   , RichTraceConfig(..)
   , runPacketTransactionTraced
+  , GateVar(..)
+  , GateResult(..)
+  , runGateReachability
   ) where
 
 import qualified Control.Exception as X
@@ -492,6 +495,241 @@ runPacketTransactionTraced mem fn bufAddr bufBytes observeAddr targetValue trace
       where
         entryAddr = MM.memWordToUnsigned (MM.addrOffset (MM.segoffAddr (MDS.discoveredFunAddr fn)))
         posFn addr = WPL.BinaryPos "aptrace" (maybe 0 fromIntegral (MC.segoffAsAbsoluteAddr addr))
+
+-- | One symbolic RAM cell to solve for in 'runGateReachability': a
+-- human-readable label (for reporting only), its concrete address, and its
+-- width in bytes (this module's own two real uses are 1 and 4). Left
+-- unwritten by 'runGateReachability' (no per-byte seeding, unlike
+-- 'PacketByte') -- the base memory is plain @SymbolicMutable@ with no
+-- zero-overlay at all, so every 'GateVar' address is already a fresh,
+-- unconstrained free variable by construction, with no extra machinery
+-- needed to make it so.
+data GateVar = GateVar
+  { gvLabel :: String
+  , gvAddr  :: W.Word32
+  , gvWidth :: Int  -- ^ 1 or 4 bytes, little-endian (matches 'CLM.doLoad'\'s own convention)
+  } deriving (Show)
+
+data GateResult
+  = GateSat [(String, Integer)]
+    -- ^ One ground value per 'GateVar', in the order given, from a real
+    -- solver model.
+  | GateUnsat
+  | GateError String
+  deriving (Show)
+
+-- | A loaded 'GateVar'\'s own symbolic value, before it is ever written to
+-- (there is no writer -- this module only reads). Two widths, matching
+-- 'GateVar'\'s own two real uses; not a general-width facility.
+data GateVal sym = GateVal8 (WI.SymBV sym 8) | GateVal32 (WI.SymBV sym 32)
+
+-- | Symbolically execute a small, whole, loop-free, call-free-up-to-its-
+-- own-stop-point Macaw-discovered function (built via 'MS.mkFunCFG' from a
+-- re-seeded entry, exactly as 'runPacketTransactionTraced' already does),
+-- with a bounded set of concrete pointer registers ('regOverrides') and a
+-- bounded set of named symbolic RAM cells ('gateVars') -- everything else
+-- (every other register, every other byte of RAM) is either a concrete
+-- zero default (registers, matching 'runPacketTransactionTraced'\'s own
+-- posture) or fully free/unconstrained (memory), with **no RAM
+-- zero-initialization overlay at all**. This is deliberately leaner than
+-- 'runPacketTransactionTraced': that overlay exists to make "the
+-- pending-event array starts at zero" sound for a whole-firmware-state
+-- replay, at a real, measured cost (docs/tooling/compact-ram-
+-- initialization.md) -- a bounded gate check that only ever reads
+-- 'gateVars' and nothing else in RAM has no use for it, and dropping it is
+-- exactly the "avoid the earlier solver failure mode" this function exists
+-- for (see docs/investigations/trigger-input-symbolic-crosscheck.md).
+--
+-- Stops the *first* time execution reaches 'stopAtAddr' (same block-
+-- granular convention 'runPacketTransactionTraced'\'s own 'stopAtAddr'
+-- established -- must be a real Macaw block-start address, not an
+-- arbitrary mid-block instruction address) and asks the solver whether
+-- that point is reachable at all, given the real path condition
+-- accumulated so far *plus* 'extraNotEqual' (zero or more additional
+-- "this 'GateVar' must not equal this value" constraints, by label --
+-- for a Query-B-style negative check: the same run, the same stop point,
+-- one guard's own known-good value excluded). An empty 'extraNotEqual'
+-- asks the plain positive reachability question. On 'GateSat', reports a
+-- real solver-produced ground value for every 'GateVar', not just the
+-- ones named in 'extraNotEqual'.
+runGateReachability
+  :: MM.Memory 32
+  -> MDS.DiscoveryFunInfo ARM.AArch32 ids
+  -> [(AR.ARMReg (MT.BVType 32), W.Word32)]  -- ^ regOverrides (concrete pointers only)
+  -> [GateVar]
+  -> W.Word32                                 -- ^ stopAtAddr
+  -> [(String, Integer)]                       -- ^ extraNotEqual, by 'gvLabel'
+  -> Maybe FilePath                            -- ^ optional solver-observability base path (see 'writeSolverLogArtifacts')
+  -> IO GateResult
+runGateReachability mem fn regOverrides gateVars stopAtAddr extraNotEqual solverLogPath
+  | Just archVals <- MS.archVals (Proxy @ARM.AArch32) Nothing =
+      withZ3Backend (run archVals)
+  | otherwise = pure (GateError "no ArchVals for AArch32")
+  where
+    run :: forall solver t st fs
+         . (WPO.OnlineSolver solver, CB.IsSymBackend (WE.ExprBuilder t st fs) (CBS.SimpleBackend t st fs))
+        => MS.ArchVals ARM.AArch32
+        -> Proxy solver
+        -> WPF.ProblemFeatures
+        -> CBS.SimpleBackend t st fs
+        -> IO GateResult
+    run archVals _proxy problemFeatures bak = do
+      let sym = CB.backendGetSym bak
+      let ?recordLLVMAnnotation = \_ _ _ -> pure ()
+      let ?processMacawAssert = MSM.defaultProcessMacawAssertion
+      let ?memOpts = CLM.defaultMemOptions
+      let ?ptrWidth = WI.knownNat @32
+      halloc <- CFH.newHandleAllocator
+      someCfg <- MS.mkFunCFG (MS.archFunctions archVals) halloc
+                   (WF.functionNameFromText "gate") posFn fn
+      case someCfg of
+        CC.SomeCFG cfg ->
+          MS.withArchEval archVals sym $ \archEvalFns -> do
+            memVar <- CLM.mkMemVar "aptrace:llvm_memory" halloc
+            -- Plain SymbolicMutable, no zero overlay -- see the module
+            -- comment above for why that is sound and deliberate here.
+            (baseMem, memPtrTable) <-
+              MSM.newGlobalMemory (Proxy @ARM.AArch32) bak LDL.LittleEndian MSM.SymbolicMutable mem
+            let mmConf = (MSM.memModelConfig bak memPtrTable)
+                  { MS.lookupFunctionHandle = MS.unsupportedFunctionCalls "aptrace"
+                    -- Sound only because 'stopAtAddr' is expected to fire
+                    -- before any call in 'fn' actually executes -- true by
+                    -- construction for this module's own trigger-gate use
+                    -- (the stop point is the block immediately preceding
+                    -- the region's one real call). If 'stopAtAddr' is
+                    -- placed *after* a real call, this throws instead of
+                    -- silently fabricating a return value -- a deliberate
+                    -- failure mode, not a gap to work around here.
+                  , MS.lookupSyscallHandle = MS.unsupportedSyscalls "aptrace"
+                  }
+                globalMap = MS.globalMemMap mmConf
+
+            -- A small concrete stack, exactly as 'runPacketTransactionTraced'
+            -- provides -- cheap, and this module makes no claim that 'fn'
+            -- never pushes/pops (ASL side-conditions can reference SP even
+            -- without an explicit push), so it stays for safety even though
+            -- this module's own current callers never need it.
+            stackSize <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr 4096)
+            (stackBase, mem1) <- CLM.doMalloc bak CLM.StackAlloc CLM.Mutable "aptrace_stack" baseMem stackSize LDL.noAlignment
+            zeroArr <- WI.constantArray sym (Ctx.singleton WI.knownRepr) =<< WI.bvLit sym (WI.knownNat @8) (BV.zero WI.knownNat)
+            mem2 <- CLM.doArrayStore bak mem1 stackBase LDL.noAlignment zeroArr stackSize
+            initSP <- CLM.ptrAdd sym WI.knownRepr stackBase stackSize
+
+            -- Read every GateVar's own (fresh, never-written) symbolic
+            -- value *before* running -- since nothing in this module's own
+            -- bounded region ever writes to a GateVar address (all seven
+            -- of this investigation's own cells are read-only guards),
+            -- this is the exact same underlying array expression the
+            -- block's own real load instructions will read during
+            -- execution, not a separate/aliased one.
+            gateVals <- mapM (\gv -> (,) (gvLabel gv) <$> readGateVar bak globalMap mem2 gv) gateVars
+
+            entryPtr <- resolvedPointer bak globalMap mem2 (fromIntegral entryAddr)
+            let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
+            regVals <- Ctx.traverseWithIndex (concreteZeroVar sym) regTypes
+            let regStruct0 = CS.RegEntry (CC.StructRepr regTypes) regVals
+                regStruct1 = MS.updateReg archVals regStruct0 MC.ip_reg entryPtr
+                regStruct2 = MS.updateReg archVals regStruct1 MC.sp_reg initSP
+            regStruct3 <- foldM
+              (\struct (reg, val) -> do
+                 pointerVal <- resolvedPointer bak globalMap mem2 val
+                 pure (MS.updateReg archVals struct reg pointerVal))
+              regStruct2
+              regOverrides
+            let initRegs = CS.RegMap (Ctx.singleton regStruct3)
+
+            let ext = MS.macawExtensions archEvalFns memVar mmConf
+            let simCtx = CS.initSimContext bak CLI.llvmIntrinsicTypes halloc IO.stderr
+                           (CS.FnBindings CFH.emptyHandleMap) ext MS.MacawSimulatorState
+            let globalState = CSG.insertGlobal memVar mem2 CS.emptyGlobals
+            let retTy = CFH.handleReturnType (CC.cfgHandle cfg)
+            let simulation = CS.regValue <$> CS.callCFG cfg initRegs
+            let initState = CS.InitialState simCtx globalState CS.defaultAbortHandler retTy
+                              (CS.runOverrideSim retTy simulation)
+
+            stepCounter <- newIORef (0 :: Int)
+            stopResultRef <- newIORef Nothing
+            let stopAddressFeature = CSE.ExecutionFeature $ \execState ->
+                  case CSET.execStateSimState execState of
+                    Just (CSET.SomeSimState st) | addrOfState (st ^. CSET.stateLocation) == Just stopAtAddr -> do
+                      already <- readIORef stopResultRef
+                      when (isNothing already) $ do
+                        assumptions <- CB.assumptionsPred sym =<< CB.collectAssumptions bak
+                        extraPreds <- mapM
+                          (\(label, notVal) -> case lookup label gateVals of
+                             Just gv -> notEqualPred sym gv notVal
+                             Nothing -> fail ("runGateReachability: unknown GateVar label in extraNotEqual: " ++ label))
+                          extraNotEqual
+                        mLogHandle <- writeSolverLogArtifacts sym solverLogPath "gate" (assumptions : extraPreds)
+                        (solverHandle :: WPO.SolverProcess t solver) <- WPO.startSolverProcess problemFeatures mLogHandle sym
+                        msat <- WPO.checkWithAssumptionsAndModel solverHandle "gate reachability"
+                                  (assumptions : extraPreds)
+                        r <- case msat of
+                          WSR.Sat evalFn -> do
+                            vs <- mapM (\(label, gv) -> (,) label <$> groundGateVal evalFn gv) gateVals
+                            pure (GateSat vs)
+                          WSR.Unsat {} -> pure GateUnsat
+                          WSR.Unknown -> pure (GateError "solver returned unknown")
+                        _ <- WPO.shutdownSolverProcess solverHandle
+                        maybe (pure ()) IO.hClose mLogHandle
+                        writeIORef stopResultRef (Just r)
+                      pure CSE.ExecutionFeatureNoChange
+                    _ -> pure CSE.ExecutionFeatureNoChange
+                addrOfState (Just loc) = case WPL.plSourceLoc loc of
+                  WPL.BinaryPos _ a -> Just (fromIntegral a :: W.Word32)
+                  _ -> Nothing
+                addrOfState Nothing = Nothing
+
+            execOutcome <- X.try @X.SomeException
+              (CS.executeCrucible [debugFeature stepCounter, stopAddressFeature] initState)
+            earlyResult <- readIORef stopResultRef
+            case (earlyResult, execOutcome) of
+              (Just r, _) -> pure r
+              (Nothing, Left e) ->
+                pure (GateError ("execution raised an exception before reaching stopAtAddr: " ++ show (e :: X.SomeException)))
+              (Nothing, Right (CS.FinishedResult {})) ->
+                pure (GateError "run finished without ever reaching stopAtAddr on any path")
+              (Nothing, Right (CS.AbortedResult {})) -> pure (GateError "simulation aborted before reaching stopAtAddr")
+              (Nothing, Right (CS.TimeoutResult {})) -> pure (GateError "simulation timed out before reaching stopAtAddr")
+      where
+        entryAddr = MM.memWordToUnsigned (MM.addrOffset (MM.segoffAddr (MDS.discoveredFunAddr fn)))
+        posFn addr = WPL.BinaryPos "aptrace" (maybe 0 fromIntegral (MC.segoffAsAbsoluteAddr addr))
+
+-- | Read one 'GateVar'\'s own current symbolic (or concrete, if somehow
+-- already determined) value out of 'mem', without writing anything.
+readGateVar
+  :: ( CB.IsSymBackend (WE.ExprBuilder t st fs) bak
+     , CLM.HasLLVMAnn (WE.ExprBuilder t st fs)
+     , CLM.HasPtrWidth 32
+     , ?memOpts :: CLM.MemOptions
+     )
+  => bak
+  -> MS.GlobalMap (WE.ExprBuilder t st fs) CLM.Mem 32
+  -> CLM.MemImpl (WE.ExprBuilder t st fs)
+  -> GateVar
+  -> IO (GateVal (WE.ExprBuilder t st fs))
+readGateVar bak globalMap mem gv = do
+  ptr <- resolvedPointer bak globalMap mem (gvAddr gv)
+  case gvWidth gv of
+    1 -> do
+      CLM.LLVMPointer _ bv <- CLM.doLoad bak mem ptr (CLM.bitvectorType 1) (CLM.LLVMPointerRepr (WI.knownNat @8)) LDL.noAlignment
+      pure (GateVal8 bv)
+    4 -> do
+      CLM.LLVMPointer _ bv <- CLM.doLoad bak mem ptr (CLM.bitvectorType 4) (CLM.LLVMPointerRepr (WI.knownNat @32)) LDL.noAlignment
+      pure (GateVal32 bv)
+    w -> fail ("readGateVar: unsupported width " ++ show w ++ " for " ++ gvLabel gv)
+
+groundGateVal :: WE.GroundEvalFn t -> GateVal (WE.ExprBuilder t st fs) -> IO Integer
+groundGateVal evalFn (GateVal8 bv) = BV.asUnsigned <$> WE.groundEval evalFn bv
+groundGateVal evalFn (GateVal32 bv) = BV.asUnsigned <$> WE.groundEval evalFn bv
+
+notEqualPred :: (CB.IsSymInterface sym) => sym -> GateVal sym -> Integer -> IO (WI.Pred sym)
+notEqualPred sym (GateVal8 bv) v = do
+  lit <- WI.bvLit sym (WI.knownNat @8) (BV.mkBV WI.knownRepr v)
+  WI.notPred sym =<< WI.bvEq sym bv lit
+notEqualPred sym (GateVal32 bv) v = do
+  lit <- WI.bvLit sym (WI.knownNat @32) (BV.mkBV WI.knownRepr v)
+  WI.notPred sym =<< WI.bvEq sym bv lit
 
 -- | Write 'bufBytes' starting at 'bufAddr' into 'mem', returning the updated
 -- memory and, for each symbolic byte, its index (0-based, from 'bufAddr')
