@@ -177,6 +177,17 @@ independent level-3 confirmation.
   for the exact SVD-named completion bits modeled, the real Arduino-idiom
   function names (`main`/`setup`/`loop`), and the confirmed pin/peripheral
   map (TC0→PB10, TC1→PA08, TC2→PB12, TC3→PA10, TCC1→PB22).
+- **The TX path's real transport (`0x8c10`) is CONFIRMED**: `SERCOM2`
+  in SPI Master mode, chip-select `PA15`, zero DMA involvement, driven
+  through a real, boot-constructed C++/`Stream`-derived driver object
+  (`0x20004160`) whose vtable[1] dispatch was independently reconfirmed
+  and whose entire dispatch chain was traced with a real, unstubbed
+  Unicorn call from a completed boot snapshot (`CallResult.returned =
+  True`). The specific external device on the other end of that SPI
+  bus (a LoRa-family transceiver, by register-address pattern) remains
+  PROBABLE, not independently hardware-confirmed. See
+  [`docs/investigations/boot-and-hardware-bringup.md`](investigations/boot-and-hardware-bringup.md)'s
+  "The TX path's real transport, `0x8c10` — CONFIRMED".
 - **The motor subsystem is unreachable from a cold boot without `MC4`**:
   the real main loop lives entirely inside the sketch's `setup()` and never
   returns until `MC4` clears one specific unlock byte. `MC<0-3>`/`G`/`I`
@@ -223,8 +234,6 @@ independent level-3 confirmation.
 Full protocol-level list: [`docs/protocol/open-questions.md`](protocol/open-questions.md).
 Headline items still unresolved:
 
-- The real transport peripheral behind the TX path's `0x8c10` dispatch —
-  named as "next" repeatedly, never actually identified.
 - Dormant-event reachability (events 2, 3, 8, 9, 11, 12, 14) and the
   event-7 11-vs-10 field mismatch — both natural Crucible/What4 targets,
   neither attempted since the pivot to hardware provenance.
@@ -256,13 +265,11 @@ Headline items still unresolved:
 
 ## Next priorities
 
-1. Name the TX path's real transport peripheral (what populates the
-   driver-object pointer `0x8c10` dispatches through).
-2. Resume `!`/`I` through the virtual link, or explicitly re-scope them out.
-3. Attempt dormant-event reachability and the event-7 field-mismatch
+1. Resume `!`/`I` through the virtual link, or explicitly re-scope them out.
+2. Attempt dormant-event reachability and the event-7 field-mismatch
    question now that whole-function execution habits are better
    understood.
-4. Get real physical measurements at the trigger jack/PB05 (see
+3. Get real physical measurements at the trigger jack/PB05 (see
    `trigger-input.md`) before choosing a debounce threshold or attempting
    a real flash patch.
 

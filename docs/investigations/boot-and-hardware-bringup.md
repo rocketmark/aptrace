@@ -147,6 +147,96 @@ ring buffer** at `0x2000245c` (head/tail indices at `0x200024c0`/
 `FUN_0000610c` clears to `0` on a successful probe — a traced
 connection, not a coincidence.
 
+**The TX path's real transport, `0x8c10` — CONFIRMED.** `0x8c10`
+(`FUN_00008c10`, called from `phase_ramp_state_machine__CUSTOM`,
+`sketch_setup__CUSTOM`, and several unnamed static-flow ancestors)
+reads the SAME mode-selector byte as the RX injection point above
+(`*0x2000006a`) and, for the real runtime value `1`, dispatches to a
+real, initialized driver object at `0x20004160`:
+
+- **Object initialization**: constructed by `FUN_00009934` (a generic
+  driver-object constructor: `object+0x00` = vtable pointer,
+  `object+0x10` = a numeric parameter, `object+0x18` = an embedded
+  sub-object pointer, `object+0x1c`/`+0x20`/`+0x24` = three PORT
+  pin-table indices, plus a call to the reference-confirmed
+  `Stream::setTimeout()` at `0xb6fa` — this driver class derives from
+  `Stream`). Reached via a tiny thunk at `0x9f3c`
+  (`ldr r0,[pc,#4]; b.w 0x9934`, itself vtable[0] of the SAME class),
+  called from inside `radio_irq_flags_poll__THIRD_PARTY`'s own extended
+  body, in turn called from `radio_rx_drain__THIRD_PARTY` — i.e. this
+  object is constructed as part of the SAME boot-time radio-driver
+  bring-up as the already-documented chip-ID probe, confirmed to
+  execute exactly once during real boot, before main-loop steady state
+  (`census reduce`'s own `dynamic_coverage` for the `boot` scenario:
+  `0x9934`/`0x9f3c`/`0x9e70`/`0x7fdc` each hit exactly once).
+- **Real object contents** (dumped from a completed `AUTOPILOT_RECIPE`
+  boot run, at main-loop steady state — not assumed): vtable pointer
+  `0x00014050` (flash, 7 real entries, `vtable[7]` already string data);
+  `+0x10 = 0x007a1200` (8,000,000 — a plausible SPI clock rate);
+  `+0x18 = 0x20004198` (`= self+0x38`, an embedded sub-object, not a
+  separate heap allocation); pin-table indices `+0x1c = 0x30 (48)`,
+  `+0x20 = 0x23 (35)`, `+0x24 = 0x22 (34)`, resolved via the SAME
+  `g_APinDescription`-shaped flash table already used for the TC-channel
+  pins (`0x14284`, 24 bytes/entry) to **PA15, PA16, PA17**.
+- **Resolved indirect target**: `vtable[1] = 0x00009a96`
+  (`FUN_0000b216`: `r3 = *object; r3 = *(r3+4); bx r3` — a real
+  vtable dispatch, reached via wrapper `FUN_0000b23a`). This exact
+  edge (`0xb234`'s `bx r3` → `0x9a96`) was ALREADY present in
+  `indirect_edge_resolutions` as `DYNAMICALLY_OBSERVED` from the
+  existing `boot` scenario capture (the real boot itself already calls
+  `0x8c10` once during setup) — this investigation independently
+  re-confirmed it via a fresh, unstubbed `ConcreteMachine.call(0x8c10,
+  ...)` from the completed boot snapshot (see "Test / repro" below), it
+  does not add a new row. A SECOND vtable slot used elsewhere in this
+  driver class, `vtable[0]` via a different wrapper (`FUN_0000b242`,
+  `bx r3` at `0xb246`), remains `UNRESOLVED` — it is called only from
+  two unrelated functions (`0x7f8e`, `0xb2c8`), never from the `0x8c10`
+  chain, and was not chased further (out of this investigation's scope).
+- **HAL functions actually reached** (real, unstubbed execution):
+  `0x9a96` (vtable[1], FIFO-write) writes the caller's buffer bytes
+  one-by-one via `radio_reg_readwrite__THIRD_PARTY` (`0x9984`) /
+  `SERCOM_transferDataSPI__STANDARD_LIBRARY` (`0x99c2`) at register
+  `0x22`, matching the SAME driver primitives already confirmed for the
+  boot-time radio chip-ID probe; `radio_reg_readwrite` itself calls
+  `digitalWrite_pulse_shared__STANDARD_LIBRARY` (`0xd388`, CS
+  low/high), `FUN_0000a000`/`FUN_0000a03c` (begin/end transaction —
+  SERCOM SWRST + baud config on enter, `cpsie i`/conditional
+  `EIC.INTENCLR`/`INTENSET` on exit), and `FUN_0000a05c` (a one-level
+  dereference into the embedded sub-object, tail-calling the real
+  ArduinoCore-samd SERCOM SPI transceive primitive at `0xb468`).
+- **Exact peripheral/registers touched** (real `--log-mmio`, unstubbed):
+  `SERCOM2` in **SPI Master mode** — `CTRLA` (`0x41012000`, SWRST +
+  ENABLE), `CTRLB` (`0x41012004`), `BAUD` (`0x4101200c`), `INTFLAG.DRE`
+  (`0x41012018`), `SYNCBUSY` (`0x4101201c`), `DATA` (`0x41012028`,
+  written once per real payload byte); `PORT.GROUP0` (`PA15`) `DIRSET`/
+  `OUTSET`/`OUTCLR`/`PINCFG15` (chip-select, toggled low then high
+  around the transaction, via the same `digitalWrite`-shaped helper
+  already confirmed for the TC-channel pins); `GCLK.PCHCTRL3`/
+  `PCHCTRL23` (peripheral clock gating around the transaction).
+  **Zero DMAC addresses touched** — this transfer is CPU-driven/
+  polled (`INTFLAG.DRE`-waited), not DMA. The `EIC.INTENCLR`/
+  `INTENSET` critical section (`0x4000280c`/`0x40002810`, previously
+  flagged as "plausibly a radio IRQ/DIO pin or UART flow control") is
+  REAL CODE reachable from `0xa000`/`0xa03c`, but its trigger condition
+  (a flag byte in the embedded sub-object, `0x200041a2` at steady
+  state) reads `0` for the real, confirmed driver instance — it did NOT
+  fire during a real, traced transmit. **PA16**/**PA17** (the other two
+  pin-table indices in the object, plausibly RESET/DIO0 for an SX127x-
+  style module) are never touched by a transmit call itself — consistent
+  with being boot-time-only (reset) or RX-side (DIO/IRQ) pins, neither
+  independently confirmed by this investigation.
+- **Transport identity: CONFIRMED at the MCU-peripheral level** — SPI
+  via `SERCOM2` (Master mode), chip-select `PA15`, no DMA, EIC not
+  active for TX. The specific EXTERNAL device on the other end of that
+  SPI bus is, at most, **PROBABLE**: the register-address pattern
+  (`0x81`/`0x83` for mode, `0x22` for FIFO base, `0x42`↔`0x12` for the
+  boot-time chip-ID check) matches the textbook SX127x/RFM9x LoRa
+  register map already noted for the chip-ID probe, and this TX path
+  demonstrably reuses the SAME driver object/functions — but no
+  external, hardware-independent confirmation of the exact chip model
+  or of a physical connector/antenna identity exists, and none is
+  claimed. See "Test / repro" below for the exact reproduction.
+
 **TC0-TC3 IRQs, addresses, and the shared pulse helper.** Vector-table
 entries (literal-pool base address resolved for each):
 
@@ -296,22 +386,46 @@ iteration), `0x20001b14`-`0x20001b17` (a channel-busy-gate target
 tracked by other investigations) recorded no write beyond the
 already-known `.bss` zero-clear at startup.
 
+**The real, unstubbed TX call**: from that SAME completed boot
+snapshot (`ConcreteMachine` reused via `fresh=False`, current SP), a
+direct `ConcreteMachine.call(0x8c10, args=[buf_addr], stub_calls=[])`
+with a real (non-empty) buffer runs the ENTIRE dispatch chain for
+real — mode-byte read, `radio_irq_flags_poll`'s pre-transmit IRQ-flag
+pokes, the `0xb23a`→`0xb216`→`0x9a96` vtable[1] dispatch, the real
+per-byte `SERCOM2` SPI write loop, and the final `RegOpMode`-style
+write — with only `mmio_clear_bits=[(0x41012000, 0x1)]` (SERCOM2
+CTRLA/SYNCBUSY SWRST self-clear — the SAME real-hardware fact
+`AUTOPILOT_RECIPE` already discloses for this exact address/bit at
+boot time, needed again because this driver issues its own SWRST at
+the start of each transaction) and the SAME already-cited DWT delay
+stub (`stub_calls=[0xcd34]`, needed only for the post-write guard-time
+wait to terminate in Unicorn's zero-behavior MMIO model). With both
+applied, `CallResult.returned = True` after 6,465 real instructions —
+no other assumption, force, or stub was required; the TX function's
+own real body ran unmodified throughout.
+
 ## Open items
 
-- **The TX path's real transport peripheral, still unnamed.** The
-  dispatch at `0x8c10` is gated behind a runtime driver-object
-  pointer, not a literal address — the same C++/HAL-style indirection
-  pattern seen in the confirmed USB bring-up function
-  (`FUN_0000bc44`). Static tracing found the TX path's descendants
-  bracket a disable/re-enable of `EIC.INTENCLR`/`INTENSET` (a critical
-  section around an interrupt-driven line — plausibly a radio
-  IRQ/DIO pin or UART flow control), and `--log-mmio` confirmed zero
-  MMIO accesses before the `0x8c10` boundary; continuing past it
-  diverges into an unmapped read at address `0x4` within ~50
-  instructions. Naming the exact peripheral needs either statically
-  resolving what init function populates the driver-object pointer
-  `0x8c10` reads, or concretely seeding that mode byte and object
-  pointer — neither done.
+- **RESOLVED this pass — the TX path's real transport peripheral.**
+  Previously: "gated behind a runtime driver-object pointer... naming
+  the exact peripheral needs either statically resolving what init
+  function populates the driver-object pointer, or concretely seeding
+  that mode byte and object pointer — neither done." Both are now done
+  — see "The TX path's real transport, `0x8c10` — CONFIRMED" above:
+  the object is constructed at boot by `FUN_00009934`, its real
+  contents were dumped from a completed boot snapshot, its vtable[1]
+  indirect dispatch (`0x9a96`) was independently reconfirmed, and a
+  real, unstubbed `0x8c10` call was traced end-to-end to SERCOM2 SPI
+  Master + PORT.GROUP0 (PA15 chip-select) with zero DMAC involvement.
+  The earlier note about "diverges into an unmapped read at address
+  `0x4`" described what happens continuing PAST `0x8c10` with a
+  synthetic/uninitialized object — using the REAL object, it does not
+  diverge; it completes cleanly (`CallResult.returned = True`).
+  Remaining, disclosed uncertainty: the external device's exact chip
+  model/physical connector identity (PROBABLE, not CONFIRMED — see
+  above), and a second, unrelated vtable slot on the same driver class
+  (`vtable[0]`, `0xb246`) that stays `UNRESOLVED` (never called from
+  the `0x8c10` chain).
 - **A second, deeper NVM-erase-loop dependency**, found but not
   chased. Pushing the main-loop run tens of millions of instructions
   further reaches a real bulk-erase operation (`FUN_000098d8`/

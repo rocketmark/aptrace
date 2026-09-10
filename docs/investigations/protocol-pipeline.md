@@ -375,10 +375,12 @@ constants — case 4 of the mode switch is the only case that can produce
   the `S` handler's switch (only cases 0-4 exist). A different AutoPilot
   firmware build/config could reach it without any Remote-side change —
   not this build.
-- **Naming the TX path's real transport peripheral**: `0x8c10` (and
-  Remote's `0x58a8`) dispatch through a runtime driver-object pointer
-  that this cluster deliberately left unmodeled (real SPI/radio timing
-  and register-level behavior). Which specific peripheral populates that
-  pointer, and what real startup does to initialize it, is not yet
-  named — the boundary is documented (`0x200038fc` config struct,
-  constructor `0x1129c` on the Remote side) but not walked through.
+- **AutoPilot's `0x8c10` transport: RESOLVED** (separate pass) —
+  `SERCOM2` SPI Master, chip-select `PA15`, no DMA, via a real,
+  boot-constructed driver object (`0x20004160`); see
+  [`boot-and-hardware-bringup.md`](boot-and-hardware-bringup.md)'s
+  "The TX path's real transport, `0x8c10` — CONFIRMED". **Remote's
+  `0x58a8` remains unnamed** — this pass only covered the AutoPilot
+  side; the Remote's own driver-object pointer, populated by its
+  `0x200038fc` config struct / constructor `0x1129c`, has not been
+  walked through the same way.

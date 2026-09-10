@@ -22,6 +22,11 @@ completed milestones are not re-narrated here.
   and the trigger-input investigation are all closed — see
   [`docs/project-status.md`](../project-status.md#major-established-system-facts)
   for the current-state summary and links to each dossier.
+- **AutoPilot's TX transport (`0x8c10`)** — confirmed `SERCOM2` SPI
+  Master, chip-select `PA15`, no DMA, via the same driver object
+  constructed/probed during boot; see
+  [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md).
+  Remote's own `0x58a8` transport remains open (see below).
 
 See [`docs/harness/protocol-harness-results.md`](protocol-harness-results.md)
 and [`docs/harness/execution-model.md`](execution-model.md) for the harness
@@ -46,12 +51,12 @@ the way.
    concretely what happens to the unconsumed field.
 4. **Remote-transmitted-packets-not-in-the-dispatch-tree question** — not
    revisited since the dispatch structure was corrected.
-5. **Name the TX path's real transport peripheral** — what populates the
-   driver-object pointer `0x8c10` dispatches through. Named as a next step
-   repeatedly across multiple slices; never actually identified. Check
-   first whether it's the same SERCOM/DMA driver object already
-   constructed and probed in
-   [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md).
+5. **Name the Remote's own TX path transport (`0x58a8`)** — AutoPilot's
+   `0x8c10` is now resolved (see "Done" above); the Remote's own
+   driver-object pointer, populated by its `0x200038fc` config struct /
+   constructor `0x1129c`, has not been walked through the same way. See
+   [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)'s
+   open items.
 
 ## Open — trigger-input mitigation
 
