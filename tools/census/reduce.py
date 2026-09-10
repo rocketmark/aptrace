@@ -11,12 +11,18 @@ build`'s base evidence (tools/census/build.py). Orchestrates, in order:
      dynamic_export.py/dynamic_ingest.py's own JSON format (scenario
      'boot') for dynamic_coverage/memory/mmio -- never a parallel
      ingestion path.
-  3. Reference-source confirmation (reference_library.py) -- tag the
-     curated, human-confirmed-against-real-upstream-source functions
-     from docs/investigations/boot-and-hardware-bringup.md (and their
-     fingerprint-propagated siblings) as `reference_source_confirmed`
-     -- the ONLY thing this reducer treats as "library truth" (a plain
-     cross-image fingerprint match is NEVER enough by itself).
+  3. Reference-source confirmation (reference_library.py +
+     reference_match.py) -- tag `reference_source_confirmed` functions
+     from TWO sources, both writing the SAME library_matches column:
+     the curated, human-confirmed-against-real-upstream-source set from
+     docs/investigations/boot-and-hardware-bringup.md
+     (reference_library.py), and the mechanical reference-corpus match
+     results from a PRIOR, separate `reference-match <firmware>` run
+     (reference_match.py's `apply_to_library_matches` -- reads only,
+     never recomputes matches itself; a no-op if `reference-match`
+     hasn't been run for this firmware yet). A plain cross-image
+     fingerprint match is NEVER enough by itself -- see
+     docs/tooling/census.md's evidence rule.
   4. Indirect-edge resolution (indirect_resolve.py + boot_recipes.py) --
      classify every indirect call/jump instruction (STATICALLY_RESOLVED
      / DYNAMICALLY_OBSERVED / FINITE_CANDIDATE_SET / UNRESOLVED),
@@ -63,6 +69,7 @@ import dynamic_ingest  # noqa: E402
 import pins as pins_mod  # noqa: E402
 import residual_priority  # noqa: E402
 import hardware_contract  # noqa: E402
+import reference_match  # noqa: E402
 import aptrace_ghidra as ghidra  # noqa: E402
 from build import FunctionRanges  # noqa: E402
 
@@ -246,7 +253,10 @@ def reduce_firmware(key, db_path=None, verbose=True):
 
     log("[3/10] Applying reference-source confirmations...")
     n_ref = reference_library.apply_reference_confirmations(conn, firmware_id, key)
-    log(f"  {n_ref} function(s) reference-source-confirmed (real 'library truth')")
+    log(f"  {n_ref} function(s) reference-source-confirmed (curated, real 'library truth')")
+    n_ref_mech = reference_match.apply_to_library_matches(conn, firmware_id, verbose=verbose)
+    log(f"  {n_ref_mech} function(s) newly reference-source-confirmed via mechanical reference-match "
+        f"(run 'reference-match {key}' first if this is 0 and you expect matches)")
 
     log("[4/10] Resolving indirect control flow...")
     resolve_indirect_edges(conn, firmware_id, key, firmware_bytes, flash_base, func_ranges, boot_result, verbose)

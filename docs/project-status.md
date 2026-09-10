@@ -109,6 +109,42 @@ reentrancy hazard) was found and partially fixed along the way — see
 `tools/unicorn/concrete.py`'s `_ranges_excluding` and
 `test_concrete.py`'s new regression coverage.
 
+**A fifth census layer mechanically fetches, COMPILES, and matches the
+confirmed reference toolchain** (`reference_corpus.py`/
+`reference_match.py`, see census.md's "Reference-source
+fingerprinting"): Adafruit `ArduinoCore-samd` v1.7.11 (already named by
+embedded build-path strings) plus its own mechanically-discovered
+dependencies — `arm-none-eabi-gcc` 9-2019q4 (Adafruit's own pinned
+toolchain version), CMSIS 5.4.0, CMSIS-Atmel 1.2.2 (resolving a
+previously-open item: `startup_samd51.c`/`system_samd51.c`'s exact
+upstream source), and a git-submodule header dependency
+(`Adafruit_ZeroDMA`, pinned by the core's own `.gitmodules` gitlink) —
+all fetched/downloaded at EXACT versions, never guessed. Compiled with
+the exact discovered flags (board `adafruit_feather_m4`, the only
+Adafruit SAMD board whose macros match this project's own confirmed
+part number `ATSAMD51J19A`): 28/28 evidenced source files compiled
+clean, 346 reference symbols extracted with real ELF-relocation-based
+fingerprints (four tiers: exact bytes, exact instructions, relocation-
+normalized, PC-relative-normalized). Two real bugs were found and fixed
+along the way: `objdump` prints a Thumb halfword as its NUMERIC value
+(not memory byte order) — every reference symbol's bytes were silently
+wrong until fixed; and a compiled symbol's ELF size includes trailing
+alignment `nop` padding that Ghidra's own firmware-side function-size
+convention excludes. `millis()` (already manually confirmed
+byte-identical in `boot-and-hardware-bringup.md`) is independently
+rediscovered as an exact match after both fixes — the key positive-
+control validation. AutoPilot868 residual 102 → 95, AutoPilot915 123 →
+116, Mando868 309 → 306, Mando915 323 → 320 (12 functions mechanically
+reference-source-confirmed per image, including real named C++ methods
+— `SPIClass::endTransaction()`, `SERCOM::SERCOM()`, three SERCOM UART
+helpers — beyond the previously-curated 7). Four documented negative
+controls (mando868 application-specific functions) correctly show
+`NO_MATCH`. One open item, disclosed rather than chased further this
+pass: `Reset_Handler`/`SysTick_Handler` do not match this corpus at any
+tier despite an earlier manual finding of byte-identity — plausibly an
+unselected `boards.txt` menu option (`-DENABLE_CACHE` most likely), not
+yet built as an alternate variant.
+
 ## Current milestone: the core protocol pipeline
 
 **Status: CLOSED at the concrete (Unicorn) evidence tier**, both firmwares,

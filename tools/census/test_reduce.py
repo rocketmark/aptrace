@@ -32,6 +32,9 @@ import reference_library  # noqa: E402
 import residual_priority  # noqa: E402
 import hardware_contract  # noqa: E402
 import firmware_diff  # noqa: E402
+import reference_normalize as rn  # noqa: E402
+import reference_match  # noqa: E402
+import reference_corpus  # noqa: E402
 
 FAILURES = []
 
@@ -1222,6 +1225,289 @@ def test_firmware_diff_structured():
         d.cleanup()
 
 
+# --- reference-source fingerprinting -----------------------------------
+
+def test_reference_normalize_masking():
+    print("test_reference_normalize_masking (relocation/pc-relative masking preserves meaningful "
+          "constants, only masks addresses/branch-targets/pc-relative offsets)")
+    check("a direct call target is masked regardless of operand shape",
+          rn.reloc_mask("bl", "0x1234", relocated=False) == "bl TARGET")
+    check("a conditional branch target is masked",
+          rn.reloc_mask("bne", "0x1234", relocated=False) == "bne TARGET")
+    check("a ground-truth-relocated instruction (reference side) is masked even with a non-address operand",
+          rn.reloc_mask("movw", "r3, #0", relocated=True) == "movw RELOC")
+    check("a bare address-shaped hex operand is masked",
+          rn.reloc_mask("movt", "r3, 0x2000abcd", relocated=False) == "movt r3, ADDR")
+    check("a small, meaningful immediate is NEVER masked", rn.reloc_mask("movs", "r2, #0", relocated=False) == "movs r2, #0")
+    check("a bitmask immediate is NEVER masked", rn.reloc_mask("ands", "r0, r0, #0xf", relocated=False) == "ands r0, r0, #0xf")
+    check("a register-only operand is untouched", rn.reloc_mask("mov", "r0, r1", relocated=False) == "mov r0, r1")
+
+    check("pcrel_mask masks a PC-relative load's byte offset",
+          rn.pcrel_mask("ldr", "r3, [pc, #0x18]", relocated=False) == "ldr r3, [pc, #OFF]")
+    check("pcrel_mask still masks a branch target too (cumulative with reloc_mask)",
+          rn.pcrel_mask("bl", "0x1234", relocated=False) == "bl TARGET")
+    check("pcrel_mask does NOT touch a non-pc-relative memory operand",
+          rn.pcrel_mask("ldr", "r0, [r3, #4]", relocated=False) == "ldr r0, [r3, #4]")
+
+
+def test_reference_normalize_trim_and_decode():
+    print("test_reference_normalize_trim_and_decode (trailing-nop trim; real Thumb decode of "
+          "millis()'s own known bytes)")
+    instrs = [(0, 2, "ldr", "r3, [pc, #4]"), (2, 2, "ldr", "r0, [r3, #0]"), (4, 2, "bx", "lr"),
+              (6, 2, "nop", "")]
+    trimmed = rn.trim_trailing_padding(instrs)
+    check("a single trailing nop is dropped", trimmed == instrs[:3], trimmed)
+    check("trimming an all-nop or empty list never raises", rn.trim_trailing_padding([]) == [])
+    check("a non-trailing nop (not last) is preserved",
+          rn.trim_trailing_padding([(0, 2, "nop", ""), (2, 2, "bx", "lr")]) ==
+          [(0, 2, "nop", ""), (2, 2, "bx", "lr")])
+
+    # The REAL, independently-known millis() bytes (see docs/investigations/
+    # boot-and-hardware-bringup.md / this pass's own reference-match finding).
+    chunk = bytes.fromhex("014b18687047")
+    decoded = rn.decode_code_bytes(chunk, 0xccd0)
+    check("real millis() bytes decode to exactly 3 instructions", len(decoded) == 3, decoded)
+    check("first instruction is the PC-relative load", decoded[0][2] == "ldr" and "[pc" in decoded[0][3], decoded[0])
+    check("last instruction is bx lr", decoded[-1][2] == "bx" and decoded[-1][3] == "lr", decoded[-1])
+
+
+def test_reference_corpus_objdump_byte_order():
+    print("test_reference_corpus_objdump_byte_order (hardening: objdump prints a Thumb halfword's "
+          "NUMERIC VALUE, not raw memory byte order -- a real bug found this pass that silently made "
+          "EVERY reference symbol's bytes wrong, so millis() never matched its OWN byte-identical "
+          "firmware counterpart)")
+    # 'f7ff fffe' is objdump's own real printed form for a 4-byte Thumb-2
+    # BL instruction (two 16-bit halfwords, each MSB-first as a NUMBER).
+    result = reference_corpus._objdump_opcode_to_mem_bytes("f7ff fffe")
+    check("each halfword is byte-swapped to reconstruct real memory order",
+          result == bytes.fromhex("fff7feff"), result.hex())
+    result2 = reference_corpus._objdump_opcode_to_mem_bytes("4b01")
+    check("a single halfword ('4b01', millis()'s own first instruction) reconstructs to '014b'",
+          result2 == bytes.fromhex("014b"), result2.hex())
+
+    sample = """
+Disassembly of section .text.millis:
+
+00000000 <millis>:
+   0:\t4b01      \tldr\tr3, [pc, #4]\t; (8 <millis+0x8>)
+   2:\t6818      \tldr\tr0, [r3, #0]
+   4:\t4770      \tbx\tlr
+   6:\tbf00      \tnop
+   8:\t00000000 \t.word\t0x00000000
+\t\t\t8: R_ARM_ABS32\t.bss._ulTickCount
+"""
+    parsed = reference_corpus._parse_objdump(sample)
+    check("millis parses to exactly one symbol", "millis" in parsed, parsed)
+    instrs, relocs = parsed["millis"]
+    check("the literal-pool .word is excluded from the instruction stream (data, not code)",
+          len(instrs) == 4, instrs)  # ldr, ldr, bx, nop -- trimmed separately by trim_trailing_padding
+    trimmed = rn.trim_trailing_padding(instrs)
+    hexbytes = "".join(i[1] for i in trimmed)
+    check("the REAL reconstructed bytes match the independently-known firmware millis() bytes",
+          hexbytes == "014b18687047", hexbytes)
+
+
+def test_reference_match_tiers():
+    print("test_reference_match_tiers (EXACT_BYTES/EXACT_INSTRUCTIONS/RELOCATION_NORMALIZED/"
+          "STRONG_STRUCTURAL/NO_MATCH tier assignment, and ambiguity when >1 distinct symbol ties)")
+    d, conn = _scratch_db()
+    try:
+        fw = _make_firmware(conn)
+        conn.execute("INSERT INTO reference_packages (pkg_key, name, version, kind, license, relevance, "
+                     "discovered_via, fetched_at) VALUES ('testpkg','Test Package','1.0','git','MIT',"
+                     "'test','test','now')")
+        pkg_id = conn.execute("SELECT id FROM reference_packages WHERE pkg_key='testpkg'").fetchone()["id"]
+        conn.execute("INSERT INTO reference_build_variants (variant_key, board, mcu, toolchain_name, "
+                     "toolchain_version, optimize, cflags, cxxflags, built_at) VALUES "
+                     "('testvariant','testboard','cortex-m4','arm-none-eabi-gcc','9-2019q4','-Os','','','now')")
+        variant_id = conn.execute("SELECT id FROM reference_build_variants WHERE variant_key='testvariant'").fetchone()["id"]
+
+        def add_symbol(source_file, symbol, chunk, entry=0x1000):
+            instrs = rn.trim_trailing_padding(rn.decode_code_bytes(chunk, entry))
+            code = b"".join(chunk[off:off + size] for off, size, _m, _o in instrs)
+            fp = rn.fingerprint_instructions(instrs)
+            import hashlib
+            exact_hash = hashlib.sha256(code).hexdigest()
+            conn.execute(
+                "INSERT INTO reference_symbols (build_variant_id, package_id, source_file, symbol, "
+                "byte_size, exact_hash, exact_instr_hash, reloc_norm_hash, pcrel_norm_hash, "
+                "n_instructions, n_branches, raw_bytes_hex) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                (variant_id, pkg_id, source_file, symbol, len(code), exact_hash, fp["exact_instr_hash"],
+                 fp["reloc_norm_hash"], fp["pcrel_norm_hash"], fp["n_instructions"], fp["n_branches"],
+                 code.hex()))
+
+        # millis()-shaped: ldr r3,[pc,#4]; ldr r0,[r3,#0]; bx lr
+        millis_bytes = bytes.fromhex("014b18687047")
+        add_symbol("a.c", "millis", millis_bytes)
+        # A second, DISTINCT symbol with the SAME bytes -- forces ambiguity.
+        add_symbol("b.c", "millis_dup", millis_bytes)
+        conn.commit()
+
+        # Firmware function EXACT_BYTES-matching millis (but its symbol is
+        # AMBIGUOUS -- 'millis' and 'millis_dup' are byte-identical).
+        exact_fn = _make_function(conn, fw, 0x2000, "FUN_2000", size=6)
+        no_match_fn = _make_function(conn, fw, 0x3000, "FUN_3000", size=2)
+        conn.commit()
+
+        # Write the firmware bytes directly (a synthetic in-memory "image").
+        firmware_bytes = bytearray(0x4000)
+        firmware_bytes[0x2000 - 0x0:0x2000 - 0x0 + 6] = millis_bytes  # entry 0x2000, flash_base 0
+        firmware_bytes[0x3000:0x3000 + 2] = bytes.fromhex("0000")  # movs r0,r0 (a real, unrelated 2-byte no-op-shaped instr)
+        firmware_bytes = bytes(firmware_bytes)
+
+        match_rows, cand_rows = reference_match.compute(conn, fw, firmware_bytes, 0, verbose=False)
+        by_fid = {m["function_id"]: m for m in match_rows}
+
+        check("byte-identical firmware function hits EXACT_BYTES", by_fid[exact_fn]["tier"] == "EXACT_BYTES",
+              by_fid[exact_fn])
+        check("...but is AMBIGUOUS (two distinct reference symbols tie)", by_fid[exact_fn]["is_ambiguous"] == 1,
+              by_fid[exact_fn])
+        check("...so reference_source_confirmed is NOT set despite EXACT_BYTES",
+              by_fid[exact_fn]["reference_source_confirmed"] == 0, by_fid[exact_fn])
+        check("...and reference_symbol_id is NULL (never silently picks one)",
+              by_fid[exact_fn]["reference_symbol_id"] is None, by_fid[exact_fn])
+
+        check("an unrelated 2-byte function is NO_MATCH", by_fid[no_match_fn]["tier"] == "NO_MATCH", by_fid[no_match_fn])
+        check("NO_MATCH never sets reference_source_confirmed", by_fid[no_match_fn]["reference_source_confirmed"] == 0)
+
+        cand_for_exact = [c for c in cand_rows if c["function_id"] == exact_fn]
+        check("both tied candidates are recorded (never deduplicated away)", len(cand_for_exact) == 2, cand_for_exact)
+    finally:
+        conn.close()
+        d.cleanup()
+
+
+def test_reference_match_confirmed_non_ambiguous():
+    print("test_reference_match_confirmed_non_ambiguous (a UNIQUE EXACT_BYTES match DOES set "
+          "reference_source_confirmed)")
+    d, conn = _scratch_db()
+    try:
+        fw = _make_firmware(conn)
+        conn.execute("INSERT INTO reference_packages (pkg_key, name, version, kind, license, relevance, "
+                     "discovered_via, fetched_at) VALUES ('testpkg','Test Package','1.0','git','MIT',"
+                     "'test','test','now')")
+        pkg_id = conn.execute("SELECT id FROM reference_packages WHERE pkg_key='testpkg'").fetchone()["id"]
+        conn.execute("INSERT INTO reference_build_variants (variant_key, board, mcu, toolchain_name, "
+                     "toolchain_version, optimize, cflags, cxxflags, built_at) VALUES "
+                     "('testvariant','testboard','cortex-m4','arm-none-eabi-gcc','9-2019q4','-Os','','','now')")
+        variant_id = conn.execute("SELECT id FROM reference_build_variants WHERE variant_key='testvariant'").fetchone()["id"]
+
+        millis_bytes = bytes.fromhex("014b18687047")
+        instrs = rn.trim_trailing_padding(rn.decode_code_bytes(millis_bytes, 0x1000))
+        fp = rn.fingerprint_instructions(instrs)
+        import hashlib
+        exact_hash = hashlib.sha256(millis_bytes).hexdigest()
+        conn.execute(
+            "INSERT INTO reference_symbols (build_variant_id, package_id, source_file, symbol, "
+            "byte_size, exact_hash, exact_instr_hash, reloc_norm_hash, pcrel_norm_hash, "
+            "n_instructions, n_branches, raw_bytes_hex) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            (variant_id, pkg_id, "delay.c", "millis", 6, exact_hash, fp["exact_instr_hash"],
+             fp["reloc_norm_hash"], fp["pcrel_norm_hash"], fp["n_instructions"], fp["n_branches"],
+             millis_bytes.hex()))
+        conn.commit()
+
+        fn = _make_function(conn, fw, 0x2000, "FUN_2000", size=6)
+        conn.commit()
+        firmware_bytes = bytearray(0x4000)
+        firmware_bytes[0x2000:0x2000 + 6] = millis_bytes
+        match_rows, _ = reference_match.compute(conn, fw, bytes(firmware_bytes), 0, verbose=False)
+        by_fid = {m["function_id"]: m for m in match_rows}
+        check("unique EXACT_BYTES match sets reference_source_confirmed=1",
+              by_fid[fn]["reference_source_confirmed"] == 1, by_fid[fn])
+        check("is_ambiguous is 0", by_fid[fn]["is_ambiguous"] == 0)
+
+        n_new = reference_match.apply_to_library_matches(conn, fw, verbose=False)
+        check("apply_to_library_matches propagates it into library_matches", n_new == 1, n_new)
+        lm = conn.execute("SELECT * FROM library_matches WHERE firmware_id=? AND function_id=?", (fw, fn)).fetchone()
+        check("library_matches.reference_source_confirmed is set", lm["reference_source_confirmed"] == 1)
+        check("citation names the mechanical source", "reference_match.py" in lm["reference_source_citation"], lm)
+
+        # A curated confirmation must NEVER be overwritten by a mechanical one.
+        conn.execute("UPDATE library_matches SET reference_source_citation='CURATED, manual' WHERE id=?", (lm["id"],))
+        conn.commit()
+        n_new2 = reference_match.apply_to_library_matches(conn, fw, verbose=False)
+        check("re-applying does not re-count an already-confirmed function", n_new2 == 0, n_new2)
+        lm2 = conn.execute("SELECT * FROM library_matches WHERE id=?", (lm["id"],)).fetchone()
+        check("the curated citation is preserved, never overwritten", lm2["reference_source_citation"] == "CURATED, manual")
+    finally:
+        conn.close()
+        d.cleanup()
+
+
+def test_real_reference_corpus_data():
+    print("test_real_reference_corpus_data (against the actual fetched+built reference corpus and "
+          "match results, if present -- positive/negative control validation)")
+    db_path = census_db.DEFAULT_DB_PATH
+    if not db_path.exists():
+        print("  (no census database built yet -- skipping)")
+        return
+    conn = census_db.connect(db_path, create=False)
+    n_symbols = conn.execute("SELECT COUNT(*) FROM reference_symbols").fetchone()[0]
+    if n_symbols == 0:
+        print("  (no reference corpus built yet -- run 'reference-corpus fetch/build' -- skipping)")
+        return
+    check("the primary reference package (adafruit-arduinocore-samd) was fetched",
+          conn.execute("SELECT COUNT(*) FROM reference_packages WHERE pkg_key='adafruit-arduinocore-samd'")
+          .fetchone()[0] == 1)
+    check("every reference package has a citable relevance/discovered_via (never blank)",
+          conn.execute("SELECT COUNT(*) FROM reference_packages WHERE relevance IS NULL OR relevance='' "
+                       "OR discovered_via IS NULL OR discovered_via=''").fetchone()[0] == 0)
+
+    try:
+        fw = census_db.get_firmware_id(conn, "autopilot868")
+    except ValueError:
+        print("  (autopilot868 not census-built yet -- skipping match-result checks)")
+        conn.close()
+        return
+    n_matches = conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=?", (fw,)).fetchone()[0]
+    if n_matches == 0:
+        print("  (autopilot868 has no reference-match run yet -- skipping)")
+        conn.close()
+        return
+
+    # Positive control: millis() (0xccd0) -- already independently confirmed
+    # by hand in docs/investigations/boot-and-hardware-bringup.md -- must be
+    # (re-)discovered by this MECHANICAL pipeline too, non-ambiguously.
+    millis_fn = conn.execute("SELECT id FROM functions WHERE firmware_id=? AND entry=0xccd0", (fw,)).fetchone()
+    if millis_fn:
+        m = conn.execute("SELECT * FROM reference_matches WHERE firmware_id=? AND function_id=?",
+                         (fw, millis_fn["id"])).fetchone()
+        check("positive control: millis() is EXACT_BYTES-matched", m and m["tier"] == "EXACT_BYTES", dict(m) if m else None)
+        check("positive control: millis() is reference_source_confirmed", m and m["reference_source_confirmed"] == 1)
+        check("positive control: millis() is NOT ambiguous", m and m["is_ambiguous"] == 0)
+
+    check("no STRONG_STRUCTURAL match EVER sets reference_source_confirmed (evidence rule)",
+          conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=? AND tier='STRONG_STRUCTURAL' "
+                       "AND reference_source_confirmed=1", (fw,)).fetchone()[0] == 0)
+    check("no ambiguous match EVER sets reference_source_confirmed (evidence rule)",
+          conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=? AND is_ambiguous=1 "
+                       "AND reference_source_confirmed=1", (fw,)).fetchone()[0] == 0)
+    check("no NO_MATCH row sets reference_source_confirmed",
+          conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=? AND tier='NO_MATCH' "
+                       "AND reference_source_confirmed=1", (fw,)).fetchone()[0] == 0)
+
+    n_confirmed = conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=? AND "
+                               "reference_source_confirmed=1", (fw,)).fetchone()[0]
+    check("at least one function is reference_source_confirmed via the mechanical pipeline", n_confirmed > 0, n_confirmed)
+
+    # Negative control (mando868, if present): an already-documented
+    # application-specific function must NOT be confirmed.
+    try:
+        mfw = census_db.get_firmware_id(conn, "mando868")
+    except ValueError:
+        mfw = None
+    if mfw is not None:
+        n_mando_matches = conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=?", (mfw,)).fetchone()[0]
+        if n_mando_matches > 0:
+            loop_fn = conn.execute("SELECT id FROM functions WHERE firmware_id=? AND entry=0x7abc", (mfw,)).fetchone()
+            if loop_fn:
+                m = conn.execute("SELECT * FROM reference_matches WHERE firmware_id=? AND function_id=?",
+                                 (mfw, loop_fn["id"])).fetchone()
+                check("negative control: mando868's own loop() is NOT reference_source_confirmed",
+                      m is None or m["reference_source_confirmed"] == 0, dict(m) if m else None)
+    conn.close()
+
+
 def test_real_reduce_data():
     print("test_real_reduce_data (against the actual built census database, if present)")
     db_path = census_db.DEFAULT_DB_PATH
@@ -1328,6 +1614,12 @@ if __name__ == "__main__":
     test_residual_priority_signals()
     test_hardware_contract_generation()
     test_firmware_diff_structured()
+    test_reference_normalize_masking()
+    test_reference_normalize_trim_and_decode()
+    test_reference_corpus_objdump_byte_order()
+    test_reference_match_tiers()
+    test_reference_match_confirmed_non_ambiguous()
+    test_real_reference_corpus_data()
     test_real_reduce_data()
 
     print()

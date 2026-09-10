@@ -631,3 +631,140 @@ CREATE TABLE IF NOT EXISTS hardware_contract_runs (
     generated_at            TEXT NOT NULL,
     UNIQUE(firmware_id)
 );
+
+-- ===========================================================================
+-- Reference-source fingerprinting layer (tools/census/reference_corpus.py
+-- + reference_match.py). Independent of any one firmware image -- these
+-- five tables hold the mechanically-fetched-and-built reference corpus
+-- (packages/build-variants/symbols) and, per firmware, the match result
+-- against it. See docs/tooling/census.md's "Reference-source
+-- fingerprinting" section for the full design writeup.
+-- ===========================================================================
+
+-- One row per fetched corpus package (the core itself, the pinned
+-- toolchain, CMSIS, CMSIS-Atmel) -- always with a citable reason it
+-- belongs in the corpus (`relevance`) and exactly how it was
+-- mechanically discovered (`discovered_via`) -- see
+-- reference_corpus.py's module docstring. Never a "looks useful"
+-- addition.
+CREATE TABLE IF NOT EXISTS reference_packages (
+    id                INTEGER PRIMARY KEY,
+    pkg_key             TEXT UNIQUE NOT NULL,
+    name                  TEXT NOT NULL,
+    version                 TEXT NOT NULL,
+    kind                      TEXT NOT NULL,  -- git / archive
+    repo_url                    TEXT,
+    ref                           TEXT,          -- requested tag/branch (git only)
+    resolved_commit                 TEXT,          -- resolved commit hash (git only)
+    archive_url                       TEXT,
+    archive_sha256                      TEXT,
+    license                               TEXT NOT NULL,
+    relevance                              TEXT NOT NULL,
+    discovered_via                           TEXT NOT NULL,
+    fetched_at                                 TEXT NOT NULL
+);
+
+-- One row per compiled reference build configuration -- the EXACT
+-- toolchain/board/flags applied (see reference_corpus.py's module
+-- docstring for the evidence behind each). `confidence_note` discloses
+-- any setting that is a board DEFAULT rather than independently
+-- confirmed from the firmware (never silently treated as fact).
+CREATE TABLE IF NOT EXISTS reference_build_variants (
+    id                INTEGER PRIMARY KEY,
+    variant_key         TEXT UNIQUE NOT NULL,
+    board                 TEXT,
+    mcu                     TEXT NOT NULL,
+    toolchain_name            TEXT NOT NULL,
+    toolchain_version           TEXT NOT NULL,
+    optimize                      TEXT NOT NULL,
+    f_cpu                           TEXT,
+    cflags                            TEXT NOT NULL,
+    cxxflags                            TEXT NOT NULL,
+    confidence_note                       TEXT,
+    built_at                                TEXT NOT NULL
+);
+
+-- One row per source file this build variant attempted to compile --
+-- 'ok' or 'failed' with the real compiler error, never silently
+-- dropped. See `aptrace_census.py reference-corpus build`'s own
+-- summary output.
+CREATE TABLE IF NOT EXISTS reference_build_files (
+    id                INTEGER PRIMARY KEY,
+    build_variant_id    INTEGER NOT NULL REFERENCES reference_build_variants(id),
+    package_id            INTEGER NOT NULL REFERENCES reference_packages(id),
+    source_file             TEXT NOT NULL,
+    status                     TEXT NOT NULL,  -- ok / failed
+    error                        TEXT,
+    UNIQUE(build_variant_id, source_file)
+);
+
+-- One row per compiled reference function/symbol -- the actual corpus
+-- `reference_match.py` compares firmware functions against. Four
+-- fingerprints, most to least strict (see reference_normalize.py's
+-- module docstring for exactly what each masks):
+-- exact_hash (raw code bytes, literal pool excluded) / exact_instr_hash
+-- (verbatim decoded-instruction sequence) / reloc_norm_hash (relocation-
+-- derived operands masked, using this symbol's OWN real ELF relocation
+-- records -- ground truth, not a heuristic) / pcrel_norm_hash
+-- (reloc_norm_hash plus PC-relative-load offsets masked).
+CREATE TABLE IF NOT EXISTS reference_symbols (
+    id                INTEGER PRIMARY KEY,
+    build_variant_id    INTEGER NOT NULL REFERENCES reference_build_variants(id),
+    package_id            INTEGER NOT NULL REFERENCES reference_packages(id),
+    source_file             TEXT NOT NULL,
+    symbol                     TEXT NOT NULL,
+    byte_size                    INTEGER NOT NULL,
+    exact_hash                     TEXT NOT NULL,
+    exact_instr_hash                 TEXT NOT NULL,
+    reloc_norm_hash                    TEXT NOT NULL,
+    pcrel_norm_hash                      TEXT NOT NULL,
+    n_instructions                         INTEGER NOT NULL,
+    n_branches                               INTEGER NOT NULL,
+    raw_bytes_hex                              TEXT NOT NULL,
+    UNIQUE(build_variant_id, source_file, symbol)
+);
+CREATE INDEX IF NOT EXISTS idx_refsym_exact ON reference_symbols(exact_hash);
+CREATE INDEX IF NOT EXISTS idx_refsym_exact_instr ON reference_symbols(exact_instr_hash);
+CREATE INDEX IF NOT EXISTS idx_refsym_reloc ON reference_symbols(reloc_norm_hash);
+CREATE INDEX IF NOT EXISTS idx_refsym_pcrel ON reference_symbols(pcrel_norm_hash);
+
+-- Every candidate reference symbol found for a firmware function, at
+-- EVERY tier that matched (never deduplicated away -- an ambiguous
+-- match, e.g. two distinct reference symbols both EXACT_BYTES-matching
+-- the same tiny firmware function, stays fully visible here rather
+-- than one being silently chosen -- see reference_matches.is_ambiguous).
+CREATE TABLE IF NOT EXISTS reference_match_candidates (
+    id                INTEGER PRIMARY KEY,
+    firmware_id         INTEGER NOT NULL REFERENCES firmware(id),
+    function_id           INTEGER NOT NULL REFERENCES functions(id),
+    reference_symbol_id     INTEGER NOT NULL REFERENCES reference_symbols(id),
+    tier                       TEXT NOT NULL,  -- EXACT_BYTES/EXACT_INSTRUCTIONS/RELOCATION_NORMALIZED/PC_RELATIVE_NORMALIZED/STRONG_STRUCTURAL
+    detail                       TEXT,
+    source                         TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_refmatchcand_fw ON reference_match_candidates(firmware_id);
+CREATE INDEX IF NOT EXISTS idx_refmatchcand_func ON reference_match_candidates(firmware_id, function_id);
+
+-- One row per firmware function: its SINGLE best-tier summary
+-- classification. `reference_source_confirmed=1` ONLY for a
+-- non-ambiguous match at EXACT_BYTES/EXACT_INSTRUCTIONS/
+-- RELOCATION_NORMALIZED/PC_RELATIVE_NORMALIZED -- STRONG_STRUCTURAL and
+-- NO_MATCH NEVER set it (see docs/tooling/census.md's evidence rule).
+-- An ambiguous best-tier match (>1 distinct reference symbol at the
+-- SAME best tier) sets is_ambiguous=1, reference_symbol_id=NULL,
+-- reference_source_confirmed=0 -- reported, never silently resolved by
+-- picking one.
+CREATE TABLE IF NOT EXISTS reference_matches (
+    id                INTEGER PRIMARY KEY,
+    firmware_id         INTEGER NOT NULL REFERENCES firmware(id),
+    function_id           INTEGER NOT NULL REFERENCES functions(id),
+    tier                     TEXT NOT NULL,
+    is_ambiguous               INTEGER NOT NULL DEFAULT 0,
+    reference_symbol_id          INTEGER REFERENCES reference_symbols(id),
+    reference_source_confirmed     INTEGER NOT NULL DEFAULT 0,
+    detail                           TEXT,
+    source                             TEXT NOT NULL,
+    UNIQUE(firmware_id, function_id)
+);
+CREATE INDEX IF NOT EXISTS idx_refmatch_fw ON reference_matches(firmware_id);
+CREATE INDEX IF NOT EXISTS idx_refmatch_tier ON reference_matches(firmware_id, tier);

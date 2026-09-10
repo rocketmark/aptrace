@@ -40,6 +40,11 @@ Usage:
     aptrace_census.py residual-components autopilot868
     aptrace_census.py hardware-contract autopilot868 [--out FILE.json]
     aptrace_census.py diff autopilot868 autopilot915 [--json]
+    aptrace_census.py reference-corpus fetch
+    aptrace_census.py reference-corpus build
+    aptrace_census.py reference-match autopilot868
+    aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
+    aptrace_census.py reference-unmatched autopilot868
 """
 import sys
 from pathlib import Path
@@ -818,6 +823,90 @@ def cmd_diff(args):
     print(f"\n({result['note']})")
 
 
+# --- reference-corpus / reference-match / reference-matches / reference-unmatched --
+
+def cmd_reference_corpus(args):
+    import reference_corpus
+    conn = census_db.connect(args.db)
+    if args.subcommand == "fetch":
+        reference_corpus.fetch(conn=conn)
+    elif args.subcommand == "build":
+        reference_corpus.build(conn)
+    else:
+        raise SystemExit(f"unknown reference-corpus subcommand {args.subcommand!r} (fetch/build)")
+
+
+def cmd_reference_match(args):
+    import reference_match
+    sys.path.insert(0, str(HERE.parent / "ghidra"))
+    import aptrace_ghidra as ghidra
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    fw_row = conn.execute("SELECT * FROM firmware WHERE id=?", (fw,)).fetchone()
+    fw_path, _flash_base_s, _labels = ghidra.firmware_info(args.firmware)
+    firmware_bytes = fw_path.read_bytes()
+    reference_match.compute(conn, fw, firmware_bytes, fw_row["flash_base"])
+
+
+def cmd_reference_matches(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    q = ("SELECT rm.*, f.entry, f.name FROM reference_matches rm JOIN functions f ON f.id=rm.function_id "
+         "WHERE rm.firmware_id=?")
+    params = [fw]
+    if args.tier:
+        q += " AND rm.tier=?"
+        params.append(args.tier.upper())
+    q += " ORDER BY f.entry"
+    rows = conn.execute(q, params).fetchall()
+    if args.package:
+        pkg_rows = conn.execute(
+            "SELECT rm.function_id FROM reference_matches rm "
+            "JOIN reference_symbols rs ON rs.id = rm.reference_symbol_id "
+            "JOIN reference_packages rp ON rp.id = rs.package_id "
+            "WHERE rm.firmware_id=? AND rp.pkg_key=?", (fw, args.package)).fetchall()
+        keep = {r["function_id"] for r in pkg_rows}
+        rows = [r for r in rows if r["function_id"] in keep]
+
+    n = 0
+    counts = {}
+    for r in rows:
+        n += 1
+        counts[r["tier"]] = counts.get(r["tier"], 0) + 1
+        print(f"firmware: {args.firmware}")
+        print(f"function: {hx(r['entry'])}  {r['name']}")
+        print(f"match: {r['tier']}")
+        if r["reference_symbol_id"]:
+            sym = conn.execute(
+                "SELECT rs.source_file, rs.symbol, rp.name AS pkg_name, rp.version AS pkg_version "
+                "FROM reference_symbols rs JOIN reference_packages rp ON rp.id = rs.package_id "
+                "WHERE rs.id=?", (r["reference_symbol_id"],)).fetchone()
+            print(f"package: {sym['pkg_name']}")
+            print(f"version: {sym['pkg_version']}")
+            print(f"source: {sym['source_file']}")
+            print(f"symbol: {sym['symbol']}")
+        print(f"is_ambiguous: {bool(r['is_ambiguous'])}")
+        print(f"reference_source_confirmed: {bool(r['reference_source_confirmed'])}")
+        print(f"provenance: {r['detail']}")
+        print()
+    print(f"({n} match(es): {counts})")
+
+
+def cmd_reference_unmatched(args):
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    rows = conn.execute(
+        "SELECT f.entry, f.name, f.size FROM reference_matches rm JOIN functions f ON f.id=rm.function_id "
+        "WHERE rm.firmware_id=? AND rm.tier='NO_MATCH' ORDER BY f.entry", (fw,)).fetchall()
+    n_total = conn.execute("SELECT COUNT(*) FROM reference_matches WHERE firmware_id=?", (fw,)).fetchone()[0]
+    if n_total == 0:
+        print(f"No reference-match data for '{args.firmware}' -- run 'reference-match {args.firmware}'.")
+        return
+    for r in rows:
+        print(f"{hx(r['entry'])}  {r['name']}  size={r['size']}")
+    print(f"({len(rows)} unmatched function(s) of {n_total} total)")
+
+
 def main(argv):
     import argparse
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -915,6 +1004,22 @@ def main(argv):
     df.add_argument("firmware_b")
     df.add_argument("--json", action="store_true", help="print the full structured diff as JSON")
 
+    rcorp = sub.add_parser("reference-corpus", help="fetch/build the mechanical reference-source corpus")
+    rcorp.add_argument("subcommand", choices=["fetch", "build"])
+
+    rm = sub.add_parser("reference-match", help="match one firmware's functions against the reference corpus")
+    rm.add_argument("firmware")
+
+    rms = sub.add_parser("reference-matches", help="list reference-source match results")
+    rms.add_argument("firmware")
+    rms.add_argument("--package", default=None, help="filter to one reference_packages.pkg_key")
+    rms.add_argument("--tier", default=None,
+                     help="EXACT_BYTES/EXACT_INSTRUCTIONS/RELOCATION_NORMALIZED/PC_RELATIVE_NORMALIZED/"
+                          "STRONG_STRUCTURAL/NO_MATCH")
+
+    run = sub.add_parser("reference-unmatched", help="functions with NO_MATCH against the reference corpus")
+    run.add_argument("firmware")
+
     args = p.parse_args(argv)
     {
         "build": cmd_build, "reduce": cmd_reduce, "summary": cmd_summary, "function": cmd_function,
@@ -926,6 +1031,8 @@ def main(argv):
         "library-matches": cmd_library_matches, "hardware-snapshot": cmd_hardware_snapshot,
         "residual-ranked": cmd_residual_ranked, "residual-components": cmd_residual_components,
         "hardware-contract": cmd_hardware_contract, "diff": cmd_diff,
+        "reference-corpus": cmd_reference_corpus, "reference-match": cmd_reference_match,
+        "reference-matches": cmd_reference_matches, "reference-unmatched": cmd_reference_unmatched,
     }[args.command](args)
     return 0
 

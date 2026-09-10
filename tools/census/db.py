@@ -84,6 +84,12 @@ def get_firmware_id(conn, key):
 # DELETE from top-to-bottom (children before the parents they reference)
 # -- see clear_firmware_data. Keep in sync with schema.sql's FOREIGN KEYs.
 _TABLES_CHILD_FIRST = (
+    # Reference-source match results for THIS firmware (function_id FKs
+    # go stale on a static rebuild) -- NOT the global corpus tables
+    # (reference_packages/reference_build_variants/reference_build_files/
+    # reference_symbols), which are firmware-independent and own their
+    # own fetch/build-time replacement -- see reference_corpus.py.
+    "reference_match_candidates", "reference_matches",
     # Residual-prioritization/hardware-contract layer (tools/census/
     # residual_priority.py, hardware_contract.py) -- a re-aggregation ON
     # TOP of the closure-reduction layer below, so cleared first.

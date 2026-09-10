@@ -127,7 +127,14 @@ so no fact is ever presented without a way to trace it back:
   `residual_priority` (one row per residual function: `score`, `tier`,
   and the full `reasons_json` list of individual signals) and
   `hardware_contract_runs` (one row per firmware: the complete
-  machine-readable `contract_json` document).
+  machine-readable `contract_json` document). Six further tables hold
+  the firmware-INDEPENDENT reference-source corpus and its per-firmware
+  match results (`reference_corpus.py`/`reference_match.py`, see
+  "Reference-source fingerprinting" below): `reference_packages`,
+  `reference_build_variants`, `reference_build_files`,
+  `reference_symbols` (the corpus itself, shared across every firmware
+  image), and `reference_match_candidates`/`reference_matches`
+  (per-firmware match results).
 - A `census build` run **replaces** that firmware's own rows in every
   base-evidence table (see `tools/census/db.py`'s `clear_firmware_data`/
   `replace_firmware_rows`) — it reflects the current Ghidra
@@ -137,7 +144,13 @@ so no fact is ever presented without a way to trace it back:
   a rebuild just replaced) — re-run `ingest-dynamic` and `census reduce`
   after any `build`. A `census reduce` run replaces only its own
   fourteen tables (`clear_reduction_data`), so it can be rerun on its
-  own without forcing a static rebuild.
+  own without forcing a static rebuild. The six reference-corpus tables
+  are separate again: `reference-corpus fetch`/`build` own
+  `reference_packages`/`reference_build_variants`/
+  `reference_build_files`/`reference_symbols` (firmware-independent,
+  replaced only by re-fetching/re-building); `reference-match
+  <firmware>` owns that firmware's own
+  `reference_match_candidates`/`reference_matches` rows.
 
 ## CLI usage
 
@@ -170,6 +183,11 @@ tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual-ranked a
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py residual-components autopilot868
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py hardware-contract autopilot868 [--out FILE.json]
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py diff autopilot868 autopilot915 [--json]
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-corpus fetch
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-corpus build
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-match autopilot868
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-unmatched autopilot868
 ```
 
 Addresses are hex (`0x` prefix optional), matching every other address
@@ -774,6 +792,184 @@ interpretation of WHY something differs:
     mechanical signal (never a claim about WHICH constant differs) that
     per-image data reaches otherwise-identical hardware-touching code.
 
+## Reference-source fingerprinting
+
+A fifth layer, firmware-INDEPENDENT (its own five tables hold one
+shared corpus every firmware image is matched against, never
+duplicated per-image): fetches and COMPILES the confirmed reference
+toolchain, then matches every firmware function against the real
+compiled output, byte-for-byte where possible. This makes mechanical
+what `docs/investigations/boot-and-hardware-bringup.md`'s own toolchain
+section did by hand for 7 functions — exhaustive, automated, and
+reusable across all four images and any future firmware built from the
+same toolchain.
+
+**No LLM classification anywhere in this pipeline.** Every step is a
+git clone/download at a pinned version, a real `arm-none-eabi-gcc`
+invocation, `objdump`/ELF relocation-record parsing, and byte/hash
+comparison.
+
+### Reference corpus (`reference_corpus.py`)
+
+`aptrace_census.py reference-corpus fetch` clones/downloads every
+corpus entry at an EXACT, mechanically-discovered version — never a
+"looks useful" addition:
+
+| Package | Version | How it was discovered |
+|---|---|---|
+| `adafruit/ArduinoCore-samd` | `1.7.11` | PRIMARY target — named directly by embedded build-path strings in all four firmware images (`docs/firmware/firmware-layout.md`) |
+| `arm-none-eabi-gcc` (GNU Arm Embedded Toolchain) | `9-2019q4` | The core's OWN toolchain pin, from Adafruit's published, versioned board-manager index (`package_adafruit_index.json`'s `toolsDependencies` for `architecture=samd version=1.7.11`) |
+| `ARM-software/CMSIS_5` | `5.4.0` | Named in the core's own `platform.txt` (`compiler.arm.cmsis.c.flags`) — header-only, no compiled symbols taken from it |
+| `adafruit/ArduinoModule-CMSIS-Atmel` | `1.2.2` | Same `platform.txt` line — ATSAMD51 device headers AND the compiled `startup_samd51.c`/`system_samd51.c`. Resolves this project's own previously-documented open item ("CMSIS `SystemInit()`'s exact upstream source... a separate, unfetched Microchip CMSIS-Atmel package") |
+| `adafruit/Adafruit_ZeroDMA` | pinned commit `655916e` | A git-submodule HEADER dependency of `libraries/SPI/SPI.cpp` (directly evidenced) — a shallow core clone doesn't fetch submodule content, so this is fetched separately at the EXACT commit the core's own `.gitmodules` gitlink names. Only the header is used; its own `.cpp` is NOT compiled (no firmware evidence names it directly) |
+
+`aptrace_census.py reference-corpus build` compiles every evidenced
+source file (`cores/arduino/*.c`/`*.cpp` — the full core, unconditionally
+compiled for ANY sketch on this core, board-independent — plus
+`libraries/SPI/SPI.cpp`, the ONE library directly named by embedded
+build-path strings, plus CMSIS-Atmel's `startup_samd51.c`/
+`system_samd51.c`) with the EXACT discovered toolchain and flags, board
+profile `adafruit_feather_m4` — the only Adafruit SAMD board in this
+core version whose `build.extra_flags` defines `__SAMD51J19A__`, an
+EXACT match to this project's own independently-confirmed part number
+(physical board inspection, not a guess). `-Os` and `F_CPU=120000000L`
+are the board's own DEFAULT menu options (`menu.opt.small`/
+`menu.speed.120`), NOT independently confirmed from the firmware, and
+recorded as such in `reference_build_variants.confidence_note` — no
+variant matrix was built this pass (a single, well-justified default,
+disclosed as an assumption; see Limitations for what a mismatch would
+look like). All 28 evidenced source files compiled cleanly this pass
+(0 failed) → 346 compiled reference symbols.
+
+Each compiled symbol is extracted via `objdump -dr` (disassembly WITH
+real ELF relocation records — ground truth for exactly which operands
+are relocation-derived, not a guess) and stored with four fingerprints
+— see `reference_normalize.py`'s module docstring for the exact
+masking each one does:
+
+  - `exact_hash` — raw code bytes (a trailing literal pool AND any
+    trailing alignment `nop` excluded on both sides — see the real bug
+    found and fixed below).
+  - `exact_instr_hash` — verbatim decoded instruction sequence.
+  - `reloc_norm_hash` — relocation-derived operands masked (BL/branch
+    targets always; anything the object file's OWN relocation records
+    name).
+  - `pcrel_norm_hash` — `reloc_norm_hash` plus a PC-relative load's
+    byte offset masked (a pure code-layout artifact).
+
+**A real byte-order bug was found and fixed while building this**:
+`objdump` prints a Thumb instruction's opcode field as the 16-bit
+halfword's NUMERIC VALUE (most-significant hex digit first, like a
+written-down hex number — e.g. `4b01`), NOT the raw little-endian
+memory byte sequence (which is `01 4b`). Treating the printed digits as
+already-correct byte order meant EVERY reference symbol's stored bytes
+were silently wrong, and NO firmware function — including `millis()`,
+independently known byte-identical by hand — ever matched at
+`EXACT_BYTES`. Fixed in `_objdump_opcode_to_mem_bytes` (per-halfword
+byte-swap) and regression-tested
+(`test_reference_corpus_objdump_byte_order`).
+
+**A second real bug**: a compiled reference symbol's ELF size includes
+trailing alignment `nop` padding before a literal pool; Ghidra's own
+firmware-side function-size convention excludes it. Without trimming
+this identically on both sides, no function padded this way could ever
+byte-match its own reference symbol (found via `millis()`: an 8-byte
+reference symbol vs. Ghidra's 6-byte firmware function, solely because
+of one trailing `nop`). Fixed via
+`reference_normalize.trim_trailing_padding`, applied on BOTH the
+reference-corpus build side and the firmware-match side.
+
+### Matching (`reference_match.py`)
+
+`aptrace_census.py reference-match <firmware>` classifies every
+function into exactly one of, checked in this order (exact preferred,
+first hit wins):
+
+`EXACT_BYTES` → `EXACT_INSTRUCTIONS` → `RELOCATION_NORMALIZED` →
+`PC_RELATIVE_NORMALIZED` → `STRONG_STRUCTURAL` (same instruction count,
+same branch count, byte size within 10% — NEVER sets
+`reference_source_confirmed`) → `NO_MATCH`.
+
+On the FIRMWARE side (already linked — no ELF relocation records
+survive), the SAME masking is applied via a shape-based heuristic
+(a direct branch/call target is ALWAYS relocation-derived by
+construction; a bare `0x`-shaped literal operand is treated the same
+way) — real ground truth on the reference side, a well-tested heuristic
+on the firmware side; this asymmetry is disclosed, not hidden.
+
+**Evidence rule**: `reference_matches.reference_source_confirmed=1`
+ONLY for a NON-AMBIGUOUS match (exactly one distinct reference symbol,
+by `(source_file, symbol)`, at the best tier) at one of the four
+non-structural tiers. An ambiguous best-tier match (>1 distinct
+reference symbol tied) sets `is_ambiguous=1`,
+`reference_symbol_id=NULL` — reported, never silently resolved by
+picking one; `reference_match_candidates` keeps EVERY tied candidate
+visible. `STRONG_STRUCTURAL` and `NO_MATCH` never confirm.
+
+**Validation this pass** (`aptrace_census.py reference-matches`,
+`test_reference_match_*`/`test_real_reference_corpus_data` in
+`test_reduce.py`):
+
+  - **Positive control**: `millis()` (`0xccd0`, already manually
+    confirmed byte-for-byte in `boot-and-hardware-bringup.md`) is
+    independently rediscovered by this mechanical pipeline —
+    `EXACT_BYTES`, non-ambiguous, confirmed.
+  - **A genuinely ambiguous case, correctly disclosed, not silently
+    resolved**: `Dummy_Handler` (`0xcc10`) is `EXACT_BYTES` against
+    FIVE distinct reference symbols (`startup_samd51.c`'s own
+    `Dummy_Handler`, `cortex_handlers.c`'s own `Dummy_Handler`,
+    `__cxa_deleted_virtual`, `__cxa_pure_virtual`, `__halt`) — all
+    genuinely byte-identical tiny infinite-loop/trap stubs. Reported as
+    ambiguous, NOT confirmed.
+  - **Real, named matches beyond the previously-curated 7**: e.g.
+    `SPIClass::endTransaction()`, `Print::print(char)`,
+    `SERCOM::SERCOM(Sercom*)`, three `SERCOM` UART helpers,
+    `Stream::setTimeout()` — genuine C++ mangled symbols, confirming
+    this firmware really does use the core's SPI/SERCOM/Print/Stream
+    classes internally.
+  - **Negative controls**: four already-documented, genuinely
+    application-specific mando868 functions (the DMAC interrupt release
+    routine, the TC2/CCL/EVSYS driver-setup routine, the shared
+    per-channel pulse helper, mando868's own `loop()`) all correctly
+    report `NO_MATCH` — normalization does not accidentally match
+    unrelated application code.
+  - **A known finding NOT (yet) confirmed**: `Reset_Handler` and
+    `SysTick_Handler`, previously manually confirmed "byte-for-byte in
+    structure" in `boot-and-hardware-bringup.md`, do NOT match at any
+    tier in this pass (not even `STRONG_STRUCTURAL` — the firmware's
+    real `Reset_Handler` has 43 instructions/104 bytes vs. this build's
+    two candidates at 30/60 and 43/86). Disclosed honestly, not
+    papered over — see Limitations for the likely cause (an unselected
+    `boards.txt` menu option, most plausibly `-DENABLE_CACHE`) and why
+    this pass did not chase it further.
+
+### Feeding back into reduction
+
+`reference_match.apply_to_library_matches` (called automatically as
+part of `census reduce`'s own reference-source-confirmation step,
+AFTER `reference_library.py`'s curated confirmations) reads
+`reference_matches.reference_source_confirmed=1` rows and writes them
+into the SAME `library_matches.reference_source_confirmed` column the
+curated set already uses — so every downstream consumer (residual
+exclusion, `residual_priority`, `components`) treats a mechanical
+match exactly like a curated one, through the ONE existing code path,
+with no new special case. A curated confirmation is NEVER overwritten
+by a mechanical one (both only ADD to the same set); `reference-match`
+must be run BEFORE `census reduce` to take effect (a no-op,
+gracefully, if it hasn't been run yet for that firmware). Effect this
+pass: AutoPilot868/915 residual 102/123 → 95/116 (7 fewer each);
+Mando868/915 residual 309/323 → 306/320 (3 fewer each) — the smaller
+Mando delta reflects that several of the 12 mechanically-confirmed
+functions were already excluded from Mando's residual set for other
+reasons (dynamic coverage, the existing curated confirmations).
+
+### Useful output
+
+```
+aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
+aptrace_census.py reference-unmatched autopilot868
+```
+
 ## Limitations
 
 - **"Reachable" in `uncovered` means "discovered by Ghidra as a
@@ -926,6 +1122,31 @@ interpretation of WHY something differs:
   function or peripheral access *means* — that is intentionally a
   separate, later phase (see the "Semantic classification" note at the
   top).
+- **The reference corpus is built with ONE flag/board variant, not a
+  matrix.** `-Os`/`F_CPU=120000000L` are `boards.txt`'s own DEFAULT
+  menu options, disclosed as an assumption (`reference_build_variants.
+  confidence_note`) rather than independently confirmed. This pass
+  found strong evidence the default is at least PARTLY right (24
+  EXACT_BYTES matches, including a positive control) but also one
+  concrete counter-example: `Reset_Handler`/`SysTick_Handler` (manually
+  confirmed byte-identical in an earlier pass) do not match this
+  variant at ANY tier, not even `STRONG_STRUCTURAL` — the real
+  firmware's `Reset_Handler` has more instructions/bytes than either
+  reference candidate in this corpus, plausibly from an unselected
+  `boards.txt` menu option (`-DENABLE_CACHE` is the most likely
+  candidate — a CMCC cache-init sequence would add exactly this shape
+  of extra code to `Reset_Handler`/early startup). A `-DENABLE_CACHE`
+  variant was NOT built this pass (scope/time) — a natural next step
+  for exactly this open item, not a "maximize match count" exercise.
+- **A genuinely ambiguous EXACT_BYTES tie is common for trivial
+  functions.** Tiny, semantically-different stub functions (a `bl #0`
+  self-loop, `__cxa_pure_virtual`, `Dummy_Handler`, a bare `bx lr`) are
+  routinely byte-identical to EACH OTHER, not just across images — see
+  `Dummy_Handler`'s 5-way tie in "Reference-source fingerprinting"
+  above. This is expected, not a corpus-quality problem, and is exactly
+  why `is_ambiguous` exists as a separate, disclosed field rather than
+  the reducer silently preferring "the first" or "the alphabetically
+  first" candidate.
 
 ## How to rerun it
 
@@ -946,9 +1167,20 @@ import dynamic_export; dynamic_export.capture(['all'])
 "
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py ingest-dynamic research/runs/census/dynamic
 
-# Closure reduction -- run AFTER build + ingest-dynamic, for each image.
-# This now ALSO scores the residual queue and builds the hardware
-# contract (steps 9-10) -- nothing further to run separately.
+# Reference-source corpus -- fetch + build ONCE (not per-firmware; ~1.5GB
+# of downloaded/compiled artifacts under research/runs/census/reference_corpus/,
+# entirely git-ignored), then match EACH firmware against it. Must run
+# BEFORE `reduce` for that firmware's confirmations to take effect.
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-corpus fetch
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-corpus build
+for fw in autopilot868 autopilot915 mando868 mando915; do
+  tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-match "$fw"
+done
+
+# Closure reduction -- run AFTER build + ingest-dynamic + reference-match,
+# for each image. This now ALSO scores the residual queue, builds the
+# hardware contract, and folds reference-match confirmations into
+# library_matches (steps 3/9/10) -- nothing further to run separately.
 for fw in autopilot868 autopilot915 mando868 mando915; do
   tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reduce "$fw"
 done
