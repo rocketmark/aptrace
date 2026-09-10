@@ -46,6 +46,21 @@ mechanism_summary: >
   target) and a real PB05-high control: see
   docs/investigations/trigger-input-motion-causality.md and
   tools/unicorn/virtual_link.py's `pb05` scenario.
+  CLOSED, trigger-status-remote-feedback slice: the OTHER real
+  consequence of PB05 (the T-status frame, mutually exclusive with the
+  reload above via the same TR0|/TR1| toggle) also cannot bridge back to
+  motion -- the Remote's real inbound handler for "T<>,<>,|"
+  (mando868's FUN_00010ce4, its own plain 'T' branch, previously
+  untraced) stores two fields plus a flag and returns; the ONLY consumer
+  anywhere in the Remote's image (FUN_0000fa10) is a pure UI-screen
+  redraw with no outbound call. Concretely confirmed: delivering both
+  real frame shapes into the Remote's real inbound ring buffer and
+  running its real dispatcher never reaches the Remote's own TX wrapper.
+  See docs/investigations/trigger-status-remote-feedback.md and
+  tools/unicorn/virtual_link.py's `t-status` scenario. Both of PB05's
+  real downstream paths are now closed as motion causes -- no
+  firmware-only bridge to phase_ramp_arm_byte/motor_move_commit__CUSTOM
+  has been found via either one.
 
 confirmed_state:
   pin_descriptor_table:
@@ -120,6 +135,23 @@ confirmed_state:
     handler: "0x0000cb6c"
     conclusion: "never armed; not the trigger mechanism"
 
+# NEW (trigger-status-remote-feedback slice): the Remote's own (mando868,
+# NOT autopilot868) real handling of the T-status frame -- CLOSED, no
+# outbound consequence. See docs/investigations/trigger-status-remote-
+# feedback.md and tools/unicorn/virtual_link.py's `t-status` scenario.
+remote_t_status_handling:
+  firmware_key: mando868
+  functions:
+    inbound_dispatcher: "0x00010ce4"   # FUN_00010ce4, already known for MT/'a'-'x'/'B'; this slice closes its plain 'T' branch (0x10f0a-0x10f32) -- parses, stores, returns; NO send call anywhere in the branch
+    t_frame_display_consumer: "0x0000fa10"   # FUN_0000fa10, a real UI screen's own render loop; the ONLY reader of all 3 T-storage cells anywhere in the image; converts field1 to field1*3300/1023 and redraws it in a color selected by field2 -- pure display, no outbound call
+    radio_refill_stub_boundary: "0x0000b440"   # real radio-driver ring-buffer refill (called from the peek helper FUN_0000b4f8) -- touches an uninitialized driver object, the same already-documented boundary mando-first-execution.md established; irrelevant once a frame is already in the ring buffer
+    tx_wrapper: "0x000058a8"   # already proven (mando-first-execution.md); watched for explicitly this slice, never reached by either real T-frame delivery
+  ram:
+    t_field1: "0x200002e8"   # T's first field (0 or 1023) -- sole writer 0x10f24 (the T branch), sole reader FUN_0000fa10
+    t_field2: "0x200027f8"   # T's second field (0 or 1) -- sole writer 0x10f2a, sole reader FUN_0000fa10
+    t_received_flag: "0x200027f9"   # sole writer 0x10f30, sole reader FUN_0000fa10 (checked-then-cleared once per screen-loop pass)
+  conclusion: "no outbound command results from receiving T, statically (complete disassembly of the parsing branch) and concretely (real ring-buffer delivery, explicit stop_at on the TX wrapper, never reached) -- the T-status path is not the missing motion-arm bridge"
+
 symbolic_target:
   # UPDATED (symbolic-reachability slice): BOTH gate cells are now
   # provenance-closed (see `ram` above) -- this is no longer a
@@ -185,21 +217,26 @@ open_questions:
   - "CLOSED (symbolic-reachability slice): 0x20001b38/0x200000d8 -- both are real, firmware-reachable via named producers (the '+' mode=0x62 bulk-push finalize path; an all-4-channels-idle check), not synthetic. See docs/investigations/trigger-input-symbolic-reachability.md."
   - "NEW (symbolic-reachability slice, tooling not firmware): why does even the narrowed query (gate cells concrete, only PB05 symbolic) fail to converge in Z3 within a practical time budget? Candidate causes: the always-on useNonlinearArithmetic/useSymbolicArrays problem features, or per-access array-theory overhead in the symbolic memory model regardless of concreteness. Not chased this slice -- a real, bounded tooling question for whoever next needs a fast multi-instruction Crucible/Z3 query in this project."
   - "Is PA02/PB05's physical identity as 'the 3.5mm trigger jack' confirmed against a schematic, or only behaviorally inferred?"
-  - "Does anything on the Remote side react to the 'T<>,<>,|' frame in a way that matches the user-reported 'one trigger' symptom? (Remote-side tracing is out of scope for this AutoPilot-only slice.)"
+  - "CLOSED (trigger-status-remote-feedback slice): does anything on the Remote side react to the 'T<>,<>,|' frame in a way that could bridge back to motion? No -- the Remote's real handler (FUN_00010ce4's own 'T' branch) only stores two fields plus a flag; the sole consumer anywhere in the image (FUN_0000fa10) is a pure UI-screen redraw with no outbound call. Concretely confirmed: neither real frame shape ever reaches the Remote's TX wrapper. The narrower 'does it match the one-trigger symptom' framing is superseded -- T cannot bridge to motion regardless of UI symptom matching. See docs/investigations/trigger-status-remote-feedback.md."
   - "What is 0x200025bc's full role (config-reload status byte, +1 offset written =3 here; two other readers at 0x7a50/0x81f8 not traced)?"
   - "CLOSED (motion-causality slice): the narrow per-channel-loop combination (0x20002014[channel]==1 and 0x20001b40[channel]+0x44 != 0) -- 0x20002014's real producers are now both known (config_reload_motion_profile_compute clears it to 0; invalidate_config_command/0x80ec also clears it as part of a config-invalidation path). No real writer anywhere in the image sets it to 1 -- this combination is not just argued but confirmed not to fire via the PB05/reload route. See docs/investigations/trigger-input-motion-causality.md."
   - "NEW (motion-causality slice): the exact wire syntax for the 'W' command family (0x84fc/0x85d8 top-level dispatch) -- W0 (0x72ac), W1 (0x8624, a second real route into the same config reload, gated on gate1 not PB05), and the third sub-case (0x8628/0x865a, the sole armer of phase_ramp_arm_byte, gated on gate2) are all disassembly-located but not named against command-inventory.md's own conventions."
   - "NEW (motion-causality slice): why does the explicitly-synthetic positive control (phase_ramp_arm_byte forced to 1) yield FUN_00006fd8(distance=0) rather than the real '+'-pushed 500? A struct+0x40 mode-selector detail, not chased since it's outside the PB05 causal question -- would matter to a future slice that wants a full, real, nonzero-distance trace through phase_ramp_state_machine__CUSTOM specifically (plus-target-distance-roundtrip.md already has one through the G-command's own separate FUN_00007e2c path)."
   - "NEW (motion-causality slice): PB30/PB31's real role -- config_reload_gpio_pulse (0x6952) pulses them unconditionally, and motor_move_commit__CUSTOM shares the same epilogue, but neither this slice nor any prior one has characterized what they actually drive (not one of the four channels' own step/DIR pins)."
+  - "NEW (trigger-status-remote-feedback slice): which specific Remote UI screen/menu FUN_0000fa10 (the T-status display consumer) belongs to, and whether it sends TR1|/TR0| itself on entry/exit (a plausible precondition-not-consequence link to TR1|'s already-known role) -- not chased, out of scope."
+  - "With BOTH of PB05's real downstream paths now closed as motion causes (the reload, trigger-input-motion-causality.md; the T-status broadcast, trigger-status-remote-feedback.md), no firmware-only (AutoPilot+Remote protocol) explanation for the reported one-time motor trigger remains open within this project's own established command set. Remaining candidates are the already-documented self-correcting level-sampled-poll explanation (trigger-input-concrete-path.md, unrelated to motion) or something outside firmware entirely (physical/electrical) -- explicitly out of scope per instruction, not chased."
 
 evidence:
   - docs/investigations/trigger-input-concrete-path.md
   - docs/investigations/trigger-input-symbolic-reachability.md
   - docs/investigations/trigger-input-motion-causality.md
+  - docs/investigations/trigger-status-remote-feedback.md
   - docs/hardware/autopilot-research-handoff.md
   - docs/investigations/mc4-transition.md
   - docs/investigations/g-command-motor-subsystem-unlock.md
   - docs/investigations/target-config-provenance.md
   - docs/investigations/manual-mode-wire-provenance.md
   - docs/investigations/bulk-push-trigger-provenance.md
+  - docs/investigations/mt-quick-setup-trigger.md
+  - docs/investigations/mando-first-execution.md
   - docs/investigations/plus-target-distance-roundtrip.md

@@ -6,7 +6,38 @@ wins — and if you find such a conflict, it's a bug in the docs; fix it here.
 Historical detail lives in linked docs, not here — this file stays short by
 design.
 
-Last updated: 2026-09-09 (the PB05-low config-reload cannot by itself
+Last updated: 2026-09-09 (the Remote's reaction to AutoPilot's T-status
+frames closes the last open firmware-only motion-bridge hypothesis —
+negatively): `trigger-input-motion-causality.md` had already ruled out
+the PB05-low config-reload as a direct motion cause; this slice traces
+PB05's *other* real downstream effect — the `"T<0 or 1023>,<1 or 0>,\|"`
+trigger-status frame sent to the Remote when reporting is armed — and
+closes it too. The Remote's real inbound dispatcher
+(`FUN_00010ce4`'s own plain `'T'` branch, previously untraced) parses and
+stores two fields plus a flag, then returns — **no send call anywhere in
+the branch**. An exhaustive xref search finds exactly one consumer of
+those three cells in the whole image: `FUN_0000fa10`, a real UI screen's
+own render loop that scales the first field (`*3300/1023`) and redraws it
+in a color selected by the second — a pure telemetry readout, nothing
+else. **Concretely confirmed**: delivering both real frame shapes
+AutoPilot is confirmed to send directly into the Remote's real inbound
+ring buffer and running its real dispatcher (with the one real-but-
+irrelevant dependency — the radio-driver ring-buffer refill step —
+stubbed, the same already-documented boundary this project always
+stubs) reproduces the exact expected stored values, with a clean return
+and **the Remote's own TX wrapper never reached, watched for explicitly**.
+Since this was PB05's only other real consequence (mutually exclusive
+with the reload via the same `TR0\|`/`TR1\|` toggle), **both of PB05's
+real downstream paths are now closed as motion causes**: no firmware-only
+(AutoPilot+Remote protocol) bridge to `phase_ramp_arm_byte`/
+`motor_move_commit__CUSTOM` has been found via either one. A new,
+reusable regression, `tools/unicorn/virtual_link.py t-status`, reproduces
+the whole result end to end. See
+[`docs/investigations/trigger-status-remote-feedback.md`](investigations/trigger-status-remote-feedback.md)
+and [`research/workflows/trigger-input.yaml`](../research/workflows/trigger-input.yaml)
+(updated).
+
+Previous update (2026-09-09, the PB05-low config-reload cannot by itself
 cause the reported one-time motor trigger — proven, not just argued):
 disassembling the reload's own downstream chain (`0x8f98` -> `0x6e4c` ->
 `FUN_00006b50` -> `FUN_00006952`, none of it previously traced past

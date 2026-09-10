@@ -94,6 +94,7 @@ Usage:
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py ampersand  # "&|" -> "V01R39" only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py pb05     # PB05-low reload -> does it reach motor_move_commit__CUSTOM?
+    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py t-status # T-status frame -> does the Remote ever send anything back?
 """
 import sys
 from pathlib import Path
@@ -1151,6 +1152,111 @@ def run_pb05_reload_motion_check(verbose=True):
     return True
 
 
+# --- T-status (AutoPilot -> Remote) feedback-loop anchors (all
+# independently confirmed by execution this pass; see
+# docs/investigations/trigger-status-remote-feedback.md) -------------------
+
+REMOTE_T_DISPATCH_ENTRY = 0x00010ce4   # FUN_00010ce4, the Remote's real
+                                         # per-byte inbound dispatcher --
+                                         # same function already established
+                                         # (mt-quick-setup-trigger.md /
+                                         # bulk-push-trigger-provenance.md)
+                                         # for MT/'a'-'x'/'B' handling; this
+                                         # pass finds and closes its plain
+                                         # 'T' branch (0x10f0a-0x10f32)
+REMOTE_T_RADIO_REFILL_STUB = 0xb440    # the real radio-driver ring-buffer
+                                         # refill step (called from the peek
+                                         # helper FUN_0000b4f8) -- touches an
+                                         # uninitialized driver object, the
+                                         # same already-documented boundary
+                                         # this project always stubs
+                                         # (mando-first-execution.md);
+                                         # irrelevant once the frame is
+                                         # already placed in the ring buffer
+REMOTE_T_FIELD1 = 0x200002e8           # T's first field (0 or 1023), stored
+REMOTE_T_FIELD2 = 0x200027f8           # T's second field (0 or 1), stored
+REMOTE_T_FLAG = 0x200027f9             # "a T frame was received" flag --
+                                         # exhaustive xref: its only OTHER
+                                         # reference anywhere in the image is
+                                         # a read inside FUN_0000fa10 (a real
+                                         # UI screen's own render loop, which
+                                         # converts field1 into a scaled
+                                         # display value -- field1*3300/1023
+                                         # -- and redraws it in a color
+                                         # selected by field2; no other
+                                         # consumer exists)
+
+
+def run_t_status_feedback_check(verbose=True):
+    """Does the Remote's real handling of AutoPilot's T-status frame
+    (`"T<0 or 1023>,<1 or 0>,|"`, trigger-input-concrete-path.md) ever send
+    anything back -- the one thing that could close a firmware-only
+    feedback loop back into the W-command family / phase_ramp_arm_byte /
+    motor_move_commit__CUSTOM (trigger-input-motion-causality.md)?
+
+    Delivers both real frame shapes the AutoPilot is confirmed to send
+    directly into the Remote's real inbound ring buffer, entering at the
+    real per-byte dispatcher (FUN_00010ce4) that already handles MT/'a'-
+    'x'/'B' elsewhere in this project -- not a new entry convention.
+    Watches for the Remote's own real string TX wrapper (0x58a8): if
+    reached, the Remote sent something in response; if the function
+    instead returns cleanly with nothing sent, the frame's whole effect
+    is confined to the two storage cells (+ a UI redraw) this investigation
+    found are its only real consumers anywhere in the image.
+    """
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    mando = _machine_for(MANDO_FW)
+
+    def deliver(frame, tag):
+        log(f"=== Delivering real frame {frame!r} into the Remote's real inbound dispatcher ===")
+        seed = [
+            (REMOTE_RX_RINGBUF, frame),
+            (REMOTE_RX_READPTR, bytes([0])),
+            (REMOTE_RX_WRITEPTR, bytes([len(frame)])),
+            (REMOTE_T_FIELD1, (0xdeadbeef).to_bytes(4, "little")),  # sentinel
+            (REMOTE_T_FIELD2, bytes([0xAA])),                        # so a
+            (REMOTE_T_FLAG, bytes([0xAA])),                          # real write is unmistakable
+        ]
+        r = mando.run(
+            REMOTE_T_DISPATCH_ENTRY,
+            seed_mem=seed,
+            reg_seed=[("lr", mando.trampoline_addr | 1)],
+            stub_calls=[REMOTE_T_RADIO_REFILL_STUB],
+            stop_at=[mando.trampoline_addr, REMOTE_TX_WRAPPER],
+            dump_mem=[(REMOTE_T_FIELD1, 4), (REMOTE_T_FIELD2, 1),
+                      (REMOTE_T_FLAG, 1), (REMOTE_RX_READPTR, 1)],
+            max_instructions=20000,
+            label=f"t-status-{tag}",
+        )
+        assert not r.stopped_at(REMOTE_TX_WRAPPER), \
+            f"unexpected: the Remote sent something in response to a real T frame ({frame!r})"
+        assert r.stopped_at(mando.trampoline_addr), \
+            f"expected a clean return, got: {r.stop_reason}"
+        field1 = int.from_bytes(r.mem(REMOTE_T_FIELD1, 4), "little", signed=True)
+        field2 = r.mem(REMOTE_T_FIELD2, 1)[0]
+        flag = r.mem(REMOTE_T_FLAG, 1)[0]
+        readptr = r.mem(REMOTE_RX_READPTR, 1)[0]
+        log(f"  field1={field1} field2={field2} flag={flag} readptr_after={readptr}"
+            f" (frame len={len(frame)}, clean return, TX wrapper NOT reached)")
+        return field1, field2, flag
+
+    f1, f2, flag = deliver(b"T1023,0,|", "high")
+    assert (f1, f2, flag) == (1023, 0, 1), f"expected (1023, 0, 1), got {(f1, f2, flag)}"
+    f1, f2, flag = deliver(b"T0,1,|", "low")
+    assert (f1, f2, flag) == (0, 1, 1), f"expected (0, 1, 1), got {(f1, f2, flag)}"
+
+    log("\nRESULT: both real T-status frame shapes are parsed and stored for real,")
+    log("with the real radio-driver refill (irrelevant once the frame is already")
+    log("queued) stubbed -- and NEITHER delivery reaches the Remote's own TX")
+    log("wrapper. The T-status path cannot be the missing motion-arm bridge: it")
+    log("has no outbound consequence at all, firmware-confirmed, not inferred")
+    log("from a timeout or absence.")
+    return True
+
+
 if __name__ == "__main__":
     which = sys.argv[1] if len(sys.argv) > 1 else "all"
     if which == "ampersand":
@@ -1163,6 +1269,8 @@ if __name__ == "__main__":
         ok = run_plus_target_distance_roundtrip()
     elif which == "pb05":
         ok = run_pb05_reload_motion_check()
+    elif which == "t-status":
+        ok = run_t_status_feedback_check()
     elif which == "all":
         ok = run_ampersand_roundtrip()
         print()
@@ -1173,6 +1281,8 @@ if __name__ == "__main__":
         ok = run_plus_target_distance_roundtrip() and ok
         print()
         ok = run_pb05_reload_motion_check() and ok
+        print()
+        ok = run_t_status_feedback_check() and ok
     else:
-        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|plus|pb05|all]")
+        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|plus|pb05|t-status|all]")
     sys.exit(0 if ok else 1)
