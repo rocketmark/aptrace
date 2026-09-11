@@ -45,6 +45,7 @@ Usage:
     aptrace_census.py reference-match autopilot868
     aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
     aptrace_census.py reference-unmatched autopilot868
+    aptrace_census.py semantic-packets autopilot868 --output research/generated/autopilot-semantic-pass1.jsonl
     aptrace_census.py state-map autopilot868 --base 0x200025bc --count 18 --width 1 \\
         [--label NAME] [--dispatcher-entry ADDR] [--tx-wrapper ADDR ...] \\
         [--extra-seed ADDR=HEXBYTES ...] [--index-addr ADDR] [--index-width N]
@@ -896,6 +897,15 @@ def cmd_reference_matches(args):
     print(f"({n} match(es): {counts})")
 
 
+def cmd_semantic_packets(args):
+    """Compact per-residual-function evidence export for a semantic
+    classification pass -- see semantic_packets.py's module docstring."""
+    import semantic_packets
+    conn = census_db.connect(args.db, create=False)
+    n = semantic_packets.export_packets(conn, args.firmware, args.output)
+    print(f"wrote {n} packet(s) to {args.output}")
+
+
 def cmd_state_map(args):
     """Generic indexed state/event array mapper -- see state_map.py's
     module docstring for the evidence model. Prints a deterministic
@@ -1070,6 +1080,10 @@ def main(argv):
     run = sub.add_parser("reference-unmatched", help="functions with NO_MATCH against the reference corpus")
     run.add_argument("firmware")
 
+    spk = sub.add_parser("semantic-packets", help="compact per-residual-function evidence export (see semantic_packets.py)")
+    spk.add_argument("firmware")
+    spk.add_argument("--output", required=True, help="output JSONL path")
+
     sm = sub.add_parser("state-map", help="generic indexed state/event array mapper (see state_map.py)")
     sm.add_argument("firmware")
     sm.add_argument("--base", required=True, help="array base address, e.g. 0x200025bc")
@@ -1107,7 +1121,7 @@ def main(argv):
         "hardware-contract": cmd_hardware_contract, "diff": cmd_diff,
         "reference-corpus": cmd_reference_corpus, "reference-match": cmd_reference_match,
         "reference-matches": cmd_reference_matches, "reference-unmatched": cmd_reference_unmatched,
-        "state-map": cmd_state_map,
+        "state-map": cmd_state_map, "semantic-packets": cmd_semantic_packets,
     }[args.command](args)
     return 0
 
