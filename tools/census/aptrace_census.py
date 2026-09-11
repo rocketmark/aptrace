@@ -45,7 +45,11 @@ Usage:
     aptrace_census.py reference-match autopilot868
     aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
     aptrace_census.py reference-unmatched autopilot868
+    aptrace_census.py state-map autopilot868 --base 0x200025bc --count 18 --width 1 \\
+        [--label NAME] [--dispatcher-entry ADDR] [--tx-wrapper ADDR ...] \\
+        [--extra-seed ADDR=HEXBYTES ...] [--index-addr ADDR] [--index-width N]
 """
+import json
 import sys
 from pathlib import Path
 
@@ -892,6 +896,49 @@ def cmd_reference_matches(args):
     print(f"({n} match(es): {counts})")
 
 
+def cmd_state_map(args):
+    """Generic indexed state/event array mapper -- see state_map.py's
+    module docstring for the evidence model. Prints a deterministic
+    slot-by-slot summary and stores the full result in SQLite
+    (state_map_runs/state_map_slots/state_map_dispatcher_probes)."""
+    import state_map
+    conn = census_db.connect(args.db, create=False)
+    base = hexaddr(args.base)
+    dispatcher_entry = hexaddr(args.dispatcher_entry) if args.dispatcher_entry else None
+    tx_wrappers = [hexaddr(a) for a in args.tx_wrapper]
+    index_addr = hexaddr(args.index_addr) if args.index_addr else None
+
+    run_id = state_map.build_state_map(
+        conn, args.firmware, base, args.count, args.width,
+        label=args.label, dispatcher_entry=dispatcher_entry)
+
+    if dispatcher_entry is not None:
+        state_map.probe_dispatcher(
+            conn, run_id, args.firmware, base, args.width, args.count, dispatcher_entry,
+            tx_wrappers=tx_wrappers, extra_seed=args.extra_seed, index_addr=index_addr,
+            index_width=args.index_width, max_instructions=args.max_instructions)
+
+    print(f"state-map run {run_id}: '{args.firmware}' base={hx(base)} count={args.count} "
+          f"width={args.width}" + (f" label={args.label!r}" if args.label else ""))
+    print(f"{'slot':>4}  {'addr':>10}  {'static_w':>8}  {'reachable_w':>11}  {'dyn_w':>5}  "
+          f"{'dispatcher':>13}  unresolved")
+    for row in state_map.summary_rows(conn, run_id):
+        s, probe = row["slot"], row["probe"]
+        writers = json.loads(s["static_writers_json"])
+        reach = sorted({w["reachability"] for w in writers if w["reachability"]})
+        disp = "-"
+        if probe:
+            disp = probe["outcome"]
+            if probe["output_depends_on_unresolved_source"]:
+                disp += "*"
+        unresolved = "UNRESOLVED_PRODUCER" if s["unresolved_producer"] else ""
+        print(f"{s['slot_index']:>4}  {hx(s['addr']):>10}  {len(writers):>8}  "
+              f"{','.join(reach) or '-':>11}  {s['has_dynamic_writer']:>5}  {disp:>13}  {unresolved}")
+    print(f"\n(run_id={run_id}; * = dispatcher reached a real TX call but this probe supplied no "
+          f"source value, so the captured output is empty/all-zero -- "
+          f"output_depends_on_unresolved_source)")
+
+
 def cmd_reference_unmatched(args):
     conn = census_db.connect(args.db, create=False)
     fw = census_db.get_firmware_id(conn, args.firmware)
@@ -1020,6 +1067,24 @@ def main(argv):
     run = sub.add_parser("reference-unmatched", help="functions with NO_MATCH against the reference corpus")
     run.add_argument("firmware")
 
+    sm = sub.add_parser("state-map", help="generic indexed state/event array mapper (see state_map.py)")
+    sm.add_argument("firmware")
+    sm.add_argument("--base", required=True, help="array base address, e.g. 0x200025bc")
+    sm.add_argument("--count", type=int, required=True, help="number of slots")
+    sm.add_argument("--width", type=int, default=1, help="bytes per slot (default 1)")
+    sm.add_argument("--label", default=None, help="human-readable name for this array, purely descriptive")
+    sm.add_argument("--dispatcher-entry", default=None,
+                     help="optional: also run the generic dispatcher probe from this real entry point")
+    sm.add_argument("--tx-wrapper", action="append", default=[],
+                     help="a real TX-wrapper address the probe should stop at and capture (repeatable)")
+    sm.add_argument("--extra-seed", action="append", default=[],
+                     help="ADDR=HEXBYTES, applied identically before every probed slot (repeatable) -- "
+                          "mechanical wiring (e.g. a queue-length constant), never a semantic source value")
+    sm.add_argument("--index-addr", default=None,
+                     help="optional: also write the slot index N here each iteration (e.g. a scan-table slot)")
+    sm.add_argument("--index-width", type=int, default=1)
+    sm.add_argument("--max-instructions", type=int, default=5000)
+
     args = p.parse_args(argv)
     {
         "build": cmd_build, "reduce": cmd_reduce, "summary": cmd_summary, "function": cmd_function,
@@ -1033,6 +1098,7 @@ def main(argv):
         "hardware-contract": cmd_hardware_contract, "diff": cmd_diff,
         "reference-corpus": cmd_reference_corpus, "reference-match": cmd_reference_match,
         "reference-matches": cmd_reference_matches, "reference-unmatched": cmd_reference_unmatched,
+        "state-map": cmd_state_map,
     }[args.command](args)
     return 0
 

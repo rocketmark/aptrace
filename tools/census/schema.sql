@@ -768,3 +768,83 @@ CREATE TABLE IF NOT EXISTS reference_matches (
 );
 CREATE INDEX IF NOT EXISTS idx_refmatch_fw ON reference_matches(firmware_id);
 CREATE INDEX IF NOT EXISTS idx_refmatch_tier ON reference_matches(firmware_id, tier);
+
+-- ===========================================================================
+-- Generic indexed state/event array mapper (tools/census/state_map.py).
+-- One run = one (firmware, base, count, width) array description (e.g.
+-- AutoPilot's pending[] event-scheduling array, base=0x200025bc,
+-- count=18, width=1) -- reusable for ANY other indexed state array in
+-- ANY firmware, not specific to any one protocol/array. Every fact
+-- underneath is pulled mechanically from the evidence tables ABOVE
+-- (memory_accesses, function_reachability, dynamic_memory,
+-- indirect_edge_resolutions) -- this layer never collects a new static
+-- fact of its own; it only re-slices existing evidence per array slot.
+-- No semantic interpretation ("is this real/dormant/motor-related") is
+-- stored here -- see docs/tooling/census.md's evidence rule.
+-- ===========================================================================
+
+CREATE TABLE IF NOT EXISTS state_map_runs (
+    id                INTEGER PRIMARY KEY,
+    firmware_id         INTEGER NOT NULL REFERENCES firmware(id),
+    base                  INTEGER NOT NULL,
+    count                   INTEGER NOT NULL,
+    width                    INTEGER NOT NULL,
+    label                      TEXT,
+    dispatcher_entry            INTEGER,  -- NULL if no dispatcher probe was requested
+    ran_at                        TEXT NOT NULL,
+    source                          TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_statemap_runs_fw ON state_map_runs(firmware_id);
+
+-- One row per slot (0..count-1) of one state_map_runs run. JSON columns
+-- hold the full, un-collapsed list of matching evidence rows (never just
+-- a count) so a later reader can see exactly which instructions/
+-- functions/scenarios produced each verdict.
+CREATE TABLE IF NOT EXISTS state_map_slots (
+    id                       INTEGER PRIMARY KEY,
+    run_id                     INTEGER NOT NULL REFERENCES state_map_runs(id),
+    firmware_id                  INTEGER NOT NULL REFERENCES firmware(id),
+    slot_index                     INTEGER NOT NULL,
+    addr                              INTEGER NOT NULL,
+    static_writers_json                 TEXT NOT NULL,  -- [{from_addr, from_function, reachability}, ...]
+    static_readers_json                   TEXT NOT NULL,  -- [{from_addr, from_function, reachability}, ...]
+    dynamic_writers_json                    TEXT NOT NULL,  -- [{scenario, leg_label, pc, value_hex}, ...]
+    dynamic_readers_json                      TEXT NOT NULL,  -- [{scenario, leg_label, pc}, ...]
+    unresolved_indirect_json                    TEXT NOT NULL,  -- [{from_addr, from_function}, ...] -- UNRESOLVED
+                                                                    -- indirect edges inside a writer/reader's
+                                                                    -- OWN function (disclosed caveat, not a
+                                                                    -- claim that edge produces this write)
+    has_static_writer                             INTEGER NOT NULL,  -- 0/1
+    has_dynamic_writer                              INTEGER NOT NULL,  -- 0/1
+    unresolved_producer                               INTEGER NOT NULL,  -- 0/1: no static AND no dynamic writer
+    source                                              TEXT NOT NULL,
+    UNIQUE(run_id, slot_index)
+);
+CREATE INDEX IF NOT EXISTS idx_statemap_slots_run ON state_map_slots(run_id);
+CREATE INDEX IF NOT EXISTS idx_statemap_slots_unresolved ON state_map_slots(run_id, unresolved_producer);
+
+-- One row per slot's OPTIONAL generic dispatcher probe (only populated
+-- when state_map_runs.dispatcher_entry is set) -- a single reusable
+-- probe (tools/census/state_map.py:probe_dispatcher) iterates every
+-- slot mechanically (mark slot N active, run the real dispatcher
+-- function, see what real code path it takes), never a per-slot
+-- hand-authored test and never a seeded semantic source value.
+CREATE TABLE IF NOT EXISTS state_map_dispatcher_probes (
+    id                       INTEGER PRIMARY KEY,
+    run_id                     INTEGER NOT NULL REFERENCES state_map_runs(id),
+    firmware_id                  INTEGER NOT NULL REFERENCES firmware(id),
+    slot_index                     INTEGER NOT NULL,
+    outcome                           TEXT NOT NULL,  -- string_tx / byte_tx / clean_return / other / error
+    stop_reason                         TEXT,
+    tx_wrapper_addr                       INTEGER,
+    output_hex                              TEXT,     -- raw bytes captured at the TX-wrapper stop, if reached
+    output_depends_on_unresolved_source       INTEGER NOT NULL DEFAULT 0,  -- 1 if output_hex is all-zero/empty
+                                                                              -- while reaching a real TX call --
+                                                                              -- i.e. the dispatcher DID take a
+                                                                              -- real output path, but this probe
+                                                                              -- supplied no source value for it
+    instructions_executed                       INTEGER,
+    source                                        TEXT NOT NULL,
+    UNIQUE(run_id, slot_index)
+);
+CREATE INDEX IF NOT EXISTS idx_statemap_probes_run ON state_map_dispatcher_probes(run_id);

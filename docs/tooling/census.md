@@ -188,6 +188,9 @@ tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-corpus 
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-match autopilot868
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
 tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py reference-unmatched autopilot868
+tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py state-map autopilot868 \
+    --base 0x200025bc --count 18 --width 1 [--label NAME] \
+    [--dispatcher-entry ADDR --tx-wrapper ADDR ... --extra-seed ADDR=HEXBYTES ... --index-addr ADDR]
 ```
 
 Addresses are hex (`0x` prefix optional), matching every other address
@@ -969,6 +972,41 @@ reasons (dynamic coverage, the existing curated confirmations).
 aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
 aptrace_census.py reference-unmatched autopilot868
 ```
+
+## Generic indexed state/event array mapper (`state_map.py`)
+
+`aptrace_census.py state-map <firmware> --base ADDR --count N --width N
+[--label NAME]` mechanically enumerates every slot of an arbitrary
+indexed RAM array (byte, halfword, or word width) and re-slices EXISTING
+evidence per slot — `memory_accesses` (static writers/readers),
+`function_reachability` (is each writer/reader function itself
+reachable?), `dynamic_memory` (writes/reads already observed by an
+ingested Unicorn scenario, with captured values), and
+`indirect_edge_resolutions` (any UNRESOLVED indirect edge inside a
+writer/reader's own function, disclosed as a caveat, never claimed to
+explain the write). It collects no new static fact of its own and makes
+no semantic judgment about what any slot "means" — reusable for any
+indexed state/event array in any firmware this census already covers,
+not specific to any one array or protocol. Results persist to
+`state_map_runs`/`state_map_slots` (one run per invocation, so history
+accumulates rather than being overwritten).
+
+An optional, equally generic dispatcher probe (`--dispatcher-entry ADDR
+--tx-wrapper ADDR ... [--extra-seed ADDR=HEXBYTES ...] [--index-addr
+ADDR]`) uses real Unicorn concrete execution: for every slot N, mark
+slot N active (write into the array itself), optionally also write N to
+an `--index-addr` (for a dispatcher reached through a separate scan/
+queue table) and apply any fixed `--extra-seed` writes identically every
+iteration (mechanical wiring — a queue-length constant, a rate-limit
+bypass — never a semantic source value), then run the real firmware from
+`--dispatcher-entry` and record where it stops: a real TX-wrapper call
+with captured bytes, a clean return with no TX wrapper ever reached, or
+something else, as-is. If a real TX call IS reached but the captured
+bytes are empty (a source this probe didn't seed defaults to nothing),
+that is recorded as `output_depends_on_unresolved_source` rather than
+retried with an invented value. Results persist to
+`state_map_dispatcher_probes`. See `tools/census/state_map.py`'s module
+docstring for the full evidence model.
 
 ## Limitations
 
