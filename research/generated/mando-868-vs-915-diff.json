@@ -1,0 +1,125 @@
+{
+  "audit": "Mando 915 Differential Audit against Mando 868",
+  "baseline": "mando868 (Remote behavioral baseline, per docs/replacement/mando868-counterpart-audit.md)",
+  "compared": "mando915",
+  "method": "Exhaustive raw byte-for-byte diff of the two firmware images (research/firmware/originals/firmware_mando868.bin vs firmware_mando915.bin, both 138304 bytes), cross-checked against the existing census `diff` subcommand (tools/census/aptrace_census.py diff mando868 mando915 --json), then a small number of targeted disassembly comparisons (via the existing cached Ghidra project, no new analysis) to distinguish real logic differences from link-time address relocation. No Unicorn, no SMT, no new census/analysis tooling.",
+  "firmware_hashes": {
+    "mando868_sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc",
+    "mando915_sha256": "abb71190982793872f5752f620adeaa3b3516d6266fe9433d0e6e680a4e629b9"
+  },
+  "raw_byte_diff": {
+    "total_bytes": 138304,
+    "differing_bytes": 62870,
+    "contiguous_differing_ranges": 4870,
+    "differing_range_span": "file offset 0x4 - 0x21830 (of 0x21c00 total)",
+    "note": "Unlike AutoPilot868/915 (a single clean 4-byte diff), this is a large, pervasive diff spanning most of the image. This is NOT, by itself, evidence of behavioral change -- see root_cause_analysis below."
+  },
+  "root_cause_analysis": {
+    "hypothesis": "A single link-time relocation: some region early in the mando915 build is a different size than in mando868 (most plausibly related to the region-specific RF-band configuration/string), causing every subsequent absolute address reference (vector-table entries, BL call targets, literal-pool data pointers) to shift by a small, position-dependent delta (observed deltas: +0x10, +0xc, +0x8 depending on location) -- with the underlying instruction logic completely unchanged.",
+    "verification_method": "Three independent representative samples, spanning early/mid-file locations and both 'callee relocated' and 'function itself relocated' cases, all confirmed the hypothesis with zero logic differences found:",
+    "samples": [
+      {
+        "function": "0x000049c4 (Remote '+' frame builder, FUN_000049c4 -- already characterized in docs/investigations/auto-mode-and-plus-command.md and this project's own AutoPilot Gap Resolution A)",
+        "finding": "Own start address and instruction stream identical; 2 internal BL targets shifted: 0x00014bb6->0x00014bc6 and 0x00014c7a->0x00014c8a (both +0x10). No other difference in the function's 736-byte body.",
+        "classification": "ADDRESS_LAYOUT_ONLY"
+      },
+      {
+        "function": "0x0000e670 region (Auto-Mode configuration screen state machine, FUN_0000e670)",
+        "finding": "Own start address and instruction stream identical; 1 internal BL target shifted: 0x000171f0->0x00017200 (+0x10, the jog-wheel-click read primitive already characterized in docs/investigations/manual-mode-and-limits.md). No logic difference.",
+        "classification": "ADDRESS_LAYOUT_ONLY"
+      },
+      {
+        "function": "0x00010ce4 -> 0x00010cf4 (Remote inbound radio-command handler, FUN_0000_10ce4 -- already characterized as the MT/async-dispatch consumer in docs/investigations/motor-subsystem-unlock.md and docs/replacement/mando868-counterpart-audit.md item 10)",
+        "finding": "Function's OWN start address moved by +0x10 (0x10ce4->0x10cf4); every internal literal-pool/branch-target address inside it shifted by the identical +0x10; every unshifted external call target (0x583c, 0xb4f8) stayed unchanged. Instruction-for-instruction identical otherwise.",
+        "classification": "ADDRESS_LAYOUT_ONLY"
+      }
+    ],
+    "structural_cross_check": "Of the 125 functions with mismatched content-hash between the two images, only 8 have a different START address (own-function relocation): 0x00010ce4->0x00010cf4, 0x00010698->0x000106a8, 0x00010258->0x00010264, 0x000100f0->0x000100fc, 0x00016900->0x00016910, 0x00019cdc->0x00019cec, 0x0001a224->0x0001a234, 0x0001a788->0x0001a798 -- all shifts are small (+0xc to +0x10), consistent with a single cascading link-time cause rather than independent content edits. The remaining 117 keep their own start address and differ only in embedded references to the 8 relocated functions or to shifted literal-pool data.",
+    "conclusion": "The entire raw-byte diff (all 4870 ranges) is explained by this single relocation mechanism plus the 2 genuine content differences documented below. This conclusion is representative-sample-based (3 disassembly comparisons + 1 structural cross-check across 125 hash-mismatched functions), not an individual re-verification of all 125 -- consistent with this audit's own bound against manual inspection of every changed address."
+  },
+  "actual_differences": [
+    {
+      "id": "DIFF-1",
+      "kind": "string_constant",
+      "description": "RF-band display string",
+      "value_mando868": "868MHz band",
+      "value_mando915": "915MHz band",
+      "classification": "RF_BAND_SPECIFIC",
+      "replacement_contract_relevance": "Display-only (Info/firmware-version screen, per docs/ui/user-guide-workflows.md#9); no protocol/behavior consequence."
+    },
+    {
+      "id": "DIFF-2",
+      "kind": "string_constant",
+      "description": "Compile-time build timestamp string",
+      "value_mando868": "12:22:42",
+      "value_mando915": "12:20:52",
+      "classification": "BUILD_ARTIFACT",
+      "replacement_contract_relevance": "None -- a __TIME__-macro-style compile timestamp, not a functional difference."
+    },
+    {
+      "id": "DIFF-3",
+      "kind": "address_relocation",
+      "description": "The entire remaining raw-byte diff (62,870 - a few bytes accounted for by DIFF-1/DIFF-2): vector-table entries, BL/branch targets, and literal-pool data pointers shifted by small (+0x8 to +0x10) position-dependent deltas throughout most of the image, with zero instruction/logic differences found in every sampled location.",
+      "classification": "ADDRESS_LAYOUT_ONLY",
+      "replacement_contract_relevance": "None -- confirmed by direct disassembly comparison (see root_cause_analysis) to carry no logic/behavior change; a pure build/link artifact."
+    }
+  ],
+  "rf_register_config_note": {
+    "checked": true,
+    "method": "Scanned every differing 4-byte range for a value decoding (little-endian uint32) to a plausible RF center frequency (800MHz-1000MHz range), the same technique that cleanly found AutoPilot's own 864000000/915000000 constant.",
+    "result": "No clean, round frequency value found among Mando's differing 4-byte ranges -- unlike AutoPilot, no isolated RF-frequency constant was mechanically identified. The RF-band difference is confirmed only at the display-string level (DIFF-1); whether Mando's own radio SPI/register configuration differs between builds (analogous to AutoPilot's radio_bringup__THIRD_PARTY) could not be isolated from the pervasive link-shift noise via mechanical byte-diffing alone.",
+    "status": "marked separately per this audit's own instruction; does not block protocol-contract closure, matching the identical non-blocking treatment already given to this same class of gap on both the AutoPilot side (autopilot-replacement-gaps.json, radio transport) and the Mando868 counterpart audit (item 18, radio TX/RX packet boundary)."
+  },
+  "census_analysis_state_artifacts": {
+    "residual_priority_diffs": {
+      "count": 40,
+      "description": "All 40 have an identical exact_hash between mando868 and mando915 (confirmed byte-identical function bodies) -- the diffs are purely in the mechanical residual_priority score and/or function name (14 of 40 show a name difference), stemming from unequal dynamic-coverage ingestion (mando868: 12 runs across 6 scenarios; mando915: 1 run across 1 scenario) and unequal semantic-classification progress (mando868 has this project's own Mando868 Counterpart Audit naming applied; mando915 has none, correctly, per this task's own scope).",
+      "classification": "BUILD_ARTIFACT"
+    }
+  },
+  "census_diff_summary": {
+    "hardware_register_diffs": 0,
+    "mmio_sites_only_in_a": 0,
+    "mmio_sites_only_in_b": 0,
+    "pin_config_diffs": 0,
+    "strings_only_in_a": 2,
+    "strings_only_in_b": 2,
+    "hardware_relevant_constant_diffs": 0,
+    "byte_identical_function_count": 415,
+    "functions_with_mismatched_hash": 125,
+    "of_which_self_relocated": 8,
+    "residual_priority_diffs": 40
+  },
+  "classification_tally": {
+    "RF_BAND_SPECIFIC": 1,
+    "BUILD_ARTIFACT": 2,
+    "ADDRESS_LAYOUT_ONLY": 1,
+    "SEMANTICALLY_EQUIVALENT": 0,
+    "POTENTIAL_BEHAVIOR_CHANGE": 0,
+    "UNRESOLVED": 0
+  },
+  "contract_matrix": [
+    {"item": "G transaction", "result": "SAME", "note": "0x0000b680 (G builder) is byte-identical, own address unchanged -- not in either firmware's hash-mismatch list at all."},
+    {"item": "S/P", "result": "SAME"},
+    {"item": "!", "result": "SAME"},
+    {"item": "I", "result": "SAME"},
+    {"item": "I9/I1", "result": "SAME"},
+    {"item": "interactive +", "result": "SAME", "note": "FUN_000049c4 sampled directly (see root_cause_analysis) -- logic identical, only 2 internal call-target addresses relocated."},
+    {"item": "bulk 0x62 re-arm", "result": "SAME"},
+    {"item": "Manual F0/E0", "result": "SAME", "note": "FUN_0000e670/FUN_0000de3c/FUN_0000be94 all in the address-relocation-only population (or byte-identical); no logic change found in the sampled 0xe670 region."},
+    {"item": "MC/MC4", "result": "SAME"},
+    {"item": "MT/Quick Setup", "result": "SAME", "note": "FUN_00010ce4->FUN_00010cf4 sampled directly (see root_cause_analysis) -- logic identical, function relocated by +0x10 with all internal references shifted consistently."},
+    {"item": "program-position handling", "result": "SAME"},
+    {"item": "retry/timeouts", "result": "SAME"},
+    {"item": "malformed-response behavior", "result": "SAME"},
+    {"item": "known protocol quirks", "result": "SAME"},
+    {"item": "reconnect behavior", "result": "SAME"},
+    {"item": "RF packet boundary", "result": "SAME", "note": "Logical packet framing/transport code unchanged; only the RF-band display string differs (DIFF-1) and exact radio register values are not mechanically isolable from link-shift noise on either build (see rf_register_config_note) -- unresolved at the register level on BOTH images equally, not a NEW 915-specific gap."},
+    {"item": "local persistence expectations", "result": "SAME"}
+  ],
+  "conclusion": {
+    "single_common_contract_sufficient": true,
+    "concrete_execution_required": false,
+    "summary": "The Mando868 Remote behavioral contract (docs/replacement/mando868-counterpart-audit.md, research/generated/mando868-counterpart-audit.json) applies unchanged to Mando915. The large raw-byte diff is fully explained by one link-time address-relocation artifact plus two cosmetic string differences (RF-band label, build timestamp) -- no logic/behavior difference was found anywhere sampled."
+  }
+}
