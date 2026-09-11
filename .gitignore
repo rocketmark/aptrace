@@ -32,3 +32,6 @@ dist-newstyle/
 # `aptrace_census.py build <firmware-key>` + dynamic_export.py; not
 # distributed. See docs/tooling/census.md.
 /research/runs/census/
+
+# Board photos -- reference images, not source; keep out of git history.
+/research/AutoPilot Board Photos/

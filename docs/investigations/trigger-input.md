@@ -12,6 +12,17 @@ designed and prototyped in Unicorn, but **no firmware has been patched or
 flashed** — the physical root cause of the transient itself remains
 unmeasured.
 
+**A later, deliberately adversarial falsification pass** (started from
+"assume the no-motion conclusion is wrong, try to break it," not from
+re-confirming it) found two genuinely new per-channel RAM writes on the
+trigger-accept reload path that this investigation's own original state
+audit had missed, traced both to their real consumers by decompile plus
+concrete Unicorn replay, and still could not find a reachable path to
+motor motion. See "Falsification pass," below — the headline conclusion
+is unchanged, but the evidence underneath it is now substantially
+deeper, and one bookkeeping error in the original write-up (below) was
+caught and corrected in the process.
+
 ## Current model
 
 **Boot-time mode select.** `FUN_00006968` ("startup reference/input
@@ -123,6 +134,99 @@ nothing about legitimate held-trigger use. It has been prototyped as a
 34-byte Thumb-2 trampoline and exercised concretely in Unicorn against a
 9-scenario regression matrix; it has not been flashed to any real device.
 
+## Falsification pass — deeper producer→consumer audit
+
+This pass deliberately did not start from "the prior conclusion is
+correct." It re-derived both accept paths from scratch, then went beyond
+the original state audit (which stopped at "`0x8f98` clears
+`phase_ramp_arm_byte`") to mechanically enumerate **every** persistent
+RAM write the trigger-accept reload (`FUN_00006b50`) makes, and traced
+every one of them forward to a real consumer or to a proven dead end.
+
+**Two genuinely new writes were found**, both previously uncharacterized
+in this file, both gated on the same per-channel "has a valid stored
+program" flag (`config_struct[ch].0x44 != 0`) the reload already checks
+for its other work:
+
+| Address | Value | Previously documented? |
+|---|---|---|
+| `0x20002524[ch]` (device-state byte) | `=1` | No |
+| `0x2000310c[ch]` | `=1` | No — and see the correction below |
+| `0x2000016c[ch]` | `=1`, unconditionally, all 4 channels | No |
+
+`0x2000016c` was resolved first: an exhaustive raw-binary scan of the
+compiled image for its literal address (not just Ghidra's `xrefs`
+command — see the methodology note below) finds **exactly one**
+reference anywhere in the whole firmware, the write itself. No reader
+exists. **CONFIRMED** dead, the same class of finding as the ADC
+baseline / `0x20001b14`.
+
+`0x20002524[ch]=1` and `0x2000310c[ch]=1` are not dead — they have real
+consumers, which is exactly the kind of thing this falsification pass
+was looking for:
+
+- **`0x2000310c==2`** is written by `FUN_00004d18`, but only when it is
+  called, and its only caller (`FUN_00005274`) only reaches it when
+  `0x20002318[ch]==1` (phase-1, already-armed) or `0x20002524[ch]∈{2,3}`
+  (two periodic pollers) — **not** the value `1` the trigger reload
+  writes. Closed.
+- **`0x20002524==1`** (the value Trigger actually produces) has exactly
+  one every-main-loop-tick consumer that accepts it:
+  **`FUN_00005fac`**, called unconditionally from `sketch_loop__CUSTOM`.
+  Full decompile of `FUN_00005fac` and its own terminal call
+  (`FUN_00005958`) shows both of its branches — "not yet elapsed, update
+  a timestamp" and "elapsed, advance a breakpoint index, and if that was
+  the last one, clear state" — contain **zero** calls to
+  `motor_move_commit__CUSTOM`, `FUN_00004d18`, or any GPIO/`digitalWrite`
+  primitive. `channel_event_monitor__CUSTOM` (`FUN_00008a80`,
+  `sketch_loop__CUSTOM`'s other direct callee) was also checked: its
+  `switch(0x20002524[ch])` only acts on values `2`/`3`, making `1` a
+  no-op case for it.
+- **Concretely reconfirmed** (`tools/unicorn/trigger_device_state_closure.py`):
+  starting from the real post-reload state (`device_state[0]=1`,
+  `flag_310c[0]=1`, a real non-blank segment-duration table populated by
+  the same reload), `FUN_00005fac` was run across 4 simulated main-loop
+  ticks and `channel_event_monitor__CUSTOM` once more — zero writes
+  beyond what the reload itself already made, zero reach into any motion
+  primitive.
+- **`FUN_00007e2c`/`phase_ramp_state_machine__CUSTOM`'s own re-entrant
+  calls into `motor_move_commit__CUSTOM`** (`0x8fee`/`0x9050`,
+  previously unattributed "callers" in a raw `xrefs` query) were also
+  resolved this pass: phase-2/3 **continuation** logic, reachable only
+  from an already-armed state, not a second arming path.
+- **The analog arm's convergence onto `0x8f98`** was independently
+  re-disassembled this pass (`0x8e68`-`0x8fa8`) rather than taken on the
+  original write-up's word: it is the exact same address and bytes as
+  the digital arm's target, not merely "nearby" code.
+
+**Methodology correction.** Ghidra's `xrefs` command, queried for
+`0x2000310c`, returned exactly 5 references and — critically — none of
+them were the two real writes inside `FUN_00006b50` that a full
+decompile then surfaced (it attributed those instructions to unrelated
+addresses). This is now known to be a real blind spot, not a one-off:
+every claim in this section was cross-checked by either a full decompile
+or a raw little-endian literal-byte scan of the compiled `.bin` before
+being trusted. **The pre-existing sentence in "Accept target `0x8f98`"
+below, which said `0x2000310c`'s "one other reader" is
+`motor_move_commit__CUSTOM`, was itself downstream of this same `xrefs`
+gap and is corrected in place.**
+
+**PB30/PB31 status, re-examined.** Confirmed real SAMD51 port-B bits
+30/31 (pin-descriptor table, validated formula), pulsed unconditionally
+by `FUN_00006952` on both the G-commit and the trigger-reload paths —
+state-independent, so it cannot itself encode run/idle. A same pin-index
+number on the *Remote* firmware drives its jog-wheel quadrature encoder,
+but that is a different firmware image and not evidence for the
+AutoPilot's own PB30/PB31. Physical role beyond "shared GPIO pulse" is
+left **unresolved**, not invented.
+
+**Conclusion of this pass**: `TRIGGER_NO_MOVEMENT_CONFIRMED`, now
+resting on a full producer→consumer closure over every RAM cell the
+trigger-accept path writes (including the two new ones above), each
+traced to a proven-dead or proven-inert consumer, cross-checked against
+a caught tooling failure, and closed with fresh concrete replay — not
+merely "the immediate handler doesn't set `phase_ramp_arm_byte`."
+
 ## Evidence
 
 Confidence tags follow this project's standard scale: **CONFIRMED**
@@ -190,10 +294,15 @@ arms): `ldr r3,[0x9148]` (`=0x200025bc`); `movs r2,#3`; `strb r2,[r3,#1]`
 (status byte `=3`); `pop.w {r4-r11,lr}; b.w 0x00006e4c` (tail-jump into
 the reload chain). Confirmed **not** to arm motion: `FUN_00006b50` writes
 motion-profile arrays with no other reader anywhere in the image (dead,
-same pattern as the ADC baseline) except `0x2000310c[channel]`, whose one
-other reader (`motor_move_commit__CUSTOM`) is never reached from this
-chain; and it explicitly **clears** `0x20002318[channel]` and
-`0x20002014[channel]` rather than setting them. Concretely confirmed via
+same pattern as the ADC baseline), and it explicitly **clears**
+`0x20002318[channel]` and `0x20002014[channel]` rather than setting
+them. It also writes `0x2000310c[channel]=1` and
+`0x20002524[channel]=1` for channels with a valid stored program — see
+"Falsification pass," above, for the full trace of those two cells to
+their real (non-motion) consumers; the version of this sentence claiming
+`0x2000310c`'s only other reader is `motor_move_commit__CUSTOM` was
+incorrect (a downstream effect of a `xrefs` blind spot on that address)
+and is corrected here. Concretely confirmed via
 a real `'+'`-push predecessor state (not fabricated): PB05 LOW reaches
 `0x8f98` (288 real memory writes, real PB30/PB31 GPIO pulse); PB05 HIGH
 (identical predecessor) touches none of the watched state; a labeled,
@@ -387,6 +496,13 @@ image has been produced.
   confirming the reload fires and never reaches
   `motor_move_commit__CUSTOM`, plus a labeled control that does reach it
   when the arm byte is force-set.
+- **`tools/unicorn/trigger_device_state_closure.py`** — the
+  falsification pass's own script: reuses the pb05 scenario's real
+  predecessor state, then runs `FUN_00005fac` (4 simulated main-loop
+  ticks) and `channel_event_monitor__CUSTOM` from the real post-reload
+  `0x20002524`/`0x2000310c` state, watching for any reach into
+  `motor_move_commit__CUSTOM`, `FUN_00004d18`, or the shared
+  `digitalWrite` helper. Run with no arguments.
 - **`tools/unicorn/virtual_link.py t-status`** — delivers both real
   T-status frame shapes into the Remote's real inbound ring buffer and
   confirms its TX wrapper is never reached.
