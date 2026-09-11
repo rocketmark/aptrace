@@ -30,6 +30,21 @@ deep-dive beyond what's needed to classify direction/framing.
 | Remote TX − AutoPilot RX (REMOTE_TX_ONLY) | 9 |
 | AutoPilot TX − Remote RX (AP_TX_ONLY) | 3 |
 
+**Unmatched-entry terminology.** The four directional-difference rows
+above (8 + 1 + 9 + 3) sum to **21 directional unmatched-family
+entries** — this is the precise, correct total, not "12" (12 is only
+the separate `AutoPilot TX ∩ Remote RX` matched count, and must not be
+read as an orphan/unresolved total). Checked for semantic
+double-counting across the 21 (e.g. entries that share a letter/prefix
+but are genuinely distinct wire families in opposite directions, such
+as `B2`/`B_UNKNOWN` or the piped `MS` here vs. the unrelated
+non-piped AutoPilot `MS` in the matched set): **no duplicates found** —
+the deduplicated semantic-gap count is also **21**. Full per-family
+disposition (executable status, known peer, compatibility relevance)
+for all 21 is in
+[`protocol-orphan-disposition.md`](protocol-orphan-disposition.md) /
+[`research/generated/protocol-orphan-disposition.json`](../../research/generated/protocol-orphan-disposition.json).
+
 ## Matched families (Remote → AutoPilot, 20)
 
 `0xF0`/`0xE0` (binary), `+`, `G`, `B0`/`B1`, `TR`, `W1`, `R0`, `R2`,
@@ -63,18 +78,25 @@ newly discovered — but no AutoPilot producer for a leading `'B'` byte
 exists anywhere in the 18-event dispatcher, `MT`, or `T`. Genuinely
 orphaned on the producer side.
 
-## Producer-only / orphan families
+## Producer-only / unmatched families
 
 **Remote-TX-only (9)**, no AutoPilot RX match: `V`, `MS` (with pipe —
 see naming collision below), `MR`, `MM`, `KK`, `E1` (4 fixed-value
-variants), `N`, `IX` (weakest evidence — literal only, xref
-unresolved), and `W` bare (real sender, but AutoPilot's `W` branch
-requires a second digit — a genuine variant-mismatch, not a clean
-orphan).
+variants), `N`, `IX`, and bare `W` (real sender, but AutoPilot's `W`
+branch structurally expects a distinguishing second byte — a genuine
+variant-mismatch, precisely characterized in the disposition doc, not
+a clean orphan).
 
 **AutoPilot-TX-only (3)**, no Remote RX match: event 8 (3-part CSV),
 event 9 (scaled numeric), events 11/12/14 (`M1`/`M2`/`M3`) — all
-endpoint-only, no producer *and* no consumer found; likely dormant/legacy.
+endpoint-only, no producer *and* no consumer found; likely dormant/unreached.
+
+**Full disposition for all 21 unmatched entries** (executable status,
+known peer, compatibility relevance) — including a stronger finding for
+`IX` this pass (zero xref anywhere in the image, not merely "xref not
+yet resolved") and a precise characterization of bare `W`'s fallthrough
+— is in
+[`protocol-orphan-disposition.md`](protocol-orphan-disposition.md).
 
 ## Binary families
 
@@ -117,6 +139,12 @@ family difference.
 
 Semantics kept minimal per instruction: known effect = disable-related
 path. Full `'J'` behavior not re-expanded here.
+
+**For the avoidance of doubt: `J` is classified `REMOTE_TO_AP_MATCHED`
+and is counted in the 20 matched Remote→AutoPilot families above — it
+is NOT one of the 8 AP-RX-only entries.** Remote has a concrete,
+re-verified `J|` producer (`FUN_00005a50`), sent 3× via the generic
+transaction-postamble path shared with `H`.
 
 ## Surprises / gaps
 

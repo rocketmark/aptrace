@@ -101,7 +101,7 @@
     {"family_id": "KK", "opcode_prefix": "KK", "appears_in": ["remote_tx"], "framing": "KK|", "ap_rx_site": null, "remote_tx_site": "~0xc1c8, during bridge-related initialization", "classification": "REMOTE_TX_ONLY", "documented": true, "flags": ["orphan"], "confidence": "medium", "evidence_refs": ["research/autopilot_static_inventory/commands.csv"]},
     {"family_id": "E1_FAMILY", "opcode_prefix": "E1", "appears_in": ["remote_tx"], "framing": "E1,<0 | 400000 | 1500 | 10000>,| -- 4 fixed parameter variants", "ap_rx_site": null, "remote_tx_site": "~0x8fxx-0x9050", "classification": "REMOTE_TX_ONLY", "documented": true, "flags": ["orphan", "variant-specific (4 fixed values, grouped as one family)"], "confidence": "medium; nearby UI text references legacy cablecam/IR behavior", "evidence_refs": ["research/autopilot_static_inventory/commands.csv"]},
     {"family_id": "N", "opcode_prefix": "N", "appears_in": ["remote_tx"], "framing": "N|", "ap_rx_site": null, "remote_tx_site": "~0xdbac, sent 3x", "classification": "REMOTE_TX_ONLY", "documented": true, "flags": ["orphan"], "confidence": "medium", "evidence_refs": ["research/autopilot_static_inventory/commands.csv", "docs/protocol/command-inventory.md"]},
-    {"family_id": "IX", "opcode_prefix": "IX", "appears_in": ["remote_tx"], "framing": "IX| (image literal)", "ap_rx_site": null, "remote_tx_site": "literal found; xref to it not resolved", "classification": "UNRESOLVED", "documented": true, "flags": ["orphan", "weakest evidence tier -- literal-only, not confirmed as an actually-executed send"], "confidence": "low", "evidence_refs": ["research/autopilot_static_inventory/commands.csv"], "remaining_unknown": "Whether this is ever actually transmitted"}
+    {"family_id": "IX", "opcode_prefix": "IX", "appears_in": ["remote_tx"], "framing": "IX| (image literal)", "ap_rx_site": null, "remote_tx_site": "literal found at mando868 flash 0x1cba2 ('IX|\\0', confirmed by direct byte scan this pass); STRENGTHENED this pass: exhaustive Ghidra xref check found ZERO references to that address anywhere in the image -- no instruction anywhere loads a pointer to it, not merely 'xref not yet resolved'", "classification": "UNRESOLVED", "documented": true, "flags": ["orphan", "weakest evidence tier -- confirmed-inert literal, not merely unconfirmed"], "confidence": "low (existence of the literal is now certain; that it is EVER used as a live TX is now positively disconfirmed by the zero-xref finding, though a residual possibility of a build-stripped or indirect/computed reference cannot be fully ruled out by xref search alone)", "evidence_refs": ["research/autopilot_static_inventory/commands.csv", "this session: raw byte scan of firmware_mando868.bin + tools/ghidra/aptrace_ghidra.py xrefs mando868 0x1cba2 (zero references)"], "remaining_unknown": "Whether any non-xref-visible (e.g. computed-pointer) path ever loads this string; see protocol-orphan-disposition.json for the full disposition"}
   ],
   "diffs": {
     "remote_tx_and_autopilot_rx": ["BIN_F0", "BIN_E0", "PLUS", "G", "B0_B1", "TR", "W1", "R0", "R2", "MC", "MC4", "I_DYNAMIC", "I9_I1", "LL", "BANG", "S", "AMP", "H", "J", "X"],
@@ -131,6 +131,10 @@
     "remote_tx_only": 9,
     "ap_tx_only": 3,
     "unresolved": 2,
-    "binary_family_matched": 2
-  }
+    "binary_family_matched": 2,
+    "directional_unmatched_family_entries_total": 21,
+    "directional_unmatched_terminology_note": "8 (ap_rx_only) + 1 (remote_rx_only) + 9 (remote_tx_only) + 3 (ap_tx_only) = 21. This is the correct total for 'unmatched families'; it must not be confused with matched_ap_to_remote (12), a separate, unrelated count. Checked for semantic double-counting across the 21 (shared-letter/prefix coincidences such as B2/B_UNKNOWN or piped MS_REMOTE vs. the unrelated matched EVENT16_MS): none found -- deduplicated_semantic_gap_count is also 21.",
+    "deduplicated_semantic_gap_count": 21
+  },
+  "orphan_disposition_companion": "research/generated/protocol-orphan-disposition.json / docs/protocol/protocol-orphan-disposition.md -- full per-family disposition (executable status, known peer, compatibility relevance) for all 21 directional unmatched-family entries, produced by the Protocol Census Cleanup + Orphan Family Triage pass. J is explicitly NOT in that set (it is REMOTE_TO_AP_MATCHED, counted in matched_remote_to_ap)."
 }
