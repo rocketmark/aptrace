@@ -126,10 +126,16 @@ descriptive label, not a term proven to appear on screen.
    `"MOTOR <N>"`) exposes four numeric rows — `"CURRENT (mA)"` (200-5000,
    step 50), `"STEPS/S MAX"` (1000-20000, step 20), `"MICRO-STEPPING"`
    (1-256), `"RETURN SPEED"` (0-100) — matching the manual's own
-   quantities (section 8) closely, though only the Remote-side row
-   identity is proven; what these four numbers mean to the AutoPilot's
-   own motor driver remains PROBABLE, not proven (see
-   `action-command-map.md`). **The Remote sends a wire command
+   quantities (section 8) closely. **`[firmware, CONFIRMED]`** what
+   these four numbers mean to the AutoPilot's own motor driver is now
+   proven (replacement gap-audit Gap Resolution B): CURRENT and
+   MICRO-STEPPING are received/stored/displayed with no confirmed
+   driver-hardware effect; STEPS/S MAX has a real runtime step-period
+   effect (`24,000,000 / value`); RETURN SPEED is a table-index lookup
+   whose current backing table is blank — see
+   `action-command-map.md` and
+   `docs/replacement/manual-to-firmware-traceability.md`
+   (`MAN-MOTORCFG-001..004`). **The Remote sends a wire command
    (`MC<0-3>`) every time the user clicks into a row, adjusts it with the
    jog wheel, and clicks out again** — not once per motor, and not tied
    to a "finish this motor" action. A motor's settings can be revisited
@@ -189,9 +195,11 @@ AutoPilot (workflow 8 — external input disables Auto Mode but Manual Mode
 4. `[user manual]` User clicks the jog wheel: motor stops immediately.
    **`[firmware, CONFIRMED]`** Stop is implicit — the Remote simply stops
    sending wire frames the instant the wheel is clicked; there is no
-   explicit stop/zero-rate command. Whether the AutoPilot independently
-   decays motion to zero when frames stop arriving is **UNKNOWN**, not
-   traced.
+   explicit stop/zero-rate command. **`[firmware, CONFIRMED]`** No
+   AutoPilot-side dead-man/timeout mechanism exists in current evidence
+   (replacement gap-audit Gap Resolution A/B) — the AutoPilot does not
+   independently decay motion when frames stop arriving; the RX-driven
+   handler simply does not run again until another frame is delivered.
 5. `[user manual]` User double-clicks the jog wheel: cycles to the next
    *connected* motor channel (auto-detected; unconnected channels are
    skipped). `[firmware string]` Screen shows `"MOTOR 1"`/`"MOTOR 2"`/

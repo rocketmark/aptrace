@@ -160,16 +160,22 @@ field's source (`0x20001fc0`) are both identified. See
   is meaningless without it having run first.
 - **Confidence**: **CONFIRMED**, full chain (displayed string -> input
   gesture -> state -> sender -> exact wire bytes), for `MC<0-3>` and for
-  `MC4`'s `0x1039e` call site. **PROBABLE** that the Remote's own field
-  identities (`"CURRENT (mA)"`/`"STEPS/S MAX"`/`"MICRO-STEPPING"`/
-  `"RETURN SPEED"`, CONFIRMED on the Remote side) carry the same meaning
-  into the AutoPilot's own `0x2000006c`/`0x200000dc`/`0x200000f0`/
-  `0x20000138` — structurally consistent, not proven; note in particular
-  that the AutoPilot side uses field 4 (the Remote's own `"RETURN
-  SPEED"` value) as a **table index**, not read directly as a speed,
-  a real but unresolved cross-purpose worth flagging rather than
-  smoothing over. **UNKNOWN** for `MC4`'s second call site's own trigger
-  (the `'S'`-handler bulk push) — pre-existing, unchanged.
+  `MC4`'s `0x1039e` call site. **CONFIRMED** (upgraded from PROBABLE,
+  replacement gap-audit Gap Resolution B) what the AutoPilot side does
+  with each field: `0x2000006c` (CURRENT, *80 transform) and `0x200000f0`
+  (MICRO-STEPPING) are consumed only by the LCD status-display functions
+  — no confirmed driver-hardware effect; `0x200000dc` (STEPS/S MAX) feeds
+  a real fixed-point step-period computation (`24,000,000 / value`);
+  `0x20000138` (RETURN SPEED) is used purely as a **table index** into a
+  per-channel-per-mode config table whose backing data is the same
+  blank/`0xFF` blob `motor-config-persistence.md` documents — a real
+  mechanism with no current effect, not an unresolved cross-purpose. See
+  [`docs/replacement/autopilot-gap-audit.md`](../replacement/autopilot-gap-audit.md)
+  (motor configuration) and
+  [`research/generated/manual-to-firmware-traceability.json`](../../research/generated/manual-to-firmware-traceability.json)
+  (`MAN-MOTORCFG-001..004`). `MC4`'s second call site's own trigger (the
+  `'S'`-handler bulk push) is **CONFIRMED** precisely — see workflow 6,
+  above (this reference was stale relative to that finding; now aligned).
 - **Evidence**: [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
   [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md),
   [`motor-subsystem-unlock.md`](../investigations/motor-subsystem-unlock.md)
@@ -232,13 +238,21 @@ per-gesture command. Direction is now resolved: Remote → AutoPilot.
   and the AutoPilot-receiver side, plus concrete captures). **PROBABLE**
   for "this is the sole Manual Mode entry point" and for the exact
   per-channel value's semantic source (accumulated delta vs. live
-  position — not traced). **UNKNOWN** for AutoPilot-side stop/dead-man
-  timeout behavior when frames stop arriving.
-- **Evidence**: [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md).
+  position — not traced). **CONFIRMED** (upgraded from UNKNOWN,
+  replacement gap-audit Gap Resolution A/B this session): `0xE0`'s
+  per-record field layout is byte-identical to `0xF0`'s; `0xE0`
+  additionally maintains a per-channel latch suppressing repeat
+  at-limit calls; and no AutoPilot-side dead-man/timeout mechanism
+  exists in current evidence for either frame family — its own latch
+  timestamp field has zero consumers anywhere in the image, so motion is
+  not automatically stopped when frames stop arriving. See
+  [`docs/replacement/autopilot-gap-audit.md`](../replacement/autopilot-gap-audit.md)
+  (Manual Mode).
+- **Evidence**: [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md),
+  [`docs/replacement/autopilot-gap-audit.md`](../replacement/autopilot-gap-audit.md).
 - **Open question**: the exact source of the encoded per-channel value;
   whether Manual Mode has any live-jog entry point besides the
-  `"Direction"` row; the `0xE0` variant's exact field layout; AutoPilot-
-  side behavior on communication loss mid-jog.
+  `"Direction"` row.
 
 ### 4. Auto Mode: record/confirm a segment -> `'+'` (workflow 5)
 
