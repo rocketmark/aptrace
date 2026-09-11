@@ -147,15 +147,16 @@ yet built as an alternate variant.
 
 ## Semantic classification of the residual (AutoPilot868)
 
-Of AutoPilot868's 95 residual functions, 37 now carry a HIGH-confidence
+Of AutoPilot868's 95 residual functions, 47 now carry a HIGH-confidence
 coarse semantic classification (`MOTOR_CONTROL`, `MOTOR_STEPPING`,
 `PROTOCOL_TX_EVENT`, `PROTOCOL_RX_INJECTION`, `BOOT_STARTUP`,
-`PERSISTENCE_NVM`, `RADIO_DRIVER`, `SENSING_ADC`,
-`PLATFORM_HEAP_ALLOCATOR`), 5 carry a LOW-confidence hint, and 53 remain
-semantically `UNKNOWN` — mechanical priority tier (`HIGH`/`MEDIUM`/`LOW`)
-is a separate axis from this confidence and is not itself a semantic
-result. Evidence and per-function results live under
-`research/generated/autopilot-semantic-pass*.jsonl`; not yet started for
+`PERSISTENCE_NVM`, `RADIO_DRIVER`, `SENSING_ADC`, `TRIGGER_INPUT_SENSING`,
+`PLATFORM_HEAP_ALLOCATOR`, `PLATFORM_DMAC_LIBRARY`,
+`INTERRUPT_HANDLER_EIC`), 1 carries a MEDIUM-confidence hint (`RADIO_DRIVER`),
+and 47 remain semantically `UNKNOWN` — mechanical priority tier
+(`HIGH`/`MEDIUM`/`LOW`) is a separate axis from this confidence and is
+not itself a semantic result. Evidence and per-function results live
+under `research/generated/autopilot-semantic-pass*.jsonl`; not yet started for
 AutoPilot915, Mando868, or Mando915.
 
 ## Current milestone: the core protocol pipeline
