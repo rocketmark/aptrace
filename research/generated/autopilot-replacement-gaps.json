@@ -35,8 +35,8 @@
     {
       "subsystem": "startup reference/input routine",
       "status": "PARTIAL",
-      "known_behavior": "FUN_00006968 (\"homing\", analyst label) runs before the radio probe; gated on a GPIO hold (PA22) with a real timeout exit; PA22 is later reused for the unrelated \"hold to save\" path.",
-      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (startup reference/input routine, homing-timeout loop)"],
+      "known_behavior": "FUN_00006968, the startup reference/input routine gated on PA22, runs before the radio probe; gated on a GPIO hold (PA22) with a real timeout exit; PA22 is later reused for the unrelated \"hold to save\" path.",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (startup reference/input routine timeout loop)"],
       "implementation_requirements": "Replacement firmware needs a product decision on whether/how to reproduce a boot-time wait-for-signal step at all.",
       "missing_fact": "physical identity/purpose of the PA22 signal this boot-time routine waits on is explicitly undocumented (\"no physical function claimed\")",
       "missing_fact_type": "PHYSICAL_MAPPING"

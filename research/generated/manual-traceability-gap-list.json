@@ -126,7 +126,7 @@
     {
       "row_id": "W1-startup-reference-routine",
       "source_doc": "docs/ui/user-guide-workflows.md#1 (power-on) / boot-and-hardware-bringup.md (startup reference/input routine)",
-      "description": "Boot-time 'homing'/startup-reference routine gated on PA22",
+      "description": "startup reference/input routine gated on PA22",
       "category": "REQUIRES_HARDWARE_EVIDENCE",
       "note": "Timing/gating mechanism fully characterized; PA22's real-world physical signal identity is explicitly undocumented ('no physical function claimed') and out of this session's scope per its own explicit exclusion.",
       "related_requirement_ids": []
