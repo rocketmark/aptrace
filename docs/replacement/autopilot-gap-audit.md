@@ -4,11 +4,12 @@
 sufficient to write a clean-room behavioral/hardware specification for
 replacement AutoPilot firmware. The original audit pass was a pure
 coverage audit against already-produced evidence, performing no new
-reverse engineering. A follow-up, bounded resolution pass ("Gap
-Resolution A", below) then closed the specific `CONCRETE`-type gaps it
-identified, using two targeted concrete-execution scenarios plus the
-minimal disassembly needed to construct them correctly — not a broader
-re-audit.
+reverse engineering. Two follow-up, bounded resolution passes then
+closed specific named gaps it identified: **Gap Resolution A** (below)
+closed the `CONCRETE`-type gaps via two targeted concrete-execution
+scenarios; **Gap Resolution B** (below) closed several `STATIC`-type
+hardware/behavior gaps via bounded flash-dump/disassembly against the
+existing cached Ghidra project. Neither was a broader re-audit.
 
 **Machine-readable companion**: [`research/generated/autopilot-replacement-gaps.json`](../../research/generated/autopilot-replacement-gaps.json).
 
@@ -46,15 +47,15 @@ parked).
 | 1 | MCU / clocks / startup | COMPLETE | NONE |
 | 2 | startup reference/input routine | PARTIAL | PHYSICAL_MAPPING |
 | 3 | motor timer / STEP generation | IMPLEMENTABLE_WITH_ASSUMPTIONS | STATIC |
-| 4 | direction control | PARTIAL | STATIC |
+| 4 | direction control | IMPLEMENTABLE_WITH_ASSUMPTIONS | HARDWARE |
 | 5 | per-channel position accounting | COMPLETE | NONE |
 | 6 | move/ramp profile execution | IMPLEMENTABLE_WITH_ASSUMPTIONS | PRODUCT_DECISION |
-| 7 | motor enable/disable GPIO handling | IMPLEMENTABLE_WITH_ASSUMPTIONS | STATIC |
+| 7 | motor enable/disable GPIO handling | COMPLETE | HARDWARE |
 | 8 | external STEP/DIR input behavior | EXTERNAL_EVIDENCE_REQUIRED | STATIC |
 | 9 | Manual Mode | COMPLETE | NONE |
 | 10 | Auto Mode | IMPLEMENTABLE_WITH_ASSUMPTIONS | STATIC |
 | 11 | programmed positions/moves | IMPLEMENTABLE_WITH_ASSUMPTIONS | NONE |
-| 12 | motor configuration | PARTIAL | STATIC |
+| 12 | motor configuration | COMPLETE | NONE |
 | 13 | Quick Setup / MC / MT | COMPLETE | NONE |
 | 14 | persistence / NVM | COMPLETE | NONE |
 | 15 | trigger input — digital | COMPLETE | NONE |
@@ -113,13 +114,79 @@ Full narrative, register-level results, and disassembly excerpts are
 in each scenario function's own docstring; per-subsystem updates are
 reflected in the matrix above and the JSON companion.
 
+## Gap Resolution B (this session)
+
+Six bounded static-evidence investigations, using only existing tooling
+(`tools/ghidra/aptrace_ghidra.py`'s `literal`/`dump`/`disasm`/`callers`/
+`xrefs` queries against the already-built cached Ghidra project — no
+new whole-firmware analysis, no Unicorn, no SMT).
+
+**1/2 — DIR and enable/disable pin identities (RESOLVED)**: both reuse
+the exact technique `boot-and-hardware-bringup.md` already validated for
+the STEP pins — the RAM address holding a pin-table *index* is
+`.data`-initialized, so its real byte value lives in flash at a fixed
+offset (`RAM_addr − 0xB2C0` for this image, re-derived and confirmed
+against the 4 already-known STEP entries before trusting it on new
+addresses) and can be read directly, then decoded through the same
+24-byte-stride pin-descriptor table (flash `0x14284`). Per-channel DIR
+pins came out PB11/PA09/PB13/PA11 — each exactly one pin number above
+its channel's already-known STEP pin (PB10/PA08/PB12/PA10), a clean
+adjacent-pin pattern across all 4 channels. `0x77a0`/`0x77f8`/`0x7868`
+resolve to exactly 4 real control pins, not a "two distinct chips"
+split: PB16/PB17 (driven HIGH to enable, LOW to end disable) and
+PB06/PB07 (pulsed HIGH only during disable, plausibly a reset strobe).
+`0x77f8` and `0x7868` were confirmed **byte-for-byte identical** in
+every literal address referenced — there really is only one pin set.
+
+**3 — MC field semantics (RESOLVED)**: re-confirmed
+`motor-subsystem-unlock.md`'s already-documented per-field storage/
+transform/consumer table and pushed one bounded hop further on field 2.
+Result: CURRENT and MICRO-STEPPING (fields 1, 3) are consumed **only**
+by the already-confirmed LCD status-display functions — no traced
+hardware effect in this image. STEPS/S MAX (field 2) feeds a **real**
+fixed-point step-period computation (`24,000,000 / value`) in
+`FUN_00006190`, stored alongside the established rate/phase machinery —
+a genuine runtime effect. RETURN SPEED (field 4) is used purely as an
+index into a per-channel-per-mode config table, but that table's
+backing data is the same blank/all-`0xFF` blob
+`motor-config-persistence.md` already established — so it is currently
+a no-op by *data* absence, not by *mechanism* absence.
+
+**4 — RF framing (PARTIALLY ADVANCED, not closed)**: one hop past the
+already-known chip-ID probe found a real, unconditional 5-call
+post-probe config sequence with literal arguments, plus (via the
+existing `callers` cache query) a family of ~10 further register-
+accessor wrapper functions consistent with a full SX127x config API.
+Decoding which SX127x register each targets would mean decompiling each
+wrapper individually — correctly out of this pass's one-hop-per-
+candidate bound, so this remains a named, bounded, *specific* follow-up
+rather than an open-ended one.
+
+**5 — external STEP/DIR (checked, still `NO` confirmed mechanism)**: the
+one architecturally-plausible candidate — the residual set's sole
+EIC-tagged function, part of a 16-entry shared-dispatcher vector-table
+family (the standard ArduinoCore-samd EIC callback pattern) — has a
+callback table with **zero writers anywhere in the image** (existing
+cached xref data). This mechanism is confirmed dormant, extending
+`trigger-input.md`'s "EIC — inert" finding from one line to the whole
+EIC line family. A polled (non-interrupt) mechanism was not ruled out.
+
+**6 — status LED (checked, still not found)**: the one already-documented
+"status" boot behavior (the radio-probe failure's infinite retry, "print
+status; delay 1000ms; repeat") is, one hop down, a pure LCD print with
+no GPIO write — ruling out the one candidate this evidence base
+suggested.
+
 ## Notable findings this audit surfaces
 
-- **Two genuine hard gaps** (`EXTERNAL_EVIDENCE_REQUIRED`, no firmware
-  trace at all): the RJ45 external STEP/DIR input path (an entire
-  external-interface product feature — presence detection, Auto-Mode
-  lockout, pulse passthrough) and the status LED. Both are documented
-  only as physical/manual facts, never traced into any code path.
+- **Two genuine hard gaps remain** (`EXTERNAL_EVIDENCE_REQUIRED`): the
+  RJ45 external STEP/DIR input path (an entire external-interface
+  product feature — presence detection, Auto-Mode lockout, pulse
+  passthrough) and the status LED. Both are still documented only as
+  physical/manual facts — but Gap Resolution B (above) checked the one
+  plausible firmware candidate for each and confirmed neither pans out
+  (an unarmed EIC callback table; an LCD-only "status" print), so these
+  are now negative findings on record rather than unexplored blanks.
 - **The radio-transport gap mostly closes itself**: firmware evidence
   alone only reaches PROBABLE for the external radio chip's identity
   (register-pattern match to an SX127x-family part), but
@@ -143,10 +210,11 @@ reflected in the matrix above and the JSON companion.
   reflected in the matrix above but not yet folded into the canonical
   investigation docs (a follow-up documentation task, not a gap in the
   evidence itself).
-- **Direction control's exact GPIO identity is unresolved** — the XLR-4
-  bipolar output pinout is known, the STEP pin map is known, but no
-  document names the per-channel DIR pin(s) feeding the onboard driver
-  ICs.
+- **Direction control's GPIO identity is now resolved** (Gap Resolution
+  B) — PB11/PA09/PB13/PA11 per channel, one pin above each channel's
+  already-known STEP pin. What remains is only the HIGH/LOW-to-physical-
+  rotation correspondence, a hardware-datasheet fact this firmware's own
+  code cannot fully disclose.
 - **Error/failure behavior has no systematic treatment** — only
   incidentally-discovered cases (radio-probe retry, NVM stall
   conditions, the `I9|` dead end, digital-trigger bounce) are documented.
@@ -156,41 +224,41 @@ reflected in the matrix above and the JSON companion.
 
 ## Reopening the 43 parked LOW-priority UNKNOWNs
 
-None were inspected this pass — that is out of this audit's scope. Three
-candidate areas where one or more of the 43 plausibly holds the missing
-mechanism are flagged for a future targeted pass, not confirmed:
+**15 were reopened this pass** (Gap Resolution B, gap 5 — external
+STEP/DIR): `0xcbb6, 0xcbbc, 0xcbc2, 0xcbc8, 0xcbce, 0xcbd4, 0xcbda,
+0xcbe0, 0xcbe6, 0xcbec, 0xcbf2, 0xcbf8, 0xcbfe, 0xcc04, 0xcc0a`. The
+justification is direct mechanical evidence, not a hunch: all 15 sit in
+the same `0xcbb0`-`0xcc0a` vector-table range `firmware-layout.md`
+already names (IRQ12-27), immediately adjacent to the already-resolved
+`0xcbb0` (Pass 7's `INTERRUPT_HANDLER_EIC`), and disassembly confirms
+all 16 entries (including `0xcbb0`) are structurally identical 6-byte
+stubs (`movs r0,#N; b.w 0xcb6c`) tail-jumping into one shared EIC
+callback dispatcher. They were not separately re-classified in the
+semantic-pass pipeline (that pipeline is untouched by this task); this
+gap-audit doc and its JSON companion record the finding instead.
 
-1. **Status LED GPIO driver** — small, simple, RAM/protocol-light
-   functions are exactly what census priority scoring ranks LOW, and a
-   status-LED `digitalWrite` wrapper fits that shape.
-2. **External STEP/DIR RJ45 handling / external-controller presence
-   detection** — the entire mechanism is untraced; some of the 43 may be
-   its presence-probe or pulse-counting code.
-3. **Per-channel DIR GPIO pin** — plausibly a near-neighbor of the
-   already-resolved STEP-pulse functions.
-
-No specific address is identified for any of these; they are hypotheses
-for where to look next, not classification results.
+No other candidate areas panned out to a specific address this pass —
+the status-LED candidate checked (the radio-probe retry's status print)
+was ruled out without touching any residual function at all (it isn't
+one; it's already-known boot-sequence code).
 
 ## Readiness assessment
 
-**Ready now**: the 10 `COMPLETE` and 6 `IMPLEMENTABLE_WITH_ASSUMPTIONS`
-subsystems (16 of 23) have sufficient evidence to write their spec
+**Ready now**: the 12 `COMPLETE` and 6 `IMPLEMENTABLE_WITH_ASSUMPTIONS`
+subsystems (18 of 23) have sufficient evidence to write their spec
 sections today — MCU/clock/startup, per-channel position accounting,
 Quick Setup/MC/MT, persistence/NVM, both trigger-input subsystems,
 protocol RX parsing, protocol TX/event system, Manual Mode, Auto Mode,
-programmed positions/moves, G/S/!/I/+ behavior, motor timer/STEP
-generation, move/ramp profile execution, motor enable/disable GPIO
-handling, and radio transport.
+programmed positions/moves, G/S/!/I/+ behavior, motor configuration,
+motor enable/disable GPIO handling, motor timer/STEP generation,
+direction control, move/ramp profile execution, and radio transport.
 
-**Not ready without a scoping decision first**: the 4 remaining `PARTIAL`
-subsystems (startup reference/input routine, direction control, motor
-configuration, error/failure behavior) each carry one specific, named
-open question (a physical-mapping gap, an unidentified GPIO pin, an
-unconfirmed field-to-hardware mapping, and a product-scoping decision,
-respectively) that should be either resolved or explicitly descoped
-("replacement will not attempt to bit-match this") before finalizing
-those sections.
+**Not ready without a scoping decision first**: the 2 remaining `PARTIAL`
+subsystems (startup reference/input routine, error/failure behavior)
+each carry one specific, named open question (a physical-mapping gap
+and a product-scoping decision, respectively) that should be either
+resolved or explicitly descoped ("replacement will not attempt to
+bit-match this") before finalizing those sections.
 
 **Blocked until the gap is closed or descoped**: the 2
 `EXTERNAL_EVIDENCE_REQUIRED` subsystems (external STEP/DIR input, status

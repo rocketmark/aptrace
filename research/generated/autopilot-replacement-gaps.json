@@ -52,12 +52,12 @@
     },
     {
       "subsystem": "direction control",
-      "status": "PARTIAL",
-      "known_behavior": "Direction is carried as a sign bit through the step-delta/move-distance computation feeding the GPIO pulse mechanism; the manual documents a configurable A/B orientation invert. XLR-4 output is a bipolar winding drive (A+/A-/B+/B-), i.e. the onboard driver ICs convert an MCU-side STEP+DIR-like control into winding current themselves.",
-      "evidence_refs": ["docs/hardware/hardware-reference.md (XLR-4 pinout)", "docs/hardware/hardware-reference.md (Manual Mode direction invert)"],
-      "implementation_requirements": "Need the actual DIR GPIO pin(s)/register(s) per channel to reproduce direction behavior electrically.",
-      "missing_fact": "which GPIO pin(s) carry the per-channel DIR signal to the onboard stepper-driver ICs are not identified in current evidence",
-      "missing_fact_type": "STATIC"
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "Gap Resolution B (this session): per-channel DIR pin-table indices are stored in a 4-byte .data-initialized array at RAM 0x200000a4 (flash source 0x14ce4, bytes `2a 2c 04 2e` = indices 42,44,4,46 for channels 0-3), decoded via the same g_APinDescription-style table (flash 0x14284, 24 bytes/entry, decode formula re-validated against the 4 already-known STEP entries before use) already used for the STEP pins: channel0 DIR=PB11, channel1 DIR=PA09, channel2 DIR=PB13, channel3 DIR=PA11 -- each exactly one pin number above its channel's already-documented STEP pin (STEP=PB10/PA08/PB12/PA10), a consistent adjacent-pin pairing across all 4 channels. These pins are configured OUTPUT by the same 0x77a0 driver-enable sequence that configures the STEP pins (see motor enable/disable GPIO handling, below). Direction is carried as a sign bit through the step-delta/move-distance computation feeding the GPIO pulse mechanism; the manual documents a configurable A/B orientation invert.",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (XLR-4 pinout)", "docs/hardware/hardware-reference.md (Manual Mode direction invert)", "flash dump 0x14284/0x14ce4 via tools/ghidra/aptrace_ghidra.py (literal/dump)"],
+      "implementation_requirements": "The DIR GPIO pin identity is now known per channel; replacement can drive these pins directly. Physical Motor1-4 XLR connector labeling to these logical channels is NOT established by this evidence and is not claimed.",
+      "missing_fact": "which instruction(s) write the actual direction VALUE (not just configure the pin as output) and which polarity (HIGH/LOW) corresponds to which physical rotation direction were not traced this pass (would need tracing the sign bit into FUN_00005898's own GPIO-pulse consumption, one hop beyond this pass's scope) -- and the HIGH/LOW-to-physical-direction correspondence is ultimately a hardware fact this firmware's own code cannot fully disclose",
+      "missing_fact_type": "HARDWARE"
     },
     {
       "subsystem": "per-channel position accounting",
@@ -79,20 +79,20 @@
     },
     {
       "subsystem": "motor enable/disable GPIO handling",
-      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
-      "known_behavior": "Newly resolved this session (Pass 6, bounded decompile): 0x77a0 asserts 2 driver-enable pins HIGH, delays 50ms, then pinMode(OUTPUT)s 8 STEP/DIR-family pins for the channel-0/1 driver chip; 0x77f8/0x7868 are the structural inverse (tri-state the 8 pins, reset-pulse the 2 enable pins). Not yet folded into docs/investigations/.",
-      "evidence_refs": ["research/generated/autopilot-semantic-pass6-bounded-static.jsonl (0x77a0, 0x77f8, 0x7868, 0xd300)"],
-      "implementation_requirements": "Replacement needs the real enable-pin power-up delay (50ms, confirmed) reproduced for driver-chip compatibility; the 8-pin OUTPUT/tri-state pattern is a safe default to replicate.",
-      "missing_fact": "exact GPIO pin identities (not just the structural pattern) driven by these enable/disable sequences are not resolved to concrete port/pin letters — the DAT_ globals feeding them were not traced to real addresses this pass",
-      "missing_fact_type": "STATIC"
+      "status": "COMPLETE",
+      "known_behavior": "Pass 6 established the mechanism (0x77a0 enable, 0x77f8/0x7868 disable); Gap Resolution B (this session) resolved the actual pin identities via the same .data flash-dump technique used for direction control: 0x77a0 drives PB17 (index 2, flash 0x14d5e=0x02) and PB16 (index 3, flash 0x14d5f=0x03) HIGH, then configures all 4 channels' STEP+DIR pins (8 total) as OUTPUT. 0x77f8 and 0x7868 are confirmed BYTE-FOR-BYTE IDENTICAL in every literal address they reference (verified by resolving both functions' own literal pools independently) -- there is only ONE pin set operated on, not two distinct driver chips' worth. Both disable functions additionally drive a second pair, PB06 (index 27, flash 0x14d60=0x1b) and PB07 (index 29, flash 0x14d61=0x1d), HIGH for 50ms before finally driving PB16/PB17 LOW -- i.e. 4 distinct control pins total across enable+disable: PB16/PB17 (driven HIGH to enable, LOW to end disable) and PB06/PB07 (pulsed HIGH only during the disable sequence, plausibly a reset strobe).",
+      "evidence_refs": ["research/generated/autopilot-semantic-pass6-bounded-static.jsonl (0x77a0, 0x77f8, 0x7868, 0xd300)", "flash dump 0x14284/0x14d5e/0x14d60 via tools/ghidra/aptrace_ghidra.py (literal/dump)"],
+      "implementation_requirements": "Replacement can drive the exact same 4 pins (PB16, PB17, PB06, PB07) with the exact same sequence and 50ms timing for driver-chip compatibility.",
+      "missing_fact": "whether HIGH or LOW on PB16/PB17 is electrically \"enabled\" vs \"disabled\" on the real driver IC (active-high vs active-low) is a hardware-datasheet fact this firmware's own code cannot disclose; why 0x77f8 and 0x7868 exist as two separate, byte-identical functions was not investigated (out of bounded scope)",
+      "missing_fact_type": "HARDWARE"
     },
     {
       "subsystem": "external STEP/DIR input behavior",
       "status": "EXTERNAL_EVIDENCE_REQUIRED",
-      "known_behavior": "User-manual-only: connecting an external controller (Dragonframe DMC-32, MRMC Ulti/Quad/Octo-Box) via one of the four RJ45 jacks disables/grays out Auto Mode while Manual Mode remains available; the Remote shows a source label (\"MRMC inputs\"/\"DMC32 inputs\"). RJ45 pinout for MRMC-style controllers is documented (pins: GND, 5V, STEP, DIR); Dragonframe DMC-32 uses a different assignment (manual page 25, not transcribed here).",
-      "evidence_refs": ["docs/hardware/hardware-reference.md (RJ45 motor signal input pinout)", "docs/ui/user-guide-workflows.md#8 (External input passthrough)"],
-      "implementation_requirements": "This is a whole external-interface product feature (external-controller presence detection, external STEP pulse counting/passthrough, Auto-Mode lockout) with zero firmware-side trace found anywhere in current evidence.",
-      "missing_fact": "no firmware code path has been traced for reading the RJ45 external STEP/DIR input pins or for detecting external-controller presence — the entire mechanism is undocumented on the firmware side",
+      "known_behavior": "User-manual-only: connecting an external controller (Dragonframe DMC-32, MRMC Ulti/Quad/Octo-Box) via one of the four RJ45 jacks disables/grays out Auto Mode while Manual Mode remains available; the Remote shows a source label (\"MRMC inputs\"/\"DMC32 inputs\"). RJ45 pinout for MRMC-style controllers is documented (pins: GND, 5V, STEP, DIR); Dragonframe DMC-32 uses a different assignment (manual page 25, not transcribed here). Gap Resolution B (this session) checked the one architecturally-plausible firmware mechanism: the residual set's sole EIC-tagged function (0xcbb0, already resolved as an IRQ12 vector handler) is one of 16 near-identical tiny stub functions (0xcbb0-0xcc0a, all in the residual set, confirmed by disassembly to each load a distinct IRQ index then tail-jump to one shared dispatcher at 0xcb6c) implementing the standard ArduinoCore-samd EIC_Handler/attachInterrupt callback-table pattern. The shared dispatcher's own callback count (RAM 0x200052e4) and function-pointer array (RAM 0x2000525c) have ZERO writers anywhere in the image per the existing cached xref database -- this generic EIC callback mechanism is never armed by any AutoPilot application code, consistent with and extending trigger-input.md's already-established \"EIC -- inert\" finding to the full EIC line set, not just the one line that document originally checked.",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (RJ45 motor signal input pinout)", "docs/ui/user-guide-workflows.md#8 (External input passthrough)", "docs/investigations/trigger-input.md (EIC inert)", "disassembly of 0xcbb0-0xcc0a and 0xcb6c; xrefs to 0x200052e4/0x2000525c via tools/ghidra/aptrace_ghidra.py"],
+      "implementation_requirements": "This is a whole external-interface product feature (external-controller presence detection, external STEP pulse counting/passthrough, Auto-Mode lockout) with zero ARMED firmware mechanism found; the one plausible interrupt-based candidate is confirmed dormant.",
+      "missing_fact": "whether external STEP/DIR is instead read via a POLLED (non-interrupt) digitalRead mechanism rather than EIC was not checked this pass (would require examining additional residual functions beyond the one EIC-tagged candidate, out of bounded scope) -- the entire external-input mechanism remains undocumented on the firmware side",
       "missing_fact_type": "STATIC"
     },
     {
@@ -124,12 +124,12 @@
     },
     {
       "subsystem": "motor configuration",
-      "status": "PARTIAL",
-      "known_behavior": "MC<0-3>/MC4 wire commands and their exact RAM write targets (0x2000006c/0x200000dc/0x200000f0/0x20000138 per channel) are confirmed; field 4 (\"RETURN SPEED\" on the Remote) is known to be used as a secondary-table index on the AutoPilot side, not a direct speed value.",
-      "evidence_refs": ["docs/ui/action-command-map.md#2", "docs/investigations/motor-subsystem-unlock.md"],
-      "implementation_requirements": "The wire schema and unlock semantics (MC4 clearing the boot-loop gate) are solid enough to reproduce directly.",
-      "missing_fact": "how the 4 MC-command fields (current, steps/s max, microstepping, return speed) are actually consumed by the motor driver beyond field 4's table-index use is unconfirmed -- \"remains PROBABLE, not proven\" per current evidence",
-      "missing_fact_type": "STATIC"
+      "status": "COMPLETE",
+      "known_behavior": "MC<0-3>/MC4 wire commands and their exact RAM write targets (0x2000006c/0x200000dc/0x200000f0/0x20000138 per channel) are confirmed. Gap Resolution B (this session) upgraded all 4 fields' AutoPilot-side semantics from PROBABLE to PROVEN by re-confirming motor-subsystem-unlock.md's already-documented storage/transform/consumer table and, for field 2, tracing one bounded hop further: field 1 (CURRENT, value*80 transform) and field 3 (MICRO-STEPPING, raw+1->0 remap) are consumed ONLY by FUN_00007514/FUN_00007770 -- both already-confirmed LCD status-display functions -- with NO traced effect on any real motor-driver register or pin; field 2 (STEPS/S MAX, raw) is consumed by FUN_00006190, which computes a REAL fixed-point step-period value (24,000,000 / value, a 24MHz-clock-derived rate) and stores it into a per-channel array (0x20002438) alongside the already-established rate/phase machinery's own storage pattern -- a genuine, confirmed runtime effect, unlike fields 1/3; field 4 (RETURN SPEED, raw) is consumed by FUN_00007e2c/FUN_00008e18 purely as an INDEX into a per-channel-per-mode secondary config table, but that table's backing data is the SAME blank/all-0xFF blob motor-config-persistence.md already established -- so in this shipped image field 4 currently resolves to a no-op, not because the mechanism is unconfirmed but because the table it indexes is unprovisioned.",
+      "evidence_refs": ["docs/ui/action-command-map.md#2", "docs/investigations/motor-subsystem-unlock.md (field table)", "docs/investigations/motor-config-persistence.md (blank config blob)", "docs/investigations/boot-and-hardware-bringup.md (FUN_00007514 = LCD status-line refresh)", "decompile of FUN_00006190 via tools/ghidra/aptrace_ghidra.py"],
+      "implementation_requirements": "Replacement can treat CURRENT and MICRO-STEPPING as pure display fields (no driver-hardware wiring needed to reproduce vendor behavior), implement STEPS/S MAX as a real step-rate input (24,000,000/value period formula, or an equivalent replacement rate law), and treat RETURN SPEED as a config-table index whose real effect depends on table provisioning this image never received.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
     },
     {
       "subsystem": "Quick Setup / MC / MT",
@@ -197,10 +197,10 @@
     {
       "subsystem": "radio transport",
       "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
-      "known_behavior": "SERCOM2 in SPI Master mode, chip-select PA15, zero DMA, driven through a real Stream-derived C++ driver object -- CONFIRMED at the MCU-peripheral level. The external chip's exact identity is only PROBABLE from firmware register-pattern matching (SX127x/RFM9x-style), but hardware-reference.md's physical board inspection independently names the actual part: an Ai-Thinker Ra-01H module (a well-documented, commodity SX1276-based module).",
-      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (TX path CONFIRMED)", "docs/hardware/hardware-reference.md (Ra-01H)"],
-      "implementation_requirements": "Replacement can target the Ra-01H/SX1276 directly via its public datasheet rather than needing byte-exact vendor-driver RE, closing the firmware-only PROBABLE gap with an independent hardware fact.",
-      "missing_fact": "the over-the-air RF-layer framing/modulation parameters used between Remote and AutoPilot on top of the SX1276 (vs. raw byte passthrough) are not established from current evidence",
+      "known_behavior": "SERCOM2 in SPI Master mode, chip-select PA15, zero DMA, driven through a real Stream-derived C++ driver object -- CONFIRMED at the MCU-peripheral level. The external chip's exact identity is only PROBABLE from firmware register-pattern matching (SX127x/RFM9x-style), but hardware-reference.md's physical board inspection independently names the actual part: an Ai-Thinker Ra-01H module (a well-documented, commodity SX1276-based module). Gap Resolution B (this session) found, one hop past the already-known chip-ID probe (radio_bringup__THIRD_PARTY, 0x610c): on a successful chip-ID match, the firmware unconditionally makes 5 further config calls with literal arguments -- FUN_00009bb0(obj,7), FUN_00009c14(obj,DAT_00006188), FUN_00009cac(obj,5), FUN_00009d2a(obj,0x11,1), FUN_00009cdc(obj) -- before clearing a \"radio ready\" flag. `callers` query against radio_reg_readwrite__THIRD_PARTY (existing cached census, no new scan) additionally shows a rich family of ~10 further small register-accessor wrapper functions (radio_id_probe__THIRD_PARTY, radio_irq_flags_poll__THIRD_PARTY, and 8 unnamed FUN_ wrappers) consistent with a full SX127x-style config API, but which SX127x register (mode/frequency/sync-word/CRC/payload-length) each of the 5 init-sequence calls or the ~10 wrapper functions targets was NOT decoded -- doing so would require decompiling each wrapper individually, exceeding this pass's one-hop-per-candidate bound.",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (TX path CONFIRMED)", "docs/hardware/hardware-reference.md (Ra-01H)", "decompile of radio_bringup__THIRD_PARTY (0x610c) and FUN_0000b258 via tools/ghidra/aptrace_ghidra.py", "callers query against 0x9984 (radio_reg_readwrite__THIRD_PARTY)"],
+      "implementation_requirements": "Replacement can target the Ra-01H/SX1276 directly via its public datasheet rather than needing byte-exact vendor-driver RE, closing the firmware-only PROBABLE gap with an independent hardware fact. The 5-call post-probe config sequence is a candidate starting point for a future bounded trace of exact SX127x register values, if bit-exact vendor radio config is ever required.",
+      "missing_fact": "the over-the-air RF-layer framing/modulation parameters used between Remote and AutoPilot on top of the SX1276 (vs. raw byte passthrough), and the exact SX127x registers/values written by the 5-call post-probe config sequence and the ~10-function register-accessor family, are not established from current evidence",
       "missing_fact_type": "STATIC"
     },
     {
@@ -215,10 +215,10 @@
     {
       "subsystem": "status LED / status reporting",
       "status": "EXTERNAL_EVIDENCE_REQUIRED",
-      "known_behavior": "Confirmed to physically exist on the AutoPilot's input panel (board inspection); no firmware-side investigation exists.",
-      "evidence_refs": ["docs/hardware/hardware-reference.md (input panel list)"],
+      "known_behavior": "Confirmed to physically exist on the AutoPilot's input panel (board inspection). Gap Resolution B (this session) checked the one already-documented \"status\" boot-time behavior -- the radio-probe failure's real infinite retry loop (\"print status; delay 1000ms; repeat\", boot-and-hardware-bringup.md) -- by decompiling its status-print call one hop deep (FUN_0000b258 -> FUN_0000b216/FUN_0000b248): it is a pure LCD/display print (the same vtable-dispatch display mechanism already established elsewhere in this project), with no raw GPIO/PORT write visible at that hop. This rules out the one already-documented \"status\" candidate as an LED driver; no other candidate was checked (per this pass's scope limit against inspecting arbitrary residuals).",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (input panel list)", "docs/investigations/boot-and-hardware-bringup.md (radio-probe failure retry loop)", "decompile of radio_bringup__THIRD_PARTY (0x610c) and FUN_0000b258 via tools/ghidra/aptrace_ghidra.py"],
       "implementation_requirements": "A real, user-visible status indicator; needs its own driving GPIO and pattern semantics before a replacement can reproduce it.",
-      "missing_fact": "no firmware investigation has traced which GPIO drives the status LED or what its blink/color/state patterns mean",
+      "missing_fact": "no firmware investigation has traced which GPIO drives the status LED or what its blink/color/state patterns mean; the one checked \"status\" code path (radio-probe retry) turned out to be LCD-only, not the LED",
       "missing_fact_type": "STATIC"
     },
     {
@@ -232,22 +232,23 @@
     }
   ],
   "summary_counts": {
-    "COMPLETE": 10,
+    "COMPLETE": 12,
     "IMPLEMENTABLE_WITH_ASSUMPTIONS": 6,
-    "PARTIAL": 4,
+    "PARTIAL": 2,
     "EXTERNAL_EVIDENCE_REQUIRED": 2,
     "NOT_REQUIRED_FOR_REPLACEMENT": 1
   },
   "missing_fact_type_tally": {
-    "NONE": 12,
-    "STATIC": 8,
+    "NONE": 13,
+    "STATIC": 5,
     "CONCRETE": 0,
     "SMT": 0,
-    "HARDWARE": 0,
+    "HARDWARE": 2,
     "PHYSICAL_MAPPING": 1,
     "PRODUCT_DECISION": 2
   },
   "gap_resolution_a_note": "AutoPilot Gap Resolution A (this session) closed all four CONCRETE-type gaps via two bounded concrete-execution scenarios added to tools/unicorn/virtual_link.py: `plus-interactive` (interactive '+' path, mode=0x00) and `manual-f0e0` (0xE0 field layout + dead-man/timeout). Both reuse the existing ConcreteMachine/virtual_link infrastructure and the same AUTOPILOT_RX_ENTRY direct-dispatch boundary every other command scenario in that module already uses; no new analysis framework was added. See docs/replacement/autopilot-gap-audit.md's 'Gap Resolution A' section for the full narrative.",
+  "gap_resolution_b_note": "AutoPilot Gap Resolution B (this session) resolved 3 of 6 targeted bounded-static gaps fully (DIR GPIO identity, motor enable/disable GPIO identity, MC-field AutoPilot-side semantics) via existing-tooling flash-dump + pin-table-decode (reusing the exact validated formula boot-and-hardware-bringup.md already established for the STEP pins) and one bounded decompile hop (FUN_00006190 for MC field 2). Radio transport gained a concrete post-probe config-call sequence but stopped short of exact SX127x register decoding (correctly out of one-hop scope). External STEP/DIR and status LED each had their one plausible existing-evidence candidate checked and ruled out (EIC callback table unarmed; radio-probe retry status print is LCD-only) -- both remain EXTERNAL_EVIDENCE_REQUIRED, now with a specific negative finding on record rather than an unexplored blank. 15 LOW-priority residual functions (0xcbb6-0xcc0a, the remaining IRQ13-27 vector stubs sharing 0xcbb0's already-resolved shared-EIC-dispatcher pattern) were touched for the external-STEP/DIR check, justified by direct vector-table-range membership (firmware-layout.md) -- no other residuals were inspected. See docs/replacement/autopilot-gap-audit.md's 'Gap Resolution B' section for the full narrative.",
   "low_priority_unknown_reopen_candidates": [
     {
       "candidate_area": "status LED GPIO driver",
