@@ -1052,6 +1052,32 @@ bounds (`MAX_CROSS_BLOCK_HOPS`, `MAX_FINITE_CANDIDATES`) and
 `tools/census/test_indexed_writes.py` for synthetic coverage of every
 shape plus a real-firmware validation case.
 
+### Minimal one-hop interprocedural RAM-write recovery (`interproc_writes.py`)
+
+Neither `memory_accesses` nor `indexed_writes.py` can see a write that
+happens through a pointer PASSED AS AN ARGUMENT into another function —
+`helper(&pending[2])` where `helper` does `*p = 1` — because the array's
+address only ever appears at `helper`'s CALLSITE, in a different
+function than the store itself. `state-map` closes this gap with a
+deliberately minimal pass (default on; `--no-interproc-writers` to
+skip): for every function with at least one plain store whose base
+register traces — via a strict single-predecessor linear chain back to
+the function's own entry block, never redefined along the way — to one
+of its own incoming AAPCS arguments (r0–r3), and for every real,
+resolved `edges` call to that function, the argument's value AT the
+callsite is resolved by directly REUSING `indexed_writes.py`'s own
+register resolver (`_resolve_reg_across_blocks`) — a concrete literal,
+optionally with a same-block `adds/subs #imm` constant folded in. If
+that resolves and the resulting address lands inside the array, it is
+recorded as `INTERPROC_EXACT_WRITER`; anything that does not resolve to
+a concrete literal is dropped, never guessed. Exactly one call edge is
+followed — no recursion, no finite/range inference, no memcpy/memset
+special-casing, no path-sensitive reasoning. See
+`tools/census/interproc_writes.py`'s module docstring and
+`tools/census/test_interproc_writes.py` for the three cases it covers
+(`helper(ptr)`, `helper(ptr+K)`, an unresolved pointer that makes no
+claim).
+
 ## Limitations
 
 - **"Reachable" in `uncovered` means "discovered by Ghidra as a

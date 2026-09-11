@@ -63,6 +63,7 @@ _COLUMN_MIGRATIONS = (
     ("components", "strings_json", "TEXT"),
     ("state_map_slots", "indexed_writers_json", "TEXT"),
     ("state_map_slots", "writer_status", "TEXT"),
+    ("state_map_slots", "interproc_writers_json", "TEXT"),
 )
 
 

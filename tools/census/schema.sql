@@ -817,17 +817,27 @@ CREATE TABLE IF NOT EXISTS state_map_slots (
     has_static_writer                             INTEGER NOT NULL,  -- 0/1
     has_dynamic_writer                              INTEGER NOT NULL,  -- 0/1
     unresolved_producer                               INTEGER NOT NULL,  -- 0/1: NO_KNOWN_WRITER (no static,
-                                                                             -- dynamic, or indexed writer at all)
+                                                                             -- dynamic, indexed, or interprocedural
+                                                                             -- writer found at all)
     indexed_writers_json                                TEXT,  -- [{from_addr, classification, ...}, ...] --
                                                                    -- state_map_indexed_writers rows touching
                                                                    -- this slot (see that table); NULL if no
                                                                    -- computed-write scan was run for this array
+    interproc_writers_json                                TEXT,  -- [{callsite_from_addr, classification, ...},
+                                                                     -- ...] -- state_map_interproc_writers rows
+                                                                     -- touching this slot; NULL if no
+                                                                     -- interprocedural scan was run
     writer_status                                         TEXT,  -- DIRECT_WRITER / INDEXED_WRITER_EXACT_SLOT /
+                                                                     -- INTERPROC_EXACT_WRITER /
                                                                      -- INDEXED_WRITER_FINITE_SLOT_SET /
+                                                                     -- INTERPROC_FINITE_WRITER_SET /
                                                                      -- INDEXED_WRITER_RANGE /
-                                                                     -- UNKNOWN_COMPUTED_WRITE / NO_KNOWN_WRITER --
+                                                                     -- INTERPROC_RANGE_WRITER /
+                                                                     -- UNKNOWN_COMPUTED_WRITE /
+                                                                     -- UNKNOWN_ALIASED_WRITE / NO_KNOWN_WRITER --
                                                                      -- the single strongest classification found
-                                                                     -- for this slot; NULL if no computed-write
+                                                                     -- for this slot, in that precedence order;
+                                                                     -- NULL if no computed-write/interprocedural
                                                                      -- scan was run (has_static_writer/
                                                                      -- has_dynamic_writer/unresolved_producer
                                                                      -- above remain valid either way)
@@ -879,6 +889,35 @@ CREATE TABLE IF NOT EXISTS state_map_indexed_writers (
 );
 CREATE INDEX IF NOT EXISTS idx_statemap_indexed_run ON state_map_indexed_writers(run_id);
 CREATE INDEX IF NOT EXISTS idx_statemap_indexed_class ON state_map_indexed_writers(run_id, classification);
+
+-- One row per (callsite, callee-effect) pair found by tools/census/
+-- interproc_writes.py's minimal, bounded ONE-call-edge-hop scan -- a
+-- write that happens through a pointer PASSED AS AN ARGUMENT into
+-- another function, invisible to both memory_accesses (the destination
+-- is a register, not a literal, at the write site) and
+-- state_map_indexed_writers (the write is in a DIFFERENT function than
+-- the one holding the array's address). The scan only ever produces
+-- INTERPROC_EXACT_WRITER (a concrete argument value, or argument+
+-- constant, that lands inside the array) -- an unresolved argument is
+-- dropped, never recorded as a guess. See that module's docstring.
+CREATE TABLE IF NOT EXISTS state_map_interproc_writers (
+    id                       INTEGER PRIMARY KEY,
+    run_id                     INTEGER NOT NULL REFERENCES state_map_runs(id),
+    firmware_id                  INTEGER NOT NULL REFERENCES firmware(id),
+    callsite_from_addr             INTEGER NOT NULL,  -- the real `bl`/`blx` instruction address
+    caller_function_id               INTEGER REFERENCES functions(id),
+    callee_function_id                 INTEGER REFERENCES functions(id),
+    effect_from_addr                     INTEGER NOT NULL,  -- the store address INSIDE the callee
+    classification                         TEXT NOT NULL,  -- always INTERPROC_EXACT_WRITER
+    slots_json                               TEXT NOT NULL,  -- concrete affected slot index, as a 1-element list
+    applies_to_all_slots                       INTEGER NOT NULL DEFAULT 0,  -- always 0 in this minimal pass
+    derivation_json                              TEXT NOT NULL,  -- {effect:{...}, argument_resolution:{...},
+                                                                     -- resolved_pointer, touched_addr} -- never
+                                                                     -- just the final label
+    source                                         TEXT NOT NULL,
+    UNIQUE(run_id, callsite_from_addr, effect_from_addr)
+);
+CREATE INDEX IF NOT EXISTS idx_statemap_interproc_run ON state_map_interproc_writers(run_id);
 
 -- One row per slot's OPTIONAL generic dispatcher probe (only populated
 -- when state_map_runs.dispatcher_entry is set) -- a single reusable

@@ -69,7 +69,8 @@ def strb_reg(addr, rt, rn, rm):
 
 
 def strb_imm(addr, rt, rn, imm5):
-    return _verify(enc16(0x7000 | ((imm5 & 0x1F) << 6) | (rn << 3) | rt), addr, f"strb r{rt}, [r{rn}, #{imm5}]")
+    text = f"strb r{rt}, [r{rn}]" if imm5 == 0 else f"strb r{rt}, [r{rn}, #{imm5}]"
+    return _verify(enc16(0x7000 | ((imm5 & 0x1F) << 6) | (rn << 3) | rt), addr, text)
 
 
 def strw_scaled(addr, rt, rn, rm, imm2):
@@ -128,10 +129,11 @@ def _make_block(conn, fw, func_id, start, end):
     conn.commit()
 
 
-def _make_edge(conn, fw, func_id, from_addr, to_addr, kind):
+def _make_edge(conn, fw, func_id, from_addr, to_addr, kind, to_function_id=None):
     conn.execute(
-        "INSERT INTO edges (firmware_id, from_addr, to_addr, kind, resolved, from_function_id, source) "
-        "VALUES (?,?,?,?,1,?,'test')", (fw, from_addr, to_addr, kind, func_id))
+        "INSERT INTO edges (firmware_id, from_addr, to_addr, kind, resolved, from_function_id, "
+        "to_function_id, source) VALUES (?,?,?,?,1,?,?,'test')",
+        (fw, from_addr, to_addr, kind, func_id, to_function_id))
     conn.commit()
 
 

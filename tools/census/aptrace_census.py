@@ -911,7 +911,8 @@ def cmd_state_map(args):
     run_id = state_map.build_state_map(
         conn, args.firmware, base, args.count, args.width,
         label=args.label, dispatcher_entry=dispatcher_entry,
-        include_indexed_writers=not args.no_indexed_writers)
+        include_indexed_writers=not args.no_indexed_writers,
+        include_interproc_writers=not args.no_interproc_writers)
 
     if dispatcher_entry is not None:
         state_map.probe_dispatcher(
@@ -1089,6 +1090,9 @@ def main(argv):
     sm.add_argument("--no-indexed-writers", action="store_true",
                      help="skip the computed/indexed-write scan (indexed_writes.py) -- static/dynamic "
                           "evidence only, faster but 'no writer found' means less")
+    sm.add_argument("--no-interproc-writers", action="store_true",
+                     help="skip the bounded interprocedural write scan (interproc_writes.py) -- "
+                          "'no writer found' won't catch writes through a pointer passed into another function")
 
     args = p.parse_args(argv)
     {

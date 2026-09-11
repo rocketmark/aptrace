@@ -118,14 +118,16 @@ def _dynamic_access_rows(conn, fw, addr, direction):
 
 # Precedence order for a slot's single "strongest evidence" writer_status
 # label -- DIRECT_WRITER (a resolved fixed-address static write) always
-# wins; among computed/indexed writers, a narrower bound is stronger
-# evidence than a wider one; NO_KNOWN_WRITER is the fallback when nothing
-# at all was found. Never chosen by any semantic judgment -- purely a
-# fixed ranking over the six classifications the computed-write scanner
-# and DIRECT/NONE can produce.
+# wins; INTERPROC_EXACT_WRITER is listed alongside INDEXED_WRITER_
+# EXACT_SLOT (both are "exactly this one slot, mechanically proven",
+# just via a different mechanism -- intraprocedural vs. one call-edge
+# hop); NO_KNOWN_WRITER is the fallback when nothing at all was found.
+# Never chosen by any semantic judgment -- purely a fixed ranking over
+# the classifications the computed-write/interprocedural scanners and
+# DIRECT/NONE can produce.
 WRITER_STATUS_PRECEDENCE = (
     "DIRECT_WRITER",
-    "INDEXED_WRITER_EXACT_SLOT",
+    "INDEXED_WRITER_EXACT_SLOT", "INTERPROC_EXACT_WRITER",
     "INDEXED_WRITER_FINITE_SLOT_SET",
     "INDEXED_WRITER_RANGE",
     "UNKNOWN_COMPUTED_WRITE",
@@ -186,13 +188,63 @@ def _run_indexed_write_scan(conn, fw, firmware_key, run_id, base, count, width):
     return by_slot, applies_to_all
 
 
+def _run_interproc_write_scan(conn, fw, firmware_key, run_id, base, count, width):
+    """Runs tools/census/interproc_writes.py's minimal, bounded one-call-
+    edge-hop scan once for this array, persists every candidate to
+    state_map_interproc_writers, and returns {slot_index: [summary,...]}
+    -- see that module's docstring. This pass only ever produces
+    INTERPROC_EXACT_WRITER (a resolved argument value, or argument +
+    constant); an unresolved argument is dropped, never guessed, so
+    there is no array-wide "applies to all slots" case here."""
+    sys.path.insert(0, str(HERE.parent / "ghidra"))
+    import aptrace_ghidra as ghidra  # noqa: E402
+    import interproc_writes  # noqa: E402
+
+    fw_row = conn.execute("SELECT flash_base FROM firmware WHERE id=?", (fw,)).fetchone()
+    fw_path, _flash_base_s, _labels = ghidra.firmware_info(firmware_key)
+    firmware_bytes = fw_path.read_bytes()
+    flash_base = fw_row["flash_base"]
+
+    found = interproc_writes.find_interproc_writers(conn, fw, firmware_bytes, flash_base, base, count, width)
+
+    by_slot = {i: [] for i in range(count)}
+    writer_rows = []
+    for w in found:
+        caller = _function_row(conn, fw, w["caller_function_id"])
+        callee = _function_row(conn, fw, w["callee_function_id"])
+        summary = {
+            "callsite_from_addr": w["callsite_from_addr"], "caller_function": caller["name"] if caller else None,
+            "callee_function": callee["name"] if callee else None, "classification": w["classification"],
+        }
+        for slot_idx in w["slots"]:
+            if 0 <= slot_idx < count:
+                by_slot[slot_idx].append(summary)
+        writer_rows.append({
+            "run_id": run_id, "firmware_id": fw, "callsite_from_addr": w["callsite_from_addr"],
+            "caller_function_id": w["caller_function_id"], "callee_function_id": w["callee_function_id"],
+            "effect_from_addr": w["effect_from_addr"], "classification": w["classification"],
+            "slots_json": json.dumps(w["slots"]), "applies_to_all_slots": int(w["applies_to_all_slots"]),
+            "derivation_json": json.dumps(w["derivation"], default=str),
+            "source": "interproc_writes.py",
+        })
+    if writer_rows:
+        cols = list(writer_rows[0].keys())
+        conn.executemany(
+            f"INSERT INTO state_map_interproc_writers ({', '.join(cols)}) "
+            f"VALUES ({', '.join('?' for _ in cols)})",
+            [tuple(r[c] for c in cols) for r in writer_rows])
+        conn.commit()
+    return by_slot, []
+
+
 def build_state_map(conn, firmware_key, base, count, width, label=None, dispatcher_entry=None,
-                     source="state_map.py", include_indexed_writers=True):
+                     source="state_map.py", include_indexed_writers=True, include_interproc_writers=True):
     """Compute and persist one state_map_runs row plus `count` state_map_slots
     rows for the array [base, base + count*width), re-slicing existing
     census evidence -- plus, by default, a real computed/indexed-write
-    scan (tools/census/indexed_writes.py) so "no writer found" means more
-    than "no direct xref found." Returns the new run_id."""
+    scan (tools/census/indexed_writes.py) and a bounded interprocedural
+    scan (tools/census/interproc_writes.py) so "no writer found" means
+    more than "no direct xref found." Returns the new run_id."""
     fw = census_db.get_firmware_id(conn, firmware_key)
     cur = conn.execute(
         "INSERT INTO state_map_runs (firmware_id, base, count, width, label, dispatcher_entry, ran_at, source) "
@@ -205,6 +257,12 @@ def build_state_map(conn, firmware_key, base, count, width, label=None, dispatch
         indexed_by_slot, indexed_applies_to_all = _run_indexed_write_scan(
             conn, fw, firmware_key, run_id, base, count, width)
 
+    interproc_by_slot, interproc_applies_to_all = ({}, [])
+    if include_interproc_writers:
+        interproc_by_slot, interproc_applies_to_all = _run_interproc_write_scan(
+            conn, fw, firmware_key, run_id, base, count, width)
+
+    scan_ran = include_indexed_writers or include_interproc_writers
     rows = []
     for i in range(count):
         addr = base + i * width
@@ -217,18 +275,24 @@ def build_state_map(conn, firmware_key, base, count, width, label=None, dispatch
 
         writer_status = None
         indexed_writers_json = None
-        if include_indexed_writers:
-            slot_indexed = indexed_by_slot.get(i, []) + indexed_applies_to_all
-            indexed_writers_json = json.dumps(slot_indexed)
+        interproc_writers_json = None
+        if scan_ran:
+            slot_indexed = indexed_by_slot.get(i, []) + indexed_applies_to_all if include_indexed_writers else []
+            slot_interproc = interproc_by_slot.get(i, []) + interproc_applies_to_all \
+                if include_interproc_writers else []
+            if include_indexed_writers:
+                indexed_writers_json = json.dumps(slot_indexed)
+            if include_interproc_writers:
+                interproc_writers_json = json.dumps(slot_interproc)
             if has_static_writer:
                 writer_status = "DIRECT_WRITER"
             else:
-                classes_here = {e["classification"] for e in slot_indexed}
+                classes_here = {e["classification"] for e in slot_indexed + slot_interproc}
                 writer_status = next(
                     (c for c in WRITER_STATUS_PRECEDENCE[1:-1] if c in classes_here), "NO_KNOWN_WRITER")
 
         unresolved_producer = (not has_static_writer and not has_dynamic_writer) \
-            if not include_indexed_writers \
+            if not scan_ran \
             else (writer_status == "NO_KNOWN_WRITER" and not has_dynamic_writer)
 
         rows.append({
@@ -245,6 +309,7 @@ def build_state_map(conn, firmware_key, base, count, width, label=None, dispatch
             "has_dynamic_writer": int(has_dynamic_writer),
             "unresolved_producer": int(unresolved_producer),
             "indexed_writers_json": indexed_writers_json,
+            "interproc_writers_json": interproc_writers_json,
             "writer_status": writer_status,
             "source": source,
         })
