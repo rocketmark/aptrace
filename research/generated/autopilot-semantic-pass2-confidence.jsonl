@@ -1,0 +1,95 @@
+{"function": "0x42a4", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x4370", "component": 0, "residual_priority": "MEDIUM", "classification": "PERSISTENCE_NVM", "semantic_confidence": "HIGH", "evidence_ids": ["provenance_csv"]}
+{"function": "0x43ac", "component": 0, "residual_priority": "MEDIUM", "classification": "PERSISTENCE_NVM", "semantic_confidence": "HIGH", "evidence_ids": ["provenance_csv"]}
+{"function": "0x4480", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "LOW", "evidence_ids": ["protocol_ram_overlap:true"]}
+{"function": "0x4630", "component": 0, "residual_priority": "HIGH", "classification": "PROTOCOL_TX_EVENT", "semantic_confidence": "MEDIUM", "evidence_ids": ["ram:0x200025cd"]}
+{"function": "0x4ae4", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x4d18", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:protocol-pipeline:shared-jog-motor-primitive"]}
+{"function": "0x5274", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:motor-subsystem-unlock:rate-machinery-entry"]}
+{"function": "0x5448", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:motor-subsystem-unlock:rate-machinery-entry"]}
+{"function": "0x54b8", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x54e0", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "MEDIUM", "evidence_ids": ["provenance_csv"]}
+{"function": "0x56e8", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_STEPPING", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral:TC0", "peripheral:TC1", "peripheral:TC2", "peripheral:TC3", "peripheral:TCC1"]}
+{"function": "0x5810", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_STEPPING", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral:TC0", "peripheral:TC1", "peripheral:TC2", "peripheral:TC3", "peripheral:TCC1"]}
+{"function": "0x5858", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_STEPPING", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral:TC0", "peripheral:TC1", "peripheral:TC2", "peripheral:TC3", "peripheral:TCC1"]}
+{"function": "0x5898", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_STEPPING", "semantic_confidence": "HIGH", "evidence_ids": ["name:digitalWrite_pulse"]}
+{"function": "0x593c", "component": 0, "residual_priority": "LOW", "classification": "MOTOR_CONTROL", "semantic_confidence": "MEDIUM", "evidence_ids": ["ram:0x20002938"]}
+{"function": "0x5958", "component": 0, "residual_priority": "LOW", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:motor-subsystem-unlock:target-reached-completion"]}
+{"function": "0x5be8", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_STEPPING", "semantic_confidence": "MEDIUM", "evidence_ids": ["name:tc0_isr_completion", "ram:0x20002938"]}
+{"function": "0x5ee8", "component": 0, "residual_priority": "MEDIUM", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:motor-subsystem-unlock:busy-gate-reader"]}
+{"function": "0x5f8c", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x5fac", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "LOW", "evidence_ids": ["ram:0x20002064", "ram:0x200025e2", "ram:0x200025e3"]}
+{"function": "0x6260", "component": 0, "residual_priority": "HIGH", "classification": "MOTOR_STEPPING", "semantic_confidence": "MEDIUM", "evidence_ids": ["peripheral:TC0", "peripheral:TC1", "peripheral:TC2", "peripheral:TC3", "ram:0x20002064"]}
+{"function": "0x6338", "component": 0, "residual_priority": "MEDIUM", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:motor-subsystem-unlock:phase-2-3-state-machine"]}
+{"function": "0x6e68", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x77a0", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x77f8", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x7868", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x7a98", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "MEDIUM", "evidence_ids": ["provenance_csv", "strings:ambiguous"]}
+{"function": "0x7b8c", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x7ef4", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x7f38", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x8a80", "component": 0, "residual_priority": "MEDIUM", "classification": "MOTOR_CONTROL", "semantic_confidence": "HIGH", "evidence_ids": ["docs:protocol-pipeline:channel_event_monitor"]}
+{"function": "0x8c70", "component": 0, "residual_priority": "HIGH", "classification": "PROTOCOL_TX_EVENT", "semantic_confidence": "HIGH", "evidence_ids": ["docs:event-map:event7-builder"]}
+{"function": "0x8d74", "component": 0, "residual_priority": "HIGH", "classification": "PROTOCOL_TX_EVENT", "semantic_confidence": "HIGH", "evidence_ids": ["docs:event-map:event8-builder"]}
+{"function": "0x8ddc", "component": 0, "residual_priority": "HIGH", "classification": "PROTOCOL_TX_EVENT", "semantic_confidence": "HIGH", "evidence_ids": ["docs:event-map:event15-builder"]}
+{"function": "0x9518", "component": 0, "residual_priority": "MEDIUM", "classification": "BOOT_STARTUP", "semantic_confidence": "MEDIUM", "evidence_ids": ["peripheral:WDT"]}
+{"function": "0x952c", "component": 0, "residual_priority": "HIGH", "classification": "BOOT_STARTUP", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral:WDT"]}
+{"function": "0x954c", "component": 0, "residual_priority": "MEDIUM", "classification": "BOOT_STARTUP", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral-set:OSC32KCTRL+USB+WDT"]}
+{"function": "0x95c8", "component": 0, "residual_priority": "HIGH", "classification": "BOOT_STARTUP", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral:WDT"]}
+{"function": "0x984c", "component": 0, "residual_priority": "HIGH", "classification": "PERSISTENCE_NVM", "semantic_confidence": "HIGH", "evidence_ids": ["peripheral:NVMCTRL"]}
+{"function": "0x99cc", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x99dc", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0x9e50", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xa314", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xa37c", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "LOW", "evidence_ids": ["peripheral:DMAC", "docs:firmware-layout"]}
+{"function": "0xa51c", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "LOW", "evidence_ids": ["peripheral:DMAC", "peripheral:MCLK"]}
+{"function": "0xa94c", "component": 1, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xa95e", "component": 2, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xa994", "component": 3, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xa9a6", "component": 4, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xaa62", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb2ea", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb3c0", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb3d2", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb3de", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb3e8", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb3f4", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb71a", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb754", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xb770", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xbf14", "component": 5, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xbffc", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xc034", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xc74e", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xc910", "component": 6, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xc93e", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xc948", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xc980", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcb18", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbb0", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "LOW", "evidence_ids": ["peripheral:EIC"]}
+{"function": "0xcbb6", "component": 7, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbbc", "component": 8, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbc2", "component": 9, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbc8", "component": 10, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbce", "component": 11, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbd4", "component": 12, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbda", "component": 13, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbe0", "component": 14, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbe6", "component": 15, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbec", "component": 16, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbf2", "component": 17, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbf8", "component": 18, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcbfe", "component": 19, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcc04", "component": 20, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcc0a", "component": 21, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xcd8a", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xd1b4", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "MEDIUM", "evidence_ids": ["peripheral:ADC0", "peripheral:ADC1", "peripheral:DAC"]}
+{"function": "0xd860", "component": 0, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xd86c", "component": 23, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xdb2c", "component": 24, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xe08c", "component": 25, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xe0fc", "component": 25, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xe1cc", "component": 26, "residual_priority": "LOW", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xe618", "component": 0, "residual_priority": "HIGH", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
+{"function": "0xe674", "component": 0, "residual_priority": "MEDIUM", "classification": "UNKNOWN", "semantic_confidence": "UNKNOWN", "evidence_ids": []}
