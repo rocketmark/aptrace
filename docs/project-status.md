@@ -70,8 +70,8 @@ discovered functions to 102, AutoPilot915 to 123; Mando868 narrowed to
 309, Mando915 to 323. Unresolved indirect edges: AutoPilot868/915 87 →
 58 (29 newly `DYNAMICALLY_OBSERVED` via boot capture), Mando868/915 146
 → 127 (19 newly `DYNAMICALLY_OBSERVED`). Still no "understood %"
-invented; semantic classification of the residual is the next,
-separate phase, not yet started.
+invented; semantic classification of the residual is underway for
+AutoPilot868 (Mando868/915 and AutoPilot915 not yet started).
 
 **A fourth census layer now turns that residual set into a prioritized,
 component-grouped, evidence-disclosed queue** (`residual_priority.py`,
@@ -144,6 +144,19 @@ pass: `Reset_Handler`/`SysTick_Handler` do not match this corpus at any
 tier despite an earlier manual finding of byte-identity — plausibly an
 unselected `boards.txt` menu option (`-DENABLE_CACHE` most likely), not
 yet built as an alternate variant.
+
+## Semantic classification of the residual (AutoPilot868)
+
+Of AutoPilot868's 95 residual functions, 37 now carry a HIGH-confidence
+coarse semantic classification (`MOTOR_CONTROL`, `MOTOR_STEPPING`,
+`PROTOCOL_TX_EVENT`, `PROTOCOL_RX_INJECTION`, `BOOT_STARTUP`,
+`PERSISTENCE_NVM`, `RADIO_DRIVER`, `SENSING_ADC`,
+`PLATFORM_HEAP_ALLOCATOR`), 5 carry a LOW-confidence hint, and 53 remain
+semantically `UNKNOWN` — mechanical priority tier (`HIGH`/`MEDIUM`/`LOW`)
+is a separate axis from this confidence and is not itself a semantic
+result. Evidence and per-function results live under
+`research/generated/autopilot-semantic-pass*.jsonl`; not yet started for
+AutoPilot915, Mando868, or Mando915.
 
 ## Current milestone: the core protocol pipeline
 
@@ -242,9 +255,10 @@ check) already have independent level-3 confirmation.
 Full protocol-level list: [`docs/protocol/open-questions.md`](protocol/open-questions.md).
 Headline items still unresolved:
 
-- Dormant-event reachability (events 2, 3, 8, 9, 11, 12, 14) and the
-  event-7 11-vs-10 field mismatch — both natural Crucible/What4 targets,
-  neither attempted since the pivot to hardware provenance.
+- Dormant-event reachability (events 2, 3, 8, 9, 11, 12, 14) — a natural
+  Crucible/What4 target, not attempted since the pivot to hardware
+  provenance. (The event-7 11-vs-10 field mismatch is resolved — see
+  "Current milestone" above.)
 - Whether any Remote-transmitted packet exists outside the currently-known
   dispatch tree.
 - The physical trigger-port electrical behavior (transient shape, bounce,
@@ -273,13 +287,13 @@ Headline items still unresolved:
 
 ## Next priorities
 
-1. Resume `!`/`I` through the virtual link, or explicitly re-scope them out.
-2. Attempt dormant-event reachability and the event-7 field-mismatch
-   question now that whole-function execution habits are better
-   understood.
-3. Get real physical measurements at the trigger jack/PB05 (see
+1. Attempt dormant-event reachability now that whole-function execution
+   habits are better understood.
+2. Get real physical measurements at the trigger jack/PB05 (see
    `trigger-input.md`) before choosing a debounce threshold or attempting
    a real flash patch.
+3. Continue semantic classification of the AutoPilot868 residual, then
+   extend to AutoPilot915/Mando868/Mando915.
 
 Fuller, itemized unfinished-work tracking lives in
 [`docs/harness/roadmap.md`](harness/roadmap.md) — not duplicated here.
