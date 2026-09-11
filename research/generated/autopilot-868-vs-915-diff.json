@@ -1,0 +1,85 @@
+{
+  "audit": "AutoPilot 915 Differential Audit against AutoPilot 868",
+  "baseline": "autopilot868 (semantic/reference baseline)",
+  "compared": "autopilot915",
+  "method": "Exhaustive raw byte-for-byte diff of the two firmware images (research/firmware/originals/firmware_autopilot868.bin vs firmware_autopilot915.bin, both 70768 bytes), cross-checked against the existing census `diff` subcommand (tools/census/aptrace_census.py diff autopilot868 autopilot915 --json), which independently compares function fingerprints/hashes, MMIO sites, pin configs, hardware registers, and string constants. No new Ghidra analysis, no Unicorn, no SMT was run; both firmware images were already fully built/reduced in the census database prior to this audit.",
+  "firmware_hashes": {
+    "autopilot868_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "autopilot915_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  "raw_byte_diff": {
+    "total_bytes": 70768,
+    "differing_bytes": 4,
+    "contiguous_differing_ranges": 1,
+    "note": "Every byte in both 70768-byte images is identical except this single 4-byte range. This is an exhaustive, complete result (every byte was compared), not a sample."
+  },
+  "actual_differences": [
+    {
+      "id": "DIFF-1",
+      "kind": "data_constant",
+      "flash_file_offset": "0x10c40-0x10c43",
+      "flash_address": "0x00014c40-0x00014c43",
+      "ram_address_after_data_copy": "0x20000000",
+      "value_autopilot868": {"bytes_le": "00 98 7f 33", "as_uint32_le": 864000000, "interpretation": "864,000,000 Hz (864 MHz) -- radio center frequency, EU/868MHz-band variant"},
+      "value_autopilot915": {"bytes_le": "c0 ca 89 36", "as_uint32_le": 915000000, "interpretation": "915,000,000 Hz (915 MHz) -- radio center frequency, US/other 915MHz-band variant"},
+      "provenance": "Copied from flash to RAM 0x20000000 by Reset_Handler__ADAFRUIT_CORE's generic .data copy loop (xref at flash 0x0000cc62, READ of flash 0x14c40). RAM 0x20000000 is READ by radio_bringup__THIRD_PARTY (0x0000610c, xref at 0x6114) -- the same already-established radio chip-ID-probe/post-probe-config function characterized in docs/replacement/autopilot-gap-audit.md's Gap Resolution B (radio transport).",
+      "evidence": ["direct raw file diff (this audit)", "tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x14c40", "tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20000000", "docs/replacement/autopilot-gap-audit.md (radio transport / Gap Resolution B, radio_bringup__THIRD_PARTY already characterized)"],
+      "classification": "RF_BAND_SPECIFIC",
+      "replacement_contract_relevance": "None -- lies entirely within the RF-band configuration boundary (radio center frequency), not MCU-side protocol/motor/persistence/trigger semantics. Confirms hardware-reference.md's already-documented '868/915 variants differ only in radio configuration' claim, now exhaustively proven for AutoPilot (previously only proven for Mando)."
+    }
+  ],
+  "mechanical_artifacts_not_counted_as_differences": [
+    {
+      "id": "ARTIFACT-1",
+      "kind": "census_analysis_state",
+      "count": 48,
+      "description": "tools/census/aptrace_census.py diff's 'residual_priority_diffs' list: 48 residual functions where autopilot868 and autopilot915 report a different mechanical residual_priority score and/or a different function name. Every one of these 48 entries has entry_a == entry_b (same address in both images) AND an identical exact_hash (i.e. byte-for-byte identical function bodies, independently confirmed by this audit's own raw file diff, which found zero differing bytes anywhere in the executable code region). The priority-score differences stem from unequal dynamic-coverage ingestion (autopilot868: 19 ingested runs across 6 scenarios; autopilot915: 1 ingested run across 1 scenario -- residual_priority.py's scoring includes a dynamic-coverage-proximity signal). The 13 name differences (e.g. 'tc0_isr_completion__CUSTOM' on 868 vs 'FUN_00005be8' on 915) reflect that this session's semantic-classification passes (1-9) and Gap Resolution A/B were run against autopilot868 only -- autopilot915 has not yet been semantically classified at all, per this task's own baseline framing.",
+      "classification": "BUILD_ARTIFACT",
+      "note": "Not a firmware behavior difference of any kind -- an artifact of unequal analysis progress on the two images, not of unequal code. No inspection performed (correctly out of scope: 'Do not re-classify AutoPilot915 function-by-function')."
+    }
+  ],
+  "census_diff_summary": {
+    "hardware_register_diffs": 0,
+    "mmio_sites_only_in_a": 0,
+    "mmio_sites_only_in_b": 0,
+    "pin_config_diffs": 0,
+    "functions_only_in_a": 0,
+    "functions_only_in_b": 0,
+    "strings_only_in_a": 0,
+    "strings_only_in_b": 0,
+    "hardware_relevant_constant_diffs": 0,
+    "byte_identical_function_count": 396,
+    "residual_priority_diffs": 48
+  },
+  "replacement_contract_matrix": [
+    {"subsystem": "boot/startup behavior", "result": "SAME"},
+    {"subsystem": "startup reference/input routine", "result": "SAME"},
+    {"subsystem": "STEP/DIR behavior", "result": "SAME"},
+    {"subsystem": "motor enable/disable", "result": "SAME"},
+    {"subsystem": "move/ramp execution", "result": "SAME"},
+    {"subsystem": "position accounting", "result": "SAME"},
+    {"subsystem": "Manual Mode", "result": "SAME"},
+    {"subsystem": "Auto Mode", "result": "SAME"},
+    {"subsystem": "programmed moves", "result": "SAME"},
+    {"subsystem": "MC / motor configuration", "result": "SAME"},
+    {"subsystem": "Quick Setup / MT", "result": "SAME"},
+    {"subsystem": "persistence", "result": "SAME"},
+    {"subsystem": "digital trigger", "result": "SAME"},
+    {"subsystem": "analog trigger", "result": "SAME"},
+    {"subsystem": "protocol RX", "result": "SAME"},
+    {"subsystem": "protocol TX/events", "result": "SAME"},
+    {"subsystem": "G / S / ! / I / +", "result": "SAME"},
+    {"subsystem": "known protocol defects/quirks", "result": "SAME"},
+    {"subsystem": "USB/update behavior", "result": "SAME"},
+    {"subsystem": "status behavior", "result": "SAME"},
+    {"subsystem": "external STEP/DIR behavior", "result": "SAME"}
+  ],
+  "replacement_contract_matrix_basis": "Every one of these 21 subsystems lives entirely in code/data outside the single 4-byte differing range (DIFF-1, an RF center-frequency constant consumed only by the radio-bringup routine). Since the raw byte diff exhaustively found zero other differences anywhere in either 70768-byte image, every function implementing any of these subsystems is proven byte-identical between autopilot868 and autopilot915 -- not inferred from partial sampling.",
+  "pass_b_items": [],
+  "pass_b_note": "No items were classified POTENTIAL_BEHAVIOR_CHANGE or UNRESOLVED, so Pass B (bounded inspection) was not entered.",
+  "conclusion": {
+    "single_common_spec_sufficient": true,
+    "concrete_execution_required": false,
+    "summary": "The AutoPilot868 replacement behavioral contract (docs/replacement/autopilot-gap-audit.md, research/generated/autopilot-replacement-gaps.json) can be used unchanged for AutoPilot915, with exactly one addendum: the radio center-frequency constant (864 MHz vs 915 MHz) that a replacement's own radio-bringup code must set per build, mirroring the vendor firmware's own single .data-constant difference."
+  }
+}
