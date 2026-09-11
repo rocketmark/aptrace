@@ -1,0 +1,167 @@
+{
+  "audit": "Manual/UI Mapping Audit against the Four-Firmware Contract",
+  "scope_note": "Gap list only -- docs/ui/user-guide-workflows.md and docs/ui/action-command-map.md are NOT rewritten by this pass. Compared against research/generated/four-firmware-contract.json and docs/hardware/hardware-reference.md.",
+  "categories": ["COMPLETE", "STALE", "MISSING_FIRMWARE_LINKAGE", "MANUAL_FIRMWARE_DISAGREEMENT", "REQUIRES_HARDWARE_EVIDENCE"],
+  "rows": [
+    {
+      "row_id": "W9-info-firmware-version",
+      "source_doc": "docs/ui/user-guide-workflows.md#9 / docs/ui/action-command-map.md#1",
+      "description": "'&|' -> 'V01R39' firmware-version query and display",
+      "category": "COMPLETE",
+      "note": "Full closed chain (string -> input -> wire bytes -> AutoPilot effect), CONFIRMED tier, now additionally variant-independent per R1-class evidence (byte-identical AutoPilot 868/915; Mando 868/915 sender unaffected by the relocation artifact).",
+      "related_requirement_ids": []
+    },
+    {
+      "row_id": "W7-G-move-execution",
+      "source_doc": "docs/ui/user-guide-workflows.md#7 / docs/ui/action-command-map.md#5",
+      "description": "'GO TO POINT'/'Move to A-D' -> G<channel><type=1><seq>| -> real move-commit",
+      "category": "COMPLETE",
+      "note": "CONFIRMED end to end for the wire mechanism; UI-label mapping is PROBABLE (no string traced to 0xb680's call site) -- already flagged as such in the source doc, not newly stale.",
+      "related_requirement_ids": ["R1"]
+    },
+    {
+      "row_id": "W2-quick-setup",
+      "source_doc": "docs/ui/user-guide-workflows.md#2 / docs/ui/action-command-map.md#2",
+      "description": "AutoPilot-initiated MT -> Choose-Type screen -> per-motor settings (MC<0-3>) -> Continue (MC4)",
+      "category": "COMPLETE",
+      "note": "Full CONFIRMED chain; now additionally confirmed variant-independent (R9, R10).",
+      "related_requirement_ids": ["R9", "R10"]
+    },
+    {
+      "row_id": "W5-auto-mode-recording-siteAB",
+      "source_doc": "docs/ui/user-guide-workflows.md#5 / docs/ui/action-command-map.md Part 3, sites A/B",
+      "description": "'Click'/'to rec A-D'/'Long-click to end' point-recording dialog -> interactive '+' (mode 0)",
+      "category": "COMPLETE",
+      "note": "String -> input -> wire bytes closed end to end; AutoPilot-side non-commit behavior now concretely proven this session (R6). No longer describable as merely disassembly-predicted.",
+      "related_requirement_ids": ["R6"]
+    },
+    {
+      "row_id": "W5-auto-mode-interactive-plus-consequence",
+      "source_doc": "docs/investigations/auto-mode-and-plus-command.md; docs/protocol/command-inventory.md ('+' row)",
+      "description": "Text describing the AutoPilot-side consequence of interactive '+' as 'remains the working hypothesis, unproven'",
+      "category": "STALE",
+      "note": "Now proven, both directions: interactive '+' concretely does NOT arm/commit a move (this session's AutoPilot Gap Resolution A). The hedge language predates that result and should be updated in a future doc-rewrite pass (not performed here).",
+      "related_requirement_ids": ["R6"]
+    },
+    {
+      "row_id": "W3-manual-mode-jog",
+      "source_doc": "docs/ui/user-guide-workflows.md#3 / docs/ui/action-command-map.md#3",
+      "description": "'Direction' row -> real-time 0xF0/0xE0 jog frame stream",
+      "category": "COMPLETE",
+      "note": "Wire grammar, sender, receiver all CONFIRMED; 0xE0 field layout and dead-man/timeout question closed this session (R8). UI-label mapping ('sole live-jog entry point?') stays PROBABLE, already flagged as such.",
+      "related_requirement_ids": ["R8"]
+    },
+    {
+      "row_id": "W3-manual-mode-e0-selection",
+      "source_doc": "docs/investigations/manual-mode-and-limits.md ('0xE0 variant... field widths remain UNKNOWN')",
+      "description": "Text marking 0xE0's field layout and selection condition as unknown",
+      "category": "STALE",
+      "note": "Field layout resolved (byte-identical to 0xF0, this session's AutoPilot Gap Resolution A/B). Selection condition resolved (this session's Mando868 counterpart audit: *0x200018e7==3 selects 0xE0). Source doc predates both findings.",
+      "related_requirement_ids": ["R8"]
+    },
+    {
+      "row_id": "W12-limit-setting",
+      "source_doc": "docs/ui/user-guide-workflows.md#12 / docs/ui/action-command-map.md#8",
+      "description": "Set-Limits sub-flow -> LL1/LL2 (I9/I1 position-query gated)",
+      "category": "COMPLETE",
+      "note": "Fully CONFIRMED including the negative result (posA/posB never populated by a real value, confirmed from both AutoPilot and Remote directions). Outcome branch beyond 'No limits set' remains UNKNOWN, already flagged as such.",
+      "related_requirement_ids": ["R5"]
+    },
+    {
+      "row_id": "W8-external-step-dir",
+      "source_doc": "docs/ui/user-guide-workflows.md#8 (External input passthrough)",
+      "description": "External STEP/DIR controller (DMC-32/MRMC) via RJ45 disables Auto Mode",
+      "category": "MISSING_FIRMWARE_LINKAGE",
+      "note": "Entire mechanism is `[user manual]`-only; this session's AutoPilot gap audit checked the one plausible firmware candidate (EIC callback dispatch) and confirmed it unarmed -- no firmware code path found for presence detection or pulse counting. See preserved_unresolved_facts in the four-firmware contract.",
+      "related_requirement_ids": []
+    },
+    {
+      "row_id": "hw-ref-status-led",
+      "source_doc": "docs/hardware/hardware-reference.md (input panel list)",
+      "description": "Status LED existence",
+      "category": "MISSING_FIRMWARE_LINKAGE",
+      "note": "Physical-inspection fact only; no firmware-side GPIO/pattern evidence exists. One candidate (radio-probe retry status print) was checked this session and ruled out (LCD-only).",
+      "related_requirement_ids": []
+    },
+    {
+      "row_id": "W2-motor-config-fields",
+      "source_doc": "docs/ui/user-guide-workflows.md#2 (section 8, motor configuration constants)",
+      "description": "CURRENT/STEPS-S-MAX/MICRO-STEPPING/RETURN-SPEED settings and their claimed hardware effect",
+      "category": "STALE",
+      "note": "Source text (and action-command-map.md#2) hedges AutoPilot-side field meaning as 'remains PROBABLE, not proven.' Now PROVEN this session (R9/R15): 2 of 4 fields are display-only, 1 feeds a real step-rate computation, 1 indexes a currently-blank config table. Hedge language should be updated in a future rewrite.",
+      "related_requirement_ids": ["R9", "R15"]
+    },
+    {
+      "row_id": "W2-return-speed-goto0",
+      "source_doc": "docs/ui/user-guide-workflows.md#8 (Return speed / GOTO 0 relationship)",
+      "description": "'Return speed' governs a manual return-to-reference move ('GOTO 0')",
+      "category": "MISSING_FIRMWARE_LINKAGE",
+      "note": "Already explicitly flagged `[inferred]` in the source doc, not proven; this session's motor-configuration work (R9) confirms RETURN SPEED is a table INDEX consumed by the locked motor subsystem, but does not independently confirm the GOTO-0/return-move UI mapping specifically.",
+      "related_requirement_ids": ["R9"]
+    },
+    {
+      "row_id": "W2-quick-setup-persistence",
+      "source_doc": "docs/ui/user-guide-workflows.md#2 (resulting state: config persists across power-off)",
+      "description": "Manual's claim that Quick Setup configuration persists across power-off",
+      "category": "MANUAL_FIRMWARE_DISAGREEMENT",
+      "note": "Not an outright contradiction -- the source doc already hedges this ('though no persistence mechanism connecting MC0-MC4 to the flash-backed config... has been found'). Listed here because R16 formally reconfirms the gap rather than closing it: no wire-level evidence supports the manual's persistence claim for MC/MC4 specifically (distinct from the fully-proven D-command/motor-target persistence path).",
+      "related_requirement_ids": ["R16"]
+    },
+    {
+      "row_id": "W2-motor-connector-identity",
+      "source_doc": "docs/ui/user-guide-workflows.md#2 / hardware-reference.md (XLR-4 pinout, 'MOTOR 1-4' labels)",
+      "description": "Which physical XLR motor-output connector corresponds to which logical channel (0-3)",
+      "category": "REQUIRES_HARDWARE_EVIDENCE",
+      "note": "Logical channel -> MCU pin (STEP/DIR) is now fully resolved (R15); logical channel -> physical 'Motor N' silkscreen/connector label is not, and per this session's own explicit instruction is not claimed.",
+      "related_requirement_ids": ["R15"]
+    },
+    {
+      "row_id": "W3-direction-invert",
+      "source_doc": "docs/ui/user-guide-workflows.md#3 (Direction can be inverted between A/B orientation)",
+      "description": "A/B orientation direction-invert configuration option",
+      "category": "REQUIRES_HARDWARE_EVIDENCE",
+      "note": "DIR GPIO pin identity is resolved (R15); which electrical polarity (HIGH/LOW) corresponds to which physical rotation direction is not, and cannot be resolved from firmware code alone.",
+      "related_requirement_ids": ["R15"]
+    },
+    {
+      "row_id": "W1-startup-reference-routine",
+      "source_doc": "docs/ui/user-guide-workflows.md#1 (power-on) / boot-and-hardware-bringup.md (startup reference/input routine)",
+      "description": "Boot-time 'homing'/startup-reference routine gated on PA22",
+      "category": "REQUIRES_HARDWARE_EVIDENCE",
+      "note": "Timing/gating mechanism fully characterized; PA22's real-world physical signal identity is explicitly undocumented ('no physical function claimed') and out of this session's scope per its own explicit exclusion.",
+      "related_requirement_ids": []
+    },
+    {
+      "row_id": "W11-rf-settings-screen",
+      "source_doc": "docs/ui/user-guide-workflows.md#11 (RF CHANNEL settings screen string)",
+      "description": "'RF CHANNEL' settings-menu string",
+      "category": "MISSING_FIRMWARE_LINKAGE",
+      "note": "Firmware string exists; no code path/register mapping traced. Consistent with the still-open exact-RF-register-setup gap (R17/R19), now confirmed equally unresolved on both Remote builds.",
+      "related_requirement_ids": ["R17", "R19"]
+    },
+    {
+      "row_id": "W13-firmware-update",
+      "source_doc": "docs/ui/user-guide-workflows.md#13 / hardware-reference.md (Bootloader/Flashing)",
+      "description": "NOXON Firmware Uploader / USB-C bootloader update process",
+      "category": "COMPLETE",
+      "note": "Fully characterized as a standard, vendor-unmodified SAM-D bootloader (VID 0x239A, 1200-baud touch-reset), entirely separate from the reverse-engineered application image -- confirmed NOT_REQUIRED_FOR_REPLACEMENT in the AutoPilot contract, no variant dependency.",
+      "related_requirement_ids": []
+    },
+    {
+      "row_id": "W10-persistence-general",
+      "source_doc": "docs/ui/user-guide-workflows.md#10 (Save/load/reset behavior)",
+      "description": "General persistence claims (recording IS saving; no explicit SAVE/LOAD string found; no factory-reset workflow documented)",
+      "category": "MISSING_FIRMWARE_LINKAGE",
+      "note": "Factory-reset workflow: 'Not covered by current evidence' already explicitly stated in the source doc -- unchanged by this session.",
+      "related_requirement_ids": ["R16"]
+    }
+  ],
+  "summary_counts": {
+    "COMPLETE": 7,
+    "STALE": 3,
+    "MISSING_FIRMWARE_LINKAGE": 5,
+    "MANUAL_FIRMWARE_DISAGREEMENT": 1,
+    "REQUIRES_HARDWARE_EVIDENCE": 3
+  },
+  "note_on_completeness": "This gap list covers the major workflow/command rows already carrying meaningful evidence-tier claims (CONFIRMED/HIGH/PROBABLE/UNKNOWN tags) in user-guide-workflows.md and action-command-map.md. It is not a line-by-line audit of every string/screen listed in those documents' own 'Screens found only as firmware strings, not yet placed in a workflow' sections -- those remain out of scope until a dedicated traceability pass is run."
+}

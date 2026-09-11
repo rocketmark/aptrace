@@ -1,0 +1,225 @@
+{
+  "audit": "Four-Firmware Cross-Reconciliation",
+  "scope_note": "Consolidation only -- no new reverse engineering. Synthesizes docs/replacement/autopilot-gap-audit.md, docs/replacement/autopilot-868-vs-915-audit.md, docs/replacement/mando868-counterpart-audit.md, docs/replacement/mando-868-vs-915-audit.md and their JSON companions.",
+  "status_legend": ["SAME", "DIFFERENT", "NOT_APPLICABLE", "UNKNOWN"],
+  "source_audits": {
+    "autopilot_contract": ["docs/replacement/autopilot-gap-audit.md", "research/generated/autopilot-replacement-gaps.json"],
+    "autopilot_868_vs_915": ["docs/replacement/autopilot-868-vs-915-audit.md", "research/generated/autopilot-868-vs-915-diff.json"],
+    "mando_contract": ["docs/replacement/mando868-counterpart-audit.md", "research/generated/mando868-counterpart-audit.json"],
+    "mando_868_vs_915": ["docs/replacement/mando-868-vs-915-audit.md", "research/generated/mando-868-vs-915-diff.json"]
+  },
+  "top_level_findings": {
+    "one_common_autopilot_contract": true,
+    "one_common_remote_contract": true,
+    "autopilot_variant_difference": "exactly one 4-byte RF center-frequency .data constant (864,000,000 Hz vs 915,000,000 Hz), consumed by radio_bringup__THIRD_PARTY; every other byte of the two 70,768-byte images is identical",
+    "remote_variant_difference": "no logic/behavior difference found anywhere sampled; the large raw-byte diff (62,870 of 138,304 bytes) is fully explained by one link-time address-relocation artifact plus two cosmetic strings (RF-band display label, build timestamp)"
+  },
+  "matrix": [
+    {
+      "requirement_id": "R1",
+      "behavior": "G transaction (Remote request -> AutoPilot '#' ack)",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote 0xb680 builds 'G<ch><type><seq>|'; 0xb59c sends/retries/acks. AutoPilot arms 0x200025e1=2 and schedules pending[17] -> single byte 0x23 ('#').",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/protocol/bidirectional-protocol.md", "docs/replacement/mando868-counterpart-audit.md#1", "research/generated/mando-868-vs-915-diff.json (0xb680 byte-identical, not in hash-mismatch list)"],
+      "remaining_unknown": "exact 0xb59c retry count/timeout duration"
+    },
+    {
+      "requirement_id": "R2",
+      "behavior": "S / P transaction",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote 0xc440 sends 'S|'; AutoPilot schedules event 6 + computes value0 (and value1/bool for extended form) in one pass -> 'P<value0>,' or extended form. Remote has a 'don't downgrade' guard -- a short-form response never overwrites already-stored extended state.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/protocol/bidirectional-protocol.md", "docs/replacement/mando868-counterpart-audit.md#2"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R3",
+      "behavior": "! transaction",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote 0xc440 sends '!0|'/'!1|' (mode digit ignored by AutoPilot's dispatch check); AutoPilot's 0x8c70 emits exactly 11 comma-terminated numeric fields.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/protocol/bidirectional-protocol.md", "docs/replacement/mando868-counterpart-audit.md#3"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R4",
+      "behavior": "I transaction",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote 0xb958 builds 'I<ch+1><digit>|' with mode digit INVERTED. AutoPilot stores mode verbatim, sets STATE[channel]=5; channel_event_monitor (0x8a80) notices and schedules event 15 with AUTOPILOT_LIVE_POSITION[channel].",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/protocol/bidirectional-protocol.md", "docs/replacement/mando868-counterpart-audit.md#4"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R5",
+      "behavior": "I9 / I1 short forms",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote FUN_0000b834 sends I9|/I1| (mode byte *0x200018e7), 6 retries over ~1000-3000 ticks. I1 silently aliases channel 0 (completes normally); I9 decodes to out-of-bounds channel 8 -- a genuine, silent AutoPilot-side dead end. Remote's parsed result (0x200027f0) is never read by anything -- discarded even on success.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/protocol/command-inventory.md", "docs/replacement/mando868-counterpart-audit.md#5"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R6",
+      "behavior": "Interactive '+' (mode 0/0x14)",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote FUN_0000e670's 4 call sites (screens 5/9/10) write only the Remote's OWN local per-channel record, never a bulk push or MC4. AutoPilot writes the wire delta into its record but does NOT compute a live target or dirty the persist buffer -- concretely proven (this session's AutoPilot Gap Resolution A) not to arm/commit a move by itself.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/investigations/auto-mode-and-plus-command.md", "docs/replacement/autopilot-gap-audit.md (Auto Mode)", "docs/replacement/mando868-counterpart-audit.md#6", "research/generated/mando-868-vs-915-diff.json (FUN_000049c4 sampled directly, logic identical)"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R7",
+      "behavior": "Bulk mode-0x62 re-arm",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "TWO distinct Remote triggers: (a) FUN_0000c440's tail -- gated on a clean S|->P... round trip AND a UI-set 'has real programmed data' flag (0x20000fa0, never set by boot alone) -- sends '+' mode=0x62 (crosses AutoPilot's compute+persist threshold, target=start+delta, real move-commit proven end to end) THEN unconditionally MC4; (b) FUN_0000b6f0, a structurally separate periodic pusher (~every 250 ticks via UI pump) that pushes '+' but NEVER sends MC4.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/investigations/auto-mode-and-plus-command.md", "docs/replacement/mando868-counterpart-audit.md#7", "tools/unicorn/virtual_link.py:run_plus_target_distance_roundtrip"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R8",
+      "behavior": "Manual Mode 0xF0 / 0xE0",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Checked before any ASCII command. 0xE0's field layout is byte-identical to 0xF0 (channel nibble + sign/23-bit magnitude); 0xE0 additionally latches per-channel state to suppress repeat at-limit calls. No dead-man/timeout exists on either side. Remote selects 0xE0 via *0x200018e7==3 (else 0xF0) in FUN_0000be94; sent every UI pump tick including idle heartbeats; stop is implicit (frames simply stop on wheel click).",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/investigations/manual-mode-and-limits.md", "docs/replacement/autopilot-gap-audit.md (Manual Mode)", "docs/replacement/mando868-counterpart-audit.md#8", "research/generated/mando-868-vs-915-diff.json (FUN_0000e670 sampled directly)"],
+      "remaining_unknown": "which specific UI screen sets *0x200018e7==3"
+    },
+    {
+      "requirement_id": "R9",
+      "behavior": "MC / MC4 (motor configuration + unlock)",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Remote FUN_00005a8c (sole builder) sends MC<0-3>/MC4 3x with NO ack wait. AutoPilot stores 4 fields per channel; fields 1/3 (CURRENT, MICRO-STEPPING) are display-only (LCD, no driver effect); field 2 (STEPS/S MAX) feeds a real fixed-point step-period computation (24,000,000/value); field 4 (RETURN SPEED) is a table index into a config blob that is blank in this firmware image. MC4 clears 0x20000060, the sole condition unlocking the AutoPilot's main-loop/motor subsystem.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/ui/action-command-map.md#2", "research/generated/autopilot-replacement-gaps.json (motor configuration)", "docs/replacement/mando868-counterpart-audit.md#9"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R10",
+      "behavior": "MT / Quick Setup",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "AutoPilot-initiated (not Remote-menu-initiated): sends MT<b0-b3><x>| exactly once per boot from 4 real GPIO connector-presence probes (slot order A->b0,C->b1,B->b2,D->b3). Remote's FUN_00010ce4 reacts, opens Choose-Type screen, assigns 'Not connected' to absent slots. No Remote-side menu entry point exists.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/investigations/motor-subsystem-unlock.md Part 4", "research/generated/autopilot-replacement-gaps.json (Quick Setup / MC / MT)", "docs/replacement/mando868-counterpart-audit.md#10", "research/generated/mando-868-vs-915-diff.json (FUN_00010ce4->FUN_00010cf4 sampled directly, logic identical, own-address relocation only)"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R11",
+      "behavior": "Reconnect / startup synchronization",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "Same mechanism as R7: Remote calls FUN_0000c440 unconditionally once per boot, and again on a debounced reconnect gated by a first-sync latch (0x20000fc9), reset only by a real ~5000-tick radio-silence gap (not a periodic timer).",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/investigations/auto-mode-and-plus-command.md", "docs/replacement/mando868-counterpart-audit.md#17"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R12",
+      "behavior": "Retries / timeouts (cross-cutting)",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "G/interactive-'+'(C/D): shared 0xb59c-style ack-wait. I9/I1: 6 retries, ~1000-3000 ticks. S/!/bulk-push gate: 'any clean response within ~200 ticks.' MC/MC4/LL1/LL2: sent 3x, NO ack wait at all.",
+      "variant_specific": null,
+      "confidence": "PROVEN_WITH_ASSUMPTION",
+      "evidence_refs": ["docs/replacement/mando868-counterpart-audit.md#14"],
+      "remaining_unknown": "exact 0xb59c retry count/timeout duration (same as R1)"
+    },
+    {
+      "requirement_id": "R13",
+      "behavior": "Program state / programmed-position handling",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "AutoPilot: per-channel-per-mode struct at 0x20001b40 (4 channels x 0x120 bytes), byte-for-byte documented. Remote: mirrored local record at 0x20000b20 (same +0xc/+0x10 delta convention), asserted to load from Remote-local flash at boot but with no specific loader function cited.",
+      "variant_specific": null,
+      "confidence": "PROVEN_WITH_ASSUMPTION",
+      "evidence_refs": ["docs/investigations/motor-config-persistence.md", "docs/replacement/mando868-counterpart-audit.md#12"],
+      "remaining_unknown": "which function loads the Remote's 0x20000b20 record array from local NVM/flash at boot (preserved open item, not solved here)"
+    },
+    {
+      "requirement_id": "R14",
+      "behavior": "Trigger behavior (digital + analog boot)",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "NOT_APPLICABLE", "mando915": "NOT_APPLICABLE",
+      "cross_device_contract": "AutoPilot-only (3.5mm TRS input, no Remote counterpart in this protocol surface). Digital arm: no debounce/latch, bouncy-insertion risk, fully characterized. Analog arm: exponentially-smoothed PB05/ADC1 filter (0x42a4) with a permanently-zero blend coefficient and a one-shot latch that never clears -- the first boot-time sample is permanently latched for the whole power cycle, explaining the manual's 'connect before power-up = less sensitive' claim exactly.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/investigations/trigger-input.md", "research/generated/autopilot-replacement-gaps.json (trigger input digital/analog)"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R15",
+      "behavior": "Motor configuration hardware effect (AP-side only)",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "NOT_APPLICABLE", "mando915": "NOT_APPLICABLE",
+      "cross_device_contract": "Covered by R9's AutoPilot-side detail; listed separately here per this task's own explicit reconciliation list. DIR pin identity (PB11/PA09/PB13/PA11, one pin above each channel's STEP pin) and motor enable/disable pin identity (PB16/PB17 enable, PB06/PB07 reset) are resolved; polarity-to-physical-direction and physical Motor1-4 connector mapping are not.",
+      "variant_specific": null,
+      "confidence": "PROVEN_WITH_ASSUMPTION",
+      "evidence_refs": ["research/generated/autopilot-replacement-gaps.json (direction control, motor enable/disable GPIO handling, motor configuration)"],
+      "remaining_unknown": "DIR polarity vs physical direction; physical Motor1-4 connector mapping (both preserved open items)"
+    },
+    {
+      "requirement_id": "R16",
+      "behavior": "Persistence expectations",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "AutoPilot's D-command/motor-target persistence (flash 0x12000, dirty-flag/save-on-change, NVMCTRL.PARAM-derived page size) is COMPLETE and concretely round-tripped. Remote's MC/MC4 sends expect no ack and no confirmed persistence-mechanism link exists between them and the AutoPilot's own flash-backed config (manual's 'Quick Setup persists' claim not independently confirmed on the wire).",
+      "variant_specific": null,
+      "confidence": "PROVEN_WITH_ASSUMPTION",
+      "evidence_refs": ["docs/investigations/motor-config-persistence.md", "docs/replacement/mando868-counterpart-audit.md#19"],
+      "remaining_unknown": "whether MC/MC4 settings have any real AutoPilot-side persistence mechanism at all (pre-existing open item)"
+    },
+    {
+      "requirement_id": "R17",
+      "behavior": "Radio transport boundary",
+      "autopilot868": "DIFFERENT", "autopilot915": "DIFFERENT", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "AutoPilot: SERCOM2 SPI Master, CS PA15, zero DMA, Stream-derived driver object -- CONFIRMED at MCU-peripheral level; external chip identity confirmed by board inspection (Ai-Thinker Ra-01H/SX1276). Remote: TX wrapper 0x58a8, RX ring buffer 0x20001773 (r/w pointers 0x200017d7/0x200017d8), LoRa/SPI driver chain 0xb440->0x11830->0x11326/0x112e8 -- characterized to the same MCU/radio-chip boundary. Logical packet framing/transport code is identical across variants on BOTH devices; only the AutoPilot's center-frequency constant differs (see RF/build differences, below).",
+      "variant_specific": "AutoPilot's own center-frequency .data constant is variant-specific (864MHz/915MHz) -- see dedicated RF/build rows below. Remote's radio driver code is variant-identical; only a display string differs.",
+      "confidence": "PROVEN_WITH_ASSUMPTION",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md", "research/generated/autopilot-replacement-gaps.json (radio transport)", "docs/replacement/mando868-counterpart-audit.md#18"],
+      "remaining_unknown": "exact SX127x register setup (mode/frequency/sync-word/CRC/payload-length) on BOTH devices -- explicitly non-blocking on all four firmware images"
+    },
+    {
+      "requirement_id": "R18",
+      "behavior": "Known protocol quirks/defects",
+      "autopilot868": "SAME", "autopilot915": "SAME", "mando868": "SAME", "mando915": "SAME",
+      "cross_device_contract": "'!' response: AutoPilot emits 11 fields; Remote's parser calls its field parser exactly 10 times and marks itself done -- field 11 and its trailing comma are left byte-for-byte unconsumed in the real RX ring buffer, no error on either side. 'I9': decodes to out-of-bounds channel 8 on the AutoPilot side; the Remote's query (6 retries, ~1000-3000 ticks) simply times out. Both are documented, genuine firmware discrepancies -- this project's own standing caution is not to 'fix' either in a harness or replacement.",
+      "variant_specific": null,
+      "confidence": "PROVEN",
+      "evidence_refs": ["docs/protocol/bidirectional-protocol.md", "docs/replacement/mando868-counterpart-audit.md#16"],
+      "remaining_unknown": null
+    },
+    {
+      "requirement_id": "R19",
+      "behavior": "RF / build differences (dedicated summary row)",
+      "autopilot868": "DIFFERENT", "autopilot915": "DIFFERENT", "mando868": "DIFFERENT", "mando915": "DIFFERENT",
+      "cross_device_contract": "See variant_specific -- this row exists to record the RF/build facts explicitly, per this task's own instruction, not to imply a behavioral difference.",
+      "variant_specific": {
+        "autopilot_center_frequency": {"868_build_hz": 864000000, "915_build_hz": 915000000, "storage": "RAM 0x20000000, .data-initialized from flash 0x14c40-0x14c43, consumed by radio_bringup__THIRD_PARTY"},
+        "remote_behavioral_contract": "identical (see top_level_findings.remote_variant_difference)",
+        "remote_display_string": {"868_build": "868MHz band", "915_build": "915MHz band"},
+        "remote_build_timestamp_string": {"868_build": "12:22:42", "915_build": "12:20:52", "note": "compile-time artifact, not functional"},
+        "remote_rf_register_setup": "unresolved equally on both Remote builds -- not mechanically isolable from link-shift noise (mando-868-vs-915-diff.json rf_register_config_note); does not block contract closure"
+      },
+      "confidence": "PROVEN",
+      "evidence_refs": ["research/generated/autopilot-868-vs-915-diff.json", "research/generated/mando-868-vs-915-diff.json"],
+      "remaining_unknown": "exact Remote RF register setup (both builds equally)"
+    }
+  ],
+  "preserved_unresolved_facts": [
+    {"fact": "Remote local NVM loader for 0x20000b20", "status": "OPEN, not solved", "source": "docs/replacement/mando868-counterpart-audit.md item 12"},
+    {"fact": "PA22 physical identity", "status": "OPEN, not solved", "source": "docs/replacement/autopilot-gap-audit.md (startup reference/input routine)"},
+    {"fact": "physical Motor1-4 connector mapping (to logical channels 0-3)", "status": "OPEN, not solved", "source": "docs/replacement/autopilot-gap-audit.md (direction control, motor enable/disable GPIO handling)"},
+    {"fact": "DIR polarity vs physical direction", "status": "OPEN, not solved", "source": "research/generated/autopilot-replacement-gaps.json (direction control)"},
+    {"fact": "external STEP/DIR implementation details", "status": "OPEN, checked and found no armed firmware mechanism (EXTERNAL_EVIDENCE_REQUIRED)", "source": "research/generated/autopilot-replacement-gaps.json (external STEP/DIR input behavior)"},
+    {"fact": "status LED GPIO path", "status": "OPEN, checked one candidate and ruled it out (EXTERNAL_EVIDENCE_REQUIRED)", "source": "research/generated/autopilot-replacement-gaps.json (status LED / status reporting)"},
+    {"fact": "exact Remote RF register setup", "status": "OPEN, not solved, equally unresolved on both Remote builds", "source": "docs/replacement/mando868-counterpart-audit.md item 18; docs/replacement/mando-868-vs-915-audit.md"},
+    {"fact": "product decisions about vendor quirks (which discovered bugs/asymmetries to intentionally preserve vs. fix)", "status": "OPEN, explicitly a product decision, not an evidence gap", "source": "research/generated/autopilot-replacement-gaps.json (error/failure behavior)"}
+  ]
+}
