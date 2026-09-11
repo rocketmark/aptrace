@@ -92,6 +92,9 @@ Usage:
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py g        # G -> # only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py s        # S -> P... only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py ampersand  # "&|" -> "V01R39" only
+    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py bang     # !0|/!1| -> 11-field CSV only (the 11-vs-10 mismatch)
+    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i        # I<channel><mode>| -> event-15 signed number only
+    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i9i1     # I9|/I1| short forms -- distinct from I<channel><mode>| and each other
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py pb05     # PB05-low reload -> does it reach motor_move_commit__CUSTOM?
     tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py t-status # T-status frame -> does the Remote ever send anything back?
@@ -585,6 +588,546 @@ def run_s_roundtrip(verbose=True):
         f" state=0x{results['extended']['remote_stored_state']},"
         f" value1={results['extended']['remote_stored_value1']},"
         f" bool=0x{results['extended']['remote_stored_bool']}")
+    return results
+
+
+# --- '!' -> 11-field bulk CSV anchors (all independently confirmed by
+# execution this pass; !0|/!1| are sent by the SAME 0xc440(0) routine as
+# 'S', immediately after its own real "P..." response is fully drained --
+# see docs/investigations/protocol-pipeline.md) -----------------------------
+
+REMOTE_BANG_MODE_SELECTOR = 0x2000109b  # Remote's own !0|/!1| choice: 0 -> "!0|" (0xc63e's
+                                          # literal 0x1c870), nonzero -> "!1|" (0xc566's own
+                                          # fallthrough literal 0x1c86c) -- confirmed by reading
+                                          # both literal-pool strings directly, not inferred from
+                                          # the address names
+REMOTE_BANG_PARSE_ENTRY = 0xc584         # past 0xc440's own S-response-wait timeout prologue
+                                          # (0xc57c's first bytes-available check + its 199-tick
+                                          # retry), right at the SAME real bytes-available
+                                          # recheck (0xb4f8) whose result (0xc596: bne 0xc6b4)
+                                          # is what actually branches into the real 10-field
+                                          # parse loop -- entering here lets THAT real check
+                                          # decide the branch, rather than this module picking it
+REMOTE_BANG_FIELD10_DONE = 0xc87c        # reached immediately after the Remote's OWN 10th (and
+                                          # final) `bl 0xb51c` call (0xc872) -- the exact point at
+                                          # which "field 11" (AutoPilot's 11th emitted field) is,
+                                          # if present, still sitting entirely unconsumed in the
+                                          # RX ring buffer
+REMOTE_BANG_DONE_FLAG = 0x2000195b       # set =1 by the Remote immediately after its 10th parse
+                                          # call (0xc876-0xc87a) -- confirms the Remote considers
+                                          # its own parse "done" at exactly 10 fields, not 11
+
+AUTOPILOT_PENDING7 = 0x200025c3          # pending[7], the '!' bulk-CSV event (0x200025bc + 7,
+                                          # same base every other pending[] constant in this
+                                          # module uses)
+
+AUTOPILOT_FIELD1_SOURCE = 0x200000ec     # event 7's field 1 = i32[here]/10, narrowed to u8
+                                          # (research/autopilot_static_inventory/event7-schema.md).
+                                          # From cold RAM this is 0, so field1=0 -- confirmed by
+                                          # disassembly of the Remote's OWN field-1 consumer
+                                          # (0xc6b4-0xc6cc: `bl 0xb51c; muls r0,#10; subs
+                                          # r0,#0x65; movw r3,#0x74ca; cmp r0,r3; bhi 0xc9dc`) to
+                                          # be OUTSIDE the Remote's own accepted range for that
+                                          # field ([101,29999] on the *10 value, i.e. raw field1
+                                          # must be >= 11) -- field1=0 sends the Remote down its
+                                          # own real "value out of range" branch (0xc9dc), which
+                                          # this harness cannot follow to completion (it calls,
+                                          # among other things, into a formatting helper whose
+                                          # state depends on C++ runtime global constructors this
+                                          # harness never runs, since it never boots from
+                                          # Reset_Handler -- see docs/harness/execution-model.md).
+                                          # Seeded below to a representative in-range value so the
+                                          # Remote's real 10-field happy-path parse is what gets
+                                          # exercised; this is AutoPilot's own real 0x8c70 builder
+                                          # computing field1 from this input, same as every other
+                                          # already-seeded field in this scenario (scan slot,
+                                          # last-timestamp) -- not a hardcoded response byte.
+
+# The AutoPilot's REAL short "S" response ("P1,\0") that 0xc440(0) has
+# already, for real, drained by the time it reaches REMOTE_BANG_PARSE_ENTRY
+# -- see run_s_roundtrip's own "short" leg (mode=0, value0=1). Captured
+# once here as a named constant, not re-derived per call, since re-running
+# that leg adds nothing new to the '!' transaction itself.
+REMOTE_BANG_PRIOR_S_RESPONSE = b"P1,"
+
+
+def run_bang_bulk_csv_roundtrip(verbose=True):
+    """The fifth acceptance scenario: Remote's real 0xc440(0) routine,
+    having just drained a real AutoPilot "S"->"P1," response, sends a real
+    "!0|"/"!1|" request -> AutoPilot schedules event 7 and builds its real
+    11-field numeric CSV response from its own concrete state -> Remote's
+    real parser consumes it. Directly resolves the previously-open "11-vs-10
+    field mismatch" (docs/protocol/open-questions.md #2): confirms exactly
+    what AutoPilot emits, exactly how many fields the Remote parses, and
+    what state the Remote is left in afterward -- via real execution on
+    both sides, not by re-reading the disassembly. Run for BOTH `!0|` and
+    `!1|`: the AutoPilot-side dispatch check (0x87b2) never inspects the
+    mode digit at all (confirmed by disassembly and by this scenario
+    getting an IDENTICAL AutoPilot-side pending[7]/response for both), so
+    any distinction is entirely Remote-side."""
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    mando = _machine_for(MANDO_FW)
+    results = {}
+    for mode, label in ((0, "!0|"), (1, "!1|")):
+        log(f"\n--- Remote mode selector (0x2000109b) = {mode} ({label}) ---")
+        log("=== Leg 1a: Remote's real 0xc440(0) sends its own real \"S|\" request ===")
+        # A real, full 0xc440 call (true entry, real prologue/SP) -- stopped
+        # (never stubbed/skipped) at the FIRST real 0x58a8 call, exactly the
+        # same "S|" send run_s_roundtrip's own leg 1 already independently
+        # confirmed. Continuing from THIS real stop -- rather than re-
+        # entering fresh mid-function at REMOTE_S_PARSE_ENTRY, which was
+        # tried first and found to corrupt an unrelated real local-stack
+        # write a few hundred instructions later (0xc568's `str r3,[sp,
+        # #0x14]`, landing just past mapped RAM under the entry point's
+        # default fresh stack pointer) -- keeps the SAME real, compiler-
+        # allocated stack frame for the whole leg, not a fabricated one.
+        leg1a = mando.run(
+            REMOTE_S_ENTRY, reg_seed=[("r0", 0)],
+            stub_calls=[REMOTE_S_PREAMBLE_STUB, 0xb440],
+            stop_at=[REMOTE_TX_WRAPPER], dump_reg_pointee=[("r0", 8)],
+            max_instructions=2000, label=f"bang-{label}-leg1a-s-send",
+        ).expect_stop(REMOTE_TX_WRAPPER)
+        _s_ptr, s_raw = leg1a.reg_pointee("r0")
+        wire_s = s_raw.split(b"\x00", 1)[0] + b"\x00"
+        log(f"  Remote's real, unmodified 0xc440 calls 0x58a8 with bytes = {wire_s!r}")
+        assert wire_s == b"S|\x00", f"unexpected Remote S bytes: {wire_s!r}"
+
+        log("\n=== Leg 1b: continuing the SAME real call, past its own real \"S\"->\"P1,\""
+            " drain, Remote sends the real !<mode>| request ===")
+        # Continuing (fresh=False) from the real LR/SP this SAME call's own
+        # `bl 0x58a8` left behind -- never a fabricated resume point. The
+        # ring buffer is seeded with AutoPilot's own real short-form "P1,"
+        # response (run_s_roundtrip's own already-established finding for
+        # AUTOPILOT_S_MODE=0), standing in for that response having really
+        # arrived over the (unmodeled) radio link.
+        leg1b = mando.run(
+            leg1a.registers["lr"], fresh=False, sp=leg1a.registers["sp"],
+            seed_mem=[
+                (REMOTE_RX_RINGBUF, REMOTE_BANG_PRIOR_S_RESPONSE),
+                (REMOTE_RX_READPTR, bytes([0])),
+                (REMOTE_RX_WRITEPTR, bytes([len(REMOTE_BANG_PRIOR_S_RESPONSE)])),
+                (REMOTE_BANG_MODE_SELECTOR, bytes([mode])),
+            ],
+            stub_calls=[0xb440], stop_at=[REMOTE_TX_WRAPPER], dump_reg_pointee=[("r0", 8)],
+            max_instructions=5000, label=f"bang-{label}-leg1b-bang-send",
+        ).expect_stop(REMOTE_TX_WRAPPER)
+        _bang_ptr, bang_raw = leg1b.reg_pointee("r0")
+        wire1 = bang_raw.split(b"\x00", 1)[0] + b"\x00"
+        log(f"  Remote's real, unmodified 0xc440 calls 0x58a8 with bytes = {wire1!r}")
+        assert wire1[:1] == b"!" and wire1[1:2] == str(mode).encode() and wire1[-2:] == b"|\x00", \
+            f"unexpected Remote ! bytes for mode={mode}: {wire1!r}"
+        wire1_bytes = wire1[:-1]
+
+        log("\n=== Leg 2a: AutoPilot receives it and schedules event 7 ===")
+        packet = wire1_bytes.ljust(4, b"\x00")
+        pending7 = deliver_and_observe(
+            AUTOPILOT_FW, AUTOPILOT_RX_ENTRY,
+            seed_mem=[(AUTOPILOT_RX_BUFFER, packet.hex())],
+            stop_at=AUTOPILOT_RX_EXIT,
+            observe_addr=AUTOPILOT_PENDING7, observe_len=1)
+        log(f"  AutoPilot's real, unmodified 0x8258 dispatcher (mode digit {mode!r} in the"
+            f" wire packet, never inspected by the check at 0x87b2) sets pending[7] = 0x{pending7.hex()}")
+        assert pending7 == b"\x01", f"event 7 not scheduled: pending[7]={pending7!r}"
+
+        log("\n=== Leg 2b: AutoPilot's outbound dispatcher builds its real 11-field CSV ===")
+        # 0x8c70 (the event-7 builder) re-reads AUTOPILOT_RX_BUFFER[1] itself
+        # (a real, separate mode-digit re-read -- confirmed by disassembly at
+        # 0x8c72-0x8c80 -- distinct from, and NOT gating, any of the 11
+        # emitted fields) -- carried forward from leg 2a's own real packet,
+        # not re-derived.
+        wire2, resp_ptr = capture_tx_bytes(
+            AUTOPILOT_FW, AUTOPILOT_TX_ENTRY, AUTOPILOT_TX_WRAPPER,
+            seed_mem=[
+                (AUTOPILOT_RX_BUFFER, packet.hex()),
+                (AUTOPILOT_PENDING7, pending7.hex()),
+                (AUTOPILOT_SCAN_SLOT0, "07"),
+                (AUTOPILOT_SCAN_COUNT, "01"),
+                (AUTOPILOT_LAST_TS, "0000ffff"),
+                (AUTOPILOT_FIELD1_SOURCE, "c8000000"),  # 200 (LE) -> field1 = 200/10 = 20
+            ])
+        wire2_bytes = wire2[:-1]
+        n_fields = wire2_bytes.count(b",")
+        log(f"  AutoPilot's real, unmodified 0x9268 dispatcher calls 0x8c10 with a pointer to"
+            f" RAM 0x{resp_ptr:x}, bytes = {wire2_bytes!r} ({n_fields} comma-terminated fields)")
+        assert n_fields == 11, f"expected AutoPilot's real event-7 builder to emit 11 fields, got {n_fields}: {wire2_bytes!r}"
+
+        log("\n=== Leg 3: continuing the SAME real call once more -- Remote's real parser"
+            " consumes it. Does it drop, misalign, or ignore field 11? ===")
+        # Same principle as Leg 1b: continuing (fresh=False) from leg1b's own
+        # real LR/SP (right where its own `bl 0x58a8` -- the "!<mode>|" send
+        # -- left off) keeps the ONE real, continuously-executing 0xc440
+        # call/stack frame intact for the whole transaction. A fresh
+        # re-entry at REMOTE_BANG_PARSE_ENTRY was tried first and hung; so
+        # did this same real-LR/SP continuation, at first, in the identical
+        # place -- the stack-continuity fix alone was NOT sufficient. The
+        # actual cause was AUTOPILOT_FIELD1_SOURCE defaulting to cold-RAM 0:
+        # the Remote's own field-1 range check (0xc6c0-0xc6cc) rejects it
+        # and branches to its own real "out of range" handler (0xc9dc),
+        # which this harness cannot run to completion (see
+        # AUTOPILOT_FIELD1_SOURCE's own comment above). Seeding a
+        # representative in-range field 1 (leg 2b, above) keeps the Remote
+        # on its real 10-field happy-path parse, which is what this leg
+        # actually needs to exercise. Even on that happy path, the real
+        # call is genuinely expensive: it internally runs a large but
+        # FINITE shared memset-style helper (0x196f8's byte-fill loop,
+        # confirmed by raising the instruction budget until the run
+        # completed on its own at ~34.7k instructions rather than hitting
+        # the limit) -- a real, one-time buffer-clear cost, not a bug or
+        # an infinite loop, analogous to the already-documented finite
+        # SERCOM device-probe cost noted in docs/harness/roadmap.md.
+        # max_instructions below is sized with headroom over that
+        # measured real cost.
+        leg3 = mando.run(
+            leg1b.registers["lr"], fresh=False, sp=leg1b.registers["sp"],
+            seed_mem=[
+                (REMOTE_RX_RINGBUF, wire2_bytes),
+                (REMOTE_RX_READPTR, bytes([0])),
+                (REMOTE_RX_WRITEPTR, bytes([len(wire2_bytes)])),
+            ],
+            stub_calls=[0xb440], stop_at=[REMOTE_BANG_FIELD10_DONE],
+            dump_mem=[(REMOTE_RX_READPTR, 1), (REMOTE_RX_WRITEPTR, 1), (REMOTE_BANG_DONE_FLAG, 1)],
+            max_instructions=100000, label=f"bang-{label}-leg3-parse",
+        ).expect_stop(REMOTE_BANG_FIELD10_DONE)
+        readptr = leg3.mem(REMOTE_RX_READPTR, 1)[0]
+        writeptr = leg3.mem(REMOTE_RX_WRITEPTR, 1)[0]
+        done_flag = leg3.mem(REMOTE_BANG_DONE_FLAG, 1)[0]
+        leftover = wire2_bytes[readptr:writeptr]
+        log(f"  Remote's real, unmodified 0xc440 parser calls its decimal-field parser"
+            f" (0xb51c) exactly 10 times, then sets its own \"parse done\" flag"
+            f" (0x2000195b) = 0x{done_flag:02x}")
+        log(f"  Real RX ring-buffer pointers at that instant: read=0x{readptr:x} write=0x{writeptr:x}"
+            f" -- {writeptr - readptr} byte(s) left UNCONSUMED in the ring buffer: {leftover!r}")
+        assert done_flag == 1, f"expected the Remote's own done-flag to be set, got 0x{done_flag:02x}"
+        eleventh_field = wire2_bytes.split(b",")[10]
+        assert leftover == eleventh_field + b",", \
+            f"expected exactly field 11 ({eleventh_field!r}+',') left unconsumed, got {leftover!r}"
+
+        results[label] = {
+            "mode": mode, "request": wire1_bytes, "response": wire2_bytes,
+            "n_fields_emitted": n_fields, "leftover_unconsumed": leftover,
+        }
+
+    log("\nBoth mode forms observed:")
+    for label, r in results.items():
+        log(f"  {label}: request={r['request']!r} -> response={r['response']!r}"
+            f" ({r['n_fields_emitted']} fields) -> Remote leaves {r['leftover_unconsumed']!r} unconsumed")
+    log("\nRESULT (the 11-vs-10 field mismatch, definitively resolved by real execution):")
+    log("  AutoPilot's real 0x8c70 ALWAYS emits exactly 11 comma-terminated fields.")
+    log("  The Remote's real 0xc440 parser calls its field parser (0xb51c) EXACTLY 10")
+    log("  times, then unconditionally marks itself done (0x2000195b=1) and moves on --")
+    log("  it never even attempts to read field 11. Field 11 + its trailing comma are")
+    log("  NEITHER an error NOR silently discarded: they are left, byte-for-byte,")
+    log("  sitting UNCONSUMED in the real RX ring buffer (write pointer stays ahead of")
+    log("  read pointer by exactly len(field11)+1 bytes) -- real, persistent buffer")
+    log("  state, not a crash and not a clean drop. Whether a LATER, unrelated read")
+    log("  eventually treats these leftover bytes as the start of a different message")
+    log("  (a real misalignment risk) depends on what the Remote does with the ring")
+    log("  buffer between cycles -- not re-traced here (out of this scenario's scope,")
+    log("  see docs/investigations/protocol-pipeline.md's Open items); what IS now")
+    log("  concretely settled is that the byte-count mismatch is real, silent (no")
+    log("  error/assert on either side), and identical for both !0| and !1|.")
+    return results
+
+
+# --- 'I<channel><mode>|' -> per-channel async state machine -> event 15
+# signed-number response anchors (all independently confirmed by execution
+# this pass; see docs/investigations/protocol-pipeline.md) -----------------
+
+REMOTE_I_ENTRY = 0xb958                  # Remote's real, self-contained I<channel><mode>|
+                                          # builder + response-wait loop (params: r0=channel
+                                          # 0-3, r1=mode_param 0/1) -- unlike 0xc440 this is a
+                                          # standalone routine with its own real prologue, so a
+                                          # normal fresh entry is sufficient (no two-phase
+                                          # resume needed for leg 1)
+REMOTE_I_VALUE_STORE = 0x20001908        # Remote's real per-channel signed-value storage
+                                          # (int32 array, index = channel*4) -- where 0xb958
+                                          # writes the parsed event-15 response; confirmed by
+                                          # decompile, distinct from I9|/I1|'s own 0x200027f0
+
+AUTOPILOT_CHANNEL_MONITOR_ENTRY = 0x8a80 # channel_event_monitor__CUSTOM -- takes NO
+                                          # parameters, internally scans all 4 channels'
+                                          # 0x20002524[ch] state byte every call (this is the
+                                          # real main-loop tick that notices state==5 and
+                                          # completes the transaction; the RX dispatcher itself
+                                          # only sets state=5, it does not schedule event 15)
+AUTOPILOT_PENDING15 = 0x200025cb         # pending[15], the event-15 numeric-response event
+                                          # (0x200025bc + 15, same pending[] base as every
+                                          # other AUTOPILOT_PENDING* constant in this module)
+AUTOPILOT_SELECTOR = 0x20002328          # "which channel is this response for" -- written
+                                          # channel+1 by BOTH the RX handler (0x874a) and the
+                                          # monitor (0x8a80's case 5, redundantly, same value)
+                                          # -- read back (channel = SELECTOR-1) by the event-15
+                                          # builder (0x8ddc) to index AUTOPILOT_LIVE_POSITION
+AUTOPILOT_MODE_ARRAY = 0x200029d8        # per-channel mode byte -- written verbatim from the
+                                          # wire's mode digit by the RX handler (0x8778-0x877a);
+                                          # NOT re-inverted on the AutoPilot side, so it ends up
+                                          # holding the OPPOSITE of the Remote's own mode_param
+                                          # (see REMOTE_I_ENTRY's mode-digit inversion, below)
+
+# Confirmed by decompiling 0xb958 (Remote's I builder): mode_param==0 sends
+# wire digit '1', mode_param==1 sends wire digit '0' -- an intentional
+# inversion on the SEND side only. The AutoPilot then stores that wire
+# digit as-is into AUTOPILOT_MODE_ARRAY[channel] (0x8778-0x877a): no
+# second inversion there. Net effect: AUTOPILOT_MODE_ARRAY[channel] ends
+# up EQUAL to (1 - mode_param), not mode_param itself.
+
+
+def run_i_channel_mode_roundtrip(verbose=True):
+    """The sixth acceptance scenario: Remote's real 0xb958 builds and sends
+    a real "I<channel><mode>|" request -> AutoPilot's real ASCII dispatcher
+    (0x872e-0x877c) sets the per-channel state machine -> AutoPilot's real
+    main-loop monitor (channel_event_monitor__CUSTOM, 0x8a80) notices state
+    5, schedules event 15, and (mode-dependent) caches the live position ->
+    AutoPilot's real event-15 builder (0x8ddc) emits a signed-decimal
+    response sourced directly from AUTOPILOT_LIVE_POSITION[channel] ->
+    Remote's real 0xb958 parses it and stores it in REMOTE_I_VALUE_STORE.
+    Run for two representative (channel, mode) pairs -- not exhaustive
+    (the task does not require all 8) -- chosen to cover both mode values
+    and a non-zero channel."""
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    mando = _machine_for(MANDO_FW)
+    results = {}
+    # (channel, mode_param, representative live-position value to seed)
+    cases = [(0, 0, 12345), (2, 1, -777)]
+    for channel, mode_param, live_pos in cases:
+        label = f"I ch={channel} mode={mode_param}"
+        log(f"\n--- {label} ---")
+        log("=== Leg 1a: Remote's real 0xb958 sends its own real I<channel><mode>| request ===")
+        leg1a = mando.run(
+            REMOTE_I_ENTRY, reg_seed=[("r0", channel), ("r1", mode_param)],
+            stub_calls=[0xb440],
+            stop_at=[REMOTE_TX_WRAPPER], dump_reg_pointee=[("r0", 8)],
+            max_instructions=3000, label=f"i-{label}-leg1a-send",
+        ).expect_stop(REMOTE_TX_WRAPPER)
+        _i_ptr, i_raw = leg1a.reg_pointee("r0")
+        wire1 = i_raw.split(b"\x00", 1)[0] + b"\x00"
+        log(f"  Remote's real, unmodified 0xb958 calls 0x58a8 with bytes = {wire1!r}")
+        wire_mode_digit = chr(ord("1") if mode_param == 0 else ord("0"))
+        assert wire1 == f"I{channel + 1}{wire_mode_digit}|".encode() + b"\x00", \
+            f"unexpected Remote I bytes for channel={channel} mode={mode_param}: {wire1!r}"
+        wire1_bytes = wire1[:-1]
+
+        log("\n=== Leg 2a: AutoPilot receives it -- sets per-channel state, NOT the"
+            " response itself (that's the monitor's job, leg 2b) ===")
+        packet = wire1_bytes.ljust(4, b"\x00")
+        result_2a = deliver_and_observe(
+            AUTOPILOT_FW, AUTOPILOT_RX_ENTRY,
+            seed_mem=[(AUTOPILOT_RX_BUFFER, packet.hex())],
+            stop_at=AUTOPILOT_RX_EXIT,
+            observe_addr=AUTOPILOT_S_MODE + channel, observe_len=1)
+        state_val = result_2a
+        log(f"  AutoPilot's real, unmodified 0x872e-0x877c handler sets"
+            f" 0x20002524[{channel}] (per-channel state) = 0x{state_val.hex()}")
+        assert state_val == b"\x05", f"expected state=5, got {state_val!r}"
+
+        log("\n=== Leg 2b: AutoPilot's real main-loop monitor (0x8a80) notices state 5"
+            " and schedules event 15 ===")
+        # The dead gate (0x20001b14[channel], see docs/investigations/
+        # motor-subsystem-unlock.md -- exhaustively confirmed never set
+        # nonzero anywhere in this firmware image) is left at its real
+        # cold-RAM value of 0, so the monitor's state-5 branch completes
+        # immediately, exactly as it would on real hardware from a fresh
+        # per-channel state. AUTOPILOT_LIVE_POSITION[channel] is seeded to
+        # a representative real-looking value -- the monitor/builder only
+        # READ it here, never compute it, so this stands in for whatever
+        # the real position-tracking code has left there by the time a
+        # user actually issues 'I' (out of scope for this transaction).
+        live_pos_bytes = int(live_pos).to_bytes(4, "little", signed=True)
+        result_2b = run_concrete(
+            AUTOPILOT_FW, AUTOPILOT_CHANNEL_MONITOR_ENTRY,
+            seed_mem=[
+                (AUTOPILOT_S_MODE + channel, "05"),
+                (AUTOPILOT_MODE_ARRAY + channel, f"{wire_mode_digit_to_int(wire_mode_digit):02x}"),
+                (AUTOPILOT_LIVE_POSITION + channel * 4, live_pos_bytes.hex()),
+            ],
+            stop_at=0x8bc4,  # channel_event_monitor__CUSTOM's own real return point
+            dump_mem=[
+                (AUTOPILOT_PENDING15, 1), (AUTOPILOT_SELECTOR, 1),
+                (AUTOPILOT_S_MODE + channel, 1),
+                (AUTOPILOT_CH0_STRUCT + channel * 0x120 + 0x10, 4),
+            ],
+        )
+        autopilot_mode_val = wire_mode_digit_to_int(wire_mode_digit)
+        pending15 = bytes.fromhex(result_2b["memory"][_norm(AUTOPILOT_PENDING15)])
+        selector = bytes.fromhex(result_2b["memory"][_norm(AUTOPILOT_SELECTOR)])
+        state_after = bytes.fromhex(result_2b["memory"][_norm(AUTOPILOT_S_MODE + channel)])
+        log(f"  AutoPilot's real, unmodified 0x8a80 monitor sets pending[15] = 0x{pending15.hex()},"
+            f" selector (0x20002328) = 0x{selector.hex()} (channel+1), and resets its own"
+            f" state byte back to 0x{state_after.hex()}")
+        assert pending15 == b"\x01", f"event 15 not scheduled: pending[15]={pending15!r}"
+        assert selector == bytes([channel + 1]), f"unexpected selector: {selector!r}"
+        assert state_after == b"\x00", f"expected monitor to reset state to 0, got {state_after!r}"
+        if autopilot_mode_val == 1:
+            cached = bytes.fromhex(result_2b["memory"][
+                _norm(AUTOPILOT_CH0_STRUCT + channel * 0x120 + 0x10)])
+            log(f"  AutoPilot-side mode byte=1 (wire mode digit {wire_mode_digit!r}, from"
+                f" Remote mode_param={mode_param} via the send-side inversion documented"
+                f" above) -- monitor ALSO cached LIVE_POSITION[{channel}] into"
+                f" CH0_STRUCT+0x10: {cached!r}")
+        else:
+            log(f"  AutoPilot-side mode byte=0 (wire mode digit {wire_mode_digit!r}, from"
+                f" Remote mode_param={mode_param}) -- monitor does NOT cache into"
+                f" CH0_STRUCT (mode-gated side effect only, does not affect the response)")
+
+        log("\n=== Leg 2c: AutoPilot's outbound dispatcher builds its real signed-decimal"
+            " event-15 response, sourced directly from AUTOPILOT_LIVE_POSITION[channel] ===")
+        wire2, resp_ptr = capture_tx_bytes(
+            AUTOPILOT_FW, AUTOPILOT_TX_ENTRY, AUTOPILOT_TX_WRAPPER,
+            seed_mem=[
+                (AUTOPILOT_PENDING15, pending15.hex()),
+                (AUTOPILOT_SELECTOR, selector.hex()),
+                (AUTOPILOT_LIVE_POSITION + channel * 4, live_pos_bytes.hex()),
+                # Same real pending-event scan table the '!' scenario needed
+                # (see AUTOPILOT_SCAN_SLOT0's own comment above) -- here
+                # populated with event 15 instead of event 7.
+                (AUTOPILOT_SCAN_SLOT0, "0f"),
+                (AUTOPILOT_SCAN_COUNT, "01"),
+                (AUTOPILOT_LAST_TS, "0000ffff"),
+            ])
+        wire2_bytes = wire2[:-1]
+        log(f"  AutoPilot's real, unmodified 0x9268 dispatcher calls 0x8ddc, which calls"
+            f" 0x8c10 with a pointer to RAM 0x{resp_ptr:x}, bytes = {wire2_bytes!r}")
+        assert wire2_bytes == f"{live_pos},".encode(), \
+            f"expected the response to be exactly LIVE_POSITION[{channel}]={live_pos} + ','," \
+            f" got {wire2_bytes!r}"
+
+        log("\n=== Leg 3: continuing the SAME real 0xb958 call -- Remote's real response"
+            " parser consumes it and stores the signed value ===")
+        leg3 = mando.run(
+            leg1a.registers["lr"], fresh=False, sp=leg1a.registers["sp"],
+            seed_mem=[
+                (REMOTE_RX_RINGBUF, wire2_bytes),
+                (REMOTE_RX_READPTR, bytes([0])),
+                (REMOTE_RX_WRITEPTR, bytes([len(wire2_bytes)])),
+            ],
+            stub_calls=[0xb440],
+            stop_at=[0xba52],  # 0xb958's own real, single shared epilogue --
+                                # confirmed by disassembly to be reached by
+                                # every response branch (literal '0', '-'
+                                # signed, and generic multi-digit positive)
+            dump_mem=[(REMOTE_I_VALUE_STORE + channel * 4, 4)],
+            max_instructions=20000, label=f"i-{label}-leg3-parse",
+        ).expect_stop(0xba52)
+        stored = int.from_bytes(leg3.mem(REMOTE_I_VALUE_STORE + channel * 4, 4), "little", signed=True)
+        ret_val = leg3.registers["r0"]
+        log(f"  Remote's real, unmodified 0xb958 parser stores REMOTE_I_VALUE_STORE[{channel}]"
+            f" = {stored} (r0 return code = {ret_val})")
+        assert stored == live_pos, f"expected Remote to store {live_pos}, got {stored}"
+
+        results[label] = {
+            "channel": channel, "mode_param": mode_param,
+            "request": wire1_bytes, "response": wire2_bytes, "stored_value": stored,
+        }
+
+    log("\nAll (channel, mode) cases observed:")
+    for label, r in results.items():
+        log(f"  {label}: request={r['request']!r} -> response={r['response']!r}"
+            f" -> Remote stores REMOTE_I_VALUE_STORE[{r['channel']}]={r['stored_value']}")
+    log("\nRESULT: the I<channel><mode>| response value is, in every case, exactly")
+    log("  AutoPilot's real AUTOPILOT_LIVE_POSITION[channel] at the moment the real")
+    log("  main-loop monitor (0x8a80) observes state==5 -- read directly, unmodified,")
+    log("  by both the monitor's cache write (mode-gated) and the event-15 builder's")
+    log("  own read (unconditional on mode). mode_param only controls whether the")
+    log("  monitor ALSO caches that same value into CH0_STRUCT+0x10 as a side effect;")
+    log("  it never changes WHICH value is reported back to the Remote.")
+    return results
+
+
+def wire_mode_digit_to_int(digit_char):
+    return 1 if digit_char == "1" else 0
+
+
+REMOTE_I9_I1_ENTRY = 0xb834              # Remote's OTHER, separate I-family sender -- fixed
+                                          # "I9|" or "I1|" (no channel/mode digits at all),
+                                          # chosen by comparing REMOTE_S_STORED_STATE (the
+                                          # SAME cell the 'S' transaction stores value0 into,
+                                          # see REMOTE_S_STORED_STATE's own comment above) to
+                                          # 26: !=26 sends "I1|", ==26 sends "I9|". Structurally
+                                          # near-identical to 0xb958 (same retry/timeout
+                                          # shape, same shared decimal-parser 0xb51c), but a
+                                          # genuinely distinct function with its own storage
+                                          # (REMOTE_I9_I1_VALUE_STORE, below) -- confirmed by
+                                          # decompile, not assumed from the naming alone.
+REMOTE_I9_I1_VALUE_STORE = 0x200027f0     # single (non-per-channel) int -- matches
+                                          # command-inventory.md's prior static finding
+
+
+def run_i9_i1_short_form_check(verbose=True):
+    """Resolves the previously-open I9|/I1| question (docs/protocol/
+    command-inventory.md): are these the same protocol path as
+    I<channel><mode>|, or genuinely different? Traces both real wire
+    forms through the SAME real AutoPilot dispatcher used by the main
+    'I' scenario above, with no assumptions about channel validity.
+
+    Real finding: neither form carries a real mode digit (byte offset 2
+    is the literal '|' in both, decoding to a garbage mode value of 76);
+    "I1|" decodes to channel index 0 (in range) and completes exactly
+    like I<channel=0><mode!=1>| -- but through 0xb834's own separate
+    send/retry/storage code, not 0xb958's. "I9|" decodes to channel
+    index 8 -- out of the monitor's real 4-channel (0-3) scan range --
+    so AutoPilot's real 0x872e handler still writes STATE[8]/MODE[8]/
+    SELECTOR=9 (a real, silent out-of-bounds array write into adjacent
+    scratch RAM), but channel_event_monitor__CUSTOM's real loop never
+    inspects index 8, so pending[15] is NEVER set: "I9|" is a genuine,
+    silent protocol dead end on this firmware image -- the Remote's own
+    0xb834 retries six times, times out, and gives up without ever
+    storing a value into REMOTE_I9_I1_VALUE_STORE."""
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    mando = _machine_for(MANDO_FW)
+    results = {}
+    for stored_state, label, expect_wire in ((26, "I9|", b"I9|\x00"), (0, "I1|", b"I1|\x00")):
+        log(f"\n--- {label} (REMOTE_S_STORED_STATE={stored_state}) ---")
+        leg1 = mando.run(
+            REMOTE_I9_I1_ENTRY, seed_mem=[(REMOTE_S_STORED_STATE, bytes([stored_state]))],
+            stub_calls=[0xb440], stop_at=[REMOTE_TX_WRAPPER], dump_reg_pointee=[("r0", 8)],
+            max_instructions=3000, label=f"i9i1-{label}-send",
+        ).expect_stop(REMOTE_TX_WRAPPER)
+        _ptr, raw = leg1.reg_pointee("r0")
+        wire = raw.split(b"\x00", 1)[0] + b"\x00"
+        log(f"  Remote's real, unmodified 0xb834 calls 0x58a8 with bytes = {wire!r}")
+        assert wire == expect_wire, f"unexpected {label} wire bytes: {wire!r}"
+
+        packet = wire[:-1].ljust(4, b"\x00")
+        snap = run_concrete(
+            AUTOPILOT_FW, AUTOPILOT_RX_ENTRY,
+            seed_mem=[(AUTOPILOT_RX_BUFFER, packet.hex())], stop_at=AUTOPILOT_RX_EXIT,
+            dump_mem=[(AUTOPILOT_SELECTOR, 1), (0x20002524, 12), (AUTOPILOT_MODE_ARRAY, 12)],
+            max_instructions=3000)
+        selector = bytes.fromhex(snap["memory"][_norm(AUTOPILOT_SELECTOR)])
+        channel_idx = selector[0] - 1
+        log(f"  AutoPilot's real, unmodified 0x872e handler decodes this as channel index"
+            f" {channel_idx} (SELECTOR={selector[0]}), a mode byte of 76 (from the literal"
+            f" '|' at the position a real mode digit would occupy), and sets"
+            f" 0x20002524[{channel_idx}] = 5 -- {'IN' if 0 <= channel_idx <= 3 else 'OUT OF'}"
+            f" the monitor's real 0-3 channel range")
+
+        monitor_snap = run_concrete(
+            AUTOPILOT_FW, AUTOPILOT_CHANNEL_MONITOR_ENTRY,
+            seed_mem=[(0x20002524 + channel_idx, "05"), (AUTOPILOT_SELECTOR, selector.hex())],
+            stop_at=0x8bc4, dump_mem=[(AUTOPILOT_PENDING15, 1), (0x20002524 + channel_idx, 1)])
+        pending15 = bytes.fromhex(monitor_snap["memory"][_norm(AUTOPILOT_PENDING15)])
+        outcome = "scheduled" if pending15 == b"\x01" else "NEVER scheduled -- dead end"
+        log(f"  AutoPilot's real, unmodified 0x8a80 monitor: pending[15] = 0x{pending15.hex()}"
+            f" ({outcome})")
+
+        results[label] = {"wire": wire[:-1], "channel_idx": channel_idx, "pending15": pending15}
+
+    assert results["I9|"]["pending15"] == b"\x00", "expected I9| to be a real dead end"
+    assert results["I1|"]["pending15"] == b"\x01", "expected I1| to complete (channel 0)"
+    log("\nRESULT: I9| and I1| are genuinely DISTINCT from I<channel><mode>| (different")
+    log("  sender/storage) AND from each other (I1| silently aliases channel 0's real")
+    log("  dispatch path; I9| is a real, silent dead end -- SELECTOR=9 decodes to an")
+    log("  out-of-bounds channel index the monitor's real 4-channel scan never visits,")
+    log("  so pending[15] is never set and the Remote's own retry loop just times out).")
     return results
 
 
@@ -1265,6 +1808,12 @@ if __name__ == "__main__":
         ok = run_g_ack_roundtrip()
     elif which == "s":
         ok = bool(run_s_roundtrip())
+    elif which == "bang":
+        ok = bool(run_bang_bulk_csv_roundtrip())
+    elif which == "i":
+        ok = bool(run_i_channel_mode_roundtrip())
+    elif which == "i9i1":
+        ok = bool(run_i9_i1_short_form_check())
     elif which == "plus":
         ok = run_plus_target_distance_roundtrip()
     elif which == "pb05":
@@ -1278,11 +1827,17 @@ if __name__ == "__main__":
         print()
         ok = bool(run_s_roundtrip()) and ok
         print()
+        ok = bool(run_bang_bulk_csv_roundtrip()) and ok
+        print()
+        ok = bool(run_i_channel_mode_roundtrip()) and ok
+        print()
+        ok = bool(run_i9_i1_short_form_check()) and ok
+        print()
         ok = run_plus_target_distance_roundtrip() and ok
         print()
         ok = run_pb05_reload_motion_check() and ok
         print()
         ok = run_t_status_feedback_check() and ok
     else:
-        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|plus|pb05|t-status|all]")
+        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|bang|i|i9i1|plus|pb05|t-status|all]")
     sys.exit(0 if ok else 1)

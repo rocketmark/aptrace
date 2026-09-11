@@ -12,8 +12,12 @@ completed milestones are not re-narrated here.
 - **M3 — Remote (`mando`) firmware brought up, virtual RF link built.**
   Closed at the concrete tier; `capture_tx_bytes`/`deliver_and_observe`
   are the reusable primitives.
-- **M4 (partial) — `G → #` and `S → P...` transactions.** Both closed at
-  the concrete tier through the same virtual link.
+- **M4 — `G → #`, `S → P...`, `!0|/!1| → 11-field CSV`, and
+  `I<channel><mode>|/I9|/I1| → signed number` transactions.** All closed
+  at the concrete tier through the same virtual link; the event-7
+  11-vs-10 field mismatch and the I9|/I1| distinction question are both
+  resolved by execution — see
+  [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 - **M5 — Tool-workbench integration (Ghidra, Unicorn).** Done; see
   [`docs/tooling/tool-selection.md`](../tooling/tool-selection.md).
 - **M6 — Behavior-to-hardware provenance.** The full pivot from protocol
@@ -35,23 +39,15 @@ the way.
 
 ## Open — protocol pipeline
 
-1. **Exercise `!`/`I` through the virtual link.** Deliberately paused
-   after `S → P...` closed, to pivot toward hardware provenance (M6).
-   Never resumed. `!` currently has only solver-confirmed entry
-   *reachability*, not a confirmed event-scheduling write; `I`'s dynamic,
-   per-channel state was never run through `virtual_link.py`.
-2. **Dormant-event reachability** (events 2, 3, 8, 9, 11, 12, 14) — per
+1. **Dormant-event reachability** (events 2, 3, 8, 9, 11, 12, 14) — per
    [`docs/protocol/open-questions.md`](../protocol/open-questions.md), a
    natural Crucible/What4 target now that whole-function execution habits
    are better understood (see the readonly-flash caveat in
    [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
    before attempting a whole-function run).
-3. **Event-7's 11-vs-10 field mismatch** — trace the Remote's `0xc440`
-   parser with the AutoPilot's real 11-field output as input to see
-   concretely what happens to the unconsumed field.
-4. **Remote-transmitted-packets-not-in-the-dispatch-tree question** — not
+2. **Remote-transmitted-packets-not-in-the-dispatch-tree question** — not
    revisited since the dispatch structure was corrected.
-5. **Name the Remote's own TX path transport (`0x58a8`)** — AutoPilot's
+3. **Name the Remote's own TX path transport (`0x58a8`)** — AutoPilot's
    `0x8c10` is now resolved (see "Done" above); the Remote's own
    driver-object pointer, populated by its `0x200038fc` config struct /
    constructor `0x1129c`, has not been walked through the same way. See
@@ -65,28 +61,28 @@ designed and Unicorn-prototyped in
 [`docs/investigations/trigger-input.md`](../investigations/trigger-input.md),
 but nothing has been flashed to real hardware. Before any patch is real:
 
-6. **Get physical measurements** at the trigger jack and at PB05:
+4. **Get physical measurements** at the trigger jack and at PB05:
    transient polarity/duration/bounce count, whether the line floats when
    disconnected, and whether the MCU-side waveform matches the jack-side
    waveform. Also measure the real main-loop period (to convert a
    poll-count debounce threshold into real time) and the minimum
    legitimate trigger pulse width.
-7. **Find a verified, real flash code cave** for the mitigation trampoline
+5. **Find a verified, real flash code cave** for the mitigation trampoline
    — the current design uses a harness-only scratch page. The most
    promising unexplored option is flash beyond the current image's end,
    within the part's real 512KB; this needs either a real device flash
    dump or vendor/BOSSA documentation review, not assumed blank.
-8. Once (6) and (7) are done: pick a real debounce threshold, build a real
+6. Once (4) and (5) are done: pick a real debounce threshold, build a real
    flashable patch, and validate it against a real device — none of this
    has been attempted yet.
 
 ## Open — hardware-bringup loose ends
 
-9. **A second, deeper NVM-erase-loop dependency**, found while reaching
+7. **A second, deeper NVM-erase-loop dependency**, found while reaching
    the stable main loop, was reported but not chased (likely gated on a
    zero-valued config field rather than a documented status bit) — see
    [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md).
-10. **`'+'`'s own dispatch is still not reachable from a genuinely fresh
+8. **`'+'`'s own dispatch is still not reachable from a genuinely fresh
     boot** in a single concrete run — blocked by a real, finite (not
     looping) SERCOM device-probe cost the project's boot-recipe
     calibration doesn't yet budget for. See

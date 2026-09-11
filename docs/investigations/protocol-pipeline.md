@@ -292,12 +292,16 @@ cleanly) for seeding the packet buffer itself — applied in
 
 ## Test / repro
 
-`tools/unicorn/virtual_link.py` runs all three closed transactions:
+`tools/unicorn/virtual_link.py` runs every closed transaction (`all` also
+covers the `+`/PB05/T-status scenarios documented elsewhere in this repo):
 
 ```sh
 tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py        # &| -> V01R39 (M3)
 tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py g      # G -> #        (M4)
 tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py s      # S -> P...     (M4)
+tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py bang   # !0|/!1| -> 11-field CSV (11-vs-10 mismatch, resolved below)
+tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i      # I<channel><mode>| -> event-15 signed number
+tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i9i1   # I9|/I1| short forms (distinct from I<channel><mode>| and each other)
 ```
 
 Each scenario drives `capture_tx_bytes`/`capture_tx_byte`/
@@ -350,25 +354,95 @@ constants — case 4 of the mode switch is the only case that can produce
 
 ## Open items
 
-- **`!` and `I` were never exercised through the virtual link** —
-  deliberately paused after `S -> P...` to pivot toward hardware
-  provenance (completing the SAMD51 motor-timer mapping started in
-  `docs/investigations/boot-and-hardware-bringup.md`: TCC1/IRQ93/`0x60ec`
-  toggling `PB22` is done; TC0/TC1/TC2's ISR/pin pairs are not). Still
-  open, not abandoned — `0xc440` already contains the `!0|`/`!1|` path
-  (Remote side), and `!`'s known 11-vs-10 field mismatch (below) awaits
-  it.
+- **`!` and `I` through the virtual link: RESOLVED.** Both closed at the
+  concrete tier, real execution on both firmwares, via
+  `tools/unicorn/virtual_link.py`'s `bang`/`i`/`i9i1` scenarios.
+
+  `!0|`/`!1|`: Remote's real `0xc440(0)` (past its own real `S`->`"P1,"`
+  drain) sends `!0|`/`!1|`; AutoPilot's `0x87b2` dispatch check never
+  inspects the mode digit (identical `pending[7]` outcome either way) and
+  schedules event 7; `0x8c70` always emits exactly **11**
+  comma-terminated fields (confirmed live: `0,1,32,4,30,2,1,0,0,0,0,`
+  from cold-RAM state, `20,1,32,4,30,2,1,0,0,0,0,` with a representative
+  field 1). Remote's own `0xc440` parser calls its shared field parser
+  (`0xb51c`) exactly **10** times, then unconditionally sets its own
+  "parse done" flag (`0x2000195b=1`) without ever attempting field 11 —
+  **the 11-vs-10 field mismatch is real, on both sides, and silent**: no
+  error, no assert, no misalignment *within this transaction*. Field 11
+  and its trailing comma are left byte-for-byte UNCONSUMED in the real RX
+  ring buffer (write pointer stays exactly `len(field11)+1` bytes ahead
+  of read) — real, persistent buffer state, confirmed by direct
+  read/write-pointer inspection after a real parse, not inferred. One
+  harness-only wrinkle: from cold RAM, field 1 (`i32[0x200000ec]/10`) is
+  0, and the Remote's own field-1 range check (`0xc6c0-0xc6cc`) rejects
+  0 as out of range, diverting into a real error path this harness can't
+  run to completion (it depends on C++ runtime global constructors this
+  harness never runs, since it never boots from `Reset_Handler`) — worked
+  around by seeding a representative, disclosed, in-range field-1 source
+  value, exactly the harness's own precedent for `S`'s `AUTOPILOT_S_MODE`
+  values.
+
+  `I<channel><mode>|`: Remote's real `0xb958` builds `"I<ch+1><digit>|"`
+  (confirmed inversion: `mode_param=0` sends digit `'1'`, `mode_param=1`
+  sends digit `'0'`); AutoPilot's real `0x872e-0x877c` handler stores
+  that digit VERBATIM into `MODE[channel]` (`0x200029d8+channel`) — no
+  second inversion — so `MODE[channel]` ends up equal to `1-mode_param`,
+  and unconditionally sets `STATE[channel]=5` (`0x20002524+channel`,
+  dual-purpose with `AUTOPILOT_S_MODE`). The RX handler does **not**
+  itself schedule the response: AutoPilot's real main-loop poll,
+  `channel_event_monitor__CUSTOM` (`0x8a80`, no parameters, scans all 4
+  channels every call), is what notices `STATE[channel]==5` and — since
+  the "busy" gate `0x20001b14[channel]` is exhaustively confirmed dead
+  (never set nonzero anywhere in this image; see
+  `motor-subsystem-unlock.md`) — completes immediately: resets
+  `STATE[channel]=0`, sets `pending[15]=1`, and (only when
+  `MODE[channel]==1`, i.e. only when `mode_param==0`) additionally caches
+  `LIVE_POSITION[channel]` into `CH0_STRUCT[channel]+0x10` as a pure side
+  effect. The event-15 builder (`0x8ddc`) then emits
+  `LIVE_POSITION[channel]` (`0x20002064+channel*4`) as a signed decimal
+  **regardless of mode** — confirmed live for `(channel=0, mode_param=0,
+  value=12345)` -> `12345,` and `(channel=2, mode_param=1, value=-777)`
+  -> `-777,`. Remote's real `0xb958` parser (shared `-`/`0`/generic-digit
+  branches, same `0xb51c` helper as `!`) stores the parsed signed value
+  into `REMOTE_I_VALUE_STORE[channel]` (`0x20001908+channel*4`) —
+  confirmed to exactly match what AutoPilot sent, both signs.
+
+  `I9|`/`I1|`: a genuinely SEPARATE Remote routine (`0xb834`, not
+  `0xb958`), sending a **fixed** string with no channel/mode digits at
+  all, chosen by comparing `REMOTE_S_STORED_STATE` (the Remote's own
+  cached `S`-response `value0`, `0x200018e7`) to 26 — `!=26` sends
+  `"I1|"`, `==26` sends `"I9|"` — and storing its own response into a
+  single non-per-channel cell (`0x200027f0`), confirmed by both static
+  decompile and live execution to match `command-inventory.md`'s prior
+  finding, "never read again by anything." Neither wire form carries a
+  real mode digit (`AutoPilot` decodes the literal `'|'` at that byte
+  offset as mode value 76). **`I1|` silently aliases channel 0**:
+  AutoPilot's real dispatcher decodes it exactly as `I<channel=0>|` with
+  a garbage (non-1) mode, and the transaction completes normally through
+  the SAME real dispatch/monitor/event-15 path documented above.
+  **`I9|` is a real, silent, firmware-level dead end**: channel digit
+  `'9'` decodes to array index 8, which AutoPilot's real
+  `0x872e` handler happily writes (`STATE[8]=5`, `SELECTOR=9` — a real,
+  silent out-of-bounds write into adjacent scratch RAM, confirmed live),
+  but `channel_event_monitor__CUSTOM`'s real scan loop only ever visits
+  indices 0-3, so `pending[15]` is **never** set — confirmed live
+  (`pending[15]` stays `0x00`) — and the Remote's own `0xb834` retry loop
+  times out after 6 attempts without ever storing a value. So: `I9|` and
+  `I1|` are each distinct from `I<channel><mode>|` (separate sender,
+  separate storage) and from each other (one completes, one is a dead
+  end) — none of the three are "the same protocol path" in any sense
+  that collapses them.
 - **Dormant-event reachability**: events 2, 3, 8, 9, 11, 12, 14 in the
   outbound dispatcher (`0x9268`) have no known trigger path traced yet —
-  only 5, 6, and 17 have been concretely exercised by this cluster.
-- **The event-7 11-vs-10 field mismatch**: flagged by prior static/
-  solver work and not resolved here — not investigated in this cluster.
+  only 5, 6, 7, 15, and 17 have been concretely exercised by this
+  cluster.
 - **Remote-transmitted packets not in the dispatch tree**: the original
   v0.1 model's "important mismatches" (`MS|`, `MR|`, `MM|`, `N|`, `KK|`,
-  `E1,...|`, bare `W|`, short `I9|`/`I1|`) remain unresolved by the
-  corrected dispatcher model — newly plausible as reachable through a
-  table-driven mechanism the character-comparison chain wouldn't show,
-  but not confirmed either way.
+  `E1,...|`, bare `W|`) remain unresolved by the corrected dispatcher
+  model — newly plausible as reachable through a table-driven mechanism
+  the character-comparison chain wouldn't show, but not confirmed either
+  way. (Short `I9|`/`I1|` are now resolved — see above; removed from this
+  list.)
 - **`PN...`'s producer**: the Remote's `0xc440` parser fully implements
   the `PN` branch (`if stored_state in {9,10,11}: stored_state = 1`), but
   no AutoPilot build examined so far ever emits a second byte `'N'` from

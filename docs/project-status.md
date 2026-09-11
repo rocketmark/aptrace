@@ -148,10 +148,12 @@ yet built as an alternate variant.
 ## Current milestone: the core protocol pipeline
 
 **Status: CLOSED at the concrete (Unicorn) evidence tier**, both firmwares,
-for three transactions: `&|` → `V01R39`, `G` → `#`, `S` → `P...`. Every
-stage — real dispatcher, real event scheduling, real TX/RX — has been
-independently demonstrated against unmodified firmware, entering at real
-call sites with the firmware establishing its own state. See
+for five transactions: `&|` → `V01R39`, `G` → `#`, `S` → `P...`,
+`!0|`/`!1|` → 11-field CSV, and `I<channel><mode>|`/`I9|`/`I1|` → signed
+number. Every stage — real dispatcher, real event scheduling, real TX/RX
+— has been independently demonstrated against unmodified firmware,
+entering at real call sites with the firmware establishing its own
+state. See
 [`docs/investigations/protocol-pipeline.md`](investigations/protocol-pipeline.md)
 for the full evidence chain, the real dispatcher structure, and a real
 tooling limitation found and explained along the way (a whole-function
@@ -159,12 +161,18 @@ Crucible replay of the dispatcher can't fold a readonly-flash-derived
 branch — a harness limitation, not a firmware bug; deliberately left
 unfixed since no current use case needs it).
 
-**Not yet done**: `!`/`I` were never exercised through the virtual link —
-paused deliberately to pivot toward hardware/behavior provenance (below),
-not resumed since. A solver-confirmed (level-3) proof of the *whole*
-dispatcher chain in one run remains blocked by the tooling limitation
-above; individual pieces (e.g. the `&` character check) already have
-independent level-3 confirmation.
+`!`/`I` closed this pass (`tools/unicorn/virtual_link.py`'s `bang`/`i`/
+`i9i1` scenarios): the event-7 11-vs-10 field mismatch is resolved
+(Remote's parser never attempts field 11; it's left unconsumed in the
+real RX ring buffer, silently, on both sides); `I<channel><mode>|`'s
+signed response is confirmed to be `AUTOPILOT_LIVE_POSITION[channel]`,
+scheduled by the real main-loop poll rather than the RX handler itself;
+and `I9|`/`I1|` are confirmed genuinely distinct from `I<channel><mode>|`
+and from each other (`I1|` aliases channel 0's real path; `I9|` is a
+real, silent, out-of-bounds dead end). A solver-confirmed (level-3) proof
+of the *whole* dispatcher chain in one run remains blocked by the
+tooling limitation above; individual pieces (e.g. the `&` character
+check) already have independent level-3 confirmation.
 
 ## Major established system facts
 

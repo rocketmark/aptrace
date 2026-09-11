@@ -12,13 +12,35 @@ about the protocol itself.
 1. **Name event-7's 11 fields** — trace the Remote's stores after each of
    its ten `0xb51c` parses and match RAM locations to UI labels/behavior.
    The 11th (AutoPilot-only) field is a separate question — see next.
-2. **Resolve the event-7 11-vs-10 field mismatch** — does the Remote
-   silently drop the 11th field, does it corrupt the next transaction, or
-   is there a version-skew explanation? Not yet traced dynamically or
-   symbolically. See `event7-schema.md`.
-3. **Resolve the `I<channel><mode>` numeric semantic** — trace table
-   `0x20002064` producers and the per-channel state machine around
-   `0x20001b14` / `0x200029d8`.
+2. ~~**Resolve the event-7 11-vs-10 field mismatch**~~ — **RESOLVED
+   (execution-confirmed, `tools/unicorn/virtual_link.py bang`)**: the
+   Remote neither drops nor corrupts anything within the transaction —
+   it simply never attempts field 11. Its parser calls the shared field
+   parser exactly 10 times, unconditionally marks itself "done," and
+   moves on; field 11 and its trailing comma are left byte-for-byte
+   UNCONSUMED in the real RX ring buffer (write pointer stays exactly
+   `len(field11)+1` bytes ahead of read, confirmed by direct pointer
+   inspection after a real parse). No error, no assert, no crash, no
+   version-skew signal either side. Whether a later, unrelated read ever
+   treats that leftover as the start of a different message was not
+   re-traced (out of this scenario's scope) — see
+   [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)'s
+   Open items.
+3. ~~**Resolve the `I<channel><mode>` numeric semantic**~~ — **RESOLVED
+   (execution-confirmed, `tools/unicorn/virtual_link.py i`)**: the
+   returned signed value is `AUTOPILOT_LIVE_POSITION[channel]`
+   (`0x20002064+channel*4`), read directly by the event-15 builder
+   (`0x8ddc`) regardless of mode. The per-channel state machine around
+   `0x20001b14`/`0x200029d8`: the RX handler (`0x872e-0x877c`) stores the
+   wire mode digit verbatim into `0x200029d8[channel]` (no inversion —
+   the inversion happens only on the Remote's send side) and
+   unconditionally sets `0x20002524[channel]=5`; the real main-loop poll
+   `channel_event_monitor__CUSTOM` (`0x8a80`) is what actually notices
+   state 5 and schedules event 15 (the RX handler itself does not); mode
+   only gates a side-effect cache write into the per-channel config
+   struct, never which value is reported. See
+   [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)'s
+   Open items for the full trace.
 4. **Name the `a0`/`a1`/`a2` states** (event 13) — trace producers of
    `0x2000209d` and `0x20002529`, and the Remote-side state variable.
 5. Trace the five backing values in the periodic `MTddddx|` status packet.
@@ -36,7 +58,12 @@ about the protocol itself.
    [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md).
 8. **Reconcile Remote-transmitted packets not accepted by the visible
    AutoPilot dispatcher**: `MS|`, `MR|`, `MM|`, `N|`, `KK|`, `E1,...|`, bare
-   `W|`, and the short `I9|`/`I1|` forms. **Note**: since
+   `W|`. (The short `I9|`/`I1|` forms are now resolved — **execution-
+   confirmed, `tools/unicorn/virtual_link.py i9i1`**: `I1|` silently
+   aliases `I<channel=0>|`'s real dispatch path and completes normally;
+   `I9|` decodes to an out-of-bounds channel index (8) that the real
+   monitor's 4-channel scan never visits, so it is a genuine, silent
+   firmware-level dead end — removed from this list.) **Note**: since
    [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
    found the AutoPilot dispatcher's real structure is more complex than the
    flat model this question assumed, some of these may turn out to be
