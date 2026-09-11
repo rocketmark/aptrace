@@ -816,12 +816,69 @@ CREATE TABLE IF NOT EXISTS state_map_slots (
                                                                     -- claim that edge produces this write)
     has_static_writer                             INTEGER NOT NULL,  -- 0/1
     has_dynamic_writer                              INTEGER NOT NULL,  -- 0/1
-    unresolved_producer                               INTEGER NOT NULL,  -- 0/1: no static AND no dynamic writer
+    unresolved_producer                               INTEGER NOT NULL,  -- 0/1: NO_KNOWN_WRITER (no static,
+                                                                             -- dynamic, or indexed writer at all)
+    indexed_writers_json                                TEXT,  -- [{from_addr, classification, ...}, ...] --
+                                                                   -- state_map_indexed_writers rows touching
+                                                                   -- this slot (see that table); NULL if no
+                                                                   -- computed-write scan was run for this array
+    writer_status                                         TEXT,  -- DIRECT_WRITER / INDEXED_WRITER_EXACT_SLOT /
+                                                                     -- INDEXED_WRITER_FINITE_SLOT_SET /
+                                                                     -- INDEXED_WRITER_RANGE /
+                                                                     -- UNKNOWN_COMPUTED_WRITE / NO_KNOWN_WRITER --
+                                                                     -- the single strongest classification found
+                                                                     -- for this slot; NULL if no computed-write
+                                                                     -- scan was run (has_static_writer/
+                                                                     -- has_dynamic_writer/unresolved_producer
+                                                                     -- above remain valid either way)
     source                                              TEXT NOT NULL,
     UNIQUE(run_id, slot_index)
 );
 CREATE INDEX IF NOT EXISTS idx_statemap_slots_run ON state_map_slots(run_id);
 CREATE INDEX IF NOT EXISTS idx_statemap_slots_unresolved ON state_map_slots(run_id, unresolved_producer);
+
+-- One row per candidate register-indexed ("computed") store instruction
+-- found by tools/census/indexed_writes.py's whole-image scan, whose
+-- resolved base address falls inside the mapped array -- see that
+-- module's docstring for the exact, bounded classification method.
+-- Every candidate a scan finds is kept (never deduplicated away), one
+-- row per (run, from_addr) -- multiple instructions can legitimately
+-- write into the same array.
+CREATE TABLE IF NOT EXISTS state_map_indexed_writers (
+    id                       INTEGER PRIMARY KEY,
+    run_id                     INTEGER NOT NULL REFERENCES state_map_runs(id),
+    firmware_id                  INTEGER NOT NULL REFERENCES firmware(id),
+    from_addr                      INTEGER NOT NULL,
+    from_function_id                 INTEGER REFERENCES functions(id),
+    mnemonic                           TEXT NOT NULL,
+    access_width                         INTEGER NOT NULL,
+    base_reg                               TEXT,
+    index_reg                                TEXT,
+    scale                                      INTEGER,
+    disp                                         INTEGER,
+    resolved_base_addr                             INTEGER NOT NULL,
+    classification                                   TEXT NOT NULL,  -- INDEXED_WRITER_EXACT_SLOT /
+                                                                         -- INDEXED_WRITER_FINITE_SLOT_SET /
+                                                                         -- INDEXED_WRITER_RANGE /
+                                                                         -- UNKNOWN_COMPUTED_WRITE
+    slots_json                                         TEXT NOT NULL,  -- concrete affected slot indices;
+                                                                          -- [] for UNKNOWN_COMPUTED_WRITE
+    applies_to_all_slots                                 INTEGER NOT NULL DEFAULT 0,  -- 1 for
+                                                                                        -- UNKNOWN_COMPUTED_WRITE:
+                                                                                        -- bound not determined,
+                                                                                        -- so every slot in the
+                                                                                        -- array is a possible
+                                                                                        -- target, disclosed
+                                                                                        -- rather than guessed
+    derivation_json                                        TEXT NOT NULL,  -- the full mechanical trace: every
+                                                                               -- instruction consulted to resolve
+                                                                               -- base/index, and why the bound
+                                                                               -- search stopped where it did
+    source                                                    TEXT NOT NULL,
+    UNIQUE(run_id, from_addr)
+);
+CREATE INDEX IF NOT EXISTS idx_statemap_indexed_run ON state_map_indexed_writers(run_id);
+CREATE INDEX IF NOT EXISTS idx_statemap_indexed_class ON state_map_indexed_writers(run_id, classification);
 
 -- One row per slot's OPTIONAL generic dispatcher probe (only populated
 -- when state_map_runs.dispatcher_entry is set) -- a single reusable

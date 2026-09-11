@@ -1008,6 +1008,50 @@ retried with an invented value. Results persist to
 `state_map_dispatcher_probes`. See `tools/census/state_map.py`'s module
 docstring for the full evidence model.
 
+### Computed/indexed RAM-write recovery (`indexed_writes.py`)
+
+Ghidra's own reference manager (the source behind `memory_accesses`)
+only resolves a store whose destination folds to one fixed literal
+address — a `strb rX, [rBase, rIndex]`-style store, where a REGISTER
+supplies part of the address, can never produce one `to_addr`, so it is
+invisible to that table even when it demonstrably targets the array
+being mapped. `state-map` runs a real computed-write recovery pass by
+default (`--no-indexed-writers` to skip it) so "no writer found" means
+"no writer found even after this," not merely "no direct xref found":
+
+1. Every register-indexed STORE instruction in the image is found by
+   decoding each `basic_blocks` row's own byte range (Ghidra's block
+   boundaries, not a blind linear scan) with Capstone.
+2. The store's BASE register is resolved via a bounded backward
+   register-definition walk — a same-block immediate/literal-pool load,
+   or (since a compiled function's own "load my literal pointers once,
+   reference them from many later blocks" shape is common) a short,
+   `edges`-driven walk across DIRECT predecessor blocks, accepted only
+   when every predecessor path agrees on the same value. A candidate is
+   kept only if its resolved base falls INSIDE the array being mapped —
+   a membership test, not a proximity guess.
+3. The INDEX register is resolved the same way; an immediate value
+   yields `INDEXED_WRITER_EXACT_SLOT`. Otherwise, two explicitly-scoped
+   `edges`-driven fan-in shapes are checked — an equality-gated
+   predecessor chain (`INDEXED_WRITER_FINITE_SLOT_SET`) or a single
+   guard-plus-init pair matching `for (i=K; i<N; i++)`
+   (`INDEXED_WRITER_RANGE`). Anything else — multi-hop loops, opaque
+   arithmetic, an unrecognized fan-in — is `UNKNOWN_COMPUTED_WRITE`,
+   with the full derivation trace kept, never a guessed bound.
+
+Results persist to `state_map_indexed_writers` (one row per candidate
+instruction) and roll up into each `state_map_slots` row's
+`writer_status` — one of `DIRECT_WRITER` / `INDEXED_WRITER_EXACT_SLOT` /
+`INDEXED_WRITER_FINITE_SLOT_SET` / `INDEXED_WRITER_RANGE` /
+`UNKNOWN_COMPUTED_WRITE` / `NO_KNOWN_WRITER`, in that precedence order.
+No variable/function name or surrounding behavior is consulted anywhere
+in this pass — only instruction operands, literal-pool bytes, and
+`edges` control-flow rows already in the database. See
+`tools/census/indexed_writes.py`'s module docstring for the exact
+bounds (`MAX_CROSS_BLOCK_HOPS`, `MAX_FINITE_CANDIDATES`) and
+`tools/census/test_indexed_writes.py` for synthetic coverage of every
+shape plus a real-firmware validation case.
+
 ## Limitations
 
 - **"Reachable" in `uncovered` means "discovered by Ghidra as a

@@ -910,7 +910,8 @@ def cmd_state_map(args):
 
     run_id = state_map.build_state_map(
         conn, args.firmware, base, args.count, args.width,
-        label=args.label, dispatcher_entry=dispatcher_entry)
+        label=args.label, dispatcher_entry=dispatcher_entry,
+        include_indexed_writers=not args.no_indexed_writers)
 
     if dispatcher_entry is not None:
         state_map.probe_dispatcher(
@@ -921,7 +922,7 @@ def cmd_state_map(args):
     print(f"state-map run {run_id}: '{args.firmware}' base={hx(base)} count={args.count} "
           f"width={args.width}" + (f" label={args.label!r}" if args.label else ""))
     print(f"{'slot':>4}  {'addr':>10}  {'static_w':>8}  {'reachable_w':>11}  {'dyn_w':>5}  "
-          f"{'dispatcher':>13}  unresolved")
+          f"{'writer_status':>27}  {'dispatcher':>13}  unresolved")
     for row in state_map.summary_rows(conn, run_id):
         s, probe = row["slot"], row["probe"]
         writers = json.loads(s["static_writers_json"])
@@ -933,7 +934,8 @@ def cmd_state_map(args):
                 disp += "*"
         unresolved = "UNRESOLVED_PRODUCER" if s["unresolved_producer"] else ""
         print(f"{s['slot_index']:>4}  {hx(s['addr']):>10}  {len(writers):>8}  "
-              f"{','.join(reach) or '-':>11}  {s['has_dynamic_writer']:>5}  {disp:>13}  {unresolved}")
+              f"{','.join(reach) or '-':>11}  {s['has_dynamic_writer']:>5}  "
+              f"{s['writer_status'] or '-':>27}  {disp:>13}  {unresolved}")
     print(f"\n(run_id={run_id}; * = dispatcher reached a real TX call but this probe supplied no "
           f"source value, so the captured output is empty/all-zero -- "
           f"output_depends_on_unresolved_source)")
@@ -1084,6 +1086,9 @@ def main(argv):
                      help="optional: also write the slot index N here each iteration (e.g. a scan-table slot)")
     sm.add_argument("--index-width", type=int, default=1)
     sm.add_argument("--max-instructions", type=int, default=5000)
+    sm.add_argument("--no-indexed-writers", action="store_true",
+                     help="skip the computed/indexed-write scan (indexed_writes.py) -- static/dynamic "
+                          "evidence only, faster but 'no writer found' means less")
 
     args = p.parse_args(argv)
     {

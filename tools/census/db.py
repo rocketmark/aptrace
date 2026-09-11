@@ -61,6 +61,8 @@ _COLUMN_MIGRATIONS = (
     ("library_matches", "reference_source_confirmed", "INTEGER NOT NULL DEFAULT 0"),
     ("library_matches", "reference_source_citation", "TEXT"),
     ("components", "strings_json", "TEXT"),
+    ("state_map_slots", "indexed_writers_json", "TEXT"),
+    ("state_map_slots", "writer_status", "TEXT"),
 )
 
 

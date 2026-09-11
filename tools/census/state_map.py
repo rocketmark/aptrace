@@ -116,17 +116,94 @@ def _dynamic_access_rows(conn, fw, addr, direction):
     return out
 
 
+# Precedence order for a slot's single "strongest evidence" writer_status
+# label -- DIRECT_WRITER (a resolved fixed-address static write) always
+# wins; among computed/indexed writers, a narrower bound is stronger
+# evidence than a wider one; NO_KNOWN_WRITER is the fallback when nothing
+# at all was found. Never chosen by any semantic judgment -- purely a
+# fixed ranking over the six classifications the computed-write scanner
+# and DIRECT/NONE can produce.
+WRITER_STATUS_PRECEDENCE = (
+    "DIRECT_WRITER",
+    "INDEXED_WRITER_EXACT_SLOT",
+    "INDEXED_WRITER_FINITE_SLOT_SET",
+    "INDEXED_WRITER_RANGE",
+    "UNKNOWN_COMPUTED_WRITE",
+    "NO_KNOWN_WRITER",
+)
+
+
+def _run_indexed_write_scan(conn, fw, firmware_key, run_id, base, count, width):
+    """Runs tools/census/indexed_writes.py's whole-image scan once for
+    this array, persists every candidate to state_map_indexed_writers,
+    and returns {slot_index: [summary, ...]} plus a separate list of
+    array-wide (applies_to_all_slots) UNKNOWN_COMPUTED_WRITE summaries --
+    see that module's docstring for the classification method."""
+    sys.path.insert(0, str(HERE.parent / "ghidra"))
+    import aptrace_ghidra as ghidra  # noqa: E402
+    import indexed_writes  # noqa: E402
+
+    fw_row = conn.execute("SELECT flash_base FROM firmware WHERE id=?", (fw,)).fetchone()
+    fw_path, _flash_base_s, _labels = ghidra.firmware_info(firmware_key)
+    firmware_bytes = fw_path.read_bytes()
+    flash_base = fw_row["flash_base"]
+
+    found = indexed_writes.find_computed_writers(conn, fw, firmware_bytes, flash_base, base, count, width)
+
+    by_slot = {i: [] for i in range(count)}
+    applies_to_all = []
+    writer_rows = []
+    for w in found:
+        func = _function_row(conn, fw, w["from_function_id"])
+        summary = {
+            "from_addr": w["from_addr"], "from_function": func["name"] if func else None,
+            "classification": w["classification"], "resolved_base_addr": w["resolved_base_addr"],
+            "base_reg": w["base_reg"], "index_reg": w["index_reg"],
+        }
+        if w["applies_to_all_slots"]:
+            applies_to_all.append(summary)
+        else:
+            for slot_idx in w["slots"]:
+                if 0 <= slot_idx < count:
+                    by_slot[slot_idx].append(summary)
+        writer_rows.append({
+            "run_id": run_id, "firmware_id": fw, "from_addr": w["from_addr"],
+            "from_function_id": w["from_function_id"], "mnemonic": w["mnemonic"],
+            "access_width": w["access_width"], "base_reg": w["base_reg"], "index_reg": w["index_reg"],
+            "scale": w["scale"], "disp": w["disp"], "resolved_base_addr": w["resolved_base_addr"],
+            "classification": w["classification"], "slots_json": json.dumps(w["slots"]),
+            "applies_to_all_slots": int(w["applies_to_all_slots"]),
+            "derivation_json": json.dumps(w["derivation"], default=str),
+            "source": "indexed_writes.py",
+        })
+    if writer_rows:
+        cols = list(writer_rows[0].keys())
+        conn.executemany(
+            f"INSERT INTO state_map_indexed_writers ({', '.join(cols)}) "
+            f"VALUES ({', '.join('?' for _ in cols)})",
+            [tuple(r[c] for c in cols) for r in writer_rows])
+        conn.commit()
+    return by_slot, applies_to_all
+
+
 def build_state_map(conn, firmware_key, base, count, width, label=None, dispatcher_entry=None,
-                     source="state_map.py"):
+                     source="state_map.py", include_indexed_writers=True):
     """Compute and persist one state_map_runs row plus `count` state_map_slots
     rows for the array [base, base + count*width), re-slicing existing
-    census evidence only. Returns the new run_id."""
+    census evidence -- plus, by default, a real computed/indexed-write
+    scan (tools/census/indexed_writes.py) so "no writer found" means more
+    than "no direct xref found." Returns the new run_id."""
     fw = census_db.get_firmware_id(conn, firmware_key)
     cur = conn.execute(
         "INSERT INTO state_map_runs (firmware_id, base, count, width, label, dispatcher_entry, ran_at, source) "
         "VALUES (?,?,?,?,?,?,?,?)",
         (fw, base, count, width, label, dispatcher_entry, _now(), source))
     run_id = cur.lastrowid
+
+    indexed_by_slot, indexed_applies_to_all = ({}, [])
+    if include_indexed_writers:
+        indexed_by_slot, indexed_applies_to_all = _run_indexed_write_scan(
+            conn, fw, firmware_key, run_id, base, count, width)
 
     rows = []
     for i in range(count):
@@ -137,6 +214,23 @@ def build_state_map(conn, firmware_key, base, count, width, label=None, dispatch
         dynamic_readers = _dynamic_access_rows(conn, fw, addr, "read")
         has_static_writer = bool(static_writers)
         has_dynamic_writer = bool(dynamic_writers)
+
+        writer_status = None
+        indexed_writers_json = None
+        if include_indexed_writers:
+            slot_indexed = indexed_by_slot.get(i, []) + indexed_applies_to_all
+            indexed_writers_json = json.dumps(slot_indexed)
+            if has_static_writer:
+                writer_status = "DIRECT_WRITER"
+            else:
+                classes_here = {e["classification"] for e in slot_indexed}
+                writer_status = next(
+                    (c for c in WRITER_STATUS_PRECEDENCE[1:-1] if c in classes_here), "NO_KNOWN_WRITER")
+
+        unresolved_producer = (not has_static_writer and not has_dynamic_writer) \
+            if not include_indexed_writers \
+            else (writer_status == "NO_KNOWN_WRITER" and not has_dynamic_writer)
+
         rows.append({
             "run_id": run_id, "firmware_id": fw, "slot_index": i, "addr": addr,
             "static_writers_json": json.dumps(static_writers),
@@ -149,7 +243,9 @@ def build_state_map(conn, firmware_key, base, count, width, label=None, dispatch
             })),
             "has_static_writer": int(has_static_writer),
             "has_dynamic_writer": int(has_dynamic_writer),
-            "unresolved_producer": int(not has_static_writer and not has_dynamic_writer),
+            "unresolved_producer": int(unresolved_producer),
+            "indexed_writers_json": indexed_writers_json,
+            "writer_status": writer_status,
             "source": source,
         })
     cols = list(rows[0].keys())
