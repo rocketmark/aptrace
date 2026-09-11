@@ -3,9 +3,13 @@
 Bounded causal-analysis pass over
 [`docs/hardware/firmware-pin-function-map.md`](../hardware/firmware-pin-function-map.md).
 Existing docs + bounded static tracing (Ghidra `callers`/`decompile`/
-`dump`) only — no Unicorn or SMT run this pass; recommended, not
-executed, where warranted. Does not reopen STEP/DIR or the
-Trigger-movement causal question.
+`dump`) — no SMT run. Does not reopen STEP/DIR or the Trigger-movement
+causal question.
+
+**Updated by a follow-up pass** (TCC1/PB22 Boot Runtime Replay): the
+one concrete-replay recommendation this audit originally made (below)
+was then executed, reusing the existing validated `AUTOPILOT_RECIPE`
+boot recipe unmodified. The TCC1/PB22 section reflects the result.
 
 **Machine-readable companion (authoritative)**:
 [`research/generated/mapped-pin-causal-gap-audit.json`](../../research/generated/mapped-pin-causal-gap-audit.json).
@@ -65,30 +69,45 @@ firmware one.
 function; cases 0–3 configure TC0–TC3's own EIC/PORT setup, **case 7
 configures TCC1** (`CTRLA=0x100`, `PER=0x20000000`, `CC0=0x10000`).
 All 5 calls (params 0,1,2,3,7) come **exclusively from
-`FUN_00006968`**, the startup reference/input boot routine — TCC1 is
-configured once per boot, alongside the 4 real motor channels' own
-timers, as part of the *same* reference-seek sequence. The only other
-path into `FUN_00005570` (via `FUN_00005f8c`) is always called with a
-0–3 channel argument in this pass's tracing, never 7 — **no live/wire
-command was found that reaches TCC1's own configuration.**
+`FUN_00006968`**, the startup reference/input boot routine. The only
+other path into `FUN_00005570` (via `FUN_00005f8c`) is always called
+with a 0–3 channel argument, never 7 — **no live/wire command reaches
+TCC1's own configuration.**
 
-`FUN_0000434c` explicitly **disables** TCC1 (clears `CTRLA.ENABLE`) and
-drives PB22 LOW, from the power-button-held halt sequence — implying
-TCC1 is expected to be actively running until explicitly silenced.
+**Resolved this pass by concrete replay** (TCC1/PB22 Boot Runtime
+Replay — see below): configuration is confirmed exactly as predicted
+(instr 65062–65071). The real **ENABLE** writer is `FUN_00005d24`
+(`CTRLA=0x102`), called *exclusively from inside `FUN_00005d44`* — the
+already-documented "dead" 128-sample ADC-baseline boot function, **not
+the reference-seek move** as the prior static-only pass inferred from
+co-configuration timing. TCC1 was enabled and disabled twice, both
+pairs entirely bracketing `FUN_00005d44`'s own execution (instr
+251605–259661 and 263738–271782 of a 450,000-instruction replay), with
+`FUN_0000434c` doing each disable (`CTRLA.ENABLE` cleared, PB22 driven
+LOW).
 
-**Physical meaning**: unknown; functionally points toward "tied to the
-boot-time reference-seek move" (synchronization/auxiliary timing) over
-a per-command motion channel or external control — an inference from
-co-configuration timing, not a proven identity.
+**Across the full replay** (11 real main-loop iterations past steady
+state): TCC1's IRQ handler (`0x60ec`) — **0 hits**. `PORT.GROUP1.OUTTGL`
+(`0x4100809c`, the handler's own toggle register) — **never written,
+not once**. But `AUTOPILOT_RECIPE` delivers **zero** real Cortex-M
+interrupts by construction (`interrupt_bridges: []`, confirmed) — so
+this null result is a property of the harness, not evidence that real
+silicon stays silent.
 
-**Gap classification**: `GOOD_CONCRETE_REPLAY_CANDIDATE`. Configuration
-is now proven; whether TCC1 ever actually **fires at runtime** is not.
+**Physical meaning**: still unknown. The earlier "tied to the
+reference-seek move" inference is superseded — TCC1's actual activity
+brackets the ADC-baseline function instead, which is *already*
+documented as functionally inert elsewhere, raising the possibility
+this TCC1 usage is likewise dead code rather than merely unidentified.
 
-> **Recommended query**: reuse `boot-and-hardware-bringup.md`'s
-> already-validated `AUTOPILOT_RECIPE` boot run unmodified, and watch
-> `0x60ec` (TCC1's IRQ handler) plus the PB22 GPIO MMIO range through
-> the *same already-reproduced* startup-reference window that run
-> covers. No new harness code needed.
+**Gap classification**: `MODEL_GAP` — firmware genuinely requests
+runtime behavior (real `CTRLA.ENABLE` writes, twice), but this harness
+cannot determine whether real hardware would fire, because AutoPilot's
+boot recipe models zero interrupt delivery. **Recommended next tool:
+none for this recipe** — closing this would need a new,
+evidence-bounded `interrupt_bridge` for IRQ93 (the same discipline
+`MANDO_RECIPE`'s one DMAC bridge already established), which is a
+harness change, out of this pass's bounded scope.
 
 ## External RJ45 STEP/DIR
 
@@ -105,13 +124,16 @@ globally searched for — no pin to start from, none invented.
 - **Candidates audited**: 4 (PB30/PB31, PB06/PB07, TCC1/PB22, external
   RJ45 STEP/DIR).
 - **Causal paths closed this pass**: PB30/PB31 and PB06/PB07 (firmware
-  side — both now `CAUSAL_PATH_PROVEN`).
-- **Good SMT candidates**: none. PB30/PB31 is now a *worse* SMT target
-  than before (4 identical producers, no ambiguity to solve for); the
-  other candidates either have no sink or a cheaper concrete-replay
-  path.
-- **Good concrete-replay candidates**: TCC1/PB22's runtime-firing
-  question (see above).
+  side — both `CAUSAL_PATH_PROVEN`); TCC1/PB22's configuration and
+  enable/disable lifecycle (firmware side — concretely proven by the
+  follow-up boot replay), though its runtime-firing question landed on
+  `MODEL_GAP`, not closed.
+- **Good SMT candidates**: none, throughout. PB30/PB31 is a *worse* SMT
+  target than before (4 identical producers, no ambiguity to solve
+  for); the others have no sink, a resolved concrete question, or a
+  harness limitation no query can get past.
+- **Good concrete-replay candidates**: none remaining — TCC1/PB22 was
+  the one candidate and it has now been run.
 - **Insufficient-sink cases**: external RJ45 STEP/DIR input.
 - **Newly discovered command/UI links**:
   - ASCII `'J'` → motor-driver disable.
@@ -121,10 +143,13 @@ globally searched for — no pin to start from, none invented.
   - Auto-Mode segment-advance and a boot-time PA22 read → the shared
     PB30/PB31 pulse (joining G-commit and Trigger-reload).
 - **Remaining high-value unknowns**: PB30/PB31 and TCC1/PB22 physical
-  destinations; full semantics of ASCII `'J'`; PB06/PB07's electrical
-  identity; the external RJ45 STEP/DIR mechanism in its entirety.
+  destinations; whether TCC1 fires on real silicon (`MODEL_GAP`); full
+  semantics of ASCII `'J'`; PB06/PB07's electrical identity; the
+  external RJ45 STEP/DIR mechanism in its entirety.
 
-**Recommended next causal query before LID**: run the TCC1/PB22
-concrete-replay query above — the only candidate here with both a
-precise, bounded sink and a genuinely open upstream-firing question,
-answerable with zero new harness code.
+**Recommended next causal query before LID**: none. Every candidate in
+this audit's set now has either a proven firmware causal path, an
+insufficient sink, or a gap that only PCB continuity measurement, real
+hardware, or a new evidence-bounded interrupt bridge (a harness change,
+not a query) could close. This candidate set is exhausted for
+firmware-only causal work.

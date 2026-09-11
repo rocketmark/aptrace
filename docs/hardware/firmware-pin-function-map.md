@@ -191,6 +191,17 @@ pulse's purpose; the external RJ45 STEP/DIR input's entire firmware-side
 mechanism; DIR polarity-to-rotation on all 4 channels; logical-channel
 to physical-Motor-1..4 identity.
 
+**TCC1/PB22 update** (TCC1/PB22 Boot Runtime Replay): concretely
+confirmed TCC1 is genuinely enabled twice during boot, both times
+inside the already-documented "dead" ADC-baseline function
+(`FUN_00005d44`), not the reference-seek move itself. Its IRQ handler
+never fired and `PORT.GROUP1.OUTTGL` was never written in a
+450,000-instruction replay — but the AutoPilot boot recipe delivers
+**zero** Cortex-M interrupts by construction (0 `interrupt_bridges`),
+so this is `MODEL_GAP`, not evidence that real silicon stays silent.
+See [`mapped-pin-causal-gap-audit.md`](../replacement/mapped-pin-causal-gap-audit.md)
+for the full replay.
+
 ## Does this give concrete hardware sinks for a later bounded causal/SMT query?
 
 **Yes, for the STEP/DIR/enable/disable/trigger/radio-CS signals** — all

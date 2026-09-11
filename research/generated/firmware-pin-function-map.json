@@ -501,11 +501,11 @@
       "logical_function": "A 5th, hardcoded (non-RAM-indexed) step-shaped pulse output, structurally parallel to the 4 channel STEP outputs but not assigned to any of the 4 documented motor channels",
       "user_or_protocol_origin": "Not traced to a specific UI/protocol action this pass (out of bounded scope to re-derive; flagged as a required 'unresolved/shared output' per task instruction)",
       "firmware_function": "TCC1 IRQ handler (0x60ec), GPIO write done INLINE (PORT.GROUP1.OUTTGL = 0x400000) rather than through the table-driven helper the other 4 channels use",
-      "firmware_state_or_trigger": "Toggled on TCC1 interrupt; pin baked directly into the instruction stream, not read from the RAM pin-index table used by TC0-3",
+      "firmware_state_or_trigger": "Configured (CTRLA/PER/CC0) exactly once, exclusively from the startup reference/input boot routine (FUN_00006968, instr ~65062-65071 in a concrete boot replay). CONCRETELY CONFIRMED this session (TCC1/PB22 Boot Runtime Replay): TCC1's CTRLA.ENABLE bit is then genuinely SET twice (CTRLA=0x102) -- both times inside FUN_00005d44 (the already-documented 'dead' 128-sample ADC-baseline boot function, not the reference-seek move itself as earlier inferred from static tracing alone), immediately on that function's own entry and again partway through, each interval lasting ~8000 instructions before FUN_0000434c explicitly disables it (CTRLA.ENABLE cleared) and drives PB22 LOW. TCC1's own IRQ handler (0x60ec) was watched for the full 450,000-instruction replay (well past main-loop steady state) and never hit once; PORT.GROUP1.OUTTGL (the handler's own toggle register) was never written at all. AUTOPILOT_RECIPE delivers zero real Cortex-M interrupts (interrupt_bridges=[]), so this null result cannot be read as 'real hardware wouldn't fire' -- see remaining_unknown.",
       "mcu_peripheral": "TCC1 (timer/counter for control applications)",
       "gpio": "PB22",
       "gpio_direction": "OUTPUT",
-      "active_level_or_encoding": "Toggle (OUTTGL)",
+      "active_level_or_encoding": "Toggle (OUTTGL) -- by the IRQ handler's own code, IF it ever runs; not observed to run in this replay",
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 49,
       "pcb_observation": "Not individually traced.",
@@ -515,11 +515,13 @@
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_TRACE_UNKNOWN",
       "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN",
-      "confidence": "GPIO identity CONFIRMED (boot-and-hardware-bringup.md; this pin's index is hardcoded in the instruction stream, not a .data table lookup, so no fresh dump was needed to re-verify it -- the disassembly IS the value).",
+      "confidence": "GPIO identity CONFIRMED (boot-and-hardware-bringup.md; hardcoded pin index, no fresh dump needed). Configuration AND enable/disable lifecycle CONCRETELY CONFIRMED this session via the AUTOPILOT_RECIPE boot replay (instruction numbers reproduced the cited investigation's own milestones exactly: 27740/64134/74157/378402 etc). Whether TCC1 ever actually fires/toggles PB22 on real silicon is MODEL_GAP -- this harness never delivers any Cortex-M interrupt for the AutoPilot recipe (0 interrupt_bridges configured, unlike the Mando recipe's one evidence-bounded DMAC bridge), so an unfired IRQ here is a harness property, not proven firmware/hardware behavior.",
       "evidence_refs": [
-        "docs/investigations/boot-and-hardware-bringup.md (TC0-TC3/TCC1 pin table)"
+        "docs/investigations/boot-and-hardware-bringup.md (TC0-TC3/TCC1 pin table)",
+        "docs/replacement/mapped-pin-causal-gap-audit.md / research/generated/mapped-pin-causal-gap-audit.json (TCC1/PB22 candidate, static tracing of FUN_00005570/FUN_0000434c/FUN_00005d24)",
+        "TCC1/PB22 Boot Runtime Replay (this session): concrete AUTOPILOT_RECIPE run, 450000 instructions, log_mmio=True, extra_watch={0x60ec} -- 13 TCC1-register MMIO entries, 0 IRQ hits, 0 OUTTGL writes"
       ],
-      "remaining_unknown": "What this 5th channel is functionally for; whether it drives a physical connector at all or is vestigial/test-only."
+      "remaining_unknown": "Whether TCC1 fires on real silicon during either ~8000-instruction enabled window (undetermined -- MODEL_GAP, not ruled out); why FUN_00005d44's ADC-baseline work needs TCC1 at all (that function's own outputs are already documented elsewhere as unconsumed/dead, so this may also be functionally inert); physical destination of PB22."
     },
     {
       "signal_id": "RADIO_SPI_CS",

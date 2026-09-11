@@ -46,23 +46,25 @@
     },
     {
       "signal": "TCC1 / PB22",
-      "known_firmware_role": "TCC1's own IRQ handler (0x60ec, IRQ93) does an inline PORT.GROUP1.OUTTGL toggle of PB22 -- already known. This pass traces TCC1's CONFIGURATION and ENABLE/DISABLE lifecycle, previously unexamined.",
+      "known_firmware_role": "TCC1's own IRQ handler (0x60ec, IRQ93) does an inline PORT.GROUP1.OUTTGL toggle of PB22 -- already known. This candidate's CONFIGURATION, ENABLE/DISABLE lifecycle, and runtime firing were all resolved by this pass, the second half concretely (see TCC1/PB22 Boot Runtime Replay).",
       "upstream_causes": [
-        "FUN_00005570(param_1), a per-peripheral configuration function with a switch on param_1: cases 0/1/2/3 configure TC0-TC3's own EIC/PORT setup; case 7 configures TCC1 specifically (CTRLA=0x100, a prescaler/mode write -- NOT the ENABLE bit; PER=0x20000000; CC0=0x10000). Called with values 0,1,2,3,7 (5 total calls) EXCLUSIVELY from FUN_00006968, the startup reference/input boot routine -- i.e. TCC1 is configured only once per boot, as part of the SAME sequence that also sets up the 4 real motor channels' own timers for the boot-time reference-seek move.",
-        "The only OTHER caller path into FUN_00005570 is FUN_00005f8c, itself called from FUN_00006338 (phase-2/3 monitor, x2) and ascii_dispatcher__CUSTOM (x1) -- all with per-channel arguments in the 0-3 range (motor-channel re-arm), never observed reaching case 7 in this pass's tracing. No live/wire-command path to TCC1's own configuration was found."
+        "FUN_00005570(param_1), a per-peripheral configuration function with a switch on param_1: cases 0/1/2/3 configure TC0-TC3's own EIC/PORT setup; case 7 configures TCC1 specifically (CTRLA=0x100, a prescaler/mode write -- NOT the ENABLE bit; PER=0x20000000; CC0=0x10000). Called with values 0,1,2,3,7 (5 total calls) EXCLUSIVELY from FUN_00006968, the startup reference/input boot routine. CONCRETELY CONFIRMED in the boot replay at instruction 65062-65071 (CTRLA=0x100, offset+0x3c=1, CC0=0x10000) -- exact match to the static prediction.",
+        "The only OTHER caller path into FUN_00005570 is FUN_00005f8c, itself called from FUN_00006338 (phase-2/3 monitor, x2) and ascii_dispatcher__CUSTOM (x1) -- all with per-channel arguments in the 0-3 range (motor-channel re-arm), never observed reaching case 7. No live/wire-command path to TCC1's own configuration was found.",
+        "CONCRETELY IDENTIFIED this pass (Boot Runtime Replay): the real ENABLE writer is FUN_00005d24 (CTRLA=0x102, ENABLE bit genuinely set), NOT FUN_0000434c as the earlier static pass's phrasing implied. FUN_00005d24 is called exclusively from inside FUN_00005d44 -- the already-documented 'dead' 128-sample ADC-baseline boot function, NOT the reference-seek move. TCC1 was enabled/disabled twice, both pairs entirely inside FUN_00005d44's own execution window (instr 251605-259661 and 263738-271782 of a 450,000-instruction replay), immediately on that function's entry and again before its return."
       ],
-      "downstream_effects": "FUN_0000434c explicitly DISABLES TCC1 (clears CTRLA bit1/ENABLE) and drives PB22 LOW, called from loop_housekeeping_save_trigger__CUSTOM's power-button-held halt sequence (and incidentally from the already-documented 'dead' ADC-baseline boot function, FUN_00005d44). This means TCC1, once configured at boot, is expected to be an ACTIVE ongoing peripheral that must be explicitly silenced on halt -- consistent with, but not proof of, it running throughout normal operation once armed.",
-      "physical_meaning": "UNKNOWN which physical function PB22 drives. Functionally, the evidence points toward 'tied to the boot-time startup-reference/input sequence' (synchronization/auxiliary timing for that specific move) rather than a per-command motion channel, external control, or something unrelated to motion -- but this is an inference from co-configuration timing, not a proven functional identity.",
+      "downstream_effects": "FUN_0000434c explicitly DISABLES TCC1 (clears CTRLA.ENABLE, confirmed by the replay: CTRLA read then written back as 0x100) and drives PB22 LOW via its own digitalWrite call -- both concretely observed, twice, exactly bracketing FUN_00005d44's two enabled intervals. Also called from loop_housekeeping_save_trigger__CUSTOM's power-button-held halt sequence (not exercised in this boot-only replay). ACROSS THE FULL 450,000-INSTRUCTION REPLAY (11 real main-loop iterations past steady state): TCC1's IRQ handler (0x60ec) was watched and hit ZERO times; PORT.GROUP1.OUTTGL (0x4100809c) was never written once. The only PB22 MMIO activity observed was the initial pinMode(OUTPUT)+digitalWrite(LOW) during boot config and FUN_0000434c's own two explicit LOW writes -- never a toggle.",
+      "physical_meaning": "UNKNOWN which physical function PB22 drives. The earlier co-configuration-timing inference ('tied to the reference-seek move') is now SUPERSEDED by the concrete finding that TCC1's actual enable/disable activity is bracketed entirely within the ADC-baseline function instead -- which that same function's own outputs are already documented elsewhere as unconsumed/dead, raising the possibility this TCC1 usage is likewise functionally inert on this firmware, not merely unidentified.",
       "evidence": [
         "docs/investigations/boot-and-hardware-bringup.md (TCC1 IRQ93/PB22 toggle, already known)",
-        "tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x41018000 (this session: 15 references across 6 functions)",
-        "tools/ghidra/aptrace_ghidra.py decompile/disasm autopilot868 0x5570 and 0x434c (this session)",
-        "tools/ghidra/aptrace_ghidra.py callers autopilot868 0x5570 / 0x5f8c (this session)"
+        "tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x41018000 (prior pass: 15 references across 6 functions)",
+        "tools/ghidra/aptrace_ghidra.py decompile/disasm autopilot868 0x5570 and 0x434c (prior pass)",
+        "tools/ghidra/aptrace_ghidra.py callers autopilot868 0x5570 / 0x5f8c (prior pass)",
+        "TCC1/PB22 Boot Runtime Replay (this session): AUTOPILOT_RECIPE reused verbatim via tools/census/boot_recipes.build_machine, extra_watch={0x60ec}, log_mmio=True/max_mmio_log=200000 -- all 9 recipe milestones plus steady-state reproduced at the exact instruction counts boot-and-hardware-bringup.md itself cites (27740/64134/74157/378402/...); 13 TCC1-register MMIO entries; 0 IRQ hits; 0 OUTTGL writes; AUTOPILOT_RECIPE['interrupt_bridges']==[] confirmed"
       ],
-      "gap_classification": "GOOD_CONCRETE_REPLAY_CANDIDATE",
-      "recommended_next_tool": "Unicorn (concrete replay)",
-      "recommended_query": "Starting from boot-and-hardware-bringup.md's own already-established, fully-disclosed concrete boot recipe (AUTOPILOT_RECIPE: fake-tick + the 4 clock/PLL force-bits + SERCOM clear/force-bits + PA22 seeded high + DWT stub + the radio-ID force-reg), watch 0x60ec (TCC1's IRQ handler) and the PB22 GPIO MMIO range through the SAME already-reproduced startup-reference-routine window (instructions ~27740-390000) that document's own run already covers: does TCC1's IRQ actually fire, and does PB22 actually toggle, during that window? This reuses an existing, already-validated recipe -- no new harness code needed, and it directly resolves the one remaining upstream-cause ambiguity (configuration confirmed; runtime firing not yet observed).",
-      "remaining_unknown": "Whether TCC1 ever actually reaches ENABLE and fires at runtime (configuration was traced, not confirmed to result in real toggling); physical destination of PB22."
+      "gap_classification": "MODEL_GAP",
+      "recommended_next_tool": "NONE for this recipe. A real interrupt_bridge for TCC1/IRQ93 (evidence-bounded, per the same discipline MANDO_RECIPE's one DMAC bridge already established) would be the only way to determine whether real silicon fires during either enabled window -- out of this pass's bounded scope to build.",
+      "recommended_query": null,
+      "remaining_unknown": "Whether TCC1 fires on real silicon during either ~8000-instruction enabled window (undetermined by this harness, not ruled out); why FUN_00005d44's ADC-baseline work uses TCC1 at all; physical destination of PB22."
     },
     {
       "signal": "External RJ45 STEP/DIR",
@@ -82,9 +84,10 @@
   ],
   "summary": {
     "candidates_audited": 4,
-    "causal_paths_closed_this_pass": ["PB30/PB31 (firmware side)", "PB06/PB07 (firmware side)"],
+    "causal_paths_closed_this_pass": ["PB30/PB31 (firmware side)", "PB06/PB07 (firmware side)", "TCC1/PB22 (firmware configuration/enable lifecycle -- concretely resolved by the TCC1/PB22 Boot Runtime Replay; runtime firing itself left MODEL_GAP, not closed)"],
     "good_smt_candidates": [],
-    "good_concrete_replay_candidates": ["TCC1/PB22 -- does it actually fire at runtime during the boot reference-seek window"],
+    "good_concrete_replay_candidates": [],
+    "model_gaps": ["TCC1/PB22 -- IRQ93/PB22-toggle runtime firing cannot be determined under AUTOPILOT_RECIPE (0 interrupt_bridges); would need a new, evidence-bounded interrupt bridge to resolve, out of this pass's scope"],
     "insufficient_sink_cases": ["External RJ45 STEP/DIR input"],
     "newly_discovered_command_ui_links": [
       "ASCII command 'J' (0x4A) can trigger the motor-driver disable sequence (PB06/PB07 pulse + PB16/PB17 LOW), under sub-conditions not yet fully characterized",
@@ -95,11 +98,11 @@
     ],
     "remaining_high_value_unknowns": [
       "PB30/PB31 and PA22/PA23 physical destinations (hardware/PCB question, not firmware)",
-      "TCC1/PB22 runtime firing confirmation and physical destination",
+      "TCC1/PB22 runtime firing on real silicon (MODEL_GAP -- this harness cannot determine it) and PB22's physical destination",
       "Full semantics of ASCII command 'J'",
       "PB06/PB07 reset-vs-strobe electrical identity",
       "Entire external RJ45 STEP/DIR firmware mechanism"
     ]
   },
-  "recommended_next_causal_query_before_lid": "Run the TCC1/PB22 concrete-replay query above (reusing boot-and-hardware-bringup.md's already-validated AUTOPILOT_RECIPE boot run, watching 0x60ec and the PB22 GPIO MMIO range through the already-reproduced startup-reference-routine window) -- it is the only candidate in this audit with both a precise, bounded sink and a genuine, currently-unresolved upstream-firing question, and it requires no new harness code."
+  "recommended_next_causal_query_before_lid": "None of the remaining candidates in this audit's set have a bounded, tool-answerable next query left: TCC1/PB22's runtime-firing question is now a hardware/interrupt-modeling question (would need a new, evidence-bounded interrupt_bridge -- a harness change, not a query, and out of this pass's scope), and every other candidate's remaining gap is a physical/PCB or datasheet fact no firmware tool can close. This candidate set is exhausted for firmware-side causal work; further progress on PB30/PB31, PA22/PA23, PB06/PB07, or TCC1/PB22 requires PCB continuity measurement or real hardware, not another causal query."
 }
