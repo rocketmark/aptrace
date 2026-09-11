@@ -6,7 +6,7 @@ producing stable requirement IDs suitable for a later LID/spec process.
 **This is a documentation/reconciliation pass — no new reverse
 engineering was performed.**
 
-**Machine-readable companion (authoritative)**: [`research/generated/manual-to-firmware-traceability.json`](../../research/generated/manual-to-firmware-traceability.json), 49 atomic requirements.
+**Machine-readable companion (authoritative)**: [`research/generated/manual-to-firmware-traceability.json`](../../research/generated/manual-to-firmware-traceability.json), 50 atomic requirements (a later bounded closure pass split CLEAR into `MAN-AUTO-006`/`MAN-AUTO-009` — see "Unresolved core Auto Mode edges," below).
 
 ## Method
 
@@ -26,17 +26,26 @@ distinguishes them (e.g. "rotate jog wheel" vs. "click to stop" vs.
 "double-click to cycle channel" — three already-distinct firmware facts,
 not an invented decomposition).
 
-## Status distribution (49 requirements)
+## Status distribution (50 requirements)
 
 | Status | Count |
 |---|---|
 | `FULL_PATH_PROVEN` | 22 |
-| `PARTIAL_PATH_PROVEN` | 9 |
-| `NO_FIRMWARE_EVIDENCE` | 8 |
+| `PARTIAL_PATH_PROVEN` | 10 |
+| `NO_FIRMWARE_EVIDENCE` | 6 |
+| `REMOTE_LOCAL_ONLY` | 6 |
 | `AUTOPILOT_LOCAL_ONLY` | 4 |
-| `REMOTE_LOCAL_ONLY` | 4 |
 | `MANUAL_FIRMWARE_DISAGREEMENT` | 1 |
 | `HARDWARE_PHYSICAL` | 1 |
+
+A later bounded closure pass (Remote UI Command Tree — Unresolved Core
+Edge Closure) resolved `MAN-AUTO-005` (TEST) from `NO_FIRMWARE_EVIDENCE`
+to `PARTIAL_PATH_PROVEN` and `MAN-AUTO-006` (CLEAR A-B) from
+`NO_FIRMWARE_EVIDENCE` to `REMOTE_LOCAL_ONLY`, and split off a new
+`MAN-AUTO-009` (CLEAR ALL/M1-M4) also at `REMOTE_LOCAL_ONLY` — using
+only pre-existing evidence plus one bounded disassembly check each. See
+[`docs/ui/remote-ui-command-tree.md`](../ui/remote-ui-command-tree.md)'s
+"Unresolved UI → command edges" section for the finding.
 
 **Every requirement carries exactly one status — none were forced into
 `FULL_PATH_PROVEN`.**
@@ -44,7 +53,7 @@ not an invented decomposition).
 ## Requirement ID namespace
 
 `MAN-STARTUP-*` (3) · `MAN-QUICKSETUP-*` (4) · `MAN-MOTORCFG-*` (5) ·
-`MAN-MANUAL-*` (5) · `MAN-AUTO-*` (8) · `MAN-RECONNECT-*` (3) ·
+`MAN-MANUAL-*` (5) · `MAN-AUTO-*` (9) · `MAN-RECONNECT-*` (3) ·
 `MAN-PERSIST-*` (4) · `MAN-SETTINGS-*` (2) · `MAN-TRIGGER-*` (3) ·
 `MAN-EXTSTEPDIR-*` (1) · `MAN-INFO-*` (3) · `MAN-LIMITS-*` (5) ·
 `MAN-UPDATE-*` (1) · `MAN-QUIRK-*` (2)
@@ -120,13 +129,14 @@ Targeted corrections only, per the STALE items already identified in
 
 ## What remains open
 
-- 8 `NO_FIRMWARE_EVIDENCE` rows (TEST/CLEAR actions, most RF/settings
-  screens, factory reset, "Surpass limits", external STEP/DIR) — no
-  wire command or firmware path was ever traced for these; a future
-  bounded investigation could target them individually.
+- 6 `NO_FIRMWARE_EVIDENCE` rows (TEST M1-M4, most RF/settings screens,
+  factory reset, "Surpass limits", external STEP/DIR) — no wire command
+  or firmware path was ever traced for these; a future bounded
+  investigation could target them individually. (TEST A-B/B-C/C-D and
+  CLEAR were resolved by a later closure pass — see above.)
 - 1 `MANUAL_FIRMWARE_DISAGREEMENT` (MAN-PERSIST-002: Quick Setup
   persistence claim vs. no confirmed mechanism).
-- 9 `PARTIAL_PATH_PROVEN` rows each carry one precise
+- 10 `PARTIAL_PATH_PROVEN` rows each carry one precise
   `external_unknown` (e.g. exact UI-label-to-call-site mappings, the
   `0xe234` outcome branch, DIR polarity).
 - Physical/hardware unknowns (PA22 identity, Motor1-4 connector mapping,

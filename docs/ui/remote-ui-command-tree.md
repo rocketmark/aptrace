@@ -12,7 +12,7 @@ engineering was performed.** Built entirely from
 `docs/hardware/hardware-reference.md`, `docs/protocol/*`,
 `docs/investigations/*`.
 
-**Machine-readable companion (authoritative)**: [`research/generated/remote-ui-command-tree.json`](../../research/generated/remote-ui-command-tree.json) — 21 nodes, 49 edges.
+**Machine-readable companion (authoritative)**: [`research/generated/remote-ui-command-tree.json`](../../research/generated/remote-ui-command-tree.json) — 21 nodes, 50 edges (CLEAR split into two edges by a later closure pass — see "Unresolved UI → command edges," below).
 
 ## Compact tree
 
@@ -35,9 +35,10 @@ REMOTE.ROOT
 │   ├── Record A/B/C/D -> interactive '+' (mode 0x00) -- does NOT arm a target
 │   │   └── long-click -> end dialog (local only)
 │   ├── Segment params (Duration/Speed/Ramp/Delay/Loop) -> interactive '+' (mode 0x14)
-│   ├── Test A-B/B-C/C-D            [UNKNOWN wire command]
+│   ├── Test A-B/B-C/C-D            -> interactive '+' (mode 0x14) [PROBABLE, not confirmed]
 │   ├── Test M1-M4 (whole-motor)    [UNKNOWN wire command]
-│   ├── Clear A-B/ALL/M1-M4         [UNKNOWN wire command]
+│   ├── Clear A-B (segment)         -- no wire command; local record write observed
+│   ├── Clear ALL / Clear M1-M4     -- no wire command (same reasoning, path not independently traced)
 │   └── GO / Move to A-D -> G<channel><type=1><seq>|  (real move-commit if |distance|>8)
 ├── EXTERNAL_INPUT (inbound: RJ45 controller connected) [UNKNOWN detection mechanism]
 └── SETTINGS
@@ -105,9 +106,10 @@ compact.
 | select REC A-D, short click | USER_ACTION | `+` (mode 0x00) | FULL_PATH_PROVEN |
 | long click (end dialog) | USER_ACTION | — | REMOTE_LOCAL_ONLY |
 | edit segment parameter | USER_ACTION | `+` (mode 0x14) | PARTIAL_PATH_PROVEN |
-| select TEST A-B/B-C/C-D | USER_ACTION | `UNKNOWN` | NO_FIRMWARE_EVIDENCE |
+| select TEST A-B/B-C/C-D | USER_ACTION | `+` (mode 0x14, PROBABLE) | REUSES_KNOWN_PATH |
 | select TEST M1-M4 | USER_ACTION | `UNKNOWN` | NO_FIRMWARE_EVIDENCE |
-| select CLEAR ... | USER_ACTION | `UNKNOWN` | NO_FIRMWARE_EVIDENCE |
+| select CLEAR A-B (segment) | USER_ACTION | none (local record write observed) | REMOTE_LOCAL_PROVEN |
+| select CLEAR ALL / CLEAR M1-M4 | USER_ACTION | none (same reasoning) | REMOTE_LOCAL_PROVEN |
 | select GO/Move to A-D | USER_ACTION | `G` | PARTIAL_PATH_PROVEN |
 | Loop=YES reaches endpoint | REMOTE_LOCAL | — | PARTIAL_PATH_PROVEN |
 | click to switch movements | USER_ACTION | — | REMOTE_LOCAL_ONLY |
@@ -120,17 +122,35 @@ compact.
 
 ## Unresolved UI → command edges
 
-Six edges carry `wire_command = "UNKNOWN"` — no command form is guessed:
+A bounded closure pass (using only pre-existing evidence plus one
+disassembly check each) resolved 4 of the 7 core Auto Mode edges this
+section previously listed as unresolved:
 
-1. `AUTO.TEST` — select TEST A-B/B-C/C-D
-2. `AUTO.TEST_MOTOR` — select TEST M1-M4
-3. `AUTO.CLEAR` — select CLEAR A-B/ALL/M1-M4
-4. `EXTERNAL_INPUT` — external RJ45 controller detection
-5. `SETTINGS` — adjust BRIGHTNESS/RF CHANNEL/IR-SENSOR MODE/TRACTION CTRL
+- **`AUTO.TEST`** (TEST A-B/B-C/C-D) — upgraded to `REUSES_KNOWN_PATH`:
+  existing row-arithmetic evidence in `action-command-map.md` Part 3
+  points to call site C (screen 10, interactive `'+'`, mode `0x14`) as
+  the likely producer — **PROBABLE, not confirmed**; this pass's bounded
+  check of the shared row-renderer did not independently confirm it.
+- **`AUTO.CLEAR` A-B (segment)** — upgraded to `REMOTE_LOCAL_PROVEN`:
+  the already-documented "exactly four `'+'` call sites" fact rules out
+  the interactive-`'+'` path (sites A/B require an *empty* record, the
+  opposite precondition of clearing existing data); this pass's bounded
+  disassembly of `FUN_0000e670`'s already-flagged sole local-record
+  WRITE (`0xf47a`) found a real local write in the adjacent code region.
+- **`AUTO.CLEAR` ALL / M1-M4** — upgraded to `REMOTE_LOCAL_PROVEN` by the
+  same "no wire command exists in the inventory" argument, though this
+  pass did not separately trace its own specific code path.
 
-(Five distinct UI actions; `AUTO.TEST`/`AUTO.TEST_MOTOR`/`AUTO.CLEAR`
-count as three of the six edges above — see the JSON for the exact
-one-edge-per-action accounting.)
+**3 edges remain unresolved** (`wire_command = "UNKNOWN"` /
+`NO_FIRMWARE_EVIDENCE`, no command form guessed):
+
+1. `AUTO.TEST_MOTOR` — select TEST M1-M4 (no lead of any kind exists in
+   current evidence, unlike per-segment TEST)
+2. `EXTERNAL_INPUT` — external RJ45 controller detection
+3. `SETTINGS` — adjust BRIGHTNESS/RF CHANNEL/IR-SENSOR MODE/TRACTION CTRL
+
+See [`manual-to-firmware-traceability.md`](../replacement/manual-to-firmware-traceability.md)
+(`MAN-AUTO-005`, `MAN-AUTO-006`) for the full per-edge record.
 
 Additionally, `AUTO.GO`'s wire command (`G`) is known, but which exact
 UI string/call-site triggers it (vs. a possible `I<channel><mode>|`

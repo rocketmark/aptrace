@@ -509,44 +509,72 @@
       "manual_section": "user-guide-workflows.md#6",
       "manual_action": "Test a segment (TEST A-B / B-C / C-D)",
       "manual_claim": "[user manual] motor physically moves through the tested segment; segment's stored parameters unchanged.",
-      "remote_ui_behavior": "'TEST A-B' etc. control, 'PRESS BUTTON'/'TO STOP'",
-      "remote_firmware_path": null,
-      "wire_behavior": null,
-      "autopilot_firmware_path": null,
-      "autopilot_state_effect": null,
+      "remote_ui_behavior": "'TEST A-B' etc. control, 'PRESS BUTTON'/'TO STOP'; rendered via the same shared row-renderer (FUN_00005474) used by all Auto-Mode screens",
+      "remote_firmware_path": "FUN_0000e670 (PROBABLE: screen 10, call site C, per row-arithmetic extrapolation in action-command-map.md Part 3 -- not independently confirmed)",
+      "wire_behavior": "+<units>,1,1,<channel>,0x14,<count>,<fields>|  (PROBABLE, same schema as call site C's already-proven interactive-'+' mechanism)",
+      "autopilot_firmware_path": "Same tail-jumped region as other interactive '+' sends (0x806c -> FUN_000046c8/FUN_00004910), IF the hypothesis holds",
+      "autopilot_state_effect": "IF confirmed: writes fields but does NOT cross the '>50' persist/arm threshold (mode 0x14) -- same non-arming contract as recording a point",
       "hardware_effect": null,
       "observable_result": "Motor physically moves (per manual)",
       "persistence_effect": null,
       "retry_timeout_behavior": null,
-      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
       "evidence_refs": [
-        "docs/ui/user-guide-workflows.md#6"
+        "docs/ui/user-guide-workflows.md#6",
+        "docs/ui/action-command-map.md Part 3",
+        "research/generated/remote-ui-command-tree.json (REMOTE.AUTO.TEST edge, this pass)"
       ],
       "discrepancy": null,
-      "replacement_requirement": "No wire command has been traced for this action; replacement must define its own test-execution mechanism if this feature is reproduced.",
-      "external_unknown": "which wire command (if any) 'TEST A-B' sends was not traced in any canonical evidence"
+      "replacement_requirement": "A PROBABLE (not confirmed) wire form exists for this action -- replacement should treat it as a candidate to verify, not a proven contract requirement; the manual's claim that the motor physically moves during TEST is not independently connected to any move-execute command (G) by current evidence.",
+      "external_unknown": "whether screen 10/call site C is really 'TEST A-B' (row-arithmetic extrapolation, not directly observed); whether a separate move-execute command is also sent for the physical preview motion"
     },
     {
       "requirement_id": "MAN-AUTO-006",
       "manual_section": "user-guide-workflows.md#5",
-      "manual_action": "Clear a segment/channel (CLEAR A-B / CLEAR ALL / CLEAR M1-M4)",
+      "manual_action": "Clear a segment (CLEAR A-B, per-segment)",
       "manual_claim": "[firmware string] confirmation dialog exists ('Are you sure...').",
+      "remote_ui_behavior": "Confirmation dialog ('Are you sure...')",
+      "remote_firmware_path": "FUN_0000e670, screen-5 code region (between call sites A/0xf40c and B/0xf5a6), gated on FUN_00005450()!=0 (some channel has data) and FUN_0000d0d4()!=0",
+      "wire_behavior": null,
+      "autopilot_firmware_path": null,
+      "autopilot_state_effect": null,
+      "hardware_effect": null,
+      "observable_result": "Local per-channel record reset -- a real write loop (offsets +0/+0x48/+0x90 per channel, all 4 channels) observed directly at FUN_0000e670 0xf47a",
+      "persistence_effect": null,
+      "retry_timeout_behavior": null,
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#5",
+        "docs/ui/action-command-map.md Part 3 ('exactly four real \\'+\\' call sites... not three')",
+        "disassembly of FUN_0000e670 @ 0xf440-0xf4a0 (this pass, bounded)",
+        "research/generated/remote-ui-command-tree.json (REMOTE.AUTO.CLEAR edge, this pass)"
+      ],
+      "discrepancy": null,
+      "replacement_requirement": "No wire command to reproduce for CLEAR A-B -- it is proven Remote-local (rules out the interactive-'+' path via the already-documented 'exactly four call sites' fact, plus a directly-observed local write this pass). Exact trigger/gating condition (FUN_00005450/FUN_0000d0d4 semantics) was not fully characterized within this pass's bounded scope.",
+      "external_unknown": "exact semantics of FUN_00005450/FUN_0000d0d4's gating condition for this write were not traced (would require further, unbounded investigation)"
+    },
+    {
+      "requirement_id": "MAN-AUTO-009",
+      "manual_section": "user-guide-workflows.md#5",
+      "manual_action": "Clear all segments / clear a whole motor (CLEAR ALL / CLEAR M1-M4)",
+      "manual_claim": "[firmware string] confirmation dialog exists ('Are you sure...'), same family as CLEAR A-B.",
       "remote_ui_behavior": "Confirmation dialog",
       "remote_firmware_path": null,
       "wire_behavior": null,
       "autopilot_firmware_path": null,
       "autopilot_state_effect": null,
       "hardware_effect": null,
-      "observable_result": "Local record cleared (presumed)",
+      "observable_result": "Local record reset presumed, by the same reasoning as CLEAR A-B (MAN-AUTO-006)",
       "persistence_effect": null,
       "retry_timeout_behavior": null,
-      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
       "evidence_refs": [
-        "docs/ui/user-guide-workflows.md#5"
+        "docs/ui/user-guide-workflows.md#5",
+        "docs/ui/action-command-map.md Part 3 ('exactly four real '+' call sites... not three')"
       ],
       "discrepancy": null,
-      "replacement_requirement": "No wire command traced; likely Remote-local only, not confirmed.",
-      "external_unknown": "whether clearing sends any wire command or is purely Remote-local was not traced"
+      "replacement_requirement": "No wire command exists in the entire documented command inventory for a 'clear' semantic -- same argument as CLEAR A-B applies. This pass did not separately trace CLEAR ALL/M1-M4's own specific code path (distinct from the one bounded check performed for CLEAR A-B); classified by the same general evidence, not an independently-verified identical mechanism.",
+      "external_unknown": "CLEAR ALL/M1-M4's own specific code path was not independently traced this pass"
     },
     {
       "requirement_id": "MAN-AUTO-007",

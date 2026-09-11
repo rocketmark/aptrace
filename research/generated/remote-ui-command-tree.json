@@ -2,7 +2,7 @@
   "artifact": "Remote UI -> Command Connection Tree",
   "scope_note": "Documentation/reconciliation task only. Built entirely from docs/ui/user-guide-workflows.md, docs/ui/action-command-map.md, docs/replacement/manual-to-firmware-traceability.md/.json, docs/replacement/four-firmware-contract.md/.json, docs/hardware/hardware-reference.md, docs/protocol/*, docs/investigations/*. No new reverse engineering performed.",
   "node_count": 21,
-  "edge_count": 49,
+  "edge_count": 50,
   "nodes": [
     {
       "node_id": "REMOTE.ROOT",
@@ -829,18 +829,20 @@
       "edge_type": "USER_ACTION",
       "input": "select TEST A-B/B-C/C-D",
       "condition": null,
-      "remote_effect": "Local test-preview control ('PRESS BUTTON'/'TO STOP')",
-      "wire_command": "UNKNOWN",
-      "wire_form": null,
+      "remote_effect": "Local test-preview control ('PRESS BUTTON'/'TO STOP'); FUN_0000e670 dispatches this screen through the same generic row-renderer (FUN_00005474) used by every other Auto-Mode screen",
+      "wire_command": "+ (candidate, PROBABLE)",
+      "wire_form": "+<units>,1,1,<channel>,0x14,<count>,<fields>|  (same schema as call site C)",
       "next_node": "REMOTE.AUTO.TEST",
-      "autopilot_effect": null,
-      "confidence": null,
-      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "autopilot_effect": "IF this hypothesis holds: writes fields via the already-proven interactive-'+' path; mode 0x14 does NOT cross the AutoPilot's persist/arm threshold (same non-arming contract as recording)",
+      "confidence": "PROBABLE, NOT CONFIRMED -- pre-existing row-arithmetic extrapolation (action-command-map.md Part 3: screens 6-9 confirmed via their own row-indexed FUN_00006558 calls at rows 3-6; screen 10's row 7 = 'TEST A-B' family is extrapolated from that same arithmetic progression, not independently observed). This pass's bounded inspection of the shared row-renderer (FUN_00005474, called 14+ times from many different FUN_0000e670 screens) did not independently confirm or refute which specific call corresponds to screen 10, and doing so would require tracing FUN_0000e670's menu-index dispatch generally -- out of this pass's bounded scope.",
+      "traceability_status": "REUSES_KNOWN_PATH",
       "evidence_refs": [
+        "docs/ui/action-command-map.md Part 3",
         "docs/ui/user-guide-workflows.md#6",
-        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)"
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)",
+        "decompile of FUN_00005474 and callers query (this pass, bounded, inconclusive)"
       ],
-      "note": "No wire command has been traced for this action."
+      "note": "Status upgraded from NO_FIRMWARE_EVIDENCE to REUSES_KNOWN_PATH (PROBABLE tier) this pass, using ONLY pre-existing evidence already cited in action-command-map.md -- no new command was invented. Whether the motor ACTUALLY moves during a TEST preview via a further, separately-triggered command (e.g. G) was not established."
     },
     {
       "from": "REMOTE.AUTO",
@@ -856,28 +858,49 @@
       "confidence": null,
       "traceability_status": "NO_FIRMWARE_EVIDENCE",
       "evidence_refs": [
-        "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)"
+        "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)",
+        "this pass: no linkage found, per its own scope boundary against general Auto Mode re-investigation"
       ],
-      "note": "Relationship to per-segment TEST (does it run all recorded segments in sequence?) is not addressed by any canonical evidence."
+      "note": "Confirmed unchanged this pass: no candidate call site, row-arithmetic hypothesis, or other lead exists anywhere in current evidence for this whole-motor test family (distinct from per-segment TEST, which does have a PROBABLE lead -- see REMOTE.AUTO.TEST)."
     },
     {
       "from": "REMOTE.AUTO",
       "to": "REMOTE.AUTO.CLEAR",
       "edge_type": "USER_ACTION",
-      "input": "select CLEAR A-B/ALL/M1-M4",
+      "input": "select CLEAR A-B (per-segment clear)",
       "condition": null,
-      "remote_effect": "Confirmation dialog ('Are you sure...')",
-      "wire_command": "UNKNOWN",
+      "remote_effect": "Confirmation dialog ('Are you sure...'); on confirm, reaches a real local per-channel record reset -- observed directly this pass",
+      "wire_command": null,
       "wire_form": null,
       "next_node": "REMOTE.AUTO.CLEAR",
       "autopilot_effect": null,
-      "confidence": null,
-      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "confidence": "PROVEN (negative: rules out '+') for 'no wire command'; PROVEN (positive, this pass) for 'a real local write occurs'; the EXACT trigger/gating of that write was not fully traced (would require characterizing FUN_00005450/FUN_0000d0d4's own logic, out of bounded scope).",
+      "traceability_status": "REMOTE_LOCAL_PROVEN",
       "evidence_refs": [
+        "docs/ui/action-command-map.md Part 3 ('exactly four real '+' call sites... not three', both A/B sites gated on EMPTY existing data -- the opposite precondition of clearing existing data)",
         "docs/ui/user-guide-workflows.md#5",
-        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-006)"
+        "disassembly of FUN_0000e670 @ 0xf440-0xf4a0 (this pass, bounded): a real write loop (str r2,[r3,#0]/[r3,#0x48]/[r3,#0x90], r3 advancing by 0x120 across all 4 channels) sits in the screen-5 code region between call sites A (0xf40c) and B (0xf5a6), reached only when FUN_00005450() (\"some channel has data\") and FUN_0000d0d4() both return nonzero"
       ],
-      "note": "Whether clearing sends any wire command or is purely Remote-local was not traced."
+      "note": "The already-documented 'exactly four call sites' fact (pre-existing evidence) proves this does NOT reuse the interactive-'+' path, since sites A/B require the record to be EMPTY -- the opposite of a 'clear existing data' precondition. This pass's one bounded disassembly check (FUN_0000e670 @ 0xf440-0xf4a0, the sole WRITE to the local record array already flagged in the Mando868 counterpart audit) found a real local write in the immediately-adjacent code region, consistent with a local clear -- but its exact trigger condition was not fully characterized within this pass's one-hop bound."
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.CLEAR",
+      "edge_type": "USER_ACTION",
+      "input": "select CLEAR ALL / CLEAR M1-M4",
+      "condition": null,
+      "remote_effect": "Confirmation dialog ('Are you sure...'); local record reset presumed, by the same reasoning as CLEAR A-B",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.CLEAR",
+      "autopilot_effect": null,
+      "confidence": "PROVEN (negative: rules out '+', same 'exactly four call sites' argument) for 'no wire command'; the specific code path for CLEAR ALL/M1-M4 (as opposed to CLEAR A-B) was not independently inspected this pass.",
+      "traceability_status": "REMOTE_LOCAL_PROVEN",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md Part 3 ('exactly four real '+' call sites... not three')",
+        "docs/ui/user-guide-workflows.md#5"
+      ],
+      "note": "Same 'no wire command exists in the inventory for a clear semantic' argument as CLEAR A-B applies, but this pass did not separately trace CLEAR ALL/M1-M4's own specific code path (distinct from the one bounded check performed for CLEAR A-B) -- classified by the same general evidence, not an independently-verified identical mechanism."
     },
     {
       "from": "REMOTE.AUTO",
