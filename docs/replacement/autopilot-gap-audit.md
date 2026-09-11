@@ -2,9 +2,13 @@
 
 **Purpose**: assess whether existing reverse-engineering evidence is
 sufficient to write a clean-room behavioral/hardware specification for
-replacement AutoPilot firmware. This is a coverage audit against
-already-produced evidence — it performs no new reverse engineering, runs
-no tooling, and inspects no disassembly.
+replacement AutoPilot firmware. The original audit pass was a pure
+coverage audit against already-produced evidence, performing no new
+reverse engineering. A follow-up, bounded resolution pass ("Gap
+Resolution A", below) then closed the specific `CONCRETE`-type gaps it
+identified, using two targeted concrete-execution scenarios plus the
+minimal disassembly needed to construct them correctly — not a broader
+re-audit.
 
 **Machine-readable companion**: [`research/generated/autopilot-replacement-gaps.json`](../../research/generated/autopilot-replacement-gaps.json).
 
@@ -47,9 +51,9 @@ parked).
 | 6 | move/ramp profile execution | IMPLEMENTABLE_WITH_ASSUMPTIONS | PRODUCT_DECISION |
 | 7 | motor enable/disable GPIO handling | IMPLEMENTABLE_WITH_ASSUMPTIONS | STATIC |
 | 8 | external STEP/DIR input behavior | EXTERNAL_EVIDENCE_REQUIRED | STATIC |
-| 9 | Manual Mode | PARTIAL | CONCRETE |
-| 10 | Auto Mode | PARTIAL | CONCRETE |
-| 11 | programmed positions/moves | PARTIAL | CONCRETE |
+| 9 | Manual Mode | COMPLETE | NONE |
+| 10 | Auto Mode | IMPLEMENTABLE_WITH_ASSUMPTIONS | STATIC |
+| 11 | programmed positions/moves | IMPLEMENTABLE_WITH_ASSUMPTIONS | NONE |
 | 12 | motor configuration | PARTIAL | STATIC |
 | 13 | Quick Setup / MC / MT | COMPLETE | NONE |
 | 14 | persistence / NVM | COMPLETE | NONE |
@@ -57,7 +61,7 @@ parked).
 | 16 | trigger input — analog boot behavior | COMPLETE | NONE |
 | 17 | protocol RX parsing | COMPLETE | NONE |
 | 18 | protocol TX/event system | COMPLETE | NONE |
-| 19 | G / S / ! / I / + behavior | PARTIAL | CONCRETE |
+| 19 | G / S / ! / I / + behavior | COMPLETE | NONE |
 | 20 | radio transport | IMPLEMENTABLE_WITH_ASSUMPTIONS | STATIC |
 | 21 | USB/update/runtime behavior | NOT_REQUIRED_FOR_REPLACEMENT | NONE |
 | 22 | status LED / status reporting | EXTERNAL_EVIDENCE_REQUIRED | STATIC |
@@ -65,6 +69,49 @@ parked).
 
 Full `known_behavior` / `evidence_refs` / `implementation_requirements`
 detail per subsystem is in the JSON companion, not duplicated here.
+
+## Gap Resolution A (this session)
+
+Two bounded concrete-execution investigations closed all four
+`CONCRETE`-type gaps this audit originally identified. Both reuse the
+existing `ConcreteMachine`/`virtual_link.py` infrastructure (no new
+analysis framework) and the same `AUTOPILOT_RX_ENTRY` direct-dispatch
+boundary every other command scenario in that module already uses.
+
+**A — interactive `'+'` path** (`tools/unicorn/virtual_link.py
+plus-interactive`): the Remote's real frame builder (`FUN_000049c4`),
+called with the real interactive-screen arguments
+`(confirm1,confirm2,channel,param_4,mode)=(1,1,0,1,0x00)`, produces a
+real wire frame; delivered into the AutoPilot's real `'+'` handler at
+the same direct-entry boundary the bulk-push scenario already uses
+(sidestepping the separately-documented cold-boot delivery blocker),
+it writes the wire-supplied delta into the per-channel record but
+leaves `target` and the dirty flag exactly as they were beforehand —
+concretely confirming, for the first time, that the interactive path
+cannot arm or commit a move by itself. Two real, disclosed Remote-side
+display/print calls (`FUN_00014bb6`, `FUN_00014c7a`) needed stubbing —
+both dereference a real but uninitialized-in-this-scenario display
+object, the same role `AUTOPILOT_PLUS_DISPLAY_STUB` already plays on
+the AutoPilot side, traced by disassembly before stubbing rather than
+guessed.
+
+**B — Manual Mode `0xF0`/`0xE0`** (`tools/unicorn/virtual_link.py
+manual-f0e0`): disassembling `ascii_dispatcher__CUSTOM`'s (`0x8258`)
+own `0xE0` arm shows its per-record field layout is byte-identical to
+`0xF0`'s; the only real difference is a per-channel latch/cache
+(`0x20001fdd`/`0x20001fe4`/`0x20001ff4`) that suppresses a *repeat*
+at-limit call once a channel is already latched. Concretely
+demonstrated: an identical over-threshold `0xE0` record reaches the
+at-limit handler on a cold delivery but is silently skipped once the
+latch is pre-set, while `0xF0` (no latch) re-fires unconditionally
+every time. The latch's own timestamp field has zero consumers
+anywhere in the image (existing cached xref data, not a new scan) —
+no dead-man/timeout mechanism exists in current evidence for either
+frame family.
+
+Full narrative, register-level results, and disassembly excerpts are
+in each scenario function's own docstring; per-subsystem updates are
+reflected in the matrix above and the JSON companion.
 
 ## Notable findings this audit surfaces
 
@@ -80,16 +127,12 @@ detail per subsystem is in the JSON companion, not duplicated here.
   names the actual part — an Ai-Thinker Ra-01H (SX1276-based, publicly
   documented) — which is enough to implement against directly without
   needing byte-exact vendor-driver RE.
-- **The `'+'` command's interactive path is the recurring blocker**
-  across four matrix rows (Auto Mode, programmed positions/moves, G/S/!/
-  I/+ behavior, and indirectly move/ramp profile execution): its wire
-  schema and AutoPilot-side field-write logic are disassembly-confirmed,
-  and its bulk-push variant (mode `0x62`) is concretely proven end-to-end
-  through a real move-commit — but the three interactive Auto-Mode screen
-  call sites have never been reached in a completed concrete run from
-  cold boot (250M+ / 80M+ instruction budgets, both insufficient,
-  bottlenecked by an uncharacterized upstream hardware-probe cost, not a
-  logic gap).
+- **The `'+'` command's interactive path was the recurring blocker across
+  four matrix rows** (Auto Mode, programmed positions/moves, G/S/!/I/+
+  behavior, and indirectly move/ramp profile execution) — **now closed**
+  by Gap Resolution A, above, without needing the blocked cold-boot
+  delivery path at all: entering directly at the same dispatcher boundary
+  every other command scenario already uses was sufficient.
 - **This session's own semantic passes (3–9) already closed real,
   previously-undocumented ground**: the stepper-driver enable/disable
   GPIO sequences (`0x77a0`/`0x77f8`/`0x7868`), the `pinMode()` primitive
@@ -131,20 +174,23 @@ for where to look next, not classification results.
 
 ## Readiness assessment
 
-**Ready now**: the 8 `COMPLETE` and 4 `IMPLEMENTABLE_WITH_ASSUMPTIONS`
-subsystems (12 of 23) have sufficient evidence to write their spec
+**Ready now**: the 10 `COMPLETE` and 6 `IMPLEMENTABLE_WITH_ASSUMPTIONS`
+subsystems (16 of 23) have sufficient evidence to write their spec
 sections today — MCU/clock/startup, per-channel position accounting,
 Quick Setup/MC/MT, persistence/NVM, both trigger-input subsystems,
-protocol RX parsing, protocol TX/event system, motor timer/STEP
+protocol RX parsing, protocol TX/event system, Manual Mode, Auto Mode,
+programmed positions/moves, G/S/!/I/+ behavior, motor timer/STEP
 generation, move/ramp profile execution, motor enable/disable GPIO
 handling, and radio transport.
 
-**Not ready without a scoping decision first**: the 8 `PARTIAL`
-subsystems each carry one specific, named open question (mostly the
-`'+'` interactive-path concrete-delivery gap, plus direction-control and
-startup-routine physical-mapping gaps) that should be either resolved or
-explicitly descoped ("replacement will not attempt to bit-match this")
-before finalizing those sections.
+**Not ready without a scoping decision first**: the 4 remaining `PARTIAL`
+subsystems (startup reference/input routine, direction control, motor
+configuration, error/failure behavior) each carry one specific, named
+open question (a physical-mapping gap, an unidentified GPIO pin, an
+unconfirmed field-to-hardware mapping, and a product-scoping decision,
+respectively) that should be either resolved or explicitly descoped
+("replacement will not attempt to bit-match this") before finalizing
+those sections.
 
 **Blocked until the gap is closed or descoped**: the 2
 `EXTERNAL_EVIDENCE_REQUIRED` subsystems (external STEP/DIR input, status

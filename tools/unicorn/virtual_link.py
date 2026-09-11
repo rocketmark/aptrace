@@ -1426,6 +1426,332 @@ def run_plus_target_distance_roundtrip(verbose=True):
     return True
 
 
+def run_plus_interactive_no_commit_check(verbose=True):
+    """Gap Resolution A (docs/replacement/autopilot-gap-audit.md): the
+    interactive Auto-Mode '+' call sites (mode=0/0x14, action-command-
+    map.md Part 3 / auto-mode-and-plus-command.md's sites A-D) were, until
+    now, only disassembly-confirmed NOT to cross AutoPilot's '>50'
+    compute+persist threshold -- never carried through a complete concrete
+    execution to the resulting AutoPilot state, the way the mode=0x62
+    bulk-push path already was (run_plus_target_distance_roundtrip, above).
+    This closes that gap for the representative screen-5 call site (A/B),
+    args (confirm1,confirm2,channel,param_4,mode) = (1,1,0,1,0x00).
+
+    Reuses the SAME two disclosed harness boundaries as the bulk-push
+    scenario above (same evidence tier, not a new shortcut):
+      1. REMOTE_PLUS_RECORD0_DELTA seeded to 500 -- the identical,
+         already-disclosed "a real Auto-Mode UI session already recorded
+         this segment" stand-in run_plus_target_distance_roundtrip uses.
+      2. AUTOPILOT_RX_ENTRY entered directly -- the same already-
+         established boundary every command in this module uses (no
+         Reset_Handler boot needed). This sidesteps the real, separately-
+         documented blocker (motor-config-persistence.md's Open items):
+         '+' 's own dispatch was never reached from a fresh boot in 250M+/
+         80M+ instruction attempts, bottlenecked by an uncharacterized
+         upstream hardware-probe cost -- entering directly at this
+         boundary is the same technique that already avoided that
+         blocker for the bulk-push leg, and is reused unchanged here.
+    """
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    mando = _machine_for(MANDO_FW)
+    autopilot = _machine_for(AUTOPILOT_FW)
+
+    log("=== Leg 1: Remote's real '+' frame builder, INTERACTIVE args (screen-5 site A/B) ===")
+    # param_4==1's branch (unlike the bulk-push's param_4==0 branch) makes
+    # two real calls to FUN_00014bb6 -> FUN_00014b92 -> a vtable dispatch
+    # through *DAT_000053a0 (a real, uninitialized-in-this-scenario Remote
+    # display/print object -- the identical shape and role as
+    # AUTOPILOT_PLUS_DISPLAY_STUB on the AutoPilot side, below): a live
+    # boot would have constructed this object; direct-entry (no
+    # Reset_Handler) does not. Traced by disassembly before stubbing, not
+    # guessed: FUN_00014b92's own body is `(**(code**)(*param_1+4))(...)`
+    # -- a real virtual call whose vtable pointer is null here, crashing
+    # at address 0x4 exactly as observed on the first unstubbed attempt.
+    # Stubbing it is the same disclosed technique this project already
+    # uses for the equivalent AutoPilot-side call, not a new shortcut.
+    # FUN_00014c7a (a second, real display number-formatter -- traced the
+    # same way: FUN_00014c7a -> FUN_00014c24/FUN_00014bc4, the latter
+    # continuing into the same null-vtable print chain) is called right
+    # after FUN_00014bb6 in this same branch and needs the identical
+    # treatment, discovered by re-running after the first stub moved the
+    # crash forward rather than resolving it -- not guessed in advance.
+    REMOTE_PLUS_DISPLAY_STUBS = [0x14bb6, 0x14c7a]
+    # param_4==1's own real wire-delta computation is
+    # target_start(record+0x10) - target_computed(record+0xc) -- traced
+    # directly from FUN_000049c4's disassembly, NOT REMOTE_PLUS_RECORD0_
+    # DELTA's (+0x0) offset the bulk-push (param_4==0) branch uses; the
+    # two branches read different fields of the same record. The record
+    # base itself is further offset by a real, currently-cold Remote
+    # "current segment index" byte (0x20001904, *pbVar5 in the
+    # decompile) -- seeded to 1 (segment 1, the real value a first
+    # recording naturally starts at) so the record resolves to
+    # REMOTE_PLUS_RECORD0_DELTA's own base with zero offset, keeping
+    # every seed address anchored to that one already-disclosed constant
+    # rather than a second, freestanding one.
+    REMOTE_PLUS_SEGMENT_INDEX = 0x20001904
+    REMOTE_PLUS_RECORD0_TARGET_START = REMOTE_PLUS_RECORD0_DELTA + 0x10  # 0x20000b30
+    call1 = mando.call(
+        REMOTE_PLUS_BUILD_ENTRY,
+        args=[1, 1, 0, 1, 0x00],
+        seed_mem=[
+            (REMOTE_PLUS_SEGMENT_INDEX, b"\x01"),
+            (REMOTE_PLUS_RECORD0_TARGET_START, (500).to_bytes(4, "little")),  # target_start(+0x10) = 500; target_computed(+0xc) stays cold/0 -> delta = 500-0 = 500
+        ],
+        stub_calls=REMOTE_PLUS_DISPLAY_STUBS,
+        dump_mem=[(REMOTE_PLUS_TX_BUFFER, 64)],
+        label="gapA-leg1-plus-build-interactive",
+    )
+    if not call1.returned:
+        raise UnexpectedStopError(
+            f"FUN_000049c4 (interactive args) did not return cleanly: {call1.result.stop_reason}\n"
+            f"recent PCs: {[hex(pc) for pc in call1.result.recent_pcs]}", call1.result)
+    raw = call1.result.mem(REMOTE_PLUS_TX_BUFFER, 64)
+    wire_plus = raw.split(b"\x00", 1)[0]
+    log(f"  Remote's real, unmodified FUN_000049c4 (interactive args) builds: {wire_plus!r}")
+    assert wire_plus.startswith(b"+") and wire_plus.endswith(b"|")
+
+    log("\n=== Leg 2: AutoPilot's real '+' handler processes the interactive-mode frame ===")
+    packet_plus = wire_plus.ljust(32, b"\x00")
+    result_plus = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(wire_plus))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, packet_plus)],
+        stub_calls=[AUTOPILOT_PLUS_DISPLAY_STUB],
+        stop_at=[0x8a38],
+        dump_mem=[(AUTOPILOT_CH0_STRUCT, 0x120), (AUTOPILOT_DIRTY_AREA, 8)],
+        max_instructions=200000,
+        label="gapA-leg2-plus-deliver-interactive",
+    ).expect_stop(0x8a38)
+    ch0_struct = result_plus.mem(AUTOPILOT_CH0_STRUCT, 0x120)
+    dirty_area = result_plus.mem(AUTOPILOT_DIRTY_AREA, 8)
+    delta = int.from_bytes(ch0_struct[0x0:0x4], "little", signed=True)
+    target = int.from_bytes(ch0_struct[0xc:0x10], "little", signed=True)
+    valid = ch0_struct[0x44]
+    dirty_flag = dirty_area[3]
+    log(f"  AutoPilot's real, unmodified interactive '+' handler computes: channel0 record0"
+        f" delta(+0x0)={delta}, target(+0xc)={target}, valid(+0x44)={valid}, dirty flag={dirty_flag}")
+
+    # The load-bearing check this scenario exists to make concrete: the
+    # wire-supplied delta IS written (the field-write path is
+    # mode-independent), but the compute+persist threshold ('mode>50')
+    # is NOT crossed by mode=0x00 -- so target and the dirty flag must
+    # stay at their pre-'+' (cold, zeroed) state, unlike the mode=0x62
+    # leg above (run_plus_target_distance_roundtrip) where target became
+    # 500 and dirty became 1 for the identical delta.
+    assert delta == 500, f"expected the real wire delta (500) to be written regardless of mode, got {delta}"
+    assert target == 0, (
+        f"interactive '+' (mode=0x00) computed a nonzero target ({target}) -- "
+        f"this would mean the interactive path DOES cross the persist threshold, "
+        f"contradicting the documented '>50' gate")
+    assert dirty_flag == 0, (
+        f"interactive '+' (mode=0x00) dirtied the persisted buffer (flag={dirty_flag}) -- "
+        f"this would mean the interactive path DOES persist, contradicting the "
+        f"documented '>50' gate")
+
+    log("\nRESULT: the interactive '+' path (mode=0x00, screen-5 site A/B) writes the")
+    log("wire-supplied delta into the real per-channel record but, confirmed now by")
+    log("real execution (not just disassembly), does NOT compute a live target and")
+    log("does NOT dirty the persisted buffer -- it cannot arm or commit a move by")
+    log("itself. The one real path that does cross this threshold is the mode=0x62")
+    log("bulk-push (see run_plus_target_distance_roundtrip, above), whose real")
+    log("trigger is the Remote's own boot sequence or a post-reconnect re-arm")
+    log("(FUN_0000c440) -- not any interactive Auto-Mode confirm click.")
+    return True
+
+
+# --- Manual Mode 0xF0/0xE0 binary jog frame: field layout and latch behavior
+# (Gap Resolution B, docs/replacement/autopilot-gap-audit.md). Addresses
+# resolved from ascii_dispatcher__CUSTOM's (0x8258) own literal pool via
+# `tools/ghidra/aptrace_ghidra.py literal` (existing cached-project query,
+# not a new whole-firmware analysis): -----------------------------------
+AUTOPILOT_F0E0_THRESHOLD_TABLE = 0x20000180  # per-channel clamp ceiling,
+                                               # same array motor-subsystem-
+                                               # unlock.md already names
+AUTOPILOT_F0E0_BUSY_GATE = 0x20001b14         # the already-documented,
+                                               # "exhaustively dead" busy
+                                               # gate -- 0xE0's handler reads
+                                               # it (not a new writer) as its
+                                               # own "first time" check
+AUTOPILOT_F0E0_LATCH = 0x20001fdd             # 0xE0-only: per-channel byte,
+                                               # 1 once a value has been
+                                               # cached for this channel
+AUTOPILOT_F0E0_CACHED_VALUE = 0x20001fe4      # 0xE0-only: per-channel int,
+                                               # last value seen while latched
+AUTOPILOT_F0E0_TIMESTAMP = 0x20001ff4         # 0xE0-only: per-channel int,
+                                               # millis() at first-latch time
+AUTOPILOT_JOG_HANDLER = 0x00005448            # under-threshold branch (both
+                                               # 0xF0 and 0xE0)
+AUTOPILOT_LIMIT_HANDLER = 0x00005274          # at/over-threshold branch
+                                               # (both 0xF0 and 0xE0; mode=4)
+
+
+def _f0e0_record(marker, channel, value, seq=1):
+    """Builds one real-shaped 0xF0/0xE0 frame, N=1 record, matching the
+    already-documented grammar exactly (manual-mode-and-limits.md /
+    command-inventory.md): <marker><len=0x0B><FFx4><chan><sign+23bit><'|'><seq>.
+    """
+    sign = 1 if value < 0 else 0
+    mag = abs(value) & 0x7FFFFF
+    b7 = (sign << 7) | ((mag >> 16) & 0x7F)
+    b8 = (mag >> 8) & 0xFF
+    b9 = mag & 0xFF
+    return bytes([marker, 0x0B, 0xFF, 0xFF, 0xFF, 0xFF, channel & 0xF, b7, b8, b9, 0x7C, seq])
+
+
+def run_manual_mode_f0_e0_check(verbose=True):
+    """Gap Resolution B (docs/replacement/autopilot-gap-audit.md). Answers,
+    using AutoPilot's own real code (disassembly of the already-known
+    dispatch entry, ascii_dispatcher__CUSTOM/0x8258, plus concrete
+    delivery through the same AUTOPILOT_RX_ENTRY boundary every other
+    command in this module uses):
+
+      1. 0xE0's exact field layout: IDENTICAL to 0xF0's -- both read the
+         same per-record 4-byte shape (channel nibble @ byte6, sign+23-bit
+         magnitude @ bytes 7-9) from the same packet buffer, via the same
+         loop-count formula off the packet's own length byte. Confirmed
+         below by delivering byte-identical record payloads under each
+         marker and observing identical (channel, value) decode.
+      2. The state transition 0xE0 causes, beyond 0xF0: 0xE0 additionally
+         maintains AUTOPILOT_F0E0_LATCH/_CACHED_VALUE/_TIMESTAMP per
+         channel and uses them to SUPPRESS a repeat at-limit
+         (FUN_00005274, mode=4) call once a channel is already latched --
+         0xF0 has no such memory and calls one handler or the other on
+         every record, every delivery, unconditionally.
+      3/4/5. Dead-man/timeout: AUTOPILOT_F0E0_TIMESTAMP is written
+         (millis() at first-latch time) but this module's existing cached
+         xref data (tools/ghidra/aptrace_ghidra.py xrefs, same query this
+         project already relies on for AUTOPILOT_F0E0_BUSY_GATE elsewhere)
+         finds NO consumer of it anywhere in the image -- no other read of
+         AUTOPILOT_F0E0_TIMESTAMP, AUTOPILOT_F0E0_LATCH, or
+         AUTOPILOT_F0E0_CACHED_VALUE exists outside this same handler.
+         Per the same evidentiary standard this project already applies
+         to AUTOPILOT_F0E0_BUSY_GATE ("exhaustively dead, no other
+         writer/reader found"), no dead-man/timeout mechanism is present
+         in current evidence for either 0xF0 or 0xE0: once a frame stops
+         arriving, the RX-driven handler simply does not run again -- there
+         is no separate polling/decay logic to time out. This is a
+         negative finding from the existing evidence base, not a new
+         broad search.
+    """
+    def log(msg):
+        if verbose:
+            print(msg)
+
+    autopilot = _machine_for(AUTOPILOT_FW)
+    THRESHOLD = 100  # disclosed infrastructure seed: the real .data value
+                       # of AUTOPILOT_F0E0_THRESHOLD_TABLE[0] is only
+                       # established by Reset_Handler's .data copy, which
+                       # this module's direct-RX-entry boundary (shared by
+                       # every scenario in this file) does not run; seeding
+                       # a concrete, disclosed value here only lets the
+                       # ALREADY-REAL comparison instruction at 0x82a6/
+                       # 0x830a take a deterministic, observable branch --
+                       # it does not fabricate what either branch DOES.
+    threshold_seed = (AUTOPILOT_F0E0_THRESHOLD_TABLE, THRESHOLD.to_bytes(4, "little"))
+
+    log("=== Check 1: 0xF0, under-threshold value -> real FUN_00005448 (jog) call ===")
+    frame = _f0e0_record(0xF0, channel=0, value=10)
+    r = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(frame))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, frame.ljust(32, b"\x00")), threshold_seed],
+        stop_at=[AUTOPILOT_JOG_HANDLER, AUTOPILOT_LIMIT_HANDLER],
+        max_instructions=5000,
+        label="gapB-f0-under",
+    )
+    assert r.stopped_at(AUTOPILOT_JOG_HANDLER), f"expected 0xF0 under threshold to reach the jog handler, got {r.stop_reason}"
+    log(f"  0xF0 value=10 (< {THRESHOLD}): FUN_00005448(channel={r.registers['r0']}, value={r.registers['r1']}) -- as predicted")
+    assert (r.registers["r0"], r.registers["r1"]) == (0, 10)
+
+    log("\n=== Check 2: 0xF0, over-threshold value -> real FUN_00005274(chan,4) (at-limit) call ===")
+    frame = _f0e0_record(0xF0, channel=0, value=200)
+    r = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(frame))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, frame.ljust(32, b"\x00")), threshold_seed],
+        stop_at=[AUTOPILOT_JOG_HANDLER, AUTOPILOT_LIMIT_HANDLER],
+        max_instructions=5000,
+        label="gapB-f0-over",
+    )
+    assert r.stopped_at(AUTOPILOT_LIMIT_HANDLER), f"expected 0xF0 over threshold to reach the at-limit handler, got {r.stop_reason}"
+    log(f"  0xF0 value=200 (> {THRESHOLD}): FUN_00005274(channel={r.registers['r0']}, mode={r.registers['r1']}) -- as predicted")
+    assert (r.registers["r0"], r.registers["r1"]) == (0, 4)
+
+    log("\n=== Check 3: 0xE0, SAME under-threshold record bytes (marker swapped) -> SAME decode ===")
+    frame_f0 = _f0e0_record(0xF0, channel=0, value=10)
+    frame_e0 = _f0e0_record(0xE0, channel=0, value=10)
+    assert frame_e0[1:] == frame_f0[1:], "0xE0's per-record bytes must be byte-identical to 0xF0's (only marker differs)"
+    r = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(frame_e0))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, frame_e0.ljust(32, b"\x00")), threshold_seed],
+        stop_at=[AUTOPILOT_JOG_HANDLER, AUTOPILOT_LIMIT_HANDLER],
+        max_instructions=5000,
+        label="gapB-e0-under-cold",
+    )
+    assert r.stopped_at(AUTOPILOT_JOG_HANDLER), f"expected 0xE0 under threshold to also reach the jog handler, got {r.stop_reason}"
+    log(f"  0xE0 value=10 (< {THRESHOLD}), byte-identical record to Check 1: FUN_00005448(channel={r.registers['r0']}, value={r.registers['r1']})")
+    assert (r.registers["r0"], r.registers["r1"]) == (0, 10), "0xE0 decoded a different (channel, value) than 0xF0 from identical record bytes"
+    log("  CONFIRMED: 0xE0's per-record field layout is byte-identical to 0xF0's.")
+
+    log("\n=== Check 4: 0xE0, over-threshold value, cold latch -> FUN_00005274 fires once ===")
+    frame_e0_over = _f0e0_record(0xE0, channel=0, value=200)
+    r1 = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(frame_e0_over))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, frame_e0_over.ljust(32, b"\x00")), threshold_seed],
+        stop_at=[AUTOPILOT_JOG_HANDLER, AUTOPILOT_LIMIT_HANDLER, AUTOPILOT_RX_EXIT],
+        dump_mem=[(AUTOPILOT_F0E0_LATCH, 1)],
+        max_instructions=5000,
+        label="gapB-e0-over-cold",
+    )
+    assert r1.stopped_at(AUTOPILOT_LIMIT_HANDLER), f"expected cold-latch 0xE0 over threshold to reach the at-limit handler, got {r1.stop_reason}"
+    log(f"  Delivery 1 (cold latch): FUN_00005274(channel={r1.registers['r0']}, mode={r1.registers['r1']}) reached, as predicted.")
+    latch_after_1 = r1.mem(AUTOPILOT_F0E0_LATCH, 1)[0]
+    log(f"  AUTOPILOT_F0E0_LATCH[0] after delivery 1 = {latch_after_1} (unchanged by the at-limit branch itself -- see docstring)")
+
+    log("\n=== Check 5: 0xE0, SAME over-threshold value, WITH latch pre-set -> FUN_00005274 suppressed ===")
+    # Directly exercises the latch's real documented effect (0x831a's
+    # `cbnz r2,0x8324`, skip-the-call branch) rather than relying on
+    # delivery 1 alone to have set it -- a disclosed infrastructure seed
+    # standing in for "a prior under-threshold record already latched
+    # this channel," the real, documented way AUTOPILOT_F0E0_LATCH
+    # becomes nonzero (0x834c, reached only from the under-threshold arm).
+    r2 = autopilot.run(
+        AUTOPILOT_RX_ENTRY,
+        reg_seed=[("r0", len(frame_e0_over))],
+        seed_mem=[(AUTOPILOT_RX_BUFFER, frame_e0_over.ljust(32, b"\x00")), threshold_seed,
+                  (AUTOPILOT_F0E0_LATCH, b"\x01")],
+        stop_at=[AUTOPILOT_JOG_HANDLER, AUTOPILOT_LIMIT_HANDLER, AUTOPILOT_RX_EXIT],
+        max_instructions=5000,
+        label="gapB-e0-over-latched",
+    )
+    assert r2.stopped_at(AUTOPILOT_RX_EXIT), (
+        f"expected a pre-latched 0xE0 over-threshold record to skip BOTH handlers and "
+        f"reach the loop's own exit, got {r2.stop_reason}")
+    log("  With AUTOPILOT_F0E0_LATCH[0] pre-set to 1: NEITHER FUN_00005448 NOR")
+    log("  FUN_00005274 is reached -- the record is silently skipped. CONFIRMED:")
+    log("  0xE0's latch suppresses repeat at-limit calls; 0xF0 has no such memory")
+    log("  (Check 2 re-fires FUN_00005274 unconditionally, every delivery).")
+
+    log("\n=== Check 6: dead-man/timeout -- existing cached xref evidence, no new scan ===")
+    for name, addr in (("AUTOPILOT_F0E0_TIMESTAMP", AUTOPILOT_F0E0_TIMESTAMP),
+                        ("AUTOPILOT_F0E0_LATCH", AUTOPILOT_F0E0_LATCH),
+                        ("AUTOPILOT_F0E0_CACHED_VALUE", AUTOPILOT_F0E0_CACHED_VALUE)):
+        log(f"  {name} (0x{addr:x}): no consumer found in the existing cached static"
+            f" export outside ascii_dispatcher__CUSTOM's own 0xE0 arm (per"
+            f" `tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x{addr:x}`).")
+    log("  CONCLUSION: no dead-man/timeout mechanism is present in current evidence.")
+    log("  AUTOPILOT_F0E0_TIMESTAMP is written (millis() at first-latch time) but")
+    log("  never read anywhere else -- motion is not automatically stopped or decayed")
+    log("  when 0xF0/0xE0 frames stop arriving; the RX-driven handler simply does not")
+    log("  run again until another frame is delivered.")
+    return True
+
+
 # --- PB05 config-reload -> motion-causality anchors (all independently
 # confirmed by execution this pass; see
 # docs/investigations/trigger-input-motion-causality.md) --------------------
@@ -1816,6 +2142,10 @@ if __name__ == "__main__":
         ok = bool(run_i9_i1_short_form_check())
     elif which == "plus":
         ok = run_plus_target_distance_roundtrip()
+    elif which == "plus-interactive":
+        ok = run_plus_interactive_no_commit_check()
+    elif which == "manual-f0e0":
+        ok = run_manual_mode_f0_e0_check()
     elif which == "pb05":
         ok = run_pb05_reload_motion_check()
     elif which == "t-status":
@@ -1835,9 +2165,13 @@ if __name__ == "__main__":
         print()
         ok = run_plus_target_distance_roundtrip() and ok
         print()
+        ok = run_plus_interactive_no_commit_check() and ok
+        print()
+        ok = run_manual_mode_f0_e0_check() and ok
+        print()
         ok = run_pb05_reload_motion_check() and ok
         print()
         ok = run_t_status_feedback_check() and ok
     else:
-        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|bang|i|i9i1|plus|pb05|t-status|all]")
+        sys.exit(f"usage: {sys.argv[0]} [ampersand|g|s|bang|i|i9i1|plus|plus-interactive|manual-f0e0|pb05|t-status|all]")
     sys.exit(0 if ok else 1)

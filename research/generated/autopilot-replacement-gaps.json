@@ -97,30 +97,30 @@
     },
     {
       "subsystem": "Manual Mode",
-      "status": "PARTIAL",
-      "known_behavior": "Fully decoded binary 0xF0/0xE0 wire frame family, sent once per UI tick from a real quadrature-encoder-driven jog loop, received by the AutoPilot's dispatcher before any ASCII command, routed into the same FUN_00005274/FUN_00004d18 entry point the I command uses. Stop is implicit (frames simply stop).",
-      "evidence_refs": ["docs/investigations/manual-mode-and-limits.md", "docs/ui/action-command-map.md#3"],
-      "implementation_requirements": "Wire grammar for 0xF0 is fully specifiable now; 0xE0 needs its own field-layout re-derivation for a from-scratch implementation.",
-      "missing_fact": "AutoPilot-side behavior when 0xF0/0xE0 frames stop arriving mid-motion (dead-man timeout vs. motion continues) is untraced, and the 0xE0 variant's exact field layout was not fully decoded",
-      "missing_fact_type": "CONCRETE"
+      "status": "COMPLETE",
+      "known_behavior": "Fully decoded binary 0xF0/0xE0 wire frame family, sent once per UI tick from a real quadrature-encoder-driven jog loop, received by the AutoPilot's dispatcher before any ASCII command. Gap Resolution A/B (this session, tools/unicorn/virtual_link.py's `manual-f0e0` scenario) closed the remaining open items by disassembling ascii_dispatcher__CUSTOM's (0x8258) own 0xF0/0xE0 arms and concretely delivering representative frames: 0xE0's per-record field layout is BYTE-IDENTICAL to 0xF0's (channel nibble @ byte6, sign+23-bit magnitude @ bytes 7-9) -- confirmed by delivering byte-identical record payloads under each marker and observing identical (channel, value) decode into FUN_00005448/FUN_00005274. 0xE0's only real difference is a per-channel latch/cache (0x20001fdd/0x20001fe4/0x20001ff4) that suppresses a REPEAT at-limit (FUN_00005274, mode=4) call once a channel is already latched -- concretely demonstrated: an identical over-threshold 0xE0 record reaches FUN_00005274 on a cold delivery but is silently skipped once the latch is pre-set, while 0xF0 (no latch) re-fires unconditionally every delivery. No dead-man/timeout exists in current evidence: the latch's own timestamp field is written but has zero consumers anywhere in the image per the existing cached xref data -- motion is not automatically stopped or decayed when frames stop arriving; the RX-driven handler simply does not run again until another frame is delivered.",
+      "evidence_refs": ["docs/investigations/manual-mode-and-limits.md", "docs/ui/action-command-map.md#3", "tools/unicorn/virtual_link.py:run_manual_mode_f0_e0_check (manual-f0e0)"],
+      "implementation_requirements": "Wire grammar and field layout are fully specifiable for both 0xF0 and 0xE0 now. Replacement should decide (product choice, not an evidence gap) whether to reproduce the absence of a dead-man timeout or add one, since none is confirmed to exist in the vendor firmware.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
     },
     {
       "subsystem": "Auto Mode",
-      "status": "PARTIAL",
-      "known_behavior": "Segment model (points A-D, up to 3 segments, duration/ramp/delay/loop parameters) confirmed on-screen and in the wire schema. Two distinct populate-a-target paths exist: interactive confirm screens (mode 0/0x14, does NOT persist a live target) vs. the boot/reconnect bulk-push (mode 0x62, DOES persist and is concretely confirmed end-to-end through a real G-driven move-commit).",
-      "evidence_refs": ["docs/investigations/auto-mode-and-plus-command.md", "docs/ui/action-command-map.md Part 3", "docs/investigations/motor-config-persistence.md"],
-      "implementation_requirements": "The persist-then-move contract (bulk-push mode 0x62) is the one fully proven path and is sufficient to design a replacement's own confirm-and-arm mechanism around.",
-      "missing_fact": "the interactive '+' command's dispatch has never been reached in a completed concrete run from cold boot (250M+ / 80M+ instruction attempts, neither sufficient) -- the static prediction that a real interactive '+' plus G crosses the move-commit threshold is unconfirmed",
-      "missing_fact_type": "CONCRETE"
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "Segment model (points A-D, up to 3 segments, duration/ramp/delay/loop parameters) confirmed on-screen and in the wire schema. Two distinct populate-a-target paths exist: interactive confirm screens (mode 0/0x14, does NOT persist a live target) vs. the boot/reconnect bulk-push (mode 0x62, DOES persist and is concretely confirmed end-to-end through a real G-driven move-commit). Gap Resolution A (this session, tools/unicorn/virtual_link.py's `plus-interactive` scenario) closed the remaining CONCRETE gap: entering directly at the real AutoPilot dispatcher boundary (the same technique already used for the bulk-push leg, sidestepping the separately-documented cold-boot delivery blocker) with a real Remote-built interactive-mode ('+' mode=0x00, screen-5 site A/B) frame confirms, by execution, that the wire-supplied delta IS written into the per-channel record but target/dirty-flag stay at their pre-command state -- the interactive path cannot arm or commit a move by itself, exactly as the '>50' threshold documentation predicted, now proven rather than only disassembled.",
+      "evidence_refs": ["docs/investigations/auto-mode-and-plus-command.md", "docs/ui/action-command-map.md Part 3", "docs/investigations/motor-config-persistence.md", "tools/unicorn/virtual_link.py:run_plus_interactive_no_commit_check (plus-interactive)"],
+      "implementation_requirements": "The full arm/no-arm contract is now proven both ways: replacement can implement its own confirm-and-arm mechanism around the bulk-push (mode 0x62) path and treat interactive confirms as record-only writes.",
+      "missing_fact": "which exact Remote UI row/highlight is shown at the moment call sites C/D (screens 9/10) send '+' remains PROBABLE, not CONFIRMED (an arithmetic extrapolation from other screens' own row-indexed calls, not directly observed for screens 9/10) -- a cosmetic UI-labeling question, not a behavioral one; see action-command-map.md Part 5 item 2",
+      "missing_fact_type": "STATIC"
     },
     {
       "subsystem": "programmed positions/moves",
-      "status": "PARTIAL",
-      "known_behavior": "Per-channel, per-mode target/position struct at 0x20001b40 (4 channels x 0x120 bytes) is documented byte-for-byte, including the mode-0 vs mode-N field offsets and the blank-default (target=0 or -1) provisioning gap.",
-      "evidence_refs": ["docs/investigations/motor-config-persistence.md", "docs/protocol/command-inventory.md ('+' row)"],
-      "implementation_requirements": "Struct layout is a firmware-internal implementation detail replacement firmware need not match; the observable contract (persist -> G resolves target -> distance -> move-commit) is what must be reproduced.",
-      "missing_fact": "same as Auto Mode's '+' concrete-delivery gap",
-      "missing_fact_type": "CONCRETE"
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "Per-channel, per-mode target/position struct at 0x20001b40 (4 channels x 0x120 bytes) is documented byte-for-byte, including the mode-0 vs mode-N field offsets and the blank-default (target=0 or -1) provisioning gap. The interactive-vs-bulk-push arm/no-arm contract (see Auto Mode, above) is now concretely confirmed both ways.",
+      "evidence_refs": ["docs/investigations/motor-config-persistence.md", "docs/protocol/command-inventory.md ('+' row)", "tools/unicorn/virtual_link.py:run_plus_interactive_no_commit_check"],
+      "implementation_requirements": "Struct layout is a firmware-internal implementation detail replacement firmware need not match; the observable contract (persist -> G resolves target -> distance -> move-commit) is what must be reproduced, and is now fully specifiable.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
     },
     {
       "subsystem": "motor configuration",
@@ -187,12 +187,12 @@
     },
     {
       "subsystem": "G / S / ! / I / + behavior",
-      "status": "PARTIAL",
-      "known_behavior": "G, S, !0/!1, and I<channel><mode> are all execution-confirmed end-to-end (both firmwares, full round trip via tools/unicorn/virtual_link.py). '+' is confirmed for its wire schema and its one fully-exercised path (bulk-push mode 0x62); its three interactive-screen call sites are statically confirmed as senders but their AutoPilot-side dispatch was never reached in a completed concrete run.",
-      "evidence_refs": ["docs/protocol/command-inventory.md", "docs/investigations/protocol-pipeline.md", "docs/investigations/motor-config-persistence.md"],
-      "implementation_requirements": "G/S/!/I are ready to specify as-is. '+' can be specified for the bulk-push contract now; the interactive-path timing/preconditions carry residual uncertainty.",
-      "missing_fact": "same '+' interactive-dispatch concrete-delivery gap as Auto Mode, above",
-      "missing_fact_type": "CONCRETE"
+      "status": "COMPLETE",
+      "known_behavior": "G, S, !0/!1, and I<channel><mode> are all execution-confirmed end-to-end (both firmwares, full round trip via tools/unicorn/virtual_link.py). '+' is confirmed for its wire schema and both real AutoPilot-side consequences: the bulk-push path (mode 0x62) computes+persists a live target end-to-end through a real move-commit, and the interactive path (mode 0x00, this session's Gap Resolution A) writes the record but concretely does NOT compute a target or dirty the buffer.",
+      "evidence_refs": ["docs/protocol/command-inventory.md", "docs/investigations/protocol-pipeline.md", "docs/investigations/motor-config-persistence.md", "tools/unicorn/virtual_link.py:run_plus_interactive_no_commit_check (plus-interactive)"],
+      "implementation_requirements": "G/S/!/I/+ are all ready to specify as-is, including both of '+' 's real, distinct behaviors (interactive record-write vs. bulk-push arm-and-persist).",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
     },
     {
       "subsystem": "radio transport",
@@ -232,21 +232,22 @@
     }
   ],
   "summary_counts": {
-    "COMPLETE": 8,
-    "IMPLEMENTABLE_WITH_ASSUMPTIONS": 4,
-    "PARTIAL": 8,
+    "COMPLETE": 10,
+    "IMPLEMENTABLE_WITH_ASSUMPTIONS": 6,
+    "PARTIAL": 4,
     "EXTERNAL_EVIDENCE_REQUIRED": 2,
     "NOT_REQUIRED_FOR_REPLACEMENT": 1
   },
   "missing_fact_type_tally": {
-    "NONE": 8,
-    "STATIC": 6,
-    "CONCRETE": 4,
+    "NONE": 12,
+    "STATIC": 8,
+    "CONCRETE": 0,
     "SMT": 0,
     "HARDWARE": 0,
     "PHYSICAL_MAPPING": 1,
     "PRODUCT_DECISION": 2
   },
+  "gap_resolution_a_note": "AutoPilot Gap Resolution A (this session) closed all four CONCRETE-type gaps via two bounded concrete-execution scenarios added to tools/unicorn/virtual_link.py: `plus-interactive` (interactive '+' path, mode=0x00) and `manual-f0e0` (0xE0 field layout + dead-man/timeout). Both reuse the existing ConcreteMachine/virtual_link infrastructure and the same AUTOPILOT_RX_ENTRY direct-dispatch boundary every other command scenario in that module already uses; no new analysis framework was added. See docs/replacement/autopilot-gap-audit.md's 'Gap Resolution A' section for the full narrative.",
   "low_priority_unknown_reopen_candidates": [
     {
       "candidate_area": "status LED GPIO driver",
