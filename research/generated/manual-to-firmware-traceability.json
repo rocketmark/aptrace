@@ -510,7 +510,7 @@
       "manual_action": "Test a segment (TEST A-B / B-C / C-D)",
       "manual_claim": "[user manual] motor physically moves through the tested segment; segment's stored parameters unchanged.",
       "remote_ui_behavior": "'TEST A-B' etc. control, 'PRESS BUTTON'/'TO STOP'; rendered via the same shared row-renderer (FUN_00005474) used by all Auto-Mode screens",
-      "remote_firmware_path": "FUN_0000e670 (PROBABLE: screen 10, call site C, per row-arithmetic extrapolation in action-command-map.md Part 3 -- not independently confirmed)",
+      "remote_firmware_path": "FUN_0000e670 (PROBABLE: screen/menu-index 10, call site C @0xf60c -- the r6==10 gate is now independently reconfirmed via direct disassembly (Final TEST Path Closure pass); the screen-10-to-'TEST A-B' label identity remains row-arithmetic extrapolation from action-command-map.md Part 3, not independently observed)",
       "wire_behavior": "+<units>,1,1,<channel>,0x14,<count>,<fields>|  (PROBABLE, same schema as call site C's already-proven interactive-'+' mechanism)",
       "autopilot_firmware_path": "Same tail-jumped region as other interactive '+' sends (0x806c -> FUN_000046c8/FUN_00004910), IF the hypothesis holds",
       "autopilot_state_effect": "IF confirmed: writes fields but does NOT cross the '>50' persist/arm threshold (mode 0x14) -- same non-arming contract as recording a point",
@@ -522,11 +522,12 @@
       "evidence_refs": [
         "docs/ui/user-guide-workflows.md#6",
         "docs/ui/action-command-map.md Part 3",
-        "research/generated/remote-ui-command-tree.json (REMOTE.AUTO.TEST edge, this pass)"
+        "research/generated/remote-ui-command-tree.json (REMOTE.AUTO.TEST edge)",
+        "disassembly of FUN_0000e670 @0xf5c0-0xf620 and @0xf640-0xf6a0 (Final TEST Path Closure pass): direct r6-gate confirmation for call sites C (screen 10, mode 0x14) and D (screen 9, ruled out of the TEST family -- it is the pre-existing screen-9=LOOP row reusing the same mode-0x14 mechanism)"
       ],
       "discrepancy": null,
       "replacement_requirement": "A PROBABLE (not confirmed) wire form exists for this action -- replacement should treat it as a candidate to verify, not a proven contract requirement; the manual's claim that the motor physically moves during TEST is not independently connected to any move-execute command (G) by current evidence.",
-      "external_unknown": "whether screen 10/call site C is really 'TEST A-B' (row-arithmetic extrapolation, not directly observed); whether a separate move-execute command is also sent for the physical preview motion"
+      "external_unknown": "whether screen 10/call site C is really 'TEST A-B' (row-arithmetic extrapolation for the label identity specifically -- the wire-mechanics gate itself is now directly proven); whether a separate move-execute command is also sent for the physical preview motion"
     },
     {
       "requirement_id": "MAN-AUTO-006",

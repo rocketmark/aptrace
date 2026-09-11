@@ -107,7 +107,7 @@ compact.
 | long click (end dialog) | USER_ACTION | — | REMOTE_LOCAL_ONLY |
 | edit segment parameter | USER_ACTION | `+` (mode 0x14) | PARTIAL_PATH_PROVEN |
 | select TEST A-B/B-C/C-D | USER_ACTION | `+` (mode 0x14, PROBABLE) | REUSES_KNOWN_PATH |
-| select TEST M1-M4 | USER_ACTION | `UNKNOWN` | NO_FIRMWARE_EVIDENCE |
+| select TEST M1-M4 | USER_ACTION | none (display-label state only) | REMOTE_LOCAL_PROVEN |
 | select CLEAR A-B (segment) | USER_ACTION | none (local record write observed) | REMOTE_LOCAL_PROVEN |
 | select CLEAR ALL / CLEAR M1-M4 | USER_ACTION | none (same reasoning) | REMOTE_LOCAL_PROVEN |
 | select GO/Move to A-D | USER_ACTION | `G` | PARTIAL_PATH_PROVEN |
@@ -141,13 +141,45 @@ section previously listed as unresolved:
   same "no wire command exists in the inventory" argument, though this
   pass did not separately trace its own specific code path.
 
-**3 edges remain unresolved** (`wire_command = "UNKNOWN"` /
+A later pass (**Final TEST Path Closure**) closed the remaining two Auto
+Mode TEST edges:
+
+- **`AUTO.TEST`** — direct disassembly of `FUN_0000e670` @`0xf5c0`-`0xf620`
+  found `cmp r6,#0xa; bne 0xf664` gating the mode-`0x14` `'+'` call at
+  `0xf60c` — this independently *proves* (not merely extrapolates) that
+  reaching screen/menu-index 10 provably reaches the known interactive-`'+'`
+  path. The same check disassembled call site D (`0xf68c`, gated on
+  `cmp r6,#0x9`, screen 9) and confirmed it is a *separate* row consistent
+  with the pre-existing screens-6-9 = SPEED/RAMP/DELAY/LOOP mapping (screen
+  9 = LOOP), ruling it out as a second TEST call site. The **sole**
+  remaining gap is the screen-10 → on-screen-label identity itself (is
+  screen 10 really where "TEST A-B" is displayed, vs. "TEST B-C"/"TEST
+  C-D"?) — the `'TEST A-B'` string was confirmed (via xref) to live inside
+  the shared row-renderer `FUN_00005474`'s label table, but tracing which
+  row-index argument selects it for `r6==10` specifically would require
+  following `FUN_0000e670`'s generic menu-index dispatch beyond one
+  intervening helper — out of this pass's bounded scope. Per explicit
+  instruction not to broaden the investigation merely to force
+  confirmation, **`AUTO.TEST` stays `REUSES_KNOWN_PATH`/`PROBABLE_UNCONFIRMED`**,
+  now with a directly-proven wire-mechanics gate rather than a purely
+  arithmetic one.
+- **`AUTO.TEST_MOTOR`** (TEST M1-M4) — resolved to `REMOTE_LOCAL_PROVEN`:
+  the "TEST M1"-"TEST M4" strings are referenced only from `FUN_00005190`,
+  which a full decompile shows is a straight-line `switch` on the current
+  channel selector (`0x2000180c`, the same already-known channel byte used
+  by `'+'`/`G`) that writes only local label-pointer/display fields — it
+  contains **zero calls**, so no wire command of any kind is emitted by
+  it. Its two call sites (`FUN_0000e670` @`0xe762` and the 5-caller shared
+  display dispatcher `FUN_0000f8c8` @`0xf9b2`) are both generic periodic
+  display-refresh blocks, not a distinct "user pressed TEST M1-M4"
+  handler — consistent with "TEST M1-M4" being per-channel label text
+  rather than four separately actionable commands.
+
+**2 edges remain unresolved** (`wire_command = "UNKNOWN"` /
 `NO_FIRMWARE_EVIDENCE`, no command form guessed):
 
-1. `AUTO.TEST_MOTOR` — select TEST M1-M4 (no lead of any kind exists in
-   current evidence, unlike per-segment TEST)
-2. `EXTERNAL_INPUT` — external RJ45 controller detection
-3. `SETTINGS` — adjust BRIGHTNESS/RF CHANNEL/IR-SENSOR MODE/TRACTION CTRL
+1. `EXTERNAL_INPUT` — external RJ45 controller detection
+2. `SETTINGS` — adjust BRIGHTNESS/RF CHANNEL/IR-SENSOR MODE/TRACTION CTRL
 
 See [`manual-to-firmware-traceability.md`](../replacement/manual-to-firmware-traceability.md)
 (`MAN-AUTO-005`, `MAN-AUTO-006`) for the full per-edge record.

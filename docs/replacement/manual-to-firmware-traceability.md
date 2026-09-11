@@ -47,6 +47,20 @@ only pre-existing evidence plus one bounded disassembly check each. See
 [`docs/ui/remote-ui-command-tree.md`](../ui/remote-ui-command-tree.md)'s
 "Unresolved UI → command edges" section for the finding.
 
+A final closure pass (Final TEST Path Closure) strengthened
+`MAN-AUTO-005`'s evidence without changing its status: direct
+disassembly now independently proves (rather than merely extrapolates)
+that call site C's mode-`0x14` interactive-`'+'` send is gated by
+screen/menu-index `10` (`cmp r6,#0xa`); the sole remaining gap is
+whether screen 10 is in fact the on-screen `"TEST A-B"` row, which was
+not independently re-derived this pass — `MAN-AUTO-005` stays
+`PARTIAL_PATH_PROVEN`. `TEST M1-M4` (whole-motor test) has no
+manual-workflow counterpart and therefore no `MAN-AUTO-*` row, but its
+Remote handler (`FUN_00005190`) was fully resolved as Remote-local
+display state only (no wire command) — see
+[`docs/ui/remote-ui-command-tree.md`](../ui/remote-ui-command-tree.md)'s
+`AUTO.TEST_MOTOR` entry.
+
 **Every requirement carries exactly one status — none were forced into
 `FULL_PATH_PROVEN`.**
 
@@ -129,11 +143,15 @@ Targeted corrections only, per the STALE items already identified in
 
 ## What remains open
 
-- 6 `NO_FIRMWARE_EVIDENCE` rows (TEST M1-M4, most RF/settings screens,
-  factory reset, "Surpass limits", external STEP/DIR) — no wire command
-  or firmware path was ever traced for these; a future bounded
+- 6 `NO_FIRMWARE_EVIDENCE` rows (most RF/settings screens, factory
+  reset, "Surpass limits", external STEP/DIR) — no wire command or
+  firmware path was ever traced for these; a future bounded
   investigation could target them individually. (TEST A-B/B-C/C-D and
-  CLEAR were resolved by a later closure pass — see above.)
+  CLEAR were resolved by a later closure pass — see above. TEST M1-M4
+  has no `MAN-AUTO-*` row of its own — it was never in this count — but
+  its Remote handler was independently resolved to Remote-local display
+  state only by the Final TEST Path Closure pass; see
+  `docs/ui/remote-ui-command-tree.md`.)
 - 1 `MANUAL_FIRMWARE_DISAGREEMENT` (MAN-PERSIST-002: Quick Setup
   persistence claim vs. no confirmed mechanism).
 - 10 `PARTIAL_PATH_PROVEN` rows each carry one precise

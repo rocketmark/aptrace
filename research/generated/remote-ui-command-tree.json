@@ -167,10 +167,11 @@
       "parent": "REMOTE.AUTO",
       "visible_label": "'TEST A-B'/'B-C'/'C-D' (per-segment test)",
       "entry_condition": "User selects a segment TEST action",
-      "remote_firmware_path": null,
+      "remote_firmware_path": "FUN_0000e670 (PROBABLE: screen/menu-index 10, call site C @0xf60c -- gate now independently reconfirmed via direct disassembly; screen-10-to-'TEST A-B' label identity remains row-arithmetic extrapolation, not independently observed)",
       "evidence_refs": [
         "docs/ui/user-guide-workflows.md#6",
-        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)"
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)",
+        "disassembly of FUN_0000e670 @0xf5c0-0xf620 (Final TEST Path Closure pass): cmp r6,#0xa; bne 0xf664 directly gates the mode-0x14 '+' call at 0xf60c"
       ]
     },
     {
@@ -178,9 +179,11 @@
       "parent": "REMOTE.AUTO",
       "visible_label": "'TEST M1'-'TEST M4' (whole-motor test)",
       "entry_condition": "User selects a whole-motor TEST action; distinct family from per-segment TEST",
-      "remote_firmware_path": null,
+      "remote_firmware_path": "FUN_00005190 (full decompile, Final TEST Path Closure pass): pure display-label setter, zero calls -- selects which of 'TEST M1'..'TEST M4' to show, keyed on the current-channel selector 0x2000180c; no wire-command builder is invoked anywhere in the function",
       "evidence_refs": [
-        "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)"
+        "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)",
+        "decompile of FUN_00005190 (Final TEST Path Closure pass): switch(channel 1-4) sets local label-pointer fields only, no calls",
+        "callers of FUN_00005190 (this pass): FUN_0000e670 @0xe762 and FUN_0000f8c8 @0xf9b2, both generic periodic display-refresh blocks, not a distinct per-row 'TEST M1-M4 pressed' handler"
       ]
     },
     {
@@ -834,15 +837,17 @@
       "wire_form": "+<units>,1,1,<channel>,0x14,<count>,<fields>|  (same schema as call site C)",
       "next_node": "REMOTE.AUTO.TEST",
       "autopilot_effect": "IF this hypothesis holds: writes fields via the already-proven interactive-'+' path; mode 0x14 does NOT cross the AutoPilot's persist/arm threshold (same non-arming contract as recording)",
-      "confidence": "PROBABLE, NOT CONFIRMED -- pre-existing row-arithmetic extrapolation (action-command-map.md Part 3: screens 6-9 confirmed via their own row-indexed FUN_00006558 calls at rows 3-6; screen 10's row 7 = 'TEST A-B' family is extrapolated from that same arithmetic progression, not independently observed). This pass's bounded inspection of the shared row-renderer (FUN_00005474, called 14+ times from many different FUN_0000e670 screens) did not independently confirm or refute which specific call corresponds to screen 10, and doing so would require tracing FUN_0000e670's menu-index dispatch generally -- out of this pass's bounded scope.",
+      "confidence": "PROBABLE, NOT CONFIRMED. Final TEST Path Closure pass: direct disassembly of FUN_0000e670 @0xf5c0-0xf620 independently reconfirms (not merely re-cites) that call site C's mode-0x14 '+' send at 0xf60c is unconditionally gated by `cmp r6,#0xa; bne 0xf664` -- i.e. reaching menu-index/screen 10 provably reaches the known interactive-'+' path with mode 0x14; this is no longer solely a row-arithmetic inference. The same pass also disassembled call site D (0xf68c, gated on `cmp r6,#0x9`) and confirms it is a SEPARATE row (screen 9), consistent with the pre-existing screens-6-9=SPEED/RAMP/DELAY/LOOP mapping -- ruling out D as a second TEST-family call site rather than leaving it ambiguous. The xref-confirmed presence of the 'TEST A-B' string inside the shared row-renderer FUN_00005474 (called from many Auto-Mode screens, consistent with rendering this label) is corroborating but not conclusive. The SOLE remaining gap is the screen-10-to-'TEST A-B' on-screen-label identity itself: tracing the specific row-index argument that would make FUN_00005474 select the 'TEST A-B' string specifically for r6==10 requires following FUN_0000e670's generic menu-index dispatch beyond one intervening helper, which is out of this pass's bounded scope. Per explicit instruction not to broaden the investigation merely to force confirmation, this edge remains PROBABLE_UNCONFIRMED rather than upgraded to CONFIRM_WIRE_PATH.",
       "traceability_status": "REUSES_KNOWN_PATH",
+      "final_test_closure_result": "PROBABLE_UNCONFIRMED",
       "evidence_refs": [
         "docs/ui/action-command-map.md Part 3",
         "docs/ui/user-guide-workflows.md#6",
         "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)",
-        "decompile of FUN_00005474 and callers query (this pass, bounded, inconclusive)"
+        "decompile of FUN_00005474 and callers query (prior pass, bounded, inconclusive)",
+        "disassembly of FUN_0000e670 @0xf5c0-0xf620 and @0xf640-0xf6a0 (Final TEST Path Closure pass): direct r6-gate confirmation for call sites C (screen 10) and D (screen 9); string xref of 'TEST A-B'/'TEST B-C'/'TEST C-D' (flash 0x1c54f/0x1c558/0x1c561) resolving into FUN_00005474 as DATA"
       ],
-      "note": "Status upgraded from NO_FIRMWARE_EVIDENCE to REUSES_KNOWN_PATH (PROBABLE tier) this pass, using ONLY pre-existing evidence already cited in action-command-map.md -- no new command was invented. Whether the motor ACTUALLY moves during a TEST preview via a further, separately-triggered command (e.g. G) was not established."
+      "note": "Status stays REUSES_KNOWN_PATH (PROBABLE tier); NOT upgraded to CONFIRM_WIRE_PATH this pass. The wire-mechanics gate (screen 10 -> mode-0x14 '+') is now independently proven by direct disassembly; the screen-to-label identity is not. Whether the motor ACTUALLY moves during a TEST preview via a further, separately-triggered command (e.g. G) remains unestablished."
     },
     {
       "from": "REMOTE.AUTO",
@@ -850,18 +855,21 @@
       "edge_type": "USER_ACTION",
       "input": "select TEST M1-M4",
       "condition": null,
-      "remote_effect": "Local action, distinct from per-segment TEST",
-      "wire_command": "UNKNOWN",
+      "remote_effect": "Remote-local display state only: FUN_00005190 selects which of 'TEST M1'/'TEST M2'/'TEST M3'/'TEST M4' to show as a label, keyed on the current-channel selector (0x2000180c, 1-4) -- the same already-known channel-selector RAM byte used by '+' and G elsewhere",
+      "wire_command": "NONE",
       "wire_form": null,
       "next_node": "REMOTE.AUTO.TEST_MOTOR",
       "autopilot_effect": null,
-      "confidence": null,
-      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "confidence": "PROVEN -- full decompile of the only concrete code tied to the 'TEST M1'-'TEST M4' strings (FUN_00005190) shows a straight-line switch(channel) that writes only local label-pointer/display fields; it contains zero calls (no '+', no G, no S/!, no calls at all). Its two call sites (FUN_0000e670 @0xe762 and the shared multi-caller dispatcher FUN_0000f8c8 @0xf9b2) are both generic periodic display-refresh blocks gated on internal render-cycle counters, not on a distinct 'user selected TEST M1-M4' condition -- consistent with 'TEST M1-M4' being per-channel label text rather than four separately actionable menu commands.",
+      "traceability_status": "REMOTE_LOCAL_PROVEN",
+      "final_test_closure_result": "REMOTE_LOCAL_PROVEN",
       "evidence_refs": [
         "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)",
-        "this pass: no linkage found, per its own scope boundary against general Auto Mode re-investigation"
+        "string xref of 'TEST M1'..'TEST M4' (flash 0x1c4ef-0x1c522) -> referenced only from FUN_00005190 as DATA (Final TEST Path Closure pass)",
+        "decompile of FUN_00005190 (Final TEST Path Closure pass): switch(*0x2000180c) sets label-pointer fields only, no calls",
+        "callers of FUN_00005190 (this pass): FUN_0000e670 @0xe762 (disassembled, part of a generic periodic refresh block that also issues a routine G query for the current channel) and FUN_0000f8c8 @0xf9b2 (disassembled, a 5-caller shared display dispatcher)"
       ],
-      "note": "Confirmed unchanged this pass: no candidate call site, row-arithmetic hypothesis, or other lead exists anywhere in current evidence for this whole-motor test family (distinct from per-segment TEST, which does have a PROBABLE lead -- see REMOTE.AUTO.TEST)."
+      "note": "Resolved this pass from NO_FIRMWARE_EVIDENCE to REMOTE_LOCAL_PROVEN using only the existing node as a starting point plus one immediate callee (FUN_00005190), per the pass's bounded scope. No wire command was found or searched for beyond this function and its two call sites; no 'test motor' command was invented or hypothesized."
     },
     {
       "from": "REMOTE.AUTO",
