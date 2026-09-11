@@ -1,0 +1,1177 @@
+{
+  "artifact": "Remote UI -> Command Connection Tree",
+  "scope_note": "Documentation/reconciliation task only. Built entirely from docs/ui/user-guide-workflows.md, docs/ui/action-command-map.md, docs/replacement/manual-to-firmware-traceability.md/.json, docs/replacement/four-firmware-contract.md/.json, docs/hardware/hardware-reference.md, docs/protocol/*, docs/investigations/*. No new reverse engineering performed.",
+  "node_count": 21,
+  "edge_count": 49,
+  "nodes": [
+    {
+      "node_id": "REMOTE.ROOT",
+      "parent": null,
+      "visible_label": "Remote powered on / top-level menu",
+      "entry_condition": "Power-on, or navigating back from any screen",
+      "remote_firmware_path": "Reset_Handler -> FUN_00016900 -> FUN_0000fdf0 -> FUN_0000c440(0)",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#1",
+        "research/generated/manual-to-firmware-traceability.json (MAN-STARTUP-002)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.INFO",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "Info / firmware version screen",
+      "entry_condition": "User opens Info screen (trigger event itself unconfirmed)",
+      "remote_firmware_path": "FUN_0000ba98",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#9",
+        "research/generated/manual-to-firmware-traceability.json (MAN-INFO-001..003)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.QUICK_SETUP",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "'Motor <N>: Choose type' screen",
+      "entry_condition": "Inbound MT<b0-b3><x>| received from AutoPilot at boot",
+      "remote_firmware_path": "FUN_00010ce4",
+      "evidence_refs": [
+        "docs/investigations/motor-subsystem-unlock.md Part 4",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-001..002)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MOTOR_SETTINGS",
+      "parent": "REMOTE.QUICK_SETUP",
+      "visible_label": "'MOTOR <N>' per-motor settings page (4 numeric rows)",
+      "entry_condition": "Opened from Choose-Type screen (Quick Setup) or revisited later for channel config",
+      "remote_firmware_path": "FUN_00010698",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#2",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-003, MAN-MOTORCFG-001..004)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "'MANUAL MODE' screen",
+      "entry_condition": "User navigates to Manual Mode (>=1 channel connected)",
+      "remote_firmware_path": "FUN_0000d988/FUN_0000db34",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#3",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-001)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL.DIRECTION",
+      "parent": "REMOTE.MANUAL",
+      "visible_label": "'Direction' row selected",
+      "entry_condition": "User selects the Direction row",
+      "remote_firmware_path": "FUN_0000e314 -> FUN_0000de3c (entry)",
+      "evidence_refs": [
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-001)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "parent": "REMOTE.MANUAL.DIRECTION",
+      "visible_label": "Live jog streaming",
+      "entry_condition": "Entry preamble sent; wheel not yet clicked",
+      "remote_firmware_path": "FUN_0000de3c loop body -> FUN_0000be94",
+      "evidence_refs": [
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-002)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL.SET_LIMITS",
+      "parent": "REMOTE.MANUAL",
+      "visible_label": "'SET LIMITS' row selected",
+      "entry_condition": "User selects Set Limits row (internal selector 1 or 8)",
+      "remote_firmware_path": "FUN_0000e314 -> FUN_0000dd38 -> FUN_0000de3c",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-001)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL.SET_LIMITS.PHASE1",
+      "parent": "REMOTE.MANUAL.SET_LIMITS",
+      "visible_label": "Jogging to first limit position",
+      "entry_condition": "'Click the knob to start' clicked",
+      "remote_firmware_path": "FUN_0000de3c (phase 1)",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-002)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL.SET_LIMITS.PHASE2",
+      "parent": "REMOTE.MANUAL.SET_LIMITS",
+      "visible_label": "Jogging to second limit position",
+      "entry_condition": "First position confirmed (I9/I1 query succeeded)",
+      "remote_firmware_path": "FUN_0000de3c (phase 2)",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-003)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.MANUAL.SET_LIMITS.OUTCOME",
+      "parent": "REMOTE.MANUAL.SET_LIMITS",
+      "visible_label": "Limit-setting outcome screen",
+      "entry_condition": "Second position confirmed (I9/I1 query succeeded)",
+      "remote_firmware_path": "FUN_0000de3c (outcome); un-disassembled branch 0xe234 for the success/failure-message arm",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-004)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "'AUTO MODE' screen",
+      "entry_condition": "User navigates to Auto Mode (>=1 channel configured)",
+      "remote_firmware_path": "FUN_0000e670 (menu-index *0x200001a0)",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#4",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-001)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO.RECORD",
+      "parent": "REMOTE.AUTO",
+      "visible_label": "Point-recording dialog ('Click'/'to rec A-D'/'Long-click to end')",
+      "entry_condition": "User selects REC A-D (screen 5)",
+      "remote_firmware_path": "FUN_0000e670 sites A/B (0xf40c/0xf5a6)",
+      "evidence_refs": [
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-002, MAN-AUTO-003)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO.SEGMENT_PARAMS",
+      "parent": "REMOTE.AUTO",
+      "visible_label": "Segment parameter screens (Duration/Speed/Ramp/Delay/Loop, screens 6-9)",
+      "entry_condition": "User navigates to a segment's parameter rows",
+      "remote_firmware_path": "FUN_0000e670 sites C/D (0xf60c/0xf68c) via row-indexed FUN_00006558",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md Part 3",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-004, MAN-AUTO-008)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO.TEST",
+      "parent": "REMOTE.AUTO",
+      "visible_label": "'TEST A-B'/'B-C'/'C-D' (per-segment test)",
+      "entry_condition": "User selects a segment TEST action",
+      "remote_firmware_path": null,
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#6",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO.TEST_MOTOR",
+      "parent": "REMOTE.AUTO",
+      "visible_label": "'TEST M1'-'TEST M4' (whole-motor test)",
+      "entry_condition": "User selects a whole-motor TEST action; distinct family from per-segment TEST",
+      "remote_firmware_path": null,
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO.CLEAR",
+      "parent": "REMOTE.AUTO",
+      "visible_label": "'CLEAR A-B'/'CLEAR ALL'/'CLEAR M1-M4'",
+      "entry_condition": "User selects a CLEAR action; confirmation dialog shown",
+      "remote_firmware_path": null,
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#5",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-006)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.AUTO.GO",
+      "parent": "REMOTE.AUTO",
+      "visible_label": "'SET POINT'/'GO TO POINT'/'Move to A-D' (executing)",
+      "entry_condition": "User selects a point/segment to execute",
+      "remote_firmware_path": "0xb680 (G request builder) -- exact call-site trigger not traced",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#7",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-007, MAN-AUTO-008)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.CHANNEL_SELECT",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "Channel-selection state (cross-cutting: Manual + Auto Mode)",
+      "entry_condition": "Double-click gesture while in Manual or Auto Mode",
+      "remote_firmware_path": null,
+      "evidence_refs": [
+        "docs/hardware/hardware-reference.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-004)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.EXTERNAL_INPUT",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "External STEP/DIR controller connected (source label shown)",
+      "entry_condition": "External controller (DMC-32/MRMC) connected via RJ45",
+      "remote_firmware_path": null,
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#8",
+        "research/generated/manual-to-firmware-traceability.json (MAN-EXTSTEPDIR-001)"
+      ]
+    },
+    {
+      "node_id": "REMOTE.SETTINGS",
+      "parent": "REMOTE.ROOT",
+      "visible_label": "RF/settings screens (BRIGHTNESS/RF CHANNEL/TRIGGER/IR-SENSOR MODE/TRACTION CTRL)",
+      "entry_condition": "User navigates to Settings menu",
+      "remote_firmware_path": "FUN_0000d988/FUN_0000db34 (shared row-action widget, TRIGGER row only)",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#11",
+        "research/generated/manual-to-firmware-traceability.json (MAN-SETTINGS-001, MAN-SETTINGS-002)"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.INFO",
+      "edge_type": "USER_ACTION",
+      "input": "open Info screen",
+      "condition": null,
+      "remote_effect": "Local menu navigation",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.INFO",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md"
+      ],
+      "note": "No wire command for menu navigation itself."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.MANUAL",
+      "edge_type": "USER_ACTION",
+      "input": "navigate to Manual Mode",
+      "condition": null,
+      "remote_effect": "Local menu navigation",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MANUAL",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md"
+      ],
+      "note": "No wire command for menu navigation itself."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.AUTO",
+      "edge_type": "USER_ACTION",
+      "input": "navigate to Auto Mode",
+      "condition": null,
+      "remote_effect": "Local menu navigation",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md"
+      ],
+      "note": "No wire command for menu navigation itself."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "navigate to Settings",
+      "condition": null,
+      "remote_effect": "Local menu navigation",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.SETTINGS",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md"
+      ],
+      "note": "No wire command for menu navigation itself."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.MOTOR_SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "revisit motor settings outside Quick Setup",
+      "condition": null,
+      "remote_effect": "Local menu navigation",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MOTOR_SETTINGS",
+      "autopilot_effect": null,
+      "confidence": "PROVEN_WITH_ASSUMPTION",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md"
+      ],
+      "note": "Whether motor settings can be revisited outside the Quick Setup flow is not independently confirmed."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.QUICK_SETUP",
+      "edge_type": "INBOUND_AUTOPILOT",
+      "input": "AutoPilot sends MT<b0><b1><b2><b3><x>| (sent exactly once per AutoPilot boot, before its own MC4-wait loop)",
+      "condition": "Sent unconditionally by the AutoPilot at boot; not user-triggered on either side",
+      "remote_effect": "Assigns 'Not connected' to absent connector slots; opens Choose-Type screen automatically",
+      "wire_command": "MT",
+      "wire_form": "MT<b0><b1><b2><b3><x>|",
+      "next_node": "REMOTE.QUICK_SETUP",
+      "autopilot_effect": "N/A (AutoPilot is the sender)",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/motor-subsystem-unlock.md Part 4",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-001)"
+      ],
+      "note": "No Remote-side menu entry point into Quick Setup exists -- this is the ONLY way to enter it."
+    },
+    {
+      "from": "REMOTE.QUICK_SETUP",
+      "to": "REMOTE.QUICK_SETUP",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "select motor type (Not connected/POUR/POUR HS/SPIN/Other) for a connector",
+      "condition": null,
+      "remote_effect": "Per-channel type state updated",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.QUICK_SETUP",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#2",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-002)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.QUICK_SETUP",
+      "to": "REMOTE.MOTOR_SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "open per-motor settings page for a channel",
+      "condition": null,
+      "remote_effect": "Navigates to the 4-row settings page",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MOTOR_SETTINGS",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#2"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.QUICK_SETUP",
+      "to": "REMOTE.ROOT",
+      "edge_type": "USER_ACTION",
+      "input": "click 'Continue' (all four motor-type bytes nonzero)",
+      "condition": "0x20001811 all 4 bytes nonzero",
+      "remote_effect": "Exits Quick Setup",
+      "wire_command": "MC4",
+      "wire_form": "MC4<a0>,<b0>,<c0>,<d0>,...|  (16 fields, all 4 channels)",
+      "next_node": "REMOTE.ROOT",
+      "autopilot_effect": "*0x20000060=0 -- sole instruction anywhere clearing this; AutoPilot's main-loop/motor subsystem becomes reachable",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/motor-subsystem-unlock.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-004)"
+      ],
+      "note": "Sent 3x, no ack wait."
+    },
+    {
+      "from": "REMOTE.MOTOR_SETTINGS",
+      "to": "REMOTE.MOTOR_SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "edit 'CURRENT (mA)' row with jog wheel, click out",
+      "condition": null,
+      "remote_effect": "Row value updated locally, then sent",
+      "wire_command": "MC<0-3>",
+      "wire_form": "MC<channel><a>,<b>,<c>,<d>,|  (all 4 fields resent together)",
+      "next_node": "REMOTE.MOTOR_SETTINGS",
+      "autopilot_effect": "0x2000006c[channel]=value*80; consumed only by LCD display -- no confirmed driver-hardware effect",
+      "confidence": "CONFIRMED",
+      "traceability_status": "AUTOPILOT_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md#2",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-003, MAN-MOTORCFG-001..004)"
+      ],
+      "note": "Sent every time the row is clicked out of, not once per motor. Sent 3x, no ack wait."
+    },
+    {
+      "from": "REMOTE.MOTOR_SETTINGS",
+      "to": "REMOTE.MOTOR_SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "edit 'STEPS/S MAX' row with jog wheel, click out",
+      "condition": null,
+      "remote_effect": "Row value updated locally, then sent",
+      "wire_command": "MC<0-3>",
+      "wire_form": "MC<channel><a>,<b>,<c>,<d>,|  (all 4 fields resent together)",
+      "next_node": "REMOTE.MOTOR_SETTINGS",
+      "autopilot_effect": "0x200000dc[channel]=raw; feeds a real fixed-point step-period computation (24,000,000/value)",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md#2",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-003, MAN-MOTORCFG-001..004)"
+      ],
+      "note": "Sent every time the row is clicked out of, not once per motor. Sent 3x, no ack wait."
+    },
+    {
+      "from": "REMOTE.MOTOR_SETTINGS",
+      "to": "REMOTE.MOTOR_SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "edit 'MICRO-STEPPING' row with jog wheel, click out",
+      "condition": null,
+      "remote_effect": "Row value updated locally, then sent",
+      "wire_command": "MC<0-3>",
+      "wire_form": "MC<channel><a>,<b>,<c>,<d>,|  (all 4 fields resent together)",
+      "next_node": "REMOTE.MOTOR_SETTINGS",
+      "autopilot_effect": "0x200000f0[channel]=raw (1->0 remap); consumed only by LCD display -- no confirmed driver-hardware effect",
+      "confidence": "CONFIRMED",
+      "traceability_status": "AUTOPILOT_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md#2",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-003, MAN-MOTORCFG-001..004)"
+      ],
+      "note": "Sent every time the row is clicked out of, not once per motor. Sent 3x, no ack wait."
+    },
+    {
+      "from": "REMOTE.MOTOR_SETTINGS",
+      "to": "REMOTE.MOTOR_SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "edit 'RETURN SPEED' row with jog wheel, click out",
+      "condition": null,
+      "remote_effect": "Row value updated locally, then sent",
+      "wire_command": "MC<0-3>",
+      "wire_form": "MC<channel><a>,<b>,<c>,<d>,|  (all 4 fields resent together)",
+      "next_node": "REMOTE.MOTOR_SETTINGS",
+      "autopilot_effect": "0x20000138[channel]=raw; used as a table INDEX into a per-channel-per-mode config table whose backing data is currently blank/0xFF",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md#2",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUICKSETUP-003, MAN-MOTORCFG-001..004)"
+      ],
+      "note": "Sent every time the row is clicked out of, not once per motor. Sent 3x, no ack wait."
+    },
+    {
+      "from": "REMOTE.MOTOR_SETTINGS",
+      "to": "REMOTE.QUICK_SETUP",
+      "edge_type": "USER_ACTION",
+      "input": "press BACK",
+      "condition": null,
+      "remote_effect": "Returns to Choose-Type screen (if opened from Quick Setup)",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.QUICK_SETUP",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#2"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL",
+      "to": "REMOTE.MANUAL.DIRECTION",
+      "edge_type": "USER_ACTION",
+      "input": "select 'Direction' row",
+      "condition": null,
+      "remote_effect": "Enters live-jog loop",
+      "wire_command": "LL1",
+      "wire_form": "LL1| sent 3x (entry preamble)",
+      "next_node": "REMOTE.MANUAL.DIRECTION",
+      "autopilot_effect": "posA/posB/valid cleared to 0",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-001)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL.DIRECTION",
+      "to": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(automatic) loop entry after preamble",
+      "condition": null,
+      "remote_effect": "Begins per-tick send loop",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "autopilot_effect": null,
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/manual-mode-and-limits.md"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "to": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "edge_type": "USER_ACTION",
+      "input": "rotate jog wheel",
+      "condition": null,
+      "remote_effect": "Quadrature decode accumulates sign/magnitude (0x20001818/0x2000181c -> 0x20001714)",
+      "wire_command": "F0/E0",
+      "wire_form": "<0xF0 or 0xE0><len><0xFFx4>[<channel nibble><sign+23-bit value>]*<'|'><seq> -- 0xE0 selected when *0x200018e7==3, else 0xF0. Sent EVERY UI tick, including idle/zero-record heartbeats.",
+      "next_node": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "autopilot_effect": "Under threshold (0x20000180[channel]) -> FUN_00005448(channel,value) (jog). At/over threshold -> FUN_00005274(channel,4). 0xE0 additionally latches per-channel state (0x20001fdd/0x20001fe4/0x20001ff4) to suppress a REPEAT at-limit call.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/manual-mode-and-limits.md",
+        "docs/replacement/autopilot-gap-audit.md (Manual Mode)",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-002)"
+      ],
+      "note": "No proven AutoPilot-side dead-man/frame-loss timeout exists for either 0xF0 or 0xE0."
+    },
+    {
+      "from": "REMOTE.MANUAL.DIRECTION.LIVE",
+      "to": "REMOTE.MANUAL.DIRECTION",
+      "edge_type": "USER_ACTION",
+      "input": "click jog wheel",
+      "condition": null,
+      "remote_effect": "Loop exits (FUN_000171f0(0x2d) PORT.IN read)",
+      "wire_command": null,
+      "wire_form": "No frame sent (stop is implicit -- no explicit stop/zero-rate command exists)",
+      "next_node": "REMOTE.MANUAL.DIRECTION",
+      "autopilot_effect": "Whatever state the last-received frame left",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-003)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL",
+      "to": "REMOTE.CHANNEL_SELECT",
+      "edge_type": "USER_ACTION",
+      "input": "double-click jog wheel",
+      "condition": null,
+      "remote_effect": "Cycles to next connected channel (unconnected channels skipped)",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.CHANNEL_SELECT",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/hardware/hardware-reference.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-004)"
+      ],
+      "note": "Exact RAM variable and its link to the jog frame's own channel nibble not independently confirmed."
+    },
+    {
+      "from": "REMOTE.CHANNEL_SELECT",
+      "to": "REMOTE.MANUAL",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(automatic) return to jog UI",
+      "condition": null,
+      "remote_effect": "'MOTOR 1'-'MOTOR 4' label updates",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MANUAL",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/hardware/hardware-reference.md"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL",
+      "to": "REMOTE.MANUAL",
+      "edge_type": "USER_ACTION",
+      "input": "configure Direction invert (A/B orientation)",
+      "condition": null,
+      "remote_effect": "Local configuration option",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MANUAL",
+      "autopilot_effect": "DIR pin identity known (PB11/PA09/PB13/PA11); polarity-to-physical-direction correspondence not established",
+      "confidence": "PROVEN",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
+      "evidence_refs": [
+        "research/generated/autopilot-replacement-gaps.json (direction control)",
+        "research/generated/manual-to-firmware-traceability.json (MAN-MANUAL-005)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL",
+      "to": "REMOTE.MANUAL.SET_LIMITS",
+      "edge_type": "USER_ACTION",
+      "input": "select 'Set Limits' row",
+      "condition": null,
+      "remote_effect": "Enters Set-Limits sub-flow (internal selector value 1 or 8, not fully decoded)",
+      "wire_command": "LL1",
+      "wire_form": "LL1| sent 3x",
+      "next_node": "REMOTE.MANUAL.SET_LIMITS",
+      "autopilot_effect": "posA/posB/valid cleared",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-001)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL.SET_LIMITS",
+      "to": "REMOTE.MANUAL.SET_LIMITS.PHASE1",
+      "edge_type": "USER_ACTION",
+      "input": "click the knob to start, then jog to first position",
+      "condition": null,
+      "remote_effect": "Same live-jog mechanism as Direction",
+      "wire_command": "F0/E0",
+      "wire_form": "Same as MAN-MANUAL-002",
+      "next_node": "REMOTE.MANUAL.SET_LIMITS.PHASE1",
+      "autopilot_effect": null,
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL.SET_LIMITS.PHASE1",
+      "to": "REMOTE.MANUAL.SET_LIMITS.PHASE2",
+      "edge_type": "USER_ACTION",
+      "input": "click to confirm first position",
+      "condition": null,
+      "remote_effect": "Position query, then LL1 resend if successful",
+      "wire_command": "I9/I1 then LL1",
+      "wire_form": "I9| or I1| (selected by *0x200018e7), 6 retries ~1000-3000 ticks; IF successful, LL1| x3 resend",
+      "next_node": "REMOTE.MANUAL.SET_LIMITS.PHASE2",
+      "autopilot_effect": "I1 completes normally (aliases channel 0); I9 decodes to out-of-bounds channel index 8 -- a genuine, silent dead end (event 15 never scheduled). Remote's parsed result (0x200027f0) has zero readers anywhere in the image regardless.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-002)"
+      ],
+      "note": "Query success/failure (not its value) gates the LL1 resend -- the value is always discarded."
+    },
+    {
+      "from": "REMOTE.MANUAL.SET_LIMITS.PHASE2",
+      "to": "REMOTE.MANUAL.SET_LIMITS.OUTCOME",
+      "edge_type": "USER_ACTION",
+      "input": "click to confirm second position",
+      "condition": null,
+      "remote_effect": "Position query, then LL2 send if successful",
+      "wire_command": "I9/I1 then LL2",
+      "wire_form": "I9|/I1| (same mechanism); IF successful, LL2| x3",
+      "next_node": "REMOTE.MANUAL.SET_LIMITS.OUTCOME",
+      "autopilot_effect": "LL2: compares posA/posB, orders into minDest/posB, sets valid=1 ONLY if they differ -- they never do in any traced sequence, since nothing populates them with a real value.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-003)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.MANUAL.SET_LIMITS.OUTCOME",
+      "to": "REMOTE.MANUAL",
+      "edge_type": "USER_ACTION",
+      "input": "press knob to exit",
+      "condition": null,
+      "remote_effect": "Returns to Manual Mode screen",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.MANUAL",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#12",
+        "docs/investigations/manual-mode-and-limits.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-LIMITS-004)"
+      ],
+      "note": "Traced for the 'No limits set' branch; a second, un-disassembled branch (0xe234) likely holds 'Process failed'/'Limits successfully'."
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.RECORD",
+      "edge_type": "USER_ACTION",
+      "input": "select REC A-B/B-C/C-D",
+      "condition": null,
+      "remote_effect": "Opens point-recording dialog",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.RECORD",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#5"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.AUTO.RECORD",
+      "to": "REMOTE.AUTO.RECORD",
+      "edge_type": "USER_ACTION",
+      "input": "short jog-wheel click ('record this point')",
+      "condition": null,
+      "remote_effect": "Writes current position into the local per-channel record",
+      "wire_command": "+",
+      "wire_form": "+<units>,1,1,<channel>,0x00,1,<record fields>|  (interactive, mode=0x00)",
+      "next_node": "REMOTE.AUTO.RECORD",
+      "autopilot_effect": "Writes the wire-supplied delta into its own record, but does NOT compute a live target and does NOT dirty the persist buffer (mode 0 stays below the '>50' threshold) -- concretely proven.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-002)"
+      ],
+      "note": "Interactive '+' updates segment/program information but does NOT itself arm/commit the AutoPilot move."
+    },
+    {
+      "from": "REMOTE.AUTO.RECORD",
+      "to": "REMOTE.AUTO",
+      "edge_type": "USER_ACTION",
+      "input": "long click (>400ms, two-pulse haptic)",
+      "condition": null,
+      "remote_effect": "Ends recording dialog",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO",
+      "autopilot_effect": null,
+      "confidence": "CONFIRMED",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-003)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.SEGMENT_PARAMS",
+      "edge_type": "USER_ACTION",
+      "input": "navigate to segment parameters",
+      "condition": null,
+      "remote_effect": "Opens Duration/Ramp/Delay/Loop rows (screens 6-9)",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.SEGMENT_PARAMS",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#5"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.AUTO.SEGMENT_PARAMS",
+      "to": "REMOTE.AUTO.SEGMENT_PARAMS",
+      "edge_type": "USER_ACTION",
+      "input": "change Duration/max Speed/Ramp/Delay/Loop, confirm",
+      "condition": null,
+      "remote_effect": "Row value updated, then sent (same record family as REC A-D)",
+      "wire_command": "+",
+      "wire_form": "+<units>,1,1,<channel>,0x14,<count>,<fields>|  (interactive, mode=0x14, sites C/D)",
+      "next_node": "REMOTE.AUTO.SEGMENT_PARAMS",
+      "autopilot_effect": "Writes fields; does NOT cross the persist threshold (same non-arming contract as recording a point).",
+      "confidence": "CONFIRMED",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/action-command-map.md Part 3",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-004, MAN-AUTO-008)"
+      ],
+      "note": "Exact pre-send highlighted row label for screens 9/10 remains PROBABLE (arithmetic extrapolation, not directly observed)."
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.TEST",
+      "edge_type": "USER_ACTION",
+      "input": "select TEST A-B/B-C/C-D",
+      "condition": null,
+      "remote_effect": "Local test-preview control ('PRESS BUTTON'/'TO STOP')",
+      "wire_command": "UNKNOWN",
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.TEST",
+      "autopilot_effect": null,
+      "confidence": null,
+      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#6",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-005)"
+      ],
+      "note": "No wire command has been traced for this action."
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.TEST_MOTOR",
+      "edge_type": "USER_ACTION",
+      "input": "select TEST M1-M4",
+      "condition": null,
+      "remote_effect": "Local action, distinct from per-segment TEST",
+      "wire_command": "UNKNOWN",
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.TEST_MOTOR",
+      "autopilot_effect": null,
+      "confidence": null,
+      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md (Screens found only as firmware strings)"
+      ],
+      "note": "Relationship to per-segment TEST (does it run all recorded segments in sequence?) is not addressed by any canonical evidence."
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.CLEAR",
+      "edge_type": "USER_ACTION",
+      "input": "select CLEAR A-B/ALL/M1-M4",
+      "condition": null,
+      "remote_effect": "Confirmation dialog ('Are you sure...')",
+      "wire_command": "UNKNOWN",
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.CLEAR",
+      "autopilot_effect": null,
+      "confidence": null,
+      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#5",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-006)"
+      ],
+      "note": "Whether clearing sends any wire command or is purely Remote-local was not traced."
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO.GO",
+      "edge_type": "USER_ACTION",
+      "input": "select SET POINT/GO TO POINT/Move to A-D",
+      "condition": null,
+      "remote_effect": "Begins move execution",
+      "wire_command": "G",
+      "wire_form": "G<channel><type=1><seq>|",
+      "next_node": "REMOTE.AUTO.GO",
+      "autopilot_effect": "Arms 0x200025e1=2 -> FUN_00007e2c resolves target -> FUN_00006fd8: if |distance|>8, real move-commit; else documented no-op.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "docs/ui/action-command-map.md#5",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-007)"
+      ],
+      "note": "Which exact UI action calls the G builder (0xb680) with type=1 is not traced to a specific string. The dynamic per-channel 'I<channel><mode>|' command reaches a structurally similar AutoPilot entry point (0x20000180[channel] threshold family) but its own UI trigger is likewise unconfirmed -- both command families are represented by this edge's ambiguity, not invented as separate confirmed paths."
+    },
+    {
+      "from": "REMOTE.AUTO.GO",
+      "to": "REMOTE.AUTO.GO",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(automatic) Loop=YES segment reaches its endpoint",
+      "condition": null,
+      "remote_effect": "Continues back-and-forth motion instead of stopping",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.GO",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "PARTIAL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#7",
+        "research/generated/manual-to-firmware-traceability.json (MAN-AUTO-008)"
+      ],
+      "note": "Live motion-loop consequence of the loop field was not independently re-traced this session."
+    },
+    {
+      "from": "REMOTE.AUTO.GO",
+      "to": "REMOTE.AUTO.GO",
+      "edge_type": "USER_ACTION",
+      "input": "click to switch movements",
+      "condition": null,
+      "remote_effect": "Changes which programmed segment/channel is active",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO.GO",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#7"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.AUTO",
+      "to": "REMOTE.AUTO",
+      "edge_type": "USER_ACTION",
+      "input": "select channel",
+      "condition": null,
+      "remote_effect": "Per-channel context switch (shares mechanism with REMOTE.CHANNEL_SELECT)",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.AUTO",
+      "autopilot_effect": null,
+      "confidence": "PROVEN",
+      "traceability_status": "REMOTE_LOCAL_ONLY",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#4"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.EXTERNAL_INPUT",
+      "edge_type": "INBOUND_AUTOPILOT",
+      "input": "external controller (Dragonframe DMC-32 / MRMC) connected via RJ45",
+      "condition": null,
+      "remote_effect": "Auto Mode disabled/grayed out; Manual Mode remains available; source label shown ('MRMC inputs'/'DMC32 inputs')",
+      "wire_command": "UNKNOWN",
+      "wire_form": null,
+      "next_node": "REMOTE.EXTERNAL_INPUT",
+      "autopilot_effect": null,
+      "confidence": null,
+      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "evidence_refs": [
+        "docs/hardware/hardware-reference.md",
+        "research/generated/autopilot-replacement-gaps.json (external STEP/DIR input behavior)"
+      ],
+      "note": "The one architecturally-plausible interrupt-based detection candidate was checked and found unarmed; a polled implementation was not ruled out but also not found."
+    },
+    {
+      "from": "REMOTE.SETTINGS",
+      "to": "REMOTE.SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "toggle trigger-status reporting",
+      "condition": null,
+      "remote_effect": "Enables/disables outbound T-status telemetry",
+      "wire_command": "TR0/TR1",
+      "wire_form": "TR0| (default, disarmed) / TR1| (armed)",
+      "next_node": "REMOTE.SETTINGS",
+      "autopilot_effect": "0x20003120 written -- gates whether the T<>,<>,| status frame is ever sent",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/protocol/command-inventory.md",
+        "docs/investigations/trigger-input.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-SETTINGS-002)"
+      ],
+      "note": "Sent 3x (same wake-preamble idiom family)."
+    },
+    {
+      "from": "REMOTE.SETTINGS",
+      "to": "REMOTE.SETTINGS",
+      "edge_type": "USER_ACTION",
+      "input": "adjust BRIGHTNESS/RF CHANNEL/IR-SENSOR MODE/TRACTION CTRL",
+      "condition": null,
+      "remote_effect": "Local settings row",
+      "wire_command": "UNKNOWN",
+      "wire_form": null,
+      "next_node": "REMOTE.SETTINGS",
+      "autopilot_effect": null,
+      "confidence": null,
+      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#11",
+        "research/generated/manual-to-firmware-traceability.json (MAN-SETTINGS-001)"
+      ],
+      "note": "No wire commands traced for these settings."
+    },
+    {
+      "from": "REMOTE.INFO",
+      "to": "REMOTE.INFO",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) query firmware version",
+      "condition": null,
+      "remote_effect": "Populates 'AutoPilot firm. ver.' field",
+      "wire_command": "&|",
+      "wire_form": "'&|' -> 'V01R39'",
+      "next_node": "REMOTE.INFO",
+      "autopilot_effect": "pending[5] set -> event 5 -> 0x20003134 ('V01R39') -> TX",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/protocol/bidirectional-protocol.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-INFO-001)"
+      ],
+      "note": "What Remote-UI event actually triggers a real '&|' send (connect-time handshake vs. explicit Info-screen open vs. periodic poll) is unconfirmed."
+    },
+    {
+      "from": "REMOTE.INFO",
+      "to": "REMOTE.INFO",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) view RF band variant string",
+      "condition": null,
+      "remote_effect": "Displays '868MHz band'/'915MHz band' (build-specific)",
+      "wire_command": null,
+      "wire_form": null,
+      "next_node": "REMOTE.INFO",
+      "autopilot_effect": "AutoPilot's own center-frequency .data constant (864MHz/915MHz) is otherwise the ONLY byte difference between AutoPilot RF-band builds",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "research/generated/autopilot-868-vs-915-diff.json",
+        "research/generated/manual-to-firmware-traceability.json (MAN-INFO-002)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.INFO",
+      "to": "REMOTE.INFO",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) view Signal:/IR Sens:/Trigger: status fields",
+      "condition": null,
+      "remote_effect": "Live status fields shown",
+      "wire_command": "UNKNOWN",
+      "wire_form": null,
+      "next_node": "REMOTE.INFO",
+      "autopilot_effect": null,
+      "confidence": null,
+      "traceability_status": "NO_FIRMWARE_EVIDENCE",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#9",
+        "research/generated/manual-to-firmware-traceability.json (MAN-INFO-003)"
+      ],
+      "note": "Data sources for these three fields were not traced."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.ROOT",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) state/config sync -- UI trigger unconfirmed",
+      "condition": null,
+      "remote_effect": "Parses response; a 'don't downgrade' guard means a short-form 'P1,' response never overwrites already-stored extended state",
+      "wire_command": "S/!",
+      "wire_form": "'S|' -> 'P<value0>,' [or extended form] ; '!0|'/'!1|' -> 11-field CSV",
+      "next_node": "REMOTE.ROOT",
+      "autopilot_effect": "AutoPilot emits exactly 11 fields for '!'; Remote's parser calls its field parser only 10 times and unconditionally marks itself done -- field 11 and its trailing comma are left unconsumed in the real RX ring buffer, no error on either side.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/protocol/bidirectional-protocol.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-QUIRK-001)"
+      ],
+      "note": "Protocol quirk recorded as behavior only -- this task does not decide whether a replacement should preserve the 11-vs-10 field mismatch."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.ROOT",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) Remote boot",
+      "condition": null,
+      "remote_effect": "FUN_0000c440(0) called unconditionally once per power-on",
+      "wire_command": "+ / MC4",
+      "wire_form": "'+' mode=0x62 per nonzero-data channel, then MC4<...>| unconditionally",
+      "next_node": "REMOTE.ROOT",
+      "autopilot_effect": "mode=0x62 crosses the compute+persist threshold: FUN_00004ca8 computes target=start+delta, FUN_000043f0 persists to flash 0x12000 -- proven end to end through a real G-mode-1 move-commit. A literal cold boot's push is EMPTY (0x20000fa0 unset) -- only MC4 fires.",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#10",
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-RECONNECT-001)"
+      ],
+      "note": "This is the proven target-arming/re-arm path -- distinct from interactive '+', which never arms a target."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.ROOT",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) ~5000-tick communication-gap reconnect",
+      "condition": null,
+      "remote_effect": "First-sync latch (0x20000fc9) reset by a real ~5000-tick silence, re-arming the same push",
+      "wire_command": "+ / MC4",
+      "wire_form": "Same as boot re-arm",
+      "next_node": "REMOTE.ROOT",
+      "autopilot_effect": "Same persist effect as boot re-arm",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/ui/user-guide-workflows.md#10",
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-RECONNECT-002)"
+      ],
+      "note": null
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.ROOT",
+      "edge_type": "REMOTE_LOCAL",
+      "input": "(background) periodic UI-pump push (~every 250 ticks)",
+      "condition": null,
+      "remote_effect": "FUN_0000b6f0, once first-sync is done and Quick Setup isn't active",
+      "wire_command": "+",
+      "wire_form": "'+' mode=0x62 pushes for channels with data -- NEVER sends MC4",
+      "next_node": "REMOTE.ROOT",
+      "autopilot_effect": "Same persist effect as boot re-arm, minus the MC4 send",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/investigations/auto-mode-and-plus-command.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-RECONNECT-003)"
+      ],
+      "note": "Structurally distinct from the boot/reconnect re-arm -- must not be conflated with it."
+    },
+    {
+      "from": "REMOTE.ROOT",
+      "to": "REMOTE.ROOT",
+      "edge_type": "INBOUND_AUTOPILOT",
+      "input": "AutoPilot sends T-status telemetry when trigger reporting armed",
+      "condition": null,
+      "remote_effect": "Redraws a status field (scales field1*3300/1023, colors by field2); sends nothing back",
+      "wire_command": "T",
+      "wire_form": "T<0 or 1023>,<1 or 0>,|  (AutoPilot -> Remote), rate-limited to once per ~500 AutoPilot ticks",
+      "next_node": "REMOTE.ROOT",
+      "autopilot_effect": "phase_ramp_state_machine__CUSTOM, gated on 0x20003120!=0 (armed via TR1, see REMOTE.SETTINGS)",
+      "confidence": "CONFIRMED",
+      "traceability_status": "FULL_PATH_PROVEN",
+      "evidence_refs": [
+        "docs/protocol/command-inventory.md",
+        "docs/investigations/trigger-input.md",
+        "research/generated/manual-to-firmware-traceability.json (MAN-TRIGGER-003)"
+      ],
+      "note": null
+    }
+  ],
+  "out_of_scope_workflows": [
+    {
+      "workflow": "docs/ui/user-guide-workflows.md#13 (Firmware update)",
+      "reason": "A USB-C/NOXON-Firmware-Uploader/bootloader flow, not a Remote on-screen menu state navigable via the jog wheel -- not a UI node in this graph model. Already covered as HARDWARE_PHYSICAL in research/generated/manual-to-firmware-traceability.json (MAN-UPDATE-001)."
+    }
+  ]
+}
