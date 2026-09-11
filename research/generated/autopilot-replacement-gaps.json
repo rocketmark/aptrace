@@ -1,0 +1,268 @@
+{
+  "audit": "AutoPilot Replacement-Firmware Gap Audit",
+  "unit": "AutoPilot (motion-control unit)",
+  "generated_from": [
+    "docs/project-status.md",
+    "docs/investigations/boot-and-hardware-bringup.md",
+    "docs/investigations/motor-subsystem-unlock.md",
+    "docs/investigations/motor-config-persistence.md",
+    "docs/investigations/auto-mode-and-plus-command.md",
+    "docs/investigations/manual-mode-and-limits.md",
+    "docs/investigations/trigger-input.md",
+    "docs/hardware/hardware-reference.md",
+    "docs/protocol/command-inventory.md",
+    "docs/protocol/event-map.md",
+    "docs/protocol/protocol-overview.md",
+    "docs/protocol/bidirectional-protocol.md",
+    "docs/protocol/open-questions.md",
+    "docs/ui/user-guide-workflows.md",
+    "docs/ui/action-command-map.md",
+    "docs/firmware/firmware-layout.md",
+    "research/generated/autopilot-semantic-pass1.jsonl .. pass9-bounded-static.jsonl"
+  ],
+  "status_legend": ["COMPLETE", "IMPLEMENTABLE_WITH_ASSUMPTIONS", "PARTIAL", "EXTERNAL_EVIDENCE_REQUIRED", "NOT_REQUIRED_FOR_REPLACEMENT"],
+  "missing_fact_type_legend": ["NONE", "STATIC", "CONCRETE", "SMT", "HARDWARE", "PHYSICAL_MAPPING", "PRODUCT_DECISION"],
+  "subsystems": [
+    {
+      "subsystem": "MCU / clocks / startup",
+      "status": "COMPLETE",
+      "known_behavior": "ATSAMD51J19A confirmed by board inspection. Full clock-tree/analog-block bring-up (MCLK/GCLK/OSCCTRL/OSC32KCTRL/SUPC/NVMCTRL/CMCC/AC/ADC0/ADC1/DAC/USB) traced instruction-by-instruction and concretely reproduced Reset_Handler through steady-state main loop.",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md", "docs/hardware/hardware-reference.md", "docs/project-status.md"],
+      "implementation_requirements": "Standard Microchip/ASF4/CMSIS SAMD51 clock-init sequence; no vendor-secret behavior. Implementable cleanly, not a binary-compatibility concern.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "startup reference/input routine",
+      "status": "PARTIAL",
+      "known_behavior": "FUN_00006968 (\"homing\", analyst label) runs before the radio probe; gated on a GPIO hold (PA22) with a real timeout exit; PA22 is later reused for the unrelated \"hold to save\" path.",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (startup reference/input routine, homing-timeout loop)"],
+      "implementation_requirements": "Replacement firmware needs a product decision on whether/how to reproduce a boot-time wait-for-signal step at all.",
+      "missing_fact": "physical identity/purpose of the PA22 signal this boot-time routine waits on is explicitly undocumented (\"no physical function claimed\")",
+      "missing_fact_type": "PHYSICAL_MAPPING"
+    },
+    {
+      "subsystem": "motor timer / STEP generation",
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "TC0-TC3 in CC0/period-match mode drive an ISR chain into a GPIO OUTSET/OUTCLR pulse (FUN_00005898/0xd388); confirmed pin map TC0->PB10, TC1->PA08, TC2->PB12, TC3->PA10. Semantic passes additionally resolved the pinMode primitive (0xd300) and a paired stepper-driver enable/disable GPIO sequence (0x77a0 enable; 0x77f8/0x7868 disable).",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md", "docs/investigations/motor-subsystem-unlock.md", "docs/ui/action-command-map.md#7", "research/generated/autopilot-semantic-pass6-bounded-static.jsonl"],
+      "implementation_requirements": "The step-pulse mechanism (timer-match ISR toggling a GPIO) is a standard, cleanly-replaceable pattern; replacement need not bit-match vendor timer register values, only reproduce STEP pulse timing/electrical behavior on the same physical pins.",
+      "missing_fact": "exact fixed-point ramp/rate coefficients and acceleration-curve formula used by the rate/phase machinery (FUN_00006338/0x5274/0x6e68) have not been decompiled to formula level",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "direction control",
+      "status": "PARTIAL",
+      "known_behavior": "Direction is carried as a sign bit through the step-delta/move-distance computation feeding the GPIO pulse mechanism; the manual documents a configurable A/B orientation invert. XLR-4 output is a bipolar winding drive (A+/A-/B+/B-), i.e. the onboard driver ICs convert an MCU-side STEP+DIR-like control into winding current themselves.",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (XLR-4 pinout)", "docs/hardware/hardware-reference.md (Manual Mode direction invert)"],
+      "implementation_requirements": "Need the actual DIR GPIO pin(s)/register(s) per channel to reproduce direction behavior electrically.",
+      "missing_fact": "which GPIO pin(s) carry the per-channel DIR signal to the onboard stepper-driver ICs are not identified in current evidence",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "per-channel position accounting",
+      "status": "COMPLETE",
+      "known_behavior": "AUTOPILOT_LIVE_POSITION[channel] (0x20002064+channel*4) is the single live-position store, execution-confirmed as the exact value the I command returns and G's distance computation consumes.",
+      "evidence_refs": ["docs/protocol/command-inventory.md (I row)", "docs/investigations/protocol-pipeline.md"],
+      "implementation_requirements": "Straightforward per-channel signed-integer position counter; no ambiguity for replacement.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "move/ramp profile execution",
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "Phase/velocity state machine (0x6338) gated on 0x20001b14[channel], move-commit threshold (|distance|>8) in FUN_00006fd8, busy-gate reader (0x5ee8), target-reached completion (0x5958). Semantic passes additionally resolved the per-channel move/ramp-profile initializer (0x6e68) and its record-reversal counterpart (0x4ae4), both keyed on the same 0x120-byte-stride per-channel-per-mode config struct motor-config-persistence.md already documents byte-for-byte.",
+      "evidence_refs": ["docs/investigations/motor-subsystem-unlock.md", "docs/investigations/motor-config-persistence.md", "docs/ui/action-command-map.md Part 2/4", "research/generated/autopilot-semantic-pass6-bounded-static.jsonl", "research/generated/autopilot-semantic-pass9-bounded-static.jsonl"],
+      "implementation_requirements": "Replacement can implement its own ramp/acceleration algorithm against the same struct layout and move-commit contract (threshold, busy gate, phase state machine shape) without needing the vendor's exact arithmetic.",
+      "missing_fact": "exact fixed-point ramp/rate coefficients (same gap as STEP generation, above) — not required to reproduce observable behavior, only to bit-match vendor motion profiles",
+      "missing_fact_type": "PRODUCT_DECISION"
+    },
+    {
+      "subsystem": "motor enable/disable GPIO handling",
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "Newly resolved this session (Pass 6, bounded decompile): 0x77a0 asserts 2 driver-enable pins HIGH, delays 50ms, then pinMode(OUTPUT)s 8 STEP/DIR-family pins for the channel-0/1 driver chip; 0x77f8/0x7868 are the structural inverse (tri-state the 8 pins, reset-pulse the 2 enable pins). Not yet folded into docs/investigations/.",
+      "evidence_refs": ["research/generated/autopilot-semantic-pass6-bounded-static.jsonl (0x77a0, 0x77f8, 0x7868, 0xd300)"],
+      "implementation_requirements": "Replacement needs the real enable-pin power-up delay (50ms, confirmed) reproduced for driver-chip compatibility; the 8-pin OUTPUT/tri-state pattern is a safe default to replicate.",
+      "missing_fact": "exact GPIO pin identities (not just the structural pattern) driven by these enable/disable sequences are not resolved to concrete port/pin letters — the DAT_ globals feeding them were not traced to real addresses this pass",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "external STEP/DIR input behavior",
+      "status": "EXTERNAL_EVIDENCE_REQUIRED",
+      "known_behavior": "User-manual-only: connecting an external controller (Dragonframe DMC-32, MRMC Ulti/Quad/Octo-Box) via one of the four RJ45 jacks disables/grays out Auto Mode while Manual Mode remains available; the Remote shows a source label (\"MRMC inputs\"/\"DMC32 inputs\"). RJ45 pinout for MRMC-style controllers is documented (pins: GND, 5V, STEP, DIR); Dragonframe DMC-32 uses a different assignment (manual page 25, not transcribed here).",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (RJ45 motor signal input pinout)", "docs/ui/user-guide-workflows.md#8 (External input passthrough)"],
+      "implementation_requirements": "This is a whole external-interface product feature (external-controller presence detection, external STEP pulse counting/passthrough, Auto-Mode lockout) with zero firmware-side trace found anywhere in current evidence.",
+      "missing_fact": "no firmware code path has been traced for reading the RJ45 external STEP/DIR input pins or for detecting external-controller presence — the entire mechanism is undocumented on the firmware side",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "Manual Mode",
+      "status": "PARTIAL",
+      "known_behavior": "Fully decoded binary 0xF0/0xE0 wire frame family, sent once per UI tick from a real quadrature-encoder-driven jog loop, received by the AutoPilot's dispatcher before any ASCII command, routed into the same FUN_00005274/FUN_00004d18 entry point the I command uses. Stop is implicit (frames simply stop).",
+      "evidence_refs": ["docs/investigations/manual-mode-and-limits.md", "docs/ui/action-command-map.md#3"],
+      "implementation_requirements": "Wire grammar for 0xF0 is fully specifiable now; 0xE0 needs its own field-layout re-derivation for a from-scratch implementation.",
+      "missing_fact": "AutoPilot-side behavior when 0xF0/0xE0 frames stop arriving mid-motion (dead-man timeout vs. motion continues) is untraced, and the 0xE0 variant's exact field layout was not fully decoded",
+      "missing_fact_type": "CONCRETE"
+    },
+    {
+      "subsystem": "Auto Mode",
+      "status": "PARTIAL",
+      "known_behavior": "Segment model (points A-D, up to 3 segments, duration/ramp/delay/loop parameters) confirmed on-screen and in the wire schema. Two distinct populate-a-target paths exist: interactive confirm screens (mode 0/0x14, does NOT persist a live target) vs. the boot/reconnect bulk-push (mode 0x62, DOES persist and is concretely confirmed end-to-end through a real G-driven move-commit).",
+      "evidence_refs": ["docs/investigations/auto-mode-and-plus-command.md", "docs/ui/action-command-map.md Part 3", "docs/investigations/motor-config-persistence.md"],
+      "implementation_requirements": "The persist-then-move contract (bulk-push mode 0x62) is the one fully proven path and is sufficient to design a replacement's own confirm-and-arm mechanism around.",
+      "missing_fact": "the interactive '+' command's dispatch has never been reached in a completed concrete run from cold boot (250M+ / 80M+ instruction attempts, neither sufficient) -- the static prediction that a real interactive '+' plus G crosses the move-commit threshold is unconfirmed",
+      "missing_fact_type": "CONCRETE"
+    },
+    {
+      "subsystem": "programmed positions/moves",
+      "status": "PARTIAL",
+      "known_behavior": "Per-channel, per-mode target/position struct at 0x20001b40 (4 channels x 0x120 bytes) is documented byte-for-byte, including the mode-0 vs mode-N field offsets and the blank-default (target=0 or -1) provisioning gap.",
+      "evidence_refs": ["docs/investigations/motor-config-persistence.md", "docs/protocol/command-inventory.md ('+' row)"],
+      "implementation_requirements": "Struct layout is a firmware-internal implementation detail replacement firmware need not match; the observable contract (persist -> G resolves target -> distance -> move-commit) is what must be reproduced.",
+      "missing_fact": "same as Auto Mode's '+' concrete-delivery gap",
+      "missing_fact_type": "CONCRETE"
+    },
+    {
+      "subsystem": "motor configuration",
+      "status": "PARTIAL",
+      "known_behavior": "MC<0-3>/MC4 wire commands and their exact RAM write targets (0x2000006c/0x200000dc/0x200000f0/0x20000138 per channel) are confirmed; field 4 (\"RETURN SPEED\" on the Remote) is known to be used as a secondary-table index on the AutoPilot side, not a direct speed value.",
+      "evidence_refs": ["docs/ui/action-command-map.md#2", "docs/investigations/motor-subsystem-unlock.md"],
+      "implementation_requirements": "The wire schema and unlock semantics (MC4 clearing the boot-loop gate) are solid enough to reproduce directly.",
+      "missing_fact": "how the 4 MC-command fields (current, steps/s max, microstepping, return speed) are actually consumed by the motor driver beyond field 4's table-index use is unconfirmed -- \"remains PROBABLE, not proven\" per current evidence",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "Quick Setup / MC / MT",
+      "status": "COMPLETE",
+      "known_behavior": "AutoPilot-initiated (not Remote-menu-initiated): four real GPIO motor-connector-presence probes build an MT frame, sent exactly once per boot; Remote reacts by opening the Choose-Type screen; MC4 (Continue) is the sole, concretely-confirmed condition that clears 0x20000060 and lets the AutoPilot's setup() loop exit into normal runtime.",
+      "evidence_refs": ["docs/investigations/motor-subsystem-unlock.md", "docs/ui/action-command-map.md#2", "docs/protocol/command-inventory.md (MT/MC4 rows)"],
+      "implementation_requirements": "Fully specifiable end-to-end contract for replacement: connector-presence probe -> MT -> Choose-Type UI -> MC4 -> unlock.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "persistence / NVM",
+      "status": "COMPLETE",
+      "known_behavior": "Config blob at flash 0x12000 (4097 bytes), loaded to RAM at boot, dirty-flag/save-on-change mechanism, NVMCTRL.PARAM-derived page size (PSZ=6, 512B pages for the real ATSAMD51J19A), save triggers (PA22 hold >1000 ticks, or 20000-tick elapsed check). Entire round trip -- command in, dirty, save, real NVM erase+write, reboot recovery -- concretely demonstrated register-by-register.",
+      "evidence_refs": ["docs/investigations/motor-config-persistence.md"],
+      "implementation_requirements": "Fully specifiable: page size/count derived from the real, physically-confirmed part; replacement can use its own flash-management code against the same logical layout or a clean-room equivalent.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "trigger input — digital",
+      "status": "COMPLETE",
+      "known_behavior": "No debounce/latch on the digital arm; a bouncy insertion can produce multiple accepted config-reloads. Fully characterized bug, reproduced three independent ways; a software mitigation (consecutive-sample debounce) is designed and Unicorn-prototyped.",
+      "evidence_refs": ["docs/investigations/trigger-input.md"],
+      "implementation_requirements": "Replacement firmware is free to implement proper debounce from the start -- this subsystem's gap for vendor compatibility is fully understood, and for a clean-room replacement the fix is a known, designed pattern already prototyped in this project.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "trigger input — analog boot behavior",
+      "status": "COMPLETE",
+      "known_behavior": "Analog arm samples PB05 via ADC1 through an exponentially-smoothed filter (0x42a4, resolved this session) whose blend coefficient is permanently zero and whose one-shot latch never clears -- the very first (boot-time) sample is permanently latched for the whole power cycle, explaining the manual's \"connect before power-up = noise baseline / less sensitive\" behavior precisely.",
+      "evidence_refs": ["docs/investigations/trigger-input.md", "research/generated/autopilot-semantic-pass8-medium-priority-triage.jsonl (0x42a4)"],
+      "implementation_requirements": "Mechanism and its product-visible consequence are both fully understood; replacement can choose to reproduce this exact quirk or design a proper continuously-resampled filter instead (product decision, not an evidence gap).",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "protocol RX parsing",
+      "status": "COMPLETE",
+      "known_behavior": "Core protocol pipeline milestone is CLOSED at the concrete evidence tier: real dispatcher structure, ASCII-vs-binary-frame discrimination (0xF0/0xE0 checked before any ASCII branch), and field parsing all traced and reproduced.",
+      "evidence_refs": ["docs/project-status.md (Current milestone: the core protocol pipeline)", "docs/investigations/protocol-pipeline.md"],
+      "implementation_requirements": "Dispatcher structure is fully specifiable for a from-scratch RX parser.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "protocol TX/event system",
+      "status": "COMPLETE",
+      "known_behavior": "Pending-event-counter array (one byte per event ID at 0x200025bc+event_id) and outbound dispatcher (0x9268) fully documented; 10 of 18 event slots have confirmed producers, the other 7 (events 2,3,8,9,11,12,14) have no found producer and are not currently observable product behavior.",
+      "evidence_refs": ["docs/protocol/event-map.md", "research/generated/autopilot-semantic-pass2-confidence.jsonl (0x4630, 0x8c70, 0x8d74, 0x8ddc)"],
+      "implementation_requirements": "Replacement only needs to reproduce the 10 events with confirmed real behavior; the 7 dormant slots are not required for observable-behavior compatibility.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "G / S / ! / I / + behavior",
+      "status": "PARTIAL",
+      "known_behavior": "G, S, !0/!1, and I<channel><mode> are all execution-confirmed end-to-end (both firmwares, full round trip via tools/unicorn/virtual_link.py). '+' is confirmed for its wire schema and its one fully-exercised path (bulk-push mode 0x62); its three interactive-screen call sites are statically confirmed as senders but their AutoPilot-side dispatch was never reached in a completed concrete run.",
+      "evidence_refs": ["docs/protocol/command-inventory.md", "docs/investigations/protocol-pipeline.md", "docs/investigations/motor-config-persistence.md"],
+      "implementation_requirements": "G/S/!/I are ready to specify as-is. '+' can be specified for the bulk-push contract now; the interactive-path timing/preconditions carry residual uncertainty.",
+      "missing_fact": "same '+' interactive-dispatch concrete-delivery gap as Auto Mode, above",
+      "missing_fact_type": "CONCRETE"
+    },
+    {
+      "subsystem": "radio transport",
+      "status": "IMPLEMENTABLE_WITH_ASSUMPTIONS",
+      "known_behavior": "SERCOM2 in SPI Master mode, chip-select PA15, zero DMA, driven through a real Stream-derived C++ driver object -- CONFIRMED at the MCU-peripheral level. The external chip's exact identity is only PROBABLE from firmware register-pattern matching (SX127x/RFM9x-style), but hardware-reference.md's physical board inspection independently names the actual part: an Ai-Thinker Ra-01H module (a well-documented, commodity SX1276-based module).",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (TX path CONFIRMED)", "docs/hardware/hardware-reference.md (Ra-01H)"],
+      "implementation_requirements": "Replacement can target the Ra-01H/SX1276 directly via its public datasheet rather than needing byte-exact vendor-driver RE, closing the firmware-only PROBABLE gap with an independent hardware fact.",
+      "missing_fact": "the over-the-air RF-layer framing/modulation parameters used between Remote and AutoPilot on top of the SX1276 (vs. raw byte passthrough) are not established from current evidence",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "USB/update/runtime behavior relevant to replacement",
+      "status": "NOT_REQUIRED_FOR_REPLACEMENT",
+      "known_behavior": "USB-C is used only for firmware updates via the vendor's stock BOSSA-compatible SAM-D UART bootloader (VID 0x239A, standard 1200-baud touch-reset entry), occupying the first 16KB of flash (0x0000-0x3FFF) -- entirely separate from, and untouched by, the application image this project reverse-engineers.",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (Bootloader / Flashing)"],
+      "implementation_requirements": "Replacement application firmware can be flashed via the existing standard bootloader unchanged, or updated with a modern equivalent; no RE-dependent behavior here.",
+      "missing_fact": null,
+      "missing_fact_type": "NONE"
+    },
+    {
+      "subsystem": "status LED / status reporting",
+      "status": "EXTERNAL_EVIDENCE_REQUIRED",
+      "known_behavior": "Confirmed to physically exist on the AutoPilot's input panel (board inspection); no firmware-side investigation exists.",
+      "evidence_refs": ["docs/hardware/hardware-reference.md (input panel list)"],
+      "implementation_requirements": "A real, user-visible status indicator; needs its own driving GPIO and pattern semantics before a replacement can reproduce it.",
+      "missing_fact": "no firmware investigation has traced which GPIO drives the status LED or what its blink/color/state patterns mean",
+      "missing_fact_type": "STATIC"
+    },
+    {
+      "subsystem": "error/failure behavior that matters to compatibility",
+      "status": "PARTIAL",
+      "known_behavior": "Specific, incidentally-discovered failure paths are documented: radio-probe failure -> real infinite retry with status print; NVM erase stall if PARAM/DONE bits are unmodeled; I9| silent out-of-bounds dead end with client-side timeout; digital trigger bounce risk. No systematic sweep of error/failure behavior exists beyond these.",
+      "evidence_refs": ["docs/investigations/boot-and-hardware-bringup.md (radio probe failure)", "docs/investigations/motor-config-persistence.md (NVM stall)", "docs/protocol/command-inventory.md (I9| dead end)"],
+      "implementation_requirements": "For a clean-room replacement, most of these are not behaviors worth bit-matching (e.g. the I9| dead end is plausibly an unintentional vendor bug); a product decision is needed on which discovered quirks to intentionally preserve for compatibility vs. fix.",
+      "missing_fact": "no systematic audit of AutoPilot error/failure behavior exists (malformed-packet handling beyond the specific traced commands, flash-write-failure/power-loss-mid-save behavior, motor stall/fault detection if any)",
+      "missing_fact_type": "PRODUCT_DECISION"
+    }
+  ],
+  "summary_counts": {
+    "COMPLETE": 8,
+    "IMPLEMENTABLE_WITH_ASSUMPTIONS": 4,
+    "PARTIAL": 8,
+    "EXTERNAL_EVIDENCE_REQUIRED": 2,
+    "NOT_REQUIRED_FOR_REPLACEMENT": 1
+  },
+  "missing_fact_type_tally": {
+    "NONE": 8,
+    "STATIC": 6,
+    "CONCRETE": 4,
+    "SMT": 0,
+    "HARDWARE": 0,
+    "PHYSICAL_MAPPING": 1,
+    "PRODUCT_DECISION": 2
+  },
+  "low_priority_unknown_reopen_candidates": [
+    {
+      "candidate_area": "status LED GPIO driver",
+      "reason": "status LED / status reporting is EXTERNAL_EVIDENCE_REQUIRED with zero firmware trace; a small, simple digitalWrite-shaped function is plausibly among the 43 mechanically-LOW-priority UNKNOWNs (LED drivers are typically small and RAM/protocol-light, which is exactly why census priority scoring would rank them LOW)",
+      "specific_address_identified": false
+    },
+    {
+      "candidate_area": "external STEP/DIR RJ45 input handling / external-controller presence detection",
+      "reason": "external STEP/DIR input behavior is EXTERNAL_EVIDENCE_REQUIRED with zero firmware trace at all; some of the 43 UNKNOWNs may be the presence-detection or pulse-counting code for this path",
+      "specific_address_identified": false
+    },
+    {
+      "candidate_area": "per-channel DIR GPIO pin",
+      "reason": "direction control's exact GPIO identity is unresolved; a neighbor of the already-resolved STEP-pulse functions may carry this and could be mechanically LOW-priority if it has a small/simple shape",
+      "specific_address_identified": false
+    }
+  ],
+  "note_on_reopen_candidates": "No specific address among the 43 was inspected or matched to these areas this pass, per this audit's explicit scope boundary (no browsing residual functions, no new classification). These are audit-level hypotheses for a future targeted pass, not confirmed identifications."
+}
