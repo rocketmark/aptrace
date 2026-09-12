@@ -20,6 +20,7 @@ module APTrace.MacawCensus
   , UnresolvedInfo(..)
   , CallInfo(..)
   , NormalizedInfo(..)
+  , NormalizedCallInfo(..)
   , CensusResult(..)
   , RootBuildResult(..)
     -- * Pipeline
@@ -193,6 +194,27 @@ data NormalizedInfo = NormalizedInfo
     -- other evidence later.
   } deriving (Eq, Show)
 
+-- | A @kind = \"indirect\"@ 'CallInfo'\'s own @curIP@ 'APTrace.MacawNormalize.normalizeIP'
+-- was also able to recover into a flat two-way branch -- the exact same
+-- algebraic identity 'NormalizedInfo' uses for @classify_failure@
+-- terminators, applied here to a different Macaw terminator kind
+-- ('MDP.ParsedCall' instead of 'MDP.ClassifyFailure'). Never mutates or
+-- removes the original 'CallInfo' entry: that call stays @kind =
+-- \"indirect\"@ in 'crCalls' exactly as base Macaw classified it -- this is
+-- additional, separately-provenanced evidence, not a replacement for it,
+-- mirroring 'NormalizedInfo'\'s own discipline exactly.
+data NormalizedCallInfo = NormalizedCallInfo
+  { nciCaller    :: !Word32
+    -- ^ Canonical entry of the function containing the call site.
+  , nciCallSite  :: !Word32
+    -- ^ Canonical address of the block ending in the call (matches the
+    -- corresponding 'CallInfo'\'s 'ciCallSite').
+  , nciTargets   :: ![Word32]
+    -- ^ One or two canonicalized, resolved, mapped firmware addresses.
+  , nciProvenance :: !String
+    -- ^ Always 'Normalize.macawNormalizedProvenance'.
+  } deriving (Eq, Show)
+
 data CensusResult = CensusResult
   { crRoots           :: ![RootInfo]
   , crDiscoveryError  :: !(Maybe String)
@@ -205,6 +227,7 @@ data CensusResult = CensusResult
   , crUnresolved      :: ![UnresolvedInfo]
   , crCalls           :: ![CallInfo]
   , crNormalized      :: ![NormalizedInfo]
+  , crNormalizedCalls :: ![NormalizedCallInfo]
   } deriving (Eq, Show)
 
 ------------------------------------------------------------------------
@@ -254,6 +277,7 @@ data Core = Core
   , coreUnresolved :: ![UnresolvedInfo]
   , coreCalls      :: ![CallInfo]
   , coreNormalized :: ![NormalizedInfo]
+  , coreNormalizedCalls :: ![NormalizedCallInfo]
   }
 
 forceElems :: [a] -> [a]
@@ -267,6 +291,7 @@ forceCore c = Core
   , coreUnresolved = forceElems (coreUnresolved c)
   , coreCalls      = forceElems (coreCalls c)
   , coreNormalized = forceElems (coreNormalized c)
+  , coreNormalizedCalls = forceElems (coreNormalizedCalls c)
   }
 
 -- | Run Macaw's own static discovery ('MD.cfgFromAddrs') from the given
@@ -298,6 +323,7 @@ discoverCensus mem rootGroups = do
         , crUnresolved = []
         , crCalls = []
         , crNormalized = []
+        , crNormalizedCalls = []
         }
     Right core -> coreToCensusResult (rbRootInfos rb) core
 
@@ -366,6 +392,7 @@ coreToCensusResult rootInfos core =
     , crUnresolved = sortOn (\u -> (uiFunctionEntry u, uiBlockStart u)) (coreUnresolved core)
     , crCalls = sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) (coreCalls core)
     , crNormalized = sortOn (\n -> (niFunctionEntry n, niBlockStart n)) (coreNormalized core)
+    , crNormalizedCalls = sortOn (\n -> (nciCaller n, nciCallSite n)) (coreNormalizedCalls core)
     }
 
 -- | Summarize an already-built Macaw 'MD.DiscoveryState' -- base or
@@ -389,19 +416,20 @@ buildCore mem discState rootCanonSet =
   let funs = Map.elems (discState ^. MD.funInfo)
       perFunction = map (summarizeFunction mem rootCanonSet) funs
   in Core
-       { coreFunctions  = map (\(f, _, _, _, _, _) -> f) perFunction
-       , coreBlocks     = concatMap (\(_, bs, _, _, _, _) -> bs) perFunction
-       , coreEdges      = concatMap (\(_, _, es, _, _, _) -> es) perFunction
-       , coreUnresolved = concatMap (\(_, _, _, us, _, _) -> us) perFunction
-       , coreCalls      = concatMap (\(_, _, _, _, cs, _) -> cs) perFunction
-       , coreNormalized = concatMap (\(_, _, _, _, _, ns) -> ns) perFunction
+       { coreFunctions  = map (\(f, _, _, _, _, _, _) -> f) perFunction
+       , coreBlocks     = concatMap (\(_, bs, _, _, _, _, _) -> bs) perFunction
+       , coreEdges      = concatMap (\(_, _, es, _, _, _, _) -> es) perFunction
+       , coreUnresolved = concatMap (\(_, _, _, us, _, _, _) -> us) perFunction
+       , coreCalls      = concatMap (\(_, _, _, _, cs, _, _) -> cs) perFunction
+       , coreNormalized = concatMap (\(_, _, _, _, _, ns, _) -> ns) perFunction
+       , coreNormalizedCalls = concatMap (\(_, _, _, _, _, _, ncs) -> ncs) perFunction
        }
 
 summarizeFunction
   :: MM.Memory 32
   -> Set.Set Word32
   -> Some (MD.DiscoveryFunInfo ARM.ARM)
-  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo], [NormalizedInfo])
+  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo], [NormalizedInfo], [NormalizedCallInfo])
 summarizeFunction mem rootCanonSet (Some fn) =
   let entryCanon = canonicalWord (MD.discoveredFunAddr fn)
       blocks = Map.elems (fn ^. MD.parsedBlocks)
@@ -430,8 +458,13 @@ summarizeFunction mem rootCanonSet (Some fn) =
         | b <- blocks
         , Just n <- [normalizedInfoOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)]
         ]
+      normalizedCallInfos =
+        [ n
+        | b <- blocks
+        , Just n <- [normalizedCallInfoOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)]
+        ]
       fnInfo = FunctionInfo entryCanon (entryCanon `Set.member` rootCanonSet) (length blocks)
-  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos, normalizedInfos)
+  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos, normalizedInfos, normalizedCallInfos)
 
 -- | Apply 'Normalize.normalizeIP' to exactly one block's terminator, if it's
 -- a 'MDP.ClassifyFailure' -- every other terminator kind contributes
@@ -444,6 +477,26 @@ normalizedInfoOf mem funcEntry src t = case t of
   MDP.ClassifyFailure regs _ -> do
     targets <- Normalize.normalizeIP mem (regs ^. MC.boundValue MC.ip_reg)
     Just (NormalizedInfo funcEntry src targets Normalize.macawNormalizedProvenance)
+  _ -> Nothing
+
+-- | Apply the exact same 'Normalize.normalizeIP' identity to one call's own
+-- curIP value -- but only when base Macaw's own classifier ('callsOf')
+-- could not reduce it to any concrete address at all (@kind = \"indirect\"@).
+-- A @\"direct\"@ or @\"unmapped\"@ call already has a concrete value from
+-- Macaw's own classifier and needs nothing recovered; every other
+-- terminator kind contributes nothing here. Never touches the original
+-- 'CallInfo' entry: it stays @kind = \"indirect\"@ in 'crCalls' exactly as
+-- base Macaw produced it, and this contributes only additional,
+-- separately-provenanced 'NormalizedCallInfo' evidence when it succeeds.
+normalizedCallInfoOf :: MM.Memory 32 -> Word32 -> Word32 -> MDP.ParsedTermStmt ARM.ARM ids -> Maybe NormalizedCallInfo
+normalizedCallInfoOf mem funcEntry src t = case t of
+  MDP.ParsedCall regs _ ->
+    let ipVal = regs ^. MC.curIP
+    in case MC.valueAsMemAddr ipVal >>= MM.asAbsoluteAddr of
+         Just _  -> Nothing  -- already "direct"/"unmapped" -- nothing to normalize
+         Nothing -> do
+           targets <- Normalize.normalizeIP mem ipVal
+           Just (NormalizedCallInfo funcEntry src targets Normalize.macawNormalizedProvenance)
   _ -> Nothing
 
 -- | Name Macaw's own terminator classification -- one word per
@@ -594,6 +647,14 @@ normalizedValue n = object
   , "provenance"     .= niProvenance n
   ]
 
+normalizedCallValue :: NormalizedCallInfo -> Value
+normalizedCallValue n = object
+  [ "caller"     .= hexStr (nciCaller n)
+  , "call_site"  .= hexStr (nciCallSite n)
+  , "targets"    .= map hexStr (nciTargets n)
+  , "provenance" .= nciProvenance n
+  ]
+
 -- | The full, deterministic census document. Field order within each
 -- object is fixed by this function (aeson's pinned @+ordered-keymap@
 -- build preserves it); array order is fixed by the sorts already applied
@@ -609,6 +670,7 @@ censusToValue fm cr = object
   , "incomplete_or_unresolved_terminators" .= map unresolvedValue (crUnresolved cr)
   , "calls"     .= map callValue (crCalls cr)
   , "normalized_terminators" .= map normalizedValue (crNormalized cr)
+  , "normalized_calls" .= map normalizedCallValue (crNormalizedCalls cr)
   ]
 
 ------------------------------------------------------------------------

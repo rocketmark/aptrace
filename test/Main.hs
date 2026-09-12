@@ -37,7 +37,8 @@ import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus
   ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
-  , FunctionInfo(..), NormalizedInfo(..), RootBuildResult(..), UnresolvedInfo(..)
+  , FunctionInfo(..), NormalizedCallInfo(..), NormalizedInfo(..), RootBuildResult(..)
+  , UnresolvedInfo(..)
   , buildDiscoveryState, buildRootInfo, canonicalWord, censusToValue, discoverCensus
   , normalizeRoots, summarizeDiscoveryState )
 import           APTrace.MacawExpand
@@ -75,6 +76,12 @@ main = do
     , expansionFeedsExistingFunctionNotNewFunction
     , fullFirmwareFixpointExpansion
     , summarizeDiscoveryStateMatchesDiscoverCensus
+    , groupGIndirectCallsNormalize
+    , groupHIndirectCallNormalizes
+    , differingConditionCallDoesNotNormalize
+    , baseIndirectCallRemainsIndirectAfterNormalization
+    , normalizedCallEvidenceHasProvenance
+    , unrelatedIndirectCallGroupsRemainUnchanged
     ]
   if and results
     then putStrLn "All tests passed."
@@ -900,6 +907,181 @@ summarizeDiscoveryStateMatchesDiscoverCensus = do
           (viaSummarize == viaDiscoverCensus)
   where
     targetEntry  = 0x44ec :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+------------------------------------------------------------------------
+-- Indirect-call normalization: the same 'Normalize.normalizeIP' identity,
+-- applied to 'MDP.ParsedCall' terminators currently classified
+-- @kind = "indirect"@, never mutating the original 'CallInfo'.
+
+-- | The three real "Group G" indirect calls from the 48-call analysis --
+-- each a single-block function whose own curIP is
+-- @mux(c, mux(c,A,B), C)@ with literal @A@/@C@ -- must each normalize to
+-- their real two targets. Skips if the firmware isn't present locally.
+groupGIndirectCallsNormalize :: IO Bool
+groupGIndirectCallsNormalize = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 25. Group G indirect calls normalize (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "25. Group G indirect calls normalize" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem
+          [ (macawCortexMEntry a, ["target"]) | a <- [0xa03c, 0xbd64, 0xcd34] ]
+        let byCallSite = [ (nciCallSite n, nciTargets n) | n <- crNormalizedCalls census ]
+        test "25. Group G indirect calls (0xa03c, 0xbd64, 0xcd34) normalize to their real targets"
+          (byCallSite == [ (0xa03c, [0xa056, 0xa040])
+                         , (0xbd64, [0xbd8a, 0xbd68])
+                         , (0xcd34, [0xcd48, 0xcd36])
+                         ])
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | "Group H": the one indirect call whose nested-mux condition is a
+-- complex, opaque expression (routes through an arch-specific op) rather
+-- than a plain register comparison. The condition's internal complexity
+-- is irrelevant to the identity -- only that the same typed value appears
+-- in both mux positions -- so this must normalize exactly like Group G.
+-- Skips if the firmware isn't present locally.
+groupHIndirectCallNormalizes :: IO Bool
+groupHIndirectCallNormalizes = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 26. Group H indirect call normalizes (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "26. Group H indirect call normalizes" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0xb47a, ["target"])]
+        test "26. Group H indirect call (0xb47a, opaque condition) normalizes to its real targets"
+          ([ (nciCallSite n, nciTargets n) | n <- crNormalizedCalls census ] == [(0xb47a, [0xb48a, 0xb486])])
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | A synthetic @mux(c1, mux(c2,A,B), C)@ curIP with two genuinely
+-- *different* condition values must not normalize -- the identity is only
+-- valid when both conditions are the exact same typed value. This is the
+-- same primitive property test 18 proves for classify_failure's own
+-- curIP; repeated here explicitly in call-normalization terms because
+-- 'APTrace.MacawCensus.normalizedCallInfoOf' (private, exercised via
+-- 'crNormalizedCalls' in the other tests here) delegates to the identical,
+-- unchanged 'Normalize.normalizeIP' with no call-specific branching of its
+-- own to separately verify.
+differingConditionCallDoesNotNormalize :: IO Bool
+differingConditionCallDoesNotNormalize =
+  case synthMem of
+    Left err -> test "27. a call with differing nested-mux conditions does not normalize" False
+                  <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+    Right mem -> PN.withIONonceGenerator $ \gen -> do
+      c1 <- mkCond gen
+      c2 <- mkCond gen
+      let a = mkLitAddr 0x1000
+          b = mkLitAddr 0x1010
+          bigC = mkLitAddr 0x1020
+      inner <- mkMux gen c2 a b
+      outer <- mkMux gen c1 inner bigC
+      test "27. a call with differing nested-mux conditions does not normalize"
+        (Normalize.normalizeIP mem outer == Nothing)
+
+-- | Normalizing an indirect call must never mutate the original 'CallInfo'
+-- entry: it stays @kind = \"indirect\"@ in 'crCalls', exactly as base Macaw
+-- classified it, even after a 'NormalizedCallInfo' has been produced for
+-- the same call site. Reuses the Group G/H fixture. Skips if the firmware
+-- isn't present locally.
+baseIndirectCallRemainsIndirectAfterNormalization :: IO Bool
+baseIndirectCallRemainsIndirectAfterNormalization = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 28. base indirect call remains indirect after normalization (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "28. base indirect call remains indirect after normalization" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0xa03c, ["target"])]
+        let matching = [ c | c <- crCalls census, ciCaller c == 0xa03c, ciCallSite c == 0xa03c ]
+        test "28. base indirect call remains indirect after normalization"
+          (not (null (crNormalizedCalls census))
+             && matching == [CallInfo 0xa03c 0xa03c Nothing Nothing "indirect"])
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | Every 'NormalizedCallInfo' the census emits must carry the
+-- @macaw-normalized@ provenance tag, mirroring 'NormalizedInfo'\'s own
+-- discipline. Reuses the Group G/H fixture. Skips if the firmware isn't
+-- present locally.
+normalizedCallEvidenceHasProvenance :: IO Bool
+normalizedCallEvidenceHasProvenance = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 29. normalized call evidence carries macaw-normalized provenance (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "29. normalized call evidence carries macaw-normalized provenance" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem
+          [ (macawCortexMEntry a, ["target"]) | a <- [0xa03c, 0xbd64, 0xcd34, 0xb47a] ]
+        test "29. normalized call evidence carries macaw-normalized provenance"
+          (length (crNormalizedCalls census) == 4
+             && all ((== Normalize.macawNormalizedProvenance) . nciProvenance) (crNormalizedCalls census))
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | A real indirect call from an unrelated group (here, the vtable-style
+-- @read_mem(read_mem(Initial(_R0)))@ dispatch at @0xa84a@ -- neither a
+-- mux nor built from literal targets) must remain un-normalized: no
+-- 'NormalizedCallInfo' is emitted for it, while it still appears in
+-- 'crCalls' as an ordinary indirect call. Skips if the firmware isn't
+-- present locally.
+unrelatedIndirectCallGroupsRemainUnchanged :: IO Bool
+unrelatedIndirectCallGroupsRemainUnchanged = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 30. unrelated indirect-call groups remain unchanged (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "30. unrelated indirect-call groups remain unchanged" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0xa84a, ["target"])]
+        let isIndirectHere c = ciCaller c == 0xa84a && ciCallSite c == 0xa84a && ciKind c == "indirect"
+        test "30. unrelated indirect-call groups (0xa84a, vtable-style) remain unchanged"
+          (any isIndirectHere (crCalls census) && null (crNormalizedCalls census))
+  where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
