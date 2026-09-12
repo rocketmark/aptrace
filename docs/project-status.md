@@ -24,6 +24,19 @@ to reach for which:
 | Macaw | independent CFG discovery / ARM/Thumb lifting | In use, proven |
 | Crucible + What4 + Z3 | targeted symbolic reachability / input solving | In use, proven |
 
+**Macaw static-analysis layer** (`aptrace macaw-census`/
+`macaw-census-expand`, see
+[`docs/tooling/macaw-analysis.md`](tooling/macaw-analysis.md) for the full
+model): an independent, Cortex-M-safe Macaw census (Thumb-only discovery,
+no A32 mis-lifts); a normalization/fixpoint expansion recovering concrete
+targets for `classify_failure`/misclassified-`ParsedCall` terminators; an
+APTrace-owned semantic control-transfer classification layer that
+separates Macaw's `ParsedCall` terminator into its real ISA-level
+categories (genuine indirect call, tail call, conditional branch, table
+branch, computed jump) instead of treating every one as a function call;
+and a deterministic Ghidra-vs-Macaw comparison (`macaw_compare.py`) with
+zero genuine normalized-target disagreements found so far.
+
 Demonstrated, reusable capabilities: a persistent per-firmware Ghidra
 project (build once, query many times without re-analysis); a reusable
 `ConcreteMachine` class with a real ARM-AAPCS direct-function-call helper
@@ -248,6 +261,19 @@ check) already have independent level-3 confirmation.
   Unicorn-prototyped, but **not deployed to real firmware** — no verified
   flash code cave was found for a real trampoline. See
   [`docs/investigations/trigger-input.md`](investigations/trigger-input.md).
+- **The EIC/EXTINT interrupt-callback dispatch mechanism is identified;
+  its registration path is not.** Vector-table indices 28-43 correspond
+  exactly to the ATSAMD51's `EIC_0_IRQn`…`EIC_15_IRQn`, all 16 sharing one
+  physical register-indirect dispatch site; the callback-table/mask-table/
+  registered-count RAM layout is statically characterized (addresses,
+  stride, layout regularity). An exhaustive static search (whole-firmware
+  literal scan plus a MOVW/MOVT disassembly sweep, cross-checked against
+  Ghidra's own static references) found no writer/registration routine
+  anywhere in the compiled image — application use of this Arduino-SAMD-
+  style EIC callback registration remains **unsubstantiated**, not
+  disproven. See
+  [`docs/investigations/boot-and-hardware-bringup.md`](investigations/boot-and-hardware-bringup.md)'s
+  "The EIC/EXTINT interrupt-callback dispatch mechanism".
 - **Physical hardware facts** (part numbers, board/bootloader mechanics,
   condensed manual summary): [`docs/hardware/hardware-reference.md`](hardware/hardware-reference.md).
 
@@ -287,6 +313,16 @@ Headline items still unresolved:
   good enough for routine use; install only if that stops being true.
 
 ## Next priorities
+
+The project's goal is to recover enough of the hardware and external
+behavioral contract to write a clean replacement firmware — we are still
+primarily in the hardware-contract phase. **Decision rule**: further
+reverse engineering is prioritized only when it can change the hardware
+contract, externally observable behavior, rewrite architecture, or a
+regression test needed for the replacement firmware — not merely because
+an analysis tool (Macaw, Ghidra, census) still has unresolved/residual
+items. An unresolved analysis item is tracked (see `harness/roadmap.md`),
+not automatically the next thing to chase.
 
 1. Attempt dormant-event reachability now that whole-function execution
    habits are better understood.

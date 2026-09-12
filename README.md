@@ -22,8 +22,8 @@ rather than reimplementing what they already do well:
   recovery, MMIO/global naming.
 - **Unicorn** — cheap, fast concrete Cortex-M/Thumb execution and
   memory-state snapshotting.
-- **Macaw** — independent control-flow recovery and Thumb-2 lifting
-  (ground truth that doesn't depend on a decompiler's heuristics).
+- **Macaw** — independent machine-code control-flow recovery and
+  Thumb-2 lifting.
 - **Crucible + What4 + Z3** — targeted symbolic reachability and
   input-solving, once the question and code region are already understood.
 

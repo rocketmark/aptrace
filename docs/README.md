@@ -42,6 +42,9 @@ Describes current truth, not chronology:
 - [`tooling/tool-selection.md`](tooling/tool-selection.md) — which of
   Ghidra/Unicorn/Macaw/Crucible to reach for, and why (read before any
   firmware-analysis work — see [`../CLAUDE.md`](../CLAUDE.md)).
+- [`tooling/macaw-analysis.md`](tooling/macaw-analysis.md) — the Macaw
+  static-discovery pipeline: Cortex-M safety, normalization/fixpoint
+  expansion, `ParsedCall` semantic classification, Ghidra cross-check.
 - [`tooling/ghidra-backend.md`](tooling/ghidra-backend.md),
   [`tooling/unicorn-backend.md`](tooling/unicorn-backend.md) — backend
   capabilities and CLI reference.

@@ -75,11 +75,13 @@ Ask what kind of question you actually have, in this order:
    the single most important anti-pattern this document exists to name.
 
 3. **"Do I trust Macaw's control-flow recovery here?"** → **Macaw itself,
-   cross-checked against Ghidra.** Macaw's discovery is the project's
-   ground-truth CFG source for the symbolic side (it's what Crucible
-   actually executes), but it is not infallible — see "Tool disagreements"
-   below for a concrete case where it produced an architecturally
-   impossible result.
+   cross-checked against Ghidra.** Macaw's discovery is the CFG/IR
+   consumed by APTrace's symbolic side (it's what Crucible actually
+   executes), but it is not infallible — see "Tool disagreements" below
+   for a concrete case where it produced an architecturally impossible
+   result, and [`macaw-analysis.md`](macaw-analysis.md) for a second,
+   subtler case (Macaw's own `ParsedCall` terminator routing several
+   non-call Thumb shapes through the same constructor).
 
    **When Macaw is authoritative vs. when it's only a cross-check**: Macaw
    is the right, load-bearing tool for *lifting* (turning Thumb-2 bytes
@@ -87,13 +89,18 @@ Ask what kind of question you actually have, in this order:
    that's literally what gets executed downstream — there's no
    alternative for that job. It is **not** authoritative for claims about
    the binary's structure independent of that role: what counts as "one
-   function," where a block boundary falls, and how regions merge are
-   products of Macaw's own discovery heuristics (see "Treat discovered
-   function/CFG boundaries as heuristic, not ground truth" in
-   `CLAUDE.md`), and its ARM/Thumb decode itself has a known limitation
-   (the `0x801c` A32 case below). Use Ghidra to cross-check any of those
-   *structural* claims before relying on them; use Macaw's own output
-   directly only for what Crucible will actually execute.
+   function," where a block boundary falls, how regions merge, and how a
+   terminator is classified are products of Macaw's own discovery
+   heuristics (see "Treat discovered function/CFG boundaries as
+   heuristic, not ground truth" in `CLAUDE.md`) — Macaw remains
+   load-bearing for the IR Crucible executes, but its discovered function
+   boundaries, block partitioning, and terminator classification are not
+   ground truth. Its ARM/Thumb decode itself has a known limitation (the
+   `0x801c` A32 case below, now prevented in APTrace's own normal
+   discovery path — see [`macaw-analysis.md`](macaw-analysis.md)'s
+   "Cortex-M safety"). Use Ghidra to cross-check any of those *structural*
+   claims before relying on them; use Macaw's own output directly only
+   for what Crucible will actually execute.
 
 4. **"What input reaches this address / makes this condition true?"** →
    **Crucible + What4 + Z3**, and only once you already know *which* code
@@ -180,6 +187,23 @@ a Macaw bug for that address or a sign discovery was seeded wrong.
 Ghidra's Cortex-M language, being Thumb-only by construction, is the
 standard cross-check; a second opinion from an independent decoder is the
 whole reason to keep more than one tool in the workbench.
+
+**Current status**: raw/stock Macaw (plain `ARM.arm_linux_info`, an
+unnormalized entry address) still demonstrates this exact A32 failure —
+that finding is preserved above as evidence that tool disagreements are
+real and worth cross-checking, not smoothed over. APTrace's own normal
+Cortex-M discovery path no longer hits it: every entry point is normalized
+through `macawCortexMEntry` first, and discovery runs under
+`armCortexMInfo` (which additionally forces `PSTATE_T=True` for two other
+Thumb-state-loss cases Macaw's generic AArch32 backend has been observed
+producing) — see [`macaw-analysis.md`](macaw-analysis.md)'s "Cortex-M
+safety" for both fixes. The lesson this case established remains: analyzer
+output must be cross-checked, not trusted by default. Macaw remains
+load-bearing for the IR Crucible executes, but its discovered function
+boundaries, block partitioning, and terminator classification are not
+ground truth — see [`macaw-analysis.md`](macaw-analysis.md) for a second,
+independently-found case of exactly that (Macaw's `ParsedCall` terminator
+routing several non-call Thumb shapes through the same constructor).
 
 ## Known limitation: readonly flash and plain Crucible execution
 

@@ -1,20 +1,17 @@
 # Boot Sequence and Hardware Bring-Up — Current Model
 
-This dossier consolidates eight slice-by-slice investigations that
+This dossier consolidates a series of slice-by-slice investigations that
 together took a concrete Unicorn run from `Reset_Handler` all the way
 to a stable, repeating real main loop in the AutoPilot firmware
 (`firmware_autopilot868.bin`, ATSAMD51J19A). Along the way they
 resolved the tick source, four real clock/peripheral completion-bit
 polls, a real radio chip-ID probe and its infinite-retry failure mode,
 the RX injection point, the TC0-TC3/TCC1 motor-timer-to-GPIO
-mechanism and its real per-channel pin assignments, and the exact
-Adafruit ArduinoCore-samd toolchain the firmware was built from. The
-individual slices (`boot-and-hardware-bringup.md`,
-`boot-and-hardware-bringup.md`, `boot-and-hardware-bringup.md`,
-`boot-and-hardware-bringup.md`, `boot-and-hardware-bringup.md`,
-`boot-and-hardware-bringup.md`, `boot-and-hardware-bringup.md`,
-`boot-and-hardware-bringup.md`) are superseded by this document and
-removed; their process is preserved in git history.
+mechanism and its real per-channel pin assignments, the exact
+Adafruit ArduinoCore-samd toolchain the firmware was built from, and
+the EIC/EXTINT interrupt-callback dispatch mechanism. The individual
+investigation slices are superseded by this document and removed;
+their process is preserved in git history.
 
 ## Current model
 
@@ -236,6 +233,66 @@ real, initialized driver object at `0x20004160`:
   external, hardware-independent confirmation of the exact chip model
   or of a physical connector/antenna identity exists, and none is
   claimed. See "Test / repro" below for the exact reproduction.
+
+**The EIC/EXTINT interrupt-callback dispatch mechanism — vectors
+identified, registration path exhaustively absent.** Vector-table
+indices 28-43 correspond exactly, in order, to the ATSAMD51 datasheet's
+`EIC_0_IRQn`…`EIC_15_IRQn` (confirmed against the vendored
+`samd51g19a.h`, not inferred from code shape). Each of the 16
+corresponding stub functions (flash `0xcbb0`-`0xcc0a`) loads `R0` with
+its own line number (0-15, one per stub, confirmed by decoding each
+`MOVS R0,#N` immediate directly) and then unconditionally branches
+(not calls) into one shared dispatcher at `0xcb6c`. **The dispatcher
+does not use `R0` as its dispatch index** — `R4` is a separate,
+loop-carried scan counter the dispatcher itself initializes to `0` and
+increments every iteration, independent of which physical EIC line
+woke it; `R0` is loaded and never referenced again. The dispatcher's
+own literal-pool loads (read directly from the firmware image, not
+assumed) give the concrete RAM/peripheral layout:
+
+| Register | Value | Role |
+|---|---|---|
+| `R6` | `0x40002800` | EIC peripheral base (matches the ATSAMD51 SVD/header exactly) |
+| — | `0x14` (20) | `EIC.INTFLAG` offset the dispatcher reads (`R6+0x14`) — matches the header exactly |
+| `R8` | `0x2000525c` | callback-table base (RAM) |
+| `R5` | `0x200052a0` | mask/ISR-list base (RAM) |
+| `R7` | `0x200052e4` | `nints`-style registered-interrupt count address (RAM) |
+
+The spacing between these RAM addresses is regular: `0x200052a0 -
+0x2000525c = 0x44` (68 bytes / 17 words), and `0x200052e4 - 0x200052a0
+= 0x44` (68 bytes / 17 words) — consistent with two fixed-size,
+back-to-back 17-word regions followed immediately by the count, but
+this is an **inference from spacing alone**; no array-bounds
+declaration was found to confirm 17 as the real entry count. Callback
+stride is 4 bytes; the dispatch call itself is a real, non-fabricated
+register-indirect `BLX_r_T1` at `0xcb92` (`callback_table[R4]`,
+Macaw's own `ParsedCall` terminator, correctly classified
+`true_indirect_call` — see
+[`docs/tooling/macaw-analysis.md`](../tooling/macaw-analysis.md)).
+Callback entries live in RAM, not flash — nothing in the compiled
+image statically initializes them.
+
+**No registration routine was found.** Two independent, whole-firmware
+structural searches — a literal-pool byte scan for all three RAM
+addresses, and a full-binary Thumb2 MOVW/MOVT disassembly sweep (to
+catch constant materialization that doesn't use a literal pool) — each
+find these three addresses embedded exactly **once** anywhere in the
+~200 KB image: in the dispatcher's own prologue. Ghidra's independent
+static cross-reference table agrees: the only recorded access to any
+of the three addresses, from any function, is the dispatcher's own
+read of the count. One promising lead — the same EIC base-address
+literal also appears near flash `0xa038`/`0xa058` — was chased and
+resolves against THIS SAME document's own finding above: those
+addresses belong to `0xa000`/`0xa03c`, the already-documented SPI
+begin/end-transaction helpers (SERCOM SWRST + conditional
+`EIC.INTENCLR`/`INTENSET` — see "The TX path's real transport" above),
+which is unrelated to the callback/mask/count structure. This is an
+**exhaustive static negative result, not proof that runtime
+registration is impossible** — no dynamic (Unicorn) check was run for
+this specific question. The best current interpretation: this is
+linked Arduino-SAMD-core interrupt-attach platform infrastructure
+(present because the vector table references it) whose application use
+is **not established** by any evidence gathered so far.
 
 **TC0-TC3 IRQs, addresses, and the shared pulse helper.** Vector-table
 entries (literal-pool base address resolved for each):

@@ -52,7 +52,7 @@ levels, anti-patterns) — this table is a summary.
 | Tool | Role | Status |
 |---|---|---|
 | **Ghidra** | Static RE / decompiler / cross-references / data structure and table recovery / naming MMIO registers and globals | Integrated — [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) |
-| **Macaw** | Independent CFG recovery and machine-code lifting (ground truth, doesn't depend on a decompiler's heuristics) | In use, proven (see `docs/firmware/cortexm-assessment.md`) |
+| **Macaw** | Independent machine-code control-flow recovery and Thumb-2 lifting | In use, proven (see `docs/firmware/cortexm-assessment.md`) |
 | **Unicorn** | Fast concrete Thumb execution and state snapshotting — run firmware to a checkpoint cheaply, then hand a concrete state to the symbolic side | Integrated — [`docs/tooling/unicorn-backend.md`](tooling/unicorn-backend.md) |
 | **Crucible + What4 + Z3** | Targeted symbolic reachability and input-value solving, once the question and the relevant code region are well understood | In use, proven |
 | **APTrace** | Orchestration: evidence model, scenario definitions, trace capture, and (eventually) a UI/workbench tying the above together | This repo |
