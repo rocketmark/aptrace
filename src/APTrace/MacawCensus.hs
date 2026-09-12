@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 -- | A standalone, deterministic census of what Macaw's own static discovery
 -- finds in a Cortex-M firmware image, seeded /only/ from the firmware's own
@@ -127,17 +128,35 @@ data UnresolvedInfo = UnresolvedInfo
 -- distinct from the CFG-successor 'EdgeInfo' (whose @call_return@ edge
 -- points at the *return continuation*, never the callee). Emitted for
 -- every 'MDP.ParsedCall' terminator Macaw discovers, call or tail call.
+--
+-- 'ciKind' distinguishes three cases Macaw's own call-target value
+-- ('MC.curIP') can be in -- deliberately kept separate rather than
+-- collapsing the latter two into one "unknown callee" bucket, so a later
+-- Ghidra comparison can tell "Macaw doesn't know" from "Macaw has an
+-- address, but it's outside APTrace's firmware image":
+--
+--  * @"direct"@ -- 'MC.valueAsMemAddr' gives a concrete absolute address,
+--    and it resolves into the firmware memory image. 'ciCallee' is that
+--    address, canonicalized.
+--  * @"unmapped"@ -- 'MC.valueAsMemAddr' gives a concrete absolute
+--    address, but it does /not/ resolve into the firmware memory image
+--    (out of the mapped flash\/RAM ranges). 'ciCallee' is still that
+--    address -- preserved exactly as Macaw computed it, /not/
+--    canonicalized (there is no basis to assume it's even a real
+--    instruction address, let alone Thumb-tagged, for a target outside
+--    the image), so it can still be inspected or cross-checked later.
+--  * @"indirect"@ -- Macaw cannot reduce 'MC.curIP' to a concrete address
+--    at all (a genuinely register-indirect call). 'ciCallee' is 'Nothing'.
 data CallInfo = CallInfo
   { ciCaller   :: !Word32
     -- ^ Canonical entry of the function containing the call site.
   , ciCallSite :: !Word32
     -- ^ Canonical address of the block ending in the call.
   , ciCallee   :: !(Maybe Word32)
-    -- ^ Canonical callee address, if Macaw's own call-target value
-    -- resolves to a concrete address ('MC.valueAsMemAddr'); 'Nothing' for
-    -- a register-indirect call Macaw could not reduce to a literal.
+    -- ^ 'Just' for @"direct"@ (canonicalized, resolved) and @"unmapped"@
+    -- (raw, unresolved -- see 'ciKind'); 'Nothing' only for @"indirect"@.
   , ciKind     :: !String
-    -- ^ @"direct"@ (callee known) or @"indirect"@ (callee unknown).
+    -- ^ @"direct"@, @"unmapped"@, or @"indirect"@ -- see above.
   } deriving (Eq, Show)
 
 data CensusResult = CensusResult
@@ -378,21 +397,19 @@ unresolvedOf funcEntry src t = case t of
 --
 -- The callee comes from the *same* register state 'MDP.parsedTermSucc'
 -- reads for the call's return successor -- 'MDP.ParsedCall'\'s own
--- 'MC.RegState' -- read at the instruction-pointer register
--- ('MC.curIP') and resolved via Macaw's own 'MC.valueAsMemAddr'. Never
--- inferred from disassembly text. If that value isn't syntactically a
--- concrete address (a register-indirect call macaw couldn't reduce to a
--- literal), the call is still emitted, with 'ciCallee' @Nothing@ and
--- 'ciKind' @"indirect"@, rather than dropped.
+-- 'MC.RegState' -- read at the instruction-pointer register ('MC.curIP').
+-- Never inferred from disassembly text. Classified into exactly the three
+-- cases 'CallInfo' documents (@direct@\/@unmapped@\/@indirect@); a call is
+-- always emitted, never dropped, regardless of which case it falls into.
 callsOf :: MM.Memory 32 -> Word32 -> Word32 -> MDP.ParsedTermStmt ARM.ARM ids -> [CallInfo]
 callsOf mem funcEntry src t = case t of
-  MDP.ParsedCall regs _ -> [ CallInfo funcEntry src callee (maybe "indirect" (const "direct") callee) ]
+  MDP.ParsedCall regs _ -> [ classify (regs ^. MC.curIP) ]
     where
-      callee = do
-        addr <- MC.valueAsMemAddr (regs ^. MC.curIP)
-        w    <- MM.asAbsoluteAddr addr
-        off  <- resolveEntry mem (fromIntegral (MM.memWordValue w))
-        pure (canonicalWord off)
+      classify ipVal = case MC.valueAsMemAddr ipVal >>= MM.asAbsoluteAddr of
+        Nothing -> CallInfo funcEntry src Nothing "indirect"
+        Just w  -> case resolveEntry mem (fromIntegral (MM.memWordValue w)) of
+          Nothing  -> CallInfo funcEntry src (Just (fromIntegral (MM.memWordValue w))) "unmapped"
+          Just off -> CallInfo funcEntry src (Just (canonicalWord off)) "direct"
   _ -> []
 
 ------------------------------------------------------------------------
