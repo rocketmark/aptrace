@@ -67,10 +67,10 @@ in relative to the MCU as a whole.
 | DIR ch1 | PA09 | 18 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | DIR ch2 | PB13 | 26 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | DIR ch3 | PA11 | 20 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
-| Driver enable A | PB17 | 40 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
-| Driver enable B | PB16 | 39 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
-| Driver reset strobe A | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNKNOWN |
-| Driver reset strobe B | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNKNOWN |
+| Driver enable A *(name provisional — see mux hypothesis)* | PB17 | 40 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver enable B *(name provisional — see mux hypothesis)* | PB16 | 39 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver reset strobe A *(name provisional — see mux hypothesis)* | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver reset strobe B *(name provisional — see mux hypothesis)* | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
 | Trigger digital/analog | PB05 | 6 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | Trigger boot arm-select | PA02 | 3 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |
 | Startup reference/input | PA22 | 43 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |
@@ -214,6 +214,137 @@ standalone (pin-configured) mode** — it only means no such trace was
 legible at the angles/resolution captured so far; a real PCB continuity
 check is still required to close this either way.
 
+## Motor bus architecture — mux hypothesis (`HIGH-CONFIDENCE INFERENCE`, not proven)
+
+**Two `SN74CBTLV3257` devices — device count.** `...0103.jpg` proves one
+device (marking `CL257`/`27M`/`AFRN64`, PCB photo + TI datasheet marking
+match). A second device in the same repeated configuration is reported,
+but this documentation pass **did not itself locate a second legible (or
+even blurry-but-identifiable) photo of a second 16-pin SSOP part** —
+`...0114.jpg`, `...0121.jpg` (REV 1) and `IMG_3094.JPG`, `IMG_3095.JPG`
+(REV 2) were checked and show unrelated ICs (power-management parts near
+the MCU logic region, not the motor-driver cluster). Per this document's
+own evidence discipline (`hardware-reference.md`'s "Adjacent 16-pin SSOP
+mux/demux") and per the instruction not to promote hypotheses to
+`PROVEN` without continuity or equivalent direct evidence: **the exact
+count of two `SN74CBTLV3257` devices is recorded as reported, not
+independently re-derived from a second photo in this pass** — graded
+`PROBABLE`, consistent with the board's already-established 4-repeated-
+motor-driver-channel layout (`IMG_3098.JPG`) and the 8-signal count
+math below, not `PROVEN` by a second legible marking. If a second photo
+surfaces later, cite it here and upgrade to `PROVEN`.
+
+**The architectural hypothesis.** The two `SN74CBTLV3257` 4-channel 2:1
+muxes select between MCU-generated STEP/DIR and externally-supplied
+(RJ45) STEP/DIR, with their outputs feeding the four TMC5160 STEP/DIR
+inputs:
+
+```text
+                   MCU STEP/DIR
+                       \
+                        SN74CBTLV3257
+                       /              \
+external RJ45 STEP/DIR                 TMC5160 STEP/DIR
+```
+
+Signal-count match (the basis for the inference, not proof of it):
+
+```text
+4 motors x 2 signals (STEP + DIR) = 8 switched signals
+2 x SN74CBTLV3257 = 2 x 4 switched channels = 8 switched signals
+```
+
+One mux naturally handles 4 STEP/DIR signals (two motors); two muxes
+cover all four motors. This would also explain why no firmware path has
+been found consuming external RJ45 STEP/DIR pulses (see "Trigger
+result" below and `docs/replacement/mapped-pin-causal-gap-audit.md`'s
+"External RJ45 STEP/DIR" `INSUFFICIENT_SINK` finding): the external
+pulses may bypass the ATSAMD51 entirely, switched electrically into the
+TMC5160 STEP/DIR inputs by the mux rather than consumed by any GPIO/ISR.
+
+**Status: `HIGH-CONFIDENCE INFERENCE`, explicitly not `PROVEN`.** Do not
+treat this as the actual wiring until continuity confirms it.
+
+**PB16/PB17 and PB06/PB07 — revised interpretation.** The previous names
+`Driver enable A/B` and `Driver reset strobe A/B` (compact map above) are
+now **provisional functional names, not proven electrical identities**.
+Leading hypothesis:
+
+```text
+PB16 / PB17  ->  likely SN74CBTLV3257 source-select (S) lines
+PB06 / PB07  ->  likely SN74CBTLV3257 /OE lines
+```
+
+Status: `HIGH-CONFIDENCE INFERENCE`. Reasons:
+
+1. Two `SN74CBTLV3257`s require exactly 2x `S` + 2x `/OE` — matching the
+   firmware's exactly-four unexplained paired motor-control GPIOs.
+2. `/OE` is active-low on this part, so a temporary HIGH pulse naturally
+   disconnects mux outputs during a source transition — consistent with
+   PB06/PB07's already-documented ~50ms pulse in the disable/switch
+   sequences (`0x77f8`/`0x7868`).
+3. PB16/PB17 *hold* state after a transition (already-documented
+   firmware behavior) — consistent with a persistent mux
+   source-selection signal, not a momentary reset strobe.
+4. Direct interpretation of PB16/PB17 as TMC5160 `DRV_ENN` is
+   questionable: TMC5160 `DRV_ENN` polarity/behavior does not cleanly
+   match the previously-assigned "enable" semantics.
+
+**Do not rename these pins in canonical tables until continuity
+confirms them** — the compact map above keeps the old names with an
+explicit "name provisional" flag rather than renaming to
+`MOTOR_CTRL_A/B`/`MOTOR_STROBE_A/B` outright.
+
+**Highest-value continuity tests (next physical work, in order):**
+
+```text
+For one mux:
+  SN74CBTLV3257 pin 1  (S)    -> PB16 or PB17?
+  SN74CBTLV3257 pin 15 (/OE)  -> PB06 or PB07?
+
+Then for one switched channel:
+  A/common -> TMC5160 STEP or DIR?
+  B1       -> ATSAMD51 STEP/DIR?   (B1/B2 may be reversed)
+  B2       -> external RJ45 STEP/DIR path?
+```
+
+If confirmed on one channel, repeat only enough measurements to confirm
+the same pattern on the second mux — this alone would close a large
+fraction of the motor signal-routing contract.
+
+**After the mux architecture is confirmed** — not before — resolve
+TMC5160 configuration mode directly at the device. Highest-value
+TMC5160A-TA pins for that *later* pass (candidate numbers, not yet
+matched against this specific package's real pinout):
+
+```text
+13 CSN_CFG3   14 SCK_CFG2   15 SDI_CFG1   16 SDO_CFG0
+17 REFL_STEP  18 REFR_DIR
+21 SD_MODE    22 SPI_MODE
+28 DRV_ENN
+```
+
+Priority once the mux question is closed: (1) confirm pins 17/18 receive
+mux outputs, (2) inspect `SPI_MODE`, (3) inspect `SD_MODE`, (4) only if
+SPI mode is physically established, trace pins 13-16 toward the MCU, (5)
+if standalone mode is established instead, trace the CFG strap network.
+**Do not launch another broad SERCOM search before physical evidence
+establishes that a TMC5160 serial bus actually exists** — see "TMC5160
+configuration mode" below, still `UNKNOWN`.
+
+**TMC5160 configuration mode — still `UNKNOWN`, unchanged by the mux
+finding.** The mux hypothesis answers a *STEP/DIR routing* question, not
+a *configuration-bus* question — these are independent. Known firmware
+evidence, all previously established, none newly re-derived this pass:
+`SERCOM2` confirmed as the radio SPI interface; `SERCOM5` receives
+generic boot-time initialization but no traced transaction; CURRENT and
+MICROSTEPPING command fields have no traced hardware effect; no
+per-device CSN, DIAG, or REFL/REFR signal has been identified. **Do not
+infer standalone (pin-strapped) mode merely from the absence of
+discovered SPI traffic** — absence of evidence is not evidence of
+absence here; this remains `UNKNOWN`, not `PROBABLE` in either
+direction.
+
 ## Trigger result
 
 **PB05** (digital read + ADC1 analog alias) and **PA02** (boot-time
@@ -272,6 +403,28 @@ bus across TMC5160 pairs** — a plausible candidate by part function and
 TI's own "Motor drives" application note, but its `A`/`B1`/`B2`/`S`/`OE‾`
 pins are not traced to any board signal, so this is not established.
 
+Additional items opened by the mux-architecture hypothesis (see "Motor
+bus architecture — mux hypothesis" above), kept explicitly open:
+
+- Exact logical channel 0-3 ↔ physical TMC5160 package (unchanged, still
+  open).
+- Exact logical channel ↔ physical XLR connector (unchanged, still
+  open).
+- DIR polarity ↔ actual motor rotation direction (unchanged, still
+  open).
+- Which two motors belong to each `SN74CBTLV3257`.
+- Exact `S` and `OE‾` GPIO assignments (PB16/PB17/PB06/PB07 identity is
+  `HIGH-CONFIDENCE INFERENCE`, not proven).
+- `B1`/`B2` source polarity (which side is MCU-internal vs. external
+  RJ45).
+- TMC5160 SPI/UART/standalone configuration mode (still `UNKNOWN`,
+  independent of the mux question).
+- TMC5160 `DRV_ENN` wiring.
+- `DIAG0`/`DIAG1` wiring.
+- `REFL`/`REFR` use outside STEP/DIR mode.
+- Exact current-sense/power-stage topology per motor (how many
+  `CSD88537ND` packages per channel, exact bridge topology).
+
 **TCC1/PB22 update** (TCC1/PB22 Boot Runtime Replay): concretely
 confirmed TCC1 is genuinely enabled twice during boot, both times
 inside the already-documented "dead" ADC-baseline function
@@ -299,6 +452,39 @@ measurement on real hardware, before a causal/SMT query against a named
 physical outcome (e.g. "does the white LED turn on") would have a real
 target to check against. The GPIO-level query ("does PB30 go HIGH") is
 already answerable today; the physical-consequence query is not.
+
+## Evidence status summary (motor hardware, current state)
+
+```text
+PROVEN
+- TMC5160A-TA physically present (1 of 4 channels, PCB photo)
+- CSD88537ND physically present (PCB photo + TI marking match)
+- SN74CBTLV3257 physically present (1 device, PCB photo + TI marking match)
+- MCU STEP pin map (TC0-TC3 -> PB10/PA08/PB12/PA10, firmware + package)
+- MCU DIR pin map (PB11/PA09/PB13/PA11, firmware + package)
+
+PROBABLE (not PROVEN)
+- two SN74CBTLV3257 devices in a repeated board layout (consistent with
+  the board's established 4-repeated-motor-channel layout and the
+  8-signal count math; a second legible photo was not located this pass)
+
+HIGH-CONFIDENCE INFERENCE (not PROVEN)
+- two SN74CBTLV3257 devices form the 8-signal STEP/DIR source-selection
+  network
+- internal MCU STEP/DIR and external RJ45 STEP/DIR are the two mux
+  sources
+- PB16/PB17 are likely mux select (S) controls
+- PB06/PB07 are likely mux /OE controls
+- external STEP/DIR may bypass the MCU datapath completely
+
+UNKNOWN
+- exact continuity for every item above (mux pin-to-GPIO wiring,
+  channel A/B1/B2 wiring)
+- TMC5160 configuration mode (SPI / UART / standalone)
+- physical channel ordering (logical 0-3 <-> physical TMC5160/XLR)
+- TMC5160 diagnostic/configuration wiring (DIAG0/1, DRV_ENN, REFL/REFR,
+  CSN/SCK/SDI/SDO)
+```
 
 ## See also
 

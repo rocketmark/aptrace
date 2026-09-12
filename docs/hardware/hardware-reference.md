@@ -93,15 +93,27 @@ Pinout (DBQ/16-pin): `S`(1), `1B1`(2), `1B2`(3), `1A`(4), `2B1`(5),
 each switching its `A` pin to either `B1` or `B2`, sharing one select
 line (`S`) and one active-low output-enable (`OE‾`).
 
-**Architectural implication (candidate, not proven)**: a shared-select
-4-channel 2:1 mux is architecturally the kind of part used to time-share
-one physical bus across two destinations with a single control bit — a
-plausible mechanism for routing shared signal lines (e.g. an SPI/UART
-bus) between two TMC5160s or channel-pairs, directly relevant to the
-still-open "is a config bus shared across all four TMC5160s" question.
-**This is not established** — no board signal has been traced to this
-chip's `A`/`B1`/`B2`/`S`/`OE‾` pins; it is a plausible candidate
-mechanism, not a proven one, pending a PCB continuity check.
+**Device count — `PROBABLE`, not `PROVEN`**: the board's motor-driver
+region is an established 4-repeated-channel layout, and the signal-count
+math (4 motors × STEP+DIR = 8 signals = 2 × this part's 4 switched
+channels) is consistent with **two** `SN74CBTLV3257` devices — but this
+pass did not locate a second legible (or identifiably-blurry) photo of a
+second device; only one is independently confirmed. Do not round this up
+to `PROVEN` until a second photo or continuity check confirms it.
+
+**Architectural implication — leading hypothesis, `HIGH-CONFIDENCE
+INFERENCE`, not proven**: the current leading theory is that two
+`SN74CBTLV3257` devices select, per motor pair, between MCU-generated
+STEP/DIR and externally-supplied (RJ45) STEP/DIR, with their outputs
+feeding the four TMC5160 STEP/DIR inputs — not a shared SPI/UART config
+bus as earlier speculated. This would also explain why no firmware path
+consuming external RJ45 STEP/DIR pulses has been found: the external
+pulses may bypass the ATSAMD51 entirely, switched in electrically. **Not
+established** — no board signal has been traced to this chip's
+`A`/`B1`/`B2`/`S`/`OE‾` pins. See
+[`firmware-pin-function-map.md`](firmware-pin-function-map.md)'s "Motor
+bus architecture — mux hypothesis" for the full reasoning, the
+continuity-test plan, and the evidence-status summary.
 
 **Photo folder note**: the `REV 1` subfolder is not exclusively Remote-board
 photos as previously recorded — it contains the original Remote/Mando set

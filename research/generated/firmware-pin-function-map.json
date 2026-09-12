@@ -268,8 +268,8 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_PROBABLE",
-      "confidence": "Re-verified this session (idx2 = 0x11 -> group1,pin17 -> PB17).",
+      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
+      "confidence": "Re-verified this session (idx2 = 0x11 -> group1,pin17 -> PB17). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
       "evidence_refs": [
         "research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
         "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x142b4 --length 8 (this session: idx2 = group1,pin17)"
@@ -296,8 +296,8 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_PROBABLE",
-      "confidence": "Re-verified this session (idx3 = 0x10 -> group1,pin16 -> PB16).",
+      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
+      "confidence": "Re-verified this session (idx3 = 0x10 -> group1,pin16 -> PB16). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
       "evidence_refs": [
         "research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
         "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x142cc --length 8 (this session: idx3 = group1,pin16)"
@@ -324,8 +324,8 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN",
-      "confidence": "GPIO identity CONFIRMED (re-verified this session, idx27 = 0x06 -> group1,pin6 -> PB06); the 'reset strobe' functional label is explicitly PROBABLE only, per the source doc's own hedge.",
+      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
+      "confidence": "GPIO identity CONFIRMED (re-verified this session, idx27 = 0x06 -> group1,pin6 -> PB06); the 'reset strobe' functional label is explicitly PROBABLE only, per the source doc's own hedge. REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
       "evidence_refs": [
         "research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
         "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1450c --length 8 (this session: idx27 = group1,pin6)"
@@ -352,8 +352,8 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN",
-      "confidence": "Re-verified this session (idx29 = 0x07 -> group1,pin7 -> PB07).",
+      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
+      "confidence": "Re-verified this session (idx29 = 0x07 -> group1,pin7 -> PB07). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
       "evidence_refs": [
         "research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
         "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1453c --length 8 (this session: idx29 = group1,pin7)"
@@ -768,7 +768,7 @@
       "active_level_or_encoding": null,
       "chip_part": "SN74CBTLV3257 (Texas Instruments)",
       "package_pin": null,
-      "pcb_observation": "AutoPilot0103.jpg (REV 1 folder) shows a 16-pin SSOP part in the same cluster as the TMC5160A-TA chip, marked 'CL257 / 27M / AFRN64'. Independently verified against TI datasheet SCDS040N (fetched live from ti.com): CL257 is TI's documented top-side device marking for the SN74CBTLV3257, a low-voltage 4-bit 1-of-2 FET multiplexer/demultiplexer, DBQ/SSOP-16 package. TI's own datasheet lists 'Motor drives' as a named application. Pinout (DBQ/16-pin): S(1) select, 1B1(2)/1B2(3)/1A(4), 2B1(5)/2B2(6)/2A(7), GND(8), 3A(9)/3B2(10)/3B1(11), 4A(12)/4B2(13)/4B1(14), OE-bar(15), VCC(16) -- four independent 2:1 switch channels sharing one select (S) and one active-low enable (OE-bar).",
+      "pcb_observation": "AutoPilot0103.jpg (REV 1 folder) shows a 16-pin SSOP part in the same cluster as the TMC5160A-TA chip, marked 'CL257 / 27M / AFRN64'. Independently verified against TI datasheet SCDS040N (fetched live from ti.com): CL257 is TI's documented top-side device marking for the SN74CBTLV3257, a low-voltage 4-bit 1-of-2 FET multiplexer/demultiplexer, DBQ/SSOP-16 package. TI's own datasheet lists 'Motor drives' as a named application. Pinout (DBQ/16-pin): S(1) select, 1B1(2)/1B2(3)/1A(4), 2B1(5)/2B2(6)/2A(7), GND(8), 3A(9)/3B2(10)/3B1(11), 4A(12)/4B2(13)/4B1(14), OE-bar(15), VCC(16) -- four independent 2:1 switch channels sharing one select (S) and one active-low enable (OE-bar). Device count: only ONE device has an independently confirmed legible photo (AutoPilot0103.jpg). A second device is reported/expected by board-layout repetition (4 repeated motor-driver channels, IMG_3098.JPG) and the 8-signal-count match (4 motors x STEP+DIR = 8 = 2x this part's 4 channels), but no second legible or identifiably-blurry photo was located this pass (checked AutoPilot0114.jpg, AutoPilot0121.jpg, IMG_3094.JPG, IMG_3095.JPG -- unrelated ICs). Device count graded PROBABLE, not PROVEN.",
       "nearby_components": [
         "TMC5160A-TA (same cluster, AutoPilot0101.jpg/AutoPilot0103.jpg)",
         "TI CSD88537ND dual N-channel NexFET MOSFETs (same board region)"
@@ -778,13 +778,13 @@
       "package_status": "NOT_APPLICABLE",
       "pcb_status": "PROVEN_PCB_PHOTO_PLUS_MARKING_MATCH (chip identity only)",
       "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN (bus/signal role not established)",
-      "confidence": "Chip identity is PROVEN by direct PCB photo plus an independently fetched, verified TI datasheet marking match (SCDS040N) -- same evidentiary tier as the TMC5160A-TA and CSD88537ND findings. NOT established: which board signals (if any) connect to this chip's pins. Architectural candidate only: a shared-select 4-channel 2:1 mux is the kind of part used to time-share one physical bus (e.g. SPI/UART) across two destinations with a single control bit, which would be directly relevant to the open 'is a config bus shared across all four TMC5160s' question -- but this role is NOT proven, only plausible by part function and TI's own 'Motor drives' application note. A PCB continuity check is required to confirm or rule this out.",
+      "confidence": "Chip identity is PROVEN by direct PCB photo plus an independently fetched, verified TI datasheet marking match (SCDS040N) -- same evidentiary tier as the TMC5160A-TA and CSD88537ND findings. NOT established: which board signals (if any) connect to this chip's pins. Architectural candidate only: a shared-select 4-channel 2:1 mux is the kind of part used to time-share one physical bus (e.g. SPI/UART) across two destinations with a single control bit, which would be directly relevant to the open 'is a config bus shared across all four TMC5160s' question -- but this role is NOT proven, only plausible by part function and TI's own 'Motor drives' application note. A PCB continuity check is required to confirm or rule this out. REVISED LEADING HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): rather than a generic SPI/UART config-bus share, the leading theory is now that two of these devices select, per motor pair, between MCU-generated STEP/DIR and externally-supplied (RJ45) STEP/DIR, feeding the four TMC5160 STEP/DIR inputs -- PB16/PB17 as the two S lines, PB06/PB07 as the two OE-bar lines (see DRIVER_ENABLE_A/B, DRIVER_RESET_STROBE_A/B). Still not established: no board signal traced to this chip's A/B1/B2/S/OE-bar pins.",
       "evidence_refs": [
         "research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0103.jpg",
         "TI datasheet SCDS040N (SN74CBTLV3257), fetched from ti.com/lit/gpn/SN74CBTLV3257",
         "docs/hardware/hardware-reference.md (Adjacent 16-pin SSOP mux/demux)"
       ],
-      "remaining_unknown": "Whether this chip carries any motor-driver-relevant signal at all; if so, which signals (S/OE-bar/A/B1/B2 per channel) map to which board nets; whether it is the mechanism sharing an SPI/UART config bus across TMC5160 pairs."
+      "remaining_unknown": "Whether this chip carries any motor-driver-relevant signal at all; if so, which signals (S/OE-bar/A/B1/B2 per channel) map to which board nets; whether it is the mechanism sharing an SPI/UART config bus across TMC5160 pairs. Which two motors belong to each mux; B1/B2 source polarity; whether a second device exists as reported (PROBABLE, not independently photo-confirmed this pass)."
     }
   ],
   "summary_counts": {
