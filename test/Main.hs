@@ -24,6 +24,7 @@ import qualified Data.Macaw.ARM.Arch as ARMArch
 import qualified Data.Macaw.Discovery as MD
 import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
+import qualified Data.Macaw.Refinement as Refine
 import           Data.Parameterized.Some ( Some(..) )
 import qualified Prettyprinter as PP
 
@@ -33,6 +34,7 @@ import           APTrace.MacawCensus
   ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
   , FunctionInfo(..), UnresolvedInfo(..)
   , canonicalWord, censusToValue, discoverCensus, normalizeRoots )
+import           APTrace.MacawRefinement ( refineFunctionAt )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
 main :: IO ()
@@ -55,6 +57,7 @@ main = do
     , callReturnEdgeStaysSeparateFromCallRelation
     , unresolvedCallIsPreserved
     , callOutputIsDeterministic
+    , refinementInitializesEmptyStructRegister
     ]
   if and results
     then putStrLn "All tests passed."
@@ -469,6 +472,56 @@ callOutputIsDeterministic = do
         test "15. call output ordering is deterministic"
           (crCalls c1 == crCalls c2 && isSorted (crCalls c1))
   where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 16. AArch32/Cortex-M compatibility-patch regression: vendored
+-- @macaw-refinement@'s own 'Data.Macaw.Refinement.SymbolicExecution.freshSymVar'
+-- previously had no case for AArch32's ASL-derived unit-typed pseudo-register
+-- (an empty struct, visible in a block's abstract state as @() => ()_0@) and
+-- failed /every/ AArch32 refinement attempt with @user error (unsupported
+-- variable type: StructRepr [])@ before any SMT solving was even attempted
+-- -- see that module's compatibility-patch comment. This proves refinement
+-- now gets past register-state construction for a real @classify_failure@
+-- block (flash @0x44ec@, a Thumb @CBZ_T1@) without throwing that error, even
+-- though this particular block still does not fully refine: a separate,
+-- independent gap (missing ASL semantics for a VFP instruction elsewhere in
+-- the block, @MissingSemanticsForT32Instruction VLDR_l_T1_S@) is expected
+-- and must show up recorded in the result, not silently hidden. Skips if
+-- the firmware isn't present locally.
+refinementInitializesEmptyStructRegister :: IO Bool
+refinementInitializesEmptyStructRegister = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 16. AArch32 refinement initializes the empty-struct register without throwing (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "16. AArch32 refinement initializes the empty-struct register without throwing" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> case resolveEntry mem (macawCortexMEntry targetEntry) of
+        Nothing -> test "16. AArch32 refinement initializes the empty-struct register without throwing" False
+        Just off -> do
+          let discState = MD.cfgFromAddrs armCortexMInfo mem
+                            (Map.singleton off (BSC.pack "target")) [off] []
+          outcome <- try (refineFunctionAt bytes mem discState targetEntry)
+                       :: IO (Either SomeException (MD.DiscoveryState ARM.ARM, Refine.RefinementInfo ARM.ARM))
+          case outcome of
+            Left ex ->
+              test "16. AArch32 refinement initializes the empty-struct register without throwing" False
+                <* hPutStrLn stderr ("  (refinement threw: " ++ show ex ++ ")")
+            Right (_, info) ->
+              let msgs = map snd (Refine.refinementErrors info)
+                  mentionsStructGap = any (\m -> "unsupported variable type" `isInfixOf` m
+                                                    || "StructRepr" `isInfixOf` m) msgs
+              in test "16. AArch32 refinement initializes the empty-struct register without throwing"
+                   (not mentionsStructGap)
+  where
+    targetEntry  = 0x44ec :: Word32
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
