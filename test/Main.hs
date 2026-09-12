@@ -20,17 +20,19 @@ import           System.Exit ( exitFailure )
 import           System.IO ( hPutStrLn, stderr )
 
 import qualified Data.Macaw.ARM as ARM
+import qualified Data.Macaw.ARM.Arch as ARMArch
 import qualified Data.Macaw.Discovery as MD
+import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
 import           Data.Parameterized.Some ( Some(..) )
 import qualified Prettyprinter as PP
 
 import           APTrace.FirmwareLoader
-  ( buildMemory, resolveEntry, macawCortexMEntry )
+  ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus
-  ( CensusResult(..), FirmwareMeta(..), FunctionInfo(..)
-  , censusToValue, discoverCensus, normalizeRoots )
-import           APTrace.VectorTable ( VectorEntry(..) )
+  ( CensusResult(..), FirmwareMeta(..), FunctionInfo(..), UnresolvedInfo(..)
+  , canonicalWord, censusToValue, discoverCensus, normalizeRoots )
+import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
 main :: IO ()
 main = do
@@ -45,6 +47,9 @@ main = do
     , censusAddressesAreCanonical
     , censusOutputDeterministic
     , censusPreservesUnresolvedTerminator
+    , directCallCalleeIsThumb
+    , postCallContinuationIsThumb
+    , noA32DecodeErrorsInFullCensus
     ]
   if and results
     then putStrLn "All tests passed."
@@ -213,6 +218,119 @@ censusPreservesUnresolvedTerminator = do
         census <- discoverCensus mem [(macawCortexMEntry 0x8e18, ["phase_ramp_state_machine"])]
         test "8. unresolved terminators are preserved, not dropped"
           (not (null (crUnresolved census)))
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | Look up the precondition of one specific block, by canonical address,
+-- within one specific function, by canonical entry -- shared by tests 9/10.
+precondAt :: MD.DiscoveryState ARM.ARM -> Word32 -> Word32 -> [Either String ARMArch.ARMBlockPrecond]
+precondAt discState fnEntry blkAddr =
+  [ MDP.pblockPrecond b
+  | Some fn <- Map.elems (discState ^. MD.funInfo)
+  , canonicalWord (MD.discoveredFunAddr fn) == fnEntry
+  , b <- Map.elems (fn ^. MD.parsedBlocks)
+  , canonicalWord (MDP.pblockAddr b) == blkAddr
+  ]
+
+-- | 9. The real, previously-misclassified direct-call target confirmed by
+-- the prior investigation: @0xcc24@ (a normal, already-Thumb root) calls
+-- @0xcd90@ via a plain Thumb @BL@ -- an ordinary, /even/ instruction
+-- address, not a Thumb-bit-tagged pointer. Under stock
+-- 'ARM.arm_linux_info' this decodes as A32 (@PSTATE_T=False@); under
+-- 'armCortexMInfo' it must resolve to @PSTATE_T=True@. Skips if the
+-- firmware isn't present locally.
+directCallCalleeIsThumb :: IO Bool
+directCallCalleeIsThumb = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 9. direct-call callee 0xcd90 resolves PSTATE_T=True (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "9. direct-call callee 0xcd90 resolves PSTATE_T=True" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> case resolveEntry mem (macawCortexMEntry callerAddr) of
+        Nothing -> test "9. direct-call callee 0xcd90 resolves PSTATE_T=True" False
+        Just entry ->
+          let discState = MD.cfgFromAddrs armCortexMInfo mem
+                            (Map.singleton entry (BSC.pack "caller")) [entry] []
+          in test "9. direct-call callee 0xcd90 resolves PSTATE_T=True"
+               (precondAt discState calleeAddr calleeAddr
+                  == [Right (ARMArch.ARMBlockPrecond True)])
+  where
+    callerAddr   = 0xcc24 :: Word32
+    calleeAddr   = 0xcd90 :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 10. The real, previously-@TopV@ post-call continuation confirmed by the
+-- prior investigation: stub function @0xcbb0@ (@IRQ12_Handler@) calls a
+-- shared subroutine at @0xcb8e@ and continues at @0xcb94@; under stock
+-- 'ARM.arm_linux_info' the post-call abstract-state transfer can't fold
+-- @PSTATE_T@ to a precise value there (@Left "TopV where PSTATE_T
+-- expected"@); under 'armCortexMInfo' it must resolve to @PSTATE_T=True@
+-- instead of failing. Skips if the firmware isn't present locally.
+postCallContinuationIsThumb :: IO Bool
+postCallContinuationIsThumb = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 10. post-call continuation 0xcb94 resolves PSTATE_T=True (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "10. post-call continuation 0xcb94 resolves PSTATE_T=True" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> case resolveEntry mem (macawCortexMEntry stubEntry) of
+        Nothing -> test "10. post-call continuation 0xcb94 resolves PSTATE_T=True" False
+        Just entry ->
+          let discState = MD.cfgFromAddrs armCortexMInfo mem
+                            (Map.singleton entry (BSC.pack "stub")) [entry] []
+          in test "10. post-call continuation 0xcb94 resolves PSTATE_T=True"
+               (precondAt discState stubEntry continuationAddr
+                  == [Right (ARMArch.ARMBlockPrecond True)])
+  where
+    stubEntry        = 0xcbb0 :: Word32
+    continuationAddr = 0xcb94 :: Word32
+    firmwarePath     = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase        = 0x4000 :: Word32
+    ramBase          = 0x20000000 :: Word32
+    ramSize          = 0x30000 :: Word32
+
+-- | 11. Across the /normal/, full vector-table-rooted discovery path (the
+-- same one @aptrace macaw-census@ runs), no unresolved terminator's detail
+-- text should ever mention an A32-only decode -- confirming 'armCortexMInfo'
+-- is actually wired into the real discovery path, not just reachable in
+-- isolation. (This does not assert the residual unresolved set is empty --
+-- a real, pre-existing, differently-caused classifier limitation
+-- ("IP is not a mux", narrow @CBZ_T1@/@CBNZ_T1@ branches) remains and is
+-- out of this fix's scope.) Skips if the firmware isn't present locally.
+noA32DecodeErrorsInFullCensus :: IO Bool
+noA32DecodeErrorsInFullCensus = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 11. no A32 decode errors in the full vector-table census (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "11. no A32 decode errors in the full vector-table census" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        let roots = normalizeRoots (parseVectorTable 40 bytes)
+        census <- discoverCensus mem roots
+        let allDetail = concatMap uiDetail (crUnresolved census)
+        test "11. no A32 decode errors in the full vector-table census"
+          (not (any ("A32" `isInfixOf`) allDetail))
   where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32

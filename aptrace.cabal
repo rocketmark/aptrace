@@ -16,6 +16,7 @@ library
   ghc-options:      -Wall
   build-depends:    base
                   , aeson
+                  , asl-translator
                   , bytestring
                   , binary
                   , bv-sized

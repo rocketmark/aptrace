@@ -46,7 +46,6 @@ import           System.Exit ( die )
 import qualified System.IO as IO
 
 import qualified Data.Macaw.AArch32.Symbolic ()
-import qualified Data.Macaw.ARM as ARM
 import qualified Data.Macaw.ARM.ARMReg as AR
 import qualified Data.Macaw.CFG as MC
 import qualified Data.Macaw.Discovery as MD
@@ -76,7 +75,8 @@ import qualified What4.Expr as WE
 import qualified What4.Interface as WI
 import qualified What4.ProgramLoc as WPL
 
-import           APTrace.FirmwareLoader ( buildMemory, resolveEntry, macawCortexMEntry )
+import           APTrace.FirmwareLoader
+  ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 
 -- | Minimal What4 backend "user state" placeholder -- mirrors
 -- 'APTrace.SymbolicRunner.BackendData' (kept local there too; What4's
@@ -102,7 +102,7 @@ runDebug path flashBase entryRaw = do
       let entryAddr = macawCortexMEntry entryRaw
       entry <- maybe (die "could not resolve entry address") pure (resolveEntry mem entryAddr)
       let addrSymMap = Map.singleton entry "target"
-          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
+          discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
       case Map.lookup entry funs of
         Nothing -> die "target function was not discovered"

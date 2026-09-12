@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE TypeApplications #-}
 -- | Builds a Macaw 'MM.Memory' image directly from a raw (headerless)
 -- Cortex-M firmware image, with no ELF involved.
 --
@@ -7,21 +8,40 @@
 -- The underlying 'Data.Macaw.Memory' construction API it calls into
 -- ('Data.Macaw.Memory.memSegment', 'Data.Macaw.Memory.insertMemSegment') is
 -- not ELF-specific, so we call it directly instead.
+--
+-- Also owns APTrace's Cortex-M execution-state policy in full: both halves
+-- of it. 'macawCortexMEntry' is Macaw's own *entry-address convention*
+-- (which bit of a 'MM.MemSegmentOff' selects Thumb decoding); 'armCortexMInfo'
+-- is the *architecture-wide invariant* (PSTATE_T is always true on this
+-- target) enforced during discovery itself. They fix two different, real
+-- ways Macaw's generic AArch32 backend can end up in A32 mode on a target
+-- that has no A32 state at all -- see each one's own Haddock.
 module APTrace.FirmwareLoader
   ( buildMemory
   , buildMemoryWithMMIO
   , resolveEntry
   , macawCortexMEntry
+  , armCortexMInfo
   ) where
 
 import           Data.Bits ( (.|.) )
 import qualified Data.ByteString as BS
 import           Data.Functor.Identity ( runIdentity )
 import qualified Data.Map as Map
+import qualified Data.Set as Set
 import           Data.Word ( Word32 )
+import           Lens.Micro ( (&), (.~) )
 
+import qualified Data.Macaw.ARM as ARM
+import qualified Data.Macaw.ARM.ARMReg as ARMReg
+import qualified Data.Macaw.ARM.Arch as ARMArch
+import qualified Data.Macaw.ARM.Eval as ARMEval
+import qualified Data.Macaw.AbsDomain.AbsState as MA
+import qualified Data.Macaw.Architecture.Info as MI
+import qualified Data.Macaw.CFG as MC
 import qualified Data.Macaw.Memory as MM
 import qualified Data.Macaw.Memory.Permissions as Perm
+import qualified Language.ASL.Globals as ASL
 
 -- | Build a Macaw memory image for a raw Cortex-M firmware image: one
 -- executable/readable segment holding the firmware bytes at the given flash
@@ -110,3 +130,48 @@ resolveEntry mem addr = MM.resolveAbsoluteAddr mem (MM.memWord (fromIntegral add
 -- (a discovery-root entry point). Never apply it to a data/MMIO address.
 macawCortexMEntry :: Word32 -> Word32
 macawCortexMEntry addr = addr .|. 1
+
+-- | The Cortex-M4F-specific Macaw architecture configuration for all normal
+-- APTrace discovery. Built from the pinned 'ARM.arm_linux_info', overriding
+-- only the two hooks responsible for the two real, distinct ways Macaw's
+-- generic AArch32 backend has been observed losing the Cortex-M Thumb-only
+-- invariant during discovery (traced against @firmware_autopilot868.bin@):
+--
+--  1. 'ARMEval.mkInitialAbsState' derives a freshly-discovered function's
+--     initial @PSTATE_T@ purely from the low bit of its own entry address.
+--     That's correct for an externally-supplied, Thumb-bit-tagged function
+--     pointer (see 'macawCortexMEntry'), but a direct, same-state Thumb
+--     @BL@ callee is a plain, /even/ instruction address -- the Thumb-bit
+--     tagging convention only applies to interworking function-pointer
+--     *data* (register-indirect @BX@\/@BLX@), never to a branch-immediate
+--     target. An ordinary internal call can therefore get initialized as
+--     A32, and everything decoded from it is not real evidence (confirmed:
+--     @0xcd90@ and @0xcdd8@, both called directly from @0xcc24@).
+--  2. A post-call continuation block's @PSTATE_T@ can fail to fold to a
+--     precise value during Macaw's generic call abstract-state transfer
+--     (@Data.Macaw.AbsDomain.AbsState@'s preserved-register handling),
+--     leaving 'ARMEval.extractBlockPrecond' unable to resolve it at all
+--     (@Left "TopV where PSTATE_T expected"@ -- confirmed at @0xcb94@,
+--     the continuation after the call at @0xcb8e@).
+--
+-- Both are overapproximation artifacts of a generic A/R-profile abstract
+-- domain, not real ambiguity: on Cortex-M4F the answer is always Thumb, so
+-- both overrides simply assert that fact instead of deriving/propagating
+-- it. Neither touches any address -- 'macawCortexMEntry' still owns that,
+-- entirely separately (Macaw's entry-address convention vs. this
+-- architecture-wide invariant are different problems; this does not
+-- replace or subsume that policy). Everything else -- disassembly,
+-- classifiers, call identification, rewriting -- is exactly Macaw's own
+-- upstream 'ARM.arm_linux_info' behavior, unmodified.
+armCortexMInfo :: MI.ArchitectureInfo ARM.ARM
+armCortexMInfo = ARM.arm_linux_info
+  { MI.mkInitialAbsState = \mem addr ->
+      ARMEval.mkInitialAbsState mem addr
+        & MA.absRegState . MC.boundValue pstateT .~ MA.FinSet (Set.singleton 1)
+  , MI.extractBlockPrecond = \addr absState ->
+      case ARMEval.extractBlockPrecond addr absState of
+        Right precond -> Right precond
+        Left _        -> Right (ARMArch.ARMBlockPrecond { ARMArch.bpPSTATE_T = True })
+  }
+  where
+    pstateT = ARMReg.ARMGlobalBV (ASL.knownGlobalRef @"PSTATE_T")

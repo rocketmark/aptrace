@@ -49,7 +49,8 @@ import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
 import           Data.Parameterized.Some ( Some(..) )
 
-import           APTrace.FirmwareLoader ( buildMemory, resolveEntry, macawCortexMEntry )
+import           APTrace.FirmwareLoader
+  ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
 -- Fixed for the AutoPilot/Mando firmware family, matching every other
@@ -249,7 +250,7 @@ discoverCensus mem rootGroups = do
 
 buildCore :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> Set.Set Word32 -> Core
 buildCore mem addrSymMap entryList rootCanonSet =
-  let discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap entryList []
+  let discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryList []
       funs = Map.elems (discState ^. MD.funInfo)
       perFunction = map (summarizeFunction rootCanonSet) funs
   in Core

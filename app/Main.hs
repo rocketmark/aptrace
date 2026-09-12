@@ -22,7 +22,7 @@ import qualified Data.Macaw.Memory as MM
 
 import           APTrace.DebugHarness ( runDebug )
 import           APTrace.FirmwareLoader
-  ( buildMemory, buildMemoryWithMMIO, resolveEntry, macawCortexMEntry )
+  ( buildMemory, buildMemoryWithMMIO, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus ( runMacawCensus )
 import           APTrace.ProtocolHarness ( PacketByte(..) )
 import qualified APTrace.ProtocolHarness as PH
@@ -89,7 +89,7 @@ run path flashBase = do
       let (addrSymMap, entryAddrs) = resolveEntries mem entries
       putStrLn ("\nRunning Macaw code discovery from " ++ show (length entryAddrs)
                 ++ " entry points...")
-      let discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap entryAddrs []
+      let discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryAddrs []
           funs = discState ^. MD.funInfo
 
       putStrLn ("\nDiscovered " ++ show (Map.size funs) ++ " function(s):\n")
@@ -130,7 +130,7 @@ runSolve path flashBase = do
     Right mem -> do
       let entries = parseVectorTable numIrq bytes
           (addrSymMap, entryAddrs) = resolveEntries mem entries
-          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap entryAddrs []
+          discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryAddrs []
           funs = discState ^. MD.funInfo
 
       funcEntry <- maybe (die "could not resolve function entry address") pure
@@ -174,7 +174,7 @@ runExplore path flashBase entryRaw = do
       entry <- maybe (die "could not resolve entry address") pure
                  (resolveEntry mem (macawCortexMEntry entryRaw))
       let addrSymMap = Map.singleton entry (BSC.pack "target")
-          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
+          discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
       putStrLn ("Discovered " ++ show (Map.size funs) ++ " function(s) from 0x"
                 ++ showHex entryRaw "" ++ ":\n")
@@ -206,7 +206,7 @@ runProtocol path flashBase = do
       entry <- maybe (die "could not resolve dispatcher entry address") pure
                  (resolveEntry mem (macawCortexMEntry dispatcherEntry))
       let addrSymMap = Map.singleton entry (BSC.pack "dispatcher")
-          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
+          discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
       Some fn <- maybe (die "dispatcher was not discovered") pure (Map.lookup entry funs)
       checkOff <- maybe (die "could not resolve '&' check address") pure
@@ -434,7 +434,7 @@ runTrigger path flashBase = do
       entryA <- maybe (die "could not resolve 0x9203 entry") pure
                   (resolveEntry mem (macawCortexMEntry 0x9203))
       let addrSymMapA = Map.singleton entryA (BSC.pack "trigger_gate")
-          discA = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMapA [entryA] []
+          discA = MD.cfgFromAddrs armCortexMInfo mem addrSymMapA [entryA] []
           funsA = discA ^. MD.funInfo
       case Map.lookup entryA funsA of
         Nothing -> putStrLn "  error: 0x9203 region was not discovered by Macaw"
@@ -476,7 +476,7 @@ runTrigger path flashBase = do
       entryB <- maybe (die "could not resolve 0x91a3 entry") pure
                   (resolveEntry mem (macawCortexMEntry 0x91a3))
       let addrSymMapB = Map.singleton entryB (BSC.pack "trigger_report")
-          discB = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMapB [entryB] []
+          discB = MD.cfgFromAddrs armCortexMInfo mem addrSymMapB [entryB] []
           funsB = discB ^. MD.funInfo
       case Map.lookup entryB funsB of
         Nothing -> putStrLn "  error: 0x91a3 region was not discovered by Macaw"
@@ -561,7 +561,7 @@ runTriggerCrossCheck path flashBase = do
       entry <- maybe (die "could not resolve 0x9203 entry") pure
                  (resolveEntry mem (macawCortexMEntry entryRaw))
       let addrSymMap = Map.singleton entry (BSC.pack "trigger_gate_crosscheck")
-          discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
+          discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
       Some fn <- maybe (die "0x9203 region was not discovered by Macaw") pure (Map.lookup entry funs)
 
