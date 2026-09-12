@@ -368,8 +368,8 @@ knownDirectCallsAreEmitted = do
         census <- discoverCensus mem [(macawCortexMEntry callerAddr, ["caller"])]
         let calls = crCalls census
         test "12. known direct calls are emitted with canonical caller/callee addresses"
-          (CallInfo callerAddr 0xcc5c (Just 0xcd90) "direct" `elem` calls
-             && CallInfo callerAddr 0xcc42 (Just 0xcdd8) "direct" `elem` calls)
+          (CallInfo callerAddr 0xcc5c (Just 0xcd90) Nothing "direct" `elem` calls
+             && CallInfo callerAddr 0xcc42 (Just 0xcdd8) Nothing "direct" `elem` calls)
   where
     callerAddr   = 0xcc24 :: Word32
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
@@ -438,7 +438,7 @@ unresolvedCallIsPreserved = do
       Right mem -> do
         census <- discoverCensus mem [(macawCortexMEntry entryAddr, ["indirect_caller"])]
         test "14. unresolved call is preserved, not dropped"
-          (CallInfo entryAddr entryAddr Nothing "indirect" `elem` crCalls census)
+          (CallInfo entryAddr entryAddr Nothing Nothing "indirect" `elem` crCalls census)
   where
     entryAddr    = 0xa03c :: Word32
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"

@@ -137,25 +137,32 @@ data UnresolvedInfo = UnresolvedInfo
 --
 --  * @"direct"@ -- 'MC.valueAsMemAddr' gives a concrete absolute address,
 --    and it resolves into the firmware memory image. 'ciCallee' is that
---    address, canonicalized.
+--    address, canonicalized; 'ciRawTarget' is 'Nothing'.
 --  * @"unmapped"@ -- 'MC.valueAsMemAddr' gives a concrete absolute
 --    address, but it does /not/ resolve into the firmware memory image
---    (out of the mapped flash\/RAM ranges). 'ciCallee' is still that
---    address -- preserved exactly as Macaw computed it, /not/
+--    (out of the mapped flash\/RAM ranges). 'ciCallee' is 'Nothing' (it is
+--    not a resolved firmware callee); 'ciRawTarget' carries that address
+--    instead -- preserved exactly as Macaw computed it, /not/
 --    canonicalized (there is no basis to assume it's even a real
 --    instruction address, let alone Thumb-tagged, for a target outside
 --    the image), so it can still be inspected or cross-checked later.
 --  * @"indirect"@ -- Macaw cannot reduce 'MC.curIP' to a concrete address
---    at all (a genuinely register-indirect call). 'ciCallee' is 'Nothing'.
+--    at all (a genuinely register-indirect call). Both 'ciCallee' and
+--    'ciRawTarget' are 'Nothing'.
 data CallInfo = CallInfo
-  { ciCaller   :: !Word32
+  { ciCaller    :: !Word32
     -- ^ Canonical entry of the function containing the call site.
-  , ciCallSite :: !Word32
+  , ciCallSite  :: !Word32
     -- ^ Canonical address of the block ending in the call.
-  , ciCallee   :: !(Maybe Word32)
-    -- ^ 'Just' for @"direct"@ (canonicalized, resolved) and @"unmapped"@
-    -- (raw, unresolved -- see 'ciKind'); 'Nothing' only for @"indirect"@.
-  , ciKind     :: !String
+  , ciCallee    :: !(Maybe Word32)
+    -- ^ 'Just' only for @"direct"@ (canonicalized, resolved firmware
+    -- address); 'Nothing' for @"unmapped"@ and @"indirect"@ -- see
+    -- 'ciRawTarget' for the @"unmapped"@ case's address.
+  , ciRawTarget :: !(Maybe Word32)
+    -- ^ 'Just' only for @"unmapped"@ (the concrete absolute address Macaw
+    -- recovered, uncanonicalized); 'Nothing' for @"direct"@ and
+    -- @"indirect"@.
+  , ciKind      :: !String
     -- ^ @"direct"@, @"unmapped"@, or @"indirect"@ -- see above.
   } deriving (Eq, Show)
 
@@ -406,10 +413,10 @@ callsOf mem funcEntry src t = case t of
   MDP.ParsedCall regs _ -> [ classify (regs ^. MC.curIP) ]
     where
       classify ipVal = case MC.valueAsMemAddr ipVal >>= MM.asAbsoluteAddr of
-        Nothing -> CallInfo funcEntry src Nothing "indirect"
+        Nothing -> CallInfo funcEntry src Nothing Nothing "indirect"
         Just w  -> case resolveEntry mem (fromIntegral (MM.memWordValue w)) of
-          Nothing  -> CallInfo funcEntry src (Just (fromIntegral (MM.memWordValue w))) "unmapped"
-          Just off -> CallInfo funcEntry src (Just (canonicalWord off)) "direct"
+          Nothing  -> CallInfo funcEntry src Nothing (Just (fromIntegral (MM.memWordValue w))) "unmapped"
+          Just off -> CallInfo funcEntry src (Just (canonicalWord off)) Nothing "direct"
   _ -> []
 
 ------------------------------------------------------------------------
@@ -468,10 +475,11 @@ unresolvedValue u = object
 
 callValue :: CallInfo -> Value
 callValue c = object
-  [ "caller"    .= hexStr (ciCaller c)
-  , "call_site" .= hexStr (ciCallSite c)
-  , "callee"    .= fmap hexStr (ciCallee c)
-  , "kind"      .= ciKind c
+  [ "caller"     .= hexStr (ciCaller c)
+  , "call_site"  .= hexStr (ciCallSite c)
+  , "callee"     .= fmap hexStr (ciCallee c)
+  , "raw_target" .= fmap hexStr (ciRawTarget c)
+  , "kind"       .= ciKind c
   ]
 
 -- | The full, deterministic census document. Field order within each
