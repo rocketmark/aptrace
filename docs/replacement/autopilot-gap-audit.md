@@ -133,10 +133,22 @@ pins came out PB11/PA09/PB13/PA11 — each exactly one pin number above
 its channel's already-known STEP pin (PB10/PA08/PB12/PA10), a clean
 adjacent-pin pattern across all 4 channels. `0x77a0`/`0x77f8`/`0x7868`
 resolve to exactly 4 real control pins, not a "two distinct chips"
-split: PB16/PB17 (driven HIGH to enable, LOW to end disable) and
-PB06/PB07 (pulsed HIGH only during disable, plausibly a reset strobe).
+split: PB16/PB17 (driven HIGH by `0x77a0`'s enable path, LOW by both
+`0x77f8`/`0x7868`'s disable paths) and PB06/PB07.
 `0x77f8` and `0x7868` were confirmed **byte-for-byte identical** in
 every literal address referenced — there really is only one pin set.
+
+**Correction (later Ghidra+Macaw cross-checked pass)**: PB06/PB07 are
+**not** a HIGH pulse in both disable sequences — `0x77f8` sets them
+HIGH (and does not set them back LOW within that function); `0x7868`
+sets them LOW instead. Each function writes PB06/PB07 to one static
+value, once; the apparent "pulse" only exists across separate calls,
+never inside one function body. `0x77a0` (enable) never touches
+PB06/PB07 at all. See `firmware-pin-function-map.md`'s "Firmware
+semantics of PB06/PB07/PB16/PB17" for the full write-site/value/
+ordering table and the exhaustive boot-time finding (all four pins are
+also driven HIGH once, at boot, inside `FUN_00006968`'s 1799ms-timeout
+branch).
 
 **3 — MC field semantics (RESOLVED)**: re-confirmed
 `motor-subsystem-unlock.md`'s already-documented per-field storage/

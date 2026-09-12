@@ -67,10 +67,10 @@ in relative to the MCU as a whole.
 | DIR ch1 | PA09 | 18 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | DIR ch2 | PB13 | 26 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | DIR ch3 | PA11 | 20 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
-| Driver enable A *(name provisional — see mux hypothesis)* | PB17 | 40 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
-| Driver enable B *(name provisional — see mux hypothesis)* | PB16 | 39 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
-| Driver reset strobe A *(name provisional — see mux hypothesis)* | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
-| Driver reset strobe B *(name provisional — see mux hypothesis)* | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver enable A *(name provisional — see "Firmware semantics" + mux hypothesis)* | PB17 | 40 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver enable B *(name provisional — see "Firmware semantics" + mux hypothesis)* | PB16 | 39 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver reset strobe A *(name provisional — see "Firmware semantics" + mux hypothesis)* | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
+| Driver reset strobe B *(name provisional — see "Firmware semantics" + mux hypothesis)* | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |
 | Trigger digital/analog | PB05 | 6 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | Trigger boot arm-select | PA02 | 3 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |
 | Startup reference/input | PA22 | 43 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |
@@ -214,6 +214,166 @@ standalone (pin-configured) mode** — it only means no such trace was
 legible at the angles/resolution captured so far; a real PCB continuity
 check is still required to close this either way.
 
+## Firmware semantics of PB06/PB07/PB16/PB17 (`PROVEN` — Ghidra + Macaw cross-checked)
+
+A narrowly-scoped follow-up pass characterized exactly what the firmware
+writes to these four pins, superseding the earlier "~50ms pulse"/"holds
+state" shorthand with precise write-site/value/ordering evidence.
+**Tool trail**: existing DB/xref search (`census pin`, live-project
+`xrefs`) located the write sites; **Macaw** (`aptrace macaw-census-expand`,
+built from `external/macaw` per `docs/toolchain.md`) independently
+discovered all three functions below as real, separate functions
+reachable from `sketch_loop__CUSTOM` at the **exact same call-site
+addresses** Ghidra found, and gave **byte-for-byte identical block-count
+and size** for `FUN_000077f8`/`FUN_00007868` (10 blocks, 84 bytes each)
+— independent structural confirmation of "symmetric," from a different
+tool than the one that read the actual values. Ghidra decompile/disasm
+supplied the values themselves (Macaw's CFG-level JSON does not expose
+per-instruction register values). One self-caught error along the way:
+a stale local JSON snapshot briefly suggested boot-time code doesn't
+touch these pins at all — direct `disasm` and live-project `xrefs`
+corrected that before it was reported (see "at boot" below).
+
+RAM index cells (the pin-table-index byte each pin resolves through, via
+the shared `digitalWrite_pulse_shared__STANDARD_LIBRARY` (`0xd388`)
+helper — never a direct MMIO write):
+
+| Pin | RAM cell |
+|---|---|
+| PB06 | `0x20000120` |
+| PB07 | `0x20000121` |
+| PB16 | `0x2000011f` |
+| PB17 | `0x2000011e` |
+
+**Exactly three functions write these pins anywhere in this firmware
+image** (exhaustive per live-project `xrefs` on all four cells):
+
+| Function | PB06 | PB07 | delay | PB17 | PB16 |
+|---|---|---|---|---|---|
+| `FUN_000077f8` (`0x77f8`) | HIGH | HIGH | 50ms | LOW | LOW |
+| `FUN_00007868` (`0x7868`) | LOW | LOW | 50ms | LOW | LOW |
+| `FUN_000077a0` (`0x77a0`) | *(not touched)* | *(not touched)* | 50ms | HIGH | HIGH |
+
+(delay is `delay__STANDARD_LIBRARY(0x32)` — exactly 50 decimal,
+milliseconds by construction, in all three functions; `delay()` is
+already reference-confirmed byte-identical elsewhere in this project.)
+
+**This corrects the earlier "byte-identical pulse" shorthand.** The two
+disable functions are structurally identical (same literal addresses,
+same delay, same call shape, same size/block-count) but **not
+value-identical**: PB06/PB07 go HIGH in `0x77f8` and LOW in `0x7868` —
+each function writes a single static value once, never both. A real
+HIGH→LOW transition on PB06/PB07 only happens **across** separate calls
+(e.g. `0x77f8` now, `0x7868` later), never inside one function body.
+PB16/PB17 are always written together (never independently), always
+*after* the 50ms delay that follows the PB06/PB07 write, and always to
+the same value as each other.
+
+**Callers** (all previously documented at a coarser grain; addresses
+now exact and Macaw-cross-checked for the `sketch_loop` ones):
+`sketch_loop__CUSTOM`'s three-way motor-connector-presence-poll branch
+calls `0x77f8`/`0x7868`/`0x77a0` respectively at call sites `0x7918`/
+`0x794c`/`0x7962`; `ascii_dispatcher__CUSTOM`'s ASCII `'J'` (0x4A) handler
+reaches `0x77f8` or `0x7868` depending on three RAM flag bytes
+(`0x8944`/`0x8948`/`0x894c`); the same dispatcher's `0xF0`/`0xE0`
+manual-jog-frame handlers call `0x77a0` when a "was disabled" flag
+(`0x8530`/`0x852c`) is set.
+
+**Boot-time finding, fully characterized (follow-up pass, `FUN_00006968`
+only, Ghidra disasm + independent Macaw CFG cross-check, zero
+disagreements found).**
+
+> **Strongest replacement-firmware statement**: `FUN_00006968` establishes
+> PB16/PB17=HIGH and PB06/PB07=HIGH exactly once during `setup()`, before
+> the four MCU STEP/DIR pairs are configured as outputs. This is the
+> **deterministic vendor startup configuration** for those four control
+> GPIOs. Its electrical safety meaning remains unproven pending
+> continuity.
+
+**Branch condition** (`0x69ae`-`0x69be`): a `millis()`-based unsigned
+elapsed-time check, `(now − snapshot) ≥ 1800`, decompiled elsewhere as
+`0x707 <` (same threshold, equivalent unsigned comparison). The snapshot
+resets every time a status-check helper (`FUN_0000d3dc(1)`, meaning not
+chased — out of scope) returns 0; otherwise the wait continues. **This
+loop has no other exit** — confirmed independently by Macaw (59 blocks
+for this function, exactly one `return` terminator in the whole
+function, at `0x6b12`, reachable only through this branch).
+
+**This is not merely a "startup timeout path."** The timeout is the
+*only* exit from a boot-*blocking* polling loop — `FUN_00006968` cannot
+return to its caller by any other route. That makes the four-pin
+sequence below not an edge case but **an effectively mandatory startup
+stage**: since this function has exactly one caller
+(`sketch_setup__CUSTOM`/`setup()`, call site `0x9488`, confirmed
+identically by Ghidra and Macaw), the sequence executes **exactly once
+per boot, unconditionally, before `loop()` ever runs**, every boot,
+without exception.
+
+**STEP/DIR pins are directly proven untouched immediately before** this
+sequence (a different, non-STEP/DIR set of pins — index `0`, `0x28`,
+`0x32`, `0x31` — is configured instead) **and are configured `OUTPUT`
+immediately after** (a 4-iteration loop, `0x6a68`-`0x6a82`, `pinMode`
+only, no `digitalWrite` — direction is set, no level is driven).
+
+**Ordered trace** (addresses exact):
+
+```
+0x69be  bcs 0x69d8                    -- elapsed >= 1800ms
+0x69d8  pinMode+digitalWrite(idx0, LOW); pinMode+digitalWrite(idx0x28, LOW)
+0x69f8  pinMode(idx0x32, OUTPUT); pinMode(idx0x31, OUTPUT)
+0x6a08  load PB06/PB07/PB17/PB16 pointers
+0x6a10  bl FUN_0000693c()             -- digitalWrite(idx0x32,HIGH); digitalWrite(idx0x31,HIGH)
+0x6a14  pinMode+digitalWrite(idx8, HIGH)
+0x6a24  pinMode(PB06,OUT); pinMode(PB07,OUT); pinMode(PB17,OUT); pinMode(PB16,OUT)
+0x6a44  digitalWrite(PB17,HIGH); digitalWrite(PB16,HIGH); digitalWrite(PB06,HIGH); digitalWrite(PB07,HIGH)
+0x6a68  loop x4: pinMode(STEP[i],OUTPUT); pinMode(DIR[i],OUTPUT)   -- no level driven
+0x6a84+ TC0-TC3/TCC1 config, then a second unrelated 4-pin cluster (out of scope)
+0x6b12  return                        -- sole exit of FUN_00006968
+```
+
+No `delay()` library call appears anywhere in this segment (pinMode/
+digitalWrite calls are back-to-back). **Not connected to the runtime
+state machine**: confirmed independently by both Ghidra (`callers` of
+`0x77f8`/`0x7868`/`0x77a0` lists only `sketch_loop`/`ascii_dispatcher`)
+and Macaw (zero call edges from `0x6968` to any of the three) — a
+structurally distinct, one-time initialization, not a fourth path
+through the disable/enable machinery documented above.
+
+**Safe-initial-state classification: `STARTUP/HOMING STATE ONLY —
+SAFETY SEMANTICS NOT PROVEN`.** Firmware evidence strongly supports this
+being a *deliberate, deterministic, unconditional* startup value (sole
+loop exit, always executed once, before STEP/DIR pins even become
+outputs) — but "safe" is an electrical claim this pass cannot make:
+whether HIGH means "mux outputs disabled/inert" or something else
+entirely still depends on the unproven `/OE`/`S` polarity assumption
+below. **Conditional interpretation only** (not firmware proof): *if*
+PB06/PB07 are confirmed `/OE` (active-low) and PB16/PB17 are confirmed
+`S`, this sequence reads as "disable both muxes, set both selects HIGH,
+re-enable both muxes — all before STEP/DIR become outputs" — a
+textbook glitch-free power-up sequence, contingent entirely on
+continuity confirming that polarity.
+
+**Explicit answers**:
+
+- Does PB06 pulse HIGH then LOW, or LOW then HIGH? Neither, within one
+  call — see correction above.
+- Does PB07 behave identically to PB06? Yes, exactly, in every function.
+- Do PB16/PB17 change before/during/after the PB06/PB07 write? **After**
+  — always post-delay, in all three functions that touch them.
+- PB16/PB17 and PB06/PB07: independent or A/B pairs? Always written
+  together, same value, in every function — functionally pairs, no
+  path writes one without the other.
+- Exactly two structurally symmetric sequences? **Three functions
+  total** — `0x77f8`/`0x7868` are the structurally-symmetric disable
+  pair; `0x77a0` is a third, distinctly-shaped enable function that
+  never touches PB06/PB07.
+
+**What this does and does not resolve**: this is a complete firmware-side
+account (write sites, values, ordering, boot behavior) — status
+`PROVEN`. It does **not** resolve physical/electrical identity (mux
+`S`/`OE‾` vs. TMC5160 `DRV_ENN` vs. something else) — that remains
+`HIGH-CONFIDENCE INFERENCE`, unchanged, in the next section.
+
 ## Motor bus architecture — mux hypothesis (`HIGH-CONFIDENCE INFERENCE`, not proven)
 
 **Two `SN74CBTLV3257` devices — device count.** `...0103.jpg` proves one
@@ -279,12 +439,16 @@ Status: `HIGH-CONFIDENCE INFERENCE`. Reasons:
 
 1. Two `SN74CBTLV3257`s require exactly 2x `S` + 2x `/OE` — matching the
    firmware's exactly-four unexplained paired motor-control GPIOs.
-2. `/OE` is active-low on this part, so a temporary HIGH pulse naturally
-   disconnects mux outputs during a source transition — consistent with
-   PB06/PB07's already-documented ~50ms pulse in the disable/switch
-   sequences (`0x77f8`/`0x7868`).
-3. PB16/PB17 *hold* state after a transition (already-documented
-   firmware behavior) — consistent with a persistent mux
+2. `/OE` is active-low on this part, so PB06/PB07 going HIGH in
+   `0x77f8` would disconnect mux outputs immediately before PB16/PB17
+   (the hypothesized `S` lines) change 50ms later — see "Firmware
+   semantics of PB06/PB07/PB16/PB17" above for the exact, corrected
+   per-function write table (PB06/PB07 are HIGH in `0x77f8`, LOW in
+   `0x7868`, untouched in `0x77a0` — not a symmetric pulse in both
+   disable sequences as earlier shorthand implied).
+3. PB16/PB17 *hold* state after a transition (now exactly
+   characterized: LOW after either disable function, HIGH after
+   `0x77a0`'s enable path) — consistent with a persistent mux
    source-selection signal, not a momentary reset strobe.
 4. Direct interpretation of PB16/PB17 as TMC5160 `DRV_ENN` is
    questionable: TMC5160 `DRV_ENN` polarity/behavior does not cleanly

@@ -39,11 +39,54 @@ target — there is no upstream ambiguity left to disambiguate.
 
 ## PB06 / PB07
 
-**Role**: ~50ms HIGH pulse, only inside the two byte-identical
-motor-driver disable sequences (`0x77f8`/`0x7868`), immediately before
-enable (PB16/PB17) goes LOW.
+**Role — corrected by a later Ghidra+Macaw cross-checked pass.** Not a
+50ms HIGH pulse in both disable sequences: `FUN_000077f8` (`0x77f8`)
+writes PB06=HIGH, PB07=HIGH, delays exactly 50ms (`delay(0x32)`), then
+writes PB17=LOW, PB16=LOW; `FUN_00007868` (`0x7868`) instead writes
+PB06=LOW, PB07=LOW, delays the same 50ms, then also writes PB17=LOW,
+PB16=LOW. Each function writes PB06/PB07 to one static value, once —
+the earlier "byte-identical...pulse" language conflated the two
+functions' identical *structure* (same literal addresses, same delay,
+same call shape — independently reconfirmed via Macaw: identical
+84-byte size and identical 10-block CFG shape for both) with their
+*values*, which differ. A third function, `FUN_000077a0` (`0x77a0`),
+writes PB17=HIGH, PB16=HIGH after the same 50ms delay and **never
+touches PB06/PB07 at all**. Full write-site/value/ordering table:
+`firmware-pin-function-map.md`'s "Firmware semantics of
+PB06/PB07/PB16/PB17".
 
-**Upstream causes**, both newly traced this pass:
+**Boot-time finding, fully characterized (follow-up `FUN_00006968`-only
+pass, Ghidra+Macaw cross-checked, no disagreements).**
+
+> **Strongest replacement-firmware statement**: `FUN_00006968`
+> establishes PB16/PB17=HIGH and PB06/PB07=HIGH exactly once during
+> `setup()`, before the four MCU STEP/DIR pairs are configured as
+> outputs. This is the **deterministic vendor startup configuration**
+> for those four control GPIOs. Its electrical safety meaning remains
+> unproven pending continuity.
+
+Inside `FUN_00006968` (the startup reference/homing routine), a
+`millis()`-based wait loop (`elapsed >= 1800`, snapshot reset by a status
+check, `FUN_0000d3dc(1)`, not chased) has **no exit other than this
+timeout** — confirmed independently by Macaw (59 blocks, exactly one
+`return` terminator, reachable only through this branch). **This is not
+merely a "startup timeout path"** — the timeout is the *only* exit from
+a boot-*blocking* polling loop, so this is not an edge case but an
+**effectively mandatory startup stage**: since `FUN_00006968` has exactly
+one caller (`setup()`, confirmed identically by both tools), the
+sequence runs **exactly once per boot, unconditionally, every boot,
+without exception**. On that branch, all four pins are explicitly
+configured `OUTPUT` and driven **HIGH** — PB06, PB07, PB16, and PB17
+alike — with STEP/DIR pins directly proven untouched immediately before
+and configured `OUTPUT` (direction only, no level) immediately after.
+Not connected to `0x77f8`/`0x7868`/`0x77a0` (confirmed by both tools:
+zero call edges either direction). Safety classification:
+`STARTUP/HOMING STATE ONLY — SAFETY SEMANTICS NOT PROVEN` — this is
+strongly evidenced as the vendor's deliberate startup value, but "safe"
+remains an electrical claim, not a firmware one. Full ordered trace with
+addresses: `firmware-pin-function-map.md`'s boot-time paragraph.
+
+**Upstream causes** (unchanged, still accurate):
 
 - `sketch_loop__CUSTOM`'s own motor-connector-presence poll — the
   firmware side of the manual's "auto-detects which of the four ports
@@ -54,14 +97,16 @@ enable (PB16/PB17) goes LOW.
   inbound `F0`/`E0` manual-jog frames can trigger **re-enable** when a
   "was disabled" flag is set.
 
-**Physical meaning**: still not confirmed as reset vs. strobe — this
-pass adds *when* it fires, not *what* it does electrically (needs the
-driver IC's datasheet).
+**Physical meaning**: still not confirmed — this pass (and the later
+one) establishes *exactly what* the firmware writes and *when*, not
+what it does electrically. The mux-hypothesis pass
+(`firmware-pin-function-map.md`) now has a specific candidate (`SN74CBTLV3257`
+`/OE`/`S` lines), `HIGH-CONFIDENCE INFERENCE`, not proven.
 
-**Gap classification**: `CAUSAL_PATH_PROVEN`. **Recommended next
-tool: none** — the causal question is closed by existing + bounded
-static evidence; the remaining gap is a hardware-datasheet fact, not a
-firmware one.
+**Gap classification**: `CAUSAL_PATH_PROVEN` for the firmware
+write-site/value/ordering question (strengthened, not just re-affirmed,
+by this later pass). **Recommended next tool: none** for the firmware
+side — the remaining gap is physical (PCB continuity), not firmware.
 
 ## TCC1 / PB22
 
