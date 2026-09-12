@@ -251,17 +251,6 @@ residualClassifyFailures state =
 ------------------------------------------------------------------------
 -- CLI entry point
 
--- Matches every other harness in this project (see app/Main.hs's own
--- ramBase/ramSize/numIrq, and APTrace.MacawCensus's identical constants).
-ramBase :: Word32
-ramBase = 0x20000000
-
-ramSize :: Word32
-ramSize = 0x30000
-
-numIrq :: Int
-numIrq = 40
-
 hexStr :: Word32 -> String
 hexStr w = "0x" ++ showHex w ""
 
@@ -296,8 +285,12 @@ coverageValue cs = object
 -- this file exactly as it already consumes a plain @macaw-census@ one.
 -- Base-vs-expanded coverage is reported alongside as small summary
 -- metadata (@base@\/@expanded@), not a second copy of the whole graph.
-runMacawCensusExpand :: FilePath -> Word32 -> IO ()
-runMacawCensusExpand path flashBase = do
+-- Target memory geometry (RAM base/size) and vector-table entry count are
+-- caller-supplied, not hardcoded here -- this module carries no knowledge
+-- of any specific target; @app/Main.hs@ supplies the Performing Rigs
+-- AutoPilot/Remote values from 'APTrace.Case.PerformingRigs'.
+runMacawCensusExpand :: FilePath -> Word32 -> Word32 -> Word32 -> Int -> IO ()
+runMacawCensusExpand path flashBase ramBase ramSize numIrq = do
   bytes <- BS.readFile path
   case buildMemory bytes flashBase ramBase ramSize of
     Left err -> die ("failed to build memory image: " ++ err)

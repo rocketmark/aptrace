@@ -25,6 +25,7 @@ module APTrace.SymbolicRunner
   ( BranchQuery(..)
   , BranchResult(..)
   , checkBranchModel
+  , reportResult
   ) where
 
 import           Control.Monad ( foldM )
@@ -32,6 +33,7 @@ import           Data.Proxy ( Proxy(..) )
 import qualified Data.BitVector.Sized as BV
 import qualified Data.Parameterized.Context as Ctx
 import qualified Data.Word as W
+import           Numeric ( showHex )
 
 import qualified Data.Macaw.CFG as MC
 import qualified Data.Macaw.Discovery.ParsedContents as MDP
@@ -289,3 +291,13 @@ freshSymVar sym idx tp =
       CC.BoolRepr -> WI.freshConstant sym symbol WI.BaseBoolRepr
       _ -> fail ("unsupported register type: " ++ show tp)
     Left err -> fail (show err)
+
+-- | Render one 'BranchResult' as a human-readable line: whether the
+-- targeted branch is reachable, and under what concrete value of the
+-- observed register if so. Shared by every CLI investigation command that
+-- calls 'checkBranchModel', framework- and case-specific alike.
+reportResult :: String -> BranchResult -> IO ()
+reportResult label res = case res of
+  Unreachable -> putStrLn "  UNSAT: no model -- this branch is not reachable."
+  Reachable v -> putStrLn ("  SAT: reachable when " ++ label ++ " = 0x" ++ showHex v "")
+  SolverError e -> putStrLn ("  error: " ++ e)

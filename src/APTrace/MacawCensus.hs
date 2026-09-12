@@ -65,17 +65,6 @@ import qualified APTrace.MacawIsaClassify as IsaClassify
 import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
--- Fixed for the AutoPilot/Mando firmware family, matching every other
--- harness in this project (see app/Main.hs's own ramBase/ramSize/numIrq).
-ramBase :: Word32
-ramBase = 0x20000000
-
-ramSize :: Word32
-ramSize = 0x30000
-
-numIrq :: Int
-numIrq = 40
-
 ------------------------------------------------------------------------
 -- Types
 
@@ -776,8 +765,13 @@ censusToValue fm cr = object
 -- seed Macaw discovery from its vector table only (deduplicated,
 -- normalized through 'macawCortexMEntry'), and print the resulting census
 -- as one line of deterministic JSON on stdout.
-runMacawCensus :: FilePath -> Word32 -> IO ()
-runMacawCensus path flashBase = do
+--
+-- Target memory geometry (RAM base/size) and vector-table entry count are
+-- caller-supplied, not hardcoded here -- this module carries no knowledge
+-- of any specific target; @app/Main.hs@ supplies the Performing Rigs
+-- AutoPilot/Remote values from 'APTrace.Case.PerformingRigs'.
+runMacawCensus :: FilePath -> Word32 -> Word32 -> Word32 -> Int -> IO ()
+runMacawCensus path flashBase ramBase ramSize numIrq = do
   bytes <- BS.readFile path
   case buildMemory bytes flashBase ramBase ramSize of
     Left err -> die ("failed to build memory image: " ++ err)

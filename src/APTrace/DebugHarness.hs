@@ -93,10 +93,14 @@ data BackendData t = BackendData
 -- commands (register inspection, single-stepping, then continuing to
 -- completion) so the output is deterministic and reproducible without
 -- requiring a live interactive terminal.
-runDebug :: FilePath -> W.Word32 -> W.Word32 -> IO ()
-runDebug path flashBase entryRaw = do
+-- Target memory geometry (RAM base/size) is caller-supplied, not
+-- hardcoded here -- this module carries no knowledge of any specific
+-- target; @app/Main.hs@ supplies the Performing Rigs AutoPilot/Remote
+-- values from 'APTrace.Case.PerformingRigs'.
+runDebug :: FilePath -> W.Word32 -> W.Word32 -> W.Word32 -> W.Word32 -> IO ()
+runDebug path flashBase ramBase ramSize entryRaw = do
   bytes <- BS.readFile path
-  case buildMemory bytes flashBase 0x20000000 0x30000 of
+  case buildMemory bytes flashBase ramBase ramSize of
     Left err -> die ("failed to build memory image: " ++ err)
     Right mem -> do
       let entryAddr = macawCortexMEntry entryRaw

@@ -20,14 +20,17 @@ module APTrace.FirmwareLoader
   ( buildMemory
   , buildMemoryWithMMIO
   , resolveEntry
+  , resolveEntries
   , macawCortexMEntry
   , armCortexMInfo
   ) where
 
 import           Data.Bits ( (.|.) )
 import qualified Data.ByteString as BS
+import qualified Data.ByteString.Char8 as BSC
 import           Data.Functor.Identity ( runIdentity )
 import qualified Data.Map as Map
+import           Data.Maybe ( mapMaybe )
 import qualified Data.Set as Set
 import           Data.Word ( Word32 )
 import           Lens.Micro ( (&), (.~) )
@@ -39,9 +42,12 @@ import qualified Data.Macaw.ARM.Eval as ARMEval
 import qualified Data.Macaw.AbsDomain.AbsState as MA
 import qualified Data.Macaw.Architecture.Info as MI
 import qualified Data.Macaw.CFG as MC
+import qualified Data.Macaw.Discovery as MD
 import qualified Data.Macaw.Memory as MM
 import qualified Data.Macaw.Memory.Permissions as Perm
 import qualified Language.ASL.Globals as ASL
+
+import           APTrace.VectorTable ( VectorEntry(..) )
 
 -- | Build a Macaw memory image for a raw Cortex-M firmware image: one
 -- executable/readable segment holding the firmware bytes at the given flash
@@ -175,3 +181,15 @@ armCortexMInfo = ARM.arm_linux_info
   }
   where
     pstateT = ARMReg.ARMGlobalBV (ASL.knownGlobalRef @"PSTATE_T")
+
+-- | Resolve a whole vector table's entries into the 'MD.AddrSymMap' and
+-- discovery-root list 'Data.Macaw.Discovery.cfgFromAddrs' needs, dropping
+-- any entry whose raw address can't be resolved against 'mem' (e.g. an
+-- empty/unpopulated vector slot). Each root is normalized through
+-- 'macawCortexMEntry' first, matching every other Macaw discovery seed in
+-- this project.
+resolveEntries :: MM.Memory 32 -> [VectorEntry] -> (MD.AddrSymMap 32, [MM.MemSegmentOff 32])
+resolveEntries mem entries =
+  let resolved = mapMaybe (\e -> (,) (veName e) <$> resolveEntry mem (macawCortexMEntry (veRawAddr e))) entries
+      addrSymMap = Map.fromList [ (addr, BSC.pack name) | (name, addr) <- resolved ]
+  in (addrSymMap, map snd resolved)
