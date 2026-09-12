@@ -12,6 +12,7 @@ library
                   , APTrace.DebugHarness
                   , APTrace.MacawCensus
                   , APTrace.MacawExpand
+                  , APTrace.MacawIsaClassify
                   , APTrace.MacawNormalize
                   , APTrace.MacawRefinement
   hs-source-dirs:   src

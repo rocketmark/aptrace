@@ -36,11 +36,12 @@ import qualified Prettyprinter as PP
 import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus
-  ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
-  , FunctionInfo(..), NormalizedCallInfo(..), NormalizedInfo(..), RootBuildResult(..)
+  ( CensusResult(..), CallInfo(..), CallClassificationInfo(..), EdgeInfo(..), FirmwareMeta(..)
+  , FunctionInfo(..), NormalizedTransferInfo(..), NormalizedInfo(..), RootBuildResult(..)
   , UnresolvedInfo(..)
   , buildDiscoveryState, buildRootInfo, canonicalWord, censusToValue, discoverCensus
   , normalizeRoots, summarizeDiscoveryState )
+import qualified APTrace.MacawIsaClassify as IsaClassify
 import           APTrace.MacawExpand
   ( ExpansionResult(..), expandWithNormalization, resolutionValue )
 import qualified APTrace.MacawNormalize as Normalize
@@ -82,6 +83,12 @@ main = do
     , baseIndirectCallRemainsIndirectAfterNormalization
     , normalizedCallEvidenceHasProvenance
     , unrelatedIndirectCallGroupsRemainUnchanged
+    , blxClassifiesAsTrueIndirectCall
+    , bxClassifiesAsTailCall
+    , cbzClassifiesAsConditionalBranch
+    , tbbClassifiesAsTableBranch
+    , ldrPcClassifiesAsComputedJump
+    , normalizedCbzIsTransferNotCall
     ]
   if and results
     then putStrLn "All tests passed."
@@ -936,7 +943,7 @@ groupGIndirectCallsNormalize = do
       Right mem -> do
         census <- discoverCensus mem
           [ (macawCortexMEntry a, ["target"]) | a <- [0xa03c, 0xbd64, 0xcd34] ]
-        let byCallSite = [ (nciCallSite n, nciTargets n) | n <- crNormalizedCalls census ]
+        let byCallSite = [ (ntiBlockStart n, ntiTargets n) | n <- crNormalizedTransfers census ]
         test "25. Group G indirect calls (0xa03c, 0xbd64, 0xcd34) normalize to their real targets"
           (byCallSite == [ (0xa03c, [0xa056, 0xa040])
                          , (0xbd64, [0xbd8a, 0xbd68])
@@ -969,7 +976,7 @@ groupHIndirectCallNormalizes = do
       Right mem -> do
         census <- discoverCensus mem [(macawCortexMEntry 0xb47a, ["target"])]
         test "26. Group H indirect call (0xb47a, opaque condition) normalizes to its real targets"
-          ([ (nciCallSite n, nciTargets n) | n <- crNormalizedCalls census ] == [(0xb47a, [0xb48a, 0xb486])])
+          ([ (ntiBlockStart n, ntiTargets n) | n <- crNormalizedTransfers census ] == [(0xb47a, [0xb48a, 0xb486])])
   where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
@@ -981,8 +988,8 @@ groupHIndirectCallNormalizes = do
 -- valid when both conditions are the exact same typed value. This is the
 -- same primitive property test 18 proves for classify_failure's own
 -- curIP; repeated here explicitly in call-normalization terms because
--- 'APTrace.MacawCensus.normalizedCallInfoOf' (private, exercised via
--- 'crNormalizedCalls' in the other tests here) delegates to the identical,
+-- 'APTrace.MacawCensus.normalizedTransferInfoOf' (private, exercised via
+-- 'crNormalizedTransfers' in the other tests here) delegates to the identical,
 -- unchanged 'Normalize.normalizeIP' with no call-specific branching of its
 -- own to separately verify.
 differingConditionCallDoesNotNormalize :: IO Bool
@@ -1003,7 +1010,7 @@ differingConditionCallDoesNotNormalize =
 
 -- | Normalizing an indirect call must never mutate the original 'CallInfo'
 -- entry: it stays @kind = \"indirect\"@ in 'crCalls', exactly as base Macaw
--- classified it, even after a 'NormalizedCallInfo' has been produced for
+-- classified it, even after a 'NormalizedTransferInfo' has been produced for
 -- the same call site. Reuses the Group G/H fixture. Skips if the firmware
 -- isn't present locally.
 baseIndirectCallRemainsIndirectAfterNormalization :: IO Bool
@@ -1022,7 +1029,7 @@ baseIndirectCallRemainsIndirectAfterNormalization = do
         census <- discoverCensus mem [(macawCortexMEntry 0xa03c, ["target"])]
         let matching = [ c | c <- crCalls census, ciCaller c == 0xa03c, ciCallSite c == 0xa03c ]
         test "28. base indirect call remains indirect after normalization"
-          (not (null (crNormalizedCalls census))
+          (not (null (crNormalizedTransfers census))
              && matching == [CallInfo 0xa03c 0xa03c Nothing Nothing "indirect"])
   where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
@@ -1030,7 +1037,7 @@ baseIndirectCallRemainsIndirectAfterNormalization = do
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
 
--- | Every 'NormalizedCallInfo' the census emits must carry the
+-- | Every 'NormalizedTransferInfo' the census emits must carry the
 -- @macaw-normalized@ provenance tag, mirroring 'NormalizedInfo'\'s own
 -- discipline. Reuses the Group G/H fixture. Skips if the firmware isn't
 -- present locally.
@@ -1050,8 +1057,8 @@ normalizedCallEvidenceHasProvenance = do
         census <- discoverCensus mem
           [ (macawCortexMEntry a, ["target"]) | a <- [0xa03c, 0xbd64, 0xcd34, 0xb47a] ]
         test "29. normalized call evidence carries macaw-normalized provenance"
-          (length (crNormalizedCalls census) == 4
-             && all ((== Normalize.macawNormalizedProvenance) . nciProvenance) (crNormalizedCalls census))
+          (length (crNormalizedTransfers census) == 4
+             && all ((== Normalize.macawNormalizedProvenance) . ntiProvenance) (crNormalizedTransfers census))
   where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
@@ -1061,7 +1068,7 @@ normalizedCallEvidenceHasProvenance = do
 -- | A real indirect call from an unrelated group (here, the vtable-style
 -- @read_mem(read_mem(Initial(_R0)))@ dispatch at @0xa84a@ -- neither a
 -- mux nor built from literal targets) must remain un-normalized: no
--- 'NormalizedCallInfo' is emitted for it, while it still appears in
+-- 'NormalizedTransferInfo' is emitted for it, while it still appears in
 -- 'crCalls' as an ordinary indirect call. Skips if the firmware isn't
 -- present locally.
 unrelatedIndirectCallGroupsRemainUnchanged :: IO Bool
@@ -1080,7 +1087,201 @@ unrelatedIndirectCallGroupsRemainUnchanged = do
         census <- discoverCensus mem [(macawCortexMEntry 0xa84a, ["target"])]
         let isIndirectHere c = ciCaller c == 0xa84a && ciCallSite c == 0xa84a && ciKind c == "indirect"
         test "30. unrelated indirect-call groups (0xa84a, vtable-style) remain unchanged"
-          (any isIndirectHere (crCalls census) && null (crNormalizedCalls census))
+          (any isIndirectHere (crCalls census) && null (crNormalizedTransfers census))
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+------------------------------------------------------------------------
+-- APTrace.MacawIsaClassify: the ISA-level semantic overlay on
+-- 'MDP.ParsedCall' terminators. Real, already-verified sites from the
+-- 48-site indirect-ParsedCall audit -- one per mnemonic family Macaw's
+-- generic call classifier misroutes here -- confirm 'classifyParsedCall'
+-- reproduces that audit's own findings via 'crCallClassifications',
+-- never touching 'crCalls' itself.
+
+-- | 31. @0x99dc@: a single-block function whose own terminator is a real
+-- register-indirect @BLX_r_T1@ with Macaw's own @mret@ freshly set to
+-- @0x99e6@ -- a genuine call, classified 'true_indirect_call'. Skips if
+-- the firmware isn't present locally.
+blxClassifiesAsTrueIndirectCall :: IO Bool
+blxClassifiesAsTrueIndirectCall = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 31. BLX classifies as true_indirect_call (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "31. BLX classifies as true_indirect_call" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0x99dc, ["target"])]
+        let matching = [ c | c <- crCallClassifications census
+                            , cciFunctionEntry c == 0x99dc, cciBlockStart c == 0x99dc ]
+        test "31. BLX_r_T1 (0x99dc, mret=0x99e6) classifies as true_indirect_call"
+          (case matching of
+             [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.TrueIndirectCall
+                      && cciMacawTerminator c == "ParsedCall"
+                      && cciReturnAddr c == Just 0x99e6
+             _   -> False)
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 32. @0xa84a@: the same vtable-style @BX_T1@ dispatch used by test 30 --
+-- Macaw's own @mret@ is @Nothing@ (BX never writes LR) -- classified
+-- 'tail_call', never a call that returns. Skips if the firmware isn't
+-- present locally.
+bxClassifiesAsTailCall :: IO Bool
+bxClassifiesAsTailCall = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 32. BX classifies as tail_call (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "32. BX classifies as tail_call" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0xa84a, ["target"])]
+        let matching = [ c | c <- crCallClassifications census
+                            , cciFunctionEntry c == 0xa84a, cciBlockStart c == 0xa84a ]
+        test "32. BX_T1 (0xa84a, mret=Nothing) classifies as tail_call"
+          (case matching of
+             [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.TailCall
+                      && cciReturnAddr c == Nothing
+             _   -> False)
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 33. @0xa03c@: the same "Group G" @CBZ_T1@ site used by tests 25/28 --
+-- classified 'conditional_branch', never a call, regardless of Macaw's own
+-- @ParsedCall@ terminator shape. Skips if the firmware isn't present
+-- locally.
+cbzClassifiesAsConditionalBranch :: IO Bool
+cbzClassifiesAsConditionalBranch = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 33. CBZ classifies as conditional_branch (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "33. CBZ classifies as conditional_branch" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0xa03c, ["target"])]
+        let matching = [ c | c <- crCallClassifications census
+                            , cciFunctionEntry c == 0xa03c, cciBlockStart c == 0xa03c ]
+        test "33. CBZ_T1 (0xa03c) classifies as conditional_branch"
+          (case matching of
+             [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.ConditionalBranch
+             _   -> False)
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 34. @0x5570@'s @TBB_T1@-terminated block (block start @0x557c@) -- one
+-- of "Group B"'s five compiler-emitted switch-case jump tables --
+-- classified 'table_branch', never a call. Skips if the firmware isn't
+-- present locally.
+tbbClassifiesAsTableBranch :: IO Bool
+tbbClassifiesAsTableBranch = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 34. TBB classifies as table_branch (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "34. TBB classifies as table_branch" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0x5570, ["target"])]
+        let matching = [ c | c <- crCallClassifications census
+                            , cciFunctionEntry c == 0x5570, cciBlockStart c == 0x557c ]
+        test "34. TBB_T1 (0x5570/0x557c) classifies as table_branch"
+          (case matching of
+             [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.TableBranch
+             _   -> False)
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 35. @0x56e8@'s @LDR_r_T2@-terminated block (block start @0x5772@, the
+-- lone "Group K" absolute-address computed jump) -- classified
+-- 'computed_jump', never a call. Skips if the firmware isn't present
+-- locally.
+ldrPcClassifiesAsComputedJump :: IO Bool
+ldrPcClassifiesAsComputedJump = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 35. LDR Rt=PC classifies as computed_jump (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "35. LDR Rt=PC classifies as computed_jump" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0x56e8, ["target"])]
+        let matching = [ c | c <- crCallClassifications census
+                            , cciFunctionEntry c == 0x56e8, cciBlockStart c == 0x5772 ]
+        test "35. LDR_r_T2 Rt=PC (0x56e8/0x5772) classifies as computed_jump"
+          (case matching of
+             [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.ComputedJump
+             _   -> False)
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 36. The evidence-discipline check the normalization rename exists for:
+-- @0xa03c@'s recovered normalized-target evidence (the same "Group G" site
+-- as tests 25/33) must appear in 'crNormalizedTransfers' tagged
+-- @semantic_kind = \"conditional_branch\"@ -- never implied to be a call.
+-- Skips if the firmware isn't present locally.
+normalizedCbzIsTransferNotCall :: IO Bool
+normalizedCbzIsTransferNotCall = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 36. normalized CBZ evidence is a transfer, not a call (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "36. normalized CBZ evidence is a transfer, not a call" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0xa03c, ["target"])]
+        let matching = [ n | n <- crNormalizedTransfers census
+                            , ntiFunctionEntry n == 0xa03c, ntiBlockStart n == 0xa03c ]
+        test "36. normalized CBZ evidence (0xa03c) is exposed as a normalized_transfer, not a call"
+          (case matching of
+             [n] -> ntiSemanticKind n == IsaClassify.semanticKindText IsaClassify.ConditionalBranch
+                      && ntiProvenance n == Normalize.macawNormalizedProvenance
+                      && ntiTargets n == [0xa056, 0xa040]
+             _   -> False)
   where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32

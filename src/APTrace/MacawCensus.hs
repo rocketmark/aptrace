@@ -20,7 +20,8 @@ module APTrace.MacawCensus
   , UnresolvedInfo(..)
   , CallInfo(..)
   , NormalizedInfo(..)
-  , NormalizedCallInfo(..)
+  , NormalizedTransferInfo(..)
+  , CallClassificationInfo(..)
   , CensusResult(..)
   , RootBuildResult(..)
     -- * Pipeline
@@ -60,6 +61,7 @@ import           Data.Parameterized.Some ( Some(..) )
 
 import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
+import qualified APTrace.MacawIsaClassify as IsaClassify
 import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
@@ -203,16 +205,56 @@ data NormalizedInfo = NormalizedInfo
 -- \"indirect\"@ in 'crCalls' exactly as base Macaw classified it -- this is
 -- additional, separately-provenanced evidence, not a replacement for it,
 -- mirroring 'NormalizedInfo'\'s own discipline exactly.
-data NormalizedCallInfo = NormalizedCallInfo
-  { nciCaller    :: !Word32
+--
+-- Named @NormalizedTransferInfo@, not @NormalizedCallInfo@: auditing every
+-- @kind = \"indirect\"@ site this normalizer can recover found all of them
+-- are, per 'APTrace.MacawIsaClassify', a @conditional_branch@ (a plain
+-- @CBZ@\/@CBNZ@) -- never a real call. 'ntiSemanticKind' (from the exact
+-- same ISA classification 'callClassificationOf' computes for this same
+-- block) is carried explicitly so this evidence never silently implies
+-- \"callback invoked\" for a site that is really just a two-way branch.
+data NormalizedTransferInfo = NormalizedTransferInfo
+  { ntiFunctionEntry :: !Word32
     -- ^ Canonical entry of the function containing the call site.
-  , nciCallSite  :: !Word32
-    -- ^ Canonical address of the block ending in the call (matches the
-    -- corresponding 'CallInfo'\'s 'ciCallSite').
-  , nciTargets   :: ![Word32]
+  , ntiBlockStart    :: !Word32
+    -- ^ Canonical address of the block ending in the terminator (matches
+    -- the corresponding 'CallInfo'\'s 'ciCallSite').
+  , ntiSemanticKind  :: !String
+    -- ^ The same 'IsaClassify.SemanticKind' text
+    -- 'CallClassificationInfo' reports for this exact block -- e.g.
+    -- @\"conditional_branch\"@, never assumed to be @\"true_indirect_call\"@.
+  , ntiTargets       :: ![Word32]
     -- ^ One or two canonicalized, resolved, mapped firmware addresses.
-  , nciProvenance :: !String
+  , ntiProvenance    :: !String
     -- ^ Always 'Normalize.macawNormalizedProvenance'.
+  } deriving (Eq, Show)
+
+-- | APTrace's own ISA-level interpretation of one @ParsedCall@ terminator
+-- -- see "APTrace.MacawIsaClassify". Produced for /every/ @ParsedCall@
+-- Macaw discovers (direct, unmapped, or indirect alike): the
+-- over-inclusiveness this exists to expose isn't specific to unresolved
+-- targets. Purely additive -- 'crCalls'\'s own entries are never read by
+-- this, let alone changed by it.
+data CallClassificationInfo = CallClassificationInfo
+  { cciFunctionEntry   :: !Word32
+  , cciBlockStart      :: !Word32
+  , cciInstructionAddr :: !Word32
+    -- ^ The actual terminating instruction's own address -- may differ
+    -- from 'cciBlockStart' if the block has leading straight-line code.
+  , cciInstruction     :: !String
+    -- ^ The bare mnemonic Macaw's own lifter recorded for that
+    -- instruction (e.g. @\"BLX_r_T1\"@, @\"CBZ_T1\"@).
+  , cciMacawTerminator :: !String
+    -- ^ Always @\"ParsedCall\"@ -- Macaw's own terminator constructor name,
+    -- kept alongside so this record is self-contained without needing to
+    -- cross-reference 'crCalls'.
+  , cciSemanticKind    :: !String
+    -- ^ One of 'IsaClassify.semanticKindText'\'s results.
+  , cciReturnAddr      :: !(Maybe Word32)
+    -- ^ Macaw's own @ParsedCall@ return-address field (canonicalized),
+    -- unchanged from what base discovery produced.
+  , cciProvenance      :: !String
+    -- ^ Always 'IsaClassify.aptraceIsaClassificationProvenance'.
   } deriving (Eq, Show)
 
 data CensusResult = CensusResult
@@ -227,7 +269,8 @@ data CensusResult = CensusResult
   , crUnresolved      :: ![UnresolvedInfo]
   , crCalls           :: ![CallInfo]
   , crNormalized      :: ![NormalizedInfo]
-  , crNormalizedCalls :: ![NormalizedCallInfo]
+  , crNormalizedTransfers :: ![NormalizedTransferInfo]
+  , crCallClassifications :: ![CallClassificationInfo]
   } deriving (Eq, Show)
 
 ------------------------------------------------------------------------
@@ -277,7 +320,8 @@ data Core = Core
   , coreUnresolved :: ![UnresolvedInfo]
   , coreCalls      :: ![CallInfo]
   , coreNormalized :: ![NormalizedInfo]
-  , coreNormalizedCalls :: ![NormalizedCallInfo]
+  , coreNormalizedTransfers :: ![NormalizedTransferInfo]
+  , coreCallClassifications :: ![CallClassificationInfo]
   }
 
 forceElems :: [a] -> [a]
@@ -291,7 +335,8 @@ forceCore c = Core
   , coreUnresolved = forceElems (coreUnresolved c)
   , coreCalls      = forceElems (coreCalls c)
   , coreNormalized = forceElems (coreNormalized c)
-  , coreNormalizedCalls = forceElems (coreNormalizedCalls c)
+  , coreNormalizedTransfers = forceElems (coreNormalizedTransfers c)
+  , coreCallClassifications = forceElems (coreCallClassifications c)
   }
 
 -- | Run Macaw's own static discovery ('MD.cfgFromAddrs') from the given
@@ -323,7 +368,8 @@ discoverCensus mem rootGroups = do
         , crUnresolved = []
         , crCalls = []
         , crNormalized = []
-        , crNormalizedCalls = []
+        , crNormalizedTransfers = []
+        , crCallClassifications = []
         }
     Right core -> coreToCensusResult (rbRootInfos rb) core
 
@@ -392,7 +438,8 @@ coreToCensusResult rootInfos core =
     , crUnresolved = sortOn (\u -> (uiFunctionEntry u, uiBlockStart u)) (coreUnresolved core)
     , crCalls = sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) (coreCalls core)
     , crNormalized = sortOn (\n -> (niFunctionEntry n, niBlockStart n)) (coreNormalized core)
-    , crNormalizedCalls = sortOn (\n -> (nciCaller n, nciCallSite n)) (coreNormalizedCalls core)
+    , crNormalizedTransfers = sortOn (\n -> (ntiFunctionEntry n, ntiBlockStart n)) (coreNormalizedTransfers core)
+    , crCallClassifications = sortOn (\c -> (cciFunctionEntry c, cciBlockStart c)) (coreCallClassifications core)
     }
 
 -- | Summarize an already-built Macaw 'MD.DiscoveryState' -- base or
@@ -416,20 +463,22 @@ buildCore mem discState rootCanonSet =
   let funs = Map.elems (discState ^. MD.funInfo)
       perFunction = map (summarizeFunction mem rootCanonSet) funs
   in Core
-       { coreFunctions  = map (\(f, _, _, _, _, _, _) -> f) perFunction
-       , coreBlocks     = concatMap (\(_, bs, _, _, _, _, _) -> bs) perFunction
-       , coreEdges      = concatMap (\(_, _, es, _, _, _, _) -> es) perFunction
-       , coreUnresolved = concatMap (\(_, _, _, us, _, _, _) -> us) perFunction
-       , coreCalls      = concatMap (\(_, _, _, _, cs, _, _) -> cs) perFunction
-       , coreNormalized = concatMap (\(_, _, _, _, _, ns, _) -> ns) perFunction
-       , coreNormalizedCalls = concatMap (\(_, _, _, _, _, _, ncs) -> ncs) perFunction
+       { coreFunctions  = map (\(f, _, _, _, _, _, _, _) -> f) perFunction
+       , coreBlocks     = concatMap (\(_, bs, _, _, _, _, _, _) -> bs) perFunction
+       , coreEdges      = concatMap (\(_, _, es, _, _, _, _, _) -> es) perFunction
+       , coreUnresolved = concatMap (\(_, _, _, us, _, _, _, _) -> us) perFunction
+       , coreCalls      = concatMap (\(_, _, _, _, cs, _, _, _) -> cs) perFunction
+       , coreNormalized = concatMap (\(_, _, _, _, _, ns, _, _) -> ns) perFunction
+       , coreNormalizedTransfers = concatMap (\(_, _, _, _, _, _, nts, _) -> nts) perFunction
+       , coreCallClassifications = concatMap (\(_, _, _, _, _, _, _, ccs) -> ccs) perFunction
        }
 
 summarizeFunction
   :: MM.Memory 32
   -> Set.Set Word32
   -> Some (MD.DiscoveryFunInfo ARM.ARM)
-  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo], [NormalizedInfo], [NormalizedCallInfo])
+  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo], [NormalizedInfo]
+     , [NormalizedTransferInfo], [CallClassificationInfo])
 summarizeFunction mem rootCanonSet (Some fn) =
   let entryCanon = canonicalWord (MD.discoveredFunAddr fn)
       blocks = Map.elems (fn ^. MD.parsedBlocks)
@@ -458,13 +507,19 @@ summarizeFunction mem rootCanonSet (Some fn) =
         | b <- blocks
         , Just n <- [normalizedInfoOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)]
         ]
-      normalizedCallInfos =
+      normalizedTransferInfos =
         [ n
         | b <- blocks
-        , Just n <- [normalizedCallInfoOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)]
+        , Just n <- [normalizedTransferInfoOf mem entryCanon b]
+        ]
+      callClassifications =
+        [ c
+        | b <- blocks
+        , Just c <- [callClassificationOf entryCanon b]
         ]
       fnInfo = FunctionInfo entryCanon (entryCanon `Set.member` rootCanonSet) (length blocks)
-  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos, normalizedInfos, normalizedCallInfos)
+  in ( fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos, normalizedInfos
+     , normalizedTransferInfos, callClassifications )
 
 -- | Apply 'Normalize.normalizeIP' to exactly one block's terminator, if it's
 -- a 'MDP.ClassifyFailure' -- every other terminator kind contributes
@@ -487,16 +542,43 @@ normalizedInfoOf mem funcEntry src t = case t of
 -- terminator kind contributes nothing here. Never touches the original
 -- 'CallInfo' entry: it stays @kind = \"indirect\"@ in 'crCalls' exactly as
 -- base Macaw produced it, and this contributes only additional,
--- separately-provenanced 'NormalizedCallInfo' evidence when it succeeds.
-normalizedCallInfoOf :: MM.Memory 32 -> Word32 -> Word32 -> MDP.ParsedTermStmt ARM.ARM ids -> Maybe NormalizedCallInfo
-normalizedCallInfoOf mem funcEntry src t = case t of
-  MDP.ParsedCall regs _ ->
+-- separately-provenanced 'NormalizedTransferInfo' evidence when it
+-- succeeds -- tagged with the same ISA 'IsaClassify.semanticKindText' this
+-- block's own 'callClassificationOf' computes, so this evidence never
+-- silently implies the recovered site is a call.
+normalizedTransferInfoOf :: MM.Memory 32 -> Word32 -> MDP.ParsedBlock ARM.ARM ids -> Maybe NormalizedTransferInfo
+normalizedTransferInfoOf mem funcEntry b = case MDP.pblockTermStmt b of
+  MDP.ParsedCall regs mret ->
     let ipVal = regs ^. MC.curIP
+        src = canonicalWord (MDP.pblockAddr b)
     in case MC.valueAsMemAddr ipVal >>= MM.asAbsoluteAddr of
          Just _  -> Nothing  -- already "direct"/"unmapped" -- nothing to normalize
          Nothing -> do
            targets <- Normalize.normalizeIP mem ipVal
-           Just (NormalizedCallInfo funcEntry src targets Normalize.macawNormalizedProvenance)
+           let kind = IsaClassify.classifyParsedCall src (MDP.pblockStmts b) mret
+           Just (NormalizedTransferInfo funcEntry src
+                   (IsaClassify.semanticKindText (IsaClassify.icSemanticKind kind))
+                   targets Normalize.macawNormalizedProvenance)
+  _ -> Nothing
+
+-- | APTrace's own ISA-level classification of one block's terminator, for
+-- every @ParsedCall@ Macaw discovers -- see "APTrace.MacawIsaClassify".
+-- Every other terminator kind contributes nothing here.
+callClassificationOf :: Word32 -> MDP.ParsedBlock ARM.ARM ids -> Maybe CallClassificationInfo
+callClassificationOf funcEntry b = case MDP.pblockTermStmt b of
+  MDP.ParsedCall _regs mret ->
+    let src = canonicalWord (MDP.pblockAddr b)
+        kind = IsaClassify.classifyParsedCall src (MDP.pblockStmts b) mret
+    in Just CallClassificationInfo
+         { cciFunctionEntry = funcEntry
+         , cciBlockStart = src
+         , cciInstructionAddr = IsaClassify.icInstructionAddr kind
+         , cciInstruction = IsaClassify.icInstruction kind
+         , cciMacawTerminator = "ParsedCall"
+         , cciSemanticKind = IsaClassify.semanticKindText (IsaClassify.icSemanticKind kind)
+         , cciReturnAddr = fmap canonicalWord mret
+         , cciProvenance = IsaClassify.aptraceIsaClassificationProvenance
+         }
   _ -> Nothing
 
 -- | Name Macaw's own terminator classification -- one word per
@@ -647,12 +729,25 @@ normalizedValue n = object
   , "provenance"     .= niProvenance n
   ]
 
-normalizedCallValue :: NormalizedCallInfo -> Value
-normalizedCallValue n = object
-  [ "caller"     .= hexStr (nciCaller n)
-  , "call_site"  .= hexStr (nciCallSite n)
-  , "targets"    .= map hexStr (nciTargets n)
-  , "provenance" .= nciProvenance n
+normalizedTransferValue :: NormalizedTransferInfo -> Value
+normalizedTransferValue n = object
+  [ "function_entry" .= hexStr (ntiFunctionEntry n)
+  , "block_start"    .= hexStr (ntiBlockStart n)
+  , "semantic_kind"  .= ntiSemanticKind n
+  , "targets"        .= map hexStr (ntiTargets n)
+  , "provenance"     .= ntiProvenance n
+  ]
+
+callClassificationValue :: CallClassificationInfo -> Value
+callClassificationValue c = object
+  [ "function_entry"   .= hexStr (cciFunctionEntry c)
+  , "block_start"      .= hexStr (cciBlockStart c)
+  , "instruction_addr" .= hexStr (cciInstructionAddr c)
+  , "instruction"      .= cciInstruction c
+  , "macaw_terminator" .= cciMacawTerminator c
+  , "semantic_kind"    .= cciSemanticKind c
+  , "return_addr"      .= fmap hexStr (cciReturnAddr c)
+  , "provenance"       .= cciProvenance c
   ]
 
 -- | The full, deterministic census document. Field order within each
@@ -670,7 +765,8 @@ censusToValue fm cr = object
   , "incomplete_or_unresolved_terminators" .= map unresolvedValue (crUnresolved cr)
   , "calls"     .= map callValue (crCalls cr)
   , "normalized_terminators" .= map normalizedValue (crNormalized cr)
-  , "normalized_calls" .= map normalizedCallValue (crNormalizedCalls cr)
+  , "normalized_transfers" .= map normalizedTransferValue (crNormalizedTransfers cr)
+  , "call_classifications" .= map callClassificationValue (crCallClassifications cr)
   ]
 
 ------------------------------------------------------------------------
