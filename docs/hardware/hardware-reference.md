@@ -35,6 +35,81 @@ Visible board features: four repeated motor-output driver channels, large
 electrolytic capacitors, low-value power resistors (~0R22 markings)
 consistent with current sensing, USB-C.
 
+**Motor driver IC identity — CONFIRMED by PCB photo.** A QFP package in one
+of the four repeated motor-driver channels is legibly marked (Trinamic
+triangle logo) `TMC5160A-TA / 2512 A19TA / GERMANY` —
+`research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0101.jpg`,
+reconfirmed from a wider angle in `..._0103.jpg`. This is the first
+independent, in-repo confirmation of the TMC5160A-TA part (previously an
+external/asserted fact only). **Not established by this evidence**: which
+of the four repeated channels/XLR jacks this specific chip belongs to, the
+identity of the other three (assumed identical by board repetition, not
+individually confirmed), and any SPI/UART bus wiring between this chip and
+the ATSAMD51 — no legible net label or traceable copper run to the MCU was
+found in any available photo.
+
+**Adjacent SOIC-8 parts — CONFIRMED by manufacturer marking match.** Small
+SOIC-8 parts visible in the same board region (both REV 1 and REV 2
+photos), marked:
+
+```text
+88537N
+26Z
+N9x4G4
+```
+
+are Texas Instruments **CSD88537ND** — a dual 60 V N-channel NexFET power
+MOSFET, SOIC-8. TI's own documentation gives `88537N` as this exact
+part's package/device marking. Classification:
+`PROVEN — PCB PHOTO + MANUFACTURER MARKING MATCH`. `26Z`/`N9x4G4` are
+recorded only as secondary package/lot/trace markings, not independently
+decoded.
+
+**Architectural implication**: the CSD88537ND is consistent with the
+external N-channel MOSFET power stage the TMC5160A requires — it is a
+power-stage component, not a second motor-control IC. The exact number of
+CSD88537ND packages per motor channel and the complete bridge topology are
+**not** inferred from this one photo; that would need either an
+independent per-channel photo count or PCB continuity evidence.
+
+**Adjacent 16-pin SSOP mux/demux — CONFIRMED by manufacturer marking
+match.** A 16-pin SSOP part in the same cluster (`0103.jpg`), marked:
+
+```text
+CL257
+27M
+AFRN64
+```
+
+is Texas Instruments **`SN74CBTLV3257`** — a low-voltage, 4-bit 1-of-2
+FET multiplexer/demultiplexer, DBQ/SSOP-16 package. `CL257` is TI's own
+documented top-side device marking for this exact part (`SCDS040N`);
+`27M`/`AFRN64` are secondary lot/trace codes, not independently decoded.
+Classification: `PROVEN — PCB PHOTO + MANUFACTURER MARKING MATCH`. TI's
+own datasheet lists "Motor drives" as a named application for this part.
+Pinout (DBQ/16-pin): `S`(1), `1B1`(2), `1B2`(3), `1A`(4), `2B1`(5),
+`2B2`(6), `2A`(7), `GND`(8), `3A`(9), `3B2`(10), `3B1`(11), `4A`(12),
+`4B2`(13), `4B1`(14), `OE‾`(15), `VCC`(16) — four independent channels,
+each switching its `A` pin to either `B1` or `B2`, sharing one select
+line (`S`) and one active-low output-enable (`OE‾`).
+
+**Architectural implication (candidate, not proven)**: a shared-select
+4-channel 2:1 mux is architecturally the kind of part used to time-share
+one physical bus across two destinations with a single control bit — a
+plausible mechanism for routing shared signal lines (e.g. an SPI/UART
+bus) between two TMC5160s or channel-pairs, directly relevant to the
+still-open "is a config bus shared across all four TMC5160s" question.
+**This is not established** — no board signal has been traced to this
+chip's `A`/`B1`/`B2`/`S`/`OE‾` pins; it is a plausible candidate
+mechanism, not a proven one, pending a PCB continuity check.
+
+**Photo folder note**: the `REV 1` subfolder is not exclusively Remote-board
+photos as previously recorded — it contains the original Remote/Mando set
+(`...0042`-`...0074`) plus a later-added set of real AutoPilot board
+close-ups (`...0095` onward, silkscreen `52_PO_V01R04`, the same board
+identity as the `REV 2` folder). Treat REV 1 as mixed; check each file's
+own board identity rather than trusting the folder name.
+
 ### XLR-4 motor output pinout
 
 ```

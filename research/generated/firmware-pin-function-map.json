@@ -11,9 +11,9 @@
   },
   "discrepancy_flags": [
     {
-      "flag": "The 'REV 1' photo subfolder (research/AutoPilot Board Photos/REV 1/*.jpg) does NOT show the AutoPilot board -- it shows the Remote/Mando board.",
-      "evidence": "REV 1 photos show a small handheld-sized PCB (board silkscreen '24_PO_V05R01') with an Ai-Thinker Ra-01H radio module, a rotary encoder with integrated push switch, a yellow LiPo pouch cell, and a buzzer -- an exact match to hardware-reference.md's Remote Unit board-level facts, not the AutoPilot's. The 'REV 2' photos show a larger PCB (silkscreen '52_PO_V01R04') with a visible 'Atmel ATSAMD51J19A' marking, dual RJ45 jacks, a 3.5mm TRS jack, 4 XLR-4-shaped panel connectors, and 4 repeated motor-driver channels -- matching the AutoPilot's documented facts exactly.",
-      "action_taken": "Only REV 2 photos were used as AutoPilot PCB evidence in this pass. REV 1 photos were not used for any AutoPilot claim. This is reported as a discrepancy per instruction, not silently corrected in the folder."
+      "flag": "The 'REV 1' photo subfolder is mixed, not exclusively Remote-board photos as originally recorded.",
+      "evidence": "The original file set (AutoPilot0042.jpg-AutoPilot0074.jpg) shows a small handheld-sized PCB (board silkscreen '24_PO_V05R01') with an Ai-Thinker Ra-01H radio module, a rotary encoder with integrated push switch, a yellow LiPo pouch cell, and a buzzer -- an exact match to hardware-reference.md's Remote Unit board-level facts, not the AutoPilot's. A later-added file set in the SAME folder (AutoPilot0095.jpg onward) shows the real AutoPilot board (silkscreen '52_PO_V01R04', matching REV 2) -- including AutoPilot0101.jpg/AutoPilot0103.jpg, the first legible in-repo photo confirmation of a TMC5160A-TA motor-driver IC. The REV 2 subfolder remains, as before, real AutoPilot-board photos (silkscreen '52_PO_V01R04'): visible 'Atmel ATSAMD51J19A' marking, dual RJ45 jacks, a 3.5mm TRS jack, 4 XLR-4-shaped panel connectors, and 4 repeated motor-driver channels.",
+      "action_taken": "Check each file's own board identity; do not trust the REV 1/REV 2 folder name alone. AutoPilot0101.jpg/AutoPilot0103.jpg (REV 1 folder) and REV 2 photos were both used as AutoPilot PCB evidence; AutoPilot0042.jpg-AutoPilot0074.jpg (REV 1 folder) were not."
     },
     {
       "flag": "No discrepancy found between the documented AutoPilot chip identity (ATSAMD51J19A-AU, TQFP-64) and the REV 2 photos.",
@@ -33,8 +33,12 @@
       "active_level_or_encoding": "Pulsed HIGH then LOW per step (OUTSET/OUTCLR pair); polarity of a single step vs. direction is carried separately by DIR_CH0",
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 23,
-      "pcb_observation": "Not individually traced (fine-pitch QFP pin, no continuous copper followed to a component). MCU package sits in the board's logic-side region (IMG_3096/3097); the board's opposite (motor-driver) region contains 4 repeated small-QFP driver-adjacent stages, TI H-bridge-marked SOIC ICs, and 4 XLR-4-shaped panel connectors (IMG_3091/3097/3098).",
-      "nearby_components": ["4x TI '8853x'-marked SOIC power/driver ICs (motor-driver region, exact IC-to-channel assignment not determined)", "large electrolytic capacitors (motor-driver region)", "4x XLR-4 panel connectors (REV 2 left board in IMG_3098 clearly shows these panel-mounted)"],
+      "pcb_observation": "Not individually traced (fine-pitch QFP pin, no continuous copper followed to a component). MCU package sits in the board's logic-side region (IMG_3096/3097); the board's opposite (motor-driver) region contains 4 repeated small-QFP driver-adjacent stages, TI CSD88537ND-marked (dual N-channel NexFET power MOSFET, SOIC-8) parts, and 4 XLR-4-shaped panel connectors (IMG_3091/3097/3098).",
+      "nearby_components": [
+        "TI CSD88537ND (dual 60V N-channel NexFET power MOSFET, SOIC-8; marking '88537N', confirmed by TI's documented package/device marking match; secondary markings '26Z'/'N9x4G4' not independently decoded) -- a power-stage component, not a second motor-control IC (motor-driver region, exact IC-to-channel assignment not determined)",
+        "large electrolytic capacitors (motor-driver region)",
+        "4x XLR-4 panel connectors (REV 2 left board in IMG_3098 clearly shows these panel-mounted)"
+      ],
       "physical_destination": "Presumed to feed, via the motor-driver region's power stage, one of the 4 XLR-4 motor-output connectors -- but WHICH of the 4 physical XLR jacks corresponds to logical channel 0 is NOT established by any evidence in this pass and is not claimed.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -61,7 +65,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 17,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region / one of 4 XLR-4 outputs; specific jack not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -87,7 +93,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 25,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region / one of 4 XLR-4 outputs; specific jack not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -113,7 +121,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 19,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region / one of 4 XLR-4 outputs; specific jack not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -139,7 +149,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 24,
       "pcb_observation": "Not individually traced. Adjacent package pin to STEP_CH0 (pin 23/24 consecutive), consistent with the firmware's own 'DIR = STEP pin + 1' pattern across all 4 channels.",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region / one of 4 XLR-4 outputs; specific jack and DIR-to-physical-rotation polarity not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -165,7 +177,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 18,
       "pcb_observation": "Not individually traced. Adjacent to STEP_CH1 (pin 17/18).",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region; specific jack/polarity not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -191,7 +205,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 26,
       "pcb_observation": "Not individually traced. Adjacent to STEP_CH2 (pin 25/26).",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region; specific jack/polarity not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -217,7 +233,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 20,
       "pcb_observation": "Not individually traced. Adjacent to STEP_CH3 (pin 19/20).",
-      "nearby_components": ["Same motor-driver-region neighbors as STEP_CH0"],
+      "nearby_components": [
+        "Same motor-driver-region neighbors as STEP_CH0"
+      ],
       "physical_destination": "Presumed same motor-driver region; specific jack/polarity not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -243,7 +261,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 40,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Motor-driver-region ICs (candidate: the TI '8853x'-marked SOIC parts visible in IMG_3097, not confirmed as the specific consumer)"],
+      "nearby_components": [
+        "Motor-driver-region ICs (candidate: the TI CSD88537ND (dual 60V N-channel NexFET power MOSFET, SOIC-8; marking '88537N', confirmed by TI's documented package/device marking match; secondary markings '26Z'/'N9x4G4' not independently decoded) -- a power-stage component, not a second motor-control IC, visible in IMG_3097, not confirmed as the specific consumer)"
+      ],
       "physical_destination": "Presumed motor-driver-region enable input; specific IC pin not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -269,7 +289,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 39,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Same as DRIVER_ENABLE_A"],
+      "nearby_components": [
+        "Same as DRIVER_ENABLE_A"
+      ],
       "physical_destination": "Presumed motor-driver-region enable input; specific IC pin not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -295,7 +317,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 9,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Same motor-driver-region ICs as DRIVER_ENABLE_A"],
+      "nearby_components": [
+        "Same motor-driver-region ICs as DRIVER_ENABLE_A"
+      ],
       "physical_destination": "Presumed motor-driver-region reset input; specific IC pin not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -321,7 +345,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 10,
       "pcb_observation": "Not individually traced.",
-      "nearby_components": ["Same motor-driver-region ICs as DRIVER_ENABLE_A"],
+      "nearby_components": [
+        "Same motor-driver-region ICs as DRIVER_ENABLE_A"
+      ],
       "physical_destination": "Presumed motor-driver-region reset input; specific IC pin not established.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -347,7 +373,11 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 6,
       "pcb_observation": "3.5mm TRS jack visually confirmed on the REV 2 board (IMG_3093.JPG, IMG_3101.JPG), near the top-left/logic region of the board, close to the main MCU package and the two RJ45 jacks. No individual copper trace from package pin 6 to the jack's tip contact was followed (fine traces disappear under solder mask / other components at this photo resolution).",
-      "nearby_components": ["3.5mm TRS jack (SMD, black molded body)", "7812-marked linear regulator", "main ATSAMD51 MCU (same board region)"],
+      "nearby_components": [
+        "3.5mm TRS jack (SMD, black molded body)",
+        "7812-marked linear regulator",
+        "main ATSAMD51 MCU (same board region)"
+      ],
       "physical_destination": "3.5mm TRS jack, tip contact (PROBABLE by board-region proximity only, not by traced copper).",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -375,7 +405,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 3,
       "pcb_observation": "Not individually traced; presumed same logic-region wiring as TRIGGER_DIGITAL (both configured by the same boot routine immediately adjacent in code).",
-      "nearby_components": ["Same as TRIGGER_DIGITAL"],
+      "nearby_components": [
+        "Same as TRIGGER_DIGITAL"
+      ],
       "physical_destination": "Presumed part of the same 3.5mm TRS jack circuit (e.g. a sense/pull network) as TRIGGER_DIGITAL; not independently confirmed by PCB evidence.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -454,7 +486,13 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 59,
       "pcb_observation": "HIGHEST-PRIORITY finding of this pass. A pair of small SMD LEDs -- one amber/yellow-tinted (consistent with an unlit white LED's phosphor coating) and one blue-tinted, mounted immediately adjacent to each other -- was found in IMG_3096.JPG, positioned in the board's logic/control region, between the main MCU package and the U3/U14 power-management ICs, i.e. in the SAME general board region as the MCU, NOT in the motor-driver region on the opposite side of the board. No individual copper trace from package pin 59 to either LED footprint was followed or resolved at the available photo resolution -- this is a REGION-level correlation, not a traced connection.",
-      "nearby_components": ["One amber/yellow-tinted SMD LED", "one blue-tinted SMD LED (immediately adjacent to the first)", "R47 resistor", "220-marked passive", "main ATSAMD51 MCU package (same region)"],
+      "nearby_components": [
+        "One amber/yellow-tinted SMD LED",
+        "one blue-tinted SMD LED (immediately adjacent to the first)",
+        "R47 resistor",
+        "220-marked passive",
+        "main ATSAMD51 MCU package (same region)"
+      ],
       "physical_destination": "UNRESOLVED as a proven connection. The 2-LED cluster is a PLAUSIBLE candidate for the AutoPilot's documented single status LED (which the manual describes as WHITE for Standby and BLUE for Running -- a white-phosphor LED + a blue LED, mounted together, would be one hardware way to implement that with two single-color parts instead of one bi-color part), but connectivity to PB30/PB31 specifically is NOT shown. No WHITE/BLUE color identity is assigned to PB30 by this evidence.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -482,7 +520,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 60,
       "pcb_observation": "Same as SHARED_RELOAD_PULSE_A -- adjacent package pin (59/60 consecutive), same board-region correlation to the 2-LED cluster, same lack of traced copper.",
-      "nearby_components": ["Same as SHARED_RELOAD_PULSE_A"],
+      "nearby_components": [
+        "Same as SHARED_RELOAD_PULSE_A"
+      ],
       "physical_destination": "UNRESOLVED, same reasoning as SHARED_RELOAD_PULSE_A. No color identity assigned.",
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -611,7 +651,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 45,
       "pcb_observation": "USB-C connector visually confirmed on the REV 2 board (IMG_3091.JPG, bottom-left region), in the same general logic-side board region as the MCU.",
-      "nearby_components": ["USB-C connector"],
+      "nearby_components": [
+        "USB-C connector"
+      ],
       "physical_destination": "USB-C connector (PROBABLE by silicon fixed-pin convention plus board-region proximity; not individually traced).",
       "firmware_status": "FIRMWARE_PROBABLE",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -638,7 +680,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": 46,
       "pcb_observation": "Same as USB_DM.",
-      "nearby_components": ["USB-C connector"],
+      "nearby_components": [
+        "USB-C connector"
+      ],
       "physical_destination": "USB-C connector (same basis as USB_DM).",
       "firmware_status": "FIRMWARE_PROBABLE",
       "package_status": "PACKAGE_PIN_PROVEN",
@@ -665,7 +709,9 @@
       "chip_part": "ATSAMD51J19A-AU",
       "package_pin": null,
       "pcb_observation": "Two RJ45-shaped jacks are visually confirmed on the REV 2 board (IMG_3091.JPG, top-left region) -- consistent with hardware-reference.md's 'four RJ45 motor signal input jacks,' but this session's photo set only clearly shows 2 of the claimed 4 from the angles available; the other 2 were not located and are not claimed to be absent.",
-      "nearby_components": ["2 RJ45 jacks (confirmed visible); 2 more per hardware-reference.md, not located in this photo set"],
+      "nearby_components": [
+        "2 RJ45 jacks (confirmed visible); 2 more per hardware-reference.md, not located in this photo set"
+      ],
       "physical_destination": "RJ45 jack(s), STEP/DIR pins per the documented pinout (docs/hardware/hardware-reference.md) -- but with NO firmware-side GPIO identified to connect to them.",
       "firmware_status": "FIRMWARE_UNKNOWN",
       "package_status": "PACKAGE_PIN_UNKNOWN",
@@ -678,14 +724,88 @@
         "research/AutoPilot Board Photos/REV 2/IMG_3091.JPG"
       ],
       "remaining_unknown": "Entire firmware-side mechanism (presence detection, Auto-Mode lockout trigger, pulse passthrough path) and which 2 (or 4) physical jacks exist beyond the 2 visually located this pass."
+    },
+    {
+      "signal_id": "MOTOR_DRIVER_IC_IDENTITY",
+      "logical_function": "Physical identity of the per-channel motor-driver IC",
+      "user_or_protocol_origin": "n/a -- physical component identity, not a wire/UI-triggered signal",
+      "firmware_function": "n/a -- no firmware-side evidence claimed by this entry",
+      "firmware_state_or_trigger": "n/a",
+      "mcu_peripheral": "n/a (not a GPIO/peripheral signal; documents the external driver IC itself)",
+      "gpio": null,
+      "gpio_direction": null,
+      "active_level_or_encoding": null,
+      "chip_part": "TMC5160A-TA (Trinamic)",
+      "package_pin": null,
+      "pcb_observation": "AutoPilot0101.jpg (REV 1 folder) shows a QFP package with a clearly legible Trinamic triangle logo and marking 'TMC5160A-TA / 2512 A19TA / GERMANY', in one of the four repeated motor-driver channels. AutoPilot0103.jpg independently reconfirms the same device from a wider angle. AutoPilot0106.jpg additionally shows a 'CR9MICRO CRSS037N10N' power MOSFET near the connector/power-stage area -- recorded only as supporting power-stage evidence, not as the motor-driver IC itself.",
+      "nearby_components": [
+        "CR9MICRO CRSS037N10N power MOSFET (AutoPilot0106.jpg, power-stage support, not the driver IC)",
+        "TI CSD88537ND (dual 60V N-channel NexFET power MOSFET, SOIC-8; marking '88537N', confirmed by TI's documented package/device marking match; secondary markings '26Z'/'N9x4G4' not independently decoded) -- a power-stage component, not a second motor-control IC (same board region, REV 1 and REV 2 photos)"
+      ],
+      "physical_destination": "Presumed to be the driver for one of the four XLR-4 motor-output channels, consistent with the board's 4x repeated motor-driver-channel layout -- but WHICH of the 4 channels is NOT established (no legible reference designator or channel label was in frame).",
+      "firmware_status": "NOT_APPLICABLE",
+      "package_status": "NOT_APPLICABLE",
+      "pcb_status": "PROVEN_PCB_PHOTO",
+      "physical_function_status": "PHYSICAL_FUNCTION_PROBABLE (1 of 4 channels; other 3 assumed identical by board repetition, not individually confirmed)",
+      "confidence": "Chip identity for at least one of the four motor-driver positions is PROVEN by direct, legible PCB photo evidence (two independent photos of the same device). This is the first independent, in-repo confirmation of the TMC5160A-TA part -- previously an external/asserted fact only. NOT claimed: per-channel identity for the other three positions; any SPI/UART bus wiring (SCK/SDI/SDO/CSN) between this chip and the ATSAMD51 -- no legible net label or traceable copper run to the MCU was found in any available photo. Absence of a visible bus trace does not prove standalone (pin-configured) mode; a PCB continuity check is still required to resolve this either way.",
+      "evidence_refs": [
+        "research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0101.jpg",
+        "research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0103.jpg",
+        "research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0106.jpg",
+        "docs/hardware/hardware-reference.md (Motor driver IC identity)"
+      ],
+      "remaining_unknown": "Logical-channel-to-physical-XLR correspondence for this chip; identity confirmation for the other 3 driver positions; SCK/SDI/SDO/CSN routing to the ATSAMD51 (or absence thereof, i.e. standalone pin-configured mode); whether a live configuration interface exists at all."
+    },
+    {
+      "signal_id": "MOTOR_MUX_IC_IDENTITY",
+      "logical_function": "Physical identity of a 16-pin SSOP FET mux/demux found in the motor-driver IC cluster",
+      "user_or_protocol_origin": "n/a -- physical component identity, not a wire/UI-triggered signal",
+      "firmware_function": "n/a -- no firmware-side evidence claimed by this entry",
+      "firmware_state_or_trigger": "n/a",
+      "mcu_peripheral": "n/a (not a GPIO/peripheral signal; documents an external candidate bus-sharing IC)",
+      "gpio": null,
+      "gpio_direction": null,
+      "active_level_or_encoding": null,
+      "chip_part": "SN74CBTLV3257 (Texas Instruments)",
+      "package_pin": null,
+      "pcb_observation": "AutoPilot0103.jpg (REV 1 folder) shows a 16-pin SSOP part in the same cluster as the TMC5160A-TA chip, marked 'CL257 / 27M / AFRN64'. Independently verified against TI datasheet SCDS040N (fetched live from ti.com): CL257 is TI's documented top-side device marking for the SN74CBTLV3257, a low-voltage 4-bit 1-of-2 FET multiplexer/demultiplexer, DBQ/SSOP-16 package. TI's own datasheet lists 'Motor drives' as a named application. Pinout (DBQ/16-pin): S(1) select, 1B1(2)/1B2(3)/1A(4), 2B1(5)/2B2(6)/2A(7), GND(8), 3A(9)/3B2(10)/3B1(11), 4A(12)/4B2(13)/4B1(14), OE-bar(15), VCC(16) -- four independent 2:1 switch channels sharing one select (S) and one active-low enable (OE-bar).",
+      "nearby_components": [
+        "TMC5160A-TA (same cluster, AutoPilot0101.jpg/AutoPilot0103.jpg)",
+        "TI CSD88537ND dual N-channel NexFET MOSFETs (same board region)"
+      ],
+      "physical_destination": "Not established. No board signal (STEP/DIR/enable/reset-strobe/radio-SPI or any other named signal in this map) has been traced to this chip's A/B1/B2/S/OE-bar pins.",
+      "firmware_status": "NOT_APPLICABLE",
+      "package_status": "NOT_APPLICABLE",
+      "pcb_status": "PROVEN_PCB_PHOTO_PLUS_MARKING_MATCH (chip identity only)",
+      "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN (bus/signal role not established)",
+      "confidence": "Chip identity is PROVEN by direct PCB photo plus an independently fetched, verified TI datasheet marking match (SCDS040N) -- same evidentiary tier as the TMC5160A-TA and CSD88537ND findings. NOT established: which board signals (if any) connect to this chip's pins. Architectural candidate only: a shared-select 4-channel 2:1 mux is the kind of part used to time-share one physical bus (e.g. SPI/UART) across two destinations with a single control bit, which would be directly relevant to the open 'is a config bus shared across all four TMC5160s' question -- but this role is NOT proven, only plausible by part function and TI's own 'Motor drives' application note. A PCB continuity check is required to confirm or rule this out.",
+      "evidence_refs": [
+        "research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0103.jpg",
+        "TI datasheet SCDS040N (SN74CBTLV3257), fetched from ti.com/lit/gpn/SN74CBTLV3257",
+        "docs/hardware/hardware-reference.md (Adjacent 16-pin SSOP mux/demux)"
+      ],
+      "remaining_unknown": "Whether this chip carries any motor-driver-relevant signal at all; if so, which signals (S/OE-bar/A/B1/B2 per channel) map to which board nets; whether it is the mechanism sharing an SPI/UART config bus across TMC5160 pairs."
     }
   ],
   "summary_counts": {
-    "total_signals": 25,
-    "firmware_status": {"FIRMWARE_PROVEN": 20, "FIRMWARE_PROBABLE": 4, "FIRMWARE_UNKNOWN": 1},
-    "package_status": {"PACKAGE_PIN_PROVEN": 24, "PACKAGE_PIN_UNKNOWN": 1},
-    "pcb_status": {"PCB_NEIGHBORHOOD_ONLY": 18, "PCB_TRACE_UNKNOWN": 7},
-    "physical_function_status": {"PHYSICAL_FUNCTION_PROBABLE": 14, "PHYSICAL_FUNCTION_UNKNOWN": 11}
+    "total_signals": 27,
+    "firmware_status": {
+      "FIRMWARE_PROVEN": 20,
+      "FIRMWARE_PROBABLE": 4,
+      "FIRMWARE_UNKNOWN": 1
+    },
+    "package_status": {
+      "PACKAGE_PIN_PROVEN": 24,
+      "PACKAGE_PIN_UNKNOWN": 1
+    },
+    "pcb_status": {
+      "PCB_NEIGHBORHOOD_ONLY": 18,
+      "PCB_TRACE_UNKNOWN": 7
+    },
+    "physical_function_status": {
+      "PHYSICAL_FUNCTION_PROBABLE": 14,
+      "PHYSICAL_FUNCTION_UNKNOWN": 11
+    }
   },
   "validation_checklist": {
     "all_required_gpios_represented": true,

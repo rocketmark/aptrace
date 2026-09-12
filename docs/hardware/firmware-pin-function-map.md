@@ -10,7 +10,7 @@ inspection, and the explicit per-layer grading.
 
 **Machine-readable companion (authoritative)**:
 [`research/generated/firmware-pin-function-map.json`](../../research/generated/firmware-pin-function-map.json),
-25 signals.
+27 signals.
 
 ## Package and orientation
 
@@ -36,16 +36,21 @@ in relative to the MCU as a whole.
 
 ## Discrepancy flags
 
-- **The `REV 1` photo subfolder does not show the AutoPilot.** It shows
-  the **Remote/Mando** board (silkscreen `24_PO_V05R01`): Ai-Thinker
-  Ra-01H radio module, rotary encoder with integrated push switch, LiPo
-  pouch cell, buzzer — an exact match to `hardware-reference.md`'s
-  *Remote* facts, not the AutoPilot's. The `REV 2` subfolder (silkscreen
-  `52_PO_V01R04`) is the real AutoPilot board: visible `Atmel
-  ATSAMD51J19A` marking, dual RJ45 jacks, a 3.5mm TRS jack, 4 XLR-4
-  panel connectors, 4 repeated motor-driver channels. **Only `REV 2`
-  photos were used as AutoPilot evidence in this pass**; this is
-  reported rather than silently corrected in the folder.
+- **The `REV 1` photo subfolder is mixed, not exclusively Remote-board
+  photos as this pass originally recorded.** The original file set
+  (`...0042`-`...0074`) shows the **Remote/Mando** board (silkscreen
+  `24_PO_V05R01`): Ai-Thinker Ra-01H radio module, rotary encoder with
+  integrated push switch, LiPo pouch cell, buzzer — an exact match to
+  `hardware-reference.md`'s *Remote* facts, not the AutoPilot's. A
+  later-added file set in the SAME folder (`...0095` onward) shows the
+  real **AutoPilot** board (silkscreen `52_PO_V01R04`, matching `REV 2`)
+  — including the first legible, in-repo photo confirmation of a
+  `TMC5160A-TA` motor-driver IC (`...0101.jpg`/`...0103.jpg`; see
+  `hardware-reference.md`'s "Motor driver IC identity"). Check each
+  file's own board identity; do not trust the folder name alone.
+  `REV 2` (silkscreen `52_PO_V01R04`) remains the real AutoPilot board:
+  visible `Atmel ATSAMD51J19A` marking, dual RJ45 jacks, a 3.5mm TRS
+  jack, 4 XLR-4 panel connectors, 4 repeated motor-driver channels.
 - No discrepancy was found between the documented AutoPilot chip
   identity and the REV 2 photos — reported to make the validation check
   explicit.
@@ -79,6 +84,10 @@ in relative to the MCU as a whole.
 | USB D- | PA24 | 45 | PROBABLE | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | USB D+ | PA25 | 46 | PROBABLE | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |
 | External RJ45 STEP/DIR in | *unknown* | *unknown* | **UNKNOWN** | UNKNOWN | NEIGHBORHOOD_ONLY | UNKNOWN |
+| Motor driver IC (chip identity: TMC5160A-TA) | n/a (not a GPIO) | n/a | n/a | n/a | **PROVEN — PCB PHOTO** | PROBABLE (1 of 4 channels) |
+| Motor driver power stage (CSD88537ND, TI) | n/a (not a GPIO) | n/a | n/a | n/a | **PROVEN — PCB PHOTO + MARKING MATCH** | PROBABLE (power stage, not motor-control) |
+| Motor bus mux candidate (SN74CBTLV3257, TI) | n/a (not traced) | n/a | n/a | n/a | **PROVEN — PCB PHOTO + MARKING MATCH** (identity only) | UNKNOWN (bus role not established) |
+| Motor driver SPI/UART (SCK/SDI/SDO/CSN) | *unknown* | *unknown* | **UNKNOWN** | UNKNOWN | TRACE_UNKNOWN | UNKNOWN |
 
 Full per-signal detail (firmware function/trigger, exact evidence refs,
 PCB observations, remaining unknowns) is in the JSON companion — not
@@ -135,7 +144,7 @@ resolved further.
 
 All 8 STEP+DIR package pins re-verified exactly against prior records
 via fresh flash dumps this session (no discrepancy). PCB photos confirm
-a motor-driver board region (4 repeated small-QFP/TI-H-bridge-marked
+a motor-driver board region (4 repeated small-QFP/TI-CSD88537ND-marked
 driver stages, large electrolytic capacitors, 4 XLR-4 panel connectors
 — the REV 2 "left" board in `IMG_3098.JPG` shows the XLR jacks
 mounted through the panel directly) on the side of the board opposite
@@ -143,6 +152,67 @@ the MCU/logic region. **No individual copper trace was followed from
 any specific package pin to any specific XLR jack**, and — per explicit
 instruction — **no logical-channel-to-physical-Motor-1..4 identity and
 no DIR-polarity-to-physical-rotation identity is claimed.**
+
+**Motor driver IC identity: `PROVEN — PCB PHOTO`.**
+`research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0101.jpg`
+contains a clearly legible Trinamic-marked device — `TMC5160A-TA` /
+`2512 A19TA` / `GERMANY` — direct PCB-photo confirmation that at least
+one TMC5160A-TA is physically populated on the AutoPilot board.
+`...0103.jpg` independently reconfirms the same device from a wider
+view. **Not claimed**: which of the four motor channels this specific
+chip belongs to (no legible reference designator or trace was in
+frame), and that all four devices carry independently legible markings
+— only one has been individually read; the other three are assumed
+identical by board repetition, not confirmed. `...0106.jpg` additionally
+shows a `CR9MICRO CRSS037N10N` power MOSFET near the connector/
+power-stage area — recorded only as supporting power-stage evidence,
+not as the motor-driver IC itself.
+
+**Adjacent SOIC-8 parts identified: `PROVEN — PCB PHOTO + MANUFACTURER
+MARKING MATCH`.** The small SOIC-8 parts previously recorded only as
+"TI `8853x`-marked" are Texas Instruments **CSD88537ND** (dual 60 V
+N-channel NexFET power MOSFET, SOIC-8) — marking `88537N` (TI's own
+documented package/device marking for this exact part), with `26Z` and
+`N9x4G4` recorded only as secondary package/lot/trace markings, not
+independently decoded. **Architectural implication**: consistent with
+the external N-channel MOSFET power stage the TMC5160A requires — a
+power-stage component, not a second motor-control IC. Exact count of
+CSD88537ND packages per channel and the complete bridge topology are
+**not** inferred from a single photo.
+
+**Adjacent 16-pin SSOP mux/demux identified: `PROVEN — PCB PHOTO +
+MANUFACTURER MARKING MATCH`.** A 16-pin SSOP part in the same cluster
+(`...0103.jpg`), marked `CL257` / `27M` / `AFRN64`, is Texas Instruments
+**`SN74CBTLV3257`** — a low-voltage 4-bit 1-of-2 FET multiplexer/
+demultiplexer, DBQ/SSOP-16 package (`CL257` is TI's documented top-side
+marking, `SCDS040N`; `27M`/`AFRN64` are secondary lot/trace codes, not
+independently decoded). TI's datasheet names "Motor drives" as an
+application for this part. Pinout: `S`(1) select, `1B1/1B2/1A`,
+`2B1/2B2/2A`, `3A/3B2/3B1`, `4A/4B2/4B1` (four independent 2:1 switch
+channels), `GND`(8), `OE‾`(15), `VCC`(16) — all four channels share one
+select (`S`) and one active-low enable (`OE‾`).
+
+**Architectural implication (candidate, not proven)**: a shared-select
+4-channel 2:1 mux is the kind of part used to time-share one physical
+bus across two destinations with a single control bit — a plausible
+mechanism for the still-open "is a config bus shared across all four
+TMC5160s" question (see "Unresolved high-value pins" below). **Not
+established**: no board signal has been traced to this chip's
+`A`/`B1`/`B2`/`S`/`OE‾` pins. This is a candidate mechanism only, pending
+a PCB continuity check.
+
+No examined photo establishes SCK/SDI/SDO/CSN routing to the ATSAMD51,
+logical-channel↔physical-XLR identity, or DIR-polarity↔physical-rotation
+identity.
+
+> The remaining high-value question is whether a live configuration
+> interface exists between the ATSAMD51 and the TMC5160s, and if so how
+> SCK/SDI/SDO/CSN are routed.
+
+**Absence of visible bus traces in these photographs does not prove
+standalone (pin-configured) mode** — it only means no such trace was
+legible at the angles/resolution captured so far; a real PCB continuity
+check is still required to close this either way.
 
 ## Trigger result
 
@@ -180,8 +250,11 @@ firmware GPIO for that external-input path exists in current evidence
   session, reconfirmed structurally this pass.
 - PA23 as the status LED: ruled out at the firmware layer (one-shot
   latch, not a toggle) in a prior session; not re-opened here.
-- REV 1 photos as AutoPilot evidence: ruled out this pass (they are
-  Remote-board photos).
+- REV 1 photos as AutoPilot evidence: **superseded** — this was true
+  only of the original `...0042`-`...0074` file set (Remote-board
+  photos); a later-added file set in the same folder (`...0095` onward)
+  is real AutoPilot-board evidence, including the TMC5160A-TA chip-ID
+  finding above.
 
 ## Unresolved high-value pins
 
@@ -189,7 +262,15 @@ PB30/PB31's real physical destination; PA22's physical component;
 PB06/PB07's "reset strobe" characterization; the TCC1/PB22 5th-channel
 pulse's purpose; the external RJ45 STEP/DIR input's entire firmware-side
 mechanism; DIR polarity-to-rotation on all 4 channels; logical-channel
-to physical-Motor-1..4 identity.
+to physical-Motor-1..4 identity; **whether a live SPI/UART configuration
+interface exists between the ATSAMD51 and the four TMC5160A-TA devices,
+and if so the SCK/SDI/SDO/CSN routing** (chip identity is now
+`PROVEN — PCB PHOTO` for one device; bus routing is still `UNKNOWN` —
+see "Motor result (STEP/DIR)" above); **whether the identified
+`SN74CBTLV3257` (`CL257`) 4-channel 2:1 mux is the mechanism sharing that
+bus across TMC5160 pairs** — a plausible candidate by part function and
+TI's own "Motor drives" application note, but its `A`/`B1`/`B2`/`S`/`OE‾`
+pins are not traced to any board signal, so this is not established.
 
 **TCC1/PB22 update** (TCC1/PB22 Boot Runtime Replay): concretely
 confirmed TCC1 is genuinely enabled twice during boot, both times
