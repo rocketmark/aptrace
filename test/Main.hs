@@ -8,6 +8,7 @@
 module Main (main) where
 
 import           Control.Exception ( SomeException, try )
+import           Data.Aeson ( encode )
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
 import           Data.List ( isInfixOf )
@@ -26,6 +27,10 @@ import qualified Prettyprinter as PP
 
 import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry )
+import           APTrace.MacawCensus
+  ( CensusResult(..), FirmwareMeta(..), FunctionInfo(..)
+  , censusToValue, discoverCensus, normalizeRoots )
+import           APTrace.VectorTable ( VectorEntry(..) )
 
 main :: IO ()
 main = do
@@ -36,6 +41,10 @@ main = do
         (macawCortexMEntry 0x952d == 0x952d)
     , dataAddressUnmodified
     , realFirmwareRepro
+    , vectorRootsDedupNormalized
+    , censusAddressesAreCanonical
+    , censusOutputDeterministic
+    , censusPreservesUnresolvedTerminator
     ]
   if and results
     then putStrLn "All tests passed."
@@ -121,3 +130,91 @@ decodeContainsA1 mem addr =
       in case Map.lookup entry funs of
            Nothing -> error ("decodeContainsA1: 0x" ++ showHex addr "" ++ " was not discovered")
            Just (Some fn) -> pure ("_A1" `isInfixOf` show (PP.pretty fn))
+
+-- | 5. Two vector-table entries whose raw values are byte-different but
+-- represent the same Cortex-M target (one already Thumb-tagged, one not)
+-- must collapse into a single root group, and a genuinely different target
+-- must not -- exercising 'APTrace.MacawCensus.normalizeRoots' directly, no
+-- firmware needed.
+vectorRootsDedupNormalized :: IO Bool
+vectorRootsDedupNormalized =
+  let entries =
+        [ VectorEntry 1 "Reset_Handler"   0x8001 -- already Thumb-tagged
+        , VectorEntry 3 "Default_Handler" 0x9000 -- a distinct target
+        , VectorEntry 4 "Spurious_A"      0x8000 -- same target as #1, even encoding
+        , VectorEntry 5 "Spurious_B"      0x8001 -- same target as #1, exact duplicate
+        ]
+      grouped = normalizeRoots entries
+      expected =
+        [ (0x8001, ["Reset_Handler", "Spurious_A", "Spurious_B"])
+        , (0x9001, ["Default_Handler"])
+        ]
+  in test "5. vector roots are deduplicated and normalized through macawCortexMEntry"
+       (grouped == expected)
+
+-- | A tiny, hand-assembled Thumb function -- @nop; bx lr@ -- used by tests
+-- 6 and 7 so they don't need the proprietary AutoPilot firmware.
+tinyThumbProgram :: BS.ByteString
+tinyThumbProgram = BS.pack [0xC0, 0x46, 0x70, 0x47]
+
+-- | 6. A census seeded at an even canonical code address must report that
+-- function's identity as the canonical (even) address, never the odd
+-- Thumb-tagged Macaw-internal one.
+censusAddressesAreCanonical :: IO Bool
+censusAddressesAreCanonical = do
+  let entryRaw = 0x8000 :: Word32
+  case buildMemory tinyThumbProgram entryRaw 0x20000000 0x1000 of
+    Left err -> test "6. census output addresses are canonical (no Thumb-tag identities)" False
+                  <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+    Right mem -> do
+      census <- discoverCensus mem [(macawCortexMEntry entryRaw, ["synthetic"])]
+      test "6. census output addresses are canonical (no Thumb-tag identities)"
+        (case crFunctions census of
+           [fi] -> fiEntry fi == entryRaw
+           _    -> False)
+
+-- | 7. Running the same census twice over the same input must produce
+-- byte-identical JSON -- both list ordering (sorted by address, per
+-- 'discoverCensus') and content must be deterministic.
+censusOutputDeterministic :: IO Bool
+censusOutputDeterministic = do
+  let entryRaw = 0x8000 :: Word32
+  case buildMemory tinyThumbProgram entryRaw 0x20000000 0x1000 of
+    Left err -> test "7. census output ordering/content is deterministic across runs" False
+                  <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+    Right mem -> do
+      let fm = FirmwareMeta "synthetic" (BS.length tinyThumbProgram) entryRaw 0x20000000 0x1000
+          roots = [(macawCortexMEntry entryRaw, ["synthetic"])]
+      c1 <- discoverCensus mem roots
+      c2 <- discoverCensus mem roots
+      test "7. census output ordering/content is deterministic across runs"
+        (encode (censusToValue fm c1) == encode (censusToValue fm c2))
+
+-- | 8. A genuine, already-documented Macaw classify failure (every branch
+-- in @phase_ramp_state_machine__CUSTOM@ / flash @0x8e18@ is a narrow
+-- @CBZ_T1@/@CBNZ_T1@ this Macaw version's branch classifier cannot
+-- recognize -- see @app/Main.hs@'s @runTrigger@ docstring, "Confirmed
+-- exhaustively for this function (4/4 classify failures are CBZ_T1)") must
+-- show up in 'crUnresolved' rather than being silently dropped. Skips if
+-- the proprietary firmware isn't present locally.
+censusPreservesUnresolvedTerminator :: IO Bool
+censusPreservesUnresolvedTerminator = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 8. unresolved-terminator preservation (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "8. unresolved terminators are preserved, not dropped" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry 0x8e18, ["phase_ramp_state_machine"])]
+        test "8. unresolved terminators are preserved, not dropped"
+          (not (null (crUnresolved census)))
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32

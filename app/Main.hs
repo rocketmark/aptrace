@@ -23,6 +23,7 @@ import qualified Data.Macaw.Memory as MM
 import           APTrace.DebugHarness ( runDebug )
 import           APTrace.FirmwareLoader
   ( buildMemory, buildMemoryWithMMIO, resolveEntry, macawCortexMEntry )
+import           APTrace.MacawCensus ( runMacawCensus )
 import           APTrace.ProtocolHarness ( PacketByte(..) )
 import qualified APTrace.ProtocolHarness as PH
 import           APTrace.SymbolicRunner
@@ -54,9 +55,11 @@ main = do
     ["trigger", path]                  -> runTrigger path 0x4000
     ["trigger-crosscheck", path]       -> runTriggerCrossCheck path 0x4000
     ["debug", path, entryS]            -> runDebug path 0x4000 (parseHexWord entryS)
+    ["macaw-census", path]              -> runMacawCensus path 0x4000
+    ["macaw-census", path, flashBaseS]  -> runMacawCensus path (parseHexWord flashBaseS)
     [path]                      -> run path 0x4000
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
-    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)"
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)\n       aptrace macaw-census FIRMWARE.bin [FLASH_BASE_HEX]  (standalone Macaw static-discovery census, phase 1)"
 
 parseHexWord :: String -> Word32
 parseHexWord s =

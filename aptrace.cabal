@@ -10,10 +10,12 @@ library
                   , APTrace.SymbolicRunner
                   , APTrace.ProtocolHarness
                   , APTrace.DebugHarness
+                  , APTrace.MacawCensus
   hs-source-dirs:   src
   default-language: Haskell2010
   ghc-options:      -Wall
   build-depends:    base
+                  , aeson
                   , bytestring
                   , binary
                   , bv-sized
@@ -32,6 +34,7 @@ library
                   , semmc-aarch32
                   , text
                   , time
+                  , vector
                   , what4
 
 executable aptrace
@@ -56,6 +59,7 @@ test-suite aptrace-test
   default-language: Haskell2010
   ghc-options:      -Wall
   build-depends:    base
+                  , aeson
                   , bytestring
                   , containers
                   , microlens
