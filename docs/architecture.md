@@ -147,3 +147,15 @@ depend on framework code, never the reverse:
   `docs/tooling/` and `docs/harness/execution-model.md` hold framework/
   tooling documentation describing reusable mechanisms, not one
   firmware's results.
+
+**Known remaining coupling, not yet cleaned up**: this target's RAM
+geometry (`0x20000000`/`0x30000`) is still independently duplicated as
+inline CLI-argument defaults in several `tools/unicorn/*.py` scripts
+(`concrete.py`, `run_concrete.py`, `virtual_link.py`,
+`trigger_mitigation_prototype.py`, `trigger_transient_propagation.py`)
+and `tools/census/state_map.py`, rather than importing it from
+`tools/case/performing_rigs.py`. `tools/census/hardware_contract.py`
+also decodes ATSAMD51-specific peripheral register fields in code that
+borders on census/schema semantics. Both are real, bounded follow-ups,
+not attempted in the pass that established the `Case`/`case` boundary
+above.
