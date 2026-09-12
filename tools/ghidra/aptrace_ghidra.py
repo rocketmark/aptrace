@@ -74,24 +74,16 @@ ANALYSIS_VERSION = 1
 PROCESSOR = "ARM:LE:32:Cortex"
 CSPEC = "default"
 
-# Address-range defaults for APTraceExportCensus.java's RAM/MMIO
-# classification -- matches tools/unicorn/concrete.py's ram_base/ram_size
-# and tools/unicorn/virtual_link.py's (wider) MMIO window, so a static
-# memory/MMIO access and a dynamic (Unicorn) one are classified against
-# the same address ranges.
-CENSUS_RAM_BASE = "0x20000000"
-CENSUS_RAM_SIZE = "0x30000"
-CENSUS_MMIO_BASE = "0x40000000"
-CENSUS_MMIO_SIZE = "0x4000000"
-
-# firmware key -> (path relative to repo root, load base, provenance TSV or None)
-FIRMWARE_REGISTRY = {
-    "autopilot868": ("research/firmware/originals/firmware_autopilot868.bin", "0x4000",
-                      "research/provenance/ghidra_labels.tsv"),
-    "autopilot915": ("research/firmware/originals/firmware_autopilot915.bin", "0x4000", None),
-    "mando868": ("research/firmware/originals/firmware_mando868.bin", "0x4000", None),
-    "mando915": ("research/firmware/originals/firmware_mando915.bin", "0x4000", None),
-}
+# Performing Rigs case data (known firmware images, this target's RAM/MMIO
+# geometry) lives under tools/case/, not in this reusable Ghidra-backend
+# module -- see tools/case/performing_rigs.py. Re-exported under the same
+# names so existing callers (build.py's `ghidra.CENSUS_RAM_BASE`,
+# test_aptrace_ghidra.py's `ag.FIRMWARE_REGISTRY`) are unaffected.
+sys.path.insert(0, str(REPO_ROOT / "tools" / "case"))
+from performing_rigs import (  # noqa: E402
+    CENSUS_RAM_BASE, CENSUS_RAM_SIZE, CENSUS_MMIO_BASE, CENSUS_MMIO_SIZE,
+    FIRMWARE_REGISTRY,
+)
 
 
 def resolve_headless():
