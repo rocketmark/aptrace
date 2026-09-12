@@ -11,6 +11,7 @@ library
                   , APTrace.ProtocolHarness
                   , APTrace.DebugHarness
                   , APTrace.MacawCensus
+                  , APTrace.MacawNormalize
                   , APTrace.MacawRefinement
   hs-source-dirs:   src
   default-language: Haskell2010

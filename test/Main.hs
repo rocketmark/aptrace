@@ -21,10 +21,13 @@ import           System.IO ( hPutStrLn, stderr )
 
 import qualified Data.Macaw.ARM as ARM
 import qualified Data.Macaw.ARM.Arch as ARMArch
+import qualified Data.Macaw.CFG as MC
 import qualified Data.Macaw.Discovery as MD
 import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
 import qualified Data.Macaw.Refinement as Refine
+import qualified Data.Macaw.Types as MT
+import qualified Data.Parameterized.Nonce as PN
 import           Data.Parameterized.Some ( Some(..) )
 import qualified Prettyprinter as PP
 
@@ -32,8 +35,9 @@ import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus
   ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
-  , FunctionInfo(..), UnresolvedInfo(..)
+  , FunctionInfo(..), NormalizedInfo(..), UnresolvedInfo(..)
   , canonicalWord, censusToValue, discoverCensus, normalizeRoots )
+import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.MacawRefinement ( refineFunctionAt )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
@@ -58,6 +62,11 @@ main = do
     , unresolvedCallIsPreserved
     , callOutputIsDeterministic
     , refinementInitializesEmptyStructRegister
+    , nestedSameConditionMuxSimplifies
+    , nestedDifferentConditionMuxDoesNotSimplify
+    , realCase0x44ecRecoversTwoTargets
+    , recoveredEvidenceIsMarkedMacawNormalized
+    , memoryDerivedFailureRemainsUnresolved
     ]
   if and results
     then putStrLn "All tests passed."
@@ -522,6 +531,184 @@ refinementInitializesEmptyStructRegister = do
                    (not mentionsStructGap)
   where
     targetEntry  = 0x44ec :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+------------------------------------------------------------------------
+-- APTrace.MacawNormalize: the one algebraic identity
+-- mux(c, mux(c,A,B), C) -> mux(c,A,C), applied only to classify_failure
+-- curIP expressions. Tests 17/18 build small, synthetic, hand-assembled
+-- Macaw IR values directly (no firmware, no discovery) to exercise
+-- 'Normalize.normalizeIP' in isolation; tests 19/20/21 use the real,
+-- already-documented firmware cases.
+
+-- | A fresh, otherwise-meaningless Bool-typed assignment -- stands in for
+-- "some condition Macaw computed"; 'Normalize.normalizeIP' never inspects
+-- a condition's own right-hand side, only its identity, so its actual rhs
+-- (here, 'MC.SetUndefined') is irrelevant.
+mkCond :: PN.NonceGenerator IO ids
+       -> IO (MC.Value ARM.ARM ids MT.BoolType)
+mkCond gen = do
+  n <- PN.freshNonce gen
+  pure (MC.AssignedValue (MC.Assignment (MC.AssignId n) (MC.SetUndefined MT.BoolTypeRepr)))
+
+-- | A concrete literal code address, exactly as it appears in Macaw's own
+-- lifted IR for a direct branch target ('MC.RelocatableValue').
+mkLitAddr :: Word32 -> MC.Value ARM.ARM ids (MT.BVType 32)
+mkLitAddr w = MC.RelocatableValue MM.Addr32 (MM.absoluteAddr (MM.memWord (fromIntegral w)))
+
+-- | A fresh Mux assignment -- 'MC.valueAsApp' (which 'Normalize.normalizeIP'
+-- uses internally) recovers exactly this shape back out.
+mkMux :: PN.NonceGenerator IO ids
+      -> MC.Value ARM.ARM ids MT.BoolType
+      -> MC.Value ARM.ARM ids (MT.BVType 32)
+      -> MC.Value ARM.ARM ids (MT.BVType 32)
+      -> IO (MC.Value ARM.ARM ids (MT.BVType 32))
+mkMux gen c t f = do
+  n <- PN.freshNonce gen
+  pure (MC.AssignedValue
+          (MC.Assignment (MC.AssignId n) (MC.EvalApp (MC.Mux (MT.BVTypeRepr MT.n32) c t f))))
+
+-- | A tiny synthetic memory covering exactly the literal addresses tests
+-- 17/18 use as branch targets -- large enough to hold three well-separated
+-- addresses, nothing more.
+synthMem :: Either String (MM.Memory 32)
+synthMem = buildMemory (BS.replicate 0x100 0) 0x1000 0x20000000 0x100
+
+-- | 17. The one supported identity, in isolation: @mux(c, mux(c,A,B), C)@
+-- with the *same* condition value @c@ in both mux positions (by identity --
+-- literally the same 'MC.Value', not merely two conditions that happen to
+-- read the same) must normalize to exactly @[A, C]@, dropping the
+-- unreachable @B@ branch entirely.
+nestedSameConditionMuxSimplifies :: IO Bool
+nestedSameConditionMuxSimplifies =
+  case synthMem of
+    Left err -> test "17. mux(c, mux(c,A,B), C) simplifies to [A,C]" False
+                  <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+    Right mem -> PN.withIONonceGenerator $ \gen -> do
+      c <- mkCond gen
+      let a = mkLitAddr 0x1000
+          b = mkLitAddr 0x1010
+          bigC = mkLitAddr 0x1020
+      inner <- mkMux gen c a b
+      outer <- mkMux gen c inner bigC
+      test "17. mux(c, mux(c,A,B), C) simplifies to [A,C]"
+        (Normalize.normalizeIP mem outer == Just [0x1000, 0x1020])
+
+-- | 18. The same shape, but the inner mux's condition is a *different*
+-- value from the outer one -- the identity does not apply (it is only
+-- valid when both conditions are identical), so this must be left
+-- unresolved (@Nothing@), never guessed at.
+nestedDifferentConditionMuxDoesNotSimplify :: IO Bool
+nestedDifferentConditionMuxDoesNotSimplify =
+  case synthMem of
+    Left err -> test "18. different conditions do not simplify" False
+                  <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+    Right mem -> PN.withIONonceGenerator $ \gen -> do
+      c1 <- mkCond gen
+      c2 <- mkCond gen
+      let a = mkLitAddr 0x1000
+          b = mkLitAddr 0x1010
+          bigC = mkLitAddr 0x1020
+      inner <- mkMux gen c2 a b
+      outer <- mkMux gen c1 inner bigC
+      test "18. different conditions do not simplify"
+        (Normalize.normalizeIP mem outer == Nothing)
+
+-- | 19. The real, already-documented @0x44ec@ CBZ_T1 case (a whole,
+-- single-block function whose only terminator is exactly this shape --
+-- see @APTrace.MacawNormalize@'s Haddock): seeding discovery at @0x44ec@
+-- alone must produce a 'NormalizedInfo' recovering its real two targets,
+-- @0x457e@ and @0x453e@. Skips if the firmware isn't present locally.
+realCase0x44ecRecoversTwoTargets :: IO Bool
+realCase0x44ecRecoversTwoTargets = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 19. real case 0x44ec recovers its two targets (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "19. real case 0x44ec recovers its two targets" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry targetEntry, ["target"])]
+        test "19. real case 0x44ec recovers its two targets"
+          (case crNormalized census of
+             [n] -> niFunctionEntry n == targetEntry && niBlockStart n == targetEntry
+                      && niTargets n == [0x457e, 0x453e]
+             _   -> False)
+  where
+    targetEntry  = 0x44ec :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 20. Every 'NormalizedInfo' the census emits must carry the
+-- @macaw-normalized@ provenance tag -- never left blank, never relabeled as
+-- ordinary @macaw-base@ evidence. Reuses the same @0x44ec@ fixture as
+-- test 19. Skips if the firmware isn't present locally.
+recoveredEvidenceIsMarkedMacawNormalized :: IO Bool
+recoveredEvidenceIsMarkedMacawNormalized = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 20. recovered evidence is marked macaw-normalized (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "20. recovered evidence is marked macaw-normalized" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry targetEntry, ["target"])]
+        test "20. recovered evidence is marked macaw-normalized"
+          (not (null (crNormalized census))
+             && all ((== Normalize.macawNormalizedProvenance) . niProvenance) (crNormalized census))
+  where
+    targetEntry  = 0x44ec :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 21. A real memory-derived classify_failure -- @0x978c@ / target
+-- @0x97a0@ (@mux(c, loop_target, stack_loaded_value)@ -- one branch is a
+-- plain memory read, not a concrete address; see @APTrace.MacawNormalize@'s
+-- Haddock) -- must remain unresolved: normalization must not fire, so no
+-- 'NormalizedInfo' is emitted for it, and the original classify_failure
+-- must still be present in 'crUnresolved'. Skips if the firmware isn't
+-- present locally.
+memoryDerivedFailureRemainsUnresolved :: IO Bool
+memoryDerivedFailureRemainsUnresolved = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 21. memory-derived failure remains unresolved (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "21. memory-derived failure remains unresolved" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem (normalizeRoots (parseVectorTable 40 bytes))
+        let stillUnresolved =
+              any (\u -> uiFunctionEntry u == fnEntry && uiBlockStart u == blkStart
+                           && uiKind u == "classify_failure")
+                  (crUnresolved census)
+            notNormalized =
+              not (any (\n -> niFunctionEntry n == fnEntry && niBlockStart n == blkStart)
+                       (crNormalized census))
+        test "21. memory-derived failure remains unresolved"
+          (stillUnresolved && notNormalized)
+  where
+    fnEntry      = 0x97a0 :: Word32
+    blkStart     = 0x978c :: Word32
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32

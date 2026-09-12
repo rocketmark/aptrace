@@ -19,6 +19,7 @@ module APTrace.MacawCensus
   , EdgeInfo(..)
   , UnresolvedInfo(..)
   , CallInfo(..)
+  , NormalizedInfo(..)
   , CensusResult(..)
     -- * Pipeline
   , normalizeRoots
@@ -54,6 +55,7 @@ import           Data.Parameterized.Some ( Some(..) )
 
 import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
+import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
 -- Fixed for the AutoPilot/Mando firmware family, matching every other
@@ -166,17 +168,39 @@ data CallInfo = CallInfo
     -- ^ @"direct"@, @"unmapped"@, or @"indirect"@ -- see above.
   } deriving (Eq, Show)
 
+-- | A @classify_failure@ terminator 'APTrace.MacawNormalize.normalizeIP'
+-- was able to recover into a flat two-way branch, purely by an
+-- architecture-independent Boolean identity over Macaw's own lifted
+-- @curIP@ expression -- never by decoding instruction bytes and never by
+-- consulting Ghidra/Capstone. The corresponding entry in 'crUnresolved' is
+-- /never/ removed when this succeeds: this is additional evidence with its
+-- own distinct 'niProvenance', not a replacement for or relabeling of the
+-- original Macaw evidence, which remains fully auditable.
+data NormalizedInfo = NormalizedInfo
+  { niFunctionEntry :: !Word32
+  , niBlockStart    :: !Word32
+  , niTargets       :: ![Word32]
+    -- ^ One or two canonicalized, resolved, mapped firmware addresses (one
+    -- only in the degenerate case where both branches happen to be the
+    -- same address).
+  , niProvenance    :: !String
+    -- ^ Always 'Normalize.macawNormalizedProvenance' -- carried explicitly
+    -- on every entry so this list is self-describing if ever combined with
+    -- other evidence later.
+  } deriving (Eq, Show)
+
 data CensusResult = CensusResult
   { crRoots           :: ![RootInfo]
   , crDiscoveryError  :: !(Maybe String)
     -- ^ Set only if Macaw's discovery pass itself raised an exception
     -- (e.g. an unhandled decode case) -- see 'discoverCensus'. When set,
-    -- 'crFunctions'/'crBlocks'/'crEdges'/'crUnresolved'/'crCalls' are empty.
+    -- every other list in this record is empty.
   , crFunctions       :: ![FunctionInfo]
   , crBlocks          :: ![BlockInfo]
   , crEdges           :: ![EdgeInfo]
   , crUnresolved      :: ![UnresolvedInfo]
   , crCalls           :: ![CallInfo]
+  , crNormalized      :: ![NormalizedInfo]
   } deriving (Eq, Show)
 
 ------------------------------------------------------------------------
@@ -225,6 +249,7 @@ data Core = Core
   , coreEdges      :: ![EdgeInfo]
   , coreUnresolved :: ![UnresolvedInfo]
   , coreCalls      :: ![CallInfo]
+  , coreNormalized :: ![NormalizedInfo]
   }
 
 forceElems :: [a] -> [a]
@@ -237,6 +262,7 @@ forceCore c = Core
   , coreEdges      = forceElems (coreEdges c)
   , coreUnresolved = forceElems (coreUnresolved c)
   , coreCalls      = forceElems (coreCalls c)
+  , coreNormalized = forceElems (coreNormalized c)
   }
 
 -- | Run Macaw's own static discovery ('MD.cfgFromAddrs') from the given
@@ -285,6 +311,7 @@ discoverCensus mem rootGroups = do
         , crEdges = []
         , crUnresolved = []
         , crCalls = []
+        , crNormalized = []
         }
     Right core ->
       CensusResult
@@ -296,6 +323,7 @@ discoverCensus mem rootGroups = do
                       (coreEdges core)
         , crUnresolved = sortOn (\u -> (uiFunctionEntry u, uiBlockStart u)) (coreUnresolved core)
         , crCalls = sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) (coreCalls core)
+        , crNormalized = sortOn (\n -> (niFunctionEntry n, niBlockStart n)) (coreNormalized core)
         }
 
 buildCore :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> Set.Set Word32 -> Core
@@ -304,18 +332,19 @@ buildCore mem addrSymMap entryList rootCanonSet =
       funs = Map.elems (discState ^. MD.funInfo)
       perFunction = map (summarizeFunction mem rootCanonSet) funs
   in Core
-       { coreFunctions  = map (\(f, _, _, _, _) -> f) perFunction
-       , coreBlocks     = concatMap (\(_, bs, _, _, _) -> bs) perFunction
-       , coreEdges      = concatMap (\(_, _, es, _, _) -> es) perFunction
-       , coreUnresolved = concatMap (\(_, _, _, us, _) -> us) perFunction
-       , coreCalls      = concatMap (\(_, _, _, _, cs) -> cs) perFunction
+       { coreFunctions  = map (\(f, _, _, _, _, _) -> f) perFunction
+       , coreBlocks     = concatMap (\(_, bs, _, _, _, _) -> bs) perFunction
+       , coreEdges      = concatMap (\(_, _, es, _, _, _) -> es) perFunction
+       , coreUnresolved = concatMap (\(_, _, _, us, _, _) -> us) perFunction
+       , coreCalls      = concatMap (\(_, _, _, _, cs, _) -> cs) perFunction
+       , coreNormalized = concatMap (\(_, _, _, _, _, ns) -> ns) perFunction
        }
 
 summarizeFunction
   :: MM.Memory 32
   -> Set.Set Word32
   -> Some (MD.DiscoveryFunInfo ARM.ARM)
-  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo])
+  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo], [NormalizedInfo])
 summarizeFunction mem rootCanonSet (Some fn) =
   let entryCanon = canonicalWord (MD.discoveredFunAddr fn)
       blocks = Map.elems (fn ^. MD.parsedBlocks)
@@ -339,8 +368,26 @@ summarizeFunction mem rootCanonSet (Some fn) =
           [ callsOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)
           | b <- blocks
           ]
+      normalizedInfos =
+        [ n
+        | b <- blocks
+        , Just n <- [normalizedInfoOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)]
+        ]
       fnInfo = FunctionInfo entryCanon (entryCanon `Set.member` rootCanonSet) (length blocks)
-  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos)
+  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos, normalizedInfos)
+
+-- | Apply 'Normalize.normalizeIP' to exactly one block's terminator, if it's
+-- a 'MDP.ClassifyFailure' -- every other terminator kind contributes
+-- nothing here, and a classify_failure whose curIP doesn't match the one
+-- supported identity (or whose recovered targets aren't concrete/mapped)
+-- also contributes nothing, leaving 'unresolvedOf'\'s entry for the same
+-- block as the only evidence.
+normalizedInfoOf :: MM.Memory 32 -> Word32 -> Word32 -> MDP.ParsedTermStmt ARM.ARM ids -> Maybe NormalizedInfo
+normalizedInfoOf mem funcEntry src t = case t of
+  MDP.ClassifyFailure regs _ -> do
+    targets <- Normalize.normalizeIP mem (regs ^. MC.boundValue MC.ip_reg)
+    Just (NormalizedInfo funcEntry src targets Normalize.macawNormalizedProvenance)
+  _ -> Nothing
 
 -- | Name Macaw's own terminator classification -- one word per
 -- 'MDP.ParsedTermStmt' constructor, nothing inferred beyond that.
@@ -482,6 +529,14 @@ callValue c = object
   , "kind"       .= ciKind c
   ]
 
+normalizedValue :: NormalizedInfo -> Value
+normalizedValue n = object
+  [ "function_entry" .= hexStr (niFunctionEntry n)
+  , "block_start"    .= hexStr (niBlockStart n)
+  , "targets"        .= map hexStr (niTargets n)
+  , "provenance"     .= niProvenance n
+  ]
+
 -- | The full, deterministic census document. Field order within each
 -- object is fixed by this function (aeson's pinned @+ordered-keymap@
 -- build preserves it); array order is fixed by the sorts already applied
@@ -496,6 +551,7 @@ censusToValue fm cr = object
   , "edges"     .= map edgeValue (crEdges cr)
   , "incomplete_or_unresolved_terminators" .= map unresolvedValue (crUnresolved cr)
   , "calls"     .= map callValue (crCalls cr)
+  , "normalized_terminators" .= map normalizedValue (crNormalized cr)
   ]
 
 ------------------------------------------------------------------------
