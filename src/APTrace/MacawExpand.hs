@@ -46,11 +46,11 @@ module APTrace.MacawExpand
   , resolutionValue
   ) where
 
-import           Data.Aeson ( Value, encode, object, (.=) )
+import           Data.Aeson ( Value(..), encode, object, (.=) )
+import qualified Data.Aeson.KeyMap as KM
 import qualified Data.ByteString as BS
-import qualified Data.ByteString.Char8 as BSC
 import qualified Data.ByteString.Lazy.Char8 as BSLC
-import           Data.List ( foldl', intercalate, sort )
+import           Data.List ( foldl', sort )
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import           Data.Word ( Word32 )
@@ -66,8 +66,10 @@ import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
 import           Data.Parameterized.Some ( Some(..) )
 
-import           APTrace.FirmwareLoader ( buildMemory, resolveEntry )
-import           APTrace.MacawCensus ( buildDiscoveryState, normalizeRoots )
+import           APTrace.FirmwareLoader ( buildMemory )
+import           APTrace.MacawCensus
+  ( CensusResult(..), FirmwareMeta(..), RootBuildResult(..)
+  , buildDiscoveryState, buildRootInfo, censusToValue, normalizeRoots, summarizeDiscoveryState )
 import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.VectorTable ( parseVectorTable )
 
@@ -89,13 +91,18 @@ data ExpansionResult = ExpansionResult
     -- at all).
   }
 
--- | An upper bound on fixpoint rounds. 72 total classify_failure blocks
--- (see @docs@\/prior investigation) bounds how many rounds are even
--- possible in principle (each round resolves at least one previously
--- unresolved block, and a resolved block is never revisited -- see
--- 'MD.discoveredClassifyFailureResolutions'); this is a generous multiple
--- of that, so hitting it means the process is not actually converging and
--- must be reported loudly rather than silently truncated.
+-- | An upper bound on fixpoint rounds. Not derived from the original 72
+-- base-state classify_failure blocks: normalization can (and on
+-- @autopilot868@, does) expose entirely new code with its own further
+-- classify_failures, so the round count is not bounded by any fixed count
+-- observed before expansion starts. What does bound it is that each round
+-- either makes strictly positive progress (at least one block gains a
+-- resolution it didn't have before, and a resolved block is never
+-- revisited -- see 'MD.discoveredClassifyFailureResolutions') or the
+-- fixpoint stops; 100 is simply a generously large ceiling on plausible
+-- rounds for a single firmware image, so hitting it means the process is
+-- not actually converging and must be reported loudly rather than
+-- silently truncated.
 maxRounds :: Int
 maxRounds = 100
 
@@ -274,51 +281,73 @@ coverageValue cs = object
   ]
 
 -- | @aptrace macaw-census-expand FIRMWARE.bin [FLASH_BASE]@ -- build the
--- same vector-root-only base discovery state @aptrace macaw-census@ does,
--- then run 'expandWithNormalization' to a fixpoint and report both layers
--- of evidence: what ordinary Macaw discovery found on its own (@base_*@),
--- and the expanded result after feeding back every @macaw-normalized@
--- resolution through Macaw's own incremental API (@expanded_*@), plus
--- every resolution actually applied, round by round.
+-- same vector-root-only base discovery state @aptrace macaw-census@ does
+-- (via 'buildRootInfo'\/'buildDiscoveryState', the very functions
+-- @discoverCensus@ itself is built from -- no separate address-resolution
+-- or canonicalization logic here), then run 'expandWithNormalization' to a
+-- fixpoint.
+--
+-- The output's core fields (@functions@, @basic_blocks@, @edges@,
+-- @calls@, @incomplete_or_unresolved_terminators@,
+-- @normalized_terminators@) are exactly what @aptrace macaw-census@ itself
+-- emits -- built via the very same 'summarizeDiscoveryState'\/'censusToValue'
+-- this module's base census uses -- but describing the FINAL EXPANDED
+-- state, not the base one, so @tools/census/macaw_compare.py@ can consume
+-- this file exactly as it already consumes a plain @macaw-census@ one.
+-- Base-vs-expanded coverage is reported alongside as small summary
+-- metadata (@base@\/@expanded@), not a second copy of the whole graph.
 runMacawCensusExpand :: FilePath -> Word32 -> IO ()
 runMacawCensusExpand path flashBase = do
   bytes <- BS.readFile path
   case buildMemory bytes flashBase ramBase ramSize of
     Left err -> die ("failed to build memory image: " ++ err)
     Right mem -> do
-      let rootGroups = normalizeRoots (parseVectorTable numIrq bytes)
-          resolvedRoots =
-            [ (off, names) | (addr, names) <- rootGroups, Just off <- [resolveEntry mem addr] ]
-          addrSymMap = Map.fromList
-            [ (off, BSC.pack (intercalate "|" names)) | (off, names) <- resolvedRoots ]
-          entryList = map fst resolvedRoots
-          baseState = buildDiscoveryState mem addrSymMap entryList
+      let rb = buildRootInfo mem (normalizeRoots (parseVectorTable numIrq bytes))
+          baseState = buildDiscoveryState mem (rbAddrSymMap rb) (rbEntryList rb)
           baseStats = coverageStats baseState
 
           result = expandWithNormalization mem baseState
           expandedState = erExpandedState result
           expandedStats = coverageStats expandedState
 
-          allResolutions = concatMap riResolutions (erRounds result)
           residual = residualClassifyFailures expandedState
+
+          fm = FirmwareMeta
+                 { fmPath = path
+                 , fmSizeBytes = BS.length bytes
+                 , fmFlashBase = flashBase
+                 , fmRamBase = ramBase
+                 , fmRamSize = ramSize
+                 }
+          -- The final expanded state's own functions/basic_blocks/edges/
+          -- calls/unresolved-terminators/normalized-terminators, via the
+          -- same summarization discoverCensus uses -- with crRoots set to
+          -- the firmware's own vector-table roots (unaffected by
+          -- expansion) rather than 'summarizeDiscoveryState's default
+          -- empty list.
+          expandedCensus = (summarizeDiscoveryState mem (rbRootCanonSet rb) expandedState)
+                             { crRoots = rbRootInfos rb }
+          graphValue = censusToValue fm expandedCensus
 
           roundValue r = object
             [ "round"       .= riRound r
             , "resolutions" .= map resolutionValue (riResolutions r)
             ]
 
-          out = object
-            [ "firmware" .= path
-            , "base" .= coverageValue baseStats
+          extras = object
+            [ "base" .= coverageValue baseStats
             , "expanded" .= coverageValue expandedStats
             , "normalization_rounds" .= length (erRounds result)
             , "rounds" .= map roundValue (erRounds result)
-            , "normalized_terminators" .= map resolutionValue allResolutions
             , "residual_classify_failures" .=
                 [ object [ "function_entry" .= hexStr fn, "block_start" .= hexStr blk ]
                 | (fn, blk) <- residual
                 ]
             ]
+
+          out = case (graphValue, extras) of
+            (Object g, Object e) -> Object (KM.union g e)
+            _ -> error "runMacawCensusExpand: censusToValue/extras did not produce JSON objects"
 
       IO.hSetBuffering IO.stdout IO.LineBuffering
       BSLC.putStrLn (encode out)

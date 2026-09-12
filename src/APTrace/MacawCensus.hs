@@ -21,10 +21,13 @@ module APTrace.MacawCensus
   , CallInfo(..)
   , NormalizedInfo(..)
   , CensusResult(..)
+  , RootBuildResult(..)
     -- * Pipeline
   , normalizeRoots
   , discoverCensus
   , buildDiscoveryState
+  , buildRootInfo
+  , summarizeDiscoveryState
   , censusToValue
   , canonicalWord
     -- * CLI entry point
@@ -281,6 +284,39 @@ forceCore c = Core
 -- crashing with no output at all.
 discoverCensus :: MM.Memory 32 -> [(Word32, [String])] -> IO CensusResult
 discoverCensus mem rootGroups = do
+  let rb = buildRootInfo mem rootGroups
+  attempt <- try (evaluate (forceCore (buildCore mem (buildDiscoveryState mem (rbAddrSymMap rb) (rbEntryList rb)) (rbRootCanonSet rb))))
+               :: IO (Either SomeException Core)
+  pure $ case attempt of
+    Left ex ->
+      CensusResult
+        { crRoots = rbRootInfos rb
+        , crDiscoveryError = Just (show ex)
+        , crFunctions = []
+        , crBlocks = []
+        , crEdges = []
+        , crUnresolved = []
+        , crCalls = []
+        , crNormalized = []
+        }
+    Right core -> coreToCensusResult (rbRootInfos rb) core
+
+-- | Every derived quantity 'discoverCensus' (and 'APTrace.MacawExpand')
+-- needs from a raw vector-table root-group list, computed exactly once so
+-- both never risk diverging on how a root address is resolved or
+-- canonicalized: which roots resolve into mapped memory and which don't
+-- ('rbRootInfos', for display), the 'MD.AddrSymMap'/entry-point list
+-- 'buildDiscoveryState' needs, and the canonical-address set used to mark
+-- a discovered function as a root ('rbRootCanonSet').
+data RootBuildResult = RootBuildResult
+  { rbRootInfos    :: ![RootInfo]
+  , rbAddrSymMap   :: !(MD.AddrSymMap 32)
+  , rbEntryList    :: ![MM.MemSegmentOff 32]
+  , rbRootCanonSet :: !(Set.Set Word32)
+  }
+
+buildRootInfo :: MM.Memory 32 -> [(Word32, [String])] -> RootBuildResult
+buildRootInfo mem rootGroups =
   let resolvedRoots =
         [ (addr, off, names)
         | (addr, names) <- rootGroups
@@ -299,33 +335,12 @@ discoverCensus mem rootGroups = do
           ++ [ RootInfo names addr (Just (canonicalWord off)) True
              | (addr, off, names) <- resolvedRoots
              ]
-
-  attempt <- try (evaluate (forceCore (buildCore mem addrSymMap entryList rootCanonSet)))
-               :: IO (Either SomeException Core)
-  pure $ case attempt of
-    Left ex ->
-      CensusResult
-        { crRoots = rootInfos
-        , crDiscoveryError = Just (show ex)
-        , crFunctions = []
-        , crBlocks = []
-        , crEdges = []
-        , crUnresolved = []
-        , crCalls = []
-        , crNormalized = []
-        }
-    Right core ->
-      CensusResult
-        { crRoots = rootInfos
-        , crDiscoveryError = Nothing
-        , crFunctions = sortOn fiEntry (coreFunctions core)
-        , crBlocks = sortOn (\b -> (biFunctionEntry b, biBlockStart b)) (coreBlocks core)
-        , crEdges = sortOn (\e -> (eiFunctionEntry e, eiSource e, eiTarget e, eiKind e))
-                      (coreEdges core)
-        , crUnresolved = sortOn (\u -> (uiFunctionEntry u, uiBlockStart u)) (coreUnresolved core)
-        , crCalls = sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) (coreCalls core)
-        , crNormalized = sortOn (\n -> (niFunctionEntry n, niBlockStart n)) (coreNormalized core)
-        }
+  in RootBuildResult
+       { rbRootInfos = rootInfos
+       , rbAddrSymMap = addrSymMap
+       , rbEntryList = entryList
+       , rbRootCanonSet = rootCanonSet
+       }
 
 -- | The one, vector-root-only Macaw discovery pass every entry point in
 -- this module (and 'APTrace.MacawExpand') is built from -- exported so the
@@ -335,10 +350,43 @@ discoverCensus mem rootGroups = do
 buildDiscoveryState :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> MD.DiscoveryState ARM.ARM
 buildDiscoveryState mem addrSymMap entryList = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryList []
 
-buildCore :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> Set.Set Word32 -> Core
-buildCore mem addrSymMap entryList rootCanonSet =
-  let discState = buildDiscoveryState mem addrSymMap entryList
-      funs = Map.elems (discState ^. MD.funInfo)
+-- | Wraps a 'Core' summary (see 'buildCore') into a full 'CensusResult',
+-- applying the one, canonical sort order every list in this module's JSON
+-- output uses. Shared by 'discoverCensus' and 'summarizeDiscoveryState' so
+-- there is exactly one place that decides what "the census" looks like.
+coreToCensusResult :: [RootInfo] -> Core -> CensusResult
+coreToCensusResult rootInfos core =
+  CensusResult
+    { crRoots = rootInfos
+    , crDiscoveryError = Nothing
+    , crFunctions = sortOn fiEntry (coreFunctions core)
+    , crBlocks = sortOn (\b -> (biFunctionEntry b, biBlockStart b)) (coreBlocks core)
+    , crEdges = sortOn (\e -> (eiFunctionEntry e, eiSource e, eiTarget e, eiKind e))
+                  (coreEdges core)
+    , crUnresolved = sortOn (\u -> (uiFunctionEntry u, uiBlockStart u)) (coreUnresolved core)
+    , crCalls = sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) (coreCalls core)
+    , crNormalized = sortOn (\n -> (niFunctionEntry n, niBlockStart n)) (coreNormalized core)
+    }
+
+-- | Summarize an already-built Macaw 'MD.DiscoveryState' -- base or
+-- expanded, it makes no difference to this function -- into a
+-- 'CensusResult', using exactly the same per-function/per-block
+-- summarization ('buildCore'\/'summarizeFunction') and address
+-- canonicalization ('canonicalWord') 'discoverCensus' itself uses. Its
+-- 'crRoots' is always empty and 'crDiscoveryError' always 'Nothing': the
+-- given state is assumed to already be the result of a completed,
+-- successful discovery pass (any decode exception would already have
+-- surfaced while building it), and it carries no per-invocation root-group
+-- list of its own -- a caller that wants 'crRoots' populated (e.g. with
+-- the firmware's vector-table roots, unaffected by any later expansion)
+-- should set it via a record update, as 'APTrace.MacawExpand' does.
+summarizeDiscoveryState :: MM.Memory 32 -> Set.Set Word32 -> MD.DiscoveryState ARM.ARM -> CensusResult
+summarizeDiscoveryState mem rootCanonSet discState =
+  coreToCensusResult [] (buildCore mem discState rootCanonSet)
+
+buildCore :: MM.Memory 32 -> MD.DiscoveryState ARM.ARM -> Set.Set Word32 -> Core
+buildCore mem discState rootCanonSet =
+  let funs = Map.elems (discState ^. MD.funInfo)
       perFunction = map (summarizeFunction mem rootCanonSet) funs
   in Core
        { coreFunctions  = map (\(f, _, _, _, _, _) -> f) perFunction

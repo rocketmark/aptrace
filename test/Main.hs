@@ -12,7 +12,7 @@ import           Data.Aeson ( encode )
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
 import qualified Data.ByteString.Lazy.Char8 as BSLC
-import           Data.List ( intercalate, isInfixOf, sortOn )
+import           Data.List ( isInfixOf, sortOn )
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import           Data.Word ( Word32 )
@@ -37,8 +37,9 @@ import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus
   ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
-  , FunctionInfo(..), NormalizedInfo(..), UnresolvedInfo(..)
-  , buildDiscoveryState, canonicalWord, censusToValue, discoverCensus, normalizeRoots )
+  , FunctionInfo(..), NormalizedInfo(..), RootBuildResult(..), UnresolvedInfo(..)
+  , buildDiscoveryState, buildRootInfo, canonicalWord, censusToValue, discoverCensus
+  , normalizeRoots, summarizeDiscoveryState )
 import           APTrace.MacawExpand
   ( ExpansionResult(..), expandWithNormalization, resolutionValue )
 import qualified APTrace.MacawNormalize as Normalize
@@ -73,6 +74,7 @@ main = do
     , memoryDerivedFailureRemainsUnresolved
     , expansionFeedsExistingFunctionNotNewFunction
     , fullFirmwareFixpointExpansion
+    , summarizeDiscoveryStateMatchesDiscoverCensus
     ]
   if and results
     then putStrLn "All tests passed."
@@ -812,11 +814,8 @@ fullFirmwareFixpointExpansion = do
                             | u <- crUnresolved baseCensus, uiKind u == "classify_failure" ]
             originalResidual = originalClassifyFailures `Set.difference` originalNormalized
 
-            resolvedRoots = [ (off, names) | (addr, names) <- rootGroups, Just off <- [resolveEntry mem addr] ]
-            addrSymMap = Map.fromList
-              [ (off, BSC.pack (intercalate "|" names)) | (off, names) <- resolvedRoots ]
-            entryList = map fst resolvedRoots
-            baseState = buildDiscoveryState mem addrSymMap entryList
+            rb = buildRootInfo mem rootGroups
+            baseState = buildDiscoveryState mem (rbAddrSymMap rb) (rbEntryList rb)
             result = expandWithNormalization mem baseState
 
         r1 <- test "23a. the fixpoint discovers second-round-or-later normalizable failures"
@@ -840,8 +839,67 @@ fullFirmwareFixpointExpansion = do
         r3 <- test "23c. repeating the completed expansion finds no further changes"
                 (null (erRounds result2))
 
-        pure (r1 && r2 && r3)
+        -- 23d/23e: the same 'summarizeDiscoveryState' the CLI's
+        -- macaw-census-expand output is built from (see
+        -- APTrace.MacawExpand.runMacawCensusExpand) must describe the
+        -- FINAL EXPANDED graph -- strictly more functions/blocks/calls
+        -- than the base graph, never a second copy of the base one -- and
+        -- every one of its normalized-terminator entries must still carry
+        -- macaw-normalized provenance once round-tripped through the same
+        -- 'censusToValue' JSON encoding the CLI uses.
+        let expandedCensus = summarizeDiscoveryState mem (rbRootCanonSet rb) (erExpandedState result)
+        r4 <- test "23d. the expanded census reflects the final expanded graph, not the base one"
+                (length (crFunctions expandedCensus) > length (crFunctions baseCensus)
+                   && length (crBlocks expandedCensus) > length (crBlocks baseCensus)
+                   && length (crCalls expandedCensus) > length (crCalls baseCensus)
+                   && not (null (crNormalized expandedCensus)))
+
+        let fm = FirmwareMeta firmwarePath (BS.length bytes) flashBase ramBase ramSize
+            encoded = BSLC.unpack (encode (censusToValue fm expandedCensus))
+        r5 <- test "23e. normalized_terminators round-tripped through censusToValue keep their provenance"
+                ("macaw-normalized" `isInfixOf` encoded
+                   && length (crNormalized expandedCensus) >= 100)
+
+        pure (r1 && r2 && r3 && r4 && r5)
   where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 24. A fast, single-function-scoped check that 'summarizeDiscoveryState'
+-- (the new, reusable summarization entry point 'discoverCensus' itself is
+-- now built from -- see 'APTrace.MacawCensus.coreToCensusResult') produces
+-- exactly the same 'CensusResult' as the existing 'discoverCensus' path,
+-- for the identical discovery state -- i.e. this is a genuine refactor
+-- (one summarization implementation reused two ways), not a second,
+-- independent one. 'crRoots' is set explicitly since
+-- 'summarizeDiscoveryState' always returns it empty (a discovery state
+-- carries no root-group list of its own). Skips if the firmware isn't
+-- present locally.
+summarizeDiscoveryStateMatchesDiscoverCensus :: IO Bool
+summarizeDiscoveryStateMatchesDiscoverCensus = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 24. summarizeDiscoveryState matches discoverCensus (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "24. summarizeDiscoveryState matches discoverCensus" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        let rootGroups = [(macawCortexMEntry targetEntry, ["target"])]
+            rb = buildRootInfo mem rootGroups
+            discState = buildDiscoveryState mem (rbAddrSymMap rb) (rbEntryList rb)
+            viaSummarize = (summarizeDiscoveryState mem (rbRootCanonSet rb) discState)
+                             { crRoots = rbRootInfos rb }
+        viaDiscoverCensus <- discoverCensus mem rootGroups
+        test "24. summarizeDiscoveryState matches discoverCensus for the same discovery state"
+          (viaSummarize == viaDiscoverCensus)
+  where
+    targetEntry  = 0x44ec :: Word32
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32

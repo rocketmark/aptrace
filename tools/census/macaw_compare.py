@@ -662,6 +662,50 @@ def compare_cfg_edges(ghidra_rows, macaw_by_function):
     }
 
 
+def macaw_normalized_edges_by_function(macaw):
+    """function_entry -> [(source_start, source_end, target, kind)] built
+    from `normalized_terminators` -- the externally-supplied, provably
+    concrete two-way branches `APTrace.MacawNormalize` recovered (see
+    `macaw_normalized_lookup`). Each entry's block-range comes from the
+    same `basic_blocks[].size` convention every other edge section here
+    uses, so it plugs directly into the existing `compare_cfg_edges`
+    containment-and-target-set comparison -- no new comparison algorithm,
+    just a new Macaw-side edge source fed through the existing one."""
+    block_size = macaw_block_size_map(macaw)
+    out = collections.defaultdict(list)
+    for n in macaw.get("normalized_terminators", []):
+        fe = maddr(n["function_entry"])
+        src = maddr(n["block_start"])
+        size = block_size.get((fe, src), 1)
+        for t in n["targets"]:
+            out[fe].append((src, src + max(size, 1), maddr(t), "macaw-normalized"))
+    return out
+
+
+def genuine_disagreements(edge_cmp):
+    """Within one `compare_cfg_edges` result, a (function_entry, source)
+    site appearing in BOTH `macaw_only` and `ghidra_only` means both sides
+    resolved *some* target there but with no target in common at all --
+    a real disagreement, as opposed to Ghidra simply having extra targets
+    from an adjacent instruction sharing the same block range (which
+    shows up only in `ghidra_only`, with the shared targets themselves
+    correctly landing in `shared`)."""
+    macaw_by_site = collections.defaultdict(set)
+    for r in edge_cmp["macaw_only"]:
+        macaw_by_site[(r["function_entry"], r["source"])].add(r["target"])
+    ghidra_by_site = collections.defaultdict(set)
+    for r in edge_cmp["ghidra_only"]:
+        if r.get("unmatched_source") or r["target"] is None:
+            continue
+        ghidra_by_site[(r["function_entry"], r["source"])].add(r["target"])
+    out = []
+    for site in sorted(set(macaw_by_site) & set(ghidra_by_site)):
+        out.append({"function_entry": site[0], "source": site[1],
+                     "macaw_targets": sorted(macaw_by_site[site]),
+                     "ghidra_targets": sorted(ghidra_by_site[site])})
+    return out
+
+
 def compare_call_return_vs_fallthrough(macaw, ghidra_rows_all_kinds_including_fallthrough, by_function_size):
     """Macaw's `call_return` edge (call-site -> return continuation) is
     deliberately compared ONLY against Ghidra's `fallthrough` edge from
@@ -724,16 +768,33 @@ def analyze_macaw_indirect_calls(conn, fw_id, macaw, macaw_by_caller):
     return {"counts": dict(counts), "calls": results}
 
 
+def macaw_normalized_lookup(macaw):
+    """(function_entry, block_start) -> targets, from `normalized_terminators`
+    -- present in every Macaw census JSON (base or expanded) since these
+    externally-supplied resolutions are recorded separately from, and never
+    overwrite, the block's own `ClassifyFailure` terminator (see
+    APTrace.MacawExpand's module docstring: Macaw keeps the terminator as
+    `ClassifyFailure` plus a `discoveredClassifyFailureResolutions` entry,
+    it does not rewrite it into an ordinary two-target branch). Used so
+    this tool never treats an already-`macaw-normalized` block as if it
+    were still an unresolved Macaw failure."""
+    return {(maddr(n["function_entry"]), maddr(n["block_start"])): [maddr(t) for t in n["targets"]]
+            for n in macaw.get("normalized_terminators", [])}
+
+
 def analyze_macaw_classify_failures(conn, fw_id, macaw):
-    """For every Macaw `classify_failure` block: find the Ghidra basic
-    block (if any) whose own [start_addr, end_addr] contains that
-    address, and report whether ANY edge originating within that
-    Ghidra block's range is resolved. This is deliberately
-    range-based, not exact-address-based: a `classify_failure` block's
-    own `size` is often 0 (Macaw could not determine its extent), so
-    the only mechanically sound question is "what does Ghidra's own
-    coverage of this same code region show," not "is there an edge at
-    this exact byte.\""""
+    """For every Macaw `classify_failure` block that does NOT already have
+    a `macaw-normalized` resolution (see `macaw_normalized_lookup` --
+    excluded here because those are proven, separately-reported CFG
+    evidence, not open failures): find the Ghidra basic block (if any)
+    whose own [start_addr, end_addr] contains that address, and report
+    whether ANY edge originating within that Ghidra block's range is
+    resolved. This is deliberately range-based, not exact-address-based:
+    a `classify_failure` block's own `size` is often 0 (Macaw could not
+    determine its extent), so the only mechanically sound question is
+    "what does Ghidra's own coverage of this same code region show," not
+    "is there an edge at this exact byte.\""""
+    normalized = macaw_normalized_lookup(macaw)
     results = []
     counts = collections.Counter()
     for u in macaw.get("incomplete_or_unresolved_terminators", []):
@@ -741,6 +802,8 @@ def analyze_macaw_classify_failures(conn, fw_id, macaw):
             continue
         fn_entry = maddr(u["function_entry"])
         addr = maddr(u["block_start"])
+        if (fn_entry, addr) in normalized:
+            continue
         block = conn.execute(
             "SELECT id, start_addr, end_addr, function_id FROM basic_blocks "
             "WHERE firmware_id=? AND start_addr<=? AND end_addr>=? LIMIT 1",
@@ -786,7 +849,19 @@ def build_report(conn, fw_id, macaw):
     jump_cmp = compare_cfg_edges(
         [r for r in ghidra_noncall_rows if r["kind"] != "fallthrough"], macaw_jump_edges)
     call_return_cmp = compare_call_return_vs_fallthrough(macaw, ghidra_noncall_rows, block_size)
-    cfg_edges = {"jump_like": jump_cmp, "call_return_vs_fallthrough": call_return_cmp}
+    # Unlike jump_like (which reserves Ghidra's `fallthrough` kind for the
+    # separate call_return_vs_fallthrough section, since Macaw's
+    # call_return only ever pairs with a fallthrough), a macaw-normalized
+    # flat two-way branch's two real successors are legitimately Ghidra's
+    # `cbranch` + `fallthrough` *together* -- excluding fallthrough here
+    # drops one of the two genuinely-agreeing targets and manufactures a
+    # false disagreement (see the 0x4b64/0x4ba2 investigation). So this
+    # comparison alone uses every Ghidra non-call row, fallthrough included.
+    normalized_cmp = compare_cfg_edges(
+        ghidra_noncall_rows,
+        macaw_normalized_edges_by_function(macaw))
+    cfg_edges = {"jump_like": jump_cmp, "call_return_vs_fallthrough": call_return_cmp,
+                 "normalized_vs_ghidra": normalized_cmp}
 
     macaw_indirect_calls = analyze_macaw_indirect_calls(conn, fw_id, macaw, by_caller)
     macaw_unresolved = analyze_macaw_classify_failures(conn, fw_id, macaw)
@@ -802,6 +877,7 @@ def build_report(conn, fw_id, macaw):
         "cfg_edges": cfg_edges,
         "macaw_indirect_calls": macaw_indirect_calls,
         "macaw_unresolved": macaw_unresolved,
+        "macaw_normalized_terminators_total": len(macaw.get("normalized_terminators", [])),
     }
 
 
@@ -956,6 +1032,7 @@ def print_report(report, ghidra_names):
     cfg = report["cfg_edges"]
     jc = cfg["jump_like"]
     crc = cfg["call_return_vs_fallthrough"]
+    nc = cfg["normalized_vs_ghidra"]
     print()
     print("--- CFG edges: jump/branch/lookup-table (same-root, non-call) ---")
     print(f"Shared source/target pairs      : {len(jc['shared'])}")
@@ -968,6 +1045,18 @@ def print_report(report, ghidra_names):
     print(f"Macaw-only                      : {len(crc['macaw_only'])}")
     print(f"Ghidra-only                     : {len(crc['ghidra_only'])}")
     print(f"Unresolved on one side          : {len(crc['unresolved_one_side'])}")
+    print()
+    print(f"--- CFG edges: macaw-normalized resolutions vs. Ghidra "
+          f"(cross-check only, total supplied: {report['macaw_normalized_terminators_total']}) ---")
+    print(f"Shared source/target pairs      : {len(nc['shared'])}")
+    print(f"Macaw-only (no Ghidra evidence) : {len(nc['macaw_only'])}")
+    print(f"Ghidra-only                     : {len(nc['ghidra_only'])}")
+    print(f"Unresolved on one side          : {len(nc['unresolved_one_side'])}")
+    genuine = genuine_disagreements(nc)
+    print(f"Genuine target disagreements    : {len(genuine)}")
+    for d in genuine[:10]:
+        print(f"  function={hx(d['function_entry'])} source={hx(d['source'])}: "
+              f"macaw->{fmt_targets(d['macaw_targets'])}  ghidra->{fmt_targets(d['ghidra_targets'])}")
 
     ic = report["macaw_indirect_calls"]
     cf = report["macaw_unresolved"]
@@ -1057,6 +1146,7 @@ def report_to_jsonable(report):
         "cfg_edges": fmt_cfg_edges(report["cfg_edges"]),
         "macaw_indirect_calls": fmt_macaw_indirect_calls(report["macaw_indirect_calls"]),
         "macaw_unresolved": fmt_macaw_unresolved(report["macaw_unresolved"]),
+        "macaw_normalized_terminators_total": report["macaw_normalized_terminators_total"],
     }
 
 
@@ -1103,8 +1193,15 @@ def fmt_edge_cmp(cmp):
 
 
 def fmt_cfg_edges(cfg):
+    nc = cfg["normalized_vs_ghidra"]
     return {"jump_like": fmt_edge_cmp(cfg["jump_like"]),
-            "call_return_vs_fallthrough": fmt_edge_cmp(cfg["call_return_vs_fallthrough"])}
+            "call_return_vs_fallthrough": fmt_edge_cmp(cfg["call_return_vs_fallthrough"]),
+            "normalized_vs_ghidra": {**fmt_edge_cmp(nc),
+                                      "genuine_disagreements": [
+                                          {"function_entry": hx(d["function_entry"]), "source": hx(d["source"]),
+                                           "macaw_targets": [hx(t) for t in d["macaw_targets"]],
+                                           "ghidra_targets": [hx(t) for t in d["ghidra_targets"]]}
+                                          for d in genuine_disagreements(nc)]}}
 
 
 def fmt_macaw_indirect_calls(ic):
