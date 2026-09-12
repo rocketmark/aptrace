@@ -384,6 +384,385 @@ def compare_calls(ghidra_calls, macaw_by_caller):
 
 
 # ---------------------------------------------------------------------
+# Interval utilities (byte-range coverage, section 1)
+# ---------------------------------------------------------------------
+
+def merge_ranges(ranges):
+    """Merge arbitrary (possibly overlapping/unsorted) half-open [start,end)
+    byte ranges into a sorted, non-overlapping, non-adjacent list."""
+    rs = sorted(r for r in ranges if r[1] > r[0])
+    if not rs:
+        return []
+    merged = [list(rs[0])]
+    for s, e in rs[1:]:
+        if s <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], e)
+        else:
+            merged.append([s, e])
+    return [(s, e) for s, e in merged]
+
+
+def range_len(ranges):
+    return sum(e - s for s, e in ranges)
+
+
+def subtract_ranges(a, b):
+    """(merged a) - (merged b), both already-merged half-open range lists."""
+    b = merge_ranges(b)
+    out = []
+    for s, e in merge_ranges(a):
+        cur = s
+        for bs, be in b:
+            if be <= cur or bs >= e:
+                continue
+            if bs > cur:
+                out.append((cur, min(bs, e)))
+            cur = max(cur, be)
+            if cur >= e:
+                break
+        if cur < e:
+            out.append((cur, e))
+    return merge_ranges(out)
+
+
+def intersect_ranges(a, b):
+    a = merge_ranges(a)
+    return subtract_ranges(a, subtract_ranges(a, b))
+
+
+# ---------------------------------------------------------------------
+# Section 1: basic-block / byte coverage (same-root)
+# ---------------------------------------------------------------------
+
+def ghidra_blocks_by_function(conn, fw_id, function_ids):
+    """function_id -> [(start_addr, end_addr+1)] -- Ghidra's own
+    basic_blocks rows, converted to half-open ranges (end_addr is the
+    inclusive last byte per schema.sql)."""
+    out = collections.defaultdict(list)
+    if not function_ids:
+        return out
+    placeholders = ",".join("?" for _ in function_ids)
+    for row in conn.execute(
+            f"SELECT function_id, start_addr, end_addr FROM basic_blocks "
+            f"WHERE firmware_id=? AND function_id IN ({placeholders})",
+            (fw_id, *function_ids)):
+        out[row["function_id"]].append((row["start_addr"], row["end_addr"] + 1))
+    return out
+
+
+def macaw_blocks_by_function(macaw):
+    """function_entry -> [(block_start, block_start+size)]."""
+    out = collections.defaultdict(list)
+    for b in macaw["basic_blocks"]:
+        fe = maddr(b["function_entry"])
+        start = maddr(b["block_start"])
+        out[fe].append((start, start + b["size"]))
+    return out
+
+
+def compare_block_coverage(conn, fw_id, macaw, ghidra_reachable_ids, func_id_by_entry, fn_cmp):
+    """Section 1: exact block-start comparison AND byte-range coverage
+    comparison for the same-root subgraph -- both a per-(function_entry)
+    contextual view (a Macaw block can legitimately belong to several
+    function contexts; each is compared against Ghidra's OWN coverage of
+    that SAME function) and a global, function-context-agnostic
+    union-of-byte-ranges view (does ANY Macaw function cover this byte,
+    vs does ANY Ghidra function cover it). A block-start-set difference
+    with IDENTICAL covered bytes is reported as a partition difference,
+    never as missing code."""
+    id_to_entry = {fid: entry for entry, fid in func_id_by_entry.items()}
+    ghidra_blocks = ghidra_blocks_by_function(conn, fw_id, ghidra_reachable_ids)
+    macaw_blocks = macaw_blocks_by_function(macaw)
+
+    per_function = []
+    for entry in fn_cmp["shared"]:
+        fid = func_id_by_entry.get(entry)
+        g_ranges = ghidra_blocks.get(fid, [])
+        m_ranges = macaw_blocks.get(entry, [])
+        g_starts = {s for s, _ in g_ranges}
+        m_starts = {s for s, _ in m_ranges}
+        g_merged = merge_ranges(g_ranges)
+        m_merged = merge_ranges(m_ranges)
+        g_only = subtract_ranges(g_merged, m_merged)
+        m_only = subtract_ranges(m_merged, g_merged)
+        both = intersect_ranges(g_merged, m_merged)
+        per_function.append({
+            "entry": entry,
+            "ghidra_block_starts": len(g_starts),
+            "macaw_block_starts": len(m_starts),
+            "same_block_starts": g_starts == m_starts,
+            "shared_bytes": range_len(both),
+            "ghidra_only_bytes": range_len(g_only),
+            "macaw_only_bytes": range_len(m_only),
+            "ghidra_only_ranges": g_only,
+            "macaw_only_ranges": m_only,
+            "different_partition_same_bytes":
+                g_starts != m_starts and not g_only and not m_only,
+        })
+
+    different_partition_count = sum(1 for r in per_function if r["different_partition_same_bytes"])
+    largest_differences = sorted(
+        per_function, key=lambda r: -(r["ghidra_only_bytes"] + r["macaw_only_bytes"]))
+
+    # Global, function-context-agnostic union: covers every same-root
+    # Ghidra-reachable function's blocks and every Macaw function's
+    # blocks (not just the shared subset) -- deduplicated across
+    # whatever function context(s) claim a given byte on either side.
+    all_ghidra = [r for fid in ghidra_reachable_ids for r in ghidra_blocks.get(fid, [])]
+    all_macaw = [r for fe in macaw_blocks for r in macaw_blocks[fe]]
+    g_global = merge_ranges(all_ghidra)
+    m_global = merge_ranges(all_macaw)
+    g_only_global = subtract_ranges(g_global, m_global)
+    m_only_global = subtract_ranges(m_global, g_global)
+    shared_global = intersect_ranges(g_global, m_global)
+
+    return {
+        "per_function": per_function,
+        "different_partition_same_bytes_count": different_partition_count,
+        "largest_differences": largest_differences[:15],
+        "global": {
+            "ghidra_total_bytes": range_len(g_global),
+            "macaw_total_bytes": range_len(m_global),
+            "shared_bytes": range_len(shared_global),
+            "ghidra_only_bytes": range_len(g_only_global),
+            "macaw_only_bytes": range_len(m_only_global),
+            "ghidra_only_ranges": g_only_global,
+            "macaw_only_ranges": m_only_global,
+        },
+    }
+
+
+# ---------------------------------------------------------------------
+# Section 2: CFG edges (non-call), same-root
+# ---------------------------------------------------------------------
+
+# Ghidra edge kinds that are genuine intra-function control flow, never
+# a call -- deliberately excludes 'call'/'computed-call'/'*-unresolved'
+# call variants (already the calls section's job) and includes both
+# resolved jump kinds and their unresolved counterpart so an "unresolved
+# on one side" comparison is possible.
+_GHIDRA_NONCALL_KINDS = ("fallthrough", "branch", "cbranch", "computed-jump", "computed-jump-unresolved")
+
+# Macaw non-call edge kinds this section compares (see module docstring
+# addition below for why 'call_return' is handled separately, and why
+# 'arch_term_stmt' -- zero occurrences on this firmware, no verified
+# Ghidra-side equivalent kind -- is excluded rather than force-matched).
+_MACAW_JUMP_KINDS = ("jump", "branch_true", "branch_false", "lookup_table")
+
+
+def macaw_block_size_map(macaw):
+    return {(maddr(b["function_entry"]), maddr(b["block_start"])): b["size"] for b in macaw["basic_blocks"]}
+
+
+def macaw_edges_by_function(macaw, kinds):
+    """function_entry -> [(source_start, source_end, target, kind)] for
+    Macaw edges of the given kind(s)."""
+    block_size = macaw_block_size_map(macaw)
+    out = collections.defaultdict(list)
+    for e in macaw["edges"]:
+        if e["kind"] not in kinds:
+            continue
+        fe = maddr(e["function_entry"])
+        src = maddr(e["source"])
+        size = block_size.get((fe, src), 1)
+        out[fe].append((src, src + max(size, 1), maddr(e["target"]), e["kind"]))
+    return out
+
+
+def ghidra_noncall_edges_in_reachable_set(conn, fw_id, reachable_ids, kinds):
+    if not reachable_ids:
+        return []
+    placeholders = ",".join("?" for _ in reachable_ids)
+    kind_placeholders = ",".join("?" for _ in kinds)
+    rows = conn.execute(
+        f"SELECT e.from_addr, e.to_addr, e.kind, e.resolved, ff.entry AS fn_entry "
+        f"FROM edges e JOIN functions ff ON ff.id = e.from_function_id "
+        f"WHERE e.firmware_id=? AND e.source LIKE 'ghidra%' AND e.kind IN ({kind_placeholders}) "
+        f"AND e.from_function_id IN ({placeholders})",
+        (fw_id, *kinds, *reachable_ids))
+    return [dict(r) for r in rows]
+
+
+def _find_macaw_edge_range(by_function, fn_entry, addr):
+    for start, end, target, kind in by_function.get(fn_entry, ()):
+        if start <= addr < end:
+            return (start, end)
+    return None
+
+
+def compare_cfg_edges(ghidra_rows, macaw_by_function):
+    """Groups both sides by (function_entry, matched Macaw source range)
+    -- exactly the calls section's containment strategy, applied to
+    non-call edges -- then compares TARGET SETS rather than forcing a
+    1:1 pairing (a branch has two Macaw edges from one source; a real
+    Ghidra jump table can resolve to many). Original kinds are kept on
+    every row for the detailed output."""
+    # group Macaw edges by (fn_entry, range)
+    macaw_groups = collections.defaultdict(list)
+    for fn_entry, edges in macaw_by_function.items():
+        for start, end, target, kind in edges:
+            macaw_groups[(fn_entry, start, end)].append((target, kind))
+
+    # group Ghidra rows into the matching Macaw range, or "unmatched"
+    ghidra_in_range = collections.defaultdict(list)
+    ghidra_unmatched = collections.defaultdict(list)
+    for g in ghidra_rows:
+        rng = _find_macaw_edge_range(macaw_by_function, g["fn_entry"], g["from_addr"])
+        if rng is None:
+            ghidra_unmatched[(g["fn_entry"], g["from_addr"])].append(g)
+        else:
+            ghidra_in_range[(g["fn_entry"], rng[0], rng[1])].append(g)
+
+    shared, macaw_only, ghidra_only, unresolved_one_side = [], [], [], []
+
+    all_keys = set(macaw_groups) | set(ghidra_in_range)
+    for key in all_keys:
+        fn_entry, start, end = key
+        m_edges = macaw_groups.get(key, [])
+        g_rows = ghidra_in_range.get(key, [])
+        m_targets = {t for t, _k in m_edges}
+        g_targets = {r["to_addr"] for r in g_rows if r["resolved"] and r["to_addr"] is not None}
+        g_has_unresolved = any(not r["resolved"] or r["to_addr"] is None for r in g_rows)
+
+        for t in sorted(m_targets & g_targets):
+            m_kinds = sorted({k for tt, k in m_edges if tt == t})
+            g_kinds = sorted({r["kind"] for r in g_rows if r["to_addr"] == t})
+            shared.append({"function_entry": fn_entry, "source": start, "target": t,
+                            "macaw_kinds": m_kinds, "ghidra_kinds": g_kinds})
+        for t in sorted(m_targets - g_targets):
+            m_kinds = sorted({k for tt, k in m_edges if tt == t})
+            entry = {"function_entry": fn_entry, "source": start, "target": t, "macaw_kinds": m_kinds}
+            if g_has_unresolved:
+                unresolved_one_side.append({**entry, "side": "ghidra_unresolved_macaw_resolved",
+                                             "ghidra_kinds": sorted({r["kind"] for r in g_rows})})
+            else:
+                macaw_only.append(entry)
+        for t in sorted(g_targets - m_targets):
+            g_kinds = sorted({r["kind"] for r in g_rows if r["to_addr"] == t})
+            ghidra_only.append({"function_entry": fn_entry, "source": start, "target": t,
+                                 "ghidra_kinds": g_kinds})
+        if not g_targets and g_has_unresolved and m_targets:
+            # Ghidra found nothing but an unresolved computed-jump at a
+            # range where Macaw fully resolved (possibly several)
+            # targets -- already captured per-target above via
+            # unresolved_one_side; nothing further to add here.
+            pass
+
+    for (fn_entry, from_addr), rows in ghidra_unmatched.items():
+        g_targets = sorted({r["to_addr"] for r in rows if r["resolved"] and r["to_addr"] is not None})
+        ghidra_only.append({"function_entry": fn_entry, "source": from_addr, "target": None,
+                             "ghidra_kinds": sorted({r["kind"] for r in rows}),
+                             "ghidra_targets": g_targets, "unmatched_source": True})
+
+    return {
+        "shared": shared,
+        "macaw_only": macaw_only,
+        "ghidra_only": ghidra_only,
+        "unresolved_one_side": unresolved_one_side,
+    }
+
+
+def compare_call_return_vs_fallthrough(macaw, ghidra_rows_all_kinds_including_fallthrough, by_function_size):
+    """Macaw's `call_return` edge (call-site -> return continuation) is
+    deliberately compared ONLY against Ghidra's `fallthrough` edge from
+    the same call site -- verified on this firmware (flash 0x635e) that
+    Ghidra really does emit a fallthrough reference alongside a call's
+    own edge(s), representing the same "control returns here" fact.
+    Never compared against Ghidra's `call`/`computed-call` edges (those
+    are caller->callee, a different relation entirely -- the existing
+    Calls section's job)."""
+    macaw_by_function = collections.defaultdict(list)
+    for e in macaw["edges"]:
+        if e["kind"] != "call_return":
+            continue
+        fe = maddr(e["function_entry"])
+        src = maddr(e["source"])
+        size = by_function_size.get((fe, src), 1)
+        macaw_by_function[fe].append((src, src + max(size, 1), maddr(e["target"]), "call_return"))
+
+    fallthrough_rows = [r for r in ghidra_rows_all_kinds_including_fallthrough if r["kind"] == "fallthrough"]
+    result = compare_cfg_edges(fallthrough_rows, macaw_by_function)
+    return result
+
+
+# ---------------------------------------------------------------------
+# Section 3: Macaw unresolved cases (indirect calls, classify_failure)
+# ---------------------------------------------------------------------
+
+def analyze_macaw_indirect_calls(conn, fw_id, macaw, macaw_by_caller):
+    """For every Macaw call with kind in ('indirect', 'unmapped'): does
+    Ghidra's base evidence have a call edge (resolved or not) anywhere
+    in that same physical call-site range, regardless of Ghidra's own
+    function attribution (a Macaw-only function has none to match)?"""
+    results = []
+    counts = collections.Counter()
+    for c in macaw["calls"]:
+        if c["kind"] not in ("indirect", "unmapped"):
+            continue
+        caller = maddr(c["caller"])
+        site = maddr(c["call_site"])
+        size = None
+        for start, end, call in macaw_by_caller.get(caller, ()):
+            if start == site:
+                size = end - start
+                break
+        size = size or 1
+        rows = conn.execute(
+            "SELECT to_addr, resolved, kind FROM edges WHERE firmware_id=? AND source LIKE 'ghidra%' "
+            "AND kind LIKE '%call%' AND from_addr>=? AND from_addr<?",
+            (fw_id, site, site + size)).fetchall()
+        if not rows:
+            status = "no_ghidra_evidence"
+            targets, kinds = [], []
+        else:
+            targets = sorted({r["to_addr"] for r in rows if r["resolved"] and r["to_addr"] is not None})
+            kinds = sorted({r["kind"] for r in rows})
+            status = "ghidra_resolved" if targets else "ghidra_unresolved"
+        counts[status] += 1
+        results.append({"caller": caller, "call_site": site, "macaw_kind": c["kind"],
+                         "status": status, "ghidra_targets": targets, "ghidra_kinds": kinds})
+    return {"counts": dict(counts), "calls": results}
+
+
+def analyze_macaw_classify_failures(conn, fw_id, macaw):
+    """For every Macaw `classify_failure` block: find the Ghidra basic
+    block (if any) whose own [start_addr, end_addr] contains that
+    address, and report whether ANY edge originating within that
+    Ghidra block's range is resolved. This is deliberately
+    range-based, not exact-address-based: a `classify_failure` block's
+    own `size` is often 0 (Macaw could not determine its extent), so
+    the only mechanically sound question is "what does Ghidra's own
+    coverage of this same code region show," not "is there an edge at
+    this exact byte.\""""
+    results = []
+    counts = collections.Counter()
+    for u in macaw.get("incomplete_or_unresolved_terminators", []):
+        if u["kind"] != "classify_failure":
+            continue
+        fn_entry = maddr(u["function_entry"])
+        addr = maddr(u["block_start"])
+        block = conn.execute(
+            "SELECT id, start_addr, end_addr, function_id FROM basic_blocks "
+            "WHERE firmware_id=? AND start_addr<=? AND end_addr>=? LIMIT 1",
+            (fw_id, addr, addr)).fetchone()
+        if block is None:
+            status = "no_ghidra_evidence"
+            targets, kinds = [], []
+        else:
+            rows = conn.execute(
+                "SELECT to_addr, resolved, kind FROM edges WHERE firmware_id=? AND source LIKE 'ghidra%' "
+                "AND from_addr>=? AND from_addr<=?",
+                (fw_id, block["start_addr"], block["end_addr"])).fetchall()
+            targets = sorted({r["to_addr"] for r in rows if r["resolved"] and r["to_addr"] is not None})
+            kinds = sorted({r["kind"] for r in rows})
+            status = "ghidra_resolved" if targets else ("ghidra_unresolved" if rows else "no_ghidra_evidence")
+        counts[status] += 1
+        results.append({"function_entry": fn_entry, "block_start": addr, "status": status,
+                         "ghidra_targets": targets, "ghidra_kinds": kinds})
+    return {"counts": dict(counts), "blocks": results}
+
+
+# ---------------------------------------------------------------------
 # Report
 # ---------------------------------------------------------------------
 
@@ -395,6 +774,23 @@ def build_report(conn, fw_id, macaw):
     ghidra_calls, unattributed_ghidra_calls = ghidra_calls_in_reachable_set(conn, fw_id, reachable_ids)
     by_caller = macaw_calls_by_caller(macaw)
     call_cmp = compare_calls(ghidra_calls, by_caller)
+
+    # -- new sections (unchanged inputs above; nothing here alters the
+    # function/call comparison already computed) --
+    blocks = compare_block_coverage(conn, fw_id, macaw, reachable_ids, func_id_by_entry, fn_cmp)
+
+    block_size = macaw_block_size_map(macaw)
+    macaw_jump_edges = macaw_edges_by_function(macaw, _MACAW_JUMP_KINDS)
+    ghidra_noncall_rows = ghidra_noncall_edges_in_reachable_set(
+        conn, fw_id, reachable_ids, _GHIDRA_NONCALL_KINDS)
+    jump_cmp = compare_cfg_edges(
+        [r for r in ghidra_noncall_rows if r["kind"] != "fallthrough"], macaw_jump_edges)
+    call_return_cmp = compare_call_return_vs_fallthrough(macaw, ghidra_noncall_rows, block_size)
+    cfg_edges = {"jump_like": jump_cmp, "call_return_vs_fallthrough": call_return_cmp}
+
+    macaw_indirect_calls = analyze_macaw_indirect_calls(conn, fw_id, macaw, by_caller)
+    macaw_unresolved = analyze_macaw_classify_failures(conn, fw_id, macaw)
+
     return {
         "whole_inventory": inv,
         "root_fairness": fairness,
@@ -402,6 +798,10 @@ def build_report(conn, fw_id, macaw):
         "same_root_functions": fn_cmp,
         "same_root_calls": call_cmp,
         "unattributed_ghidra_call_edges_total": unattributed_ghidra_calls,
+        "blocks": blocks,
+        "cfg_edges": cfg_edges,
+        "macaw_indirect_calls": macaw_indirect_calls,
+        "macaw_unresolved": macaw_unresolved,
     }
 
 
@@ -531,6 +931,73 @@ def print_report(report, ghidra_names):
             print(f"  caller={hx(g['caller_entry'])} call_site={hx(g['from_addr'])} "
                   f"target={fmt_targets(g['targets'])}{multi}")
 
+    blocks = report["blocks"]
+    print()
+    print("--- Basic-block / byte coverage (same-root, shared functions) ---")
+    print(f"Functions compared              : {len(blocks['per_function'])}")
+    print(f"Different partition, same bytes : {blocks['different_partition_same_bytes_count']}")
+    g = blocks["global"]
+    print("\nGlobal union-of-byte-ranges (context-agnostic, all same-root functions):")
+    print(f"  Ghidra total bytes : {g['ghidra_total_bytes']}")
+    print(f"  Macaw total bytes  : {g['macaw_total_bytes']}")
+    print(f"  Shared bytes       : {g['shared_bytes']}")
+    print(f"  Ghidra-only bytes  : {g['ghidra_only_bytes']}")
+    print(f"  Macaw-only bytes   : {g['macaw_only_bytes']}")
+    if blocks["largest_differences"]:
+        print("\nLargest per-function coverage differences (ghidra_only_bytes + macaw_only_bytes):")
+        for r in blocks["largest_differences"][:10]:
+            if r["ghidra_only_bytes"] == 0 and r["macaw_only_bytes"] == 0:
+                continue
+            note = " [different partition, same bytes]" if r["different_partition_same_bytes"] else ""
+            print(f"  {hx(r['entry'])}: ghidra_starts={r['ghidra_block_starts']} "
+                  f"macaw_starts={r['macaw_block_starts']} "
+                  f"ghidra_only={r['ghidra_only_bytes']}B macaw_only={r['macaw_only_bytes']}B{note}")
+
+    cfg = report["cfg_edges"]
+    jc = cfg["jump_like"]
+    crc = cfg["call_return_vs_fallthrough"]
+    print()
+    print("--- CFG edges: jump/branch/lookup-table (same-root, non-call) ---")
+    print(f"Shared source/target pairs      : {len(jc['shared'])}")
+    print(f"Macaw-only                      : {len(jc['macaw_only'])}")
+    print(f"Ghidra-only                     : {len(jc['ghidra_only'])}")
+    print(f"Unresolved on one side          : {len(jc['unresolved_one_side'])}")
+    print()
+    print("--- CFG edges: Macaw call_return vs. Ghidra fallthrough (kept separate from calls) ---")
+    print(f"Shared source/target pairs      : {len(crc['shared'])}")
+    print(f"Macaw-only                      : {len(crc['macaw_only'])}")
+    print(f"Ghidra-only                     : {len(crc['ghidra_only'])}")
+    print(f"Unresolved on one side          : {len(crc['unresolved_one_side'])}")
+
+    ic = report["macaw_indirect_calls"]
+    cf = report["macaw_unresolved"]
+    print()
+    print("--- Macaw unresolved: indirect/unmapped calls ---")
+    print(f"Total analyzed : {len(ic['calls'])}")
+    for status in ("ghidra_resolved", "ghidra_unresolved", "no_ghidra_evidence"):
+        print(f"  {status:20s}: {ic['counts'].get(status, 0)}")
+    resolved_examples = [c for c in ic["calls"] if c["status"] == "ghidra_resolved"]
+    if resolved_examples:
+        print("\nExamples where Ghidra DOES resolve a target Macaw left indirect:")
+        for c in resolved_examples[:10]:
+            print(f"  caller={hx(c['caller'])} call_site={hx(c['call_site'])} "
+                  f"ghidra->{fmt_targets(c['ghidra_targets'])} ({', '.join(c['ghidra_kinds'])})")
+
+    print()
+    print("--- Macaw unresolved: classify_failure blocks (believed CBZ/CBNZ classifier limitation) ---")
+    print(f"Total analyzed : {len(cf['blocks'])}")
+    for status in ("ghidra_resolved", "ghidra_unresolved", "no_ghidra_evidence"):
+        label = {"ghidra_resolved": "Macaw failure / Ghidra resolved",
+                  "ghidra_unresolved": "Macaw failure / Ghidra unresolved",
+                  "no_ghidra_evidence": "Macaw failure / no Ghidra evidence"}[status]
+        print(f"  {label:38s}: {cf['counts'].get(status, 0)}")
+    resolved_examples = [b for b in cf["blocks"] if b["status"] == "ghidra_resolved"]
+    if resolved_examples:
+        print("\nExamples where Ghidra resolves outgoing flow Macaw's classifier failed on:")
+        for b in resolved_examples[:10]:
+            print(f"  function={hx(b['function_entry'])} block={hx(b['block_start'])} "
+                  f"ghidra->{fmt_targets(b['ghidra_targets'])} ({', '.join(b['ghidra_kinds'])})")
+
 
 def report_to_jsonable(report):
     def fmt_addr_list(xs):
@@ -586,6 +1053,77 @@ def report_to_jsonable(report):
                              for g in calls["ghidra_only"]],
         },
         "unattributed_ghidra_call_edges_total": report["unattributed_ghidra_call_edges_total"],
+        "blocks": fmt_blocks(report["blocks"]),
+        "cfg_edges": fmt_cfg_edges(report["cfg_edges"]),
+        "macaw_indirect_calls": fmt_macaw_indirect_calls(report["macaw_indirect_calls"]),
+        "macaw_unresolved": fmt_macaw_unresolved(report["macaw_unresolved"]),
+    }
+
+
+def fmt_ranges(ranges):
+    return [{"start": hx(s), "end": hx(e), "size": e - s} for s, e in ranges]
+
+
+def fmt_blocks(blocks):
+    def fmt_per_function(r):
+        return {"entry": hx(r["entry"]), "ghidra_block_starts": r["ghidra_block_starts"],
+                "macaw_block_starts": r["macaw_block_starts"], "same_block_starts": r["same_block_starts"],
+                "shared_bytes": r["shared_bytes"], "ghidra_only_bytes": r["ghidra_only_bytes"],
+                "macaw_only_bytes": r["macaw_only_bytes"],
+                "different_partition_same_bytes": r["different_partition_same_bytes"],
+                "ghidra_only_ranges": fmt_ranges(r["ghidra_only_ranges"]),
+                "macaw_only_ranges": fmt_ranges(r["macaw_only_ranges"])}
+
+    g = blocks["global"]
+    return {
+        "per_function": [fmt_per_function(r) for r in blocks["per_function"]],
+        "different_partition_same_bytes_count": blocks["different_partition_same_bytes_count"],
+        "largest_differences": [fmt_per_function(r) for r in blocks["largest_differences"]],
+        "global": {"ghidra_total_bytes": g["ghidra_total_bytes"], "macaw_total_bytes": g["macaw_total_bytes"],
+                   "shared_bytes": g["shared_bytes"], "ghidra_only_bytes": g["ghidra_only_bytes"],
+                   "macaw_only_bytes": g["macaw_only_bytes"],
+                   "ghidra_only_ranges": fmt_ranges(g["ghidra_only_ranges"]),
+                   "macaw_only_ranges": fmt_ranges(g["macaw_only_ranges"])},
+    }
+
+
+def fmt_edge_cmp(cmp):
+    def fmt_row(r):
+        out = {"function_entry": hx(r["function_entry"]), "source": hx(r["source"]),
+               "target": hx(r.get("target"))}
+        for k in ("macaw_kinds", "ghidra_kinds", "ghidra_targets", "side", "unmatched_source"):
+            if k in r:
+                out[k] = [hx(t) for t in r[k]] if k == "ghidra_targets" else r[k]
+        return out
+
+    return {"shared": [fmt_row(r) for r in cmp["shared"]],
+            "macaw_only": [fmt_row(r) for r in cmp["macaw_only"]],
+            "ghidra_only": [fmt_row(r) for r in cmp["ghidra_only"]],
+            "unresolved_one_side": [fmt_row(r) for r in cmp["unresolved_one_side"]]}
+
+
+def fmt_cfg_edges(cfg):
+    return {"jump_like": fmt_edge_cmp(cfg["jump_like"]),
+            "call_return_vs_fallthrough": fmt_edge_cmp(cfg["call_return_vs_fallthrough"])}
+
+
+def fmt_macaw_indirect_calls(ic):
+    return {
+        "counts": ic["counts"],
+        "calls": [{"caller": hx(c["caller"]), "call_site": hx(c["call_site"]),
+                   "macaw_kind": c["macaw_kind"], "status": c["status"],
+                   "ghidra_targets": [hx(t) for t in c["ghidra_targets"]], "ghidra_kinds": c["ghidra_kinds"]}
+                  for c in ic["calls"]],
+    }
+
+
+def fmt_macaw_unresolved(cf):
+    return {
+        "counts": cf["counts"],
+        "blocks": [{"function_entry": hx(b["function_entry"]), "block_start": hx(b["block_start"]),
+                    "status": b["status"], "ghidra_targets": [hx(t) for t in b["ghidra_targets"]],
+                    "ghidra_kinds": b["ghidra_kinds"]}
+                   for b in cf["blocks"]],
     }
 
 
