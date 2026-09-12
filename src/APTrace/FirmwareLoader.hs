@@ -11,6 +11,7 @@ module APTrace.FirmwareLoader
   ( buildMemory
   , buildMemoryWithMMIO
   , resolveEntry
+  , macawCortexMEntry
   ) where
 
 import           Data.Bits ( (.|.) )
@@ -77,13 +78,35 @@ buildMemoryWithMMIO flashBytes flashBase ramBase ramSize mmioBase mmioSize = do
   where
     overlapErr = either (const (Left "overlapping memory segments")) Right
 
--- | Resolve a raw vector-table word to a Macaw segment offset.
+-- | Resolve an address to a Macaw segment offset.
 --
--- Deliberately does /not/ clear the low (Thumb) bit: Macaw's AArch32 backend
--- (@Data.Macaw.ARM.Eval.mkInitialAbsState@) derives a function's initial
--- decode mode (A32 vs Thumb) from the low bit of its own entry address, so
--- vector-table addresses -- which already have that bit set for every
--- Cortex-M handler, since Cortex-M is Thumb-only -- should be handed to
--- Macaw's code discovery unmodified.
+-- Deliberately does /not/ touch the low (Thumb) bit either way: this is a
+-- plain lookup, used both for code entries (which must already have the bit
+-- set -- see 'macawCortexMEntry') and for plain data/MMIO addresses (which
+-- must not). Callers seeding Macaw code discovery should normalize through
+-- 'macawCortexMEntry' first; callers resolving a data address should not.
 resolveEntry :: MM.Memory 32 -> Word32 -> Maybe (MM.MemSegmentOff 32)
 resolveEntry mem addr = MM.resolveAbsoluteAddr mem (MM.memWord (fromIntegral addr))
+
+-- | Convert a canonical Cortex-M code address -- a function's instruction
+-- address as it appears in disassembly, a raw vector-table word, or an
+-- ARM/Thumb function-pointer value, whether or not it already carries the
+-- low "Thumb bit" -- into the address Macaw's AArch32 backend needs to
+-- select Thumb (T32) decoding for it.
+--
+-- Macaw's AArch32 backend (@Data.Macaw.ARM.Eval.mkInitialAbsState@,
+-- @lowBitSet@) derives a discovery root's initial @PSTATE_T@ precondition
+-- purely from the low bit of the 'MM.MemSegmentOff' handed to
+-- 'Data.Macaw.Discovery.cfgFromAddrs' as an entry point: bit set => Thumb,
+-- clear => ARM (A32). Cortex-M has no A32 execution state at all, so an
+-- even (bit-clear) code address must never be handed to discovery as-is --
+-- Macaw has been observed lifting such an address as A32 while the same
+-- address with the Thumb bit set decodes correctly. Setting the bit
+-- unconditionally is always correct for Cortex-M code and is a no-op for an
+-- address that already has it (every real vector-table word and Thumb
+-- function pointer already does).
+--
+-- Only apply this to an address APTrace is intentionally treating as code
+-- (a discovery-root entry point). Never apply it to a data/MMIO address.
+macawCortexMEntry :: Word32 -> Word32
+macawCortexMEntry addr = addr .|. 1

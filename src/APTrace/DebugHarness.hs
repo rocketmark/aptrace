@@ -76,7 +76,7 @@ import qualified What4.Expr as WE
 import qualified What4.Interface as WI
 import qualified What4.ProgramLoc as WPL
 
-import           APTrace.FirmwareLoader ( buildMemory, resolveEntry )
+import           APTrace.FirmwareLoader ( buildMemory, resolveEntry, macawCortexMEntry )
 
 -- | Minimal What4 backend "user state" placeholder -- mirrors
 -- 'APTrace.SymbolicRunner.BackendData' (kept local there too; What4's
@@ -99,14 +99,15 @@ runDebug path flashBase entryRaw = do
   case buildMemory bytes flashBase 0x20000000 0x30000 of
     Left err -> die ("failed to build memory image: " ++ err)
     Right mem -> do
-      entry <- maybe (die "could not resolve entry address") pure (resolveEntry mem entryRaw)
+      let entryAddr = macawCortexMEntry entryRaw
+      entry <- maybe (die "could not resolve entry address") pure (resolveEntry mem entryAddr)
       let addrSymMap = Map.singleton entry "target"
           discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
       case Map.lookup entry funs of
         Nothing -> die "target function was not discovered"
         Just (Some fn) ->
-          case MM.resolveAbsoluteAddr mem (MM.memWord (fromIntegral entryRaw)) of
+          case MM.resolveAbsoluteAddr mem (MM.memWord (fromIntegral entryAddr)) of
             Nothing -> die "could not resolve block address"
             Just off -> case Map.lookup off (fn ^. MD.parsedBlocks) of
               Nothing -> die "target block not found in discovered function"

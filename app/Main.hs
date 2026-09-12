@@ -22,7 +22,7 @@ import qualified Data.Macaw.Memory as MM
 
 import           APTrace.DebugHarness ( runDebug )
 import           APTrace.FirmwareLoader
-  ( buildMemory, buildMemoryWithMMIO, resolveEntry )
+  ( buildMemory, buildMemoryWithMMIO, resolveEntry, macawCortexMEntry )
 import           APTrace.ProtocolHarness ( PacketByte(..) )
 import qualified APTrace.ProtocolHarness as PH
 import           APTrace.SymbolicRunner
@@ -94,7 +94,7 @@ run path flashBase = do
 
 resolveEntries :: MM.Memory 32 -> [VectorEntry] -> (MD.AddrSymMap 32, [MM.MemSegmentOff 32])
 resolveEntries mem entries =
-  let resolved = mapMaybe (\e -> (,) (veName e) <$> resolveEntry mem (veRawAddr e)) entries
+  let resolved = mapMaybe (\e -> (,) (veName e) <$> resolveEntry mem (macawCortexMEntry (veRawAddr e))) entries
       addrSymMap = Map.fromList [ (addr, BSC.pack name) | (name, addr) <- resolved ]
   in (addrSymMap, map snd resolved)
 
@@ -131,7 +131,7 @@ runSolve path flashBase = do
           funs = discState ^. MD.funInfo
 
       funcEntry <- maybe (die "could not resolve function entry address") pure
-                     (resolveEntry mem funcEntryRaw)
+                     (resolveEntry mem (macawCortexMEntry funcEntryRaw))
       Some funInfo <- maybe (die "target function was not discovered") pure
                         (Map.lookup funcEntry funs)
       loopBlockOff <- maybe (die "could not resolve loop block address") pure
@@ -168,7 +168,8 @@ runExplore path flashBase entryRaw = do
   case buildMemory bytes flashBase ramBase ramSize of
     Left err -> die ("failed to build memory image: " ++ err)
     Right mem -> do
-      entry <- maybe (die "could not resolve entry address") pure (resolveEntry mem entryRaw)
+      entry <- maybe (die "could not resolve entry address") pure
+                 (resolveEntry mem (macawCortexMEntry entryRaw))
       let addrSymMap = Map.singleton entry (BSC.pack "target")
           discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
@@ -200,7 +201,7 @@ runProtocol path flashBase = do
     Left err -> die ("failed to build memory image: " ++ err)
     Right mem -> do
       entry <- maybe (die "could not resolve dispatcher entry address") pure
-                 (resolveEntry mem dispatcherEntry)
+                 (resolveEntry mem (macawCortexMEntry dispatcherEntry))
       let addrSymMap = Map.singleton entry (BSC.pack "dispatcher")
           discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
@@ -427,7 +428,8 @@ runTrigger path flashBase = do
       -- came from direct provenance tracing (Ghidra) plus a concrete
       -- Unicorn replay using the real values that tracing found, not from
       -- this solver call completing.
-      entryA <- maybe (die "could not resolve 0x9203 entry") pure (resolveEntry mem 0x9203)
+      entryA <- maybe (die "could not resolve 0x9203 entry") pure
+                  (resolveEntry mem (macawCortexMEntry 0x9203))
       let addrSymMapA = Map.singleton entryA (BSC.pack "trigger_gate")
           discA = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMapA [entryA] []
           funsA = discA ^. MD.funInfo
@@ -468,7 +470,8 @@ runTrigger path flashBase = do
           reportPacket "0x8f98 config-reload write (0x200025bc+1 == 3)" bufLoA resA
 
       putStrLn "\n=== Query B: entry 0x91a3 (TR1/armed -- does reaching the 'T' write depend on PB05 or the gate cells?) ==="
-      entryB <- maybe (die "could not resolve 0x91a3 entry") pure (resolveEntry mem 0x91a3)
+      entryB <- maybe (die "could not resolve 0x91a3 entry") pure
+                  (resolveEntry mem (macawCortexMEntry 0x91a3))
       let addrSymMapB = Map.singleton entryB (BSC.pack "trigger_report")
           discB = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMapB [entryB] []
           funsB = discB ^. MD.funInfo
@@ -525,7 +528,7 @@ runTriggerCrossCheck path flashBase = do
           trEnableAddr     = 0x20003120 :: Word32  -- r6 @ 0x9222: the TR0|/TR1| enable byte's own address
           state32Addr      = 0x20001b38 :: Word32  -- loaded via the flash literal @ 0x9260; must == 0x7b
           state8Addr       = 0x200000d8 :: Word32  -- loaded via the flash literal @ 0x9264; must == 0x09
-          entryRaw         = 0x9203 :: Word32      -- Thumb bit set -- see FirmwareLoader.resolveEntry's own note
+          entryRaw         = 0x9203 :: Word32      -- Thumb bit set -- see FirmwareLoader.macawCortexMEntry
           stopAddr         = 0x9226 :: Word32      -- the real Macaw block-start address immediately
                                                      -- preceding the "bl 0xd3dc" at 0x9228 -- reaching it
                                                      -- is this project's own established proxy for "0x9228
@@ -552,7 +555,8 @@ runTriggerCrossCheck path flashBase = do
             ]
           regOverrides = [(AR.r5, deviceStateArray), (AR.r6, trEnableAddr)]
 
-      entry <- maybe (die "could not resolve 0x9203 entry") pure (resolveEntry mem entryRaw)
+      entry <- maybe (die "could not resolve 0x9203 entry") pure
+                 (resolveEntry mem (macawCortexMEntry entryRaw))
       let addrSymMap = Map.singleton entry (BSC.pack "trigger_gate_crosscheck")
           discState = MD.cfgFromAddrs ARM.arm_linux_info mem addrSymMap [entry] []
           funs = discState ^. MD.funInfo
