@@ -11,8 +11,10 @@ import           Control.Exception ( SomeException, try )
 import           Data.Aeson ( encode )
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
-import           Data.List ( isInfixOf, sortOn )
+import qualified Data.ByteString.Lazy.Char8 as BSLC
+import           Data.List ( intercalate, isInfixOf, sortOn )
 import qualified Data.Map as Map
+import qualified Data.Set as Set
 import           Data.Word ( Word32 )
 import           Lens.Micro ( (^.) )
 import           Numeric ( showHex )
@@ -36,7 +38,9 @@ import           APTrace.FirmwareLoader
 import           APTrace.MacawCensus
   ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
   , FunctionInfo(..), NormalizedInfo(..), UnresolvedInfo(..)
-  , canonicalWord, censusToValue, discoverCensus, normalizeRoots )
+  , buildDiscoveryState, canonicalWord, censusToValue, discoverCensus, normalizeRoots )
+import           APTrace.MacawExpand
+  ( ExpansionResult(..), expandWithNormalization, resolutionValue )
 import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.MacawRefinement ( refineFunctionAt )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
@@ -67,6 +71,8 @@ main = do
     , realCase0x44ecRecoversTwoTargets
     , recoveredEvidenceIsMarkedMacawNormalized
     , memoryDerivedFailureRemainsUnresolved
+    , expansionFeedsExistingFunctionNotNewFunction
+    , fullFirmwareFixpointExpansion
     ]
   if and results
     then putStrLn "All tests passed."
@@ -709,6 +715,133 @@ memoryDerivedFailureRemainsUnresolved = do
   where
     fnEntry      = 0x97a0 :: Word32
     blkStart     = 0x978c :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+------------------------------------------------------------------------
+-- APTrace.MacawExpand: reintegrating normalization via Macaw's own
+-- 'MD.addDiscoveredFunctionBlockTargets', never as new 'cfgFromAddrs'
+-- roots.
+
+-- | 22. The real @0x44ec@ case, scoped to just that one function: after
+-- 'expandWithNormalization', its two recovered targets (@0x457e@,
+-- @0x453e@) must NOT appear as new, independent function entries -- only
+-- as new blocks reachable from within @0x44ec@'s own, pre-existing
+-- function. This is the central distinction this integration exists to
+-- get right (a one-off @cfgFromAddrs@-with-extra-roots experiment gets it
+-- wrong, inflating function count). Skips if the firmware isn't present
+-- locally.
+expansionFeedsExistingFunctionNotNewFunction :: IO Bool
+expansionFeedsExistingFunctionNotNewFunction = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 22. expansion feeds the existing function, not a new one (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "22. expansion feeds the existing function, not a new one" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> case resolveEntry mem (macawCortexMEntry targetEntry) of
+        Nothing -> test "22. expansion feeds the existing function, not a new one" False
+        Just off -> do
+          let baseState = buildDiscoveryState mem (Map.singleton off (BSC.pack "target")) [off]
+              canonFnAddrs s = [ canonicalWord (MD.discoveredFunAddr fn) | Some fn <- Map.elems (s ^. MD.funInfo) ]
+              baseBlockCount =
+                sum [ Map.size (fn ^. MD.parsedBlocks) | Some fn <- Map.elems (baseState ^. MD.funInfo) ]
+
+              result = expandWithNormalization mem baseState
+              expState = erExpandedState result
+              expFnAddrs = canonFnAddrs expState
+
+              matchesTarget (Some fn) = canonicalWord (MD.discoveredFunAddr fn) == targetEntry
+              targetFnBlocks state =
+                case filter matchesTarget (Map.elems (state ^. MD.funInfo)) of
+                  (Some fn : _) -> Just [ canonicalWord (MDP.pblockAddr b) | b <- Map.elems (fn ^. MD.parsedBlocks) ]
+                  []            -> Nothing
+
+          r1 <- test "22a. recovered targets 0x457e/0x453e are not created as new function entries"
+                  (0x457e `notElem` expFnAddrs && 0x453e `notElem` expFnAddrs)
+          r2 <- test "22b. recovered targets become new blocks within the existing 0x44ec function"
+                  (case targetFnBlocks expState of
+                     Just blks -> 0x457e `elem` blks && 0x453e `elem` blks
+                                    && length blks > baseBlockCount
+                     Nothing   -> False)
+          r3 <- test "22c. recovered evidence is rendered with macaw-normalized provenance"
+                  ("macaw-normalized" `isInfixOf`
+                     BSLC.unpack (encode (resolutionValue (targetEntry, targetEntry, [0x457e, 0x453e]))))
+          pure (r1 && r2 && r3)
+  where
+    targetEntry  = 0x44ec :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 23. The full, vector-table-seeded fixpoint on the real firmware:
+-- normalization exposes new code, which itself contains further
+-- same-shape @classify_failure@s, so the fixpoint must run more than one
+-- round (23a); every one of the base run's 23 originally non-normalizable
+-- failures must still be present, unresolved, in the final state -- never
+-- force-resolved just because the block was revisited in a later round
+-- (23b); and running the fixpoint again over its own already-expanded
+-- output must find nothing further to do (23c), confirming this is a
+-- genuine, stable fixpoint. Skips if the firmware isn't present locally.
+fullFirmwareFixpointExpansion :: IO Bool
+fullFirmwareFixpointExpansion = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 23. full-firmware fixpoint expansion (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "23. full-firmware fixpoint expansion" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        let rootGroups = normalizeRoots (parseVectorTable 40 bytes)
+        baseCensus <- discoverCensus mem rootGroups
+        let originalNormalized =
+              Set.fromList [ (niFunctionEntry n, niBlockStart n) | n <- crNormalized baseCensus ]
+            originalClassifyFailures =
+              Set.fromList [ (uiFunctionEntry u, uiBlockStart u)
+                            | u <- crUnresolved baseCensus, uiKind u == "classify_failure" ]
+            originalResidual = originalClassifyFailures `Set.difference` originalNormalized
+
+            resolvedRoots = [ (off, names) | (addr, names) <- rootGroups, Just off <- [resolveEntry mem addr] ]
+            addrSymMap = Map.fromList
+              [ (off, BSC.pack (intercalate "|" names)) | (off, names) <- resolvedRoots ]
+            entryList = map fst resolvedRoots
+            baseState = buildDiscoveryState mem addrSymMap entryList
+            result = expandWithNormalization mem baseState
+
+        r1 <- test "23a. the fixpoint discovers second-round-or-later normalizable failures"
+                (length (erRounds result) > 1)
+
+        let residualOf state =
+              Set.fromList
+                [ (canonicalWord (MD.discoveredFunAddr fn), canonicalWord (MDP.pblockAddr b))
+                | Some fn <- Map.elems (state ^. MD.funInfo)
+                , let already = Set.fromList (map fst (MD.discoveredClassifyFailureResolutions fn))
+                , b <- Map.elems (fn ^. MD.parsedBlocks)
+                , MDP.ClassifyFailure{} <- [MDP.pblockTermStmt b]
+                , not (Set.member (MDP.pblockAddr b) already)
+                ]
+            finalResidual = residualOf (erExpandedState result)
+
+        r2 <- test "23b. the original 23 non-normalizable failures are not force-resolved"
+                (originalResidual `Set.isSubsetOf` finalResidual)
+
+        let result2 = expandWithNormalization mem (erExpandedState result)
+        r3 <- test "23c. repeating the completed expansion finds no further changes"
+                (null (erRounds result2))
+
+        pure (r1 && r2 && r3)
+  where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32

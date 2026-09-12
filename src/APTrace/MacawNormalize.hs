@@ -32,6 +32,8 @@
 module APTrace.MacawNormalize
   ( macawNormalizedProvenance
   , normalizeIP
+  , normalizeIPSegOff
+  , segOffToCanonicalWord
   ) where
 
 import qualified Data.List as List
@@ -66,34 +68,55 @@ asMux v = case MC.valueAsApp v of
   _                     -> Nothing
 
 -- | A concrete address that resolves into this firmware's own mapped
--- memory -- 'Nothing' for anything else (a register, another mux, a memory
--- read, an unmapped literal, ...), so normalization safely declines rather
--- than guessing. Mirrors 'APTrace.MacawCensus.callsOf'\'s own
+-- memory, as the 'MM.MemSegmentOff' Macaw's own discovery API expects --
+-- 'Nothing' for anything else (a register, another mux, a memory read, an
+-- unmapped literal, ...), so normalization safely declines rather than
+-- guessing. Mirrors 'APTrace.MacawCensus.callsOf'\'s own
 -- @MC.valueAsMemAddr ipVal >>= MM.asAbsoluteAddr@ idiom for extracting a
--- concrete address from a curIP-shaped value, then resolves and
--- canonicalizes it exactly like every other address in this project
--- (no bit manipulation of its own).
-asConcreteMappedAddr :: MM.Memory 32 -> MC.Value ARM.ARM ids (MT.BVType 32) -> Maybe Word32
-asConcreteMappedAddr mem v = do
+-- concrete address from a curIP-shaped value, then resolves it exactly like
+-- every other address in this project (no bit manipulation of its own).
+-- The literal addresses Macaw's own lifted IR uses for a direct branch
+-- target are already canonical (even), so this never needs to touch a
+-- Thumb bit itself.
+asConcreteMappedSegOff :: MM.Memory 32 -> MC.Value ARM.ARM ids (MT.BVType 32) -> Maybe (MM.MemSegmentOff 32)
+asConcreteMappedSegOff mem v = do
   addr <- MC.valueAsMemAddr v
   w <- MM.asAbsoluteAddr addr
-  off <- resolveEntry mem (fromIntegral (MM.memWordValue w))
-  absW <- MM.asAbsoluteAddr (MM.segoffAddr (MM.clearSegmentOffLeastBit off))
-  Just (fromIntegral (MM.memWordValue absW))
+  resolveEntry mem (fromIntegral (MM.memWordValue w))
+
+-- | The canonical (even) Cortex-M instruction address for a resolved
+-- 'MM.MemSegmentOff' -- the same operation
+-- 'APTrace.MacawCensus.canonicalWord' performs, duplicated here (it is a
+-- four-line, purely mechanical unwrap with no policy of its own) so this
+-- module has no import-cycle dependency on 'APTrace.MacawCensus'.
+segOffToCanonicalWord :: MM.MemSegmentOff 32 -> Word32
+segOffToCanonicalWord off =
+  case MM.asAbsoluteAddr (MM.segoffAddr (MM.clearSegmentOffLeastBit off)) of
+    Just w  -> fromIntegral (MM.memWordValue w)
+    Nothing -> error "segOffToCanonicalWord: expected an absolute address"
 
 -- | Attempt the one supported identity on a @ClassifyFailure@ block's curIP
--- value. Returns the (one or two, deduplicated) recovered concrete targets
--- on success; 'Nothing' whenever any safety condition fails -- the value
--- isn't a mux at all, the two conditions differ, or either surviving
--- branch isn't a concrete mapped address -- in which case the caller must
--- leave the original classify_failure as the sole evidence.
-normalizeIP :: MM.Memory 32 -> MC.Value ARM.ARM ids (MT.BVType 32) -> Maybe [Word32]
-normalizeIP mem ipVal = do
+-- value. Returns the (one or two, deduplicated) recovered concrete targets,
+-- as the 'MM.MemSegmentOff' values Macaw's own
+-- @Data.Macaw.Discovery.addDiscoveredFunctionBlockTargets@ expects, on
+-- success; 'Nothing' whenever any safety condition fails -- the value isn't
+-- a mux at all, the two conditions differ, or either surviving branch
+-- isn't a concrete mapped address -- in which case the caller must leave
+-- the original classify_failure as the sole evidence.
+normalizeIPSegOff :: MM.Memory 32 -> MC.Value ARM.ARM ids (MT.BVType 32) -> Maybe [MM.MemSegmentOff 32]
+normalizeIPSegOff mem ipVal = do
   (cond, t, f) <- asMux ipVal
   (survivorT, survivorF) <- case (asMux t, asMux f) of
     (Just (cond', a, _b), _) | cond == cond' -> Just (a, f)
     (_, Just (cond', _b, c)) | cond == cond' -> Just (t, c)
     _ -> Nothing
-  wT <- asConcreteMappedAddr mem survivorT
-  wF <- asConcreteMappedAddr mem survivorF
-  Just (List.nub [wT, wF])
+  offT <- asConcreteMappedSegOff mem survivorT
+  offF <- asConcreteMappedSegOff mem survivorF
+  Just (List.nub [offT, offF])
+
+-- | Word32 form of 'normalizeIPSegOff', for consumers that only need the
+-- (canonical, resolved) recovered addresses themselves -- e.g. the census's
+-- own JSON output -- and not Macaw's own discovery-facing 'MM.MemSegmentOff'
+-- representation.
+normalizeIP :: MM.Memory 32 -> MC.Value ARM.ARM ids (MT.BVType 32) -> Maybe [Word32]
+normalizeIP mem ipVal = map segOffToCanonicalWord <$> normalizeIPSegOff mem ipVal

@@ -24,6 +24,7 @@ import           APTrace.DebugHarness ( runDebug )
 import           APTrace.FirmwareLoader
   ( buildMemory, buildMemoryWithMMIO, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus ( runMacawCensus )
+import           APTrace.MacawExpand ( runMacawCensusExpand )
 import           APTrace.ProtocolHarness ( PacketByte(..) )
 import qualified APTrace.ProtocolHarness as PH
 import           APTrace.SymbolicRunner
@@ -57,9 +58,11 @@ main = do
     ["debug", path, entryS]            -> runDebug path 0x4000 (parseHexWord entryS)
     ["macaw-census", path]              -> runMacawCensus path 0x4000
     ["macaw-census", path, flashBaseS]  -> runMacawCensus path (parseHexWord flashBaseS)
+    ["macaw-census-expand", path]             -> runMacawCensusExpand path 0x4000
+    ["macaw-census-expand", path, flashBaseS] -> runMacawCensusExpand path (parseHexWord flashBaseS)
     [path]                      -> run path 0x4000
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
-    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)\n       aptrace macaw-census FIRMWARE.bin [FLASH_BASE_HEX]  (standalone Macaw static-discovery census, phase 1)"
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)\n       aptrace macaw-census FIRMWARE.bin [FLASH_BASE_HEX]  (standalone Macaw static-discovery census, phase 1)\n       aptrace macaw-census-expand FIRMWARE.bin [FLASH_BASE_HEX]  (macaw-normalized classify_failure recovery, fed back into Macaw's own incremental discovery)"
 
 parseHexWord :: String -> Word32
 parseHexWord s =

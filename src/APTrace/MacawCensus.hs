@@ -24,6 +24,7 @@ module APTrace.MacawCensus
     -- * Pipeline
   , normalizeRoots
   , discoverCensus
+  , buildDiscoveryState
   , censusToValue
   , canonicalWord
     -- * CLI entry point
@@ -326,9 +327,17 @@ discoverCensus mem rootGroups = do
         , crNormalized = sortOn (\n -> (niFunctionEntry n, niBlockStart n)) (coreNormalized core)
         }
 
+-- | The one, vector-root-only Macaw discovery pass every entry point in
+-- this module (and 'APTrace.MacawExpand') is built from -- exported so the
+-- normalization-expansion pipeline can run its own further discovery
+-- starting from exactly this same state, without re-implementing (or
+-- accidentally diverging from) how APTrace seeds Macaw.
+buildDiscoveryState :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> MD.DiscoveryState ARM.ARM
+buildDiscoveryState mem addrSymMap entryList = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryList []
+
 buildCore :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> Set.Set Word32 -> Core
 buildCore mem addrSymMap entryList rootCanonSet =
-  let discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryList []
+  let discState = buildDiscoveryState mem addrSymMap entryList
       funs = Map.elems (discState ^. MD.funInfo)
       perFunction = map (summarizeFunction mem rootCanonSet) funs
   in Core
