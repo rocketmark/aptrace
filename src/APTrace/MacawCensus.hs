@@ -17,6 +17,7 @@ module APTrace.MacawCensus
   , BlockInfo(..)
   , EdgeInfo(..)
   , UnresolvedInfo(..)
+  , CallInfo(..)
   , CensusResult(..)
     -- * Pipeline
   , normalizeRoots
@@ -44,6 +45,7 @@ import           System.Exit ( die )
 import qualified System.IO as IO
 
 import qualified Data.Macaw.ARM as ARM
+import qualified Data.Macaw.CFG as MC
 import qualified Data.Macaw.Discovery as MD
 import qualified Data.Macaw.Discovery.ParsedContents as MDP
 import qualified Data.Macaw.Memory as MM
@@ -121,16 +123,34 @@ data UnresolvedInfo = UnresolvedInfo
   , uiDetail        :: ![String]
   } deriving (Eq, Show)
 
+-- | One @caller function -> call site -> callee function@ relationship,
+-- distinct from the CFG-successor 'EdgeInfo' (whose @call_return@ edge
+-- points at the *return continuation*, never the callee). Emitted for
+-- every 'MDP.ParsedCall' terminator Macaw discovers, call or tail call.
+data CallInfo = CallInfo
+  { ciCaller   :: !Word32
+    -- ^ Canonical entry of the function containing the call site.
+  , ciCallSite :: !Word32
+    -- ^ Canonical address of the block ending in the call.
+  , ciCallee   :: !(Maybe Word32)
+    -- ^ Canonical callee address, if Macaw's own call-target value
+    -- resolves to a concrete address ('MC.valueAsMemAddr'); 'Nothing' for
+    -- a register-indirect call Macaw could not reduce to a literal.
+  , ciKind     :: !String
+    -- ^ @"direct"@ (callee known) or @"indirect"@ (callee unknown).
+  } deriving (Eq, Show)
+
 data CensusResult = CensusResult
   { crRoots           :: ![RootInfo]
   , crDiscoveryError  :: !(Maybe String)
     -- ^ Set only if Macaw's discovery pass itself raised an exception
     -- (e.g. an unhandled decode case) -- see 'discoverCensus'. When set,
-    -- 'crFunctions'/'crBlocks'/'crEdges'/'crUnresolved' are empty.
+    -- 'crFunctions'/'crBlocks'/'crEdges'/'crUnresolved'/'crCalls' are empty.
   , crFunctions       :: ![FunctionInfo]
   , crBlocks          :: ![BlockInfo]
   , crEdges           :: ![EdgeInfo]
   , crUnresolved      :: ![UnresolvedInfo]
+  , crCalls           :: ![CallInfo]
   } deriving (Eq, Show)
 
 ------------------------------------------------------------------------
@@ -178,6 +198,7 @@ data Core = Core
   , coreBlocks     :: ![BlockInfo]
   , coreEdges      :: ![EdgeInfo]
   , coreUnresolved :: ![UnresolvedInfo]
+  , coreCalls      :: ![CallInfo]
   }
 
 forceElems :: [a] -> [a]
@@ -189,6 +210,7 @@ forceCore c = Core
   , coreBlocks     = forceElems (coreBlocks c)
   , coreEdges      = forceElems (coreEdges c)
   , coreUnresolved = forceElems (coreUnresolved c)
+  , coreCalls      = forceElems (coreCalls c)
   }
 
 -- | Run Macaw's own static discovery ('MD.cfgFromAddrs') from the given
@@ -236,6 +258,7 @@ discoverCensus mem rootGroups = do
         , crBlocks = []
         , crEdges = []
         , crUnresolved = []
+        , crCalls = []
         }
     Right core ->
       CensusResult
@@ -246,25 +269,28 @@ discoverCensus mem rootGroups = do
         , crEdges = sortOn (\e -> (eiFunctionEntry e, eiSource e, eiTarget e, eiKind e))
                       (coreEdges core)
         , crUnresolved = sortOn (\u -> (uiFunctionEntry u, uiBlockStart u)) (coreUnresolved core)
+        , crCalls = sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) (coreCalls core)
         }
 
 buildCore :: MM.Memory 32 -> MD.AddrSymMap 32 -> [MM.MemSegmentOff 32] -> Set.Set Word32 -> Core
 buildCore mem addrSymMap entryList rootCanonSet =
   let discState = MD.cfgFromAddrs armCortexMInfo mem addrSymMap entryList []
       funs = Map.elems (discState ^. MD.funInfo)
-      perFunction = map (summarizeFunction rootCanonSet) funs
+      perFunction = map (summarizeFunction mem rootCanonSet) funs
   in Core
-       { coreFunctions  = map (\(f, _, _, _) -> f) perFunction
-       , coreBlocks     = concatMap (\(_, bs, _, _) -> bs) perFunction
-       , coreEdges      = concatMap (\(_, _, es, _) -> es) perFunction
-       , coreUnresolved = concatMap (\(_, _, _, us) -> us) perFunction
+       { coreFunctions  = map (\(f, _, _, _, _) -> f) perFunction
+       , coreBlocks     = concatMap (\(_, bs, _, _, _) -> bs) perFunction
+       , coreEdges      = concatMap (\(_, _, es, _, _) -> es) perFunction
+       , coreUnresolved = concatMap (\(_, _, _, us, _) -> us) perFunction
+       , coreCalls      = concatMap (\(_, _, _, _, cs) -> cs) perFunction
        }
 
 summarizeFunction
-  :: Set.Set Word32
+  :: MM.Memory 32
+  -> Set.Set Word32
   -> Some (MD.DiscoveryFunInfo ARM.ARM)
-  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo])
-summarizeFunction rootCanonSet (Some fn) =
+  -> (FunctionInfo, [BlockInfo], [EdgeInfo], [UnresolvedInfo], [CallInfo])
+summarizeFunction mem rootCanonSet (Some fn) =
   let entryCanon = canonicalWord (MD.discoveredFunAddr fn)
       blocks = Map.elems (fn ^. MD.parsedBlocks)
       blockInfos =
@@ -282,8 +308,13 @@ summarizeFunction rootCanonSet (Some fn) =
         | b <- blocks
         , Just u <- [unresolvedOf entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)]
         ]
+      callInfos =
+        concat
+          [ callsOf mem entryCanon (canonicalWord (MDP.pblockAddr b)) (MDP.pblockTermStmt b)
+          | b <- blocks
+          ]
       fnInfo = FunctionInfo entryCanon (entryCanon `Set.member` rootCanonSet) (length blocks)
-  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos)
+  in (fnInfo, blockInfos, edgeInfos, unresolvedInfos, callInfos)
 
 -- | Name Macaw's own terminator classification -- one word per
 -- 'MDP.ParsedTermStmt' constructor, nothing inferred beyond that.
@@ -336,6 +367,33 @@ unresolvedOf funcEntry src t = case t of
   MDP.ParsedTranslateError msg  -> Just (UnresolvedInfo funcEntry src "translate_error" [Text.unpack msg])
   MDP.ClassifyFailure _ reasons -> Just (UnresolvedInfo funcEntry src "classify_failure" reasons)
   _                              -> Nothing
+
+-- | The @caller -> call site -> callee@ relation for one block's
+-- terminator, if it's a call (ordinary or tail) -- 'MDP.ParsedCall'.
+-- Every other terminator kind (jump, branch, lookup table, PLT stub --
+-- 'MDP.PLTStub' is itself documented as a tail-call variant, not a plain
+-- call -- return, arch term stmt, translate error, classify failure)
+-- contributes nothing here; this never guesses a call from anything but
+-- Macaw's own classified 'MDP.ParsedCall'.
+--
+-- The callee comes from the *same* register state 'MDP.parsedTermSucc'
+-- reads for the call's return successor -- 'MDP.ParsedCall'\'s own
+-- 'MC.RegState' -- read at the instruction-pointer register
+-- ('MC.curIP') and resolved via Macaw's own 'MC.valueAsMemAddr'. Never
+-- inferred from disassembly text. If that value isn't syntactically a
+-- concrete address (a register-indirect call macaw couldn't reduce to a
+-- literal), the call is still emitted, with 'ciCallee' @Nothing@ and
+-- 'ciKind' @"indirect"@, rather than dropped.
+callsOf :: MM.Memory 32 -> Word32 -> Word32 -> MDP.ParsedTermStmt ARM.ARM ids -> [CallInfo]
+callsOf mem funcEntry src t = case t of
+  MDP.ParsedCall regs _ -> [ CallInfo funcEntry src callee (maybe "indirect" (const "direct") callee) ]
+    where
+      callee = do
+        addr <- MC.valueAsMemAddr (regs ^. MC.curIP)
+        w    <- MM.asAbsoluteAddr addr
+        off  <- resolveEntry mem (fromIntegral (MM.memWordValue w))
+        pure (canonicalWord off)
+  _ -> []
 
 ------------------------------------------------------------------------
 -- JSON
@@ -391,6 +449,14 @@ unresolvedValue u = object
   , "detail"         .= uiDetail u
   ]
 
+callValue :: CallInfo -> Value
+callValue c = object
+  [ "caller"    .= hexStr (ciCaller c)
+  , "call_site" .= hexStr (ciCallSite c)
+  , "callee"    .= fmap hexStr (ciCallee c)
+  , "kind"      .= ciKind c
+  ]
+
 -- | The full, deterministic census document. Field order within each
 -- object is fixed by this function (aeson's pinned @+ordered-keymap@
 -- build preserves it); array order is fixed by the sorts already applied
@@ -404,6 +470,7 @@ censusToValue fm cr = object
   , "basic_blocks" .= map blockValue (crBlocks cr)
   , "edges"     .= map edgeValue (crEdges cr)
   , "incomplete_or_unresolved_terminators" .= map unresolvedValue (crUnresolved cr)
+  , "calls"     .= map callValue (crCalls cr)
   ]
 
 ------------------------------------------------------------------------

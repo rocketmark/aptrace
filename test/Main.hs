@@ -11,7 +11,7 @@ import           Control.Exception ( SomeException, try )
 import           Data.Aeson ( encode )
 import qualified Data.ByteString as BS
 import qualified Data.ByteString.Char8 as BSC
-import           Data.List ( isInfixOf )
+import           Data.List ( isInfixOf, sortOn )
 import qualified Data.Map as Map
 import           Data.Word ( Word32 )
 import           Lens.Micro ( (^.) )
@@ -30,7 +30,8 @@ import qualified Prettyprinter as PP
 import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus
-  ( CensusResult(..), FirmwareMeta(..), FunctionInfo(..), UnresolvedInfo(..)
+  ( CensusResult(..), CallInfo(..), EdgeInfo(..), FirmwareMeta(..)
+  , FunctionInfo(..), UnresolvedInfo(..)
   , canonicalWord, censusToValue, discoverCensus, normalizeRoots )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
@@ -50,6 +51,10 @@ main = do
     , directCallCalleeIsThumb
     , postCallContinuationIsThumb
     , noA32DecodeErrorsInFullCensus
+    , knownDirectCallsAreEmitted
+    , callReturnEdgeStaysSeparateFromCallRelation
+    , unresolvedCallIsPreserved
+    , callOutputIsDeterministic
     ]
   if and results
     then putStrLn "All tests passed."
@@ -331,6 +336,138 @@ noA32DecodeErrorsInFullCensus = do
         let allDetail = concatMap uiDetail (crUnresolved census)
         test "11. no A32 decode errors in the full vector-table census"
           (not (any ("A32" `isInfixOf`) allDetail))
+  where
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 12. The two calls verified directly against Macaw's own call-target
+-- resolution -- NOT the stale call-site address from the earlier,
+-- pre-'armCortexMInfo' investigation (that investigation reported
+-- @0xcc52 -> 0xcdd8@; fixing the Cortex-M architecture policy changed
+-- Macaw's own block splitting in @0xcc24@, and the real call site for
+-- @0xcdd8@ is now @0xcc42@ -- re-verified directly from 'crCalls' before
+-- writing this, the same "verify, don't assume" lesson as the earlier
+-- @0xcde8@ vs @0xcdd8@ correction). @0xcc24@ calls @0xcd90@ from call site
+-- @0xcc5c@ and @0xcdd8@ from call site @0xcc42@ -- both direct, both
+-- canonical. Skips if the firmware isn't present locally.
+knownDirectCallsAreEmitted :: IO Bool
+knownDirectCallsAreEmitted = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 12. known direct calls are emitted (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "12. known direct calls are emitted" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry callerAddr, ["caller"])]
+        let calls = crCalls census
+        test "12. known direct calls are emitted with canonical caller/callee addresses"
+          (CallInfo callerAddr 0xcc5c (Just 0xcd90) "direct" `elem` calls
+             && CallInfo callerAddr 0xcc42 (Just 0xcdd8) "direct" `elem` calls)
+  where
+    callerAddr   = 0xcc24 :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 13. The @call_return@ CFG edge (source = call site, target = return
+-- continuation) must remain a distinct fact from the new @caller ->
+-- callee@ relation for the *same* call site: for @0xcc5c@'s call to
+-- @0xcd90@, the edge target is the return address @0xcc60@ -- never the
+-- callee -- while 'crCalls' separately records the callee for that same
+-- call site. Skips if the firmware isn't present locally.
+callReturnEdgeStaysSeparateFromCallRelation :: IO Bool
+callReturnEdgeStaysSeparateFromCallRelation = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 13. call_return edge stays separate from the call relation (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "13. call_return edge stays separate from the call relation" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry callerAddr, ["caller"])]
+        let callReturnTargets =
+              [ eiTarget e
+              | e <- crEdges census
+              , eiFunctionEntry e == callerAddr, eiSource e == callSite, eiKind e == "call_return"
+              ]
+            callCallees =
+              [ ciCallee c
+              | c <- crCalls census
+              , ciCaller c == callerAddr, ciCallSite c == callSite
+              ]
+        test "13. call_return edge stays separate from the call relation"
+          (callReturnTargets == [0xcc60] && callCallees == [Just 0xcd90])
+  where
+    callerAddr   = 0xcc24 :: Word32
+    callSite     = 0xcc5c :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 14. A real, register-indirect call whose target Macaw's own
+-- call-target value doesn't reduce to a concrete address (@0xa03c@,
+-- called into as its own root, whose entry block itself ends in the
+-- indirect call) must still appear in 'crCalls' -- with @callee=Nothing@,
+-- @kind="indirect"@ -- rather than being dropped. Skips if the firmware
+-- isn't present locally.
+unresolvedCallIsPreserved :: IO Bool
+unresolvedCallIsPreserved = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 14. unresolved call is preserved (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "14. unresolved call is preserved, not dropped" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        census <- discoverCensus mem [(macawCortexMEntry entryAddr, ["indirect_caller"])]
+        test "14. unresolved call is preserved, not dropped"
+          (CallInfo entryAddr entryAddr Nothing "indirect" `elem` crCalls census)
+  where
+    entryAddr    = 0xa03c :: Word32
+    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    flashBase    = 0x4000 :: Word32
+    ramBase      = 0x20000000 :: Word32
+    ramSize      = 0x30000 :: Word32
+
+-- | 15. Running the same census twice must produce a byte-identical
+-- @calls@ list -- both content and the @caller, call_site, callee@ sort
+-- order. Skips if the firmware isn't present locally.
+callOutputIsDeterministic :: IO Bool
+callOutputIsDeterministic = do
+  readResult <- try (BS.readFile firmwarePath) :: IO (Either SomeException BS.ByteString)
+  case readResult of
+    Left _ -> do
+      hPutStrLn stderr
+        ("SKIP: 15. call output ordering is deterministic (firmware not present at "
+          ++ firmwarePath ++ ")")
+      pure True
+    Right bytes -> case buildMemory bytes flashBase ramBase ramSize of
+      Left err -> test "15. call output ordering is deterministic" False
+                    <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
+      Right mem -> do
+        let roots = normalizeRoots (parseVectorTable 40 bytes)
+        c1 <- discoverCensus mem roots
+        c2 <- discoverCensus mem roots
+        let isSorted cs = cs == sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) cs
+        test "15. call output ordering is deterministic"
+          (crCalls c1 == crCalls c2 && isSorted (crCalls c1))
   where
     firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
