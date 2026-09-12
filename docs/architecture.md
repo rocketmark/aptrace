@@ -22,7 +22,7 @@ The project started as a feasibility spike for a narrower question: **can
 the Galois Macaw/Crucible/What4 stack alone do this, without writing a
 custom symbolic execution engine?** That question has a qualified yes —
 see [`docs/firmware/cortexm-assessment.md`](firmware/cortexm-assessment.md)
-and [`docs/harness/symbolic-execution-results.md`](harness/symbolic-execution-results.md)
+and [`docs/investigations/symbolic-execution-results.md`](investigations/symbolic-execution-results.md)
 for the demonstrations. Macaw's AArch32/Thumb backend decodes real Cortex-M4F
 firmware cleanly, and Crucible/What4/Z3 can solve real reachability and
 input-value questions against it.
@@ -101,17 +101,49 @@ aptrace/
     FirmwareLoader.hs        -- raw firmware -> Macaw Memory (no ELF)
     SymbolicRunner.hs        -- one Macaw block -> Crucible -> What4/Z3
     ProtocolHarness.hs       -- whole-function Crucible execution + diagnostics
+    MacawCensus.hs, MacawExpand.hs, MacawIsaClassify.hs, MacawNormalize.hs
+                             -- Macaw static-discovery pipeline (docs/tooling/macaw-analysis.md)
+    DebugHarness.hs          -- experimental crucible-debug prototype
+    Case/                    -- Performing Rigs case code (below)
   app/Main.hs                -- CLI entry point (see docs/toolchain.md for usage)
   tools/
     vector_scan.py           -- standalone Python vector-table scanner/validator
     doctor.sh                -- verifies Ghidra/Unicorn/Macaw-Crucible-What4-Z3 are usable
     ghidra/                  -- headless Ghidra integration (see docs/tooling/ghidra-backend.md)
     unicorn/                 -- concrete-execution backend (see docs/tooling/unicorn-backend.md)
+    census/                  -- aptrace census evidence database (docs/tooling/census.md)
+    case/                    -- Performing Rigs case config (below)
   external/macaw/            -- GaloisInc/macaw, vendored as described in docs/toolchain.md
   docs/                       -- current, authoritative documentation (this tree)
     tooling/                 -- tool-selection.md and per-backend usage docs
+    investigations/          -- Performing Rigs case/research dossiers
   research/
     firmware/originals/      -- copies of the AutoPilot/Mando firmware images + hashes
     autopilot_static_inventory/  -- raw static RE research artifacts (see docs/protocol/)
     runs/                    -- saved raw tool output from real runs (incl. runs/ghidra/)
 ```
+
+## Framework / case split
+
+Reusable framework/tooling code carries no Performing Rigs-specific
+knowledge and must not import case code; Performing Rigs case code may
+depend on framework code, never the reverse:
+
+- `src/APTrace/Case/PerformingRigs.hs` -- the single authoritative
+  definition of the AutoPilot/Remote target's RAM base/size, IRQ vector
+  count, and default flash base. Framework modules that need this
+  geometry (`APTrace.MacawCensus`, `APTrace.MacawExpand`,
+  `APTrace.DebugHarness`) take it as parameters instead of hardcoding it.
+- `src/APTrace/Case/PerformingRigsScenarios.hs` -- Performing Rigs
+  AutoPilot-specific investigation scenarios (`aptrace solve`/`protocol`/
+  `trigger`/`trigger-crosscheck`), hardcoding real, discovered flash/RAM
+  addresses. `app/Main.hs` is the only place both framework and case
+  modules are wired together, which is expected for a CLI entry point.
+- `tools/case/performing_rigs.py` -- the known firmware image registry
+  (`FIRMWARE_REGISTRY`) and this target's RAM/MMIO geometry, imported by
+  `tools/ghidra/aptrace_ghidra.py` and `tools/census/build.py` rather than
+  hardcoded inside them.
+- `docs/investigations/` holds Performing Rigs case/research dossiers;
+  `docs/tooling/` and `docs/harness/execution-model.md` hold framework/
+  tooling documentation describing reusable mechanisms, not one
+  firmware's results.

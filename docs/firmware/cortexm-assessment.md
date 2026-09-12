@@ -220,7 +220,7 @@ its memory backed by `Data.Macaw.Symbolic.Memory.newGlobalMemory` with a genuine
 memory-mapped-peripheral address (`0x40002000`, found by reading a real literal-pool
 value out of the firmware bytes) modeled as symbolic, and a Z3 online solver process
 produced concrete, semantically-correct models for both directions of the block's
-real conditional branch. Full details: `../harness/symbolic-execution-results.md`. Every
+real conditional branch. Full details: `../investigations/symbolic-execution-results.md`. Every
 research question in this document (1-7) now has a direct, empirical answer, not
 just a source-reading-based inference. Recommendation **A** is fully confirmed.
 
@@ -229,7 +229,7 @@ just a source-reading-based inference. Recommendation **A** is fully confirmed.
 1. ~~Build `macaw-aarch32`~~ — done (Step 2 in progress.md).
 2. ~~Confirm real Thumb-2 firmware lifts cleanly~~ — done: 25 functions, 0 failures.
 3. ~~Get one function into Crucible, with symbolic MMIO and a solver model~~ — done,
-   see `../harness/symbolic-execution-results.md`.
+   see `../investigations/symbolic-execution-results.md`.
 4. Cross-validate a sample of the decoded instructions against an independent
    disassembler (objdump/Capstone; neither installed yet) — not yet done, still worth
    doing for full Step 6 confidence even though the zero-failure result plus a

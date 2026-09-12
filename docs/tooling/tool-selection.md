@@ -123,7 +123,7 @@ above:
 3. **Symbolic (Crucible/What4/Z3)**: leaving `r3` symbolic and asking "is
    `0x8890` reachable" gets Z3 to *derive* `0x26` as the unique witness,
    rather than confirm a value already chosen — see
-   [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md).
+   [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md).
 
 All three agree. That agreement is itself the point: a static read alone is
 a claim; concrete execution is a demonstration for one input; the solver
@@ -246,7 +246,7 @@ sufficient for now.
   example of *not* following this rule: `APTrace.ProtocolHarness`'s
   whole-function replay was, in effect, trying to concretely replay a
   packet transaction through Crucible — see
-  [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md)
+  [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)
   for how that turned into a memory-side-effect modeling gap that a
   concrete Unicorn run would sidestep entirely.)
 - **Reimplementing a mature tool's job.** Don't hand-write a disassembler,

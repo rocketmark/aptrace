@@ -14,7 +14,7 @@
 --
 -- Current status, blockers, and the diagnostic technique ('debugFeature')
 -- are documented in docs/harness/execution-model.md and
--- docs/harness/protocol-harness-results.md -- see those before changing
+-- docs/investigations/protocol-harness-results.md -- see those before changing
 -- this module's call-handling or memory-model behavior.
 --
 -- Memory model: the base memory uses @SymbolicMutable@ content (Macaw-
@@ -255,7 +255,7 @@ runPacketTransactionTraced mem fn bufAddr bufBytes observeAddr targetValue trace
             -- this clobbered *every* register, including whatever loop
             -- counter or table pointer the caller was using in R4-R11 --
             -- which corrupted ordinary bounded loops into apparently-infinite
-            -- ones (see docs/harness/protocol-harness-results.md). Only
+            -- ones (see docs/investigations/protocol-harness-results.md). Only
             -- clobber the registers a real call is actually allowed to.
             let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
             callCounter <- newIORef (0 :: Int)

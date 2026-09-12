@@ -10,7 +10,7 @@
 > structure and the claim that entry starts a simple linear scan does not.
 > See [`docs/investigations/parser-dispatch.md`](../../docs/investigations/parser-dispatch.md)
 > for the current, corrected picture and
-> [`docs/harness/protocol-harness-results.md`](../../docs/harness/protocol-harness-results.md)
+> [`docs/investigations/protocol-harness-results.md`](../../docs/investigations/protocol-harness-results.md)
 > for how this was found. This file is kept as-is (v0.1, never updated to
 > v0.3) for provenance.
 

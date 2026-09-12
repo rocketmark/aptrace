@@ -1,7 +1,7 @@
 # Protocol Harness Results — `aptrace protocol` (roadmap M2/M3)
 
 Follow-up to the project's original protocol-harness roadmap, since
-superseded; current roadmap is [roadmap.md](roadmap.md). This is the
+superseded; current roadmap is [roadmap.md](../harness/roadmap.md). This is the
 first concrete execution of that roadmap: seed the AutoPilot inbound packet dispatcher
 directly, model its input as controlled/symbolic, and ask What4/Z3 for the byte values
 that reach specific command-scheduling code -- cross-checked against
@@ -197,7 +197,7 @@ modeling gap above.
 ## Next steps
 
 Superseded by the consolidated current roadmap: see
-[docs/harness/roadmap.md](roadmap.md). (Briefly, as of this document: resolve
+[docs/harness/roadmap.md](../harness/roadmap.md). (Briefly, as of this document: resolve
 the R4-R7 lookup setup or switch to lazy real-CFG execution for callees;
 verify G/!/S's handlers perform their claimed writes, not just reach their
 entry block; hook `0x8c10`/`0x7f84`; do not start on the Remote/mando

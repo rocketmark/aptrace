@@ -46,7 +46,7 @@ executing) the real firmware, via APTrace's Crucible/What4/Z3 pipeline:
   and the exact byte value required for each was solver-derived (not
   hand-fed) and matches the ASCII value the static inventory assigned:
   `&`→`0x26`, `G`→`0x47`, `!`→`0x21`, `S`→`0x53`. See
-  [`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md).
+  [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md).
 - The `&` handler (`0x8890`) really does write `1` to the pending-event
   array at the event-5 slot (RAM `0x200025bc + 5`) and then returns — this
   was read directly from the lifted instruction semantics, not inferred.

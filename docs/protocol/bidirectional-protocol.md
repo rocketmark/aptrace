@@ -57,7 +57,7 @@ Remote (0xba98): send "&|"             [execution-confirmed: real "&|\0" literal
 Both the AutoPilot side (parser -> event 5 -> TX hook -> `"V01R39"`) and
 the Remote side (TX construction and RX capture) are execution-confirmed
 at the concrete (Unicorn) evidence tier — see
-[`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md),
+[`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md),
 [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md),
 and
 [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)

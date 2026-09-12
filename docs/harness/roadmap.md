@@ -32,7 +32,7 @@ completed milestones are not re-narrated here.
   [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md).
   Remote's own `0x58a8` transport remains open (see below).
 
-See [`docs/harness/protocol-harness-results.md`](protocol-harness-results.md)
+See [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)
 and [`docs/harness/execution-model.md`](execution-model.md) for the harness
 mechanics (calling convention, tracing, memory model) established along
 the way.

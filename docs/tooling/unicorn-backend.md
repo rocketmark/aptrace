@@ -452,7 +452,7 @@ Written to `--out PATH` or stdout.
 Running the command above (seeding `r3 = 0x26`, the `&` command's ASCII
 value) concretely executes exactly 3 instructions and halts at `0x8890` —
 the same handler block
-[`docs/harness/protocol-harness-results.md`](../harness/protocol-harness-results.md)
+[`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)
 solver-confirmed symbolically. Seeding any other value for `r3` (e.g. `0x0`)
 instead halts at the fallthrough `0x889e`. This is a genuine cross-check at
 a different evidence level (see `tool-selection.md`'s "Evidence levels"): a

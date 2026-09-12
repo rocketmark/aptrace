@@ -14,7 +14,7 @@ without a subprocess per call) -- see that module for the
 multi-leg-scenario layer built on top of this.
 
 Usage example (concretely single-step the '&' character check block that
-docs/harness/protocol-harness-results.md solver-confirmed symbolically):
+docs/investigations/protocol-harness-results.md solver-confirmed symbolically):
 
     tools/unicorn/run_concrete.py \\
         --firmware Autopilot_firm/firmware_autopilot868.bin \\

@@ -290,7 +290,7 @@ what "the `&` command" even is, GREASE's under-constrained symbolic
 execution independently rediscovered `R3 = 0x26` (`'&'`) as a value
 reaching this exact block — the same fact this project already
 solver-confirmed with its own harness
-(`docs/harness/protocol-harness-results.md`) and concretely confirmed
+(`docs/investigations/protocol-harness-results.md`) and concretely confirmed
 with Unicorn. The other four `R3` values (`0x48`='H', `0x41`='A',
 `0x58`='X', `0x4a`='J') are presumably other single-character command
 checks GREASE's own path exploration reached nearby in the same

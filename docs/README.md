@@ -48,10 +48,9 @@ Describes current truth, not chronology:
 - [`tooling/ghidra-backend.md`](tooling/ghidra-backend.md),
   [`tooling/unicorn-backend.md`](tooling/unicorn-backend.md) — backend
   capabilities and CLI reference.
-- [`harness/execution-model.md`](harness/execution-model.md),
-  [`harness/protocol-harness-results.md`](harness/protocol-harness-results.md),
-  [`harness/symbolic-execution-results.md`](harness/symbolic-execution-results.md) —
-  harness internals and solver results.
+- [`harness/execution-model.md`](harness/execution-model.md) — the
+  reusable Crucible/What4/Z3 execution mechanisms (not any one
+  experiment's results).
 - [`tooling/census.md`](tooling/census.md) — `aptrace census`, the
   mechanical firmware evidence database/closure report (`tools/census/`).
 - [`toolchain.md`](toolchain.md) — build/toolchain setup.
@@ -74,6 +73,10 @@ open items for one area, not a chronological log:
   `'+'` and Auto Mode.
 - [`investigations/manual-mode-and-limits.md`](investigations/manual-mode-and-limits.md) —
   Manual Mode's binary jog frame, `LL1`/`LL2`.
+- [`investigations/protocol-harness-results.md`](investigations/protocol-harness-results.md) —
+  the `aptrace protocol` inbound-dispatcher symbolic results.
+- [`investigations/symbolic-execution-results.md`](investigations/symbolic-execution-results.md) —
+  the `IRQ10_Handler` MMIO-poll symbolic feasibility demonstration.
 
 **Documentation rule**: an investigation is a working notebook. When it
 closes, fold the durable finding into the relevant dossier above (or start

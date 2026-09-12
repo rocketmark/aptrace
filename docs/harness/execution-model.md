@@ -2,8 +2,8 @@
 
 How APTrace actually drives Crucible/What4/Z3 against lifted Macaw IR — the
 reusable mechanisms, not any one experiment's results. See
-[`docs/harness/symbolic-execution-results.md`](symbolic-execution-results.md)
-and [`docs/harness/protocol-harness-results.md`](protocol-harness-results.md)
+[`docs/investigations/symbolic-execution-results.md`](../investigations/symbolic-execution-results.md)
+and [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)
 for the experiments that use these mechanisms.
 
 ## Two execution granularities
@@ -33,7 +33,7 @@ elsewhere in the same function.
 free, a single-block query can be satisfied by an unrelated free variable
 rather than the one you think you're testing — this is exactly what
 happened when the `0x827e` loop-body block was queried in isolation (see
-[`docs/harness/protocol-harness-results.md`](protocol-harness-results.md)):
+[`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)):
 the solver's answer looked like it depended on the packet buffer, but a
 whole-function test with the same concrete buffer value proved it didn't.
 **Cross-check single-block results against a whole-function run before
@@ -195,5 +195,5 @@ This mirrors `Data.Macaw.Refinement.Solver`'s Z3 case, which could not be
 imported directly because it's an internal (`other-modules`) definition in
 the `macaw-refinement` package, and depending on that package pulls in
 unwanted x86/PPC/RISC-V builds. See
-[`docs/harness/symbolic-execution-results.md`](symbolic-execution-results.md)
+[`docs/investigations/symbolic-execution-results.md`](../investigations/symbolic-execution-results.md)
 for how this was found.

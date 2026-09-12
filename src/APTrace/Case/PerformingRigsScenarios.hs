@@ -47,7 +47,7 @@ import           APTrace.VectorTable ( parseVectorTable )
 -- the AutoPilot firmware family, @IRQ10_Handler@: it clears a bit in an MMIO
 -- register at 0x40002000, then polls a status word at 0x40002008 in a loop
 -- (@while (status == 0) {}@-shaped), branching to 0x953c once the status
--- becomes non-zero. See docs/harness/symbolic-execution-results.md for how
+-- becomes non-zero. See docs/investigations/symbolic-execution-results.md for how
 -- these addresses were found (a real firmware literal-pool load, confirmed
 -- by hand-decoding the firmware bytes).
 --
