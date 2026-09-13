@@ -145,7 +145,7 @@ def main(argv):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("path", help="a dynamic_export.py JSON file, or a directory of them")
     p.add_argument("--firmware", default=None, help="only ingest legs for this firmware key")
-    p.add_argument("--db", default=None, help="census database path (default: research/runs/census/census.sqlite3)")
+    p.add_argument("--db", default=None, help="census database path (default: cases/performing-rigs/research/runs/census/census.sqlite3)")
     args = p.parse_args(argv)
 
     conn = census_db.connect(args.db)

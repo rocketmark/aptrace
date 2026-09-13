@@ -14,7 +14,7 @@
 set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-FIRMWARE="$REPO_ROOT/Autopilot_firm/firmware_autopilot868.bin"
+FIRMWARE="$REPO_ROOT/cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
 FAILED=0
 
 pass() { echo "  OK   $1"; }

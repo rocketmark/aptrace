@@ -6,13 +6,13 @@
  * This does NOT change program behavior, does NOT rename anything not
  * listed in the TSV, and does NOT attempt automatic function matching --
  * every entry in the TSV was placed there by a human-reviewed
- * investigation (see docs/investigations/standard-library-provenance.md
+ * investigation (see cases/performing-rigs/docs/investigations/standard-library-provenance.md
  * for the method and evidence). Re-running this script is idempotent
  * (it just re-applies the same names/comments).
  *
  * Input format: a tab-separated file with a header row, columns
  * "address\tname\tclassification" -- see
- * research/provenance/ghidra_labels.tsv. Rows whose address doesn't
+ * cases/performing-rigs/research/provenance/ghidra_labels.tsv. Rows whose address doesn't
  * parse as a single 0x-prefixed hex value are skipped (the richer,
  * prose-bearing CSV this file is derived from has some multi-address
  * and non-address rows not meant for this script).
@@ -76,8 +76,8 @@ public class APTraceApplyProvenance extends GhidraScript {
 				}
 				f.setName(name, SourceType.USER_DEFINED);
 				f.setComment("APTrace provenance: " + classification
-					+ " -- see docs/investigations/standard-library-provenance.md"
-					+ " and research/provenance/function_classification.csv");
+					+ " -- see cases/performing-rigs/docs/investigations/standard-library-provenance.md"
+					+ " and cases/performing-rigs/research/provenance/function_classification.csv");
 				applied++;
 			}
 		}

@@ -433,7 +433,7 @@ CREATE TABLE IF NOT EXISTS library_matches (
     -- reference_source_confirmed=1 is a stronger, separate, curated fact:
     -- this function was structurally matched against REAL, FETCHED
     -- upstream source (see tools/census/reference_library.py and
-    -- docs/investigations/boot-and-hardware-bringup.md's CONFIRMED
+    -- cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md's CONFIRMED
     -- tier) -- the only thing this reducer treats as actual "library
     -- truth" for residual-exclusion purposes.
     reference_source_confirmed          INTEGER NOT NULL DEFAULT 0,

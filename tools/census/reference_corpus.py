@@ -2,8 +2,8 @@
 source corpus for the AutoPilot/Mando firmware's confirmed build
 toolchain -- Adafruit `ArduinoCore-samd` v1.7.11, named directly by
 embedded build-path strings in all four firmware images (see
-docs/firmware/firmware-layout.md) and already independently fetched and
-spot-checked by hand in docs/investigations/boot-and-hardware-bringup.md.
+cases/performing-rigs/docs/firmware/firmware-layout.md) and already independently fetched and
+spot-checked by hand in cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md.
 This module makes that fetch-and-compare process itself mechanical,
 reusable, and exhaustive rather than a one-off manual investigation.
 
@@ -18,8 +18,8 @@ Adafruit's own published, versioned board-manager package index --
 never guessed, never a "latest").
 
 Downloaded sources/toolchain/build artifacts live under
-`research/runs/census/reference_corpus/` -- entirely git-ignored (see
-`/research/runs/census/` in .gitignore) -- never committed. This module
+`cases/performing-rigs/research/runs/census/reference_corpus/` -- entirely git-ignored (see
+`/cases/performing-rigs/research/runs/census/` in .gitignore) -- never committed. This module
 (the fetch/build recipe) IS committed; the multi-hundred-MB toolchain/
 CMSIS downloads and compiled object files are not.
 
@@ -30,7 +30,7 @@ own `boards.txt`) is the ONLY Adafruit SAMD board in this core version
 whose `build.extra_flags` defines `__SAMD51J19A__` -- an EXACT match to
 this project's own independently-confirmed exact part number
 (`ATSAMD51J19A`, from physical board inspection -- see
-docs/hardware/hardware-reference.md), not a guess. Its board-specific
+cases/performing-rigs/docs/hardware/hardware-reference.md), not a guess. Its board-specific
 `variant.cpp`/pin table is NOT used or compiled (a different physical
 board's pin layout) -- only `cores/arduino/*` (shared by every SAMD51
 board in this core), the board-independent `platform.txt` compiler
@@ -83,9 +83,9 @@ CORE_PKG = {
     "license": "LGPL-2.1 (cores/arduino; see per-directory LICENSE.md/headers for exceptions)",
     "relevance": "PRIMARY reference target -- named directly by embedded build-path strings in "
                  "all four firmware images: '...packages\\\\adafruit\\\\hardware\\\\samd\\\\1.7.11\\\\"
-                 "libraries\\\\SPI\\\\SPI.cpp' (docs/firmware/firmware-layout.md), independently "
-                 "fetched and spot-checked in docs/investigations/boot-and-hardware-bringup.md.",
-    "discovered_via": "strings scan on the firmware .bin files (docs/firmware/firmware-layout.md)",
+                 "libraries\\\\SPI\\\\SPI.cpp' (cases/performing-rigs/docs/firmware/firmware-layout.md), independently "
+                 "fetched and spot-checked in cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md.",
+    "discovered_via": "strings scan on the firmware .bin files (cases/performing-rigs/docs/firmware/firmware-layout.md)",
 }
 
 TOOLCHAIN_PKG = {
@@ -144,7 +144,7 @@ CMSIS_ATMEL_PKG = {
     "license": "Apache-2.0 (Microchip/Atmel device headers + startup, Adafruit-packaged)",
     "relevance": "ATSAMD51 device headers AND the compiled CMSIS startup/system files "
                  "(startup_samd51.c, system_samd51.c) -- resolves this project's own previously-"
-                 "documented 'UNKNOWN, honestly' open item (docs/investigations/boot-and-hardware-"
+                 "documented 'UNKNOWN, honestly' open item (cases/performing-rigs/docs/investigations/boot-and-hardware-"
                  "bringup.md: 'CMSIS SystemInit()'s exact upstream source... a separate, unfetched "
                  "Microchip CMSIS-Atmel package'). Version pinned identically to CMSIS_5 above.",
     "discovered_via": f"{CORE_PKG['repo_url']} platform.txt (compiler.arm.cmsis.c.flags), tag 1.7.11",

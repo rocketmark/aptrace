@@ -5,7 +5,7 @@ and query CLI.
 `build` runs the full pipeline (Ghidra static export + basic-block/CFG
 export, a raw vector/function-pointer scan, an independent Capstone
 cross-check, SVD/pin resolution, disagreement detection) and populates
-research/runs/census/census.sqlite3 (or --db). Every other subcommand is
+cases/performing-rigs/research/runs/census/census.sqlite3 (or --db). Every other subcommand is
 a read-only query against that database -- no tool invocation, no LLM
 interpretation, just SQL. See docs/tooling/census.md for the full design
 writeup, what each table means, and current limitations.
@@ -45,7 +45,7 @@ Usage:
     aptrace_census.py reference-match autopilot868
     aptrace_census.py reference-matches autopilot868 [--package P] [--tier T]
     aptrace_census.py reference-unmatched autopilot868
-    aptrace_census.py semantic-packets autopilot868 --output research/generated/autopilot-semantic-pass1.jsonl
+    aptrace_census.py semantic-packets autopilot868 --output cases/performing-rigs/research/generated/autopilot-semantic-pass1.jsonl
     aptrace_census.py state-map autopilot868 --base 0x200025bc --count 18 --width 1 \\
         [--label NAME] [--dispatcher-entry ADDR] [--tx-wrapper ADDR ...] \\
         [--extra-seed ADDR=HEXBYTES ...] [--index-addr ADDR] [--index-width N]
@@ -970,7 +970,7 @@ def cmd_reference_unmatched(args):
 def main(argv):
     import argparse
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--db", default=None, help="census database path (default: research/runs/census/census.sqlite3)")
+    p.add_argument("--db", default=None, help="census database path (default: cases/performing-rigs/research/runs/census/census.sqlite3)")
     sub = p.add_subparsers(dest="command", required=True)
 
     b = sub.add_parser("build", help="run the full census pipeline for one firmware image")

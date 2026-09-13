@@ -47,7 +47,7 @@ import           APTrace.VectorTable ( parseVectorTable )
 -- the AutoPilot firmware family, @IRQ10_Handler@: it clears a bit in an MMIO
 -- register at 0x40002000, then polls a status word at 0x40002008 in a loop
 -- (@while (status == 0) {}@-shaped), branching to 0x953c once the status
--- becomes non-zero. See docs/investigations/symbolic-execution-results.md for how
+-- becomes non-zero. See cases/performing-rigs/docs/investigations/symbolic-execution-results.md for how
 -- these addresses were found (a real firmware literal-pool load, confirmed
 -- by hand-decoding the firmware bytes).
 --
@@ -108,8 +108,8 @@ runSolve path flashBase = do
 -- Runs single-block checks (via 'APTrace.SymbolicRunner.checkBranchModel')
 -- against known character-comparison blocks rather than the whole merged
 -- ~340-block function, because whole-function replay does not yet
--- terminate -- see docs/investigations/parser-dispatch.md for why entry
--- isn't a simple character chain, and docs/project-status.md for the
+-- terminate -- see cases/performing-rigs/docs/investigations/parser-dispatch.md for why entry
+-- isn't a simple character chain, and cases/performing-rigs/status.md for the
 -- current blocker on the whole-function version of this test.
 runProtocol :: FilePath -> Word32 -> IO ()
 runProtocol path flashBase = do
@@ -160,7 +160,7 @@ runProtocol path flashBase = do
       putStr "  continue (0x828e): " >> reportResult "buffer[1]" lp2
 
       -- Isolate the dispatcher's real first decision (0x8258-0x8266, per
-      -- docs/investigations/dispatcher-loop-concrete-trace.md) in Crucible,
+      -- cases/performing-rigs/docs/investigations/dispatcher-loop-concrete-trace.md) in Crucible,
       -- using the existing single-block machinery plus 'bqMemoryBytes' (a
       -- small addition: 'BranchQuery' previously could only seed pointer
       -- *registers*, not the memory they point at, which this block's
@@ -218,14 +218,14 @@ runProtocol path flashBase = do
       reportResult "R3 (buffer[0])" g4
 
       -- The '|' is the wire-protocol frame terminator consumed by the LoRa
-      -- assembly loop (0x8960 per research/autopilot_static_inventory);
+      -- assembly loop (0x8960 per cases/performing-rigs/research/autopilot_static_inventory);
       -- rf-boundaries.md says the buffer gets NUL-terminated once assembled,
       -- so it's very unlikely '|' itself is ever stored at buffer[1]. The
       -- loop probe above confirms buffer[1]=1 exits this pre-check loop
       -- immediately (R6=0); our formula predicts buffer[1]=0 does too (both
       -- give a negative (buf[1]-7), satisfying the observed exit condition).
       putStrLn "\nTest 0: whole dispatcher function, buffer[1]=0x01 (Z3-confirmed exit witness above)"
-      putStrLn "  (rich-trace enabled: 0x8258-0x8900, watching buffer[0] -- see docs/investigations/whole-function-trace-divergence.md)"
+      putStrLn "  (rich-trace enabled: 0x8258-0x8900, watching buffer[0] -- see cases/performing-rigs/docs/investigations/whole-function-trace-divergence.md)"
       let realPacket = [Concrete 0x26, Concrete 0x01, Concrete 0x00, Concrete 0x00]
           traceCfg = PH.RichTraceConfig
             { PH.rtLoAddr = 0x8258, PH.rtHiAddr = 0x8900
@@ -270,7 +270,7 @@ runProtocol path flashBase = do
 -- | @aptrace trigger FIRMWARE.bin@ -- bounded symbolic reachability for the
 -- AutoPilot's PB05 trigger-poll region, inside @phase_ramp_state_machine__
 -- CUSTOM@ (@FUN_00008e18@), per
--- docs/investigations/trigger-input-symbolic-reachability.md.
+-- cases/performing-rigs/docs/investigations/trigger-input-symbolic-reachability.md.
 --
 -- Macaw's automatic whole-function discovery from the region's *own* real
 -- entry (0x8e18) cannot reach any of this region's interesting code: every
@@ -347,7 +347,7 @@ runTrigger path flashBase = do
       -- symbolic-array memory model plus the accumulated ASL side-
       -- condition state from a real, multi-instruction run, not a flaw in
       -- the query's own logic. See
-      -- docs/investigations/trigger-input-symbolic-reachability.md for
+      -- cases/performing-rigs/docs/investigations/trigger-input-symbolic-reachability.md for
       -- the full accounting; this slice's actual answer to both queries
       -- came from direct provenance tracing (Ghidra) plus a concrete
       -- Unicorn replay using the real values that tracing found, not from
@@ -420,7 +420,7 @@ runTrigger path flashBase = do
 -- targeted Crucible/What4/Z3 cross-check of the exact trigger gate
 -- Unicorn has already isolated (trigger-input-concrete-path.md /
 -- trigger-input-motion-causality.md), per
--- docs/investigations/trigger-input-symbolic-crosscheck.md. Unlike
+-- cases/performing-rigs/docs/investigations/trigger-input-symbolic-crosscheck.md. Unlike
 -- 'runTrigger' above (which enters the *whole* re-seeded
 -- @phase_ramp_state_machine__CUSTOM@ region and stops deep inside it,
 -- the approach already found not to converge for this Macaw/Crucible/Z3

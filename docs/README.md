@@ -1,85 +1,38 @@
-# APTrace Documentation
+# APTrace Framework Documentation
 
-Start at [`project-status.md`](project-status.md) — it is the single
-authoritative source of current project state (what's proven, what's
-open, what's next) and wins over anything else here if they disagree.
+This tree documents reusable APTrace architecture, tooling, methodology, and
+development. Concrete target findings and evidence belong to a case under
+[`../cases/`](../cases/).
 
-## Current status
+## Start here
 
-- [`project-status.md`](project-status.md) — current state, proven
-  capabilities, open questions, tooling limitations, next priorities.
-- [`harness/roadmap.md`](harness/roadmap.md) — unfinished work only.
+- [`architecture.md`](architecture.md) — framework components and dependency
+  direction.
+- [`status.md`](status.md) — implemented framework capabilities and known
+  limitations.
+- [`adding-a-case.md`](adding-a-case.md) — how a target case consumes APTrace
+  without leaking into framework areas.
+- [`toolchain.md`](toolchain.md) — build and development environment.
 
-## System reference
+## Tooling and methodology
 
-Describes current truth, not chronology:
+- [`tooling/tool-selection.md`](tooling/tool-selection.md) — selecting Ghidra,
+  Unicorn, Macaw, or symbolic execution for a question.
+- [`tooling/ghidra-backend.md`](tooling/ghidra-backend.md) — persistent Ghidra
+  project integration.
+- [`tooling/unicorn-backend.md`](tooling/unicorn-backend.md) — reusable concrete
+  execution backend.
+- [`tooling/macaw-analysis.md`](tooling/macaw-analysis.md) — Macaw discovery,
+  normalization, and comparison.
+- [`tooling/census.md`](tooling/census.md) — mechanical evidence database and
+  reduction pipeline.
+- [`tooling/compact-ram-initialization.md`](tooling/compact-ram-initialization.md)
+  — scalable symbolic RAM initialization.
+- [`harness/execution-model.md`](harness/execution-model.md) — reusable
+  Crucible/What4/Z3 harness model.
 
-- [`architecture.md`](architecture.md) — how APTrace orchestrates its
-  specialist tools.
-- [`firmware/firmware-inventory.md`](firmware/firmware-inventory.md),
-  [`firmware/firmware-layout.md`](firmware/firmware-layout.md) — image
-  hashes, memory layout, vector tables.
-- [`hardware/hardware-reference.md`](hardware/hardware-reference.md) —
-  physical board/MCU/connector facts and a condensed user-manual summary.
-- [`ui/user-guide-workflows.md`](ui/user-guide-workflows.md),
-  [`ui/action-command-map.md`](ui/action-command-map.md) — user-visible
-  workflows and which protocol command implements which UI action.
+## Cases
 
-## Protocol
-
-- [`protocol/protocol-overview.md`](protocol/protocol-overview.md),
-  [`protocol/bidirectional-protocol.md`](protocol/bidirectional-protocol.md) —
-  the AutoPilot↔Remote RF protocol shape.
-- [`protocol/command-inventory.md`](protocol/command-inventory.md) —
-  every characterized command.
-- [`protocol/event-map.md`](protocol/event-map.md) — the outbound
-  pending-event table.
-- [`protocol/open-questions.md`](protocol/open-questions.md) — protocol-
-  level unknowns.
-
-## Tooling
-
-- [`tooling/tool-selection.md`](tooling/tool-selection.md) — which of
-  Ghidra/Unicorn/Macaw/Crucible to reach for, and why (read before any
-  firmware-analysis work — see [`../CLAUDE.md`](../CLAUDE.md)).
-- [`tooling/macaw-analysis.md`](tooling/macaw-analysis.md) — the Macaw
-  static-discovery pipeline: Cortex-M safety, normalization/fixpoint
-  expansion, `ParsedCall` semantic classification, Ghidra cross-check.
-- [`tooling/ghidra-backend.md`](tooling/ghidra-backend.md),
-  [`tooling/unicorn-backend.md`](tooling/unicorn-backend.md) — backend
-  capabilities and CLI reference.
-- [`harness/execution-model.md`](harness/execution-model.md) — the
-  reusable Crucible/What4/Z3 execution mechanisms (not any one
-  experiment's results).
-- [`tooling/census.md`](tooling/census.md) — `aptrace census`, the
-  mechanical firmware evidence database/closure report (`tools/census/`).
-- [`toolchain.md`](toolchain.md) — build/toolchain setup.
-
-## Investigations
-
-Canonical topic dossiers under [`investigations/`](investigations/) — each
-one is the final, current model plus evidence, test/repro scripts, and
-open items for one area, not a chronological log:
-
-- [`investigations/trigger-input.md`](investigations/trigger-input.md) —
-  the 3.5mm trigger-input bug, both boot-time arms, mitigation design.
-- [`investigations/protocol-pipeline.md`](investigations/protocol-pipeline.md) —
-  the core dispatcher/TX/virtual-RF-link chain.
-- [`investigations/motor-subsystem-unlock.md`](investigations/motor-subsystem-unlock.md) —
-  cold-boot reachability, `MC4`/`MC`/`G`/`I`/`MT`.
-- [`investigations/motor-config-persistence.md`](investigations/motor-config-persistence.md) —
-  flash `0x12000` persistence round trip.
-- [`investigations/auto-mode-and-plus-command.md`](investigations/auto-mode-and-plus-command.md) —
-  `'+'` and Auto Mode.
-- [`investigations/manual-mode-and-limits.md`](investigations/manual-mode-and-limits.md) —
-  Manual Mode's binary jog frame, `LL1`/`LL2`.
-- [`investigations/protocol-harness-results.md`](investigations/protocol-harness-results.md) —
-  the `aptrace protocol` inbound-dispatcher symbolic results.
-- [`investigations/symbolic-execution-results.md`](investigations/symbolic-execution-results.md) —
-  the `IRQ10_Handler` MMIO-poll symbolic feasibility demonstration.
-
-**Documentation rule**: an investigation is a working notebook. When it
-closes, fold the durable finding into the relevant dossier above (or start
-a new one) and delete the slice file — git history is the archive, not a
-second hand-maintained copy of it. See [`../CLAUDE.md`](../CLAUDE.md)'s
-"Documentation discipline."
+- [`Performing Rigs`](../cases/performing-rigs/README.md) — AutoPilot and Remote
+  firmware/hardware reverse engineering. Its documentation, status, roadmap,
+  experiments, and evidence are all owned by the case.

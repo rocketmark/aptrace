@@ -1,0 +1,111 @@
+# Harness Roadmap
+
+Current, unfinished work only. For what's already proven and how the
+system got here, see [`cases/performing-rigs/status.md`](status.md)
+(authoritative) and the relevant `cases/performing-rigs/docs/investigations/*.md` dossier —
+completed milestones are not re-narrated here.
+
+## Done (summary only)
+
+- **M1 — AutoPilot-only `&` transaction, end to end.** Closed at the
+  concrete tier.
+- **M3 — Remote (`mando`) firmware brought up, virtual RF link built.**
+  Closed at the concrete tier; `capture_tx_bytes`/`deliver_and_observe`
+  are the reusable primitives.
+- **M4 — `G → #`, `S → P...`, `!0|/!1| → 11-field CSV`, and
+  `I<channel><mode>|/I9|/I1| → signed number` transactions.** All closed
+  at the concrete tier through the same virtual link; the event-7
+  11-vs-10 field mismatch and the I9|/I1| distinction question are both
+  resolved by execution — see
+  [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](docs/investigations/protocol-pipeline.md).
+- **M5 — Tool-workbench integration (Ghidra, Unicorn).** Done; see
+  [`docs/tooling/tool-selection.md`](../../docs/tooling/tool-selection.md).
+- **M6 — Behavior-to-hardware provenance.** The full pivot from protocol
+  mapping to physical hardware is done: boot sequence, motor-subsystem
+  unlock, motor-config persistence, `'+'`/Auto Mode, Manual Mode/limits,
+  and the trigger-input investigation are all closed — see
+  [`cases/performing-rigs/status.md`](status.md#major-established-system-facts)
+  for the current-state summary and links to each dossier.
+- **AutoPilot's TX transport (`0x8c10`)** — confirmed `SERCOM2` SPI
+  Master, chip-select `PA15`, no DMA, via the same driver object
+  constructed/probed during boot; see
+  [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](docs/investigations/boot-and-hardware-bringup.md).
+  Remote's own `0x58a8` transport remains open (see below).
+
+See [`cases/performing-rigs/docs/investigations/protocol-harness-results.md`](docs/investigations/protocol-harness-results.md)
+and [`docs/harness/execution-model.md`](../../docs/harness/execution-model.md) for the harness
+mechanics (calling convention, tracing, memory model) established along
+the way.
+
+## Open — protocol pipeline
+
+1. **Dormant-event reachability** (events 2, 3, 8, 9, 11, 12, 14) — per
+   [`cases/performing-rigs/docs/protocol/open-questions.md`](docs/protocol/open-questions.md), a
+   natural Crucible/What4 target now that whole-function execution habits
+   are better understood (see the readonly-flash caveat in
+   [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](docs/investigations/protocol-pipeline.md)
+   before attempting a whole-function run).
+2. **Remote-transmitted-packets-not-in-the-dispatch-tree question** — not
+   revisited since the dispatch structure was corrected.
+3. **Name the Remote's own TX path transport (`0x58a8`)** — AutoPilot's
+   `0x8c10` is now resolved (see "Done" above); the Remote's own
+   driver-object pointer, populated by its `0x200038fc` config struct /
+   constructor `0x1129c`, has not been walked through the same way. See
+   [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](docs/investigations/protocol-pipeline.md)'s
+   open items.
+
+## Open — trigger-input mitigation
+
+A software mitigation (consecutive-sample debounce on the digital arm) is
+designed and Unicorn-prototyped in
+[`cases/performing-rigs/docs/investigations/trigger-input.md`](docs/investigations/trigger-input.md),
+but nothing has been flashed to real hardware. Before any patch is real:
+
+4. **Get physical measurements** at the trigger jack and at PB05:
+   transient polarity/duration/bounce count, whether the line floats when
+   disconnected, and whether the MCU-side waveform matches the jack-side
+   waveform. Also measure the real main-loop period (to convert a
+   poll-count debounce threshold into real time) and the minimum
+   legitimate trigger pulse width.
+5. **Find a verified, real flash code cave** for the mitigation trampoline
+   — the current design uses a harness-only scratch page. The most
+   promising unexplored option is flash beyond the current image's end,
+   within the part's real 512KB; this needs either a real device flash
+   dump or vendor/BOSSA documentation review, not assumed blank.
+6. Once (4) and (5) are done: pick a real debounce threshold, build a real
+   flashable patch, and validate it against a real device — none of this
+   has been attempted yet.
+
+## Open — hardware-bringup loose ends
+
+7. **A second, deeper NVM-erase-loop dependency**, found while reaching
+   the stable main loop, was reported but not chased (likely gated on a
+   zero-valued config field rather than a documented status bit) — see
+   [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](docs/investigations/boot-and-hardware-bringup.md).
+8. **`'+'`'s own dispatch is still not reachable from a genuinely fresh
+    boot** in a single concrete run — blocked by a real, finite (not
+    looping) SERCOM device-probe cost the project's boot-recipe
+    calibration doesn't yet budget for. See
+    [`cases/performing-rigs/docs/investigations/auto-mode-and-plus-command.md`](docs/investigations/auto-mode-and-plus-command.md).
+
+## Tooling gaps (not firmware blockers)
+
+- **Readonly flash vs. plain Crucible execution**: a whole-function
+  symbolic replay through a literal-pool-derived branch doesn't fold
+  correctly. Root-caused, deliberately left unfixed — see
+  [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](docs/investigations/protocol-pipeline.md).
+  Revisit only if a real symbolic use case needs a whole-function proof
+  through such a branch; the narrow fix (baking the specific literal-pool
+  words that target reads) is the smallest starting point.
+- **`GhidraSVD`** is still not installed as a proper extension; the
+  standalone `tools/svd/resolve_mmio.py` resolver remains good enough for
+  routine use — install only if that changes.
+
+## Adding new work here
+
+When a numbered item above closes, delete it (or fold a one-line summary
+into "Done") rather than leaving a struck-through record — git history is
+the record of how it closed. Add new items only for work that is
+genuinely not started or not finished; do not use this file to narrate
+progress on an item that's already in flight (that belongs in the
+relevant investigation's own working notes until it closes).

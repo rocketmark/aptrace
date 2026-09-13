@@ -26,9 +26,9 @@ CENSUS_MMIO_SIZE = "0x4000000"
 
 # firmware key -> (path relative to repo root, load base, provenance TSV or None)
 FIRMWARE_REGISTRY = {
-    "autopilot868": ("research/firmware/originals/firmware_autopilot868.bin", "0x4000",
-                      "research/provenance/ghidra_labels.tsv"),
-    "autopilot915": ("research/firmware/originals/firmware_autopilot915.bin", "0x4000", None),
-    "mando868": ("research/firmware/originals/firmware_mando868.bin", "0x4000", None),
-    "mando915": ("research/firmware/originals/firmware_mando915.bin", "0x4000", None),
+    "autopilot868": ("cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin", "0x4000",
+                      "cases/performing-rigs/research/provenance/ghidra_labels.tsv"),
+    "autopilot915": ("cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin", "0x4000", None),
+    "mando868": ("cases/performing-rigs/research/firmware/originals/firmware_mando868.bin", "0x4000", None),
+    "mando915": ("cases/performing-rigs/research/firmware/originals/firmware_mando915.bin", "0x4000", None),
 }

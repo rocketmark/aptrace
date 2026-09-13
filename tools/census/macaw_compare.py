@@ -1228,7 +1228,7 @@ def main(argv):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("firmware", help="firmware key, e.g. autopilot868 (must already have a census build)")
     ap.add_argument("macaw_json", help="path to an `aptrace macaw-census` JSON output file")
-    ap.add_argument("--db", default=None, help="census.sqlite3 path (default: research/runs/census/census.sqlite3)")
+    ap.add_argument("--db", default=None, help="census.sqlite3 path (default: cases/performing-rigs/research/runs/census/census.sqlite3)")
     ap.add_argument("--json", action="store_true", help="print the machine-readable comparison as JSON instead")
     args = ap.parse_args(argv)
 

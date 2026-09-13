@@ -40,7 +40,7 @@ investigations kept re-paying by hand:
      harness assumption in logs/results.
 
 See docs/tooling/unicorn-backend.md for the full design writeup and
-docs/investigations/toolchain-cleanup.md for the specific frictions this
+cases/performing-rigs/docs/investigations/toolchain-cleanup.md for the specific frictions this
 replaced. `tools/unicorn/run_concrete.py --help` documents the CLI layer
 built on top of this (string parsing, JSON I/O); everything numeric here
 is plain Python ints -- there is no hex/decimal ambiguity at this layer,
@@ -105,7 +105,7 @@ PPB_BASE, PPB_SIZE = 0xE0000000, 0x100000
 # was no longer the real SAMD51 RAM top (0x20030000) and real device RAM
 # permanently carried harness-only bytes no real boot would ever
 # produce -- both fixed by moving the trampoline out of the mapped RAM
-# region entirely. See docs/investigations/toolchain-cleanup.md's
+# region entirely. See cases/performing-rigs/docs/investigations/toolchain-cleanup.md's
 # hardening-pass note.
 HARNESS_BASE = 0x2FFF0000
 HARNESS_SIZE = 0x1000
@@ -180,7 +180,7 @@ class RunResult:
     inspectable via the exception's own `.result` attribute.
 
     Two deliberately distinct properties, not one ambiguous `success`
-    (see docs/investigations/toolchain-cleanup.md's hardening-pass note
+    (see cases/performing-rigs/docs/investigations/toolchain-cleanup.md's hardening-pass note
     for why the old single `success` property was replaced):
 
       `error_free`  -- no Unicorn exception occurred. This says nothing

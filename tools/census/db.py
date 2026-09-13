@@ -1,6 +1,6 @@
 """APTrace census: SQLite connection/schema helper.
 
-One database file per repo (default: research/runs/census/census.sqlite3),
+One database file per repo (default: cases/performing-rigs/research/runs/census/census.sqlite3),
 covering every firmware image the census has been run against -- rows are
 scoped by `firmware_id`, not by one-database-per-image, so a query like
 "which functions have never executed in any known scenario" can compare

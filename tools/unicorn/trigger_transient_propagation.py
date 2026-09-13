@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Concrete Unicorn experiments for the trigger-input transient-propagation
-investigation (docs/investigations/trigger-input-transient-propagation.md).
+investigation (cases/performing-rigs/docs/investigations/trigger-input-transient-propagation.md).
 
 Three experiments against the REAL, UNMODIFIED firmware (no patch -- this
 is observation, not the mitigation-patchability slice's candidate patch):
@@ -56,7 +56,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from concrete import ConcreteMachine  # noqa: E402
 from unicorn import UC_HOOK_CODE  # noqa: E402
 
-FIRMWARE = Path(__file__).parent.parent.parent / "research/firmware/originals/firmware_autopilot868.bin"
+FIRMWARE = Path(__file__).parent.parent.parent / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
 
 # -- real, already-confirmed addresses -------------------------------------
 FUNC_ENTRY = 0x8e18          # phase_ramp_state_machine__CUSTOM's own real start

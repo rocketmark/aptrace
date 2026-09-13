@@ -14,10 +14,10 @@ without a subprocess per call) -- see that module for the
 multi-leg-scenario layer built on top of this.
 
 Usage example (concretely single-step the '&' character check block that
-docs/investigations/protocol-harness-results.md solver-confirmed symbolically):
+cases/performing-rigs/docs/investigations/protocol-harness-results.md solver-confirmed symbolically):
 
     tools/unicorn/run_concrete.py \\
-        --firmware Autopilot_firm/firmware_autopilot868.bin \\
+        --firmware cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin \\
         --entry 0x888c --reg r3=0x26 \\
         --stop-at 0x8890 --stop-at 0x889e \\
         --trace --out /tmp/snapshot.json
@@ -27,7 +27,7 @@ return trampoline, no hand-picked SP/LR -- see concrete.py's
 ConcreteMachine.call for what this replaces):
 
     tools/unicorn/run_concrete.py \\
-        --firmware research/firmware/originals/firmware_mando868.bin \\
+        --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin \\
         --call 0x49c4 --arg 1 --arg 1 --arg 0 --arg 0 --arg 0x62 \\
         --out /tmp/call_snapshot.json
 
@@ -45,7 +45,7 @@ are deliberately kept hex-only, since a bitmask is conventionally always
 written in hex and there's no decimal reading anyone would intend there.
 
 Known limitations (see docs/tooling/tool-selection.md and
-docs/project-status.md's "Tooling gaps"):
+cases/performing-rigs/status.md's "Tooling gaps"):
   - The MMIO region is mapped as plain zero-initialized RAM with no
     peripheral behavior (reads return whatever was last written, not a
     real register's semantics). Fine for control-flow/logic questions that
@@ -77,7 +77,7 @@ def parse_value(s):
     """General-purpose numeric CLI value: ordinary int(s, 0) semantics.
     '28' -> decimal 28, '0x28' -> hex 0x28. This is the fix for the
     exact ambiguity that produced a false investigative path in
-    docs/investigations/plus-target-distance-roundtrip.md (a `--reg
+    cases/performing-rigs/docs/investigations/plus-target-distance-roundtrip.md (a `--reg
     r0=28` meant to seed decimal 28, silently read as hex 0x28=40)."""
     return int(s, 0)
 
@@ -154,7 +154,7 @@ def build_argparser():
     p.add_argument("--max-mem-write-log", type=int, default=2000, help="cap on recorded hits per --watch-mem-write range (default 2000)")
     p.add_argument("--fake-tick", action="append", default=[], metavar="ADDR:PERIOD", help="repeatable: every PERIOD instructions, increment the 4-byte little-endian counter at ADDR by 1. Deliberately NOT a SysTick/timer peripheral model -- it is a direct, labeled stand-in for a firmware-maintained tick/millis variable. Advances on an INSTRUCTION-COUNT cadence, not real time.")
     p.add_argument("--stub-call", action="append", default=[], metavar="HEXADDR", help="treat this address as an opaque function that immediately returns (PC := LR) instead of executing its body (repeatable). Use for a real, but not-yet-modeled, callee whose return value this scenario doesn't depend on. Does not fabricate a return value; R0 is left exactly as the caller set it up.")
-    p.add_argument("--mmio-force-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is OR'd with MASK (hex) before the CPU sees it. See docs/investigations/reset-handler-clock-init.md for the justification discipline this requires.")
+    p.add_argument("--mmio-force-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is OR'd with MASK (hex) before the CPU sees it. See cases/performing-rigs/docs/investigations/reset-handler-clock-init.md for the justification discipline this requires.")
     p.add_argument("--mmio-clear-bits", action="append", default=[], metavar="ADDR:MASK", help="repeatable: every read of the 4-byte-aligned MMIO register at ADDR is AND'd with ~MASK (hex) before the CPU sees it -- the complement of --mmio-force-bits, for a self-clearing bit.")
     p.add_argument("--force-reg", action="append", default=[], metavar="ADDR:REG:HEX", help="repeatable: immediately before executing the instruction at ADDR, set register REG to HEX. Unlike --mmio-force-bits/--mmio-clear-bits, this DOES fabricate a value -- use only as a disclosed environmental/external-device assumption at one exact, narrow program point.")
     p.add_argument("--force-mem", action="append", default=[], metavar="TRIGGER:MEMADDR:HEXBYTES", help="repeatable: immediately before executing the instruction at TRIGGER, write HEXBYTES into memory at MEMADDR. Fires every time TRIGGER is reached, not just the first.")

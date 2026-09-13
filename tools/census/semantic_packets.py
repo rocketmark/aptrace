@@ -10,12 +10,12 @@ so the file stays small and auditable, never a raw table dump.
 
 Two file-based lookups, both exact-string matches against files already
 in the repo, never a new inference:
-  - `research/provenance/function_classification.csv` -- this project's
+  - `cases/performing-rigs/research/provenance/function_classification.csv` -- this project's
     own existing structural-provenance table (platform/library role
     matches, mostly boot/runtime plumbing).
   - `docs/**/*.md` -- a plain substring search for this function's own
     hex address (e.g. "0x8774"), so a packet can say "this address is
-    already mentioned in docs/investigations/X.md" without re-deriving
+    already mentioned in cases/performing-rigs/docs/investigations/X.md" without re-deriving
     anything from those docs.
 """
 import csv

@@ -27,9 +27,9 @@ firmware meant ten full re-analyses.
 
 ```sh
 # First use of a firmware: import, seed the vector table, auto-analyze,
-# apply provenance labels (if research/provenance/ghidra_labels.tsv
+# apply provenance labels (if cases/performing-rigs/research/provenance/ghidra_labels.tsv
 # exists for it), export the full static-analysis JSON, and persist the
-# Ghidra project under research/runs/ghidra_cache/<key>/ (gitignored,
+# Ghidra project under cases/performing-rigs/research/runs/ghidra_cache/<key>/ (gitignored,
 # fully regenerable). ~10-15s, same as before -- paid once.
 tools/ghidra/aptrace_ghidra.py build autopilot868
 tools/ghidra/aptrace_ghidra.py build mando868
@@ -61,7 +61,7 @@ there, not by hand-rolling a new `analyzeHeadless` command.
 ### Cache identity and staleness
 
 A cached project is only reused if **all** of these still match what's
-recorded in the cache's own `research/runs/ghidra_cache/<key>/meta.json`:
+recorded in the cache's own `cases/performing-rigs/research/runs/ghidra_cache/<key>/meta.json`:
 the firmware's own SHA-256, the load base, the processor/language, the
 installed Ghidra version, this module's own `ANALYSIS_VERSION` constant
 (an explicit manual override for a semantic change identity can't
@@ -105,11 +105,11 @@ throwaway cross-check you don't want persisted):
 tools/ghidra/analyze_firmware.sh FIRMWARE.bin [LOAD_ADDR_HEX] [OUT_JSON] [EXTRA_SEED_ADDRS]
 
 # e.g. the standard AutoPilot image:
-tools/ghidra/analyze_firmware.sh Autopilot_firm/firmware_autopilot868.bin 0x4000
+tools/ghidra/analyze_firmware.sh cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin 0x4000
 
 # with extra addresses seeded (for cross-checking a specific region):
-tools/ghidra/analyze_firmware.sh Autopilot_firm/firmware_autopilot868.bin 0x4000 \
-    research/runs/ghidra/firmware_autopilot868.json "0x8259,0x801c,0x8a35"
+tools/ghidra/analyze_firmware.sh cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin 0x4000 \
+    cases/performing-rigs/research/runs/ghidra/firmware_autopilot868.json "0x8259,0x801c,0x8a35"
 ```
 
 Output is JSON in the same shape `aptrace_ghidra.py build` produces
@@ -119,7 +119,7 @@ This always re-imports and re-analyzes (`-deleteProject`, nothing
 persists) -- use `aptrace_ghidra.py` instead for any firmware you expect
 to query more than once. A reference run against `firmware_autopilot868.bin`
 from before the persistent-cache workflow existed is checked in at
-`research/runs/ghidra/firmware_autopilot868.json`, kept for historical
+`cases/performing-rigs/research/runs/ghidra/firmware_autopilot868.json`, kept for historical
 investigations that cite it by that path.
 
 ## Why `ARM:LE:32:Cortex`, specifically
@@ -145,7 +145,7 @@ script runs `tools/ghidra/scripts/APTraceSeedVectorTable.java` as a
 `-preScript`, which reads the same 56-entry (16 system + 40 IRQ) vector
 table structure already validated by `tools/vector_scan.py` and
 `APTrace.VectorTable` (see
-[`../firmware/firmware-layout.md`](../firmware/firmware-layout.md)) and
+[`firmware-layout.md`](../../cases/performing-rigs/docs/firmware/firmware-layout.md)) and
 disassembles/creates a function at each handler address before
 auto-analysis runs. This alone took the function count from 204 to 414,
 including the dispatcher region, by letting Ghidra's own flow-following
@@ -163,9 +163,9 @@ how the `0x801c` cross-check in `tool-selection.md` was done.
   once, at `build` time.
 - `tools/ghidra/scripts/APTraceApplyProvenance.java` — `-postScript`, run
   (at `build` time, before export) when a firmware has a
-  `research/provenance/*.tsv` labels file — renames functions and adds
+  `cases/performing-rigs/research/provenance/*.tsv` labels file — renames functions and adds
   plate comments from the provenance classification work (see
-  [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)).
+  [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../../cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md)).
 - `tools/ghidra/scripts/APTraceExportStaticAnalysis.java` — `-postScript`,
   exports the JSON described above (post-provenance, so renamed symbols
   are what it captures). Hand-rolled JSON serialization (no external
@@ -184,7 +184,7 @@ how the `0x801c` cross-check in `tool-selection.md` was done.
   range. Decompiled C hides real instruction addresses; reach for this
   when a Unicorn scenario needs an exact call-site or loop-entry address
   (see
-  [`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
+  [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../../cases/performing-rigs/docs/investigations/protocol-pipeline.md)
   for a real use). Run per query via `aptrace_ghidra.py disasm`, same
   reopened-project mechanism as `decompile`.
 
@@ -210,7 +210,7 @@ fly by the headless analyzer; no separate build step.
   already invalidates the cache automatically via its own hash;
   `ANALYSIS_VERSION` only needs a manual bump for a change identity
   can't see on its own (e.g. how Ghidra itself is invoked).
-- The persistent cache lives under `research/runs/ghidra_cache/` (in
+- The persistent cache lives under `cases/performing-rigs/research/runs/ghidra_cache/` (in
   `.gitignore` — not distributed, fully regenerable via `build`).
   `analyze_firmware.sh` (the one-shot path) still always creates a
   temp-directory project and deletes it (`-deleteProject`), for the

@@ -62,22 +62,22 @@ and much faster.
 EXE=external/macaw/dist-newstyle/build/*/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace
 
 # Parse the vector table and run Macaw code discovery from every handler:
-$EXE research/firmware/originals/firmware_autopilot868.bin 0x4000
+$EXE cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin 0x4000
 
 # Symbolic-execution demonstration (IRQ10_Handler, real MMIO peripheral):
-$EXE solve research/firmware/originals/firmware_autopilot868.bin
+$EXE solve cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin
 
 # Explore an arbitrary seeded entry point (investigation tool):
-$EXE explore research/firmware/originals/firmware_autopilot868.bin 0x4000 0x8259
+$EXE explore cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin 0x4000 0x8259
 
 # Protocol-dispatcher symbolic checks (& / G / ! / S command bytes):
-$EXE protocol research/firmware/originals/firmware_autopilot868.bin
+$EXE protocol cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin
 ```
 
 The `0x4000` flash-base argument is the flash address that firmware byte 0
 corresponds to (the AutoPilot images are application-only dumps, flashed
 behind a 16KB bootloader at that offset — see
-[`docs/firmware/firmware-layout.md`](firmware/firmware-layout.md)). It
+[`cases/performing-rigs/docs/firmware/firmware-layout.md`](../cases/performing-rigs/docs/firmware/firmware-layout.md)). It
 defaults to `0x4000` when omitted.
 
 A future CLI may grow into something like `aptrace scan` / `aptrace vectors`
@@ -92,7 +92,7 @@ brew install ghidra   # pinned at 12.1.3 as of this writing; pulls in openjdk@21
 ```
 
 ```sh
-tools/ghidra/analyze_firmware.sh Autopilot_firm/firmware_autopilot868.bin 0x4000
+tools/ghidra/analyze_firmware.sh cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin 0x4000
 ```
 
 See [`docs/tooling/ghidra-backend.md`](tooling/ghidra-backend.md) for the
@@ -110,7 +110,7 @@ tools/unicorn/.venv/bin/pip install -r tools/unicorn/requirements.txt   # unicor
 
 ```sh
 tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py \
-    --firmware Autopilot_firm/firmware_autopilot868.bin \
+    --firmware cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin \
     --entry 0x888c --reg r3=0x26 --stop-at 0x8890 --stop-at 0x889e
 ```
 

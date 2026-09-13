@@ -218,7 +218,7 @@ def test_scan_halfword_table_tbh():
 def test_dynamic_candidates_smoke():
     print("test_dynamic_candidates_smoke (real replay, watches a known-reached address)")
     # 0x8258 is ascii_dispatcher__CUSTOM's entry -- every scenario in the
-    # corpus reaches it early (see docs/investigations/protocol-pipeline.md).
+    # corpus reaches it early (see cases/performing-rigs/docs/investigations/protocol-pipeline.md).
     # This is a real integration check, not a synthetic one -- skipped
     # quietly if the firmware isn't present (e.g. a checkout without the
     # proprietary .bin files).
@@ -1262,7 +1262,7 @@ def test_reference_normalize_trim_and_decode():
           rn.trim_trailing_padding([(0, 2, "nop", ""), (2, 2, "bx", "lr")]) ==
           [(0, 2, "nop", ""), (2, 2, "bx", "lr")])
 
-    # The REAL, independently-known millis() bytes (see docs/investigations/
+    # The REAL, independently-known millis() bytes (see cases/performing-rigs/docs/investigations/
     # boot-and-hardware-bringup.md / this pass's own reference-match finding).
     chunk = bytes.fromhex("014b18687047")
     decoded = rn.decode_code_bytes(chunk, 0xccd0)
@@ -1466,7 +1466,7 @@ def test_real_reference_corpus_data():
         return
 
     # Positive control: millis() (0xccd0) -- already independently confirmed
-    # by hand in docs/investigations/boot-and-hardware-bringup.md -- must be
+    # by hand in cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md -- must be
     # (re-)discovered by this MECHANICAL pipeline too, non-ambiguously.
     millis_fn = conn.execute("SELECT id FROM functions WHERE firmware_id=? AND entry=0xccd0", (fw,)).fetchone()
     if millis_fn:

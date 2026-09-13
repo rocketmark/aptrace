@@ -30,7 +30,7 @@ def read_vectors(firmware_path, flash_base, num_vectors=56, known_function_entri
     initial SP (not code), vectors 1..num_vectors are Thumb handler
     pointers (low bit conventionally set). Mirrors
     APTraceSeedVectorTable.java's own parsing (same num_vectors default,
-    56 = 16 system + 40 IRQ, per docs/firmware/firmware-layout.md) --
+    56 = 16 system + 40 IRQ, per cases/performing-rigs/docs/firmware/firmware-layout.md) --
     independent of it, since that script only ever *seeds* Ghidra and
     keeps no queryable record of its own.
 

@@ -1,7 +1,7 @@
 """APTrace census reduce: the ONLY thing this reducer treats as
 confirmed "library truth" -- curated, provenance-tagged confirmation
 that a specific function structurally matches REAL, FETCHED upstream
-source, reusing docs/investigations/boot-and-hardware-bringup.md's own
+source, reusing cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md's own
 CONFIRMED tier verbatim (Adafruit ArduinoCore-samd v1.7.11, fetched and
 compared byte-for-byte/structurally against this image). No new
 matching work is done here -- this module only tags rows already
@@ -19,7 +19,7 @@ exclusion purposes. A function can be a very strong cross-image match
 and still be a genuinely interesting residual function -- shared code
 is not automatically uninteresting.
 """
-_CITATION = ("docs/investigations/boot-and-hardware-bringup.md's CONFIRMED tier -- "
+_CITATION = ("cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md's CONFIRMED tier -- "
              "structurally matched, byte-for-byte, against the real, fetched "
              "adafruit/ArduinoCore-samd v1.7.11 tagged source")
 

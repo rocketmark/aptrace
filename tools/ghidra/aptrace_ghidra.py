@@ -8,7 +8,7 @@ decompile/disassemble/xref query, then throws the analyzed database away.
 Ten queries against the same firmware meant ten full re-analyses.
 
 This module keeps one Ghidra project per firmware image on disk (under
-`research/runs/ghidra_cache/<key>/`), built once (import + vector-table
+`cases/performing-rigs/research/runs/ghidra_cache/<key>/`), built once (import + vector-table
 seeding + auto-analysis + provenance labels, if any), and answers later
 queries by *reopening* that project with `-process -noanalysis` (skips
 auto-analysis entirely) or, for queries the project's own cached JSON
@@ -45,7 +45,7 @@ Firmware keys and their (path, load base) are in FIRMWARE_REGISTRY below.
 Add new images there, not by hand-rolling a new analyzeHeadless call.
 
 See docs/tooling/ghidra-backend.md for the full design writeup and
-docs/investigations/toolchain-cleanup.md for why this replaced the old
+cases/performing-rigs/docs/investigations/toolchain-cleanup.md for why this replaced the old
 per-query analyzeHeadless pattern.
 """
 import argparse

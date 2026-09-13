@@ -16,7 +16,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 REPO_ROOT = HERE.parent.parent
-MANDO_FW = REPO_ROOT / "research/firmware/originals/firmware_mando868.bin"
+MANDO_FW = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin"
 
 from concrete import ConcreteMachine, ConcreteExecutionError, TRAMPOLINE_BYTES  # noqa: E402
 import run_concrete  # noqa: E402
@@ -39,7 +39,7 @@ def test_numeric_cli_semantics():
     # And end-to-end through the actual CLI argv parser + a real Unicorn run,
     # not just the parsing function in isolation -- this is the exact
     # regression for the false investigative path documented in
-    # docs/investigations/plus-target-distance-roundtrip.md.
+    # cases/performing-rigs/docs/investigations/plus-target-distance-roundtrip.md.
     import tempfile
     import json
     with tempfile.TemporaryDirectory() as d:

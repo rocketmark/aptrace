@@ -10,7 +10,7 @@
  *
  * This reuses the same vector-table structure already validated by
  * tools/vector_scan.py and APTrace.VectorTable (56 entries: 16 system +
- * 40 IRQ, per docs/firmware/firmware-layout.md) -- it does not
+ * 40 IRQ, per cases/performing-rigs/docs/firmware/firmware-layout.md) -- it does not
  * reimplement vector-table *parsing* logic beyond what's needed to hand
  * Ghidra a list of addresses to disassemble as Thumb functions.
  *

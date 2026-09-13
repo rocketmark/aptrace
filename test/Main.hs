@@ -151,7 +151,7 @@ realFirmwareRepro = do
                 (not oddHasA1)
         pure (r1 && r2)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -258,7 +258,7 @@ censusPreservesUnresolvedTerminator = do
         test "8. unresolved terminators are preserved, not dropped"
           (not (null (crUnresolved census)))
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -304,7 +304,7 @@ directCallCalleeIsThumb = do
   where
     callerAddr   = 0xcc24 :: Word32
     calleeAddr   = 0xcd90 :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -339,7 +339,7 @@ postCallContinuationIsThumb = do
   where
     stubEntry        = 0xcbb0 :: Word32
     continuationAddr = 0xcb94 :: Word32
-    firmwarePath     = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath     = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase        = 0x4000 :: Word32
     ramBase          = 0x20000000 :: Word32
     ramSize          = 0x30000 :: Word32
@@ -371,7 +371,7 @@ noA32DecodeErrorsInFullCensus = do
         test "11. no A32 decode errors in the full vector-table census"
           (not (any ("A32" `isInfixOf`) allDetail))
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -406,7 +406,7 @@ knownDirectCallsAreEmitted = do
              && CallInfo callerAddr 0xcc42 (Just 0xcdd8) Nothing "direct" `elem` calls)
   where
     callerAddr   = 0xcc24 :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -446,7 +446,7 @@ callReturnEdgeStaysSeparateFromCallRelation = do
   where
     callerAddr   = 0xcc24 :: Word32
     callSite     = 0xcc5c :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -475,7 +475,7 @@ unresolvedCallIsPreserved = do
           (CallInfo entryAddr entryAddr Nothing Nothing "indirect" `elem` crCalls census)
   where
     entryAddr    = 0xa03c :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -503,7 +503,7 @@ callOutputIsDeterministic = do
         test "15. call output ordering is deterministic"
           (crCalls c1 == crCalls c2 && isSorted (crCalls c1))
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -553,7 +553,7 @@ refinementInitializesEmptyStructRegister = do
                    (not mentionsStructGap)
   where
     targetEntry  = 0x44ec :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -665,7 +665,7 @@ realCase0x44ecRecoversTwoTargets = do
              _   -> False)
   where
     targetEntry  = 0x44ec :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -693,7 +693,7 @@ recoveredEvidenceIsMarkedMacawNormalized = do
              && all ((== Normalize.macawNormalizedProvenance) . niProvenance) (crNormalized census))
   where
     targetEntry  = 0x44ec :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -731,7 +731,7 @@ memoryDerivedFailureRemainsUnresolved = do
   where
     fnEntry      = 0x97a0 :: Word32
     blkStart     = 0x978c :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -792,7 +792,7 @@ expansionFeedsExistingFunctionNotNewFunction = do
           pure (r1 && r2 && r3)
   where
     targetEntry  = 0x44ec :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -876,7 +876,7 @@ fullFirmwareFixpointExpansion = do
 
         pure (r1 && r2 && r3 && r4 && r5)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -914,7 +914,7 @@ summarizeDiscoveryStateMatchesDiscoverCensus = do
           (viaSummarize == viaDiscoverCensus)
   where
     targetEntry  = 0x44ec :: Word32
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -950,7 +950,7 @@ groupGIndirectCallsNormalize = do
                          , (0xcd34, [0xcd48, 0xcd36])
                          ])
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -978,7 +978,7 @@ groupHIndirectCallNormalizes = do
         test "26. Group H indirect call (0xb47a, opaque condition) normalizes to its real targets"
           ([ (ntiBlockStart n, ntiTargets n) | n <- crNormalizedTransfers census ] == [(0xb47a, [0xb48a, 0xb486])])
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1032,7 +1032,7 @@ baseIndirectCallRemainsIndirectAfterNormalization = do
           (not (null (crNormalizedTransfers census))
              && matching == [CallInfo 0xa03c 0xa03c Nothing Nothing "indirect"])
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1060,7 +1060,7 @@ normalizedCallEvidenceHasProvenance = do
           (length (crNormalizedTransfers census) == 4
              && all ((== Normalize.macawNormalizedProvenance) . ntiProvenance) (crNormalizedTransfers census))
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1089,7 +1089,7 @@ unrelatedIndirectCallGroupsRemainUnchanged = do
         test "30. unrelated indirect-call groups (0xa84a, vtable-style) remain unchanged"
           (any isIndirectHere (crCalls census) && null (crNormalizedTransfers census))
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1129,7 +1129,7 @@ blxClassifiesAsTrueIndirectCall = do
                       && cciReturnAddr c == Just 0x99e6
              _   -> False)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1160,7 +1160,7 @@ bxClassifiesAsTailCall = do
                       && cciReturnAddr c == Nothing
              _   -> False)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1190,7 +1190,7 @@ cbzClassifiesAsConditionalBranch = do
              [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.ConditionalBranch
              _   -> False)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1220,7 +1220,7 @@ tbbClassifiesAsTableBranch = do
              [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.TableBranch
              _   -> False)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1250,7 +1250,7 @@ ldrPcClassifiesAsComputedJump = do
              [c] -> cciSemanticKind c == IsaClassify.semanticKindText IsaClassify.ComputedJump
              _   -> False)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32
@@ -1283,7 +1283,7 @@ normalizedCbzIsTransferNotCall = do
                       && ntiTargets n == [0xa056, 0xa040]
              _   -> False)
   where
-    firmwarePath = "Autopilot_firm/firmware_autopilot868.bin"
+    firmwarePath = "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin"
     flashBase    = 0x4000 :: Word32
     ramBase      = 0x20000000 :: Word32
     ramSize      = 0x30000 :: Word32

@@ -10,12 +10,12 @@ dist-newstyle/
 
 # Proprietary firmware and vendor tooling -- do not redistribute.
 # Hashes are tracked (SHA256SUMS.txt); the binaries/manual/flasher are not.
-/Autopilot_firm/*.bin
-/Autopilot_firm/bossac.exe
-/Autopilot_firm/desktop.ini
-/PerformingRigs_UserManual_AutoPilot.pdf
-/research/firmware/originals/*.bin
-/research/firmware/extracted/*
+/cases/performing-rigs/research/firmware/vendor-package/*.bin
+/cases/performing-rigs/research/firmware/vendor-package/bossac.exe
+/cases/performing-rigs/research/firmware/vendor-package/desktop.ini
+/cases/performing-rigs/research/firmware/originals/*.bin
+/cases/performing-rigs/research/firmware/extracted/*
+/cases/performing-rigs/PerformingRigs_UserManual_AutoPilot.pdf
 
 # Reproducible Python venv for tools/unicorn/run_concrete.py -- rebuild via
 # tools/doctor.sh or docs/tooling/tool-selection.md; pinned in requirements.txt.
@@ -25,13 +25,13 @@ dist-newstyle/
 
 # Persistent Ghidra project cache (tools/ghidra/aptrace_ghidra.py) -- fully
 # regenerable via `aptrace_ghidra.py build <firmware-key>`; not distributed.
-/research/runs/ghidra_cache/
+/cases/performing-rigs/research/runs/ghidra_cache/
 
 # aptrace census database + dynamic-coverage capture files
 # (tools/census/) -- fully regenerable via
 # `aptrace_census.py build <firmware-key>` + dynamic_export.py; not
 # distributed. See docs/tooling/census.md.
-/research/runs/census/
+/cases/performing-rigs/research/runs/census/
 
 # Board photos -- reference images, not source; keep out of git history.
-/research/AutoPilot Board Photos/
+/cases/performing-rigs/research/AutoPilot Board Photos/

@@ -12,7 +12,7 @@ investigation actually used:
   disclosed clock/PLL/SERCOM/NVMCTRL completion-bit assumptions, the
   RAM tick counter, the PA22 GPIO-input boundary condition, the
   DWT-delay stub, and the radio-ID handshake stand-in from
-  docs/investigations/boot-and-hardware-bringup.md. Reproduces that
+  cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md. Reproduces that
   document's own cited milestones exactly (see test_reduce.py) and
   reaches real main-loop steady state (5 confirmed `0x8960` iterations,
   matching that document's own success criterion) -- `init_status`
@@ -62,7 +62,7 @@ def A(kind, addr, detail, citation):
     return {"kind": kind, "addr": addr, "detail": detail, "citation": citation}
 
 
-_CITATION = "docs/investigations/boot-and-hardware-bringup.md"
+_CITATION = "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md"
 
 AUTOPILOT_RECIPE = {
     "reference_key": "autopilot868",
@@ -144,7 +144,7 @@ MANDO_RECIPE = {
     # Arduino-core sketch code). Confirmed this pass via `--watch`: 10
     # hits at a PERFECTLY regular 33-instruction period (0 variance) --
     # the same steady-state evidence standard
-    # docs/investigations/boot-and-hardware-bringup.md's own AutoPilot
+    # cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md's own AutoPilot
     # criterion uses (there: ~2900-2940-instruction cadence, 5 hits).
     "steady_state_addr": 0x7abc,
     "steady_state_hits": 5,

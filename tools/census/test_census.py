@@ -202,7 +202,7 @@ def test_known_autopilot868_facts():
 
         # ascii_dispatcher__CUSTOM @ 0x8258 is an established, previously
         # human-confirmed function in this project (see
-        # research/provenance/ghidra_labels.tsv / docs/investigations) --
+        # cases/performing-rigs/research/provenance/ghidra_labels.tsv / docs/investigations) --
         # a real regression in the Ghidra pipeline or provenance labels
         # would silently rename or drop it.
         f = conn.execute("SELECT * FROM functions WHERE firmware_id=? AND entry=?",

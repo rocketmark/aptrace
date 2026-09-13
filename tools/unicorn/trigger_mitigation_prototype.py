@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Non-distributable Unicorn prototype for the trigger-input mitigation
-investigation (docs/investigations/trigger-input-mitigation-patchability.md).
+investigation (cases/performing-rigs/docs/investigations/trigger-input-mitigation-patchability.md).
 
 This patches ONLY the in-memory Unicorn image of firmware_autopilot868.bin,
 never the .bin file on disk. It exists to answer one narrow question: can a
@@ -45,7 +45,7 @@ try:
 except ImportError:
     _CAPSTONE = False
 
-FIRMWARE = Path(__file__).parent.parent.parent / "research/firmware/originals/firmware_autopilot868.bin"
+FIRMWARE = Path(__file__).parent.parent.parent / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
 
 # -- real, already-confirmed addresses (trigger-input-concrete-path.md,
 # trigger-input-symbolic-crosscheck.md) -----------------------------------

@@ -16,10 +16,10 @@ version of the same rules; this is the reasoning behind them.
 | **Crucible + What4 + Z3** | Targeted symbolic reachability and input solving | `APTrace.SymbolicRunner`, `APTrace.ProtocolHarness` |
 | **APTrace** | Orchestration: evidence model, scenarios, traces, snapshots, (eventually) UI | this repo |
 | `crucible-debug` (experimental) | Interactive stepping/breakpoints/register inspection over a real Crucible run | `aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX` — see `APTrace.DebugHarness` |
-| GREASE (experimental, external) | Under-constrained symbolic execution as a cheap first-pass sweep, not a replacement for the targeted queries above | not vendored in this repo — see [`galois-premeeting.md`](galois-premeeting.md) |
+| GREASE (experimental, external) | Under-constrained symbolic execution as a cheap first-pass sweep, not a replacement for the targeted queries above | not vendored in this repo — see [`galois-premeeting.md`](../../cases/performing-rigs/docs/investigations/galois-premeeting.md) |
 
 The last two rows are additions at an explicitly **experimental** tier —
-see [`galois-premeeting.md`](galois-premeeting.md) for what was tried, what
+see [`galois-premeeting.md`](../../cases/performing-rigs/docs/investigations/galois-premeeting.md) for what was tried, what
 worked, and open questions for Galois. They do not change the hierarchy
 below: Ghidra -> Unicorn -> Macaw/Crucible/What4 remains the load-bearing
 path for any actual finding recorded in this project's docs.
@@ -123,7 +123,7 @@ above:
 3. **Symbolic (Crucible/What4/Z3)**: leaving `r3` symbolic and asking "is
    `0x8890` reachable" gets Z3 to *derive* `0x26` as the unique witness,
    rather than confirm a value already chosen — see
-   [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md).
+   [`cases/performing-rigs/docs/investigations/protocol-harness-results.md`](../../cases/performing-rigs/docs/investigations/protocol-harness-results.md).
 
 All three agree. That agreement is itself the point: a static read alone is
 a claim; concrete execution is a demonstration for one input; the solver
@@ -149,7 +149,7 @@ When recording a finding in `docs/`, say which of these it is:
    [`docs/harness/execution-model.md`](../harness/execution-model.md) about
    what's actually left symbolic).
 
-`docs/project-status.md` and the investigation docs should make clear which
+`cases/performing-rigs/status.md` and the investigation docs should make clear which
 level a claim sits at — "confirmed" without qualification should mean level
 3, not level 1.
 
@@ -164,7 +164,7 @@ this project:
 > (`BL_i_A1`, `BX_A1`, `PSTATE_T => 0`). This is architecturally impossible
 > on ATSAMD51 (Cortex-M4F) — M-profile Cortex-M cores have no ARM execution
 > state at all; they are Thumb-only. See
-> [`docs/investigations/trigger-input.md`](../investigations/trigger-input.md).
+> [`cases/performing-rigs/docs/investigations/trigger-input.md`](../../cases/performing-rigs/docs/investigations/trigger-input.md).
 
 Ghidra's `ARM:LE:32:Cortex` language (`ARMCortex.pspec`) sets the `TMode`
 context register to `1` (Thumb) **for the entire address space by
@@ -177,8 +177,8 @@ two more calls — called from eight real, cross-referenced sites including
 the same `0x8a34` caller Macaw found independently. **This is strong
 evidence the A32 lift is a genuine Macaw/dismantle decode limitation for
 this address, not dead/unreachable code** — updated in
-`docs/investigations/trigger-input.md` and
-`docs/protocol/open-questions.md`.
+`cases/performing-rigs/docs/investigations/trigger-input.md` and
+`cases/performing-rigs/docs/protocol/open-questions.md`.
 
 **The rule this generalizes to**: never trust Macaw's A32/ARM-mode
 interpretation of anything on this Cortex-M4F target without cross-checking
@@ -226,7 +226,7 @@ the real concrete value implies. Confirmed concretely in this project: a
 branch on a literal-pool-derived byte took the wrong successor during
 whole-function execution despite the underlying byte being genuinely
 concrete — see
-[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
+[`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../../cases/performing-rigs/docs/investigations/protocol-pipeline.md)
 for the full trace.
 
 **Practical implication**: any whole-function Crucible target whose
@@ -246,7 +246,7 @@ sufficient for now.
   example of *not* following this rule: `APTrace.ProtocolHarness`'s
   whole-function replay was, in effect, trying to concretely replay a
   packet transaction through Crucible — see
-  [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)
+  [`cases/performing-rigs/docs/investigations/protocol-harness-results.md`](../../cases/performing-rigs/docs/investigations/protocol-harness-results.md)
   for how that turned into a memory-side-effect modeling gap that a
   concrete Unicorn run would sidestep entirely.)
 - **Reimplementing a mature tool's job.** Don't hand-write a disassembler,
@@ -266,7 +266,7 @@ sufficient for now.
 raw addresses like `0x40002000`) in Ghidra output, Unicorn traces, and any
 future Crucible MMIO modeling.
 
-**The part number is now confirmed**: `docs/hardware/hardware-reference.md`
+**The part number is now confirmed**: `cases/performing-rigs/docs/hardware/hardware-reference.md`
 identifies the AutoPilot's MCU directly (physical board inspection) as
 **ATSAMD51J19A-AU** (Remote: -AF — same silicon, different
 package/temperature grade). This confirmation did *not* come from the RAM-
@@ -287,7 +287,7 @@ address to `PERIPHERAL.REGISTER` (handling repeated/union structures like
 `PORT.GROUP0/1` and `TC.COUNT8/16/32`). `tools/unicorn/run_concrete.py
 --log-mmio` records every MMIO access from a concrete run so it can be fed
 through the same resolver. See
-[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
+[`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../../cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md)
 for a real worked example (startup peripheral survey, a first concretely-
 named pin-mux fact, and an honest negative result for the outbound TX
 path).
@@ -311,10 +311,10 @@ focuses on the custom callers instead of repeatedly re-deriving known
 infrastructure.
 
 **Method, established in
-[`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)**:
+[`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../../cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md)**:
 identify the *exact* evidenced toolchain version first (this firmware
 embeds its own build-path strings naming Adafruit `ArduinoCore-samd`
-git tag `1.7.11` — see `docs/firmware/firmware-layout.md` — no need to
+git tag `1.7.11` — see `cases/performing-rigs/docs/firmware/firmware-layout.md` — no need to
 guess), fetch the real source for that exact tag from its public
 repository, and compare structurally (control-flow shape, register/
 field-access order) against functions this project has already
@@ -323,12 +323,12 @@ real structural match against fetched source; role-only or
 cluster-level matches are labeled `LIKELY_*`, and anything without a
 plausible library candidate is left `UNKNOWN` rather than guessed.
 Recorded in a reusable CSV
-([`research/provenance/function_classification.csv`](../../research/provenance/function_classification.csv))
+([`cases/performing-rigs/research/provenance/function_classification.csv`](../../cases/performing-rigs/research/provenance/function_classification.csv))
 and, optionally, applied into Ghidra's own database (renames + a
 one-line provenance comment) via
 [`tools/ghidra/scripts/APTraceApplyProvenance.java`](../../tools/ghidra/scripts/APTraceApplyProvenance.java),
 reading a minimal companion TSV
-([`research/provenance/ghidra_labels.tsv`](../../research/provenance/ghidra_labels.tsv)).
+([`cases/performing-rigs/research/provenance/ghidra_labels.tsv`](../../cases/performing-rigs/research/provenance/ghidra_labels.tsv)).
 Purely cosmetic to Ghidra's database — no firmware behavior change, and
 standard code is never removed from analysis or execution, only
 labeled.

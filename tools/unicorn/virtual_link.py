@@ -2,18 +2,18 @@
 """APTrace: a virtual RF link between the AutoPilot and Remote firmware.
 
 Wires the four already-independently-proven concrete scenarios
-(docs/investigations/dispatcher-loop-concrete-trace.md,
-docs/investigations/tx-hook-verification.md,
-docs/investigations/mando-first-execution.md) into one harness-driven
-round trip, per docs/harness/roadmap.md's M3 step 8. See
-docs/investigations/virtual-rf-link.md for the full write-up.
+(cases/performing-rigs/docs/investigations/dispatcher-loop-concrete-trace.md,
+cases/performing-rigs/docs/investigations/tx-hook-verification.md,
+cases/performing-rigs/docs/investigations/mando-first-execution.md) into one harness-driven
+round trip, per cases/performing-rigs/roadmap.md's M3 step 8. See
+cases/performing-rigs/docs/investigations/virtual-rf-link.md for the full write-up.
 
 This does NOT model LoRa/SPI hardware. Per the already-established
 "boundary found" in mando-first-execution.md, both firmwares' real radio
 drivers are unreachable without either running full startup or building
 real peripheral behavior -- both explicitly out of scope. Instead, this
 hooks *above* the radio driver on both ends, exactly where
-research/autopilot_static_inventory/rf-boundaries.md originally
+cases/performing-rigs/research/autopilot_static_inventory/rf-boundaries.md originally
 recommended: capture the exact bytes a real, unmodified TX call is about
 to hand to the (unmodeled) radio, and deliver those exact bytes into the
 other firmware's real RX state (a packet buffer, or a ring buffer plus its
@@ -71,7 +71,7 @@ Three transactions are implemented on top of these primitives:
   run_ampersand_roundtrip() -- "&|" -> "V01R39" (roadmap M3's own scenario)
   run_g_ack_roundtrip()     -- G<d><d><seq>| -> "#" (roadmap M4's first
                                transaction; see
-                               docs/investigations/g-ack-roundtrip.md for
+                               cases/performing-rigs/docs/investigations/g-ack-roundtrip.md for
                                what this one needed beyond M3 -- register-
                                seeded call arguments, a Remote-side retry
                                loop, and two additional AutoPilot-side
@@ -82,7 +82,7 @@ Three transactions are implemented on top of these primitives:
                                concrete device-state values, to exercise
                                both the short and extended response forms
                                for real -- see
-                               docs/investigations/s-p-roundtrip.md,
+                               cases/performing-rigs/docs/investigations/s-p-roundtrip.md,
                                including a real "don't downgrade" guard in
                                the Remote's own parser found by running
                                it, not by reading the decompile alone).
@@ -108,12 +108,12 @@ from concrete import ConcreteMachine  # noqa: E402
 
 REPO_ROOT = HERE.parent.parent
 
-AUTOPILOT_FW = REPO_ROOT / "research/firmware/originals/firmware_autopilot868.bin"
-MANDO_FW = REPO_ROOT / "research/firmware/originals/firmware_mando868.bin"
+AUTOPILOT_FW = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
+MANDO_FW = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin"
 
 # Default MMIO window: covers the SAMD51 peripheral bridge (0x40000000+)
 # used by both firmwares' startup/driver code paths -- see
-# docs/investigations/mando-first-execution.md ("New harness capability").
+# cases/performing-rigs/docs/investigations/mando-first-execution.md ("New harness capability").
 MMIO_BASE = 0x40000000
 MMIO_SIZE = 0x4000000
 
@@ -218,7 +218,7 @@ def capture_tx_bytes(firmware, entry, tx_wrapper_entry, seed_mem=(), reg_seed=()
 
     'stub_calls' lets a caller skip real-but-irrelevant driver-touching
     helpers encountered *before* reaching the wrapper (see
-    docs/investigations/g-ack-roundtrip.md for a real case: the Remote's
+    cases/performing-rigs/docs/investigations/g-ack-roundtrip.md for a real case: the Remote's
     G-request builder calls a wake-up preamble, and the AutoPilot's G
     handler calls two logging/config helpers that dereference an
     uninitialized driver object -- neither affects the bytes handed to
@@ -285,7 +285,7 @@ REMOTE_RESULT_BUF = 0x200002fc
 REMOTE_STUB_CALLS = (0x58a8, 0xb440, 0x168c0)  # radio poll + TX wrapper + SysTick delay
 
 # --- G -> # anchors (all independently confirmed by execution this pass;
-# see docs/investigations/g-ack-roundtrip.md) --------------------------------
+# see cases/performing-rigs/docs/investigations/g-ack-roundtrip.md) --------------------------------
 
 AUTOPILOT_PENDING17 = 0x200025cd     # pending[17], the G-acknowledgement event
 AUTOPILOT_TX_BYTE_WRAPPER = 0x7f84   # single-byte TX wrapper (event 17's real path, not 0x8c10)
@@ -310,7 +310,7 @@ REMOTE_ACK_STOP = 0xb60e             # reached only once the '#' has been recogn
 REMOTE_ACK_REG_SEED = (("r4", 5), ("r5", 0x2000276c), ("r6", 0x2000276c), ("r7", 0x2000183c))
 
 # --- S -> P... anchors (all independently confirmed by execution this
-# pass; see docs/investigations/s-p-roundtrip.md) ---------------------------
+# pass; see cases/performing-rigs/docs/investigations/s-p-roundtrip.md) ---------------------------
 
 REMOTE_S_ENTRY = 0xc440              # real S|/!0|/!1| routine; param_1 (R0) selects phase
 REMOTE_S_PREAMBLE_STUB = 0x5a14      # real but irrelevant "wake" call, unconditional here (unlike G's)
@@ -407,7 +407,7 @@ def run_g_ack_roundtrip(verbose=True):
     Remote's real retry/ack path accepts it. Tests whether the M3
     primitives generalize to a transaction with request fields and
     Remote-side retry/ack behavior, not just a fixed string. See
-    docs/investigations/g-ack-roundtrip.md."""
+    cases/performing-rigs/docs/investigations/g-ack-roundtrip.md."""
     def log(msg):
         if verbose:
             print(msg)
@@ -493,7 +493,7 @@ def run_s_roundtrip(verbose=True):
     twice, at two different concrete AUTOPILOT_S_MODE values, to exercise
     both the short and extended response forms for real rather than
     asserting one and reading the other off the decompile. See
-    docs/investigations/s-p-roundtrip.md.
+    cases/performing-rigs/docs/investigations/s-p-roundtrip.md.
 
     Returns a dict describing what was observed in each case (not just
     True/False) -- this transaction has no single pass/fail byte string to
@@ -594,7 +594,7 @@ def run_s_roundtrip(verbose=True):
 # --- '!' -> 11-field bulk CSV anchors (all independently confirmed by
 # execution this pass; !0|/!1| are sent by the SAME 0xc440(0) routine as
 # 'S', immediately after its own real "P..." response is fully drained --
-# see docs/investigations/protocol-pipeline.md) -----------------------------
+# see cases/performing-rigs/docs/investigations/protocol-pipeline.md) -----------------------------
 
 REMOTE_BANG_MODE_SELECTOR = 0x2000109b  # Remote's own !0|/!1| choice: 0 -> "!0|" (0xc63e's
                                           # literal 0x1c870), nonzero -> "!1|" (0xc566's own
@@ -622,7 +622,7 @@ AUTOPILOT_PENDING7 = 0x200025c3          # pending[7], the '!' bulk-CSV event (0
                                           # module uses)
 
 AUTOPILOT_FIELD1_SOURCE = 0x200000ec     # event 7's field 1 = i32[here]/10, narrowed to u8
-                                          # (research/autopilot_static_inventory/event7-schema.md).
+                                          # (cases/performing-rigs/research/autopilot_static_inventory/event7-schema.md).
                                           # From cold RAM this is 0, so field1=0 -- confirmed by
                                           # disassembly of the Remote's OWN field-1 consumer
                                           # (0xc6b4-0xc6cc: `bl 0xb51c; muls r0,#10; subs
@@ -657,7 +657,7 @@ def run_bang_bulk_csv_roundtrip(verbose=True):
     "!0|"/"!1|" request -> AutoPilot schedules event 7 and builds its real
     11-field numeric CSV response from its own concrete state -> Remote's
     real parser consumes it. Directly resolves the previously-open "11-vs-10
-    field mismatch" (docs/protocol/open-questions.md #2): confirms exactly
+    field mismatch" (cases/performing-rigs/docs/protocol/open-questions.md #2): confirms exactly
     what AutoPilot emits, exactly how many fields the Remote parses, and
     what state the Remote is left in afterward -- via real execution on
     both sides, not by re-reading the disassembly. Run for BOTH `!0|` and
@@ -777,7 +777,7 @@ def run_bang_bulk_csv_roundtrip(verbose=True):
         # completed on its own at ~34.7k instructions rather than hitting
         # the limit) -- a real, one-time buffer-clear cost, not a bug or
         # an infinite loop, analogous to the already-documented finite
-        # SERCOM device-probe cost noted in docs/harness/roadmap.md.
+        # SERCOM device-probe cost noted in cases/performing-rigs/roadmap.md.
         # max_instructions below is sized with headroom over that
         # measured real cost.
         leg3 = mando.run(
@@ -826,7 +826,7 @@ def run_bang_bulk_csv_roundtrip(verbose=True):
     log("  eventually treats these leftover bytes as the start of a different message")
     log("  (a real misalignment risk) depends on what the Remote does with the ring")
     log("  buffer between cycles -- not re-traced here (out of this scenario's scope,")
-    log("  see docs/investigations/protocol-pipeline.md's Open items); what IS now")
+    log("  see cases/performing-rigs/docs/investigations/protocol-pipeline.md's Open items); what IS now")
     log("  concretely settled is that the byte-count mismatch is real, silent (no")
     log("  error/assert on either side), and identical for both !0| and !1|.")
     return results
@@ -834,7 +834,7 @@ def run_bang_bulk_csv_roundtrip(verbose=True):
 
 # --- 'I<channel><mode>|' -> per-channel async state machine -> event 15
 # signed-number response anchors (all independently confirmed by execution
-# this pass; see docs/investigations/protocol-pipeline.md) -----------------
+# this pass; see cases/performing-rigs/docs/investigations/protocol-pipeline.md) -----------------
 
 REMOTE_I_ENTRY = 0xb958                  # Remote's real, self-contained I<channel><mode>|
                                           # builder + response-wait loop (params: r0=channel
@@ -928,7 +928,7 @@ def run_i_channel_mode_roundtrip(verbose=True):
 
         log("\n=== Leg 2b: AutoPilot's real main-loop monitor (0x8a80) notices state 5"
             " and schedules event 15 ===")
-        # The dead gate (0x20001b14[channel], see docs/investigations/
+        # The dead gate (0x20001b14[channel], see cases/performing-rigs/docs/investigations/
         # motor-subsystem-unlock.md -- exhaustively confirmed never set
         # nonzero anywhere in this firmware image) is left at its real
         # cold-RAM value of 0, so the monitor's state-5 branch completes
@@ -1059,7 +1059,7 @@ REMOTE_I9_I1_VALUE_STORE = 0x200027f0     # single (non-per-channel) int -- matc
 
 
 def run_i9_i1_short_form_check(verbose=True):
-    """Resolves the previously-open I9|/I1| question (docs/protocol/
+    """Resolves the previously-open I9|/I1| question (cases/performing-rigs/docs/protocol/
     command-inventory.md): are these the same protocol path as
     I<channel><mode>|, or genuinely different? Traces both real wire
     forms through the SAME real AutoPilot dispatcher used by the main
@@ -1133,7 +1133,7 @@ def run_i9_i1_short_form_check(verbose=True):
 
 # --- '+' (Auto-Mode segment) -> motor target -> G mode-1 -> FUN_00006fd8
 # distance anchors (all independently confirmed by execution this pass;
-# see docs/investigations/plus-target-distance-roundtrip.md) -------------
+# see cases/performing-rigs/docs/investigations/plus-target-distance-roundtrip.md) -------------
 
 REMOTE_PLUS_BUILD_ENTRY = 0x000049c4   # real '+' frame builder -- called
                                          # directly through concrete.py's
@@ -1170,7 +1170,7 @@ REMOTE_PLUS_RECORD0_DELTA = 0x20000b20  # Remote's own local per-channel
 
 AUTOPILOT_CH0_STRUCT = 0x20001b40      # the per-channel-per-mode motor
                                          # config struct, channel 0 (see
-                                         # docs/investigations/
+                                         # cases/performing-rigs/docs/investigations/
                                          # persistent-record-motor-target-mapping.md)
 AUTOPILOT_PLUS_DISPLAY_STUB = 0xb216   # a real but irrelevant uninitialized-
                                          # display-object dereference inside
@@ -1178,7 +1178,7 @@ AUTOPILOT_PLUS_DISPLAY_STUB = 0xb216   # a real but irrelevant uninitialized-
                                          # display-refresh tail
 AUTOPILOT_DIRTY_AREA = 0x20004144      # +0x1002 (dirty flag) sits at byte 3
                                          # of this 8-byte window -- see
-                                         # docs/investigations/
+                                         # cases/performing-rigs/docs/investigations/
                                          # dirty-flag-persistence.md
 
 AUTOPILOT_G_MODE1_TARGET_STAGE = 0x2000201c  # FUN_00007e2c's own "this
@@ -1227,7 +1227,7 @@ def run_plus_target_distance_roundtrip(verbose=True):
     FUN_00006fd8 move-commit distance -- with every byte on the '+' side
     traced back to the Remote's own real frame builder (FUN_000049c4),
     not hand-constructed. See
-    docs/investigations/plus-target-distance-roundtrip.md for the full
+    cases/performing-rigs/docs/investigations/plus-target-distance-roundtrip.md for the full
     write-up, including exactly which two steps are harness-seeded state
     (disclosed below) rather than observed real firmware output.
 
@@ -1245,7 +1245,7 @@ def run_plus_target_distance_roundtrip(verbose=True):
          to set -- bypassing the real MC4-unlocked main loop this state
          machine is normally driven from, which costs far more
          instructions than this project's boot-recipe calibration budgets
-         for (see docs/investigations/persistent-record-motor-target-mapping.md's
+         for (see cases/performing-rigs/docs/investigations/persistent-record-motor-target-mapping.md's
          own "exact remaining gap"). This does not affect the distance
          value itself, which is computed entirely from the real '+'-
          written AUTOPILOT_CH0_STRUCT state.
@@ -1427,7 +1427,7 @@ def run_plus_target_distance_roundtrip(verbose=True):
 
 
 def run_plus_interactive_no_commit_check(verbose=True):
-    """Gap Resolution A (docs/replacement/autopilot-gap-audit.md): the
+    """Gap Resolution A (cases/performing-rigs/docs/replacement/autopilot-gap-audit.md): the
     interactive Auto-Mode '+' call sites (mode=0/0x14, action-command-
     map.md Part 3 / auto-mode-and-plus-command.md's sites A-D) were, until
     now, only disassembly-confirmed NOT to cross AutoPilot's '>50'
@@ -1563,7 +1563,7 @@ def run_plus_interactive_no_commit_check(verbose=True):
 
 
 # --- Manual Mode 0xF0/0xE0 binary jog frame: field layout and latch behavior
-# (Gap Resolution B, docs/replacement/autopilot-gap-audit.md). Addresses
+# (Gap Resolution B, cases/performing-rigs/docs/replacement/autopilot-gap-audit.md). Addresses
 # resolved from ascii_dispatcher__CUSTOM's (0x8258) own literal pool via
 # `tools/ghidra/aptrace_ghidra.py literal` (existing cached-project query,
 # not a new whole-firmware analysis): -----------------------------------
@@ -1602,7 +1602,7 @@ def _f0e0_record(marker, channel, value, seq=1):
 
 
 def run_manual_mode_f0_e0_check(verbose=True):
-    """Gap Resolution B (docs/replacement/autopilot-gap-audit.md). Answers,
+    """Gap Resolution B (cases/performing-rigs/docs/replacement/autopilot-gap-audit.md). Answers,
     using AutoPilot's own real code (disassembly of the already-known
     dispatch entry, ascii_dispatcher__CUSTOM/0x8258, plus concrete
     delivery through the same AUTOPILOT_RX_ENTRY boundary every other
@@ -1754,7 +1754,7 @@ def run_manual_mode_f0_e0_check(verbose=True):
 
 # --- PB05 config-reload -> motion-causality anchors (all independently
 # confirmed by execution this pass; see
-# docs/investigations/trigger-input-motion-causality.md) --------------------
+# cases/performing-rigs/docs/investigations/trigger-input-motion-causality.md) --------------------
 
 AUTOPILOT_GATE1 = 0x20001b38          # already known: the '+' mode=0x62
                                         # finalize path's own real side effect
@@ -2023,7 +2023,7 @@ def run_pb05_reload_motion_check(verbose=True):
 
 # --- T-status (AutoPilot -> Remote) feedback-loop anchors (all
 # independently confirmed by execution this pass; see
-# docs/investigations/trigger-status-remote-feedback.md) -------------------
+# cases/performing-rigs/docs/investigations/trigger-status-remote-feedback.md) -------------------
 
 REMOTE_T_DISPATCH_ENTRY = 0x00010ce4   # FUN_00010ce4, the Remote's real
                                          # per-byte inbound dispatcher --

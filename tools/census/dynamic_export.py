@@ -14,7 +14,7 @@ for what `collect_coverage`/`log_ram` add (both additive, default off,
 ConcreteMachine(fresh=True) semantics untouched).
 
 Writes one JSON file per scenario under
-research/runs/census/dynamic/<scenario>.json -- tools/census/
+cases/performing-rigs/research/runs/census/dynamic/<scenario>.json -- tools/census/
 dynamic_ingest.py reads those files into the census database (kept as a
 separate step so "capture" and "ingest" each have one job, and a capture
 can be inspected/reused without a database present).

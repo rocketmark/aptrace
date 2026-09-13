@@ -7,11 +7,11 @@
 # forced to ARM:LE:32:Cortex (Thumb-only Cortex-M processor spec -- unlike
 # Macaw's more general AArch32 backend, this cannot decode A32/ARM-mode
 # instructions, which makes it a useful independent check on the 0x801c
-# anomaly documented in docs/investigations/trigger-input.md).
+# anomaly documented in cases/performing-rigs/docs/investigations/trigger-input.md).
 #
 # Usage: tools/ghidra/analyze_firmware.sh FIRMWARE.bin [LOAD_ADDR_HEX] [OUT_JSON] [EXTRA_SEED_ADDRS]
 #   LOAD_ADDR_HEX defaults to 0x4000 (the AutoPilot/Remote images' flash base).
-#   OUT_JSON defaults to research/runs/ghidra/<firmware-basename>.json
+#   OUT_JSON defaults to cases/performing-rigs/research/runs/ghidra/<firmware-basename>.json
 #   EXTRA_SEED_ADDRS is an optional comma-separated list of additional
 #     addresses to force-disassemble/create-function-at before analysis --
 #     e.g. "0x8259,0x801c,0x8a35" to seed specific addresses under
@@ -40,7 +40,7 @@ BASENAME="${BASENAME%.bin}"
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SCRIPT_PATH="$REPO_ROOT/tools/ghidra/scripts"
-OUT_JSON="${3:-$REPO_ROOT/research/runs/ghidra/${BASENAME}.json}"
+OUT_JSON="${3:-$REPO_ROOT/cases/performing-rigs/research/runs/ghidra/${BASENAME}.json}"
 EXTRA_SEEDS="${4:-}"
 
 resolve_headless() {

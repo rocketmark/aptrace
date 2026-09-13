@@ -358,7 +358,7 @@ def main(argv):
     import argparse
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("firmware", help="firmware key, e.g. autopilot868 (see tools/ghidra/aptrace_ghidra.py FIRMWARE_REGISTRY)")
-    p.add_argument("--db", default=None, help="census database path (default: research/runs/census/census.sqlite3)")
+    p.add_argument("--db", default=None, help="census database path (default: cases/performing-rigs/research/runs/census/census.sqlite3)")
     p.add_argument("--no-ghidra-build", action="store_true", help="skip the Ghidra build/freshness step (assume the cache is already fresh)")
     args = p.parse_args(argv)
     build(args.firmware, db_path=args.db, ghidra_build=not args.no_ghidra_build)

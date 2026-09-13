@@ -2,8 +2,8 @@
 
 How APTrace actually drives Crucible/What4/Z3 against lifted Macaw IR — the
 reusable mechanisms, not any one experiment's results. See
-[`docs/investigations/symbolic-execution-results.md`](../investigations/symbolic-execution-results.md)
-and [`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)
+[`cases/performing-rigs/docs/investigations/symbolic-execution-results.md`](../../cases/performing-rigs/docs/investigations/symbolic-execution-results.md)
+and [`cases/performing-rigs/docs/investigations/protocol-harness-results.md`](../../cases/performing-rigs/docs/investigations/protocol-harness-results.md)
 for the experiments that use these mechanisms.
 
 ## Two execution granularities
@@ -33,7 +33,7 @@ elsewhere in the same function.
 free, a single-block query can be satisfied by an unrelated free variable
 rather than the one you think you're testing — this is exactly what
 happened when the `0x827e` loop-body block was queried in isolation (see
-[`docs/investigations/protocol-harness-results.md`](../investigations/protocol-harness-results.md)):
+[`cases/performing-rigs/docs/investigations/protocol-harness-results.md`](../../cases/performing-rigs/docs/investigations/protocol-harness-results.md)):
 the solver's answer looked like it depended on the packet buffer, but a
 whole-function test with the same concrete buffer value proved it didn't.
 **Cross-check single-block results against a whole-function run before
@@ -46,7 +46,7 @@ memory (e.g. a `push`/`STMDB` at block entry, writing `[SP-N..SP-1]`) and
 solver can choose that register so the write **aliases and overwrites** a
 value you seeded with `bqMemoryBytes` — silently defeating the seed rather
 than erroring. Confirmed concretely in
-[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md):
+[`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../../cases/performing-rigs/docs/investigations/protocol-pipeline.md):
 querying a block starting with a register-list push, with only the target
 byte seeded and `SP` left free, returned "reachable" for *both* branch
 targets with nonsense models — fixed by adding `SP` to
@@ -97,7 +97,7 @@ arbitrary side, which is not necessarily the one the "real" concrete value
 implies. This is the confirmed root cause of the AutoPilot dispatcher's
 `0x8266` gate branch being taken incorrectly in the whole-function replay
 — see
-[`docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
+[`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../../cases/performing-rigs/docs/investigations/protocol-pipeline.md)
 for the full trace and reasoning. **Any future whole-function target whose
 control flow depends on a literal-pool-derived value should expect the
 same issue** until this is fixed (candidate fixes are in that document,
@@ -148,7 +148,7 @@ memory writes, any real callee whose side effects other code depends on
 (e.g. marking a data structure updated) cannot be faithfully modeled this
 way. This is the current, understood cause of the whole-function replay not
 terminating for the AutoPilot dispatcher — see
-[`docs/project-status.md`](../project-status.md). The architecturally
+[`cases/performing-rigs/status.md`](../../cases/performing-rigs/status.md). The architecturally
 correct fix — not yet implemented — is to make `LookupFunctionHandle`'s
 callback *lazily build and register a real Crucible CFG* for the actual
 callee (looked up by address in the already-discovered function map, which
@@ -195,5 +195,5 @@ This mirrors `Data.Macaw.Refinement.Solver`'s Z3 case, which could not be
 imported directly because it's an internal (`other-modules`) definition in
 the `macaw-refinement` package, and depending on that package pulls in
 unwanted x86/PPC/RISC-V builds. See
-[`docs/investigations/symbolic-execution-results.md`](../investigations/symbolic-execution-results.md)
+[`cases/performing-rigs/docs/investigations/symbolic-execution-results.md`](../../cases/performing-rigs/docs/investigations/symbolic-execution-results.md)
 for how this was found.

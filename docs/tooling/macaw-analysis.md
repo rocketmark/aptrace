@@ -138,7 +138,7 @@ From `aptrace macaw-census-expand`'s final expanded graph:
   case this Cortex-M safety work grew out of.
 - [`census.md`](census.md) — the separate Python/Ghidra/Unicorn evidence
   database this pipeline's output is cross-checked against.
-- [`docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md) —
+- [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../../cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md) —
   the EIC/EXTINT dispatch finding that motivated the semantic
   classification layer (one physical `ParsedCall` dispatch site shared by
   16 vectors, correctly classified `true_indirect_call`).

@@ -1,6 +1,6 @@
 """
 Trigger -> Movement falsification audit: device-state producer/consumer
-closure (docs/investigations/trigger-input.md, "Falsification pass").
+closure (cases/performing-rigs/docs/investigations/trigger-input.md, "Falsification pass").
 
 The original trigger-input investigation (pb05 scenario, below) proved
 phase_ramp_arm_byte (0x20002318) is cleared, not set, by the trigger-accept

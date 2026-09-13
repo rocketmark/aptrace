@@ -14,7 +14,7 @@
 --
 -- Current status, blockers, and the diagnostic technique ('debugFeature')
 -- are documented in docs/harness/execution-model.md and
--- docs/investigations/protocol-harness-results.md -- see those before changing
+-- cases/performing-rigs/docs/investigations/protocol-harness-results.md -- see those before changing
 -- this module's call-handling or memory-model behavior.
 --
 -- Memory model: the base memory uses @SymbolicMutable@ content (Macaw-
@@ -185,7 +185,7 @@ runPacketTransactionTraced
      -- edge whose path condition would also need accounting for -- true
      -- by construction whenever it is the unique final write before an
      -- unconditional jump/call, as in this module's own trigger-input use
-     -- (see docs/investigations/trigger-input-symbolic-reachability.md).
+     -- (see cases/performing-rigs/docs/investigations/trigger-input-symbolic-reachability.md).
      -- 'Nothing' reproduces the original run-to-completion behavior
      -- exactly.
   -> Maybe FilePath
@@ -206,7 +206,7 @@ runPacketTransactionTraced
      -- without needing the online run to finish. Purely observational --
      -- changes no query semantics, only what gets written to disk
      -- alongside it. See
-     -- docs/investigations/trigger-input-symbolic-reachability.md for
+     -- cases/performing-rigs/docs/investigations/trigger-input-symbolic-reachability.md for
      -- why this was added (a query that would not converge in a
      -- practical time budget, with nothing on disk to show what was
      -- actually being asked).
@@ -255,7 +255,7 @@ runPacketTransactionTraced mem fn bufAddr bufBytes observeAddr targetValue trace
             -- this clobbered *every* register, including whatever loop
             -- counter or table pointer the caller was using in R4-R11 --
             -- which corrupted ordinary bounded loops into apparently-infinite
-            -- ones (see docs/investigations/protocol-harness-results.md). Only
+            -- ones (see cases/performing-rigs/docs/investigations/protocol-harness-results.md). Only
             -- clobber the registers a real call is actually allowed to.
             let regTypes = MS.crucArchRegTypes (MS.archFunctions archVals)
             callCounter <- newIORef (0 :: Int)
@@ -538,7 +538,7 @@ data GateVal sym = GateVal8 (WI.SymBV sym 8) | GateVal32 (WI.SymBV sym 32)
 -- initialization.md) -- a bounded gate check that only ever reads
 -- 'gateVars' and nothing else in RAM has no use for it, and dropping it is
 -- exactly the "avoid the earlier solver failure mode" this function exists
--- for (see docs/investigations/trigger-input-symbolic-crosscheck.md).
+-- for (see cases/performing-rigs/docs/investigations/trigger-input-symbolic-crosscheck.md).
 --
 -- Stops the *first* time execution reaches 'stopAtAddr' (same block-
 -- granular convention 'runPacketTransactionTraced'\'s own 'stopAtAddr'
@@ -765,7 +765,7 @@ writeBuffer bak globalMap = go 0
                    Concrete _ -> []
       pure (mem'', here ++ rest)
 
--- | Solver observability, per docs/investigations/trigger-input-
+-- | Solver observability, per cases/performing-rigs/docs/investigations/trigger-input-
 -- symbolic-reachability.md's own request: when 'Nothing', does nothing
 -- and returns 'Nothing' (the online solver process then gets no log
 -- handle, exactly as before this was added). When @Just base@:

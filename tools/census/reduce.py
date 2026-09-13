@@ -15,7 +15,7 @@ build`'s base evidence (tools/census/build.py). Orchestrates, in order:
      reference_match.py) -- tag `reference_source_confirmed` functions
      from TWO sources, both writing the SAME library_matches column:
      the curated, human-confirmed-against-real-upstream-source set from
-     docs/investigations/boot-and-hardware-bringup.md
+     cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md
      (reference_library.py), and the mechanical reference-corpus match
      results from a PRIOR, separate `reference-match <firmware>` run
      (reference_match.py's `apply_to_library_matches` -- reads only,

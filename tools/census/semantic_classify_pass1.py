@@ -4,19 +4,19 @@ residual functions into exactly one of a fixed set of product/software
 categories -- sorting, not reverse engineering.
 
 Reads ONLY the compact evidence packets `aptrace_census.py
-semantic-packets` already exported (research/generated/
+semantic-packets` already exported (cases/performing-rigs/research/generated/
 autopilot-semantic-pass1.jsonl) plus a small, fixed set of rules drawn
 from evidence already mechanically present in each packet:
 
   - a small RAM-address table for addresses this project's own canonical
-    docs (docs/investigations/*.md, docs/protocol/*.md) have already
+    docs (cases/performing-rigs/docs/investigations/*.md, cases/performing-rigs/docs/protocol/*.md) have already
     established a single, unambiguous role for (e.g. the pending[]
     event array, the per-channel motor state/mode arrays) -- reused
     exactly, never re-derived;
   - direct peripheral names (TC/TCC -> motor timers, NVMCTRL -> NVM,
     WDT/OSC32KCTRL -> boot/clock init);
   - the Ghidra-applied CUSTOM/STANDARD_LIBRARY function name and
-    `research/provenance/function_classification.csv` role text, both
+    `cases/performing-rigs/research/provenance/function_classification.csv` role text, both
     already-curated evidence from prior passes;
   - a small, explicit function-ADDRESS override table for the handful of
     functions this project's own canonical docs already name and
@@ -45,8 +45,8 @@ HERE = Path(__file__).resolve().parent
 # builder) -- a dual-purpose address is not safe evidence for a SINGLE
 # category and is left out on purpose.
 RAM_ADDR_CATEGORY = {
-    # pending[] outbound-event array (docs/protocol/event-map.md,
-    # docs/investigations/protocol-pipeline.md) -- base 0x200025bc, 18 slots
+    # pending[] outbound-event array (cases/performing-rigs/docs/protocol/event-map.md,
+    # cases/performing-rigs/docs/investigations/protocol-pipeline.md) -- base 0x200025bc, 18 slots
     **{f"0x{0x200025bc + i:x}": "PROTOCOL_TX_EVENT" for i in range(18)},
     "0x20000100": "PROTOCOL_TX_EVENT",  # outbound scan-slot table
     "0x200000d9": "PROTOCOL_TX_EVENT",  # outbound scan count
@@ -101,9 +101,9 @@ PROVENANCE_ROLE_KEYWORDS = [
 ]
 
 # Direct function-ADDRESS overrides: functions this project's own
-# canonical docs (docs/investigations/motor-subsystem-unlock.md,
-# docs/investigations/protocol-pipeline.md, docs/protocol/event-map.md,
-# docs/protocol/command-inventory.md, docs/protocol/open-questions.md)
+# canonical docs (cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md,
+# cases/performing-rigs/docs/investigations/protocol-pipeline.md, cases/performing-rigs/docs/protocol/event-map.md,
+# cases/performing-rigs/docs/protocol/command-inventory.md, cases/performing-rigs/docs/protocol/open-questions.md)
 # already name and describe BY ADDRESS -- a direct citation of prior
 # work, not a new inference from this pass. Every entry's justification
 # is the SAME already-published sentence this project wrote about that
