@@ -10,7 +10,7 @@ Orchestrates, in order:
      against the firmware's own bytes (tools/census/raw_scan.py).
   3. An independent Capstone Thumb branch-target sweep, cross-checked
      against Ghidra's own basic-block coverage (tools/census/capstone_sweep.py).
-  4. SVD-based MMIO/pin resolution (tools/census/pins.py, on top of
+  4. SVD-based MMIO/pin resolution (cases/performing-rigs/config/pins.py, on top of
      cases/performing-rigs/config/svd/resolve_mmio.py).
   5. Disagreement/anomaly detection (tools/census/scan_warnings).
 

@@ -1,5 +1,5 @@
 """APTrace census: shared instruction-level normalization for reference-
-source matching (tools/census/reference_corpus.py builds reference
+source matching (cases/performing-rigs/scripts/reference_corpus.py builds reference
 symbols with these hashes; tools/census/reference_match.py computes the
 SAME hashes for firmware functions -- using the SAME code here is what
 makes the two comparable at all).

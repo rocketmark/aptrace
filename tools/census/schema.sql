@@ -432,7 +432,7 @@ CREATE TABLE IF NOT EXISTS library_matches (
     -- code between OUR OWN products", not "confirmed external library".
     -- reference_source_confirmed=1 is a stronger, separate, curated fact:
     -- this function was structurally matched against REAL, FETCHED
-    -- upstream source (see tools/census/reference_library.py and
+    -- upstream source (see cases/performing-rigs/config/reference_library.py and
     -- cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md's CONFIRMED
     -- tier) -- the only thing this reducer treats as actual "library
     -- truth" for residual-exclusion purposes.
@@ -614,7 +614,7 @@ CREATE INDEX IF NOT EXISTS idx_respri_fw ON residual_priority(firmware_id);
 CREATE INDEX IF NOT EXISTS idx_respri_tier ON residual_priority(firmware_id, tier);
 
 -- One deterministic, machine-readable hardware-contract JSON document per
--- firmware image (tools/census/hardware_contract.py), regenerated every
+-- firmware image (cases/performing-rigs/config/hardware_contract.py), regenerated every
 -- `census reduce` from the SAME hardware_snapshot/mmio_accesses/vectors/
 -- pins/components evidence already persisted above -- never a second
 -- Unicorn run, never a new fact. Kept as one row so `census diff` can
@@ -633,7 +633,7 @@ CREATE TABLE IF NOT EXISTS hardware_contract_runs (
 );
 
 -- ===========================================================================
--- Reference-source fingerprinting layer (tools/census/reference_corpus.py
+-- Reference-source fingerprinting layer (cases/performing-rigs/scripts/reference_corpus.py
 -- + reference_match.py). Independent of any one firmware image -- these
 -- five tables hold the mechanically-fetched-and-built reference corpus
 -- (packages/build-variants/symbols) and, per firmware, the match result

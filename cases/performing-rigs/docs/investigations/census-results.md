@@ -55,7 +55,7 @@ Per firmware image, in one `census build` run:
   as superior to Ghidra** — its only job is to flag a target Ghidra's
   own basic-block coverage didn't end up including (`scan_warnings`
   category `capstone-target-not-in-ghidra-coverage`).
-- **MMIO/pin resolution** (`tools/census/pins.py`, on top of the
+- **MMIO/pin resolution** (`cases/performing-rigs/config/pins.py`, on top of the
   existing `cases/performing-rigs/config/svd/resolve_mmio.py` — no independent SVD parsing):
   every MMIO access resolved to a peripheral/register name where
   possible; `PORT.GROUPn.PINCFGxx` (exact) and `PORT.GROUPn.PMUXxx`

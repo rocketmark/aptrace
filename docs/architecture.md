@@ -57,7 +57,7 @@ mistaking one investigation's conclusions for framework capabilities.
 
 ```text
 src/APTrace/       reusable Haskell modules (namespace retained deliberately)
-app/               generic CLI plus explicit application wiring
+app/               CLI composition root and explicit case wiring
 tools/             reusable backends and analysis machinery
 docs/              framework architecture, status, and methodology
 test/              reusable framework tests

@@ -1,5 +1,5 @@
 """APTrace census: match every function in a firmware image against the
-mechanically-built reference corpus (tools/census/reference_corpus.py),
+mechanically-built reference corpus (cases/performing-rigs/scripts/reference_corpus.py),
 in strictly decreasing order of defensibility:
 
   EXACT_BYTES             -- identical compiled code bytes (literal

@@ -35,7 +35,7 @@ capabilities and limitations.
 
 ```text
 aptrace/
-├── app/                         generic APTrace CLI entry point
+├── app/                         CLI composition root
 ├── src/APTrace/                 reusable Haskell framework modules
 ├── tools/                       reusable analysis backends and utilities
 ├── docs/                        framework architecture and methodology
