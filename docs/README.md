@@ -12,6 +12,8 @@ development. Concrete target findings and evidence belong to a case under
   limitations.
 - [`adding-a-case.md`](adding-a-case.md) — how a target case consumes APTrace
   without leaking into framework areas.
+- [`case-boundary.md`](case-boundary.md) — intentional single-case integration
+  seams and deferred extraction work.
 - [`toolchain.md`](toolchain.md) — build and development environment.
 
 ## Tooling and methodology

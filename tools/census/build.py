@@ -11,7 +11,7 @@ Orchestrates, in order:
   3. An independent Capstone Thumb branch-target sweep, cross-checked
      against Ghidra's own basic-block coverage (tools/census/capstone_sweep.py).
   4. SVD-based MMIO/pin resolution (tools/census/pins.py, on top of
-     tools/svd/resolve_mmio.py).
+     cases/performing-rigs/config/svd/resolve_mmio.py).
   5. Disagreement/anomaly detection (tools/census/scan_warnings).
 
 No LLM, no semantic judgment anywhere in this file -- every table
@@ -32,6 +32,7 @@ HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(REPO_ROOT / "tools" / "ghidra"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
 
 import db as census_db  # noqa: E402
 import raw_scan  # noqa: E402

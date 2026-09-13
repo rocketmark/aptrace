@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """APTrace: regression coverage for tools/ghidra/aptrace_ghidra.py's
 persistent-project cache. Not pytest-based, same convention as
-tools/unicorn/test_concrete.py. Builds (or reuses) the mando868 cache,
+cases/performing-rigs/test/test_concrete.py. Builds (or reuses) the mando868 cache,
 so the first run pays the one-time ~13s analysis cost; later runs are
 fast. Exit code 0 means everything passed.
 """

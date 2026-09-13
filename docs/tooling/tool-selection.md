@@ -279,9 +279,9 @@ real part is known and this is directly load-bearing.
 **Wired up in this pass**: the real SVD file
 ([`cmsis-svd/cmsis-svd-data`](https://github.com/cmsis-svd/cmsis-svd-data)'s
 `data/Atmel/ATSAMD51J19A.svd`) is vendored at
-[`tools/svd/ATSAMD51J19A.svd`](../../tools/svd/ATSAMD51J19A.svd), with a
+[`cases/performing-rigs/config/svd/ATSAMD51J19A.svd`](../../cases/performing-rigs/config/svd/ATSAMD51J19A.svd), with a
 small standalone resolver,
-[`tools/svd/resolve_mmio.py`](../../tools/svd/resolve_mmio.py), that
+[`cases/performing-rigs/config/svd/resolve_mmio.py`](../../cases/performing-rigs/config/svd/resolve_mmio.py), that
 parses it (stdlib XML, not a hand-rolled SVD format) and maps a raw
 address to `PERIPHERAL.REGISTER` (handling repeated/union structures like
 `PORT.GROUP0/1` and `TC.COUNT8/16/32`). `tools/unicorn/run_concrete.py

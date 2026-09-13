@@ -500,7 +500,7 @@
       "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN",
       "confidence": "Firmware pulse mechanism and unconditional/state-independent nature CONFIRMED (prior-session concrete Unicorn + this session's fresh disassembly of the analog-arm convergence). Pin identity re-verified this session (idx49 = 0x1e -> group1,pin30 -> PB30). Physical destination is PROBABLE-at-best by region proximity to a plausible 2-LED status cluster; NOT proven, and no color is assigned.",
       "evidence_refs": [
-        "tools/unicorn/virtual_link.py (FUN_00006952 comment/constants, AUTOPILOT_PB3031_PULSE_MMIO)",
+        "cases/performing-rigs/scripts/virtual_link.py (FUN_00006952 comment/constants, AUTOPILOT_PB3031_PULSE_MMIO)",
         "cases/performing-rigs/docs/investigations/trigger-input.md ('Accept target 0x8f98')",
         "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1471c --length 8 (this session: idx49 = group1,pin30)",
         "cases/performing-rigs/research/AutoPilot Board Photos/REV 2/IMG_3096.JPG (LED pair observation, this session)"
@@ -530,7 +530,7 @@
       "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN",
       "confidence": "Same as SHARED_RELOAD_PULSE_A. Pin identity re-verified this session (idx50 = 0x1f -> group1,pin31 -> PB31).",
       "evidence_refs": [
-        "tools/unicorn/virtual_link.py (AUTOPILOT_PB3031_PULSE_MMIO)",
+        "cases/performing-rigs/scripts/virtual_link.py (AUTOPILOT_PB3031_PULSE_MMIO)",
         "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x14734 --length 8 (this session: idx50 = group1,pin31)",
         "cases/performing-rigs/research/AutoPilot Board Photos/REV 2/IMG_3096.JPG"
       ],

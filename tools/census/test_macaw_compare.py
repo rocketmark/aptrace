@@ -3,7 +3,7 @@
 `normalized_terminators` (APTrace.MacawExpand's macaw-normalized
 resolutions, fed back into Macaw's own discovery via
 `addDiscoveredFunctionBlockTargets` -- see src/APTrace/MacawExpand.hs).
-Same convention as tools/census/test_reduce.py -- plain assertions, not
+Same convention as cases/performing-rigs/test/test_reduce.py -- plain assertions, not
 pytest:
 
     tools/unicorn/.venv/bin/python3 tools/census/test_macaw_compare.py

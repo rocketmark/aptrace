@@ -1,5 +1,5 @@
 """APTrace census: capture Unicorn dynamic coverage from the EXISTING
-tools/unicorn/virtual_link.py scenario corpus, without rewriting any of
+cases/performing-rigs/scripts/virtual_link.py scenario corpus, without rewriting any of
 its scenario logic.
 
 How this stays non-invasive: `ConcreteMachine.run` (tools/unicorn/
@@ -25,11 +25,11 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent.parent
+REPO_ROOT = HERE.parents[2]
 UNICORN_DIR = REPO_ROOT / "tools" / "unicorn"
 sys.path.insert(0, str(UNICORN_DIR))
 
-DEFAULT_OUT_DIR = REPO_ROOT / "research" / "runs" / "census" / "dynamic"
+DEFAULT_OUT_DIR = REPO_ROOT / "cases" / "performing-rigs" / "research" / "runs" / "census" / "dynamic"
 
 SCENARIOS = {
     "ampersand": "run_ampersand_roundtrip",
@@ -62,7 +62,7 @@ def _firmware_key_for_path(path_str):
 def write_export(scenario, legs, out_dir=None, verbose=True):
     """Write one scenario's captured legs to a dynamic_export.py-shaped
     JSON file (the shape tools/census/dynamic_ingest.py reads) --
-    factored out so tools/census/boot_recipes.py's boot capture can
+    factored out so cases/performing-rigs/config/boot_recipes.py's boot capture can
     reuse the exact same file format/ingestion path instead of a
     parallel one. `legs`: list of {firmware, label, snapshot, tx_rx}."""
     out_dir = Path(out_dir) if out_dir else DEFAULT_OUT_DIR
@@ -114,7 +114,7 @@ def capture(scenario_names, out_dir=None, verbose=True):
             # legs are short (hundreds-low-thousands of instructions) --
             # confirmed clean by each scenario's own assertions passing.
             # A long (~10^5-10^6 instruction), RAM/stack-heavy run (e.g.
-            # tools/census/boot_recipes.py's boot capture) hit a real
+            # cases/performing-rigs/config/boot_recipes.py's boot capture) hit a real
             # cross-hook reentrancy divergence with log_ram=True; that
             # module defaults it to False instead -- see its own
             # apply_recipe docstring before re-enabling it for anything

@@ -45,7 +45,7 @@ mechanism_summary: >
   real predecessor state (a genuine '+' bulk-push, not a fabricated
   target) and a real PB05-high control: see
   cases/performing-rigs/docs/investigations/trigger-input.md and
-  tools/unicorn/virtual_link.py's `pb05` scenario.
+  cases/performing-rigs/scripts/virtual_link.py's `pb05` scenario.
   CLOSED, trigger-input slice: the OTHER real
   consequence of PB05 (the T-status frame, mutually exclusive with the
   reload above via the same TR0|/TR1| toggle) also cannot bridge back to
@@ -57,7 +57,7 @@ mechanism_summary: >
   real frame shapes into the Remote's real inbound ring buffer and
   running its real dispatcher never reaches the Remote's own TX wrapper.
   See cases/performing-rigs/docs/investigations/trigger-input.md and
-  tools/unicorn/virtual_link.py's `t-status` scenario. Both of PB05's
+  cases/performing-rigs/scripts/virtual_link.py's `t-status` scenario. Both of PB05's
   real downstream paths are now closed as motion causes -- no
   firmware-only bridge to phase_ramp_arm_byte/motor_move_commit__CUSTOM
   has been found via either one.
@@ -182,7 +182,7 @@ confirmed_state:
 # NEW (trigger-input slice): the Remote's own (mando868,
 # NOT autopilot868) real handling of the T-status frame -- CLOSED, no
 # outbound consequence. See cases/performing-rigs/docs/investigations/trigger-status-remote-
-# feedback.md and tools/unicorn/virtual_link.py's `t-status` scenario.
+# feedback.md and cases/performing-rigs/scripts/virtual_link.py's `t-status` scenario.
 remote_t_status_handling:
   firmware_key: mando868
   functions:
@@ -288,7 +288,7 @@ open_questions:
   - "NEW (trigger-input slice): which specific Remote UI screen/menu FUN_0000fa10 (the T-status display consumer) belongs to, and whether it sends TR1|/TR0| itself on entry/exit (a plausible precondition-not-consequence link to TR1|'s already-known role) -- not chased, out of scope."
   - "With BOTH of PB05's real downstream paths now closed as motion causes (the reload, trigger-input.md; the T-status broadcast, trigger-input.md), no firmware-only (AutoPilot+Remote protocol) explanation for the reported one-time motor trigger remains open within this project's own established command set. Remaining candidates are the already-documented self-correcting level-sampled-poll explanation (trigger-input.md, unrelated to motion) or something outside firmware entirely (physical/electrical) -- explicitly out of scope per instruction, not chased."
   - "CLOSED (symbolic-crosscheck slice): the trigger gate (0x9202-0x9228) and the digitalRead-return branch (0x922c) are now solver-confirmed, not just concretely/statically established -- Z3 independently derives the exact gate values Ghidra/Unicorn already found, and proves (7 separate UNSAT checks) that no other combination of the seven free cells reaches the gate, and that no digitalRead return value other than 0 reaches 0x8f98. Does not change any prior firmware-behavior conclusion -- adds a stronger evidence tier to standing results. See cases/performing-rigs/docs/investigations/trigger-input.md."
-  - "NEW (mitigation-patchability slice, design-only -- does not touch the physical root cause): the narrowest safe software rejection point for this gate is the 4-byte beq.w at 0x922e (before 0x8f98's own first RAM mutation), replaceable in place with a b.w to a trampoline -- the 48-byte gate plus its immediately-following literal pool has zero free bytes for anything beyond a bare branch-target change. Consecutive-sample debounce ranked strongest of six evaluated candidates (reuses confirmed-dead RAM 0x20001fc4 for its counter) and was prototyped as a real, capstone-verified Thumb-2 trampoline, concretely executed in Unicorn via a harness-only scratch page (not a real flash address -- no verified in-image code cave was found this slice; three candidate zero-byte regions were checked and each turned out to be real content, not slack). Full 9-scenario regression matrix passes. See cases/performing-rigs/docs/investigations/trigger-input.md and tools/unicorn/trigger_mitigation_prototype.py."
+  - "NEW (mitigation-patchability slice, design-only -- does not touch the physical root cause): the narrowest safe software rejection point for this gate is the 4-byte beq.w at 0x922e (before 0x8f98's own first RAM mutation), replaceable in place with a b.w to a trampoline -- the 48-byte gate plus its immediately-following literal pool has zero free bytes for anything beyond a bare branch-target change. Consecutive-sample debounce ranked strongest of six evaluated candidates (reuses confirmed-dead RAM 0x20001fc4 for its counter) and was prototyped as a real, capstone-verified Thumb-2 trampoline, concretely executed in Unicorn via a harness-only scratch page (not a real flash address -- no verified in-image code cave was found this slice; three candidate zero-byte regions were checked and each turned out to be real content, not slack). Full 9-scenario regression matrix passes. See cases/performing-rigs/docs/investigations/trigger-input.md and cases/performing-rigs/scripts/trigger_mitigation_prototype.py."
   - "CLOSED (transient-propagation slice): the analog arm (trigger_poll_and_send_analog_arm, 0x8e68-0x8f00) is now fully disassembled and concretely exercised -- a complete second accept/T-status path sharing the digital arm's own accept target (0x8f98, already proven non-motion-arming) and CFG shape, keyed on a threshold-band compare (ram.threshold_upper/threshold_lower, default [200,580]) against ram.live_analog_value instead of digitalRead. The load-bearing new result: ram.live_analog_value is permanently latched to the FIRST-EVER sample taken during the already-known dead 128-sample boot loop (ram.adc_filter_init_flag never reset; ram.adc_filter_alpha is cold/unwritten, permanently 0.0f, so every later blend is a real no-op) -- concretely confirmed by chaining a real boot run into a real runtime poll: an obviously out-of-band runtime ADC1.RESULT injection has zero effect on the gate. A post-boot insertion transient (any shape) therefore cannot reach this path at all. See cases/performing-rigs/docs/investigations/trigger-input.md Part 3."
   - "NEW (transient-propagation slice): a digital-arm fault-injection matrix (the task's own H/L bounce sequences) concretely demonstrates that one bouncy insertion event CAN produce multiple accepted config-reload actions (one per LOW-reading poll -- no rate limit on the accept gate), but AT MOST ONE T-status frame per ~500-tick rate-limit window (zero if the window is already spent). See cases/performing-rigs/docs/investigations/trigger-input.md Part 5.2."
   - "NEW (transient-propagation slice): EVSYS (zero raw literal references anywhere in the 70,768-byte image), AC (one reference, inside the already-documented one-time boot analog-block bring-up), and DMA (a generic channel-dispatch driver, absent from every trigger-cell RAM xref) are ruled out as trigger-fault mechanisms for the first time this slice -- neither peripheral had been explicitly checked before. See ram.peripheral_negative_results above and cases/performing-rigs/docs/investigations/trigger-input.md Part 6."

@@ -57,11 +57,11 @@ import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-REPO_ROOT = HERE.parent.parent
-sys.path.insert(0, str(HERE))
+REPO_ROOT = HERE.parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools" / "census"))
 import reference_normalize as rn  # noqa: E402
 
-CORPUS_ROOT = REPO_ROOT / "research" / "runs" / "census" / "reference_corpus"
+CORPUS_ROOT = REPO_ROOT / "cases" / "performing-rigs" / "research" / "runs" / "census" / "reference_corpus"
 SOURCES_DIR = CORPUS_ROOT / "sources"
 TOOLS_DIR = CORPUS_ROOT / "tools"
 BUILD_DIR = CORPUS_ROOT / "build"

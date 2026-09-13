@@ -1,9 +1,9 @@
 """APTrace census reduce: a deterministic MCU hardware-configuration
 snapshot, decoded from the SAME boot-recipe execution
-tools/census/boot_recipes.py already ran for dynamic coverage/indirect-
+cases/performing-rigs/config/boot_recipes.py already ran for dynamic coverage/indirect-
 edge observation (tools/census/reduce.py runs the boot once and reuses
 its final machine state here -- never a second, separate boot run) --
-using the existing SVD resolver (tools/svd/resolve_mmio.py), no new
+using the existing SVD resolver (cases/performing-rigs/config/svd/resolve_mmio.py), no new
 peripheral model.
 
 `compute()` takes the already-run `machine` and `result`
@@ -155,7 +155,7 @@ def compute(conn, firmware_id, firmware_key, machine, result, recipe, init_statu
             "detail": f"REAL interrupt delivered this run: channel={d.get('channel')}, "
                        f"table_addr=0x{d.get('table_addr', 0):08x}, at instruction {d.get('instruction')}, "
                        f"handler returned cleanly={d.get('handler_returned_cleanly')}.",
-            "citation": "tools/census/boot_recipes.py's run_with_interrupt_bridges (this run)",
+            "citation": "cases/performing-rigs/config/boot_recipes.py's run_with_interrupt_bridges (this run)",
         })
     notes = (f"reference recipe: {recipe['reference_key']}" if recipe else "no boot recipe available") + \
         f"; init_status={init_status}; real interrupts delivered this run: {len(delivery_log)}"

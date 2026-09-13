@@ -88,25 +88,24 @@ Three transactions are implemented on top of these primitives:
                                it, not by reading the decompile alone).
 
 Usage:
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py          # all transactions
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py g        # G -> # only
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py s        # S -> P... only
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py ampersand  # "&|" -> "V01R39" only
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py bang     # !0|/!1| -> 11-field CSV only (the 11-vs-10 mismatch)
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i        # I<channel><mode>| -> event-15 signed number only
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i9i1     # I9|/I1| short forms -- distinct from I<channel><mode>| and each other
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py pb05     # PB05-low reload -> does it reach motor_move_commit__CUSTOM?
-    tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py t-status # T-status frame -> does the Remote ever send anything back?
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py          # all transactions
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py g        # G -> # only
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py s        # S -> P... only
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py ampersand  # "&|" -> "V01R39" only
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py bang     # !0|/!1| -> 11-field CSV only (the 11-vs-10 mismatch)
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py i        # I<channel><mode>| -> event-15 signed number only
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py i9i1     # I9|/I1| short forms -- distinct from I<channel><mode>| and each other
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py plus     # '+' -> motor target -> G mode-1 distance only
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py pb05     # PB05-low reload -> does it reach motor_move_commit__CUSTOM?
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py t-status # T-status frame -> does the Remote ever send anything back?
 """
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).parent
-sys.path.insert(0, str(HERE))
+HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools" / "unicorn"))
 from concrete import ConcreteMachine  # noqa: E402
-
-REPO_ROOT = HERE.parent.parent
 
 AUTOPILOT_FW = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
 MANDO_FW = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin"

@@ -325,7 +325,7 @@ context, real buffer addresses, and real event semantics) — see
 
 ## Small MMIO-diagnostics improvement
 
-`tools/svd/resolve_mmio.py --unicorn-log SNAPSHOT.json` (new): reads a
+`cases/performing-rigs/config/svd/resolve_mmio.py --unicorn-log SNAPSHOT.json` (new): reads a
 `run_concrete.py --log-mmio` snapshot directly and prints every logged
 MMIO access resolved to a real ATSAMD51J19A peripheral/register name,
 with its direction, value, PC, and instruction count — no new peripheral
@@ -335,7 +335,7 @@ pin-mux setup from
 [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)):
 
 ```
-$ python3 tools/svd/resolve_mmio.py --unicorn-log snapshot.json
+$ python3 cases/performing-rigs/config/svd/resolve_mmio.py --unicorn-log snapshot.json
 read  0x40000818  MCLK.APBBMASK (+0x18)  (pc=0x0000bc78, instr #119)
 write 0x40000818 = 0x1  MCLK.APBBMASK (+0x18)  (pc=0x0000bc7e, instr #121)
 read  0x41008058  PORT.GROUP0.PINCFG24 (+0x58)  (pc=0x0000bc8a, instr #126)

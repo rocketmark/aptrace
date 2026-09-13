@@ -2,7 +2,7 @@
 library.
 
 This is the library `tools/unicorn/run_concrete.py` (the CLI) and
-`tools/unicorn/virtual_link.py` (the multi-leg scenario scripts) are both
+`cases/performing-rigs/scripts/virtual_link.py` (the multi-leg scenario scripts) are both
 built on. It exists to remove five recurring costs this project's own
 investigations kept re-paying by hand:
 

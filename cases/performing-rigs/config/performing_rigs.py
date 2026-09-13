@@ -16,7 +16,7 @@ today.
 
 # Address-range defaults for APTraceExportCensus.java's RAM/MMIO
 # classification -- matches tools/unicorn/concrete.py's ram_base/ram_size
-# and tools/unicorn/virtual_link.py's (wider) MMIO window, so a static
+# and cases/performing-rigs/scripts/virtual_link.py's (wider) MMIO window, so a static
 # memory/MMIO access and a dynamic (Unicorn) one are classified against
 # the same address ranges.
 CENSUS_RAM_BASE = "0x20000000"

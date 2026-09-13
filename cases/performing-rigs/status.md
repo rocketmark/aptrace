@@ -1,15 +1,16 @@
-# APTrace — Project Status
+# Performing Rigs Case Status
 
-**This is the single authoritative source for current project state.** If
-anything elsewhere in the repo conflicts with this document, this document
-wins — and if you find such a conflict, it's a bug in the docs; fix it
-here. This file describes *current truth only*: what's proven, what's
+**This is the authoritative source for the Performing Rigs investigation.**
+Framework capability status is separate at
+[`docs/status.md`](../../docs/status.md). If another case document conflicts
+with this document, this document wins. This file describes *current case truth
+only*: what's proven, what's
 open, what's next. Chronological narrative belongs in git history, not
 here — do not append "previous update" logs to this file; when a slice of
 work closes, fold its durable finding into the relevant section below (or
 into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and move on.
 
-## What APTrace can do now
+## Analysis capabilities exercised by this case
 
 APTrace orchestrates four specialist tools against real, unmodified
 AutoPilot/Remote (`mando`) firmware (ATSAMD51J19A, Cortex-M4F) rather than
@@ -47,7 +48,7 @@ disclosed hardware/timing assumptions (`--fake-tick`, `--mmio-force-bits`/
 `--mmio-clear-bits`, `--force-reg`, `--force-mem`, `--watch-mem-write`,
 `--log-mmio`), each scoped and justified individually, never a general
 peripheral model; a harness-driven virtual RF link
-(`tools/unicorn/virtual_link.py`) connecting both firmwares' real TX/RX
+(`cases/performing-rigs/scripts/virtual_link.py`) connecting both firmwares' real TX/RX
 paths with no radio hardware modeled; and `aptrace census`
 (`tools/census/`, see [`docs/tooling/census.md`](../../docs/tooling/census.md)) — a
 fully mechanical, no-LLM-in-the-loop static+dynamic evidence database
@@ -61,7 +62,7 @@ fingerprinting kept as shared-code EVIDENCE only (never "library truth"
 by itself — only a curated match against real, fetched
 `ArduinoCore-samd` source counts as confirmed library), per-function
 feature records, deterministic component grouping, and a reusable boot
-recipe (`tools/census/boot_recipes.py`) that mechanically packages this
+recipe (`cases/performing-rigs/config/boot_recipes.py`) that mechanically packages this
 project's own cited boot/hardware-bringup assumptions and feeds a real
 boot execution's coverage/indirect-call observations back into the
 reducer, plus a minimal, narrow interrupt-delivery primitive
@@ -188,7 +189,7 @@ Crucible replay of the dispatcher can't fold a readonly-flash-derived
 branch — a harness limitation, not a firmware bug; deliberately left
 unfixed since no current use case needs it).
 
-`!`/`I` closed this pass (`tools/unicorn/virtual_link.py`'s `bang`/`i`/
+`!`/`I` closed this pass (`cases/performing-rigs/scripts/virtual_link.py`'s `bang`/`i`/
 `i9i1` scenarios): the event-7 11-vs-10 field mismatch is resolved
 (Remote's parser never attempts field 11; it's left unconsumed in the
 real RX ring buffer, silently, on both sides); `I<channel><mode>|`'s
@@ -309,7 +310,7 @@ Headline items still unresolved:
   beyond the current image's end, within the part's real 512KB, not yet
   checked against a real device.
 - **`GhidraSVD`** (the proper Ghidra SVD-loading extension) is still not
-  installed — the standalone `tools/svd/resolve_mmio.py` resolver remains
+  installed — the standalone `cases/performing-rigs/config/svd/resolve_mmio.py` resolver remains
   good enough for routine use; install only if that stops being true.
 
 ## Next priorities

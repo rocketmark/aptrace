@@ -182,7 +182,7 @@ was looking for:
   `sketch_loop__CUSTOM`'s other direct callee) was also checked: its
   `switch(0x20002524[ch])` only acts on values `2`/`3`, making `1` a
   no-op case for it.
-- **Concretely reconfirmed** (`tools/unicorn/trigger_device_state_closure.py`):
+- **Concretely reconfirmed** (`cases/performing-rigs/scripts/trigger_device_state_closure.py`):
   starting from the real post-reload state (`device_state[0]=1`,
   `flag_310c[0]=1`, a real non-blank segment-duration table populated by
   the same reload), `FUN_00005fac` was run across 4 simulated main-loop
@@ -480,30 +480,30 @@ image has been produced.
 
 ## Test / repro
 
-- **`tools/unicorn/trigger_transient_propagation.py`** — the digital and
+- **`cases/performing-rigs/scripts/trigger_transient_propagation.py`** — the digital and
   analog fault-injection matrices (bounce/spike/ramp streams against
   both arms), the dead-ADC-baseline reconfirmation under adversarial
   input, and the boot-then-runtime latch chain for the analog arm's
   first-sample-only behavior. Run with `--only digital` / `--only
   adc-live` / `--only adc-dead` / `--only all`.
-- **`tools/unicorn/trigger_mitigation_prototype.py`** — the Candidate B
+- **`cases/performing-rigs/scripts/trigger_mitigation_prototype.py`** — the Candidate B
   debounce trampoline, hand-encoded and capstone-verified, exercised
   against the 9-scenario regression matrix above. Run with
   `--threshold N` (a free experiment parameter, not a claimed real-world
   value).
-- **`tools/unicorn/virtual_link.py pb05`** — delivers a real `'+'`
+- **`cases/performing-rigs/scripts/virtual_link.py pb05`** — delivers a real `'+'`
   bulk-push (establishing gate 1 for real) then forces PB05 LOW/HIGH,
   confirming the reload fires and never reaches
   `motor_move_commit__CUSTOM`, plus a labeled control that does reach it
   when the arm byte is force-set.
-- **`tools/unicorn/trigger_device_state_closure.py`** — the
+- **`cases/performing-rigs/scripts/trigger_device_state_closure.py`** — the
   falsification pass's own script: reuses the pb05 scenario's real
   predecessor state, then runs `FUN_00005fac` (4 simulated main-loop
   ticks) and `channel_event_monitor__CUSTOM` from the real post-reload
   `0x20002524`/`0x2000310c` state, watching for any reach into
   `motor_move_commit__CUSTOM`, `FUN_00004d18`, or the shared
   `digitalWrite` helper. Run with no arguments.
-- **`tools/unicorn/virtual_link.py t-status`** — delivers both real
+- **`cases/performing-rigs/scripts/virtual_link.py t-status`** — delivers both real
   T-status frame shapes into the Remote's real inbound ring buffer and
   confirms its TX wrapper is never reached.
 - **`aptrace explore` / `aptrace trigger`** (Crucible/What4/Z3 harness,

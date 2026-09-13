@@ -13,7 +13,7 @@ about the protocol itself.
    its ten `0xb51c` parses and match RAM locations to UI labels/behavior.
    The 11th (AutoPilot-only) field is a separate question — see next.
 2. ~~**Resolve the event-7 11-vs-10 field mismatch**~~ — **RESOLVED
-   (execution-confirmed, `tools/unicorn/virtual_link.py bang`)**: the
+   (execution-confirmed, `cases/performing-rigs/scripts/virtual_link.py bang`)**: the
    Remote neither drops nor corrupts anything within the transaction —
    it simply never attempts field 11. Its parser calls the shared field
    parser exactly 10 times, unconditionally marks itself "done," and
@@ -27,7 +27,7 @@ about the protocol itself.
    [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)'s
    Open items.
 3. ~~**Resolve the `I<channel><mode>` numeric semantic**~~ — **RESOLVED
-   (execution-confirmed, `tools/unicorn/virtual_link.py i`)**: the
+   (execution-confirmed, `cases/performing-rigs/scripts/virtual_link.py i`)**: the
    returned signed value is `AUTOPILOT_LIVE_POSITION[channel]`
    (`0x20002064+channel*4`), read directly by the event-15 builder
    (`0x8ddc`) regardless of mode. The per-channel state machine around
@@ -59,7 +59,7 @@ about the protocol itself.
 8. **Reconcile Remote-transmitted packets not accepted by the visible
    AutoPilot dispatcher**: `MS|`, `MR|`, `MM|`, `N|`, `KK|`, `E1,...|`, bare
    `W|`. (The short `I9|`/`I1|` forms are now resolved — **execution-
-   confirmed, `tools/unicorn/virtual_link.py i9i1`**: `I1|` silently
+   confirmed, `cases/performing-rigs/scripts/virtual_link.py i9i1`**: `I1|` silently
    aliases `I<channel=0>|`'s real dispatch path and completes normally;
    `I9|` decodes to an out-of-bounds channel index (8) that the real
    monitor's 4-channel scan never visits, so it is a genuine, silent

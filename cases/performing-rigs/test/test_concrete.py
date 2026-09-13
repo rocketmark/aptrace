@@ -6,16 +6,17 @@ Deliberately not pytest-based (no new dependency for this project) --
 plain assertions, run as a script. Exit code 0 means everything passed.
 
 Run after touching concrete.py/run_concrete.py, in addition to (not
-instead of) tools/doctor.sh and tools/unicorn/virtual_link.py all/plus,
+instead of) tools/doctor.sh and cases/performing-rigs/scripts/virtual_link.py all/plus,
 which remain the acceptance tests for firmware-behavior-facing changes.
 """
 import subprocess
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).parent
-sys.path.insert(0, str(HERE))
-REPO_ROOT = HERE.parent.parent
+HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools" / "unicorn"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "scripts"))
 MANDO_FW = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin"
 
 from concrete import ConcreteMachine, ConcreteExecutionError, TRAMPOLINE_BYTES  # noqa: E402

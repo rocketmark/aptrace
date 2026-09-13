@@ -54,7 +54,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE))
+REPO_ROOT = HERE.parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools" / "census"))
 from fingerprint import _family  # noqa: E402
 
 
@@ -235,8 +236,8 @@ MANDO_RECIPE = {
         # state (confirmed this pass); bounded well above that for
         # margin without being unbounded.
         "max_deliveries": 25,
-        "citation": "tools/census/boot_recipes.py's MANDO_RECIPE['resolved_blockers'] (this pass) + "
-                     "tools/svd/ATSAMD51J19A.svd's DMAC <interrupt> elements and CHANNELn.CHINTFLAG/INTPEND "
+        "citation": "cases/performing-rigs/config/boot_recipes.py's MANDO_RECIPE['resolved_blockers'] (this pass) + "
+                     "cases/performing-rigs/config/svd/ATSAMD51J19A.svd's DMAC <interrupt> elements and CHANNELn.CHINTFLAG/INTPEND "
                      "register definitions",
     }],
     "assumptions": [
@@ -253,10 +254,10 @@ MANDO_RECIPE = {
         A("mmio_force_bits", 0x40001054, "OSCCTRL.DPLL1.DPLLSTATUS -- same.", "as above"),
         A("mmio_clear_bits", 0x41012000, "SERCOM2.CTRLA/SYNCBUSY bit0 (SWRST) -- found THIS pass by watching "
           "mando868's own first boot stall (0x14f74): r3=0x41012000 (SERCOM2), same real-hardware self-clear "
-          "category as autopilot868's own SERCOM2/SERCOM5 use.", "tools/census/boot_recipes.py (this pass)"),
+          "category as autopilot868's own SERCOM2/SERCOM5 use.", "cases/performing-rigs/config/boot_recipes.py (this pass)"),
         A("mmio_force_bits", 0x41012018, "SERCOM2.INTFLAG.DRE -- found THIS pass by watching mando868's second "
           "boot stall (0x14fda): r3=0x41012000+0x18, same real-hardware DRE-on-enable category.",
-          "tools/census/boot_recipes.py (this pass)"),
+          "cases/performing-rigs/config/boot_recipes.py (this pass)"),
         A("stub_call", 0x168a4, "DWT->CYCCNT busy-wait helper -- EXACT byte match to autopilot868's own "
           "FUN_0000cd34, confirmed via this image's own literal_refs (0xe0001004 read twice, same pattern).",
           "tools/census/reduce.py's fingerprint-based remapping (this pass)"),
@@ -266,7 +267,7 @@ MANDO_RECIPE = {
           "REAL FUN_00011d20 handler (never stubbed) after seeding DMAC.INTPEND=2 and "
           "DMAC.CHANNEL2.CHINTFLAG.TCMPL=1 -- the minimal disclosed peripheral-pending condition; see "
           "'resolved_blockers' above for the full evidence chain.",
-          "tools/census/boot_recipes.py's MANDO_RECIPE['interrupt_bridges'] (this pass)"),
+          "cases/performing-rigs/config/boot_recipes.py's MANDO_RECIPE['interrupt_bridges'] (this pass)"),
     ],
 }
 
@@ -496,7 +497,8 @@ def build_machine(recipe, firmware_path, flash_base, ram_base, ram_size, mmio_ba
     as `extra_maps` -- map_pages MUST be set at construction time (see
     ConcreteMachine.__init__), so this is the one correct way to build a
     machine a recipe will run on; do not construct one separately."""
-    unicorn_dir = HERE.parent / "unicorn"
+    repo_root = HERE.parents[2]
+    unicorn_dir = repo_root / "tools" / "unicorn"
     sys.path.insert(0, str(unicorn_dir))
     from concrete import ConcreteMachine  # noqa: E402
     return ConcreteMachine(firmware_path, flash_base=flash_base, ram_base=ram_base, ram_size=ram_size,
@@ -798,7 +800,7 @@ def capture_boot(conn, firmware_key, fw_path, flash_base, ram_base, ram_size, mm
     `.instructions_executed`/`.stop_reason`/`.to_dict()` interface
     either way (see `SnapshotResult` for the interrupt-bridge case).
     `delivery_log` is `[]` when no bridges fired (or none exist)."""
-    sys.path.insert(0, str(HERE))
+    sys.path.insert(0, str(HERE.parents[2] / "cases" / "performing-rigs" / "scripts"))
     import dynamic_export  # noqa: E402
 
     recipe, gaps = resolve_for_firmware(conn, firmware_key)

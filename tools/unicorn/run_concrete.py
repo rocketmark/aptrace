@@ -9,7 +9,7 @@ This script is a thin translation layer: parse CLI strings into Python
 ints/bytes, build a ConcreteMachine, call `.run()` or `.call()` once, and
 print the resulting RunResult/CallResult as JSON. All the actual
 Unicorn setup/hook/snapshot logic lives in concrete.py, which
-tools/unicorn/virtual_link.py also uses directly (as a Python library,
+cases/performing-rigs/scripts/virtual_link.py also uses directly (as a Python library,
 without a subprocess per call) -- see that module for the
 multi-leg-scenario layer built on top of this.
 
@@ -52,7 +52,7 @@ cases/performing-rigs/status.md's "Tooling gaps"):
     don't depend on real peripheral state; not fine for anything that does.
   - No ATSAMD51 SVD-based register naming is applied automatically here.
     Use --log-mmio to record every access into the MMIO window, then resolve
-    the addresses with tools/svd/resolve_mmio.py (see
+    the addresses with cases/performing-rigs/config/svd/resolve_mmio.py (see
     docs/tooling/tool-selection.md's "SVD / MMIO labeling" section).
   - This is a single-shot script (one process per run) at the CLI layer --
     fine for ad-hoc/manual investigation. Python code that wants to reuse
@@ -145,7 +145,7 @@ def build_argparser():
     p.add_argument("--watch", action="append", default=[], metavar="HEXADDR", help="record full register state (+ --watch-mem ranges) every time this address is hit, without stopping (repeatable) -- for per-iteration traces of a loop, unlike --stop-at which halts")
     p.add_argument("--watch-mem", action="append", default=[], metavar="ADDR:LEN", help="memory range to capture at every --watch hit, in addition to registers (repeatable)")
     p.add_argument("--max-watch-hits", type=int, default=2000, help="safety cap on total recorded watch hits across all --watch addresses (default 2000)")
-    p.add_argument("--log-mmio", action="store_true", help="record every read/write into the MMIO window (address, size, direction, PC) in the snapshot -- observability only, does not change the zero-behavior MMIO model. Resolve addresses to peripheral/register names with tools/svd/resolve_mmio.py")
+    p.add_argument("--log-mmio", action="store_true", help="record every read/write into the MMIO window (address, size, direction, PC) in the snapshot -- observability only, does not change the zero-behavior MMIO model. Resolve addresses to peripheral/register names with cases/performing-rigs/config/svd/resolve_mmio.py")
     p.add_argument("--max-mmio-log", type=int, default=5000, help="cap on recorded MMIO accesses when --log-mmio is set (default 5000)")
     p.add_argument("--log-ram", action="store_true", help="like --log-mmio, but for the RAM window -- every read/write into RAM (address, size, direction, PC) in the snapshot's 'ram_log'.")
     p.add_argument("--max-ram-log", type=int, default=5000, help="cap on recorded RAM accesses when --log-ram is set (default 5000)")

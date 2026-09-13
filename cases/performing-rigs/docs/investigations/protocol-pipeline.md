@@ -102,7 +102,7 @@ runtime driver-object layer that only becomes valid after real startup
 (AutoPilot's `0x8c10`/`0x7f84`; Remote's `0x58a8`/`0xb440` chain down into
 a real SPI register-access driver via `0x11830`/`0x11326`/`0x112e8`,
 gated on a config struct at `0x200038fc` populated by a constructor at
-`0x1129c`). `tools/unicorn/virtual_link.py` **deliberately does not model
+`0x1129c`). `cases/performing-rigs/scripts/virtual_link.py` **deliberately does not model
 any of this** — no LoRa/SPI hardware, no peripheral emulation — and
 instead hooks at the application boundary immediately above it, on both
 ends, exactly where `cases/performing-rigs/research/autopilot_static_inventory/rf-boundaries.md`
@@ -292,16 +292,16 @@ cleanly) for seeding the packet buffer itself — applied in
 
 ## Test / repro
 
-`tools/unicorn/virtual_link.py` runs every closed transaction (`all` also
+`cases/performing-rigs/scripts/virtual_link.py` runs every closed transaction (`all` also
 covers the `+`/PB05/T-status scenarios documented elsewhere in this repo):
 
 ```sh
-tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py        # &| -> V01R39 (M3)
-tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py g      # G -> #        (M4)
-tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py s      # S -> P...     (M4)
-tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py bang   # !0|/!1| -> 11-field CSV (11-vs-10 mismatch, resolved below)
-tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i      # I<channel><mode>| -> event-15 signed number
-tools/unicorn/.venv/bin/python3 tools/unicorn/virtual_link.py i9i1   # I9|/I1| short forms (distinct from I<channel><mode>| and each other)
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py        # &| -> V01R39 (M3)
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py g      # G -> #        (M4)
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py s      # S -> P...     (M4)
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py bang   # !0|/!1| -> 11-field CSV (11-vs-10 mismatch, resolved below)
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py i      # I<channel><mode>| -> event-15 signed number
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py i9i1   # I9|/I1| short forms (distinct from I<channel><mode>| and each other)
 ```
 
 Each scenario drives `capture_tx_bytes`/`capture_tx_byte`/
@@ -356,7 +356,7 @@ constants — case 4 of the mode switch is the only case that can produce
 
 - **`!` and `I` through the virtual link: RESOLVED.** Both closed at the
   concrete tier, real execution on both firmwares, via
-  `tools/unicorn/virtual_link.py`'s `bang`/`i`/`i9i1` scenarios.
+  `cases/performing-rigs/scripts/virtual_link.py`'s `bang`/`i`/`i9i1` scenarios.
 
   `!0|`/`!1|`: Remote's real `0xc440(0)` (past its own real `S`->`"P1,"`
   drain) sends `!0|`/`!1|`; AutoPilot's `0x87b2` dispatch check never

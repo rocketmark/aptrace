@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """APTrace census: regression coverage for tools/census/. Same convention
-as tools/unicorn/test_concrete.py and tools/ghidra/test_aptrace_ghidra.py
+as cases/performing-rigs/test/test_concrete.py and tools/ghidra/test_aptrace_ghidra.py
 (plain assertions, not pytest). Run with the Unicorn venv, which is the
 only Python environment in this repo with both sqlite3 and capstone
 available:
@@ -21,8 +21,10 @@ import tempfile
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(HERE.parent / "ghidra"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
 
 import db as census_db  # noqa: E402
 import raw_scan  # noqa: E402

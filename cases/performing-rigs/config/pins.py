@@ -1,5 +1,5 @@
 """APTrace census: SAMD51 MMIO/pin resolution on top of the existing SVD
-resolver (tools/svd/resolve_mmio.py) -- no independent SVD parsing here,
+resolver (cases/performing-rigs/config/svd/resolve_mmio.py) -- no independent SVD parsing here,
 per docs/tooling/tool-selection.md ("don't reimplement a peripheral
 register map").
 
@@ -32,7 +32,8 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-SVD_DIR = HERE.parent / "svd"
+REPO_ROOT = HERE.parents[2]
+SVD_DIR = REPO_ROOT / "cases" / "performing-rigs" / "config" / "svd"
 sys.path.insert(0, str(SVD_DIR))
 import resolve_mmio  # noqa: E402
 

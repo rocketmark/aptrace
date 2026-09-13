@@ -11,7 +11,7 @@
  * instruction mnemonic.
  *
  * Deliberately does NOT resolve MMIO addresses to SAMD51 peripheral/
- * register names -- that happens in Python (tools/svd/resolve_mmio.py),
+ * register names -- that happens in Python (cases/performing-rigs/config/svd/resolve_mmio.py),
  * kept as the sole SVD authority per docs/tooling/tool-selection.md.
  * This script only classifies an access as landing in the RAM window or
  * the MMIO window (by address range, given as script args) and reports

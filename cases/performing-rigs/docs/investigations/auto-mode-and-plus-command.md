@@ -238,7 +238,7 @@ wire byte, the delta field, the computed target, and the distance
 
 ## Test / repro
 
-`tools/unicorn/virtual_link.py plus` (also included in `virtual_link.py
+`cases/performing-rigs/scripts/virtual_link.py plus` (also included in `virtual_link.py
 all`) demonstrates the full round trip above using both firmwares'
 real, unmodified code — a real-frame-capture leg and a real-delivery leg
 at each hop, exactly like this project's existing `run_ampersand_roundtrip`

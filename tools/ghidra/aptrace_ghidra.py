@@ -60,7 +60,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
-CACHE_ROOT = REPO_ROOT / "research" / "runs" / "ghidra_cache"
+CACHE_ROOT = REPO_ROOT / "cases" / "performing-rigs" / "research" / "runs" / "ghidra_cache"
 
 # An explicit, manual override for a semantic change that content-hashing
 # below can't see on its own (e.g. a change to how Ghidra itself is
@@ -75,11 +75,11 @@ PROCESSOR = "ARM:LE:32:Cortex"
 CSPEC = "default"
 
 # Performing Rigs case data (known firmware images, this target's RAM/MMIO
-# geometry) lives under tools/case/, not in this reusable Ghidra-backend
-# module -- see tools/case/performing_rigs.py. Re-exported under the same
+# geometry) lives under the case, not in this reusable Ghidra-backend
+# module. Re-exported under the same
 # names so existing callers (build.py's `ghidra.CENSUS_RAM_BASE`,
 # test_aptrace_ghidra.py's `ag.FIRMWARE_REGISTRY`) are unaffected.
-sys.path.insert(0, str(REPO_ROOT / "tools" / "case"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
 from performing_rigs import (  # noqa: E402
     CENSUS_RAM_BASE, CENSUS_RAM_SIZE, CENSUS_MMIO_BASE, CENSUS_MMIO_SIZE,
     FIRMWARE_REGISTRY,

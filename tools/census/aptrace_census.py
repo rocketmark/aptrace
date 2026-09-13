@@ -55,7 +55,10 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "scripts"))
 import db as census_db  # noqa: E402
 
 

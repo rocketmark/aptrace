@@ -5,7 +5,7 @@ component grouping, hardware-snapshot pin decoding). Same convention as
 tools/census/test_census.py -- plain assertions, not pytest. Run with
 the Unicorn venv:
 
-    tools/unicorn/.venv/bin/python3 tools/census/test_reduce.py
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/test/test_reduce.py
 
 Covers isolated logic against small synthetic databases/byte buffers
 (no Ghidra/Unicorn needed for most checks) plus a handful of real-data
@@ -19,7 +19,10 @@ from pathlib import Path
 from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE))
+REPO_ROOT = HERE.parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools" / "census"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "scripts"))
 
 import db as census_db  # noqa: E402
 import reachability  # noqa: E402

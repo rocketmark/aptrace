@@ -31,6 +31,9 @@ belong in each case's status document.
   scripts. A plugin/provider architecture is intentionally deferred until more
   than one real case demonstrates the need.
 
+The exact remaining integration seams and their rationale are tracked in
+[`case-boundary.md`](case-boundary.md).
+
 ## Capability status versus case status
 
 Framework implementation work is recorded here. Investigation progress,

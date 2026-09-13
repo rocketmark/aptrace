@@ -56,16 +56,16 @@ Per firmware image, in one `census build` run:
   own basic-block coverage didn't end up including (`scan_warnings`
   category `capstone-target-not-in-ghidra-coverage`).
 - **MMIO/pin resolution** (`tools/census/pins.py`, on top of the
-  existing `tools/svd/resolve_mmio.py` — no independent SVD parsing):
+  existing `cases/performing-rigs/config/svd/resolve_mmio.py` — no independent SVD parsing):
   every MMIO access resolved to a peripheral/register name where
   possible; `PORT.GROUPn.PINCFGxx` (exact) and `PORT.GROUPn.PMUXxx`
   (heuristic — one byte covers two pins) accesses further resolved to a
   specific pin (`PA08`, etc).
 - **Dynamic, from the existing Unicorn scenario corpus**
-  (`tools/census/dynamic_export.py` + `dynamic_ingest.py`, see "Dynamic
+  (`cases/performing-rigs/scripts/dynamic_export.py` + `dynamic_ingest.py`, see "Dynamic
   coverage ingestion" below): every unique PC executed, every RAM/MMIO
   access, stop reason, and any TX/RX bytes a scenario already captured —
-  for each leg of every scenario in `tools/unicorn/virtual_link.py`
+  for each leg of every scenario in `cases/performing-rigs/scripts/virtual_link.py`
   (`run_ampersand_roundtrip`, `run_g_ack_roundtrip`, `run_s_roundtrip`,
   `run_plus_target_distance_roundtrip`, `run_pb05_reload_motion_check`,
   `run_t_status_feedback_check`), without modifying any of that
@@ -632,7 +632,7 @@ writes landing inside the `log_ram` hook's range triggered Unicorn's
 hook dispatch reentrantly). Fixed for that specific mechanism (the
 hooked range now excludes any such address, `concrete.py`'s
 `_ranges_excluding`) and regression-tested
-(`tools/unicorn/test_concrete.py`); NOT fully root-caused beyond that
+(`cases/performing-rigs/test/test_concrete.py`); NOT fully root-caused beyond that
 narrow case for an arbitrarily long/RAM-heavy run, so `boot_recipes.py`
 defaults `log_ram=False` for its own (long) capture — `log_mmio` and
 `collect_coverage` were both verified safe and remain default-on. See
@@ -1116,7 +1116,7 @@ claim).
   corpus.** `uncovered`/`function ... dynamically exercised` are exactly
   as complete as the scenarios captured via `dynamic_export.py` — a
   function genuinely reachable at runtime but not exercised by any of
-  the six scenarios in `tools/unicorn/virtual_link.py` will show as
+  the six scenarios in `cases/performing-rigs/scripts/virtual_link.py` will show as
   uncovered.
 - **`DYNAMICALLY_OBSERVED`/`FINITE_CANDIDATE_SET` yield for register-
   indirect (`BX`/`BLX reg`) sites still leaves most `UNRESOLVED`.**
@@ -1301,7 +1301,7 @@ tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py diff mando868 man
 
 # Regression tests:
 tools/unicorn/.venv/bin/python3 tools/census/test_census.py
-tools/unicorn/.venv/bin/python3 tools/census/test_reduce.py
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/test/test_reduce.py
 ```
 
 `census build` is deterministic given the same firmware bytes, Ghidra
@@ -1310,7 +1310,7 @@ contract `tools/ghidra/aptrace_ghidra.py` already uses — see
 `ANALYSIS_VERSION`/`BUILD_SCRIPTS` there); `census ingest-dynamic` is
 deterministic given the same dynamic-export JSON files, which are
 themselves deterministic given the same firmware and
-`tools/unicorn/virtual_link.py` scenario code (Unicorn concrete
+`cases/performing-rigs/scripts/virtual_link.py` scenario code (Unicorn concrete
 execution has no randomness in this harness). `census reduce` is
 deterministic given the same base-evidence tables (i.e. rerun it after
 any `build`/`ingest-dynamic`, in that order — indirect-edge resolution

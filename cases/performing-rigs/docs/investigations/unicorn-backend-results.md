@@ -24,11 +24,11 @@ firmware is present.
 `tools/unicorn/concrete.py` holds all the actual Unicorn setup/hook/
 snapshot logic, as a `ConcreteMachine` class. `run_concrete.py` is now a
 thin CLI translation layer over it (parse strings, call `.run()`/
-`.call()` once, print JSON); `tools/unicorn/virtual_link.py`'s
+`.call()` once, print JSON); `cases/performing-rigs/scripts/virtual_link.py`'s
 multi-leg scenarios import `concrete.py` directly and build one
 `ConcreteMachine` per firmware image, reused across every leg, rather
 than spawning a `run_concrete.py` subprocess per call. See
-`tools/unicorn/test_concrete.py` for the regression coverage.
+`cases/performing-rigs/test/test_concrete.py` for the regression coverage.
 
 ```python
 from concrete import ConcreteMachine
@@ -98,7 +98,7 @@ written in hex, so there's no decimal reading anyone would intend there.
 Address-shaped values (`--entry`, `--stop-at`, `--watch`, the `ADDR` half
 of every `ADDR:...` spec, `--map-page`) are unchanged: always hex,
 `0x` prefix optional, matching how every address in this project's own
-docs and scripts is already written. `tools/unicorn/test_concrete.py`
+docs and scripts is already written. `cases/performing-rigs/test/test_concrete.py`
 regression-tests `28 != 0x28` through the actual CLI, not just the
 parsing function in isolation.
 
@@ -260,7 +260,7 @@ observability only, it does not change the zero-behavior MMIO model
 (reads still return whatever was last written, with no real peripheral
 side effects). Resolve the logged addresses to real ATSAMD51J19A
 peripheral/register names with
-[`tools/svd/resolve_mmio.py`](../../../../tools/svd/resolve_mmio.py) — see
+[`cases/performing-rigs/config/svd/resolve_mmio.py`](../../../../cases/performing-rigs/config/svd/resolve_mmio.py) — see
 [`tool-selection.md`](../../../../docs/tooling/tool-selection.md)'s "SVD / MMIO labeling" section
 and
 [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
@@ -332,7 +332,7 @@ timing isn't what the scenario is testing.
 sees it — a specific status/ready bit forced set. This is **not** a
 peripheral model: it never fires on a write, never clears anything, and
 touches exactly the one named register. Use it only for a bit you can
-name from the real SVD (`tools/svd/resolve_mmio.py`) as a documented
+name from the real SVD (`cases/performing-rigs/config/svd/resolve_mmio.py`) as a documented
 completion/ready flag that real hardware sets predictably once the
 firmware's own preceding write takes effect — e.g. an oscillator-ready
 or PLL-lock bit on hardware already confirmed to boot (see
@@ -495,7 +495,7 @@ full Cortex-M4 Thumb-2 instruction set used by this firmware.
   peripheral state; not fine for anything that does — e.g. a status-bit
   polling loop against a real peripheral will spin forever here, since the
   bit never goes high. `--log-mmio` (see above) plus
-  `tools/svd/resolve_mmio.py` names *which* addresses are touched.
+  `cases/performing-rigs/config/svd/resolve_mmio.py` names *which* addresses are touched.
   **Where a specific bit is a real, SVD-identified, predictably-completing
   status/ready/self-clearing flag** — confirmed for this firmware's real
   `Reset_Handler` clock-init chain and one SERCOM/DMA driver constructor,

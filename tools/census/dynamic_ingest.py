@@ -1,4 +1,4 @@
-"""APTrace census: ingest tools/census/dynamic_export.py's coverage-export
+"""APTrace census: ingest cases/performing-rigs/scripts/dynamic_export.py's coverage-export
 JSON files into the census database's dynamic_* tables.
 
 Kept separate from dynamic_export.py (capture) so each step has one job:
@@ -13,7 +13,9 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+REPO_ROOT = HERE.parent.parent
 sys.path.insert(0, str(HERE))
+sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
 import db as census_db  # noqa: E402
 import pins  # noqa: E402
 

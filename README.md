@@ -62,7 +62,7 @@ Python backend checks and the repository diagnostic are available with:
 
 ```sh
 python3 tools/ghidra/test_aptrace_ghidra.py
-tools/unicorn/.venv/bin/python3 tools/unicorn/test_concrete.py
+tools/unicorn/.venv/bin/python3 cases/performing-rigs/test/test_concrete.py
 tools/doctor.sh
 ```
 

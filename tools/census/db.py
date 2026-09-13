@@ -17,7 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent.parent
 SCHEMA_PATH = HERE / "schema.sql"
-DEFAULT_DB_PATH = REPO_ROOT / "research" / "runs" / "census" / "census.sqlite3"
+DEFAULT_DB_PATH = REPO_ROOT / "cases" / "performing-rigs" / "research" / "runs" / "census" / "census.sqlite3"
 
 
 def connect(db_path=None, create=True):

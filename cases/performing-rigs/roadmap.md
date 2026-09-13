@@ -98,7 +98,7 @@ but nothing has been flashed to real hardware. Before any patch is real:
   through such a branch; the narrow fix (baking the specific literal-pool
   words that target reads) is the smallest starting point.
 - **`GhidraSVD`** is still not installed as a proper extension; the
-  standalone `tools/svd/resolve_mmio.py` resolver remains good enough for
+  standalone `cases/performing-rigs/config/svd/resolve_mmio.py` resolver remains good enough for
   routine use — install only if that changes.
 
 ## Adding new work here

@@ -58,7 +58,7 @@ Evidence, Open question.
 - **Persistent-state effect**: none.
 - **Hardware/motion effect**: none.
 - **Confidence**: **CONFIRMED** (concrete, both firmwares, full round
-  trip — `tools/unicorn/virtual_link.py all`/no-arg run) that `&|` ->
+  trip — `cases/performing-rigs/scripts/virtual_link.py all`/no-arg run) that `&|` ->
   `V01R39` happens exactly as described. **UNKNOWN** what Remote-UI event
   actually triggers a real `&|` send (connect-time handshake vs. user
   opening the Info screen vs. periodic poll — no evidence distinguishes

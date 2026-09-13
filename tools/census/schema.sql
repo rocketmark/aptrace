@@ -137,7 +137,7 @@ CREATE INDEX IF NOT EXISTS idx_memacc_from ON memory_accesses(firmware_id, from_
 -- MMIO reads/writes with a statically-resolved target address, same
 -- source pass as memory_accesses but landing in the MMIO window instead
 -- of RAM. `peripheral`/`register_name` are filled in by resolving
--- `to_addr` through tools/svd/resolve_mmio.py's Samd51Map -- NULL means
+-- `to_addr` through cases/performing-rigs/config/svd/resolve_mmio.py's Samd51Map -- NULL means
 -- the SVD has no peripheral covering that address (a real finding, kept
 -- visible rather than hidden -- see scan_warnings).
 CREATE TABLE IF NOT EXISTS mmio_accesses (
@@ -226,7 +226,7 @@ CREATE INDEX IF NOT EXISTS idx_pins_fw ON pins(firmware_id);
 CREATE INDEX IF NOT EXISTS idx_pins_name ON pins(firmware_id, pin_name);
 
 -- One row per ingested Unicorn scenario leg (a single ConcreteMachine.run()
--- call captured while replaying tools/unicorn/virtual_link.py's scenario
+-- call captured while replaying cases/performing-rigs/scripts/virtual_link.py's scenario
 -- corpus -- see tools/census/dynamic_ingest.py).
 CREATE TABLE IF NOT EXISTS dynamic_runs (
     id                     INTEGER PRIMARY KEY,
@@ -539,7 +539,7 @@ CREATE TABLE IF NOT EXISTS hardware_snapshot_runs (
     notes                             TEXT,
     -- JSON list of every environmental/model assumption applied to reach
     -- this run's stop point: [{kind, addr, detail, citation}, ...] --
-    -- see tools/census/boot_recipes.py. Never hidden -- this is the
+    -- see cases/performing-rigs/config/boot_recipes.py. Never hidden -- this is the
     -- complete, auditable list of what was disclosed to get this far.
     assumptions_json                   TEXT,
     ran_at                                TEXT NOT NULL,

@@ -29,7 +29,7 @@ import datetime
 import json
 
 MCU_PART = "ATSAMD51J19A"
-MCU_CITATION = "tools/svd/ATSAMD51J19A.svd (vendored Microchip SVD, the same source resolve_mmio.py uses)"
+MCU_CITATION = "cases/performing-rigs/config/svd/ATSAMD51J19A.svd (vendored Microchip SVD, the same source resolve_mmio.py uses)"
 
 CLOCK_TREE_PREFIXES = ("GCLK", "OSCCTRL", "OSC32KCTRL", "MCLK")
 NO_BITFIELD_NOTE = ("raw register value only -- this project has no vendored per-bit-field "

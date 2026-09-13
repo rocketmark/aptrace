@@ -31,8 +31,8 @@ import db as census_db  # noqa: E402
 import residual_priority  # noqa: E402
 
 MAX_LIST = 10  # cap on callers/callees/ram addrs/strings kept per packet -- compact, not exhaustive
-PROVENANCE_CSV = REPO_ROOT / "research" / "provenance" / "function_classification.csv"
-DOCS_DIR = REPO_ROOT / "docs"
+PROVENANCE_CSV = REPO_ROOT / "cases" / "performing-rigs" / "research" / "provenance" / "function_classification.csv"
+DOCS_DIR = REPO_ROOT / "cases" / "performing-rigs" / "docs"
 
 
 def _hx(addr):

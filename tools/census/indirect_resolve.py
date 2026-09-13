@@ -34,7 +34,7 @@ tier that actually produced evidence.
 No LLM interpretation: the instruction-shape classification is a fixed
 Capstone operand-type check, the table scans are bounded byte-pattern
 walks, and the dynamic pass is a real, unmodified replay of the
-existing tools/unicorn/virtual_link.py scenario corpus with one
+existing cases/performing-rigs/scripts/virtual_link.py scenario corpus with one
 additional `watch` list.
 """
 import sys
@@ -170,9 +170,9 @@ def nearby_literal_table_base(conn, firmware_id, from_addr):
 
 
 def dynamic_candidates(firmware_key, from_addrs_with_regs, verbose=True):
-    """Run the EXISTING tools/unicorn/virtual_link.py scenario corpus
+    """Run the EXISTING cases/performing-rigs/scripts/virtual_link.py scenario corpus
     once more (unmodified -- same monkeypatch discipline as
-    tools/census/dynamic_export.py), this time injecting `watch` on
+    cases/performing-rigs/scripts/dynamic_export.py), this time injecting `watch` on
     every `from_addr` in `from_addrs_with_regs` (a dict from_addr ->
     target_reg_name) for the matching firmware image, and reading the
     watched register's value at each hit. Returns a dict
@@ -183,8 +183,10 @@ def dynamic_candidates(firmware_key, from_addrs_with_regs, verbose=True):
     Only meaningful for 'reg-indirect' shape instructions (a fixed
     register at the watch point holds the whole target) -- callers
     should not pass table-branch/mem-indirect addresses in here."""
-    unicorn_dir = HERE.parent / "unicorn"
+    repo_root = HERE.parent.parent
+    unicorn_dir = repo_root / "tools" / "unicorn"
     sys.path.insert(0, str(unicorn_dir))
+    sys.path.insert(0, str(repo_root / "cases" / "performing-rigs" / "scripts"))
     import concrete  # noqa: E402
     import virtual_link  # noqa: E402
     import dynamic_export  # noqa: E402

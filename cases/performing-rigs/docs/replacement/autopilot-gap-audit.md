@@ -79,7 +79,7 @@ existing `ConcreteMachine`/`virtual_link.py` infrastructure (no new
 analysis framework) and the same `AUTOPILOT_RX_ENTRY` direct-dispatch
 boundary every other command scenario in that module already uses.
 
-**A — interactive `'+'` path** (`tools/unicorn/virtual_link.py
+**A — interactive `'+'` path** (`cases/performing-rigs/scripts/virtual_link.py
 plus-interactive`): the Remote's real frame builder (`FUN_000049c4`),
 called with the real interactive-screen arguments
 `(confirm1,confirm2,channel,param_4,mode)=(1,1,0,1,0x00)`, produces a
@@ -96,7 +96,7 @@ object, the same role `AUTOPILOT_PLUS_DISPLAY_STUB` already plays on
 the AutoPilot side, traced by disassembly before stubbing rather than
 guessed.
 
-**B — Manual Mode `0xF0`/`0xE0`** (`tools/unicorn/virtual_link.py
+**B — Manual Mode `0xF0`/`0xE0`** (`cases/performing-rigs/scripts/virtual_link.py
 manual-f0e0`): disassembling `ascii_dispatcher__CUSTOM`'s (`0x8258`)
 own `0xE0` arm shows its per-record field layout is byte-identical to
 `0xF0`'s; the only real difference is a per-channel latch/cache

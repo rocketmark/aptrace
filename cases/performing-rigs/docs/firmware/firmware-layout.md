@@ -132,7 +132,7 @@ python3 tools/vector_scan.py cases/performing-rigs/research/firmware/originals/f
 
 - ~~Identify MMIO ranges actually touched~~ — done, using the real
   ATSAMD51J19A SVD rather than hardcoding a memory map by hand: see
-  [`tools/svd/resolve_mmio.py`](../../../../tools/svd/resolve_mmio.py) and
+  [`cases/performing-rigs/config/svd/resolve_mmio.py`](../../../../cases/performing-rigs/config/svd/resolve_mmio.py) and
   [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)
   (startup peripheral survey, a confirmed PB22 GPIO-toggle finding, and an
   honest negative result for the outbound TX path's peripheral identity).

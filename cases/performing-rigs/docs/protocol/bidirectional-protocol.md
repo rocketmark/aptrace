@@ -62,7 +62,7 @@ at the concrete (Unicorn) evidence tier — see
 and
 [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md)
 — **and now also connected into one live, harness-driven round trip**
-(`tools/unicorn/virtual_link.py`, no LoRa/SPI hardware modeled): Remote's
+(`cases/performing-rigs/scripts/virtual_link.py`, no LoRa/SPI hardware modeled): Remote's
 real TX call, a harness-mediated byte transfer, AutoPilot's real parse
 and response, a second harness-mediated transfer, Remote's real capture,
 asserted end to end. See
@@ -81,7 +81,7 @@ Remote (0xb680) builds "G<d><d><seq>|"        [execution-confirmed: real bytes, 
     -> Remote 0xb59c accepts acknowledgement  [execution-confirmed: real retry/ack loop, R4=1]
 ```
 
-Confirmed via `tools/unicorn/virtual_link.py g` (roadmap M4) — the same
+Confirmed via `cases/performing-rigs/scripts/virtual_link.py g` (roadmap M4) — the same
 harness-driven virtual link built for `&|` (M3), reusing its
 `capture_tx_bytes`/`deliver_and_observe` primitives plus a new
 byte-value `capture_tx_byte` (event 17's response is a single byte via
@@ -101,7 +101,7 @@ Remote (0xc440) sends "S|"                [execution-confirmed: exact bytes, rea
     -> Remote's real parser consumes and stores it       [execution-confirmed, both forms]
 ```
 
-Confirmed via `tools/unicorn/virtual_link.py s` (roadmap M4), run at two
+Confirmed via `cases/performing-rigs/scripts/virtual_link.py s` (roadmap M4), run at two
 concrete AutoPilot device-state values to exercise both response forms
 for real. Two refinements to the reading above (both found by running
 the real code, not by re-reading the decompile more carefully): the

@@ -36,7 +36,8 @@ import json
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent))
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT / "tools" / "unicorn"))
 from concrete import ConcreteMachine  # noqa: E402
 
 try:
@@ -45,7 +46,7 @@ try:
 except ImportError:
     _CAPSTONE = False
 
-FIRMWARE = Path(__file__).parent.parent.parent / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
+FIRMWARE = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
 
 # -- real, already-confirmed addresses (trigger-input-concrete-path.md,
 # trigger-input-symbolic-crosscheck.md) -----------------------------------
