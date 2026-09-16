@@ -35,3 +35,7 @@ dist-newstyle/
 
 # Board photos -- reference images, not source; keep out of git history.
 /cases/performing-rigs/research/AutoPilot Board Photos/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
