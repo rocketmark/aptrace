@@ -1,0 +1,23 @@
+[project]
+name = "aptrace-agent"
+version = "0.1.0"
+description = "Local evidence-driven firmware investigation agent for APTrace"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic-ai-slim[openai]",
+]
+
+[project.scripts]
+aptrace-agent = "aptrace_agent.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/aptrace_agent"]
