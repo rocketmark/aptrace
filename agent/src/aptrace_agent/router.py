@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import re
 
-from aptrace_agent.schemas import FunctionFactsArgs, InvestigationPlan
+from aptrace_agent.schemas import (
+    FunctionDisassemblyArgs,
+    FunctionFactsArgs,
+    InvestigationPlan,
+)
 
 
 FUNCTION_RE = re.compile(r"\bFUN_[0-9a-fA-F]{8}\b")
@@ -14,10 +18,10 @@ def _unique_functions(question: str) -> list[str]:
 
 def route_question(question: str) -> InvestigationPlan | None:
     """
-    Route direct firmware fact queries without an LLM.
+    Route direct firmware queries to deterministic APTrace operations.
 
-    Return None when the question requires an analysis capability that
-    APTrace does not yet expose.
+    Return None when the question requires an analysis capability APTrace
+    does not yet expose.
     """
 
     functions = _unique_functions(question)
@@ -26,6 +30,24 @@ def route_question(question: str) -> InvestigationPlan | None:
         return None
 
     q = question.lower()
+
+    disassembly_query = any(
+        phrase in q
+        for phrase in (
+            "disassemble",
+            "disassembly",
+            "instructions",
+            "assembly",
+        )
+    )
+
+    if disassembly_query:
+        return InvestigationPlan(
+            function_disassembly=[
+                FunctionDisassemblyArgs(function=function)
+                for function in functions
+            ]
+        )
 
     incoming_call_query = any(
         phrase in q

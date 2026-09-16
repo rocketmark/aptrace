@@ -45,6 +45,14 @@ def run_investigation(
             )
             number += 1
 
+        for args in plan.function_disassembly:
+            print(
+                f"[route {number}] "
+                f"function_disassembly(function={args.function!r})",
+                flush=True,
+            )
+            number += 1
+
         print("[phase] EXECUTE", flush=True)
 
     executor = EvidenceExecutor()

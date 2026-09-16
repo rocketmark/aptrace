@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Local evidence-driven firmware investigation agent for APTrace"
 requires-python = ">=3.12"
 dependencies = [
+    "capstone>=5.0.9",
     "pydantic-ai-slim[openai]",
 ]
 

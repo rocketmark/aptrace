@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from aptrace_agent.disassembly import autopilot_disassembler
 from aptrace_agent.ghidra_index import autopilot_ghidra_index
 from aptrace_agent.schemas import (
     EvidenceBundle,
@@ -17,6 +18,7 @@ class EvidenceExecutor:
 
     def __init__(self) -> None:
         self.ghidra = autopilot_ghidra_index()
+        self.disassembler = autopilot_disassembler()
 
     def execute(
         self,
@@ -28,25 +30,19 @@ class EvidenceExecutor:
         observations: list[EvidenceObservation] = []
         seen: set[tuple[str, str]] = set()
 
-        if not plan.function_facts:
+        if not plan.function_facts and not plan.function_disassembly:
             raise ValueError(
                 "Investigation plan contains no evidence operations"
             )
 
         for args in plan.function_facts:
             function = args.function
-            dedupe_key = ("function_facts", function)
+            key = ("function_facts", function)
 
-            if dedupe_key in seen:
-                if verbose:
-                    print(
-                        f"[executor] skip duplicate "
-                        f"function_facts({function!r})",
-                        flush=True,
-                    )
+            if key in seen:
                 continue
 
-            seen.add(dedupe_key)
+            seen.add(key)
 
             if verbose:
                 print(
@@ -62,6 +58,34 @@ class EvidenceExecutor:
                     tool="function_facts",
                     arguments={"function": function},
                     result=facts.model_dump(),
+                )
+            )
+
+        for args in plan.function_disassembly:
+            function = args.function
+            key = ("function_disassembly", function)
+
+            if key in seen:
+                continue
+
+            seen.add(key)
+
+            if verbose:
+                print(
+                    f"[executor] function_disassembly({function!r})",
+                    flush=True,
+                )
+
+            disassembly = self.disassembler.function_disassembly(
+                function
+            )
+
+            observations.append(
+                EvidenceObservation(
+                    id=f"E{len(observations) + 1}",
+                    tool="function_disassembly",
+                    arguments={"function": function},
+                    result=disassembly.model_dump(),
                 )
             )
 
