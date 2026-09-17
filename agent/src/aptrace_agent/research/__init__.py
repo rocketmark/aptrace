@@ -1,21 +1,48 @@
 """
 Generic autonomous firmware research for APTrace.
 
-APTrace owns:
-- safe deterministic execution
-- evidence collection and provenance
-- deduplication and budgets
-- argument validation
-- structural lead generation and resolution
+APTrace owns deterministic evidence collection, provenance, safe
+execution, deduplication, budgets, and structural lead resolution.
 
-The research model owns:
-- choosing which direction matters next
-- choosing among discovered leads
-- proposing claims and hypotheses
-- identifying contradictions and open questions
-- deciding when sufficient evidence exists
-
-Structural firmware arguments such as addresses, pin-table indexes,
-and function identities should normally be resolved through
-APTrace-generated leads rather than manufactured by the model.
+The research model chooses which research direction matters next,
+proposes claims and hypotheses, identifies open questions, and decides
+when sufficient evidence exists.
 """
+
+from aptrace_agent.research.lead_generation import (
+    LeadGenerationIssue,
+    LeadGenerationResult,
+    generate_function_fact_leads,
+)
+from aptrace_agent.research.leads import (
+    LeadAction,
+    LeadRegistry,
+)
+from aptrace_agent.research.state import (
+    Claim,
+    ClaimGrade,
+    Contradiction,
+    Hypothesis,
+    Lead,
+    LeadStatus,
+    OpenQuestion,
+    QuestionStatus,
+    ResearchState,
+)
+
+__all__ = [
+    "Claim",
+    "ClaimGrade",
+    "Contradiction",
+    "Hypothesis",
+    "Lead",
+    "LeadAction",
+    "LeadGenerationIssue",
+    "LeadGenerationResult",
+    "LeadRegistry",
+    "LeadStatus",
+    "OpenQuestion",
+    "QuestionStatus",
+    "ResearchState",
+    "generate_function_fact_leads",
+]
