@@ -1,0 +1,1414 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-18T22:06:59.444290+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Determine the role of FUN_0000d3dc(1) in the AutoPilot, reconcile it with the existing trigger-input evidence, identify what is proven versus still unresolved, and independently verify any load-bearing firmware claims needed for the conclusion.",
+  "seed_function": "FUN_0000d3dc",
+  "stop_reason": "research_graph_exhausted",
+  "reconciled": true,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "follow_lead",
+      "lead_id": "L1",
+      "evidence_id": "E3",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "follow_lead",
+      "lead_id": "L2",
+      "evidence_id": "E4",
+      "reason": null
+    },
+    {
+      "number": 3,
+      "action": "follow_lead",
+      "lead_id": "L3",
+      "evidence_id": "E5",
+      "reason": null
+    },
+    {
+      "number": 4,
+      "action": "follow_lead",
+      "lead_id": "L6",
+      "evidence_id": "E6",
+      "reason": null
+    },
+    {
+      "number": 5,
+      "action": "follow_lead",
+      "lead_id": "L4",
+      "evidence_id": "E7",
+      "reason": null
+    },
+    {
+      "number": 6,
+      "action": "follow_lead",
+      "lead_id": "L7",
+      "evidence_id": "E8",
+      "reason": null
+    },
+    {
+      "number": 7,
+      "action": "follow_lead",
+      "lead_id": "L5",
+      "evidence_id": "E9",
+      "reason": null
+    },
+    {
+      "number": 8,
+      "action": "follow_lead",
+      "lead_id": "L8",
+      "evidence_id": "E10",
+      "reason": null
+    },
+    {
+      "number": 9,
+      "action": "follow_lead",
+      "lead_id": "L9",
+      "evidence_id": "E11",
+      "reason": null
+    },
+    {
+      "number": 10,
+      "action": "follow_lead",
+      "lead_id": "L10",
+      "evidence_id": "E12",
+      "reason": null
+    },
+    {
+      "number": 11,
+      "action": "follow_lead",
+      "lead_id": "L11",
+      "evidence_id": "E13",
+      "reason": null
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000d3dc"
+      },
+      "result": {
+        "name": "FUN_0000d3dc",
+        "entry": "0x0000d3dc",
+        "size": 44,
+        "callers": [
+          {
+            "function": "FUN_00005dd0",
+            "address": "0x00005e10"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006976"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x000069a4"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x000069c2"
+          },
+          {
+            "function": "FUN_00008e18",
+            "address": "0x000091ca"
+          }
+        ],
+        "callees": [],
+        "unique_caller_count": 3,
+        "callsite_count": 5,
+        "unique_callee_count": 0,
+        "outgoing_callsite_count": 0,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E2",
+      "tool": "function_disassembly",
+      "arguments": {
+        "function": "FUN_0000d3dc"
+      },
+      "result": {
+        "name": "FUN_0000d3dc",
+        "entry": "0x0000d3dc",
+        "size": 44,
+        "architecture": "ARM Cortex-M4F",
+        "mode": "Thumb/Thumb-2 M-class",
+        "bounds_source": "Ghidra function metadata",
+        "decoder": "Capstone",
+        "bytes_requested": 44,
+        "bytes_decoded": 44,
+        "complete": true,
+        "instructions": [
+          {
+            "address": "0x0000d3dc",
+            "size": 2,
+            "bytes_hex": "18 23",
+            "mnemonic": "movs",
+            "operands": "r3, #0x18"
+          },
+          {
+            "address": "0x0000d3de",
+            "size": 2,
+            "bytes_hex": "0a 49",
+            "mnemonic": "ldr",
+            "operands": "r1, [pc, #0x28]"
+          },
+          {
+            "address": "0x0000d3e0",
+            "size": 2,
+            "bytes_hex": "58 43",
+            "mnemonic": "muls",
+            "operands": "r0, r3, r0"
+          },
+          {
+            "address": "0x0000d3e2",
+            "size": 2,
+            "bytes_hex": "0a 18",
+            "mnemonic": "adds",
+            "operands": "r2, r1, r0"
+          },
+          {
+            "address": "0x0000d3e4",
+            "size": 4,
+            "bytes_hex": "92 f9 08 30",
+            "mnemonic": "ldrsb.w",
+            "operands": "r3, [r2, #8]"
+          },
+          {
+            "address": "0x0000d3e8",
+            "size": 2,
+            "bytes_hex": "01 33",
+            "mnemonic": "adds",
+            "operands": "r3, #1"
+          },
+          {
+            "address": "0x0000d3ea",
+            "size": 2,
+            "bytes_hex": "0b d0",
+            "mnemonic": "beq",
+            "operands": "#0xd404"
+          },
+          {
+            "address": "0x0000d3ec",
+            "size": 2,
+            "bytes_hex": "0b 56",
+            "mnemonic": "ldrsb",
+            "operands": "r3, [r1, r0]"
+          },
+          {
+            "address": "0x0000d3ee",
+            "size": 2,
+            "bytes_hex": "db 01",
+            "mnemonic": "lsls",
+            "operands": "r3, r3, #7"
+          },
+          {
+            "address": "0x0000d3f0",
+            "size": 4,
+            "bytes_hex": "03 f1 82 43",
+            "mnemonic": "add.w",
+            "operands": "r3, r3, #0x41000000"
+          },
+          {
+            "address": "0x0000d3f4",
+            "size": 4,
+            "bytes_hex": "03 f5 00 43",
+            "mnemonic": "add.w",
+            "operands": "r3, r3, #0x8000"
+          },
+          {
+            "address": "0x0000d3f8",
+            "size": 2,
+            "bytes_hex": "18 6a",
+            "mnemonic": "ldr",
+            "operands": "r0, [r3, #0x20]"
+          },
+          {
+            "address": "0x0000d3fa",
+            "size": 2,
+            "bytes_hex": "53 68",
+            "mnemonic": "ldr",
+            "operands": "r3, [r2, #4]"
+          },
+          {
+            "address": "0x0000d3fc",
+            "size": 2,
+            "bytes_hex": "d8 40",
+            "mnemonic": "lsrs",
+            "operands": "r0, r3"
+          },
+          {
+            "address": "0x0000d3fe",
+            "size": 4,
+            "bytes_hex": "00 f0 01 00",
+            "mnemonic": "and",
+            "operands": "r0, r0, #1"
+          },
+          {
+            "address": "0x0000d402",
+            "size": 2,
+            "bytes_hex": "70 47",
+            "mnemonic": "bx",
+            "operands": "lr"
+          },
+          {
+            "address": "0x0000d404",
+            "size": 2,
+            "bytes_hex": "00 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0"
+          },
+          {
+            "address": "0x0000d406",
+            "size": 2,
+            "bytes_hex": "70 47",
+            "mnemonic": "bx",
+            "operands": "lr"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E3",
+      "tool": "callsite_context",
+      "arguments": {
+        "function": "FUN_00005dd0",
+        "address": "0x00005e10",
+        "before": 8,
+        "after": 8
+      },
+      "result": {
+        "function": "FUN_00005dd0",
+        "address": "0x00005e10",
+        "before": 8,
+        "after": 8,
+        "instructions": [
+          {
+            "address": "0x00005dfa",
+            "size": 2,
+            "bytes_hex": "08 d9",
+            "mnemonic": "bls",
+            "operands": "#0x5e0e"
+          },
+          {
+            "address": "0x00005dfc",
+            "size": 4,
+            "bytes_hex": "06 f0 68 ff",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x00005e00",
+            "size": 2,
+            "bytes_hex": "30 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0xc0]"
+          },
+          {
+            "address": "0x00005e02",
+            "size": 2,
+            "bytes_hex": "20 60",
+            "mnemonic": "str",
+            "operands": "r0, [r4]"
+          },
+          {
+            "address": "0x00005e04",
+            "size": 4,
+            "bytes_hex": "4f f4 af 62",
+            "mnemonic": "mov.w",
+            "operands": "r2, #0x578"
+          },
+          {
+            "address": "0x00005e08",
+            "size": 2,
+            "bytes_hex": "1a 60",
+            "mnemonic": "str",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x00005e0a",
+            "size": 4,
+            "bytes_hex": "fe f7 19 fb",
+            "mnemonic": "bl",
+            "operands": "#0x4440"
+          },
+          {
+            "address": "0x00005e0e",
+            "size": 2,
+            "bytes_hex": "01 20",
+            "mnemonic": "movs",
+            "operands": "r0, #1"
+          },
+          {
+            "address": "0x00005e10",
+            "size": 4,
+            "bytes_hex": "07 f0 e4 fa",
+            "mnemonic": "bl",
+            "operands": "#0xd3dc"
+          },
+          {
+            "address": "0x00005e14",
+            "size": 2,
+            "bytes_hex": "2c 4c",
+            "mnemonic": "ldr",
+            "operands": "r4, [pc, #0xb0]"
+          },
+          {
+            "address": "0x00005e16",
+            "size": 2,
+            "bytes_hex": "00 28",
+            "mnemonic": "cmp",
+            "operands": "r0, #0"
+          },
+          {
+            "address": "0x00005e18",
+            "size": 2,
+            "bytes_hex": "3e d0",
+            "mnemonic": "beq",
+            "operands": "#0x5e98"
+          },
+          {
+            "address": "0x00005e1a",
+            "size": 2,
+            "bytes_hex": "23 78",
+            "mnemonic": "ldrb",
+            "operands": "r3, [r4]"
+          },
+          {
+            "address": "0x00005e1c",
+            "size": 2,
+            "bytes_hex": "2b 4f",
+            "mnemonic": "ldr",
+            "operands": "r7, [pc, #0xac]"
+          },
+          {
+            "address": "0x00005e1e",
+            "size": 2,
+            "bytes_hex": "03 b3",
+            "mnemonic": "cbz",
+            "operands": "r3, #0x5e62"
+          },
+          {
+            "address": "0x00005e20",
+            "size": 4,
+            "bytes_hex": "06 f0 56 ff",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x00005e24",
+            "size": 2,
+            "bytes_hex": "3b 68",
+            "mnemonic": "ldr",
+            "operands": "r3, [r7]"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E4",
+      "tool": "callsite_context",
+      "arguments": {
+        "function": "FUN_00006968",
+        "address": "0x00006976",
+        "before": 8,
+        "after": 8
+      },
+      "result": {
+        "function": "FUN_00006968",
+        "address": "0x00006976",
+        "before": 8,
+        "after": 8,
+        "instructions": [
+          {
+            "address": "0x00006968",
+            "size": 2,
+            "bytes_hex": "02 21",
+            "mnemonic": "movs",
+            "operands": "r1, #2"
+          },
+          {
+            "address": "0x0000696a",
+            "size": 4,
+            "bytes_hex": "2d e9 f0 41",
+            "mnemonic": "push.w",
+            "operands": "{r4, r5, r6, r7, r8, lr}"
+          },
+          {
+            "address": "0x0000696e",
+            "size": 2,
+            "bytes_hex": "25 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0x25"
+          },
+          {
+            "address": "0x00006970",
+            "size": 4,
+            "bytes_hex": "06 f0 c6 fc",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          },
+          {
+            "address": "0x00006974",
+            "size": 2,
+            "bytes_hex": "25 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0x25"
+          },
+          {
+            "address": "0x00006976",
+            "size": 4,
+            "bytes_hex": "06 f0 31 fd",
+            "mnemonic": "bl",
+            "operands": "#0xd3dc"
+          },
+          {
+            "address": "0x0000697a",
+            "size": 2,
+            "bytes_hex": "67 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x19c]"
+          },
+          {
+            "address": "0x0000697c",
+            "size": 2,
+            "bytes_hex": "01 46",
+            "mnemonic": "mov",
+            "operands": "r1, r0"
+          },
+          {
+            "address": "0x0000697e",
+            "size": 2,
+            "bytes_hex": "28 b3",
+            "mnemonic": "cbz",
+            "operands": "r0, #0x69cc"
+          },
+          {
+            "address": "0x00006980",
+            "size": 2,
+            "bytes_hex": "01 22",
+            "mnemonic": "movs",
+            "operands": "r2, #1"
+          },
+          {
+            "address": "0x00006982",
+            "size": 2,
+            "bytes_hex": "1a 70",
+            "mnemonic": "strb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x00006984",
+            "size": 2,
+            "bytes_hex": "03 21",
+            "mnemonic": "movs",
+            "operands": "r1, #3"
+          },
+          {
+            "address": "0x00006986",
+            "size": 2,
+            "bytes_hex": "01 20",
+            "mnemonic": "movs",
+            "operands": "r0, #1"
+          },
+          {
+            "address": "0x00006988",
+            "size": 4,
+            "bytes_hex": "06 f0 ba fc",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E5",
+      "tool": "callsite_context",
+      "arguments": {
+        "function": "FUN_00006968",
+        "address": "0x000069a4",
+        "before": 8,
+        "after": 8
+      },
+      "result": {
+        "function": "FUN_00006968",
+        "address": "0x000069a4",
+        "before": 8,
+        "after": 8,
+        "instructions": [
+          {
+            "address": "0x0000698e",
+            "size": 4,
+            "bytes_hex": "06 f0 df f9",
+            "mnemonic": "bl",
+            "operands": "#0xcd50"
+          },
+          {
+            "address": "0x00006992",
+            "size": 2,
+            "bytes_hex": "01 21",
+            "mnemonic": "movs",
+            "operands": "r1, #1"
+          },
+          {
+            "address": "0x00006994",
+            "size": 2,
+            "bytes_hex": "32 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0x32"
+          },
+          {
+            "address": "0x00006996",
+            "size": 4,
+            "bytes_hex": "06 f0 b3 fc",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          },
+          {
+            "address": "0x0000699a",
+            "size": 2,
+            "bytes_hex": "31 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0x31"
+          },
+          {
+            "address": "0x0000699c",
+            "size": 2,
+            "bytes_hex": "01 21",
+            "mnemonic": "movs",
+            "operands": "r1, #1"
+          },
+          {
+            "address": "0x0000699e",
+            "size": 4,
+            "bytes_hex": "06 f0 af fc",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          },
+          {
+            "address": "0x000069a2",
+            "size": 2,
+            "bytes_hex": "01 20",
+            "mnemonic": "movs",
+            "operands": "r0, #1"
+          },
+          {
+            "address": "0x000069a4",
+            "size": 4,
+            "bytes_hex": "06 f0 1a fd",
+            "mnemonic": "bl",
+            "operands": "#0xd3dc"
+          },
+          {
+            "address": "0x000069a8",
+            "size": 2,
+            "bytes_hex": "08 b1",
+            "mnemonic": "cbz",
+            "operands": "r0, #0x69ae"
+          },
+          {
+            "address": "0x000069aa",
+            "size": 4,
+            "bytes_hex": "ff f7 d2 ff",
+            "mnemonic": "bl",
+            "operands": "#0x6952"
+          },
+          {
+            "address": "0x000069ae",
+            "size": 4,
+            "bytes_hex": "06 f0 8f f9",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x000069b2",
+            "size": 2,
+            "bytes_hex": "04 46",
+            "mnemonic": "mov",
+            "operands": "r4, r0"
+          },
+          {
+            "address": "0x000069b4",
+            "size": 4,
+            "bytes_hex": "06 f0 8c f9",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x000069b8",
+            "size": 2,
+            "bytes_hex": "00 1b",
+            "mnemonic": "subs",
+            "operands": "r0, r0, r4"
+          },
+          {
+            "address": "0x000069ba",
+            "size": 4,
+            "bytes_hex": "b0 f5 e1 6f",
+            "mnemonic": "cmp.w",
+            "operands": "r0, #0x708"
+          },
+          {
+            "address": "0x000069be",
+            "size": 2,
+            "bytes_hex": "0b d2",
+            "mnemonic": "bhs",
+            "operands": "#0x69d8"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E6",
+      "tool": "pin_table_entry",
+      "arguments": {
+        "index": 1
+      },
+      "result": {
+        "index": 1,
+        "table_address": "0x0001429c",
+        "file_offset": "0x0001029c",
+        "raw_hex": "00 00 00 00 16 00 00 00 02 00 00 00 00 02 00 00 ff 00 02 00 00 09 06 00",
+        "group": 0,
+        "bit": 22,
+        "field_8": 2,
+        "gpio": "PA22"
+      }
+    },
+    {
+      "id": "E7",
+      "tool": "callsite_context",
+      "arguments": {
+        "function": "FUN_00006968",
+        "address": "0x000069c2",
+        "before": 8,
+        "after": 8
+      },
+      "result": {
+        "function": "FUN_00006968",
+        "address": "0x000069c2",
+        "before": 8,
+        "after": 8,
+        "instructions": [
+          {
+            "address": "0x000069aa",
+            "size": 4,
+            "bytes_hex": "ff f7 d2 ff",
+            "mnemonic": "bl",
+            "operands": "#0x6952"
+          },
+          {
+            "address": "0x000069ae",
+            "size": 4,
+            "bytes_hex": "06 f0 8f f9",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x000069b2",
+            "size": 2,
+            "bytes_hex": "04 46",
+            "mnemonic": "mov",
+            "operands": "r4, r0"
+          },
+          {
+            "address": "0x000069b4",
+            "size": 4,
+            "bytes_hex": "06 f0 8c f9",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x000069b8",
+            "size": 2,
+            "bytes_hex": "00 1b",
+            "mnemonic": "subs",
+            "operands": "r0, r0, r4"
+          },
+          {
+            "address": "0x000069ba",
+            "size": 4,
+            "bytes_hex": "b0 f5 e1 6f",
+            "mnemonic": "cmp.w",
+            "operands": "r0, #0x708"
+          },
+          {
+            "address": "0x000069be",
+            "size": 2,
+            "bytes_hex": "0b d2",
+            "mnemonic": "bhs",
+            "operands": "#0x69d8"
+          },
+          {
+            "address": "0x000069c0",
+            "size": 2,
+            "bytes_hex": "01 20",
+            "mnemonic": "movs",
+            "operands": "r0, #1"
+          },
+          {
+            "address": "0x000069c2",
+            "size": 4,
+            "bytes_hex": "06 f0 0b fd",
+            "mnemonic": "bl",
+            "operands": "#0xd3dc"
+          },
+          {
+            "address": "0x000069c6",
+            "size": 2,
+            "bytes_hex": "00 28",
+            "mnemonic": "cmp",
+            "operands": "r0, #0"
+          },
+          {
+            "address": "0x000069c8",
+            "size": 2,
+            "bytes_hex": "f4 d1",
+            "mnemonic": "bne",
+            "operands": "#0x69b4"
+          },
+          {
+            "address": "0x000069ca",
+            "size": 2,
+            "bytes_hex": "f0 e7",
+            "mnemonic": "b",
+            "operands": "#0x69ae"
+          },
+          {
+            "address": "0x000069cc",
+            "size": 2,
+            "bytes_hex": "02 22",
+            "mnemonic": "movs",
+            "operands": "r2, #2"
+          },
+          {
+            "address": "0x000069ce",
+            "size": 2,
+            "bytes_hex": "39 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0x39"
+          },
+          {
+            "address": "0x000069d0",
+            "size": 2,
+            "bytes_hex": "1a 70",
+            "mnemonic": "strb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x000069d2",
+            "size": 4,
+            "bytes_hex": "06 f0 95 fc",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          },
+          {
+            "address": "0x000069d6",
+            "size": 2,
+            "bytes_hex": "d5 e7",
+            "mnemonic": "b",
+            "operands": "#0x6984"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E8",
+      "tool": "pin_table_entry",
+      "arguments": {
+        "index": 37
+      },
+      "result": {
+        "index": 37,
+        "table_address": "0x000145fc",
+        "file_offset": "0x000105fc",
+        "raw_hex": "00 00 00 00 02 00 00 00 01 00 00 00 02 00 00 00 14 00 ff ff ff ff 02 00",
+        "group": 0,
+        "bit": 2,
+        "field_8": 1,
+        "gpio": "PA02"
+      }
+    },
+    {
+      "id": "E9",
+      "tool": "callsite_context",
+      "arguments": {
+        "function": "FUN_00008e18",
+        "address": "0x000091ca",
+        "before": 8,
+        "after": 8
+      },
+      "result": {
+        "function": "FUN_00008e18",
+        "address": "0x000091ca",
+        "before": 8,
+        "after": 8,
+        "instructions": [
+          {
+            "address": "0x000091b6",
+            "size": 2,
+            "bytes_hex": "28 4f",
+            "mnemonic": "ldr",
+            "operands": "r7, [pc, #0xa0]"
+          },
+          {
+            "address": "0x000091b8",
+            "size": 2,
+            "bytes_hex": "20 60",
+            "mnemonic": "str",
+            "operands": "r0, [r4]"
+          },
+          {
+            "address": "0x000091ba",
+            "size": 2,
+            "bytes_hex": "28 4c",
+            "mnemonic": "ldr",
+            "operands": "r4, [pc, #0xa0]"
+          },
+          {
+            "address": "0x000091bc",
+            "size": 2,
+            "bytes_hex": "54 23",
+            "mnemonic": "movs",
+            "operands": "r3, #0x54"
+          },
+          {
+            "address": "0x000091be",
+            "size": 4,
+            "bytes_hex": "4f f0 01 08",
+            "mnemonic": "mov.w",
+            "operands": "r8, #1"
+          },
+          {
+            "address": "0x000091c2",
+            "size": 2,
+            "bytes_hex": "39 20",
+            "mnemonic": "movs",
+            "operands": "r0, #0x39"
+          },
+          {
+            "address": "0x000091c4",
+            "size": 2,
+            "bytes_hex": "3b 70",
+            "mnemonic": "strb",
+            "operands": "r3, [r7]"
+          },
+          {
+            "address": "0x000091c6",
+            "size": 4,
+            "bytes_hex": "84 f8 00 80",
+            "mnemonic": "strb.w",
+            "operands": "r8, [r4]"
+          },
+          {
+            "address": "0x000091ca",
+            "size": 4,
+            "bytes_hex": "04 f0 07 f9",
+            "mnemonic": "bl",
+            "operands": "#0xd3dc"
+          },
+          {
+            "address": "0x000091ce",
+            "size": 4,
+            "bytes_hex": "10 f0 ff 00",
+            "mnemonic": "ands",
+            "operands": "r0, r0, #0xff"
+          },
+          {
+            "address": "0x000091d2",
+            "size": 2,
+            "bytes_hex": "31 d0",
+            "mnemonic": "beq",
+            "operands": "#0x9238"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E10",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "PA22",
+        "max_results": 8
+      },
+      "result": {
+        "query": "PA22",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 74,
+            "kind": "documentation",
+            "excerpt": "72: | Driver reset strobe A *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n73: | Driver reset strobe B *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n74: | Trigger digital/analog | PB05 | 6 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |\n75: | Trigger boot arm-select | PA02 | 3 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |\n76: | Startup reference/input | PA22 | 43 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 123,
+            "kind": "documentation",
+            "excerpt": "121: route) all remain open; the LED-pair observation is reported as a\n122: plausible lead for a future, higher-resolution or continuity-tested\n123: pass, not as a finding.\n124: \n125: ## Priority question 2 \u2014 PA22/PA23",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 128,
+            "kind": "documentation",
+            "excerpt": "126: \n127: Firmware semantics preserved exactly as documented: **PA22** gates the\n128: startup reference/input routine and is later polled as a held-input\n129: check (`loop_housekeeping_save_trigger__CUSTOM`); **PA23** is driven\n130: LOW during that startup sequence and HIGH on its completion (and on",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 133,
+            "kind": "documentation",
+            "excerpt": "131: later, unrelated completion/halt events) \u2014 a one-shot latch, not a\n132: repeating toggle (already established in a prior session; explicitly\n133: **not** the status LED). Package pins re-verified this session: PA22 =\n134: pin 43, PA23 = pin 44.\n135: ",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 138,
+            "kind": "documentation",
+            "excerpt": "136: **No PCB component was confidently attributed to either pin.** A front\n137: power button is a documented AutoPilot board-level fact and is a\n138: plausible candidate for PA22's \"held input\" role, but this is a\n139: plausibility note, not a traced or silkscreen-confirmed finding. Per\n140: this pass's explicit scope, PA22's physical identity is **not**",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 526,
+            "kind": "documentation",
+            "excerpt": "524: (already-documented gap, re-confirmed here, not re-investigated).\n525: \n526: ## Newly strengthened mappings\n527: \n528: - All 18 previously-documented STEP/DIR/enable/disable/trigger/PA22/",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 554,
+            "kind": "documentation",
+            "excerpt": "552:   finding above.\n553: \n554: ## Unresolved high-value pins\n555: \n556: PB30/PB31's real physical destination; PA22's physical component;",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 608,
+            "kind": "documentation",
+            "excerpt": "606: have PROVEN firmware mechanism and PROVEN package pin, sufficient to\n607: seed a bounded concrete (Unicorn) or symbolic query against a named\n608: GPIO with known semantics.\n609: \n610: **Not yet for PB30/PB31 or PA22/PA23** \u2014 the firmware side is proven,",
+            "score": 25
+          }
+        ],
+        "files_scanned": 68,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E11",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "PA02",
+        "max_results": 8
+      },
+      "result": {
+        "query": "PA02",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 73,
+            "kind": "documentation",
+            "excerpt": "71: | Driver enable B *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB16 | 39 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n72: | Driver reset strobe A *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n73: | Driver reset strobe B *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n74: | Trigger digital/analog | PB05 | 6 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |\n75: | Trigger boot arm-select | PA02 | 3 | PROVEN | PROVEN | TRACE_UNKNOWN | UNKNOWN |",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 512,
+            "kind": "documentation",
+            "excerpt": "510: direction.\n511: \n512: ## Trigger result\n513: \n514: **PB05** (digital read + ADC1 analog alias) and **PA02** (boot-time",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 517,
+            "kind": "documentation",
+            "excerpt": "515: arm-select) re-verified at pins 6 and 3. A 3.5mm TRS jack is visually\n516: confirmed in the board's logic region (`IMG_3093.JPG`, `IMG_3101.JPG`),\n517: near the MCU. This is a **region-level, not copper-traced**, match \u2014\n518: graded `PHYSICAL_FUNCTION_PROBABLE` for PB05 and left `UNKNOWN` for\n519: PA02 (whose electrical relationship to the jack, vs. a separate",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/trigger-input.md",
+            "line": 28,
+            "kind": "investigation",
+            "excerpt": "26: ## Current model\n27: \n28: **Boot-time mode select.** `FUN_00006968` (\"startup reference/input\n29: routine\"), called once from `sketch_setup__CUSTOM` before any trigger\n30: logic runs, configures **PA02** (pin index `0x25`, port A bit 2)",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/trigger-input.md",
+            "line": 34,
+            "kind": "investigation",
+            "excerpt": "32: (the **analog arm**); LOW \u2192 mode flag `0x20001fc0=2` (the **digital\n33: arm**), and only on this arm is **PB05** (pin index `0x39` / analog alias\n34: `0x3b`, port B bit 5) explicitly configured as a bare digital `INPUT`\n35: (`pinMode` mode `0`, no pull). The two arms are mutually exclusive for\n36: the entire power cycle \u2014 decided once, by PA02's level at boot, never",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/trigger-input.md",
+            "line": 234,
+            "kind": "investigation",
+            "excerpt": "232: Confidence tags follow this project's standard scale: **CONFIRMED**\n233: (disassembly and/or concrete Unicorn execution), **SOLVER-CONFIRMED**\n234: (Crucible/What4/Z3), **PROBABLE**/**INFERENCE**, **UNKNOWN**.\n235: \n236: **Pins.** PA02 = pin-descriptor index `0x25` (port A, bit 2). PB05 = pin",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/trigger-input.md",
+            "line": 239,
+            "kind": "investigation",
+            "excerpt": "237: index `0x39` (digital) / `0x3b` (analog alias), port B bit 5. Both\n238: resolved directly from the real Arduino-core pin-descriptor table\n239: (`0x00014284`, stride `0x18` bytes) \u2014 **CONFIRMED**. An exhaustive\n240: call-site enumeration finds PA02 read in exactly one place in the whole\n241: image, PB05 in exactly the paths named here (`digitalRead` twice,",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/trigger-input.md",
+            "line": 523,
+            "kind": "investigation",
+            "excerpt": "521: - The real main-loop period, needed to translate any poll-count\n522:   threshold (the debounce's *N*) into real milliseconds.\n523: - The minimum legitimate trigger pulse width (bounds how large *N* can\n524:   safely be without rejecting a real short trigger).\n525: - Whether the analog boot-mode (PA02 HIGH at boot) is a real, commonly",
+            "score": 25
+          }
+        ],
+        "files_scanned": 68,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E12",
+      "tool": "pin_table_entry",
+      "arguments": {
+        "index": 57
+      },
+      "result": {
+        "index": 57,
+        "table_address": "0x000147dc",
+        "file_offset": "0x000107dc",
+        "raw_hex": "01 00 00 00 05 00 00 00 0e 00 00 00 04 00 00 00 ff 00 ff ff ff ff 05 00",
+        "group": 1,
+        "bit": 5,
+        "field_8": 14,
+        "gpio": "PB05"
+      }
+    },
+    {
+      "id": "E13",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "PB05",
+        "max_results": 8
+      },
+      "result": {
+        "query": "PB05",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 72,
+            "kind": "documentation",
+            "excerpt": "70: | Driver enable A *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB17 | 40 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n71: | Driver enable B *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB16 | 39 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n72: | Driver reset strobe A *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB06 | 9 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n73: | Driver reset strobe B *(name provisional \u2014 see \"Firmware semantics\" + mux hypothesis)* | PB07 | 10 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | UNCONFIRMED |\n74: | Trigger digital/analog | PB05 | 6 | PROVEN | PROVEN | NEIGHBORHOOD_ONLY | PROBABLE |",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 512,
+            "kind": "documentation",
+            "excerpt": "510: direction.\n511: \n512: ## Trigger result\n513: \n514: **PB05** (digital read + ADC1 analog alias) and **PA02** (boot-time",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 517,
+            "kind": "documentation",
+            "excerpt": "515: arm-select) re-verified at pins 6 and 3. A 3.5mm TRS jack is visually\n516: confirmed in the board's logic region (`IMG_3093.JPG`, `IMG_3101.JPG`),\n517: near the MCU. This is a **region-level, not copper-traced**, match \u2014\n518: graded `PHYSICAL_FUNCTION_PROBABLE` for PB05 and left `UNKNOWN` for\n519: PA02 (whose electrical relationship to the jack, vs. a separate",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 533,
+            "kind": "documentation",
+            "excerpt": "531:   to match every prior record exactly \u2014 a genuine, if unglamorous,\n532:   strengthening (this project's own established replay-before-trust\n533:   discipline).\n534: - The analog and digital trigger aliases (`0x39`/`0x3b`) were confirmed\n535:   this session to decode to the *same* physical pin (PB05), closing a",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/census-results.md",
+            "line": 68,
+            "kind": "investigation",
+            "excerpt": "66:   coverage ingestion\" below): every unique PC executed, every RAM/MMIO\n67:   access, stop reason, and any TX/RX bytes a scenario already captured \u2014\n68:   for each leg of every scenario in `cases/performing-rigs/scripts/virtual_link.py`\n69:   (`run_ampersand_roundtrip`, `run_g_ack_roundtrip`, `run_s_roundtrip`,\n70:   `run_plus_target_distance_roundtrip`, `run_pb05_reload_motion_check`,",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/census-results.md",
+            "line": 169,
+            "kind": "investigation",
+            "excerpt": "167: tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py callees autopilot868 0x8258\n168: tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py readers autopilot868 0x20001b40\n169: tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py writers autopilot868 0x20001b40\n170: tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py peripheral autopilot868 PORT\n171: tools/unicorn/.venv/bin/python3 tools/census/aptrace_census.py pin autopilot868 PB05",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/compact-ram-initialization.md",
+            "line": 4,
+            "kind": "investigation",
+            "excerpt": "2: \n3: **Status: implemented and measured.** Follow-up to\n4: [`cases/performing-rigs/docs/investigations/trigger-input.md`](../investigations/trigger-input.md)'s\n5: Part 6, which diagnosed (but deliberately did not fix) why that\n6: investigation's narrowed PB05 reachability query produced a 41MB,",
+            "score": 25
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/compact-ram-initialization.md",
+            "line": 59,
+            "kind": "investigation",
+            "excerpt": "57: Net effect: byte-for-byte the same fact is asserted (every writable segment\n58: starts at zero), at a fraction of the assertion count. Flash and the actual\n59: packet-buffer/register logic are completely unchanged.\n60: \n61: ## Measured impact: the exact narrowed PB05 -> 0x8f98 query",
+            "score": 25
+          }
+        ],
+        "files_scanned": 68,
+        "truncated": true
+      }
+    }
+  ],
+  "state": {
+    "objective": "Determine the role of FUN_0000d3dc(1) in the AutoPilot, reconcile it with the existing trigger-input evidence, identify what is proven versus still unresolved, and independently verify any load-bearing firmware claims needed for the conclusion.",
+    "evidence_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6",
+      "E7",
+      "E8",
+      "E9",
+      "E10",
+      "E11",
+      "E12",
+      "E13"
+    ],
+    "claims": [
+      {
+        "id": "C1",
+        "statement": "FUN_00005dd0 calls #0xd3dc at 0x00005e10 with r0 literal 1 (0x1).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E3"
+        ]
+      },
+      {
+        "id": "C2",
+        "statement": "FUN_00006968 calls #0xd3dc at 0x00006976 with r0 literal 37 (0x25).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ]
+      },
+      {
+        "id": "C3",
+        "statement": "FUN_00006968 calls #0xd3dc at 0x000069a4 with r0 literal 1 (0x1).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E5"
+        ]
+      },
+      {
+        "id": "C4",
+        "statement": "Logical pin-table index 1 maps to GPIO PA22 (group 0, bit 22).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E6"
+        ]
+      },
+      {
+        "id": "C5",
+        "statement": "FUN_00006968 calls #0xd3dc at 0x000069c2 with r0 literal 1 (0x1).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E7"
+        ]
+      },
+      {
+        "id": "C6",
+        "statement": "Logical pin-table index 37 maps to GPIO PA02 (group 0, bit 2).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E8"
+        ]
+      },
+      {
+        "id": "C7",
+        "statement": "FUN_00008e18 calls #0xd3dc at 0x000091ca with r0 literal 57 (0x39).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E9"
+        ]
+      },
+      {
+        "id": "C8",
+        "statement": "Logical pin-table index 57 maps to GPIO PB05 (group 1, bit 5).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E12"
+        ]
+      },
+      {
+        "id": "C9",
+        "statement": "PA22: Startup reference/input Used as a held-input check during the startup sequence via the loop_housekeeping_save_trigger__CUSTOM routine.",
+        "grade": "SUPPORTED",
+        "evidence_ids": [
+          "E3",
+          "E5",
+          "E7",
+          "E6",
+          "E10"
+        ]
+      },
+      {
+        "id": "C10",
+        "statement": "PA02: Boot-time arm-select Evaluated during the startup reference/input routine to decide between the analog arm and the digital arm.",
+        "grade": "SUPPORTED",
+        "evidence_ids": [
+          "E4",
+          "E8",
+          "E11"
+        ]
+      },
+      {
+        "id": "C11",
+        "statement": "PB05: Trigger digital/analog Configured as a bare digital input (pinMode 0) only when the PA02 boot-time arm-select selects the digital arm.",
+        "grade": "SUPPORTED",
+        "evidence_ids": [
+          "E9",
+          "E12",
+          "E13"
+        ]
+      }
+    ],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [
+      {
+        "id": "Q1",
+        "question": "Physical identity of the component connected to the pin (e.g., front power button) is not confirmed.",
+        "evidence_ids": [
+          "E10"
+        ],
+        "status": "OPEN"
+      },
+      {
+        "id": "Q2",
+        "question": "The electrical relationship between this pin and the 3.5mm TRS jack is unknown.",
+        "evidence_ids": [
+          "E11"
+        ],
+        "status": "OPEN"
+      },
+      {
+        "id": "Q3",
+        "question": "Physical connectivity to the 3.5mm TRS jack is a region-level match but not copper-traced.",
+        "evidence_ids": [
+          "E13"
+        ],
+        "status": "OPEN"
+      }
+    ],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d3dc from FUN_00005dd0 at 0x00005e10",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L2",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d3dc from FUN_00006968 at 0x00006976",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L3",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d3dc from FUN_00006968 at 0x000069a4",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L4",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d3dc from FUN_00006968 at 0x000069c2",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L5",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d3dc from FUN_00008e18 at 0x000091ca",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L6",
+        "kind": "pin-table",
+        "description": "Resolve logical pin-table argument 1 observed at FUN_00005dd0 callsite 0x00005e10",
+        "source_evidence_ids": [
+          "E3",
+          "E5",
+          "E7"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L7",
+        "kind": "pin-table",
+        "description": "Resolve logical pin-table argument 37 observed at FUN_00006968 callsite 0x00006976",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L8",
+        "kind": "case-evidence",
+        "description": "Search existing case evidence for observed GPIO PA22",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L9",
+        "kind": "case-evidence",
+        "description": "Search existing case evidence for observed GPIO PA02",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L10",
+        "kind": "pin-table",
+        "description": "Resolve logical pin-table argument 57 observed at FUN_00008e18 callsite 0x000091ca",
+        "source_evidence_ids": [
+          "E9"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L11",
+        "kind": "case-evidence",
+        "description": "Search existing case evidence for observed GPIO PB05",
+        "source_evidence_ids": [
+          "E12"
+        ],
+        "status": "FOLLOWED"
+      }
+    ]
+  }
+}

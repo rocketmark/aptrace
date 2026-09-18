@@ -93,3 +93,99 @@ def test_research_cli_json(
     assert payload["reconciled"] is True
     assert payload["trajectory"] == []
     assert payload["evidence"] == []
+
+
+def test_research_cli_writes_artifact(
+    monkeypatch,
+    capsys,
+    tmp_path,
+):
+    run = SimpleNamespace(
+        objective="Determine the role.",
+        seed_function="FUN_0000d3dc",
+        result=ResearchRunResult(
+            stop_reason=(
+                "research_graph_exhausted"
+            ),
+            steps=(),
+            reconciled=True,
+        ),
+        state=ResearchState(
+            objective="Determine the role."
+        ),
+        evidence=(),
+    )
+
+    def fake_run(
+        objective,
+        *,
+        seed_function,
+        max_steps,
+    ):
+        return run
+
+    monkeypatch.setattr(
+        cli,
+        "run_autonomous_investigation",
+        fake_run,
+    )
+
+    monkeypatch.setenv(
+        "APTRACE_MODEL",
+        "test-planner",
+    )
+
+    monkeypatch.setenv(
+        "APTRACE_REVIEW_MODEL",
+        "test-reconciler",
+    )
+
+    output = (
+        tmp_path
+        / "research-run.json"
+    )
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "aptrace-agent",
+            "research",
+            "--function",
+            "FUN_0000d3dc",
+            "--output",
+            str(output),
+            "Determine",
+            "the",
+            "role.",
+        ],
+    )
+
+    cli.main()
+
+    payload = json.loads(
+        output.read_text()
+    )
+
+    assert payload["schema_version"] == 1
+
+    assert payload["objective"] == (
+        "Determine the role."
+    )
+
+    assert payload["models"] == {
+        "planner": "test-planner",
+        "reconciler": "test-reconciler",
+    }
+
+    assert payload["stop_reason"] == (
+        "research_graph_exhausted"
+    )
+
+    assert payload["reconciled"] is True
+
+    assert "generated_at" in payload
+
+    stdout = capsys.readouterr().out
+
+    assert "Artifact:" in stdout

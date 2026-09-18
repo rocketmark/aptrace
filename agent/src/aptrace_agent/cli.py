@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+
+from datetime import datetime, timezone
+from pathlib import Path
 
 from aptrace_agent.investigator import (
     AutonomousInvestigationRun,
@@ -14,6 +18,19 @@ def _research_payload(
     run: AutonomousInvestigationRun,
 ) -> dict:
     return {
+        "schema_version": 1,
+        "generated_at": datetime.now(
+            timezone.utc
+        ).isoformat(),
+        "models": {
+            "planner": os.environ.get(
+                "APTRACE_MODEL"
+            ),
+            "reconciler": os.environ.get(
+                "APTRACE_REVIEW_MODEL",
+                "gemma-4-26b-a4b-it-4bit",
+            ),
+        },
         "objective": run.objective,
         "seed_function": run.seed_function,
         "stop_reason": (
@@ -234,6 +251,14 @@ def main() -> None:
     )
 
     research.add_argument(
+        "--output",
+        help=(
+            "Write the complete research run "
+            "JSON artifact to this path"
+        ),
+    )
+
+    research.add_argument(
         "objective",
         nargs="+",
         help="Research objective",
@@ -256,10 +281,34 @@ def main() -> None:
             )
         )
 
+        payload = _research_payload(
+            run
+        )
+
+        output_path = None
+
+        if args.output:
+            output_path = Path(
+                args.output
+            ).expanduser()
+
+            output_path.parent.mkdir(
+                parents=True,
+                exist_ok=True,
+            )
+
+            output_path.write_text(
+                json.dumps(
+                    payload,
+                    indent=2,
+                )
+                + "\n"
+            )
+
         if args.json:
             print(
                 json.dumps(
-                    _research_payload(run),
+                    payload,
                     indent=2,
                 )
             )
@@ -268,6 +317,13 @@ def main() -> None:
         _print_research_summary(
             run
         )
+
+        if output_path is not None:
+            print()
+            print(
+                f"Artifact: {output_path}"
+            )
+
         return
 
     if args.command != "investigate":
