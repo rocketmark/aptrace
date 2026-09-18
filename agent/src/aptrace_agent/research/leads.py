@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from dataclasses import dataclass
 from typing import Any
 
@@ -32,7 +34,23 @@ class LeadRegistry:
 
     def __init__(self) -> None:
         self._records: dict[str, _LeadRecord] = {}
+        self._action_index: dict[str, str] = {}
         self._next_id = 1
+
+    def _action_key(
+        self,
+        tool: str,
+        arguments: dict[str, Any],
+    ) -> str:
+        return json.dumps(
+            {
+                "tool": tool,
+                "arguments": arguments,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+            default=str,
+        )
 
     def register(
         self,
@@ -43,6 +61,33 @@ class LeadRegistry:
         arguments: dict[str, Any],
         source_evidence_ids: list[str] | None = None,
     ) -> Lead:
+        action_key = self._action_key(
+            tool,
+            arguments,
+        )
+
+        existing_id = self._action_index.get(
+            action_key
+        )
+
+        if existing_id is not None:
+            existing = self._records[
+                existing_id
+            ].lead
+
+            for evidence_id in (
+                source_evidence_ids or []
+            ):
+                if (
+                    evidence_id
+                    not in existing.source_evidence_ids
+                ):
+                    existing.source_evidence_ids.append(
+                        evidence_id
+                    )
+
+            return existing
+
         lead_id = f"L{self._next_id}"
         self._next_id += 1
 
@@ -60,6 +105,8 @@ class LeadRegistry:
                 arguments=dict(arguments),
             ),
         )
+
+        self._action_index[action_key] = lead_id
 
         return lead
 
