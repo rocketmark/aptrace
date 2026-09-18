@@ -102,7 +102,6 @@ def test_supported_reconciliation_ingests_claim():
       "status": "SUPPORTED",
       "role": "startup reference/input",
       "context": "It is later polled as a held-input check.",
-      "proven_claim_ids": ["C1"],
       "unresolved": [
         "What physical component is connected to PA22?"
       ]
@@ -158,8 +157,12 @@ def test_reconciliation_must_cover_every_query():
         reconciler.run(session)
 
 
-def test_supported_reconciliation_requires_proven_claim():
+def test_supported_reconciliation_requires_structural_provenance():
     session = make_session()
+
+    # Documentary evidence alone is not enough. Remove the
+    # authoritative structural claim that connects PA22 to firmware.
+    session.state.claims.clear()
 
     content = """
 {
@@ -169,7 +172,6 @@ def test_supported_reconciliation_requires_proven_claim():
       "status": "SUPPORTED",
       "role": "startup input",
       "context": null,
-      "proven_claim_ids": [],
       "unresolved": []
     }
   ]
@@ -199,7 +201,6 @@ def test_case_evidence_provenance_is_attached_by_aptrace():
       "status": "SUPPORTED",
       "role": "startup reference/input",
       "context": "It is later polled as a held-input check.",
-      "proven_claim_ids": ["C1"],
       "unresolved": []
     }
   ]

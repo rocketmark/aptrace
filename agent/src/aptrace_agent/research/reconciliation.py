@@ -24,10 +24,6 @@ class EntityReconciliation(BaseModel):
     role: str | None = None
     context: str | None = None
 
-    proven_claim_ids: list[str] = Field(
-        default_factory=list,
-    )
-
     unresolved: list[str] = Field(
         default_factory=list,
     )
@@ -137,6 +133,78 @@ class CaseReconciler:
 
         return content
 
+    def _structural_claim_ids_for_query(
+        self,
+        session: ResearchSession,
+        query: str,
+    ) -> list[str]:
+        """
+        Deterministically connect a case-evidence entity to the
+        authoritative pin-table and callsite claims APTrace already
+        derived.
+        """
+
+        mapping_pattern = re.compile(
+            r"^Logical pin-table index "
+            r"(?P<index>\d+) maps to GPIO "
+            r"(?P<gpio>\S+) "
+        )
+
+        call_pattern = re.compile(
+            r" with r0 literal "
+            r"(?P<index>\d+) "
+            r"\(0x[0-9a-fA-F]+\)\.$"
+        )
+
+        proven = [
+            claim
+            for claim in session.state.claims
+            if claim.grade == ClaimGrade.PROVEN
+        ]
+
+        indices: set[int] = set()
+        mapping_ids: list[str] = []
+
+        for claim in proven:
+            match = mapping_pattern.match(
+                claim.statement
+            )
+
+            if (
+                match is not None
+                and match.group("gpio") == query
+            ):
+                indices.add(
+                    int(match.group("index"))
+                )
+                mapping_ids.append(
+                    claim.id
+                )
+
+        if not mapping_ids:
+            return []
+
+        call_ids: list[str] = []
+
+        for claim in proven:
+            if claim.id in mapping_ids:
+                continue
+
+            match = call_pattern.search(
+                claim.statement
+            )
+
+            if (
+                match is not None
+                and int(match.group("index"))
+                in indices
+            ):
+                call_ids.append(
+                    claim.id
+                )
+
+        return call_ids + mapping_ids
+
     def _resolve_claim_refs(
         self,
         session: ResearchSession,
@@ -195,26 +263,7 @@ class CaseReconciler:
                 "collected case-evidence queries"
             )
 
-        valid_claim_ids = {
-            claim.id
-            for claim in session.state.claims
-            if claim.grade == ClaimGrade.PROVEN
-        }
-
         for item in proposal.reconciliations:
-            unknown_claims = (
-                set(item.proven_claim_ids)
-                - valid_claim_ids
-            )
-
-            if unknown_claims:
-                raise ValueError(
-                    f"{item.query}: unknown PROVEN claims: "
-                    + ", ".join(
-                        sorted(unknown_claims)
-                    )
-                )
-
             if item.status == "SUPPORTED":
                 if not item.role:
                     raise ValueError(
@@ -222,11 +271,18 @@ class CaseReconciler:
                         "reconciliation has no role"
                     )
 
-                if not item.proven_claim_ids:
+                structural_claim_ids = (
+                    self._structural_claim_ids_for_query(
+                        session,
+                        item.query,
+                    )
+                )
+
+                if not structural_claim_ids:
                     raise ValueError(
                         f"{item.query}: supported "
-                        "reconciliation has no PROVEN "
-                        "claim provenance"
+                        "reconciliation has no deterministic "
+                        "structural provenance"
                     )
 
 
@@ -326,10 +382,9 @@ Rules:
 - Do not infer physical connectivity from firmware.
 - Do not promote plausibility into fact.
 - Do not ask questions already answered by authoritative PROVEN facts.
-- A SUPPORTED entry must cite at least one relevant C# PROVEN claim and
-  APTrace supplies each query's case-evidence provenance.
-- In proven_claim_ids, cite only supplied C# identifiers.
-- Do not emit E# provenance; APTrace attaches documentary evidence IDs.
+- APTrace deterministically attaches authoritative structural and
+  documentary provenance for each entity.
+- Do not emit C# or E# identifiers.
 - If no useful role is supported, use
   NO_SUPPORTED_INTERPRETATION.
 
@@ -342,7 +397,6 @@ Return ONLY JSON:
       "status": "SUPPORTED",
       "role": "...",
       "context": "...",
-      "proven_claim_ids": ["C1"],
       "unresolved": ["..."]
     }}
   ]
@@ -357,8 +411,8 @@ Return ONLY JSON:
                     "research with authoritative machine-derived "
                     "facts. Keep entity role, operating context, "
                     "and unresolved questions distinct. APTrace owns "
-                    "documentary evidence identity and provenance; "
-                    "you select relevant C# PROVEN claims."
+                    "documentary and structural evidence identity "
+                    "and provenance; you supply semantic interpretation."
                 ),
             },
             {
@@ -441,12 +495,10 @@ Return ONLY JSON:
                             f"{first_validation_error}\n\n"
                             "Correct only what is necessary to satisfy "
                             "the reconciliation contract. Preserve one "
-                            "entry for every required query. A "
-                            "SUPPORTED entry must cite at least one "
-                            "relevant authoritative C# PROVEN claim "
-                            "APTrace owns documentary evidence "
-                            "identity and provenance. Return only one "
-                            "JSON object "
+                            "entry for every required query. "
+                            "APTrace owns structural and documentary "
+                            "provenance; do not emit C# or E# IDs. "
+                            "Return only one JSON object "
                             "matching the requested schema."
                         ),
                     },
@@ -495,10 +547,17 @@ Return ONLY JSON:
             ):
                 continue
 
+            structural_claim_ids = (
+                self._structural_claim_ids_for_query(
+                    session,
+                    item.query,
+                )
+            )
+
             evidence_ids = (
                 self._resolve_claim_refs(
                     session,
-                    item.proven_claim_ids,
+                    structural_claim_ids,
                 )
             )
 
