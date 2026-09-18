@@ -325,3 +325,86 @@ def test_planner_gets_one_retry_for_missing_tool_call():
     )
 
     assert planner.completions.calls == 2
+
+
+class NoChoicesThenDecisionCompletions:
+    def __init__(self, lead_id):
+        self.lead_id = lead_id
+        self.calls = 0
+
+    def create(self, **kwargs):
+        self.calls += 1
+
+        if self.calls == 1:
+            return SimpleNamespace(
+                choices=None
+            )
+
+        return SimpleNamespace(
+            choices=[
+                SimpleNamespace(
+                    message=SimpleNamespace(
+                        content=None,
+                        tool_calls=[
+                            SimpleNamespace(
+                                function=SimpleNamespace(
+                                    name="follow_lead",
+                                    arguments=__import__(
+                                        "json"
+                                    ).dumps(
+                                        {
+                                            "lead_id":
+                                            self.lead_id
+                                        }
+                                    ),
+                                )
+                            )
+                        ],
+                    )
+                )
+            ]
+        )
+
+
+class NoChoicesThenDecisionClient:
+    def __init__(self, lead_id):
+        self.completions = (
+            NoChoicesThenDecisionCompletions(
+                lead_id
+            )
+        )
+
+        self.chat = SimpleNamespace(
+            completions=self.completions
+        )
+
+
+def test_planner_retries_response_with_no_choices():
+    session, registry = make_session()
+
+    lead = add_lead(
+        session,
+        registry,
+    )
+
+    planner = NoChoicesThenDecisionClient(
+        lead.id
+    )
+
+    controller = ResearchController(
+        planner_client=planner,
+        planner_model="test",
+        reconciler=FakeReconciler(),
+    )
+
+    result = controller.run(
+        session
+    )
+
+    assert result.stop_reason == (
+        "research_graph_exhausted"
+    )
+
+    assert planner.completions.calls == 2
+    assert len(result.steps) == 1
+    assert result.steps[0].lead_id == lead.id

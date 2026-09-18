@@ -119,38 +119,73 @@ class ResearchController:
             )
 
         if observation.tool == "function_disassembly":
-            instructions = "\n".join(
-                f"  {item.get('address')} "
-                f"{item.get('mnemonic')} "
-                f"{item.get('operands', '')}".rstrip()
-                for item in result.get(
-                    "instructions",
-                    [],
-                )
+            instructions = result.get(
+                "instructions",
+                [],
+            )
+
+            first_address = (
+                instructions[0].get("address")
+                if instructions
+                else None
+            )
+
+            last_address = (
+                instructions[-1].get("address")
+                if instructions
+                else None
             )
 
             return (
                 f"{observation.id} "
-                f"function_disassembly:\n"
-                f"{instructions}"
+                f"function_disassembly: "
+                f"{len(instructions)} instructions "
+                f"from {first_address} to {last_address}; "
+                "full disassembly retained by APTrace"
             )
 
         if observation.tool == "callsite_context":
-            instructions = "\n".join(
+            instructions = result.get(
+                "instructions",
+                [],
+            )
+
+            callsite = result.get(
+                "address"
+            )
+
+            call_index = None
+
+            for index, item in enumerate(
+                instructions
+            ):
+                if item.get("address") == callsite:
+                    call_index = index
+                    break
+
+            if call_index is None:
+                selected = instructions[:6]
+            else:
+                selected = instructions[
+                    max(0, call_index - 2):
+                    min(
+                        len(instructions),
+                        call_index + 4,
+                    )
+                ]
+
+            rendered = "\n".join(
                 f"  {item.get('address')} "
                 f"{item.get('mnemonic')} "
                 f"{item.get('operands', '')}".rstrip()
-                for item in result.get(
-                    "instructions",
-                    [],
-                )
+                for item in selected
             )
 
             return (
                 f"{observation.id} callsite_context "
                 f"{result.get('function')} "
-                f"@ {result.get('address')}:\n"
-                f"{instructions}"
+                f"@ {callsite}:\n"
+                f"{rendered}"
             )
 
         if observation.tool == "pin_table_entry":
@@ -168,7 +203,7 @@ class ResearchController:
             for match in result.get(
                 "matches",
                 [],
-            )[:3]:
+            )[:2]:
                 excerpt = " ".join(
                     str(
                         match.get(
@@ -178,9 +213,9 @@ class ResearchController:
                     ).split()
                 )
 
-                if len(excerpt) > 300:
+                if len(excerpt) > 220:
                     excerpt = (
-                        excerpt[:300]
+                        excerpt[:220]
                         + "..."
                     )
 
@@ -450,15 +485,46 @@ Otherwise use follow_lead exactly once.
                 )
             )
 
-            message = (
-                response.choices[0].message
+            choices = getattr(
+                response,
+                "choices",
+                None,
             )
 
-            tool_calls = (
-                message.tool_calls or []
-            )
+            message = None
 
-            if len(tool_calls) == 1:
+            if not choices:
+                problem = (
+                    "planner response contained "
+                    "no choices"
+                )
+
+                tool_calls = []
+            else:
+                message = getattr(
+                    choices[0],
+                    "message",
+                    None,
+                )
+
+                if message is None:
+                    problem = (
+                        "planner response choice "
+                        "contained no message"
+                    )
+
+                    tool_calls = []
+                else:
+                    tool_calls = (
+                        getattr(
+                            message,
+                            "tool_calls",
+                            None,
+                        )
+                        or []
+                    )
+
+            if message is not None and len(tool_calls) == 1:
                 call = tool_calls[0]
 
                 try:
@@ -518,7 +584,7 @@ Otherwise use follow_lead exactly once.
                             "unexpected tool "
                             f"{name!r}"
                         )
-            else:
+            elif message is not None:
                 problem = (
                     "expected exactly one tool call, "
                     f"received {len(tool_calls)}"
@@ -533,8 +599,16 @@ Otherwise use follow_lead exactly once.
                         {
                             "role": "assistant",
                             "content": (
-                                message.content
-                                or ""
+                                (
+                                    getattr(
+                                        message,
+                                        "content",
+                                        None,
+                                    )
+                                    or ""
+                                )
+                                if message is not None
+                                else ""
                             ),
                         },
                         {

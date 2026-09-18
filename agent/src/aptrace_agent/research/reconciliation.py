@@ -28,10 +28,6 @@ class EntityReconciliation(BaseModel):
         default_factory=list,
     )
 
-    case_evidence_ids: list[str] = Field(
-        default_factory=list,
-    )
-
     unresolved: list[str] = Field(
         default_factory=list,
     )
@@ -199,10 +195,6 @@ class CaseReconciler:
                 "collected case-evidence queries"
             )
 
-        valid_case_ids = set(
-            expected.values()
-        )
-
         valid_claim_ids = {
             claim.id
             for claim in session.state.claims
@@ -223,23 +215,6 @@ class CaseReconciler:
                     )
                 )
 
-            unknown_case = (
-                set(item.case_evidence_ids)
-                - valid_case_ids
-            )
-
-            if unknown_case:
-                raise ValueError(
-                    f"{item.query}: unknown case evidence: "
-                    + ", ".join(
-                        sorted(unknown_case)
-                    )
-                )
-
-            own_case_id = expected[
-                item.query
-            ]
-
             if item.status == "SUPPORTED":
                 if not item.role:
                     raise ValueError(
@@ -254,15 +229,6 @@ class CaseReconciler:
                         "claim provenance"
                     )
 
-                if (
-                    own_case_id
-                    not in item.case_evidence_ids
-                ):
-                    raise ValueError(
-                        f"{item.query}: supported "
-                        "reconciliation does not cite "
-                        "its own case evidence"
-                    )
 
     def run(
         self,
@@ -361,8 +327,9 @@ Rules:
 - Do not promote plausibility into fact.
 - Do not ask questions already answered by authoritative PROVEN facts.
 - A SUPPORTED entry must cite at least one relevant C# PROVEN claim and
-  that entity's own E# case-evidence observation.
-- Cite only supplied C# and E# identifiers.
+  APTrace supplies each query's case-evidence provenance.
+- In proven_claim_ids, cite only supplied C# identifiers.
+- Do not emit E# provenance; APTrace attaches documentary evidence IDs.
 - If no useful role is supported, use
   NO_SUPPORTED_INTERPRETATION.
 
@@ -376,7 +343,6 @@ Return ONLY JSON:
       "role": "...",
       "context": "...",
       "proven_claim_ids": ["C1"],
-      "case_evidence_ids": ["E11"],
       "unresolved": ["..."]
     }}
   ]
@@ -390,7 +356,9 @@ Return ONLY JSON:
                     "You reconcile documentary firmware "
                     "research with authoritative machine-derived "
                     "facts. Keep entity role, operating context, "
-                    "and unresolved questions distinct."
+                    "and unresolved questions distinct. APTrace owns "
+                    "documentary evidence identity and provenance; "
+                    "you select relevant C# PROVEN claims."
                 ),
             },
             {
@@ -476,8 +444,9 @@ Return ONLY JSON:
                             "entry for every required query. A "
                             "SUPPORTED entry must cite at least one "
                             "relevant authoritative C# PROVEN claim "
-                            "and that entity's own E# case-evidence "
-                            "observation. Return only one JSON object "
+                            "APTrace owns documentary evidence "
+                            "identity and provenance. Return only one "
+                            "JSON object "
                             "matching the requested schema."
                         ),
                     },
@@ -533,13 +502,14 @@ Return ONLY JSON:
                 )
             )
 
-            for evidence_id in (
-                item.case_evidence_ids
-            ):
-                if evidence_id not in evidence_ids:
-                    evidence_ids.append(
-                        evidence_id
-                    )
+            case_evidence_id = case_by_query[
+                item.query
+            ]
+
+            if case_evidence_id not in evidence_ids:
+                evidence_ids.append(
+                    case_evidence_id
+                )
 
             statement = (
                 f"{item.query}: "

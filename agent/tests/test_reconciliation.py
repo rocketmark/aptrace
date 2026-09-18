@@ -103,7 +103,6 @@ def test_supported_reconciliation_ingests_claim():
       "role": "startup reference/input",
       "context": "It is later polled as a held-input check.",
       "proven_claim_ids": ["C1"],
-      "case_evidence_ids": ["E2"],
       "unresolved": [
         "What physical component is connected to PA22?"
       ]
@@ -171,7 +170,6 @@ def test_supported_reconciliation_requires_proven_claim():
       "role": "startup input",
       "context": null,
       "proven_claim_ids": [],
-      "case_evidence_ids": ["E2"],
       "unresolved": []
     }
   ]
@@ -188,3 +186,47 @@ def test_supported_reconciliation_requires_proven_claim():
         match="semantic validation twice",
     ):
         reconciler.run(session)
+
+
+def test_case_evidence_provenance_is_attached_by_aptrace():
+    session = make_session()
+
+    content = """
+{
+  "reconciliations": [
+    {
+      "query": "PA22",
+      "status": "SUPPORTED",
+      "role": "startup reference/input",
+      "context": "It is later polled as a held-input check.",
+      "proven_claim_ids": ["C1"],
+      "unresolved": []
+    }
+  ]
+}
+"""
+
+    reconciler = CaseReconciler(
+        client=FakeClient(content),
+        model="test",
+    )
+
+    reconciler.run(session)
+
+    supported = [
+        claim
+        for claim in session.state.claims
+        if claim.grade.value == "SUPPORTED"
+    ]
+
+    assert len(supported) == 1
+
+    claim = supported[0]
+
+    # E1 comes from authoritative C1.
+    # E2 is the PA22 search_case_evidence observation.
+    # Gemma did not author E2; APTrace attached it.
+    assert claim.evidence_ids == [
+        "E1",
+        "E2",
+    ]
