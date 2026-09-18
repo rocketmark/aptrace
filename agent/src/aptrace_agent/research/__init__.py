@@ -9,6 +9,11 @@ proposes claims and hypotheses, identifies open questions, and decides
 when sufficient evidence exists.
 """
 
+from aptrace_agent.research.controller import (
+    ResearchController,
+    ResearchRunResult,
+    ResearchStep,
+)
 from aptrace_agent.research.derivation import (
     DerivationResult,
     LeadDeriver,
@@ -71,6 +76,9 @@ __all__ = [
     "EntityReconciliation",
     "ReconciliationProposal",
     "ResearchSession",
+    "ResearchController",
+    "ResearchRunResult",
+    "ResearchStep",
     "ResearchState",
     "ResearchStateUpdater",
     "StateFactDeriver",
