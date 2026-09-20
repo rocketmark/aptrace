@@ -37,7 +37,7 @@ class InvestigationRun:
 @dataclass
 class AutonomousInvestigationRun:
     objective: str
-    seed_function: str
+    seed_function: str | None
     result: ResearchRunResult
     state: ResearchState
     evidence: tuple[EvidenceObservation, ...]
@@ -117,7 +117,7 @@ def run_investigation(
 def run_autonomous_investigation(
     objective: str,
     *,
-    seed_function: str,
+    seed_function: str | None = None,
     max_steps: int = 12,
     planner_model: str | None = None,
     review_model: str | None = None,
@@ -126,8 +126,9 @@ def run_autonomous_investigation(
     """
     Run one bounded autonomous firmware investigation.
 
-    The seed establishes the initial firmware evidence. From that point
-    onward the ResearchController chooses among APTrace-validated leads.
+    If a seed function is supplied, APTrace starts from that firmware
+    function. Otherwise the ResearchController performs bounded
+    objective-driven discovery before entering the normal lead graph.
     """
 
     objective = objective.strip()
@@ -137,12 +138,15 @@ def run_autonomous_investigation(
             "research objective must not be empty"
         )
 
-    seed_function = seed_function.strip()
-
-    if not seed_function:
-        raise ValueError(
-            "seed function must not be empty"
+    if seed_function is not None:
+        seed_function = (
+            seed_function.strip()
         )
+
+        if not seed_function:
+            raise ValueError(
+                "seed function must not be empty"
+            )
 
     executor = EvidenceExecutor()
     registry = LeadRegistry()
@@ -159,32 +163,36 @@ def run_autonomous_investigation(
             callsite_reader=(
                 performing_rigs_callsite_context()
             ),
+            function_facts_reader=(
+                executor.ghidra
+            ),
         ),
     )
 
-    session.record(
-        executor.execute_operation(
-            "function_facts",
-            {
-                "function": seed_function,
-            },
-            evidence_id=(
-                session.ledger.next_id()
-            ),
+    if seed_function is not None:
+        session.record(
+            executor.execute_operation(
+                "function_facts",
+                {
+                    "function": seed_function,
+                },
+                evidence_id=(
+                    session.ledger.next_id()
+                ),
+            )
         )
-    )
 
-    session.record(
-        executor.execute_operation(
-            "function_disassembly",
-            {
-                "function": seed_function,
-            },
-            evidence_id=(
-                session.ledger.next_id()
-            ),
+        session.record(
+            executor.execute_operation(
+                "function_disassembly",
+                {
+                    "function": seed_function,
+                },
+                evidence_id=(
+                    session.ledger.next_id()
+                ),
+            )
         )
-    )
 
     research_controller = (
         controller

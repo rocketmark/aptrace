@@ -293,8 +293,14 @@ class CaseReconciler:
         case_observations = [
             observation
             for observation in session.ledger.all()
-            if observation.tool
-            == "search_case_evidence"
+            if (
+                observation.tool
+                == "search_case_evidence"
+                and observation.arguments.get(
+                    "purpose"
+                )
+                != "discovery"
+            )
         ]
 
         if not case_observations:

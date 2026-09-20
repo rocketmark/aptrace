@@ -150,6 +150,7 @@ def test_zero_open_leads_stops_without_planner_call():
         planner_client=planner,
         planner_model="test",
         reconciler=reconciler,
+        max_discovery_steps=0,
     )
 
     result = controller.run(
@@ -408,3 +409,45 @@ def test_planner_retries_response_with_no_choices():
     assert planner.completions.calls == 2
     assert len(result.steps) == 1
     assert result.steps[0].lead_id == lead.id
+
+
+def test_repeated_discovery_query_finishes_cleanly():
+    session, _ = make_session()
+
+    planner = FakePlannerClient(
+        [
+            (
+                "search_case_evidence",
+                {
+                    "query": "TMC5160 SPI",
+                },
+            ),
+            (
+                "search_case_evidence",
+                {
+                    "query": "TMC5160 SPI",
+                },
+            ),
+        ]
+    )
+
+    reconciler = FakeReconciler()
+
+    controller = ResearchController(
+        planner_client=planner,
+        planner_model="test",
+        reconciler=reconciler,
+    )
+
+    action, arguments = (
+        controller._request_discovery(
+            session,
+            {"tmc5160 spi"},
+        )
+    )
+
+    assert action == "finish"
+    assert (
+        "could not produce"
+        in arguments["reason"]
+    )

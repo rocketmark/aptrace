@@ -223,11 +223,11 @@ def main() -> None:
 
     research.add_argument(
         "--function",
-        required=True,
         dest="seed_function",
         help=(
-            "Seed function, for example "
-            "FUN_0000d3dc"
+            "Optional expert seed function, for example "
+            "FUN_0000d3dc. If omitted, APTrace performs "
+            "bounded objective-driven discovery."
         ),
     )
 

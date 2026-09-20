@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Protocol
@@ -15,6 +16,14 @@ class CallsiteReader(Protocol):
         address: int | str,
         before: int = 8,
         after: int = 8,
+    ) -> Any:
+        ...
+
+
+class FunctionFactsReader(Protocol):
+    def function_facts(
+        self,
+        function: str,
     ) -> Any:
         ...
 
@@ -83,13 +92,17 @@ def generate_function_fact_leads(
     evidence_id: str,
     registry: LeadRegistry,
     callsite_reader: CallsiteReader,
+    function_facts_reader: FunctionFactsReader | None = None,
+    max_incoming_calls: int = 8,
+    max_outgoing_functions: int = 6,
 ) -> LeadGenerationResult:
     """
-    Generate validated incoming-call leads from FunctionFacts.
+    Generate validated structural leads from FunctionFacts.
 
-    Every structural lead is checked against the execution backend before
-    registration. Metadata that cannot be executed becomes an issue instead
-    of a model-visible lead.
+    Incoming and outgoing calls become validated callsite leads.
+    Valid outgoing callees may additionally become bounded function-facts
+    and disassembly leads so the research graph can move forward through
+    the call graph.
     """
 
     data = _mapping(facts)
@@ -106,8 +119,16 @@ def generate_function_fact_leads(
     leads: list[Lead] = []
     issues: list[LeadGenerationIssue] = []
     seen: set[tuple[str, str]] = set()
+    expanded_callees: set[str] = set()
+    incoming_call_count = 0
+    outgoing_function_count = 0
 
     for entry in callers:
+        if (
+            incoming_call_count
+            >= max_incoming_calls
+        ):
+            break
         caller_data = _mapping(entry)
 
         caller = _first(
@@ -160,7 +181,9 @@ def generate_function_fact_leads(
                     kind="invalid-callsite",
                     description=description,
                     reason=str(exc),
-                    source_evidence_ids=(evidence_id,),
+                    source_evidence_ids=(
+                        evidence_id,
+                    ),
                 )
             )
             continue
@@ -176,7 +199,162 @@ def generate_function_fact_leads(
                     "before": 8,
                     "after": 8,
                 },
-                source_evidence_ids=[evidence_id],
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+        incoming_call_count += 1
+
+    target_text = str(target)
+    callees = data.get("callees") or []
+
+    for entry in callees:
+        callee_data = _mapping(entry)
+
+        callee = _first(
+            callee_data,
+            "function",
+            "callee",
+            "callee_name",
+            "name",
+        )
+
+        address = _first(
+            callee_data,
+            "address",
+            "callsite",
+            "callsite_address",
+            "site",
+        )
+
+        if callee is None or address is None:
+            continue
+
+        callee_text = str(callee)
+        address_text = _address(address)
+
+        identity = (
+            target_text,
+            address_text,
+        )
+
+        if identity in seen:
+            continue
+
+        seen.add(identity)
+
+        description = (
+            f"Inspect outgoing call from {target_text} to "
+            f"{callee_text} at {address_text}"
+        )
+
+        try:
+            callsite_reader.context(
+                target_text,
+                address_text,
+                before=0,
+                after=0,
+            )
+        except ValueError as exc:
+            issues.append(
+                LeadGenerationIssue(
+                    kind="invalid-callsite",
+                    description=description,
+                    reason=str(exc),
+                    source_evidence_ids=(
+                        evidence_id,
+                    ),
+                )
+            )
+            continue
+
+        leads.append(
+            registry.register(
+                kind="callsite",
+                description=description,
+                tool="callsite_context",
+                arguments={
+                    "function": target_text,
+                    "address": address_text,
+                    "before": 8,
+                    "after": 8,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+        if (
+            function_facts_reader is None
+            or outgoing_function_count
+            >= max_outgoing_functions
+            or callee_text == target_text
+            or callee_text in expanded_callees
+        ):
+            continue
+
+        try:
+            function_facts_reader.function_facts(
+                callee_text
+            )
+        except (KeyError, ValueError) as exc:
+            issues.append(
+                LeadGenerationIssue(
+                    kind="invalid-outgoing-function",
+                    description=(
+                        f"Inspect outgoing callee "
+                        f"{callee_text} from "
+                        f"{target_text}"
+                    ),
+                    reason=str(exc),
+                    source_evidence_ids=(
+                        evidence_id,
+                    ),
+                )
+            )
+            continue
+
+        expanded_callees.add(
+            callee_text
+        )
+        outgoing_function_count += 1
+
+        leads.append(
+            registry.register(
+                kind="function",
+                description=(
+                    f"Inspect outgoing callee "
+                    f"{callee_text} from "
+                    f"{target_text}"
+                ),
+                tool="function_facts",
+                arguments={
+                    "function": callee_text,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+        leads.append(
+            registry.register(
+                kind="function-disassembly",
+                description=(
+                    f"Inspect disassembly of outgoing "
+                    f"callee {callee_text} from "
+                    f"{target_text}"
+                ),
+                tool="function_disassembly",
+                arguments={
+                    "function": callee_text,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
             )
         )
 
@@ -364,3 +542,221 @@ def generate_case_search_leads_from_pin_table(
             ],
         )
     ]
+
+
+
+_DISCOVERED_FUNCTION_RE = re.compile(
+    r"\bFUN_([0-9a-fA-F]{8})\b"
+)
+
+_DISCOVERED_ADDRESS_RE = re.compile(
+    r"\b0x([0-9a-fA-F]{4,8})\b"
+)
+
+
+def generate_function_leads_from_case_evidence(
+    observation: Any,
+    *,
+    evidence_id: str,
+    registry: LeadRegistry,
+    function_facts_reader: FunctionFactsReader,
+    max_functions: int = 8,
+) -> LeadGenerationResult:
+    """
+    Convert concrete firmware-function names found in an explicit
+    discovery search into validated APTrace leads.
+
+    The model chooses only the semantic search query. Function names
+    come from retrieved evidence and are validated against the current
+    firmware index before becoming leads.
+    """
+
+    data = _mapping(observation)
+
+    if data.get("tool") != "search_case_evidence":
+        return LeadGenerationResult(
+            leads=(),
+            issues=(),
+        )
+
+    arguments = _mapping(
+        data.get("arguments")
+    )
+
+    if arguments.get("purpose") != "discovery":
+        return LeadGenerationResult(
+            leads=(),
+            issues=(),
+        )
+
+    result = _mapping(
+        data.get("result")
+    )
+
+    query = str(
+        result.get("query", "")
+    ).strip()
+
+    explicit_functions: list[str] = []
+    address_candidates: list[str] = []
+
+    for raw_match in result.get(
+        "matches",
+        [],
+    ):
+        match = _mapping(raw_match)
+
+        searchable = "\n".join(
+            [
+                str(
+                    match.get(
+                        "source",
+                        "",
+                    )
+                ),
+                str(
+                    match.get(
+                        "excerpt",
+                        "",
+                    )
+                ),
+            ]
+        )
+
+        for suffix in (
+            _DISCOVERED_FUNCTION_RE.findall(
+                searchable
+            )
+        ):
+            function = (
+                "FUN_" + suffix.lower()
+            )
+
+            if function not in explicit_functions:
+                explicit_functions.append(
+                    function
+                )
+
+        for suffix in (
+            _DISCOVERED_ADDRESS_RE.findall(
+                searchable
+            )
+        ):
+            address = int(
+                suffix,
+                16,
+            )
+
+            function = (
+                f"FUN_{address:08x}"
+            )
+
+            if (
+                function
+                not in address_candidates
+            ):
+                address_candidates.append(
+                    function
+                )
+
+    leads: list[Lead] = []
+    issues: list[LeadGenerationIssue] = []
+    discovered: list[str] = []
+
+    for function in explicit_functions:
+        try:
+            function_facts_reader.function_facts(
+                function
+            )
+        except (KeyError, ValueError) as exc:
+            issues.append(
+                LeadGenerationIssue(
+                    kind="invalid-discovered-function",
+                    description=(
+                        f"Inspect firmware function "
+                        f"{function} mentioned by "
+                        f"discovery query {query!r}"
+                    ),
+                    reason=str(exc),
+                    source_evidence_ids=(
+                        evidence_id,
+                    ),
+                )
+            )
+            continue
+
+        discovered.append(
+            function
+        )
+
+        if len(discovered) >= max_functions:
+            break
+
+    if len(discovered) < max_functions:
+        for function in address_candidates:
+            if function in discovered:
+                continue
+
+            try:
+                function_facts_reader.function_facts(
+                    function
+                )
+            except (KeyError, ValueError):
+                # Naked documentary addresses are only promoted when
+                # they exactly match a current firmware function entry.
+                # Invalid addresses are expected and are not issues.
+                continue
+
+            discovered.append(
+                function
+            )
+
+            if (
+                len(discovered)
+                >= max_functions
+            ):
+                break
+
+    for function in discovered:
+
+        description = (
+            f"Inspect firmware function {function} "
+            f"mentioned by discovery query {query!r}"
+        )
+
+        leads.append(
+            registry.register(
+                kind="function",
+                description=description,
+                tool="function_facts",
+                arguments={
+                    "function": function,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+        leads.append(
+            registry.register(
+                kind="function-disassembly",
+                description=(
+                    f"Inspect disassembly of {function} "
+                    f"mentioned by discovery query "
+                    f"{query!r}"
+                ),
+                tool="function_disassembly",
+                arguments={
+                    "function": function,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+    return LeadGenerationResult(
+        leads=tuple(leads),
+        issues=tuple(issues),
+    )
