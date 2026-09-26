@@ -1,0 +1,50 @@
+{
+	"folders": [
+		{
+			"name": "APTrace (framework)",
+			"path": "."
+		},
+		{
+			"name": "Agent (Python)",
+			"path": "agent"
+		},
+		{
+			"name": "Case: Performing Rigs",
+			"path": "cases/performing-rigs"
+		}
+	],
+	"settings": {
+		"files.watcherExclude": {
+			"**/dist-newstyle/**": true,
+			"**/external/**": true,
+			"**/.venv/**": true,
+			"**/*.ghidra_cache/**": true,
+			"**/research/runs/**": true
+		},
+		"search.exclude": {
+			"**/dist-newstyle": true,
+			"**/external": true,
+			"**/.venv": true,
+			"**/uv.lock": true,
+			"cabal.project.freeze*": true
+		},
+		"files.exclude": {
+			"**/.DS_Store": true
+		},
+		"haskell.manageHLS": "GHCup",
+		"haskell.serverEnvironment": {
+			"PATH": "${workspaceFolder:APTrace (framework)}/external/macaw:${env:PATH}"
+		},
+		"python.analysis.autoImportCompletions": true
+	},
+	"extensions": {
+		"recommendations": [
+			"haskell.haskell",
+			"justusadam.language-haskell",
+			"ms-python.python",
+			"ms-python.vscode-pylance",
+			"timonwong.shellcheck",
+			"tamasfe.even-better-toml"
+		]
+	}
+}
