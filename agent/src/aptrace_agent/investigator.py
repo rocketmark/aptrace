@@ -200,6 +200,9 @@ def run_autonomous_investigation(
             planner_model=planner_model,
             review_model=review_model,
             max_steps=max_steps,
+            census_peripherals=(
+                executor.census.available_peripherals()
+            ),
         )
     )
 

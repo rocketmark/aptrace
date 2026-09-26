@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import Any
 
@@ -52,6 +53,8 @@ class ResearchController:
         max_steps: int = 12,
         max_discovery_steps: int = 3,
         recent_evidence_limit: int = 6,
+        census_peripherals: Sequence[str] = (),
+        max_structural_analyses: int = 4,
     ) -> None:
         if max_steps < 1:
             raise ValueError(
@@ -107,6 +110,171 @@ class ResearchController:
         self.recent_evidence_limit = (
             recent_evidence_limit
         )
+
+        # APTrace-validated peripheral names with census evidence. The
+        # planner may only choose among these; APTrace owns firmware,
+        # database, limits and execution.
+        self.census_peripherals = tuple(
+            sorted(set(census_peripherals))
+        )
+        self.max_structural_analyses = (
+            max_structural_analyses
+        )
+
+    def _census_observations(
+        self,
+        session: ResearchSession,
+    ) -> list:
+        return [
+            observation
+            for observation in session.ledger.all()
+            if observation.tool
+            == "census_peripheral_usage"
+        ]
+
+    def _analyzable_peripherals(
+        self,
+        session: ResearchSession,
+    ) -> list[str]:
+        done = self._census_observations(
+            session
+        )
+
+        if len(done) >= self.max_structural_analyses:
+            return []
+
+        analyzed = {
+            observation.arguments.get(
+                "peripheral"
+            )
+            for observation in done
+        }
+
+        return [
+            name
+            for name in self.census_peripherals
+            if name not in analyzed
+        ]
+
+    @staticmethod
+    def _analysis_tool(
+        peripherals: list[str],
+    ) -> dict[str, Any]:
+        return {
+            "type": "function",
+            "function": {
+                "name": "analyze_peripheral",
+                "description": (
+                    "Subsystem-level structural analysis "
+                    "of one MCU peripheral from APTrace's "
+                    "firmware census: which functions "
+                    "access its registers or load its "
+                    "address, and their reachability."
+                ),
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "peripheral": {
+                            "type": "string",
+                            "enum": peripherals,
+                        }
+                    },
+                    "required": [
+                        "peripheral",
+                    ],
+                    "additionalProperties": False,
+                },
+            },
+        }
+
+    def _analysis_guidance(
+        self,
+        session: ResearchSession,
+        peripherals: list[str],
+    ) -> str:
+        if not peripherals:
+            return ""
+
+        analyzed = ", ".join(
+            f"{observation.arguments.get('peripheral')} "
+            f"({observation.id})"
+            for observation in self._census_observations(
+                session
+            )
+        ) or "(none)"
+
+        return f"""
+STRUCTURAL ANALYSIS
+
+analyze_peripheral answers subsystem-level questions about one MCU
+peripheral in a single step, from APTrace's precomputed firmware census.
+Prefer this order:
+1. existing case evidence
+2. analyze_peripheral for a peripheral relevant to the objective
+3. inspection of the functions it narrows to
+4. caller/callee expansion only for a specific remaining question
+Census facts are structural; they do not identify attached devices.
+Already analyzed (do not repeat): {analyzed}
+"""
+
+    def _analysis_problem(
+        self,
+        session: ResearchSession,
+        peripheral: Any,
+    ) -> str:
+        for observation in self._census_observations(
+            session
+        ):
+            if observation.arguments.get(
+                "peripheral"
+            ) == peripheral:
+                return (
+                    f"{peripheral} was already analyzed "
+                    f"in {observation.id}; choose a "
+                    "different listed peripheral or "
+                    "another action"
+                )
+
+        return (
+            "analyze_peripheral requires "
+            "one of the listed peripherals"
+        )
+
+    def _follow_peripheral_analysis(
+        self,
+        session: ResearchSession,
+        peripheral: str,
+    ):
+        lead = session.registry.register(
+            kind="census",
+            description=(
+                f"Census structural usage of "
+                f"peripheral {peripheral}"
+            ),
+            tool="census_peripheral_usage",
+            arguments={
+                "peripheral": peripheral,
+                "limit": 25,
+            },
+            source_evidence_ids=[],
+        )
+
+        if all(
+            existing.id != lead.id
+            for existing
+            in session.state.leads
+        ):
+            session.state.add_lead(
+                lead
+            )
+
+        observation = (
+            session.follow_lead(
+                lead.id
+            )
+        )
+
+        return lead, observation
 
     def _format_observation(
         self,
@@ -198,6 +366,11 @@ class ResearchController:
                 f"{rendered}"
             )
 
+        if observation.tool == "census_peripheral_usage":
+            return self._format_census(
+                observation
+            )
+
         if observation.tool == "pin_table_entry":
             return (
                 f"{observation.id} pin_table_entry: "
@@ -246,6 +419,55 @@ class ResearchController:
             f"{observation.id} "
             f"{observation.tool}: "
             f"{json.dumps(result, sort_keys=True)}"
+        )
+
+    @staticmethod
+    def _format_census(
+        observation,
+    ) -> str:
+        result = observation.result
+        header = (
+            f"{observation.id} census_peripheral_usage "
+            f"{result.get('peripheral')}: "
+            f"status={result.get('status')}"
+        )
+
+        if result.get("status") != "ok":
+            return (
+                f"{header} "
+                f"({result.get('diagnostic')})"
+            )
+
+        functions = [
+            item.get("function")
+            for item in result.get(
+                "functions",
+                [],
+            )[:6]
+        ]
+
+        unattributed = [
+            str(item.get("site"))
+            for item in result.get(
+                "unattributed_sites",
+                [],
+            )[:4]
+        ]
+
+        return (
+            f"{header} "
+            f"mmio_sites={result.get('total_mmio_sites')} "
+            f"address_constants="
+            f"{result.get('total_address_constants')} "
+            f"(unreferenced="
+            f"{result.get('unreferenced_address_constants')}) "
+            f"functions={result.get('total_functions')} "
+            f"[{', '.join(functions)}]"
+            + (
+                f" unattributed_sites=[{', '.join(unattributed)}]"
+                if unattributed
+                else ""
+            )
         )
 
     def _state_digest(
@@ -432,6 +654,12 @@ class ResearchController:
                 f"{function}@{address}"
             )
 
+        if tool == "census_peripheral_usage":
+            return (
+                f"{lead.id} census peripheral "
+                f"{args.get('peripheral', '?')}"
+            )
+
         if tool == "pin_table_entry":
             return (
                 f"{lead.id} pin_table_entry "
@@ -465,6 +693,7 @@ class ResearchController:
     def _prompt(
         self,
         session: ResearchSession,
+        analyzable: list[str],
     ) -> str:
         all_open_leads = (
             session.state.open_leads()
@@ -474,6 +703,12 @@ class ResearchController:
             self._planner_open_leads(
                 session
             )
+        )
+
+        actions = (
+            "follow_lead or analyze_peripheral"
+            if analyzable
+            else "follow_lead"
         )
 
         lead_text = "\n".join(
@@ -507,7 +742,7 @@ RESEARCH STATE
 OPEN APTRACE-VALIDATED LEADS
 
 {lead_text}
-
+{self._analysis_guidance(session, analyzable)}
 TASK
 
 Choose the single highest-value next research action.
@@ -531,7 +766,7 @@ If the available evidence is sufficient for the objective, or the
 remaining leads are unlikely to materially improve the result, use
 finish.
 
-Otherwise use follow_lead exactly once.
+Otherwise use {actions} exactly once.
 """
 
     def _request_decision(
@@ -548,6 +783,12 @@ Otherwise use follow_lead exactly once.
             lead.id
             for lead in open_leads
         ]
+
+        analyzable = (
+            self._analyzable_peripherals(
+                session
+            )
+        )
 
         tools = [
             {
@@ -598,6 +839,14 @@ Otherwise use follow_lead exactly once.
             },
         ]
 
+        if analyzable:
+            tools.insert(
+                1,
+                self._analysis_tool(
+                    analyzable
+                ),
+            )
+
         messages = [
             {
                 "role": "system",
@@ -613,7 +862,8 @@ Otherwise use follow_lead exactly once.
             {
                 "role": "user",
                 "content": self._prompt(
-                    session
+                    session,
+                    analyzable,
                 ),
             },
         ]
@@ -777,6 +1027,27 @@ Otherwise use follow_lead exactly once.
                             "an unavailable lead"
                         )
 
+                    elif (
+                        name == "analyze_peripheral"
+                        and analyzable
+                    ):
+                        peripheral = arguments.get(
+                            "peripheral"
+                        )
+
+                        if peripheral in analyzable:
+                            return (
+                                name,
+                                {
+                                    "peripheral": peripheral,
+                                },
+                            )
+
+                        problem = self._analysis_problem(
+                            session,
+                            peripheral,
+                        )
+
                     elif name == "finish":
                         reason = arguments.get(
                             "reason"
@@ -810,6 +1081,30 @@ Otherwise use follow_lead exactly once.
             if attempt == 0:
                 first_problem = problem
 
+                if "already analyzed" in problem:
+                    # Retry a repeated analysis request as a fresh,
+                    # smaller request without the analysis tool, so the
+                    # planner must choose a lead or finish.
+                    analyzable = []
+                    tools = [
+                        tool
+                        for tool in tools
+                        if tool["function"]["name"]
+                        != "analyze_peripheral"
+                    ]
+                    messages = [
+                        messages[0],
+                        {
+                            "role": "user",
+                            "content": self._prompt(
+                                session,
+                                analyzable,
+                            ),
+                        },
+                    ]
+
+                    continue
+
                 messages = (
                     messages
                     + [
@@ -836,7 +1131,13 @@ Otherwise use follow_lead exactly once.
                                 "controller contract: "
                                 f"{problem}. "
                                 "Make exactly one valid "
-                                "follow_lead or finish "
+                                "follow_lead, "
+                                + (
+                                    "analyze_peripheral, "
+                                    if analyzable
+                                    else ""
+                                )
+                                + "or finish "
                                 "tool call now."
                             ),
                         },
@@ -865,6 +1166,7 @@ Otherwise use follow_lead exactly once.
         self,
         session: ResearchSession,
         attempted_queries: set[str],
+        analyzable: list[str],
     ) -> str:
         attempted = (
             "\n".join(
@@ -910,13 +1212,38 @@ identities found by the search.
 
 Use search_case_evidence exactly once. If no additional documentary
 search is likely to produce a useful firmware starting point, use finish.
-"""
+{self._discovery_analysis_guidance(session, analyzable)}"""
+
+    def _discovery_analysis_guidance(
+        self,
+        session: ResearchSession,
+        analyzable: list[str],
+    ) -> str:
+        if not analyzable:
+            return ""
+
+        return (
+            "\nIf the objective concerns an MCU peripheral or "
+            "interface, analyze_peripheral may be used instead: it "
+            "returns subsystem-level structural firmware evidence "
+            "from APTrace's census in one step.\n"
+            + self._analysis_guidance(
+                session,
+                analyzable,
+            )
+        )
 
     def _request_discovery(
         self,
         session: ResearchSession,
         attempted_queries: set[str],
     ) -> tuple[str, dict[str, Any]]:
+        analyzable = (
+            self._analyzable_peripherals(
+                session
+            )
+        )
+
         tools = [
             {
                 "type": "function",
@@ -966,6 +1293,14 @@ search is likely to produce a useful firmware starting point, use finish.
             },
         ]
 
+        if analyzable:
+            tools.insert(
+                1,
+                self._analysis_tool(
+                    analyzable
+                ),
+            )
+
         messages = [
             {
                 "role": "system",
@@ -982,6 +1317,7 @@ search is likely to produce a useful firmware starting point, use finish.
                 "content": self._discovery_prompt(
                     session,
                     attempted_queries,
+                    analyzable,
                 ),
             },
         ]
@@ -1091,6 +1427,27 @@ search is likely to produce a useful firmware starting point, use finish.
                                 },
                             )
 
+                    elif (
+                        name == "analyze_peripheral"
+                        and analyzable
+                    ):
+                        peripheral = arguments.get(
+                            "peripheral"
+                        )
+
+                        if peripheral in analyzable:
+                            return (
+                                name,
+                                {
+                                    "peripheral": peripheral,
+                                },
+                            )
+
+                        problem = self._analysis_problem(
+                            session,
+                            peripheral,
+                        )
+
                     elif name == "finish":
                         reason = str(
                             arguments.get(
@@ -1125,6 +1482,28 @@ search is likely to produce a useful firmware starting point, use finish.
             if attempt == 0:
                 first_problem = problem
 
+                if "already analyzed" in problem:
+                    analyzable = []
+                    tools = [
+                        tool
+                        for tool in tools
+                        if tool["function"]["name"]
+                        != "analyze_peripheral"
+                    ]
+                    messages = [
+                        messages[0],
+                        {
+                            "role": "user",
+                            "content": self._discovery_prompt(
+                                session,
+                                attempted_queries,
+                                analyzable,
+                            ),
+                        },
+                    ]
+
+                    continue
+
                 messages = (
                     messages
                     + [
@@ -1151,8 +1530,13 @@ search is likely to produce a useful firmware starting point, use finish.
                                 "did not satisfy the "
                                 "discovery contract: "
                                 f"{problem}. Make exactly "
-                                "one valid search_case_evidence "
-                                "or finish tool call now."
+                                "one valid search_case_evidence, "
+                                + (
+                                    "analyze_peripheral, "
+                                    if analyzable
+                                    else ""
+                                )
+                                + "or finish tool call now."
                             ),
                         },
                     ]
@@ -1302,6 +1686,27 @@ search is likely to produce a useful firmware starting point, use finish.
                             reconciled=False,
                         )
 
+                    if action == "analyze_peripheral":
+                        lead, observation = (
+                            self._follow_peripheral_analysis(
+                                session,
+                                arguments["peripheral"],
+                            )
+                        )
+
+                        steps.append(
+                            ResearchStep(
+                                number=step_number,
+                                action="analyze",
+                                lead_id=lead.id,
+                                evidence_id=(
+                                    observation.id
+                                ),
+                            )
+                        )
+
+                        continue
+
                     query = str(
                         arguments["query"]
                     ).strip()
@@ -1420,6 +1825,27 @@ search is likely to produce a useful firmware starting point, use finish.
                     steps=tuple(steps),
                     reconciled=reconciled,
                 )
+
+            if action == "analyze_peripheral":
+                lead, observation = (
+                    self._follow_peripheral_analysis(
+                        session,
+                        arguments["peripheral"],
+                    )
+                )
+
+                steps.append(
+                    ResearchStep(
+                        number=step_number,
+                        action="analyze",
+                        lead_id=lead.id,
+                        evidence_id=(
+                            observation.id
+                        ),
+                    )
+                )
+
+                continue
 
             lead_id = str(
                 arguments["lead_id"]

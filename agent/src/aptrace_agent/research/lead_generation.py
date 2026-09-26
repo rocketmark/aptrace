@@ -760,3 +760,144 @@ def generate_function_leads_from_case_evidence(
         leads=tuple(leads),
         issues=tuple(issues),
     )
+
+
+def generate_function_leads_from_census(
+    observation: Any,
+    *,
+    evidence_id: str,
+    registry: LeadRegistry,
+    function_facts_reader: FunctionFactsReader,
+    max_functions: int = 4,
+) -> LeadGenerationResult:
+    """
+    Promote the functions a census peripheral analysis narrowed to into
+    validated function leads.
+
+    Only functions the census attributes to the peripheral are promoted,
+    in the census result's deterministic order. No caller/callee or
+    callsite expansion happens here.
+    """
+
+    data = _mapping(observation)
+
+    if data.get("tool") != "census_peripheral_usage":
+        return LeadGenerationResult(
+            leads=(),
+            issues=(),
+        )
+
+    result = _mapping(
+        data.get("result")
+    )
+
+    if result.get("status") != "ok":
+        return LeadGenerationResult(
+            leads=(),
+            issues=(),
+        )
+
+    peripheral = str(
+        result.get("peripheral", "")
+    )
+
+    leads: list[Lead] = []
+    issues: list[LeadGenerationIssue] = []
+    promoted = 0
+
+    for raw in result.get(
+        "functions",
+        [],
+    ):
+        if promoted >= max_functions:
+            break
+
+        function = str(
+            _mapping(raw).get("function", "")
+        )
+
+        description = (
+            f"Inspect {function}, which the census "
+            f"associates with {peripheral}"
+        )
+
+        try:
+            function_facts_reader.function_facts(
+                function
+            )
+        except (KeyError, ValueError) as exc:
+            issues.append(
+                LeadGenerationIssue(
+                    kind="invalid-census-function",
+                    description=description,
+                    reason=str(exc),
+                    source_evidence_ids=(
+                        evidence_id,
+                    ),
+                )
+            )
+            continue
+
+        promoted += 1
+
+        leads.append(
+            registry.register(
+                kind="function",
+                description=description,
+                tool="function_facts",
+                arguments={
+                    "function": function,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+        leads.append(
+            registry.register(
+                kind="function-disassembly",
+                description=(
+                    f"Inspect disassembly of {function}, "
+                    f"which the census associates with "
+                    f"{peripheral}"
+                ),
+                tool="function_disassembly",
+                arguments={
+                    "function": function,
+                },
+                source_evidence_ids=[
+                    evidence_id,
+                ],
+            )
+        )
+
+    for raw in result.get(
+        "unattributed_sites",
+        [],
+    ):
+        site = _mapping(raw)
+
+        issues.append(
+            LeadGenerationIssue(
+                kind="unattributed-census-site",
+                description=(
+                    f"{peripheral} reference at "
+                    f"{site.get('site')} "
+                    f"(block {site.get('basic_block')}): "
+                    f"{site.get('detail')}"
+                ),
+                reason=(
+                    "census attributes this site to no "
+                    "known function"
+                ),
+                source_evidence_ids=(
+                    evidence_id,
+                ),
+            )
+        )
+
+    return LeadGenerationResult(
+        leads=tuple(leads),
+        issues=tuple(issues),
+    )

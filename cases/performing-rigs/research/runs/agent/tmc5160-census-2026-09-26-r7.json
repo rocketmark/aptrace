@@ -1,0 +1,543 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-26T19:20:29.450523+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Determine whether the AutoPilot ATSAMD51 directly communicates with the TMC5160 motor drivers. Identify any SPI, UART, or other firmware-controlled interface to the drivers; identify relevant firmware functions and MCU pins; determine what driver configuration or commands can be proven from firmware; distinguish proven communication paths from hardware-only hypotheses.",
+  "seed_function": null,
+  "stop_reason": "planner_prefill_exhausted",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "discover",
+      "lead_id": "L1",
+      "evidence_id": "E1",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "discover",
+      "lead_id": "L2",
+      "evidence_id": "E2",
+      "reason": null
+    },
+    {
+      "number": 3,
+      "action": "analyze",
+      "lead_id": "L7",
+      "evidence_id": "E3",
+      "reason": null
+    },
+    {
+      "number": 4,
+      "action": "follow_lead",
+      "lead_id": "L4",
+      "evidence_id": "E4",
+      "reason": null
+    },
+    {
+      "number": 5,
+      "action": "finish",
+      "lead_id": null,
+      "evidence_id": null,
+      "reason": "Planner request exceeded the local model prefill memory guard. Research stopped cleanly with all accumulated evidence retained."
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "TMC5160 SPI",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "TMC5160 SPI",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 582,
+            "kind": "documentation",
+            "excerpt": "580: - Exact `S` and `OE\u203e` GPIO assignments (PB16/PB17/PB06/PB07 identity is\n581:   `HIGH-CONFIDENCE INFERENCE`, not proven).\n582: - `B1`/`B2` source polarity (which side is MCU-internal vs. external\n583:   RJ45).\n584: - TMC5160 SPI/UART/standalone configuration mode (still `UNKNOWN`,",
+            "score": 22
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 88,
+            "kind": "documentation",
+            "excerpt": "86: | External RJ45 STEP/DIR in | *unknown* | *unknown* | **UNKNOWN** | UNKNOWN | NEIGHBORHOOD_ONLY | UNKNOWN |\n87: | Motor driver IC (chip identity: TMC5160A-TA) | n/a (not a GPIO) | n/a | n/a | n/a | **PROVEN \u2014 PCB PHOTO** | PROBABLE (1 of 4 channels) |\n88: | Motor driver power stage (CSD88537ND, TI) | n/a (not a GPIO) | n/a | n/a | n/a | **PROVEN \u2014 PCB PHOTO + MARKING MATCH** | PROBABLE (power stage, not motor-control) |\n89: | Motor bus mux candidate (SN74CBTLV3257, TI) | n/a (not traced) | n/a | n/a | n/a | **PROVEN \u2014 PCB PHOTO + MARKING MATCH** (identity only) | UNKNOWN (bus role not established) |\n90: | Motor driver SPI/UART (SCK/SDI/SDO/CSN) | *unknown* | *unknown* | **UNKNOWN** | UNKNOWN | TRACE_UNKNOWN | UNKNOWN |",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 494,
+            "kind": "documentation",
+            "excerpt": "492: mux outputs, (2) inspect `SPI_MODE`, (3) inspect `SD_MODE`, (4) only if\n493: SPI mode is physically established, trace pins 13-16 toward the MCU, (5)\n494: if standalone mode is established instead, trace the CFG strap network.\n495: **Do not launch another broad SERCOM search before physical evidence\n496: establishes that a TMC5160 serial bus actually exists** \u2014 see \"TMC5160",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 501,
+            "kind": "documentation",
+            "excerpt": "499: **TMC5160 configuration mode \u2014 still `UNKNOWN`, unchanged by the mux\n500: finding.** The mux hypothesis answers a *STEP/DIR routing* question, not\n501: a *configuration-bus* question \u2014 these are independent. Known firmware\n502: evidence, all previously established, none newly re-derived this pass:\n503: `SERCOM2` confirmed as the radio SPI interface; `SERCOM5` receives",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 559,
+            "kind": "documentation",
+            "excerpt": "557: PB06/PB07's \"reset strobe\" characterization; the TCC1/PB22 5th-channel\n558: pulse's purpose; the external RJ45 STEP/DIR input's entire firmware-side\n559: mechanism; DIR polarity-to-rotation on all 4 channels; logical-channel\n560: to physical-Motor-1..4 identity; **whether a live SPI/UART configuration\n561: interface exists between the ATSAMD51 and the four TMC5160A-TA devices,",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 645,
+            "kind": "documentation",
+            "excerpt": "643: \n644: UNKNOWN\n645: - exact continuity for every item above (mux pin-to-GPIO wiring,\n646:   channel A/B1/B2 wiring)\n647: - TMC5160 configuration mode (SPI / UART / standalone)",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+            "line": 45,
+            "kind": "documentation",
+            "excerpt": "43: independent, in-repo confirmation of the TMC5160A-TA part (previously an\n44: external/asserted fact only). **Not established by this evidence**: which\n45: of the four repeated channels/XLR jacks this specific chip belongs to, the\n46: identity of the other three (assumed identical by board repetition, not\n47: individually confirmed), and any SPI/UART bus wiring between this chip and",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+            "line": 106,
+            "kind": "documentation",
+            "excerpt": "104: **Architectural implication \u2014 leading hypothesis, `HIGH-CONFIDENCE\n105: INFERENCE`, not proven**: the current leading theory is that two\n106: `SN74CBTLV3257` devices select, per motor pair, between MCU-generated\n107: STEP/DIR and externally-supplied (RJ45) STEP/DIR, with their outputs\n108: feeding the four TMC5160 STEP/DIR inputs \u2014 not a shared SPI/UART config",
+            "score": 12
+          }
+        ],
+        "files_scanned": 68,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E2",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "TMC5160 SPI chip select",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "TMC5160 SPI chip select",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/research/generated/firmware-pin-function-map.json",
+            "line": 779,
+            "kind": "generated_evidence",
+            "excerpt": "777:       \"firmware_status\": \"NOT_APPLICABLE\",\n778:       \"package_status\": \"NOT_APPLICABLE\",\n779:       \"pcb_status\": \"PROVEN_PCB_PHOTO_PLUS_MARKING_MATCH (chip identity only)\",\n780:       \"physical_function_status\": \"PHYSICAL_FUNCTION_UNKNOWN (bus/signal role not established)\",\n781:       \"confidence\": \"Chip identity is PROVEN by direct PCB photo plus an independently fetched, verified TI datasheet marking match (SCDS040N) -- same evidentiary tier as the TMC5160A-TA and CSD88537ND findings. NOT established: which board signals (if any) connect to this chip's pins. Architectural candidate only: a shared-select 4-channel 2:1 mux is the kind of part used to time-share one physical bus (e.g. SPI/UART) across two destinations with a single control bi...",
+            "score": 14
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 88,
+            "kind": "documentation",
+            "excerpt": "86: | External RJ45 STEP/DIR in | *unknown* | *unknown* | **UNKNOWN** | UNKNOWN | NEIGHBORHOOD_ONLY | UNKNOWN |\n87: | Motor driver IC (chip identity: TMC5160A-TA) | n/a (not a GPIO) | n/a | n/a | n/a | **PROVEN \u2014 PCB PHOTO** | PROBABLE (1 of 4 channels) |\n88: | Motor driver power stage (CSD88537ND, TI) | n/a (not a GPIO) | n/a | n/a | n/a | **PROVEN \u2014 PCB PHOTO + MARKING MATCH** | PROBABLE (power stage, not motor-control) |\n89: | Motor bus mux candidate (SN74CBTLV3257, TI) | n/a (not traced) | n/a | n/a | n/a | **PROVEN \u2014 PCB PHOTO + MARKING MATCH** (identity only) | UNKNOWN (bus role not established) |\n90: | Motor driver SPI/UART (SCK/SDI/SDO/CSN) | *unknown* | *unknown* | **UNKNOWN** | UNKNOWN | TRACE_UNKNOWN | UNKNOWN |",
+            "score": 9
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 560,
+            "kind": "documentation",
+            "excerpt": "558: pulse's purpose; the external RJ45 STEP/DIR input's entire firmware-side\n559: mechanism; DIR polarity-to-rotation on all 4 channels; logical-channel\n560: to physical-Motor-1..4 identity; **whether a live SPI/UART configuration\n561: interface exists between the ATSAMD51 and the four TMC5160A-TA devices,\n562: and if so the SCK/SDI/SDO/CSN routing** (chip identity is now",
+            "score": 9
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+            "line": 45,
+            "kind": "documentation",
+            "excerpt": "43: independent, in-repo confirmation of the TMC5160A-TA part (previously an\n44: external/asserted fact only). **Not established by this evidence**: which\n45: of the four repeated channels/XLR jacks this specific chip belongs to, the\n46: identity of the other three (assumed identical by board repetition, not\n47: individually confirmed), and any SPI/UART bus wiring between this chip and",
+            "score": 9
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+            "line": 106,
+            "kind": "documentation",
+            "excerpt": "104: **Architectural implication \u2014 leading hypothesis, `HIGH-CONFIDENCE\n105: INFERENCE`, not proven**: the current leading theory is that two\n106: `SN74CBTLV3257` devices select, per motor pair, between MCU-generated\n107: STEP/DIR and externally-supplied (RJ45) STEP/DIR, with their outputs\n108: feeding the four TMC5160 STEP/DIR inputs \u2014 not a shared SPI/UART config",
+            "score": 9
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+            "line": 207,
+            "kind": "investigation",
+            "excerpt": "205:   `SERCOM2` in **SPI Master mode** \u2014 `CTRLA` (`0x41012000`, SWRST +\n206:   ENABLE), `CTRLB` (`0x41012004`), `BAUD` (`0x4101200c`), `INTFLAG.DRE`\n207:   (`0x41012018`), `SYNCBUSY` (`0x4101201c`), `DATA` (`0x41012028`,\n208:   written once per real payload byte); `PORT.GROUP0` (`PA15`) `DIRSET`/\n209:   `OUTSET`/`OUTCLR`/`PINCFG15` (chip-select, toggled low then high",
+            "score": 9
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+            "line": 224,
+            "kind": "investigation",
+            "excerpt": "222:   style module) are never touched by a transmit call itself \u2014 consistent\n223:   with being boot-time-only (reset) or RX-side (DIO/IRQ) pins, neither\n224:   independently confirmed by this investigation.\n225: - **Transport identity: CONFIRMED at the MCU-peripheral level** \u2014 SPI\n226:   via `SERCOM2` (Master mode), chip-select `PA15`, no DMA, EIC not",
+            "score": 9
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+            "line": 474,
+            "kind": "investigation",
+            "excerpt": "472:   the object is constructed at boot by `FUN_00009934`, its real\n473:   contents were dumped from a completed boot snapshot, its vtable[1]\n474:   indirect dispatch (`0x9a96`) was independently reconfirmed, and a\n475:   real, unstubbed `0x8c10` call was traced end-to-end to SERCOM2 SPI\n476:   Master + PORT.GROUP0 (PA15 chip-select) with zero DMAC involvement.",
+            "score": 9
+          }
+        ],
+        "files_scanned": 68,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E3",
+      "tool": "census_peripheral_usage",
+      "arguments": {
+        "peripheral": "SERCOM4",
+        "limit": 25
+      },
+      "result": {
+        "status": "no_code_references",
+        "peripheral": "SERCOM4",
+        "diagnostic": "peripheral addresses appear only in flash data words that no census instruction references",
+        "peripheral_base": "0x43000000",
+        "peripheral_size": 49,
+        "total_mmio_sites": 0,
+        "total_address_constants": 2,
+        "unreferenced_address_constants": 2,
+        "total_functions": 0,
+        "functions": [],
+        "functions_truncated": false,
+        "unattributed_sites": [],
+        "address_constants": [
+          {
+            "location": "0x00014170",
+            "value": "0x43000028",
+            "register_name": "SERCOM4.I2CM.DATA/I2CS.DATA/SPIM.DATA/SPIS.DATA/USART_EXT.DATA/USART_INT.DATA",
+            "referenced": false,
+            "reference_count": 0
+          },
+          {
+            "location": "0x00014868",
+            "value": "0x43000000",
+            "register_name": "SERCOM4.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA",
+            "referenced": false,
+            "reference_count": 0
+          }
+        ],
+        "address_constants_truncated": false,
+        "warnings": [],
+        "warnings_total": 0,
+        "limitations": [
+          "MMIO sites are constant-address references resolved by Ghidra's reference manager; accesses through a base-address register are not attributed to a peripheral in mmio_accesses.",
+          "Address constants are aligned flash words whose value lies in the peripheral's SVD range; loading an address is not proof of an access.",
+          "Absence of evidence is bounded to these two static methods and does not exclude runtime-computed peripheral addresses.",
+          "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+        ],
+        "provenance": {
+          "analysis": "census_peripheral_usage",
+          "analysis_version": 1,
+          "firmware_key": "autopilot868",
+          "expected_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "census_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "census_built_at": "2026-09-26T19:04:27.793705+00:00",
+          "census_ghidra_version": "12.1.3",
+          "reduction_status": "present",
+          "reduced_at": "2026-09-26T19:05:29.594854+00:00",
+          "peripheral_catalog": "ATSAMD51J19A.svd sha256:58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+          "flash_word_scan": "sha256-verified",
+          "sources": [
+            "flash-word-scan"
+          ],
+          "limit": 25
+        }
+      }
+    },
+    {
+      "id": "E4",
+      "tool": "function_disassembly",
+      "arguments": {
+        "function": "FUN_00009a96"
+      },
+      "result": {
+        "name": "FUN_00009a96",
+        "entry": "0x00009a96",
+        "size": 68,
+        "architecture": "ARM Cortex-M4F",
+        "mode": "Thumb/Thumb-2 M-class",
+        "bounds_source": "Ghidra function metadata",
+        "decoder": "Capstone",
+        "bytes_requested": 68,
+        "bytes_decoded": 68,
+        "complete": true,
+        "instructions": [
+          {
+            "address": "0x00009a96",
+            "size": 4,
+            "bytes_hex": "2d e9 f0 41",
+            "mnemonic": "push.w",
+            "operands": "{r4, r5, r6, r7, r8, lr}"
+          },
+          {
+            "address": "0x00009a9a",
+            "size": 2,
+            "bytes_hex": "0c 46",
+            "mnemonic": "mov",
+            "operands": "r4, r1"
+          },
+          {
+            "address": "0x00009a9c",
+            "size": 2,
+            "bytes_hex": "22 21",
+            "mnemonic": "movs",
+            "operands": "r1, #0x22"
+          },
+          {
+            "address": "0x00009a9e",
+            "size": 2,
+            "bytes_hex": "15 46",
+            "mnemonic": "mov",
+            "operands": "r5, r2"
+          },
+          {
+            "address": "0x00009aa0",
+            "size": 2,
+            "bytes_hex": "07 46",
+            "mnemonic": "mov",
+            "operands": "r7, r0"
+          },
+          {
+            "address": "0x00009aa2",
+            "size": 4,
+            "bytes_hex": "ff f7 8e ff",
+            "mnemonic": "bl",
+            "operands": "#0x99c2"
+          },
+          {
+            "address": "0x00009aa6",
+            "size": 2,
+            "bytes_hex": "43 19",
+            "mnemonic": "adds",
+            "operands": "r3, r0, r5"
+          },
+          {
+            "address": "0x00009aa8",
+            "size": 2,
+            "bytes_hex": "ff 2b",
+            "mnemonic": "cmp",
+            "operands": "r3, #0xff"
+          },
+          {
+            "address": "0x00009aaa",
+            "size": 2,
+            "bytes_hex": "88 bf",
+            "mnemonic": "it",
+            "operands": "hi"
+          },
+          {
+            "address": "0x00009aac",
+            "size": 4,
+            "bytes_hex": "c0 f1 ff 05",
+            "mnemonic": "rsbhi.w",
+            "operands": "r5, r0, #0xff"
+          },
+          {
+            "address": "0x00009ab0",
+            "size": 2,
+            "bytes_hex": "06 46",
+            "mnemonic": "mov",
+            "operands": "r6, r0"
+          },
+          {
+            "address": "0x00009ab2",
+            "size": 4,
+            "bytes_hex": "04 eb 05 08",
+            "mnemonic": "add.w",
+            "operands": "r8, r4, r5"
+          },
+          {
+            "address": "0x00009ab6",
+            "size": 2,
+            "bytes_hex": "44 45",
+            "mnemonic": "cmp",
+            "operands": "r4, r8"
+          },
+          {
+            "address": "0x00009ab8",
+            "size": 2,
+            "bytes_hex": "06 d0",
+            "mnemonic": "beq",
+            "operands": "#0x9ac8"
+          },
+          {
+            "address": "0x00009aba",
+            "size": 4,
+            "bytes_hex": "14 f8 01 2b",
+            "mnemonic": "ldrb",
+            "operands": "r2, [r4], #1"
+          },
+          {
+            "address": "0x00009abe",
+            "size": 2,
+            "bytes_hex": "80 21",
+            "mnemonic": "movs",
+            "operands": "r1, #0x80"
+          },
+          {
+            "address": "0x00009ac0",
+            "size": 2,
+            "bytes_hex": "38 46",
+            "mnemonic": "mov",
+            "operands": "r0, r7"
+          },
+          {
+            "address": "0x00009ac2",
+            "size": 4,
+            "bytes_hex": "ff f7 5f ff",
+            "mnemonic": "bl",
+            "operands": "#0x9984"
+          },
+          {
+            "address": "0x00009ac6",
+            "size": 2,
+            "bytes_hex": "f6 e7",
+            "mnemonic": "b",
+            "operands": "#0x9ab6"
+          },
+          {
+            "address": "0x00009ac8",
+            "size": 2,
+            "bytes_hex": "72 19",
+            "mnemonic": "adds",
+            "operands": "r2, r6, r5"
+          },
+          {
+            "address": "0x00009aca",
+            "size": 2,
+            "bytes_hex": "d2 b2",
+            "mnemonic": "uxtb",
+            "operands": "r2, r2"
+          },
+          {
+            "address": "0x00009acc",
+            "size": 2,
+            "bytes_hex": "a2 21",
+            "mnemonic": "movs",
+            "operands": "r1, #0xa2"
+          },
+          {
+            "address": "0x00009ace",
+            "size": 2,
+            "bytes_hex": "38 46",
+            "mnemonic": "mov",
+            "operands": "r0, r7"
+          },
+          {
+            "address": "0x00009ad0",
+            "size": 4,
+            "bytes_hex": "ff f7 58 ff",
+            "mnemonic": "bl",
+            "operands": "#0x9984"
+          },
+          {
+            "address": "0x00009ad4",
+            "size": 2,
+            "bytes_hex": "28 46",
+            "mnemonic": "mov",
+            "operands": "r0, r5"
+          },
+          {
+            "address": "0x00009ad6",
+            "size": 4,
+            "bytes_hex": "bd e8 f0 81",
+            "mnemonic": "pop.w",
+            "operands": "{r4, r5, r6, r7, r8, pc}"
+          }
+        ]
+      }
+    }
+  ],
+  "state": {
+    "objective": "Determine whether the AutoPilot ATSAMD51 directly communicates with the TMC5160 motor drivers. Identify any SPI, UART, or other firmware-controlled interface to the drivers; identify relevant firmware functions and MCU pins; determine what driver configuration or commands can be proven from firmware; distinguish proven communication paths from hardware-only hypotheses.",
+    "evidence_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4"
+    ],
+    "claims": [
+      {
+        "id": "C1",
+        "statement": "SERCOM4 addresses appear only in 2 aligned flash data word(s) that no census instruction references; the census has no constant-address MMIO site for SERCOM4 (bounded static analysis; indexed table access is not excluded).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E3"
+        ]
+      }
+    ],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'TMC5160 SPI'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L2",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'TMC5160 SPI chip select'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L3",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_00009a96 mentioned by discovery query 'TMC5160 SPI chip select'",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN"
+      },
+      {
+        "id": "L4",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_00009a96 mentioned by discovery query 'TMC5160 SPI chip select'",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "FOLLOWED"
+      },
+      {
+        "id": "L5",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_00008c10 mentioned by discovery query 'TMC5160 SPI chip select'",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN"
+      },
+      {
+        "id": "L6",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_00008c10 mentioned by discovery query 'TMC5160 SPI chip select'",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN"
+      },
+      {
+        "id": "L7",
+        "kind": "census",
+        "description": "Census structural usage of peripheral SERCOM4",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED"
+      }
+    ]
+  }
+}

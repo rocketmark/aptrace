@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from aptrace_agent.case_evidence import performing_rigs_case_evidence
+from aptrace_agent.census import performing_rigs_census
 
 from aptrace_agent.disassembly import autopilot_disassembler
 from aptrace_agent.ghidra_index import autopilot_ghidra_index
@@ -32,6 +33,7 @@ class EvidenceExecutor:
         )
         self.pin_table_reader = performing_rigs_pin_table()
         self.case_evidence = performing_rigs_case_evidence()
+        self.census = performing_rigs_census()
 
     def execute_operation(
         self,
@@ -92,6 +94,17 @@ class EvidenceExecutor:
                     max_results=max_results,
                 )
                 .model_dump()
+            )
+
+        elif tool == "census_peripheral_usage":
+            # Firmware, database and bounds are bound by APTrace; only
+            # the catalog-validated peripheral name varies.
+            result = (
+                self.census.peripheral_usage(
+                    arguments["peripheral"],
+                    limit=arguments.get("limit", 25),
+                )
+                .model_dump(mode="json")
             )
 
         else:

@@ -142,6 +142,152 @@ def _call_target(
     return None
 
 
+MAX_CENSUS_FUNCTION_CLAIMS = 4
+MAX_CENSUS_UNATTRIBUTED_CLAIMS = 2
+
+
+def _census_location(
+    value: str | None,
+    register: str | None,
+    peripheral: str,
+    base: str | None,
+) -> str:
+    """Short, unambiguous name for a peripheral address."""
+
+    if value is None:
+        return peripheral
+
+    try:
+        offset = int(value, 16) - int(str(base), 16)
+    except (TypeError, ValueError):
+        offset = None
+
+    if offset == 0:
+        return f"{value} ({peripheral} base)"
+
+    if register and "/" not in register:
+        return f"{value} ({register})"
+
+    if offset is not None:
+        return f"{value} ({peripheral}+0x{offset:x})"
+
+    return value
+
+
+def _census_claims(
+    observation: EvidenceObservation,
+) -> list[str]:
+    """
+    Atomic structural statements supported by one census peripheral
+    analysis. Nothing here names the external device on the bus.
+    """
+
+    result = observation.result
+    status = result.get("status")
+    peripheral = str(result.get("peripheral", ""))
+    base = result.get("peripheral_base")
+    provenance = result.get("provenance") or {}
+    reduction = provenance.get("reduction_status")
+
+    if status == "no_matching_accesses":
+        return [
+            f"The census contains no constant-address MMIO site and no "
+            f"aligned flash address constant for {peripheral} "
+            f"(bounded static analysis; runtime-computed addresses "
+            f"are not excluded)."
+        ]
+
+    if status == "no_code_references":
+        return [
+            f"{peripheral} addresses appear only in "
+            f"{result.get('total_address_constants', 0)} aligned flash "
+            f"data word(s) that no census instruction references; the "
+            f"census has no constant-address MMIO site for {peripheral} "
+            f"(bounded static analysis; indexed table access is not "
+            f"excluded)."
+        ]
+
+    if status != "ok":
+        return []
+
+    statements = [
+        f"Census structural usage of {peripheral}: "
+        f"{result.get('total_mmio_sites', 0)} constant-address MMIO "
+        f"site(s), {result.get('total_address_constants', 0)} flash "
+        f"address constant(s) "
+        f"({result.get('unreferenced_address_constants', 0)} with no "
+        f"code reference), {result.get('total_functions', 0)} "
+        f"attributed function(s), "
+        f"{len(result.get('unattributed_sites') or [])} unattributed "
+        f"reference site(s) (reduction {reduction})."
+    ]
+
+    for item in (result.get("functions") or [])[
+        :MAX_CENSUS_FUNCTION_CLAIMS
+    ]:
+        parts: list[str] = []
+        sites = item.get("mmio_sites") or []
+
+        if sites:
+            accesses = sorted(
+                {
+                    f"{site.get('register_name') or site.get('address')} "
+                    f"{site.get('direction')}"
+                    for site in sites
+                }
+            )
+
+            parts.append(
+                f"has {item.get('mmio_site_count')} statically "
+                f"resolved {peripheral} MMIO site(s) "
+                f"({', '.join(accesses[:4])}"
+                f"{', ...' if len(accesses) > 4 else ''})"
+            )
+
+        loads = item.get("constant_loads") or []
+
+        if loads:
+            first = loads[0]
+            parts.append(
+                f"loads {peripheral} address constant "
+                + _census_location(
+                    first.get("value"),
+                    first.get("register_name"),
+                    peripheral,
+                    base,
+                )
+                + f" at {first.get('site')}"
+                + (
+                    f" (+{len(loads) - 1} more load site(s))"
+                    if len(loads) > 1
+                    else ""
+                )
+            )
+
+        reach = item.get("reachability")
+
+        if reach:
+            parts.append(
+                f"census reachability {reach.get('status')}"
+            )
+
+        if parts:
+            statements.append(
+                f"{item.get('function')} " + "; ".join(parts) + "."
+            )
+
+    for site in (result.get("unattributed_sites") or [])[
+        :MAX_CENSUS_UNATTRIBUTED_CLAIMS
+    ]:
+        statements.append(
+            f"Code at {site.get('site')} (basic block "
+            f"{site.get('basic_block')}, attributed to no census "
+            f"function) references {peripheral}: {site.get('detail')}."
+        )
+
+    return statements
+
+
 class StateFactDeriver:
     """
     Convert structurally explicit evidence into atomic PROVEN claims.
@@ -240,6 +386,21 @@ class StateFactDeriver:
                 )
 
                 claims.append(claim)
+
+        if observation.tool == "census_peripheral_usage":
+            for statement in _census_claims(
+                observation
+            ):
+                claims.append(
+                    self.updater.merge_claim(
+                        state,
+                        statement=statement,
+                        grade=ClaimGrade.PROVEN,
+                        evidence_ids=[
+                            observation.id,
+                        ],
+                    )
+                )
 
         return FactDerivationResult(
             claims=tuple(claims)

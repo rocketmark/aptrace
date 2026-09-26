@@ -9,6 +9,7 @@ from aptrace_agent.research.lead_generation import (
     LeadGenerationIssue,
     generate_case_search_leads_from_pin_table,
     generate_function_fact_leads,
+    generate_function_leads_from_census,
     generate_function_leads_from_case_evidence,
     generate_pin_table_leads_from_callsite,
 )
@@ -87,6 +88,28 @@ class LeadDeriver:
         ):
             generated = (
                 generate_function_leads_from_case_evidence(
+                    observation,
+                    evidence_id=observation.id,
+                    registry=self.registry,
+                    function_facts_reader=(
+                        self.function_facts_reader
+                    ),
+                )
+            )
+
+            return DerivationResult(
+                leads=generated.leads,
+                issues=generated.issues,
+            )
+
+        if (
+            observation.tool
+            == "census_peripheral_usage"
+            and self.function_facts_reader
+            is not None
+        ):
+            generated = (
+                generate_function_leads_from_census(
                     observation,
                     evidence_id=observation.id,
                     registry=self.registry,
