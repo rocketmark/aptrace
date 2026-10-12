@@ -14,6 +14,9 @@ one product (Performing Rigs AutoPilot/Remote) known to this codebase
 today.
 """
 
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
 # Address-range defaults for APTraceExportCensus.java's RAM/MMIO
 # classification -- matches tools/unicorn/concrete.py's ram_base/ram_size
 # and cases/performing-rigs/scripts/virtual_link.py's (wider) MMIO window, so a static
@@ -23,6 +26,24 @@ CENSUS_RAM_BASE = "0x20000000"
 CENSUS_RAM_SIZE = "0x30000"
 CENSUS_MMIO_BASE = "0x40000000"
 CENSUS_MMIO_SIZE = "0x4000000"
+
+# ATSAMD51J19A external (NVIC) interrupt count, derived from the case SVD
+# rather than restated: the highest <interrupt><value> plus one (IRQ0..135
+# -> 136). The vector table is therefore 16 Cortex-M system words
+# (initial SP + 15 exceptions) followed by this many IRQ words. Consumed by
+# the census raw vector scan (tools/census/build.py) and the Ghidra vector
+# seeding (tools/ghidra/aptrace_ghidra.py); the Haskell side's
+# APTrace.Case.PerformingRigs.numIrq must agree (checked by
+# cases/performing-rigs/test/test_target_irq_count.py).
+TARGET_SVD = Path(__file__).resolve().parent / "svd" / "ATSAMD51J19A.svd"
+
+
+def _svd_num_external_irq(svd_path):
+    values = [int(e.findtext("value"), 0) for e in ET.parse(svd_path).iter("interrupt")]
+    return max(values) + 1
+
+
+NUM_EXTERNAL_IRQ = _svd_num_external_irq(TARGET_SVD)
 
 # firmware key -> (path relative to repo root, load base, provenance TSV or None)
 FIRMWARE_REGISTRY = {

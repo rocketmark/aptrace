@@ -25,19 +25,26 @@ SYSTEM_VECTOR_NAMES = {
 }
 
 
-def read_vectors(firmware_path, flash_base, num_vectors=56, known_function_entries=()):
-    """Read the ARMv7-M vector table directly from flash: vector 0 is the
-    initial SP (not code), vectors 1..num_vectors are Thumb handler
-    pointers (low bit conventionally set). Mirrors
-    APTraceSeedVectorTable.java's own parsing (same num_vectors default,
-    56 = 16 system + 40 IRQ, per cases/performing-rigs/docs/firmware/firmware-layout.md) --
-    independent of it, since that script only ever *seeds* Ghidra and
-    keeps no queryable record of its own.
+def read_vectors(firmware_path, flash_base, *, num_irq, known_function_entries=()):
+    """Read the ARMv7-M vector table directly from flash: 16 system words
+    (vector 0 is the initial SP, not code; 1..15 are the system exception
+    handlers) followed by `num_irq` external IRQ handler words, i.e.
+    vectors 0..15+num_irq. Thumb handler pointers conventionally have the
+    low bit set; target_addr is the canonical (bit-cleared) address.
 
-    Returns a list of dicts, one per vector (0..num_vectors inclusive).
+    `num_irq` is target configuration supplied by the caller (for the
+    Performing Rigs ATSAMD51 it is derived from the case SVD) -- there is
+    deliberately no default, so no single device's IRQ count is baked into
+    this generic scanner. Same table shape as APTrace.VectorTable's
+    parseVectorTable (16 + numIrq words) and the words
+    APTraceSeedVectorTable.java seeds -- independent of the latter, since
+    that script only ever *seeds* Ghidra and keeps no queryable record.
+
+    Returns a list of dicts, one per vector (0..15+num_irq inclusive).
     `landed_in_known_function` is None for vector 0 or an empty
     (0x00000000 / 0xFFFFFFFF) slot, else 0/1 depending on whether
     target_addr is in `known_function_entries`."""
+    num_vectors = 15 + num_irq  # handler words after the initial SP
     known = set(known_function_entries)
     data = firmware_path.read_bytes()
     out = []

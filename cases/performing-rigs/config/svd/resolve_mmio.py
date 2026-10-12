@@ -61,6 +61,7 @@ class Samd51Map:
         tree = ET.parse(svd_path)
         root = tree.getroot()
         self.peripherals = []  # (base, size, name, [(regname, offset, sizebytes)])
+        self.interrupts = {}  # IRQ number -> (interrupt name, peripheral name)
         derived = {}
         raw = {}
         for p in root.find("peripherals"):
@@ -73,6 +74,10 @@ class Samd51Map:
             if derived_from:
                 derived[name] = (int(base, 0), derived_from)
 
+        for p in root.find("peripherals"):
+            for irq in p.findall("interrupt"):
+                self.interrupts.setdefault(
+                    int(irq.findtext("value"), 0), (irq.findtext("name"), p.findtext("name")))
         for p in root.find("peripherals"):
             name = p.findtext("name")
             base = p.findtext("baseAddress")

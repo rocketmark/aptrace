@@ -82,8 +82,13 @@ CSPEC = "default"
 sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
 from performing_rigs import (  # noqa: E402
     CENSUS_RAM_BASE, CENSUS_RAM_SIZE, CENSUS_MMIO_BASE, CENSUS_MMIO_SIZE,
-    FIRMWARE_REGISTRY,
+    FIRMWARE_REGISTRY, NUM_EXTERNAL_IRQ,
 )
+
+# Vector-table handler words after the initial-SP word that
+# APTraceSeedVectorTable.java seeds: 15 system exceptions + the target's
+# external IRQs (supplied by the case, not assumed here).
+SEED_VECTOR_WORDS = 15 + NUM_EXTERNAL_IRQ
 
 
 def resolve_headless():
@@ -140,6 +145,31 @@ def cache_dir(key):
     return CACHE_ROOT / key
 
 
+# Mechanically derived extra code seeds for one image (written by
+# `aptrace_census.py fnptr-seeds`, e.g. statically resolved RAM function-
+# pointer targets), passed to APTraceSeedVectorTable.java's extraHexAddrs.
+# Kept outside the cache dir, which a rebuild deletes.
+SEEDS_ROOT = CACHE_ROOT.parent / "ghidra_seeds"
+
+
+def seed_file(key):
+    return SEEDS_ROOT / f"{key}.json"
+
+
+def derived_seeds(key):
+    """Seed addresses from this image's derived-seeds file ([] if none).
+    Refuses a file recorded against a different firmware image."""
+    path = seed_file(key)
+    if not path.exists():
+        return []
+    with open(path) as f:
+        doc = json.load(f)
+    fw_path, _base, _labels = firmware_info(key)
+    if doc.get("firmware_sha256") != sha256_of(fw_path):
+        sys.exit(f"error: {path} was derived from a different firmware image; regenerate it")
+    return sorted({int(s["addr"], 16) for s in doc["seeds"]})
+
+
 # Every script/data input `build()` actually feeds to analyzeHeadless (see
 # its -preScript/-postScript args below) -- hashed into cache identity so
 # an edit to any of them invalidates the cache automatically, without
@@ -171,11 +201,18 @@ def expected_identity(key):
         "cspec": CSPEC,
         "ghidra_version": ghidra_version(headless),
         "analysis_version": ANALYSIS_VERSION,
+        # A script *argument*, so not covered by the script content hashes
+        # below -- a target IRQ-count change must still invalidate the cache.
+        "seed_vector_words": SEED_VECTOR_WORDS,
     }
     for script in BUILD_SCRIPTS:
         identity[f"script_sha256:{script}"] = _file_identity_hash(SCRIPTS_DIR / script)
     identity["provenance_tsv_sha256"] = (
         _file_identity_hash(labels_tsv) if labels_tsv is not None else None)
+    # Only present when derived seeds exist, so images without any keep
+    # their existing caches.
+    if seed_file(key).exists():
+        identity["derived_seeds_sha256"] = sha256_of(seed_file(key))
     return identity
 
 
@@ -244,7 +281,8 @@ def build(key, force=False):
         "-loader", "BinaryLoader",
         "-loader-baseAddr", base,
         "-scriptPath", str(SCRIPTS_DIR),
-        "-preScript", "APTraceSeedVectorTable.java", "56", "",
+        "-preScript", "APTraceSeedVectorTable.java", str(SEED_VECTOR_WORDS),
+        ",".join(f"0x{a:x}" for a in derived_seeds(key)),
         "-analysisTimeoutPerFile", "300",
     ]
     # Apply provenance labels BEFORE exporting, so the cached JSON (and

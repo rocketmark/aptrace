@@ -27,12 +27,18 @@ class Claim(BaseModel):
     statement: str
     grade: ClaimGrade
     evidence_ids: list[str] = Field(default_factory=list)
+    # Evidence level of the derivation, e.g. "census" (static structure),
+    # "raw-symbolic" (Crucible extraction), "solver" (What4/Z3-proved),
+    # "case-document". None for claims predating the field.
+    basis: str | None = None
 
 
 class Hypothesis(BaseModel):
     id: str
     statement: str
     evidence_ids: list[str] = Field(default_factory=list)
+    # Who proposed it, e.g. "planner" for a research-model conclusion.
+    source: str | None = None
 
 
 class Contradiction(BaseModel):
@@ -46,6 +52,7 @@ class OpenQuestion(BaseModel):
     question: str
     evidence_ids: list[str] = Field(default_factory=list)
     status: QuestionStatus = QuestionStatus.OPEN
+    source: str | None = None
 
 
 class Lead(BaseModel):

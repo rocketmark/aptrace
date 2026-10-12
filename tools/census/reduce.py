@@ -25,9 +25,11 @@ build`'s base evidence (tools/census/build.py). Orchestrates, in order:
      docs/tooling/census.md's evidence rule.
   4. Indirect-edge resolution (indirect_resolve.py + boot_recipes.py) --
      classify every indirect call/jump instruction (STATICALLY_RESOLVED
-     / DYNAMICALLY_OBSERVED / FINITE_CANDIDATE_SET / UNRESOLVED),
-     merging targets observed during the scenario corpus AND during
-     boot.
+     / DYNAMICALLY_OBSERVED / RESOLVED_RAM_FUNCTION_POINTER /
+     FINITE_CANDIDATE_SET / UNRESOLVED), merging targets observed during
+     the scenario corpus AND during boot. RESOLVED_RAM_FUNCTION_POINTER
+     (fnptr_resolve.py) is a register-indirect site loading its target
+     from a RAM slot whose every known store is a constant code pointer.
   5. Reachability (reachability.py) -- DEFINITELY_REACHABLE /
      POSSIBLY_REACHABLE_VIA_UNRESOLVED_INDIRECT / NO_KNOWN_PATH, from
      mechanically-justified roots only.
@@ -60,6 +62,7 @@ sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "scripts"))
 
 import db as census_db  # noqa: E402
 import indirect_resolve  # noqa: E402
+import fnptr_resolve  # noqa: E402
 import reachability  # noqa: E402
 import fingerprint  # noqa: E402
 import features  # noqa: E402
@@ -149,6 +152,26 @@ def resolve_indirect_edges(conn, firmware_id, firmware_key, firmware_bytes, flas
             "instr_mnemonic": mnem, "instr_shape": shape, "classification": classification,
             "note": note, "source": "indirect-resolve",
         }
+
+    # Statically initialized RAM function pointers -- only for sites
+    # nothing above resolved; a later dynamic observation still upgrades.
+    fnptr_rows = fnptr_resolve.resolve_function_pointers(conn, firmware_id, firmware_bytes, flash_base)
+    for row in fnptr_rows:
+        res = resolutions.get(row["consumer_site"])
+        if res is None or row["canonical_target"] is None or res["classification"] not in (
+                "UNRESOLVED", "RESOLVED_RAM_FUNCTION_POINTER"):
+            continue
+        res["classification"] = "RESOLVED_RAM_FUNCTION_POINTER"
+        res["note"] = (f"target loaded from RAM slot 0x{row['slot_addr']:08x}; known constant writer(s) store "
+                       f"0x{row['raw_value']:08x} (code 0x{row['canonical_target']:08x}, {row['confidence']})")
+        candidates.append({
+            "firmware_id": firmware_id, "from_addr": row["consumer_site"], "candidate_addr": row["canonical_target"],
+            "candidate_function_id": func_ranges.containing(row["canonical_target"]),
+            "confidence": row["confidence"], "source": fnptr_resolve.SOURCE,
+        })
+    census_db.replace_firmware_rows(conn, firmware_id, "resolved_function_pointers", fnptr_rows)
+    if verbose:
+        print(f"  [indirect-resolve] {len(fnptr_rows)} RAM function-pointer store record(s)")
 
     # Merge targets observed during the boot capture (already run by
     # the caller, see reduce_firmware) with a fresh scenario-corpus

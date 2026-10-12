@@ -396,6 +396,40 @@ CREATE TABLE IF NOT EXISTS indirect_edge_candidates (
 CREATE INDEX IF NOT EXISTS idx_indcand_fw ON indirect_edge_candidates(firmware_id);
 CREATE INDEX IF NOT EXISTS idx_indcand_from ON indirect_edge_candidates(firmware_id, from_addr);
 
+-- Statically initialized RAM function pointers (tools/census/
+-- fnptr_resolve.py): an unresolved register-indirect site whose target is
+-- loaded from one constant RAM slot, and each store into that slot with
+-- its mechanically constant value (or why it isn't). The raw stored word
+-- and the canonical (Thumb-bit-cleared) code address are separate
+-- columns; forwarding_json records every bounded branch-forwarding hop.
+-- Feeds indirect_edge_candidates with source 'ram-fnptr-constant-store'.
+CREATE TABLE IF NOT EXISTS resolved_function_pointers (
+    id                    INTEGER PRIMARY KEY,
+    firmware_id           INTEGER NOT NULL REFERENCES firmware(id),
+    consumer_site         INTEGER NOT NULL,
+    consumer_function_id  INTEGER REFERENCES functions(id),
+    consumer_instruction  TEXT,
+    slot_addr             INTEGER NOT NULL,
+    slot_load_addr        INTEGER,
+    store_addr            INTEGER NOT NULL,
+    writer_function_id    INTEGER REFERENCES functions(id),
+    value_reg             TEXT,
+    derivation            TEXT,     -- intraprocedural-constant / callsite-argument
+    callsite_addr         INTEGER,
+    caller_function_id    INTEGER REFERENCES functions(id),
+    arg_reg               TEXT,
+    value_kind            TEXT NOT NULL,  -- constant / unresolved
+    raw_value             INTEGER,
+    thumb_bit             INTEGER,
+    canonical_target      INTEGER,
+    terminal_target       INTEGER,
+    forwarding_json       TEXT,
+    confidence            TEXT,     -- STRONG / WEAK (code pointers only)
+    provenance_json       TEXT,
+    source                TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_rfp_fw ON resolved_function_pointers(firmware_id);
+
 -- Deterministic per-function fingerprints (tools/census/fingerprint.py)
 -- -- used to cross-check the SAME function across the other firmware
 -- images already in this database, never against an externally-

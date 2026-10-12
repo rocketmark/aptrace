@@ -92,6 +92,13 @@ a few are actually implemented.
 | IRQ10_Handler | 0x0000952d → 0x952c | distinct |
 | IRQ12..IRQ27_Handler | 0xcbb1..0xcc0b range | distinct, sequential — likely a peripheral IRQ block (SERCOM0-7 style on SAMD51) |
 | IRQ31..IRQ35_Handler | 0x0000a37d → 0xa37c (all identical) | distinct from default, shared among themselves — likely one handler registered for a group of related IRQs (e.g. all TC/TCC timer channels) |
+| IRQ50..53, IRQ58..65 (SVD: SERCOM1, SERCOM3, SERCOM4) | 0xb0fd..0xb141 | three 6–14-byte bodies, each with three 4-byte stubs |
+| IRQ80..83 (SVD: USB_OTHER, USB_SOF_HSOF, USB_TRCPT0/1) | 0xcc15; 0xccb7/0xccbb/0xccbf | 0xcc14 tail-calls a RAM function pointer (0x200052e8); 0xccb6/ba/be are `b.w 0xcc14` |
+| IRQ93, IRQ107..110 (SVD: TCC1_MC0, TC0..TC3) | 0x60ed; 0x607d..0x60d1 | distinct, 22–24 bytes each |
+
+IRQ44 is 0 (empty). Word 152 (IRQ136, beyond the SVD's IRQ0..135) also
+holds the default handler and is followed by code, so it is a populated
+reserved slot with no information lost by stopping at IRQ135.
 
 ### firmware_mando868.bin / firmware_mando915.bin (near-identical, larger image)
 
@@ -105,11 +112,15 @@ a few are actually implemented.
 | IRQ12..IRQ27_Handler | 0x16721..0x1677b range, distinct |
 | IRQ31..IRQ35_Handler | 0x00011d21 → 0x11d20 (shared) |
 
-Full dumps (56 entries: 16 system + 40 IRQ) reproducible via:
+Full dumps (152 entries: 16 system + 136 IRQ; the IRQ count is the case
+SVD's highest interrupt number + 1, `NUM_EXTERNAL_IRQ` in
+`cases/performing-rigs/config/performing_rigs.py` — an earlier "40 IRQ"
+figure here silently truncated the census and Ghidra seeding at IRQ40)
+reproducible via:
 
 ```
 python3 tools/vector_scan.py cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin \
-    --flash-base 0x4000 --ram-size 0x30000 --num-irq 40
+    --flash-base 0x4000 --ram-size 0x30000 --num-irq 136
 ```
 
 ## Candidate entry points for Step 5/6/7 experiments

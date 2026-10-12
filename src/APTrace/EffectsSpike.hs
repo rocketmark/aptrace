@@ -47,6 +47,7 @@ import qualified Data.ByteString.Lazy.Char8 as BSL
 import           Data.Functor.Identity ( runIdentity )
 import           Data.IORef
 import           Data.List ( nub, sort )
+import qualified Data.List
 import qualified Data.Map as Map
 import           Data.Maybe ( catMaybes )
 import           Data.Parameterized.Some ( Some(..) )
@@ -135,11 +136,13 @@ runEffectsSpike
   -> [MmioRange]        -- ^ MMIO ranges (target geometry)
   -> Word32             -- ^ function entry
   -> [(Int, Word32)]    -- ^ concrete overrides for argument registers r0-r3
+  -> [(Int, Word32)]    -- ^ solver specializations @arg_rN == V@ (enrichment only; no re-simulation)
   -> Int                -- ^ generic step bound
+  -> Bool               -- ^ query uniqueness of parametric terms without a specialization
   -> Bool               -- ^ raw only: skip solver enrichment
   -> FilePath           -- ^ output prefix (.raw.json / .enriched.json)
   -> IO ()
-runEffectsSpike path flashBase ramBase ramSize mmio entryRaw argOverrides stepBound rawOnly outPrefix = do
+runEffectsSpike path flashBase ramBase ramSize mmio entryRaw argOverrides argSpecs stepBound parametricUniq rawOnly outPrefix = do
   bytes <- BS.readFile path
   mem <- either fail pure $ do
     m0 <- buildMemory bytes flashBase ramBase ramSize
@@ -391,6 +394,9 @@ runEffectsSpike path flashBase ramBase ramSize mmio entryRaw argOverrides stepBo
               [ "spike" A..= ("aptrace-effects-spike-v1-raw" :: String)
               , "entry" A..= hex entryRaw
               , "arg_overrides" A..= [ ("r" ++ show i, hex v) | (i, v) <- argOverrides ]
+              , "arg_specializations" A..= [ ("r" ++ show i, hex v) | (i, v) <- argSpecs ]
+              , "regions" A..= [ A.object [ "region" A..= nm, "base" A..= hex lo, "size" A..= hex sz ]
+                               | (nm, lo, sz) <- namedRegions flashLen ]
               , "status" A..= status'
               , "macaw_blocks" A..= nBlocks
               , "crucible_steps" A..= nSteps
@@ -466,35 +472,51 @@ runEffectsSpike path flashBase ramBase ramSize mmio entryRaw argOverrides stepBo
             timed "assert common assumptions once" $
               WSW.assume (WPO.solverConn proc') assumptions
             tEnrich0 <- CT.getCurrentTime
-            argEqs <- forM [ (nm, v) | (nm, v) <- inputTerms, nm == "arg_r0" ] $ \(nm, v) -> do
-              lit <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr 1)
-              eqP <- WI.bvEq sym v lit
-              pure (nm ++ " == 0x1", eqP)
+            argEqs <- fmap catMaybes $ forM argSpecs $ \(i, val) ->
+              case lookup ("arg_r" ++ show i) inputTerms of
+                Nothing -> pure Nothing
+                Just v -> do
+                  lit <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr (toInteger val))
+                  eqP <- WI.bvEq sym v lit
+                  pure (Just ("arg_r" ++ show i ++ " == " ++ hex val, eqP))
             enrichOutcome <- X.try $ timed "solver enrichment" $ do
-              let -- unique(v) / non-unique(witnesses) / unknown, under the given preds.
+              let -- Read a model value through a fresh 32-bit witness bound to
+                  -- the term, so evaluation is one get-value of that witness
+                  -- rather than ground-evaluating the whole term (which pulls
+                  -- every symbolic memory array it selects from).
+                  modelValue preds e qType source extra = do
+                    w <- WI.freshConstant sym (WI.safeSymbol "witness") (WI.BaseBVRepr (WI.knownNat @32))
+                    wEq <- WI.bvEq sym w e
+                    query qType source extra (preds ++ [wEq]) $ \r -> case r of
+                      WSR.Sat ev -> Just . BV.asUnsigned <$> WE.groundEval ev w
+                      _ -> pure Nothing
+                  -- unique(v) / non-unique(witnesses) / unknown, under the given preds.
                   uniqueness source extra preds e = case WI.asBV e of
                     Just bv -> pure (A.object [ "outcome" A..= ("unique" :: String)
                                               , "value" A..= hex (BV.asUnsigned bv)
                                               , "method" A..= ("concrete term (no solver)" :: String) ])
                     Nothing -> do
-                      (k1, mv) <- query "uniqueness: model" source extra preds $ \r -> case r of
-                        WSR.Sat ev -> Just . BV.asUnsigned <$> WE.groundEval ev e
-                        _ -> pure Nothing
+                      (k1, mv) <- modelValue preds e "uniqueness: model" source extra
                       case mv of
                         Nothing -> pure (A.object [ "outcome" A..= (if k1 == "UNSAT" then "no value (guard infeasible)" else "unknown" :: String)
                                                   , "model_query" A..= k1 ])
                         Just v -> do
                           lit <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr v)
                           other <- WI.notPred sym =<< WI.bvEq sym e lit
-                          (k2, mv2) <- query "uniqueness: other value?" source extra (preds ++ [other]) $ \r -> case r of
-                            WSR.Sat ev -> Just . BV.asUnsigned <$> WE.groundEval ev e
-                            _ -> pure Nothing
+                          (k2, mv2) <- modelValue (preds ++ [other]) e "uniqueness: other value?" source extra
                           pure $ case k2 of
                             "UNSAT" -> A.object [ "outcome" A..= ("unique" :: String), "value" A..= hex v
                                                 , "method" A..= ("solver: model + UNSAT for any other value" :: String) ]
                             "SAT" -> A.object [ "outcome" A..= ("non-unique" :: String)
                                               , "witnesses" A..= map hex (v : maybe [] pure mv2) ]
                             _ -> A.object [ "outcome" A..= ("unknown" :: String), "witnesses" A..= [hex v] ]
+                  -- A term over symbolic inputs is by construction parametric;
+                  -- without a specialization, its uniqueness is queried only
+                  -- when asked (each model query costs tens of seconds here).
+                  unspecialized source preds e
+                    | parametricUniq || WI.asBV e /= Nothing = uniqueness source [] preds e
+                    | otherwise = pure (A.object [ "outcome" A..= ("parametric (not queried)" :: String)
+                                                 , "depends_on" A..= freeVars e ])
                   -- satisfiable? always true? (three-valued)
                   guardStatus source extra preds g = case WI.asConstantPred g of
                     Just True -> pure (A.object [ "status" A..= ("always-true" :: String), "method" A..= ("concrete term (no solver)" :: String) ])
@@ -550,10 +572,18 @@ runEffectsSpike path flashBase ramBase ramSize mmio entryRaw argOverrides stepBo
                             restJ <- go rest
                             pure (A.object [ "region" A..= nm, "base" A..= hex lo, "size" A..= hex sz
                                            , "membership" A..= m ] : restJ)
-              accJson <- forM (zip [(1 :: Int) ..] accesses) $ \(i, acc) -> do
+              -- Enrich the first access at each (kind, pc) site, at most
+              -- 'maxEnrichedSites' of them: an input-dependent polling loop
+              -- repeats one site thousands of times. Every access stays in
+              -- the raw output; the enriched list keeps raw indices.
+              let firstAtSite = Map.elems (Map.fromListWith (\_ older -> older)
+                    [ ((acKind a, acPc a), (i, a)) | (i, a) <- zip [(1 :: Int) ..] accesses ])
+                  maxEnrichedSites = 24 :: Int
+                  enrichTargets = take maxEnrichedSites (Data.List.sortOn fst firstAtSite)
+              accJson <- forM enrichTargets $ \(i, acc) -> do
                 let src = "access " ++ show i ++ " " ++ acKind acc ++ maybe "" (\p -> " @" ++ hex p) (acPc acc)
                 regionJ <- regions (src ++ " address") acc
-                uniqJ <- uniqueness (src ++ " address") [] [acGuard acc] (acAddr acc)
+                uniqJ <- unspecialized (src ++ " address") [acGuard acc] (acAddr acc)
                 guardJ <- guardStatus (src ++ " guard") [] [] (acGuard acc)
                 specJ <- forM argEqs $ \(desc, eqP) -> do
                   su <- uniqueness (src ++ " address") [desc] [eqP, acGuard acc] (acAddr acc)
@@ -569,11 +599,20 @@ runEffectsSpike path flashBase ramBase ramSize mmio entryRaw argOverrides stepBo
               retJ <- case retTerm of
                 Nothing -> pure A.Null
                 Just r -> do
-                  u <- uniqueness "return r0" [] [] r
+                  let -- Is the return value confined to {0, 1}? (three-valued)
+                      bitValued extra preds = case WI.asBV r of
+                        Just bv -> pure (if BV.asUnsigned bv <= 1 then "proven" else "refuted" :: String)
+                        Nothing -> do
+                          one <- WI.bvLit sym WI.knownRepr (BV.mkBV WI.knownRepr 1)
+                          above <- WI.bvUlt sym one r
+                          (k, _) <- query "range: return above 1?" "return r0" extra (preds ++ [above]) $ \_ -> pure ()
+                          pure (case k of { "UNSAT" -> "proven"; "SAT" -> "refuted"; _ -> "unknown" })
+                  u <- unspecialized "return r0" [] r
+                  b <- bitValued [] []
                   specs <- forM argEqs $ \(desc, eqP) -> do
                     su <- uniqueness "return r0" [desc] [eqP] r
                     pure (A.object [ "additional_assumption" A..= desc, "uniqueness" A..= su ])
-                  pure (A.object [ "uniqueness" A..= u, "specializations" A..= specs ])
+                  pure (A.object [ "uniqueness" A..= u, "bit_valued" A..= b, "specializations" A..= specs ])
               pure (accJson, retJ)
             tEnrich1 <- CT.getCurrentTime
             nQueries <- readIORef queryCount

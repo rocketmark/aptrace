@@ -6,6 +6,12 @@ from aptrace_agent.case_evidence import performing_rigs_case_evidence
 from aptrace_agent.census import performing_rigs_census
 
 from aptrace_agent.disassembly import autopilot_disassembler
+from aptrace_agent.function_effects import planner_summary as effects_summary
+from aptrace_agent.structural_wiring import (
+    performing_rigs_function_effects,
+    performing_rigs_graph,
+    performing_rigs_usb_inventory,
+)
 from aptrace_agent.ghidra_index import autopilot_ghidra_index
 from aptrace_agent.investigation_tools import (
     performing_rigs_callsite_context,
@@ -34,6 +40,21 @@ class EvidenceExecutor:
         self.pin_table_reader = performing_rigs_pin_table()
         self.case_evidence = performing_rigs_case_evidence()
         self.census = performing_rigs_census()
+        self.graph = performing_rigs_graph(self.census)
+        self.usb = performing_rigs_usb_inventory(self.census, self.graph)
+        self._effects = None
+
+    @property
+    def effects(self):
+        # Built lazily: it reads the firmware image's vector table.
+        if self._effects is None:
+            self._effects = performing_rigs_function_effects(
+                self.census,
+                self.graph,
+                self.usb,
+            )
+
+        return self._effects
 
     def execute_operation(
         self,
@@ -106,6 +127,33 @@ class EvidenceExecutor:
                 )
                 .model_dump(mode="json")
             )
+
+        elif tool == "census_common_paths":
+            # Function sets are resolved by APTrace from its own evidence;
+            # hop bounds and edge semantics are fixed by the graph reader.
+            result = (
+                self.graph.common_paths(
+                    list(arguments["left"]),
+                    list(arguments["right"]),
+                    left_label=str(arguments.get("left_label", "left")),
+                    right_label=str(arguments.get("right_label", "right")),
+                )
+                .model_dump(mode="json")
+            )
+
+        elif tool == "census_usb_inventory":
+            result = (
+                self.usb.inventory()
+                .model_dump(mode="json")
+            )
+
+        elif tool == "function_effects":
+            effects = self.effects.analyze(
+                arguments["function"],
+                arguments.get("specialize") or {},
+            )
+            effects.planner_summary = effects_summary(effects)
+            result = effects.model_dump(mode="json")
 
         else:
             raise ValueError(

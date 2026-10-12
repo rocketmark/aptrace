@@ -161,6 +161,7 @@ def cmd_summary(args):
     ind = {s: n for s, n in ind_rows}
     print(f"Indirect edges: STATICALLY_RESOLVED={ind.get('STATICALLY_RESOLVED', 0)}  "
           f"DYNAMICALLY_OBSERVED={ind.get('DYNAMICALLY_OBSERVED', 0)}  "
+          f"RESOLVED_RAM_FUNCTION_POINTER={ind.get('RESOLVED_RAM_FUNCTION_POINTER', 0)}  "
           f"FINITE_CANDIDATE_SET={ind.get('FINITE_CANDIDATE_SET', 0)}  UNRESOLVED={ind.get('UNRESOLVED', 0)}")
 
     lib_rows = c.execute(
@@ -955,6 +956,43 @@ def cmd_state_map(args):
           f"output_depends_on_unresolved_source)")
 
 
+def cmd_fnptr_seeds(args):
+    """Statically initialized RAM function pointers (fnptr_resolve.py),
+    computed from the CURRENT build, printed with their derivation and
+    (unless --dry-run) written as derived Ghidra seeds for the next
+    `aptrace_ghidra.py build` -- STRONG resolutions only."""
+    import fnptr_resolve
+    sys.path.insert(0, str(REPO_ROOT / "tools" / "ghidra"))
+    import aptrace_ghidra as ghidra
+    conn = census_db.connect(args.db, create=False)
+    fw = census_db.get_firmware_id(conn, args.firmware)
+    fw_row = conn.execute("SELECT * FROM firmware WHERE id=?", (fw,)).fetchone()
+    fw_path, _base, _labels = ghidra.firmware_info(args.firmware)
+    rows = fnptr_resolve.resolve_function_pointers(conn, fw, fw_path.read_bytes(), fw_row["flash_base"])
+    for r in rows:
+        via = (f"arg {r['arg_reg']} at callsite {hx(r['callsite_addr'])}" if r["derivation"] == "callsite-argument"
+               and r["callsite_addr"] is not None else r["derivation"] or "-")
+        value = (f"raw {hx(r['raw_value'])} -> code {hx(r['canonical_target'])} -> terminal {hx(r['terminal_target'])} "
+                 f"[{r['confidence']}]" if r["canonical_target"] is not None
+                 else f"{r['value_kind']} {json.loads(r['provenance_json'])['writer'].get('reason', '')}")
+        print(f"site {hx(r['consumer_site'])} ({r['consumer_instruction']}) slot {hx(r['slot_addr'])} "
+              f"store {hx(r['store_addr'])} via {via}: {value}")
+    seeds = fnptr_resolve.seed_targets(rows)
+    if args.dry_run:
+        print(f"{len(seeds)} seed(s) (dry run, not written)")
+        return
+    out = ghidra.seed_file(args.firmware)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    doc = {"firmware_key": args.firmware, "firmware_sha256": fw_row["sha256"],
+           "source": f"aptrace_census.py fnptr-seeds ({fnptr_resolve.SOURCE})",
+           "seeds": [{**s, "addr": hx(s["addr"]), "consumer_site": hx(s["consumer_site"]),
+                      "slot_addr": hx(s["slot_addr"]), "raw_value": hx(s["raw_value"])} for s in seeds]}
+    with open(out, "w") as f:
+        json.dump(doc, f, indent=2)
+        f.write("\n")
+    print(f"wrote {len(seeds)} seed(s) to {out}")
+
+
 def cmd_reference_unmatched(args):
     conn = census_db.connect(args.db, create=False)
     fw = census_db.get_firmware_id(conn, args.firmware)
@@ -1111,6 +1149,11 @@ def main(argv):
                      help="skip the bounded interprocedural write scan (interproc_writes.py) -- "
                           "'no writer found' won't catch writes through a pointer passed into another function")
 
+    fps = sub.add_parser("fnptr-seeds", help="resolve statically initialized RAM function pointers and write "
+                                             "them as derived Ghidra seeds (see fnptr_resolve.py)")
+    fps.add_argument("firmware")
+    fps.add_argument("--dry-run", action="store_true", help="print the resolutions only")
+
     args = p.parse_args(argv)
     {
         "build": cmd_build, "reduce": cmd_reduce, "summary": cmd_summary, "function": cmd_function,
@@ -1125,6 +1168,7 @@ def main(argv):
         "reference-corpus": cmd_reference_corpus, "reference-match": cmd_reference_match,
         "reference-matches": cmd_reference_matches, "reference-unmatched": cmd_reference_unmatched,
         "state-map": cmd_state_map, "semantic-packets": cmd_semantic_packets,
+        "fnptr-seeds": cmd_fnptr_seeds,
     }[args.command](args)
     return 0
 

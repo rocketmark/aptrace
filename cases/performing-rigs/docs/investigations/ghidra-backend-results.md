@@ -142,8 +142,9 @@ heuristic Function Start Search alone is not enough: an unseeded run of
 `firmware_autopilot868.bin` found only 204 functions, none in the
 `0x8000`-`0x9700` range where the protocol dispatcher lives. The wrapper
 script runs `tools/ghidra/scripts/APTraceSeedVectorTable.java` as a
-`-preScript`, which reads the same 56-entry (16 system + 40 IRQ) vector
-table structure already validated by `tools/vector_scan.py` and
+`-preScript`, which reads the same vector table structure (16 system words
++ the case-configured IRQ count; 40 at the time of the counts below, 136
+since 2026-10-12) already validated by `tools/vector_scan.py` and
 `APTrace.VectorTable` (see
 [`firmware-layout.md`](../firmware/firmware-layout.md)) and
 disassembles/creates a function at each handler address before

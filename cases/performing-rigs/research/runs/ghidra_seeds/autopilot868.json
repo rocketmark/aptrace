@@ -1,0 +1,21 @@
+{
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "source": "aptrace_census.py fnptr-seeds (ram-fnptr-constant-store)",
+  "seeds": [
+    {
+      "addr": "0x0000c5cc",
+      "role": "forwarding-terminal",
+      "consumer_site": "0x0000cc1a",
+      "slot_addr": "0x200052e8",
+      "raw_value": "0x0000c725"
+    },
+    {
+      "addr": "0x0000c724",
+      "role": "resolved-function-pointer",
+      "consumer_site": "0x0000cc1a",
+      "slot_addr": "0x200052e8",
+      "raw_value": "0x0000c725"
+    }
+  ]
+}

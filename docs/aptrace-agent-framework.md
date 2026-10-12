@@ -5,6 +5,14 @@ research toward a Galois-first, whole-binary behavioral map that local models
 label and that later investigation tools query. It records the plan and its
 exit criteria; implemented capability status stays in [`status.md`](status.md).
 
+> **Recalibration (Agent v0).** The whole-binary map is no longer a
+> prerequisite for useful research. The autonomous controller is un-parked as
+> Agent v0: it uses the targeted capabilities that exist now (census
+> subsystem analysis, call-graph common paths, a USB structural inventory,
+> and on-demand function effects from the Phase 2 spike) behind a bounded
+> planner projection. The phases below remain the plan for broader coverage;
+> each is pursued when agent use shows it is needed, not as a gate.
+
 ## Jobs to be done
 
 1. **Map the full binary.** Every function and flash range is accounted for,

@@ -9,14 +9,18 @@
  * docs/harness/protocol-harness-results.md for that region's significance).
  *
  * This reuses the same vector-table structure already validated by
- * tools/vector_scan.py and APTrace.VectorTable (56 entries: 16 system +
- * 40 IRQ, per cases/performing-rigs/docs/firmware/firmware-layout.md) -- it does not
+ * tools/vector_scan.py and APTrace.VectorTable (16 system words followed by
+ * the target's external IRQ words) -- it does not
  * reimplement vector-table *parsing* logic beyond what's needed to hand
  * Ghidra a list of addresses to disassemble as Thumb functions.
  *
  * Script args: [numVectors] [extraHexAddrs]
  *   numVectors:    how many 4-byte vector-table words to read, starting
- *                  after the initial-SP word (default 56).
+ *                  after the initial-SP word: 15 system exceptions + the
+ *                  target's external IRQ count. Required -- the device's
+ *                  IRQ count is target configuration supplied by the caller
+ *                  (tools/ghidra/aptrace_ghidra.py SEED_VECTOR_WORDS), not
+ *                  assumed here.
  *   extraHexAddrs: optional comma-separated list of additional addresses
  *                  to seed as functions (e.g. a specific address under
  *                  investigation) -- e.g. "0x8259,0x801c,0x8a35".
@@ -43,7 +47,11 @@ public class APTraceSeedVectorTable extends GhidraScript {
 	@Override
 	public void run() throws Exception {
 		String[] args = getScriptArgs();
-		int numVectors = (args.length >= 1 && !args[0].isEmpty()) ? Integer.parseInt(args[0]) : 56;
+		if (args.length < 1 || args[0].isEmpty()) {
+			throw new IllegalArgumentException(
+				"APTraceSeedVectorTable: numVectors argument is required (15 + target IRQ count)");
+		}
+		int numVectors = Integer.parseInt(args[0]);
 
 		Memory mem = currentProgram.getMemory();
 		MemoryBlock block = mem.getBlocks()[0];

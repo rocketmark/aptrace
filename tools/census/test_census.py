@@ -92,19 +92,28 @@ def test_raw_vector_scan():
     flash_base = 0x4000
     # initial SP, Reset (index1, thumb bit set), NMI (index2, empty),
     # one IRQ slot populated (index16), rest left as 0xFFFFFFFF (empty).
-    num_vectors = 39
-    words = [0xFFFFFFFF] * (num_vectors + 1)
+    # num_irq is caller-supplied target configuration (no default); 24
+    # external IRQs -> 16 + 24 = 40 vector words.
+    num_irq = 24
+    words = [0xFFFFFFFF] * (16 + num_irq + 4)  # trailing words past the table
     words[0] = 0x20030000       # initial SP
     words[1] = flash_base | 1   # Reset
     words[2] = 0                # NMI, empty (0 also means "empty")
     words[16] = flash_base | 1  # first IRQ slot
+    words[16 + num_irq - 1] = (flash_base + 0x20) | 1  # last IRQ slot
+    words[16 + num_irq] = (flash_base + 0x40) | 1      # first word PAST the table
     data = b"".join(struct.pack("<I", w) for w in words)
     with tempfile.NamedTemporaryFile(suffix=".bin", delete=False) as f:
         f.write(data)
         tmp_path = Path(f.name)
     try:
-        vectors = raw_scan.read_vectors(tmp_path, flash_base, num_vectors=num_vectors,
+        vectors = raw_scan.read_vectors(tmp_path, flash_base, num_irq=num_irq,
                                           known_function_entries={flash_base})
+        check("table is exactly 16 system words + num_irq IRQ words",
+              len(vectors) == 16 + num_irq and vectors[-1]["vector_index"] == 15 + num_irq, len(vectors))
+        check("last IRQ slot is read, Thumb bit cleared, past-table word is not",
+              vectors[-1]["target_addr"] == flash_base + 0x20
+              and all(v["target_addr"] != flash_base + 0x40 for v in vectors))
         check("vector 0 is the initial SP, no target/name/is_irq semantics",
               vectors[0]["target_addr"] is None and vectors[0]["is_irq"] == 0)
         check("vector 1 (Reset) targets flash_base, landed_in_known_function=1",
@@ -214,8 +223,8 @@ def test_known_autopilot868_facts():
               f["name"] if f else None)
 
         n_vectors = conn.execute("SELECT COUNT(*) FROM vectors WHERE firmware_id=?", (fw,)).fetchone()[0]
-        check("57 vectors recorded (vector 0 + 56 handler slots, per APTraceSeedVectorTable.java)",
-              n_vectors == 57, n_vectors)
+        check("16 system + NUM_EXTERNAL_IRQ vectors recorded (case-configured target IRQ count)",
+              n_vectors == 16 + ghidra.NUM_EXTERNAL_IRQ, n_vectors)
         reset_vec = conn.execute(
             "SELECT * FROM vectors WHERE firmware_id=? AND vector_index=1", (fw,)).fetchone()
         check("Reset vector (index 1) landed in a known function",

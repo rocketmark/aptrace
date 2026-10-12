@@ -104,6 +104,7 @@ _TABLES_CHILD_FIRST = (
     # own tables independently of a static rebuild.
     "component_members", "components", "function_features", "library_matches",
     "function_fingerprints", "indirect_edge_candidates", "indirect_edge_resolutions",
+    "resolved_function_pointers",
     "function_reachability", "reachability_roots", "pin_snapshot", "hardware_snapshot",
     "hardware_snapshot_runs",
     # Base evidence layer (tools/census/build.py).
@@ -120,6 +121,7 @@ _REDUCTION_TABLES_CHILD_FIRST = (
     "residual_priority", "hardware_contract_runs",
     "component_members", "components", "function_features", "library_matches",
     "function_fingerprints", "indirect_edge_candidates", "indirect_edge_resolutions",
+    "resolved_function_pointers",
     "function_reachability", "reachability_roots", "pin_snapshot", "hardware_snapshot",
     "hardware_snapshot_runs",
 )

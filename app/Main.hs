@@ -15,7 +15,7 @@ import qualified System.IO as IO
 
 import qualified Data.Macaw.Discovery as MD
 
-import           APTrace.Case.PerformingRigs ( ramBase, ramSize, numIrq, defaultFlashBase )
+import           APTrace.Case.PerformingRigs ( ramBase, ramSize, numIrq, defaultFlashBase, mmioWindow )
 import           APTrace.Case.PerformingRigsScenarios
   ( runSolve, runProtocol, runTrigger, runTriggerCrossCheck )
 import           APTrace.DebugHarness ( runDebug )
@@ -47,10 +47,17 @@ main = do
       let (argOvs, mmio) = parseSpikeOpts [ o | o <- opts, o /= "--raw-only", take 4 o /= "out=" ]
           rawOnly = "--raw-only" `elem` opts
           outPrefix = last ("effects-spike" : [ drop 4 o | o <- opts, take 4 o == "out=" ])
-      in runEffectsSpike path defaultFlashBase ramBase ramSize mmio (parseHexWord entryS) argOvs 200000 rawOnly outPrefix
+      -- Spike-only: preserves the original hardcoded arg_r0 == 1 specialization.
+      in runEffectsSpike path defaultFlashBase ramBase ramSize mmio (parseHexWord entryS) argOvs [(0, 1)] 200000 True rawOnly outPrefix
+    ("function-effects" : path : entryS : opts) ->
+      -- Production entry for the agent's bounded function-effects action.
+      -- Geometry (flash/RAM/MMIO) is the target's own; the only caller
+      -- inputs are the entry, solver specializations and the output prefix.
+      let (specs, outPrefix) = parseEffectsOpts opts
+      in runEffectsSpike path defaultFlashBase ramBase ramSize [mmioWindow] (parseHexWord entryS) [] specs 3000 False False outPrefix
     [path]                      -> run path defaultFlashBase
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
-    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)\n       aptrace macaw-census FIRMWARE.bin [FLASH_BASE_HEX]  (standalone Macaw static-discovery census, phase 1)\n       aptrace macaw-census-expand FIRMWARE.bin [FLASH_BASE_HEX]  (macaw-normalized classify_failure recovery, fed back into Macaw's own incremental discovery)"
+    _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)\n       aptrace macaw-census FIRMWARE.bin [FLASH_BASE_HEX]  (standalone Macaw static-discovery census, phase 1)\n       aptrace macaw-census-expand FIRMWARE.bin [FLASH_BASE_HEX]  (macaw-normalized classify_failure recovery, fed back into Macaw's own incremental discovery)\n       aptrace function-effects FIRMWARE.bin ENTRY_ADDR_HEX [rN=HEX ...] out=PREFIX  (raw + solver-derived function effects; target geometry)\n       aptrace effects-spike FIRMWARE.bin ENTRY_ADDR_HEX [rN=HEX] [mmio=BASE:SIZE] [--raw-only] [out=PREFIX]  (SPIKE ONLY)"
 
 -- | @effects-spike@ options: @rN=HEX@ (N in 0..3) concrete argument
 -- overrides, and @mmio=BASE:SIZE@ MMIO ranges. Also @--raw-only@ and
@@ -64,6 +71,20 @@ parseSpikeOpts = foldr step ([], [])
       ('r' : n, '=' : v) | n `elem` ["0", "1", "2", "3"] -> ((read n, parseHexWord v) : argOvs, mmio)
       ("mmio", '=' : range) | (b, ':' : s) <- break (== ':') range -> (argOvs, (parseHexWord b, parseHexWord s) : mmio)
       _ -> error ("bad effects-spike option: " ++ opt)
+
+-- | @function-effects@ options: @rN=HEX@ (N in 0..3) solver
+-- specializations @arg_rN == HEX@, and @out=PREFIX@ (required). No MMIO or
+-- solver options: those belong to the target and to APTrace.
+parseEffectsOpts :: [String] -> ([(Int, Word32)], FilePath)
+parseEffectsOpts opts = (foldr step [] opts, outPrefix)
+  where
+    outPrefix = case [ drop 4 o | o <- opts, take 4 o == "out=" ] of
+      [p] -> p
+      _ -> error "function-effects requires exactly one out=PREFIX"
+    step opt specs = case break (== '=') opt of
+      ('r' : n, '=' : v) | n `elem` ["0", "1", "2", "3"] -> (read n, parseHexWord v) : specs
+      ("out", _) -> specs
+      _ -> error ("bad function-effects option: " ++ opt)
 
 parseHexWord :: String -> Word32
 parseHexWord s =

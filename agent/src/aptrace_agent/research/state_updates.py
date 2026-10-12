@@ -46,6 +46,7 @@ class ResearchStateUpdater:
         statement: str,
         grade: ClaimGrade,
         evidence_ids: list[str],
+        basis: str | None = None,
     ) -> Claim:
         normalized = _normalize(statement)
 
@@ -77,6 +78,7 @@ class ResearchStateUpdater:
             evidence_ids=list(
                 dict.fromkeys(evidence_ids)
             ),
+            basis=basis,
         )
 
         state.claims.append(claim)
@@ -89,6 +91,7 @@ class ResearchStateUpdater:
         *,
         statement: str,
         evidence_ids: list[str],
+        source: str | None = None,
     ) -> Hypothesis:
         normalized = _normalize(statement)
 
@@ -117,6 +120,7 @@ class ResearchStateUpdater:
             evidence_ids=list(
                 dict.fromkeys(evidence_ids)
             ),
+            source=source,
         )
 
         state.hypotheses.append(
@@ -176,6 +180,7 @@ class ResearchStateUpdater:
         *,
         question: str,
         evidence_ids: list[str],
+        source: str | None = None,
     ) -> OpenQuestion:
         normalized = _normalize(question)
 
@@ -207,6 +212,7 @@ class ResearchStateUpdater:
             evidence_ids=list(
                 dict.fromkeys(evidence_ids)
             ),
+            source=source,
         )
 
         state.open_questions.append(

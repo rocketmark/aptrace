@@ -203,6 +203,11 @@ def run_autonomous_investigation(
             census_peripherals=(
                 executor.census.available_peripherals()
             ),
+            structural_tools=(
+                "usb_inventory",
+                "common_paths",
+                "function_effects",
+            ),
         )
     )
 

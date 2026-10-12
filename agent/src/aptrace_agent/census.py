@@ -833,17 +833,31 @@ def _expected_sha(sums_file: Path, filename: str) -> str:
     raise KeyError(f"{filename} not listed in {sums_file}")
 
 
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+PERFORMING_RIGS_CASE = _REPO_ROOT / "cases" / "performing-rigs"
+_SVD_FILE = PERFORMING_RIGS_CASE / "config" / "svd" / "ATSAMD51J19A.svd"
+_svd_singleton: Any = None
+
+
+def performing_rigs_svd() -> Any:
+    """The case's existing SVD map (peripherals, registers, interrupts)."""
+
+    global _svd_singleton
+
+    if _svd_singleton is None:
+        module = _load_svd_map(_SVD_FILE.parent / "resolve_mmio.py")
+        _svd_singleton = module.Samd51Map(_SVD_FILE)
+
+    return _svd_singleton
+
+
 def performing_rigs_census() -> CensusReader:
     """AutoPilot 868 census reader. Every identity is fixed here."""
 
-    repo_root = Path(__file__).resolve().parents[3]
-    case = repo_root / "cases" / "performing-rigs"
+    case = PERFORMING_RIGS_CASE
     originals = case / "research" / "firmware" / "originals"
-    svd_dir = case / "config" / "svd"
-    svd_file = svd_dir / "ATSAMD51J19A.svd"
-
-    module = _load_svd_map(svd_dir / "resolve_mmio.py")
-    svd = module.Samd51Map(svd_file)
+    svd_file = _SVD_FILE
+    svd = performing_rigs_svd()
 
     peripherals: dict[str, PeripheralRange] = {}
 

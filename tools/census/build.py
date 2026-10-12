@@ -200,7 +200,8 @@ def build(key, db_path=None, verbose=True, ghidra_build=True):
 
     # --- vectors + function-pointer candidates (raw byte scan) ---------
     log("[5/6] Raw vector-table read, function-pointer scan, Capstone cross-check...")
-    vectors = raw_scan.read_vectors(fw_path, flash_base, known_function_entries=known_entries)
+    vectors = raw_scan.read_vectors(fw_path, flash_base, num_irq=ghidra.NUM_EXTERNAL_IRQ,
+                                    known_function_entries=known_entries)
     vector_rows = [{
         "firmware_id": firmware_id, "vector_index": v["vector_index"], "raw_value": v["raw_value"],
         "target_addr": v["target_addr"], "name": v["name"], "is_irq": v["is_irq"],

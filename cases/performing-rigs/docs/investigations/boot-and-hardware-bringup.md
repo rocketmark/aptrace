@@ -286,10 +286,43 @@ resolves against THIS SAME document's own finding above: those
 addresses belong to `0xa000`/`0xa03c`, the already-documented SPI
 begin/end-transaction helpers (SERCOM SWRST + conditional
 `EIC.INTENCLR`/`INTENSET` — see "The TX path's real transport" above),
-which is unrelated to the callback/mask/count structure. This is an
-**exhaustive static negative result, not proof that runtime
-registration is impossible** — no dynamic (Unicorn) check was run for
-this specific question. The best current interpretation: this is
+which is unrelated to the callback/mask/count structure.
+
+The 2026-10-12 re-check widened the search and added concrete evidence:
+
+- **Anchor-relative and indexed encodings (static):** from each of the
+  86 PC-relative literal loads of a RAM value in
+  `0x20004e00`–`0x20005600` (outside the dispatcher), a register-def-
+  bounded forward scan checked whether any load/store displacement
+  (negative ones included), `add`/`sub` immediate, or `stm` from that
+  base reaches `0x2000525c`–`0x200052e7`. **None did.** A pass over
+  every census basic block also tracked indexed store bases across
+  blocks (single-predecessor, aware of call clobbers) and found none.
+  That pass is partial: about 72% of the bases do not resolve under
+  that tracer.
+- **Placement (static):** all three arrays lie inside `.bss`
+  (`0x20000830`–`0x2000531c`, zero-filled by `Reset_Handler`'s
+  `0xcc82` loop). No flash image initializes them.
+- **EIC configuration (static):** nothing writes `EIC.CTRLA` or
+  `CONFIGn`. The only EIC-register writers are the
+  `INTENCLR`/`INTENSET` helpers above.
+- **Concrete:** the reference boot recipe was run to recipe status
+  `complete` (450k instructions, no interrupts delivered by the recipe)
+  with `0xcb6c`/`0xcb86`/`0xcb8e`/`0xcb92` watched. None was hit. At the
+  end of the run, `*0x200052e4 = 0` and every word of both arrays is
+  zero. As a control, the USB slot `0x200052e8` in the same memory read
+  holds `0xc725`, so registration code did run and the read is valid.
+  The census `reduce` replay also watches `0xcb92` over the scenario
+  corpus and has observed no target.
+
+So the dispatch loop guard (`i < *0x200052e4`) cannot pass on any state
+these static and concrete paths can construct. **Zero callback slots
+are statically recoverable**, and the census adds no `resolved_indirect`
+edge at `0xcb92`. This is an **exhaustive static negative result plus a
+bounded concrete negative, not proof that runtime registration is
+impossible**: a computed store through a pointer this analysis cannot
+trace, or code outside the recipe's boot path, is not excluded. The best
+current interpretation: this is
 linked Arduino-SAMD-core interrupt-attach platform infrastructure
 (present because the vector table references it) whose application use
 is **not established** by any evidence gathered so far.

@@ -46,6 +46,7 @@ import           APTrace.MacawExpand
   ( ExpansionResult(..), expandWithNormalization, resolutionValue )
 import qualified APTrace.MacawNormalize as Normalize
 import           APTrace.MacawRefinement ( refineFunctionAt )
+import           APTrace.Case.PerformingRigs ( numIrq )
 import           APTrace.VectorTable ( VectorEntry(..), parseVectorTable )
 
 main :: IO ()
@@ -365,7 +366,7 @@ noA32DecodeErrorsInFullCensus = do
       Left err -> test "11. no A32 decode errors in the full vector-table census" False
                     <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
       Right mem -> do
-        let roots = normalizeRoots (parseVectorTable 40 bytes)
+        let roots = normalizeRoots (parseVectorTable numIrq bytes)
         census <- discoverCensus mem roots
         let allDetail = concatMap uiDetail (crUnresolved census)
         test "11. no A32 decode errors in the full vector-table census"
@@ -496,7 +497,7 @@ callOutputIsDeterministic = do
       Left err -> test "15. call output ordering is deterministic" False
                     <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
       Right mem -> do
-        let roots = normalizeRoots (parseVectorTable 40 bytes)
+        let roots = normalizeRoots (parseVectorTable numIrq bytes)
         c1 <- discoverCensus mem roots
         c2 <- discoverCensus mem roots
         let isSorted cs = cs == sortOn (\c -> (ciCaller c, ciCallSite c, ciCallee c)) cs
@@ -718,7 +719,7 @@ memoryDerivedFailureRemainsUnresolved = do
       Left err -> test "21. memory-derived failure remains unresolved" False
                     <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
       Right mem -> do
-        census <- discoverCensus mem (normalizeRoots (parseVectorTable 40 bytes))
+        census <- discoverCensus mem (normalizeRoots (parseVectorTable numIrq bytes))
         let stillUnresolved =
               any (\u -> uiFunctionEntry u == fnEntry && uiBlockStart u == blkStart
                            && uiKind u == "classify_failure")
@@ -819,7 +820,7 @@ fullFirmwareFixpointExpansion = do
       Left err -> test "23. full-firmware fixpoint expansion" False
                     <* hPutStrLn stderr ("  (setup failed: " ++ err ++ ")")
       Right mem -> do
-        let rootGroups = normalizeRoots (parseVectorTable 40 bytes)
+        let rootGroups = normalizeRoots (parseVectorTable numIrq bytes)
         baseCensus <- discoverCensus mem rootGroups
         let originalNormalized =
               Set.fromList [ (niFunctionEntry n, niBlockStart n) | n <- crNormalized baseCensus ]

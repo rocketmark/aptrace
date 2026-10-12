@@ -2,19 +2,54 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
+import time
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from types import SimpleNamespace
 from typing import Any
 
 from openai import OpenAI
 
+from aptrace_agent.research.projection import (
+    COMPACT_BUDGET,
+    PlannerProjection,
+    ProjectionBudget,
+    clip,
+    known_functions,
+)
 from aptrace_agent.research.reconciliation import (
     CaseReconciler,
 )
 from aptrace_agent.research.session import (
     ResearchSession,
 )
+from aptrace_agent.research.state_updates import (
+    ResearchStateUpdater,
+)
+
+
+# Structural tools beyond per-peripheral census analysis. Each is offered
+# only when the application enables it.
+STRUCTURAL_TOOLS = (
+    "usb_inventory",
+    "common_paths",
+    "function_effects",
+)
+
+_FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
+_SET_NAME_RE = re.compile(r"[A-Z][A-Z0-9_]{0,23}")
+
+# Sources whose function leads are structural narrowing rather than
+# caller/callee crawling; their leads rank first for the planner.
+_STRUCTURAL_SOURCES = {
+    "census_peripheral_usage",
+    "census_usb_inventory",
+    "census_common_paths",
+    "function_effects",
+    "search_case_evidence",
+}
 
 
 @dataclass(frozen=True)
@@ -31,16 +66,72 @@ class ResearchRunResult:
     stop_reason: str
     steps: tuple[ResearchStep, ...]
     reconciled: bool
+    planner_requests: tuple[dict[str, Any], ...] = ()
+
+
+@dataclass
+class _Palette:
+    """The tools offered for one planner request and what they accept."""
+
+    tools: list[dict[str, Any]]
+    lead_ids: list[str] = field(default_factory=list)
+    analyzable: list[str] = field(default_factory=list)
+    set_names: dict[str, list[str]] = field(default_factory=dict)
+    known: set[str] = field(default_factory=set)
+    # Tool whose request repeated an analysis already in evidence.
+    duplicate: str | None = None
+
+    def names(self) -> list[str]:
+        return [tool["function"]["name"] for tool in self.tools]
+
+    def drop(self, name: str) -> None:
+        self.tools = [tool for tool in self.tools if tool["function"]["name"] != name]
+
+        if name == "analyze_peripheral":
+            self.analyzable = []
+
+
+def _function_tool(name: str, description: str, properties: dict[str, Any], required: list[str]) -> dict[str, Any]:
+    return {
+        "type": "function",
+        "function": {
+            "name": name,
+            "description": description,
+            "parameters": {
+                "type": "object",
+                "properties": properties,
+                "required": required,
+                "additionalProperties": False,
+            },
+        },
+    }
+
+
+def _prefill_rejected(value: Any) -> bool:
+    """True for an oMLX prefill-memory rejection, raised or returned as a body."""
+
+    if isinstance(value, Exception):
+        text = str(value)
+    else:
+        if getattr(value, "choices", None):
+            return False
+
+        extra = getattr(value, "model_extra", None) or {}
+        text = str(extra.get("error") or getattr(value, "error", "") or "")
+
+    return "prefill_memory_exceeded" in text or "prefill memory guard" in text
 
 
 class ResearchController:
     """
     Model-directed bounded research loop.
 
-    Qwen chooses among APTrace-validated leads. APTrace executes the
-    selected lead and updates authoritative evidence/facts. Case
-    reconciliation is sparse and occurs only at a terminal boundary in
-    this initial production controller.
+    Qwen chooses which uncertainty to pursue: a validated lead, a
+    subsystem-level structural analysis, or finishing. APTrace validates
+    every argument, executes the analysis, records evidence, and derives
+    facts. The planner sees a bounded projection of the research state;
+    the complete evidence ledger, claims and provenance stay in APTrace.
+    Case reconciliation is sparse and occurs only at a terminal boundary.
     """
 
     def __init__(
@@ -52,1185 +143,913 @@ class ResearchController:
         review_model: str | None = None,
         max_steps: int = 12,
         max_discovery_steps: int = 3,
-        recent_evidence_limit: int = 6,
+        recent_evidence_limit: int = 2,
         census_peripherals: Sequence[str] = (),
         max_structural_analyses: int = 4,
+        structural_tools: Sequence[str] = (),
+        max_effects_analyses: int = 3,
+        max_path_analyses: int = 3,
+        max_visible_leads: int = 6,
+        prefill_retry_delay: float = 3.0,
+        projection_budget: ProjectionBudget | None = None,
     ) -> None:
         if max_steps < 1:
-            raise ValueError(
-                "max_steps must be at least 1"
-            )
+            raise ValueError("max_steps must be at least 1")
 
         if max_discovery_steps < 0:
-            raise ValueError(
-                "max_discovery_steps must be at least 0"
-            )
+            raise ValueError("max_discovery_steps must be at least 0")
 
         if recent_evidence_limit < 1:
-            raise ValueError(
-                "recent_evidence_limit must be at least 1"
-            )
+            raise ValueError("recent_evidence_limit must be at least 1")
 
-        self.planner_client = (
-            planner_client
-            or OpenAI(
-                base_url=os.environ[
-                    "OMLX_BASE_URL"
-                ],
-                api_key=os.environ[
-                    "OMLX_API_KEY"
-                ],
-                max_retries=0,
-                timeout=120.0,
-            )
+        unknown = sorted(set(structural_tools) - set(STRUCTURAL_TOOLS))
+
+        if unknown:
+            raise ValueError(f"unknown structural tools: {', '.join(unknown)}")
+
+        self.planner_client = planner_client or OpenAI(
+            base_url=os.environ["OMLX_BASE_URL"],
+            api_key=os.environ["OMLX_API_KEY"],
+            max_retries=0,
+            timeout=120.0,
         )
 
-        self.planner_model = (
-            planner_model
-            or os.environ["APTRACE_MODEL"]
-        )
+        self.planner_model = planner_model or os.environ["APTRACE_MODEL"]
 
-        self.reconciler = (
-            reconciler
-            or CaseReconciler(
-                model=(
-                    review_model
-                    or os.environ.get(
-                        "APTRACE_REVIEW_MODEL",
-                        "gemma-4-26b-a4b-it-4bit",
-                    )
+        self.reconciler = reconciler or CaseReconciler(
+            model=(
+                review_model
+                or os.environ.get(
+                    "APTRACE_REVIEW_MODEL",
+                    "gemma-4-26b-a4b-it-4bit",
                 )
             )
         )
 
         self.max_steps = max_steps
-        self.max_discovery_steps = (
-            max_discovery_steps
-        )
-        self.recent_evidence_limit = (
-            recent_evidence_limit
-        )
+        self.max_discovery_steps = max_discovery_steps
 
         # APTrace-validated peripheral names with census evidence. The
         # planner may only choose among these; APTrace owns firmware,
         # database, limits and execution.
-        self.census_peripherals = tuple(
-            sorted(set(census_peripherals))
-        )
-        self.max_structural_analyses = (
-            max_structural_analyses
-        )
+        self.census_peripherals = tuple(sorted(set(census_peripherals)))
+        self.max_structural_analyses = max_structural_analyses
+        self.structural_tools = tuple(structural_tools)
+        self.max_effects_analyses = max_effects_analyses
+        self.max_path_analyses = max_path_analyses
+        self.max_visible_leads = max_visible_leads
+        self.prefill_retry_delay = prefill_retry_delay
 
-    def _census_observations(
-        self,
-        session: ResearchSession,
-    ) -> list:
-        return [
-            observation
-            for observation in session.ledger.all()
-            if observation.tool
-            == "census_peripheral_usage"
-        ]
+        budget = projection_budget or ProjectionBudget(latest_count=recent_evidence_limit)
+        self.normal_projection = PlannerProjection(budget)
+        self.compact_projection = PlannerProjection(COMPACT_BUDGET)
+        self.projection = self.normal_projection
+        self.updater = ResearchStateUpdater()
 
-    def _analyzable_peripherals(
-        self,
-        session: ResearchSession,
-    ) -> list[str]:
-        done = self._census_observations(
-            session
-        )
+        # Size of every planner request, for measurement and the run record.
+        self.planner_requests: list[dict[str, Any]] = []
+
+        # Decisions left to request with the compact projection after the
+        # local server rejected a request at prefill.
+        self._compact_decisions = 0
+
+        # Tool -> decisions left during which it is withheld, after the
+        # planner asked it to repeat an analysis already in evidence.
+        self._cooldown: dict[str, int] = {}
+
+    # -- what has already run ---------------------------------------------------
+
+    @staticmethod
+    def _observations(session: ResearchSession, tool: str) -> list:
+        return [observation for observation in session.ledger.all() if observation.tool == tool]
+
+    def _census_observations(self, session: ResearchSession) -> list:
+        return self._observations(session, "census_peripheral_usage")
+
+    def _analyzable_peripherals(self, session: ResearchSession) -> list[str]:
+        done = self._census_observations(session)
 
         if len(done) >= self.max_structural_analyses:
             return []
 
-        analyzed = {
-            observation.arguments.get(
-                "peripheral"
-            )
-            for observation in done
-        }
+        analyzed = {observation.arguments.get("peripheral") for observation in done}
 
-        return [
-            name
-            for name in self.census_peripherals
-            if name not in analyzed
-        ]
+        # The USB inventory already includes the USB census usage.
+        if self._observations(session, "census_usb_inventory"):
+            analyzed.add("USB")
+
+        return [name for name in self.census_peripherals if name not in analyzed]
+
+    def _set_names(self, session: ResearchSession) -> dict[str, list[str]]:
+        """Named function sets the planner may relate: analyzed peripherals."""
+
+        sets: dict[str, list[str]] = {}
+
+        for observation in self._census_observations(session):
+            functions = [item.get("function") for item in observation.result.get("functions", [])]
+
+            if functions:
+                sets[str(observation.arguments.get("peripheral"))] = [f for f in functions if f]
+
+        for observation in self._observations(session, "census_usb_inventory"):
+            functions = observation.result.get("functions", [])
+
+            if functions:
+                sets["USB"] = list(dict.fromkeys(sets.get("USB", []) + functions))
+
+        return sets
+
+    # -- palette ----------------------------------------------------------------
 
     @staticmethod
-    def _analysis_tool(
-        peripherals: list[str],
-    ) -> dict[str, Any]:
-        return {
-            "type": "function",
-            "function": {
-                "name": "analyze_peripheral",
-                "description": (
-                    "Subsystem-level structural analysis "
-                    "of one MCU peripheral from APTrace's "
-                    "firmware census: which functions "
-                    "access its registers or load its "
-                    "address, and their reachability."
-                ),
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "peripheral": {
-                            "type": "string",
-                            "enum": peripherals,
-                        }
-                    },
-                    "required": [
-                        "peripheral",
-                    ],
-                    "additionalProperties": False,
-                },
-            },
-        }
+    def _analysis_tool(peripherals: list[str]) -> dict[str, Any]:
+        return _function_tool(
+            "analyze_peripheral",
+            "Census: functions using one peripheral, with reachability.",
+            {"peripheral": {"type": "string", "enum": peripherals}},
+            ["peripheral"],
+        )
 
-    def _analysis_guidance(
-        self,
-        session: ResearchSession,
-        peripherals: list[str],
-    ) -> str:
-        if not peripherals:
-            return ""
+    def _structural_palette(self, session: ResearchSession, palette: _Palette) -> None:
+        palette.analyzable = self._analyzable_peripherals(session)
 
-        analyzed = ", ".join(
-            f"{observation.arguments.get('peripheral')} "
-            f"({observation.id})"
-            for observation in self._census_observations(
-                session
-            )
-        ) or "(none)"
+        if palette.analyzable:
+            palette.tools.append(self._analysis_tool(palette.analyzable))
 
-        return f"""
-STRUCTURAL ANALYSIS
+        # Scoped to relevance: offered when the objective names USB or USB
+        # census evidence already exists.
+        usb_relevant = "usb" in session.state.objective.lower() or any(
+            observation.arguments.get("peripheral") == "USB"
+            for observation in self._census_observations(session)
+        )
 
-analyze_peripheral answers subsystem-level questions about one MCU
-peripheral in a single step, from APTrace's precomputed firmware census.
-Prefer this order:
-1. existing case evidence
-2. analyze_peripheral for a peripheral relevant to the objective
-3. inspection of the functions it narrows to
-4. caller/callee expansion only for a specific remaining question
-Census facts are structural; they do not identify attached devices.
-Already analyzed (do not repeat): {analyzed}
-"""
-
-    def _analysis_problem(
-        self,
-        session: ResearchSession,
-        peripheral: Any,
-    ) -> str:
-        for observation in self._census_observations(
-            session
+        if (
+            "usb_inventory" in self.structural_tools
+            and usb_relevant
+            and not self._observations(session, "census_usb_inventory")
         ):
-            if observation.arguments.get(
-                "peripheral"
-            ) == peripheral:
-                return (
-                    f"{peripheral} was already analyzed "
-                    f"in {observation.id}; choose a "
-                    "different listed peripheral or "
-                    "another action"
+            palette.tools.append(
+                _function_tool(
+                    "analyze_usb_interface",
+                    "USB questions only: USB register users, IRQ handlers, descriptors.",
+                    {},
+                    [],
                 )
+            )
 
-        return (
-            "analyze_peripheral requires "
-            "one of the listed peripherals"
-        )
+        observations = session.ledger.all()
+        palette.known = set(known_functions(observations))
+        palette.set_names = self._set_names(session)
 
-    def _follow_peripheral_analysis(
-        self,
-        session: ResearchSession,
-        peripheral: str,
-    ):
-        lead = session.registry.register(
-            kind="census",
-            description=(
-                f"Census structural usage of "
-                f"peripheral {peripheral}"
-            ),
-            tool="census_peripheral_usage",
-            arguments={
-                "peripheral": peripheral,
-                "limit": 25,
-            },
-            source_evidence_ids=[],
-        )
-
-        if all(
-            existing.id != lead.id
-            for existing
-            in session.state.leads
+        if (
+            "common_paths" in self.structural_tools
+            and len(self._observations(session, "census_common_paths")) < self.max_path_analyses
+            and len(palette.set_names) >= 2
         ):
-            session.state.add_lead(
-                lead
+            members = {"type": "array", "items": {"type": "string"}, "maxItems": 4}
+            palette.tools.append(
+                _function_tool(
+                    "find_common_paths",
+                    "Only to test whether two subsystems connect: do two function sets (analyzed peripherals or FUN_ names) converge in the call graph or shared RAM?",
+                    {"left": members, "right": members},
+                    ["left", "right"],
+                )
             )
 
-        observation = (
-            session.follow_lead(
-                lead.id
-            )
-        )
-
-        return lead, observation
-
-    def _format_observation(
-        self,
-        observation,
-    ) -> str:
-        result = observation.result
-
-        if observation.tool == "function_facts":
-            callers = result.get(
-                "callers",
-                [],
+        if (
+            "function_effects" in self.structural_tools
+            and len(self._observations(session, "function_effects")) < self.max_effects_analyses
+            and palette.known
+        ):
+            value = {"type": "integer"}
+            palette.tools.append(
+                _function_tool(
+                    "analyze_function_effects",
+                    "Only when one function's dataflow is the open question: symbolic MMIO/RAM/return effects of a known FUN_; r0/r1 optionally fix arguments.",
+                    {"function": {"type": "string"}, "r0": value, "r1": value},
+                    ["function"],
+                )
             )
 
-            return (
-                f"{observation.id} function_facts: "
-                f"{result.get('name')} "
-                f"entry={result.get('entry')} "
-                f"size={result.get('size')} "
-                f"validated_calls={len(callers)}"
-            )
+    def _apply_cooldown(self, palette: _Palette) -> None:
+        for name, remaining in list(self._cooldown.items()):
+            if remaining > 0 and len(palette.tools) > 1:
+                palette.drop(name)
 
-        if observation.tool == "function_disassembly":
-            instructions = result.get(
-                "instructions",
-                [],
-            )
-
-            first_address = (
-                instructions[0].get("address")
-                if instructions
-                else None
-            )
-
-            last_address = (
-                instructions[-1].get("address")
-                if instructions
-                else None
-            )
-
-            return (
-                f"{observation.id} "
-                f"function_disassembly: "
-                f"{len(instructions)} instructions "
-                f"from {first_address} to {last_address}; "
-                "full disassembly retained by APTrace"
-            )
-
-        if observation.tool == "callsite_context":
-            instructions = result.get(
-                "instructions",
-                [],
-            )
-
-            callsite = result.get(
-                "address"
-            )
-
-            call_index = None
-
-            for index, item in enumerate(
-                instructions
-            ):
-                if item.get("address") == callsite:
-                    call_index = index
-                    break
-
-            if call_index is None:
-                selected = instructions[:6]
+            if remaining <= 1:
+                del self._cooldown[name]
             else:
-                selected = instructions[
-                    max(0, call_index - 2):
-                    min(
-                        len(instructions),
-                        call_index + 4,
-                    )
-                ]
+                self._cooldown[name] = remaining - 1
 
-            rendered = "\n".join(
-                f"  {item.get('address')} "
-                f"{item.get('mnemonic')} "
-                f"{item.get('operands', '')}".rstrip()
-                for item in selected
-            )
+    def _decision_palette(self, session: ResearchSession) -> _Palette:
+        open_leads = self._planner_open_leads(session)
+        palette = _Palette(tools=[], lead_ids=[lead.id for lead in open_leads])
 
-            return (
-                f"{observation.id} callsite_context "
-                f"{result.get('function')} "
-                f"@ {callsite}:\n"
-                f"{rendered}"
-            )
-
-        if observation.tool == "census_peripheral_usage":
-            return self._format_census(
-                observation
-            )
-
-        if observation.tool == "pin_table_entry":
-            return (
-                f"{observation.id} pin_table_entry: "
-                f"index={result.get('index')} "
-                f"gpio={result.get('gpio')} "
-                f"group={result.get('group')} "
-                f"bit={result.get('bit')}"
-            )
-
-        if observation.tool == "search_case_evidence":
-            matches: list[str] = []
-
-            for match in result.get(
-                "matches",
-                [],
-            )[:2]:
-                excerpt = " ".join(
-                    str(
-                        match.get(
-                            "excerpt",
-                            "",
-                        )
-                    ).split()
+        if palette.lead_ids:
+            palette.tools.append(
+                _function_tool(
+                    "follow_lead",
+                    "Follow one lead listed under LEADS.",
+                    {"lead_id": {"type": "string", "enum": palette.lead_ids}},
+                    ["lead_id"],
                 )
-
-                if len(excerpt) > 220:
-                    excerpt = (
-                        excerpt[:220]
-                        + "..."
-                    )
-
-                matches.append(
-                    f"  {match.get('source')}:"
-                    f"{match.get('line')}: "
-                    f"{excerpt}"
-                )
-
-            return (
-                f"{observation.id} "
-                f"search_case_evidence "
-                f"query={result.get('query')}:\n"
-                + "\n".join(matches)
             )
 
-        return (
-            f"{observation.id} "
-            f"{observation.tool}: "
-            f"{json.dumps(result, sort_keys=True)}"
+        self._structural_palette(session, palette)
+        palette.tools.append(self._finish_tool())
+        self._apply_cooldown(palette)
+        return palette
+
+    def _discovery_palette(self, session: ResearchSession) -> _Palette:
+        palette = _Palette(
+            tools=[
+                _function_tool(
+                    "search_case_evidence",
+                    "Search case documents (lexical terms).",
+                    {"query": {"type": "string"}},
+                    ["query"],
+                )
+            ]
         )
+        self._structural_palette(session, palette)
+        palette.tools.append(
+            _function_tool(
+                "finish",
+                "End discovery; no further search is useful.",
+                {"reason": {"type": "string"}},
+                ["reason"],
+            )
+        )
+        return palette
 
     @staticmethod
-    def _format_census(
-        observation,
-    ) -> str:
-        result = observation.result
-        header = (
-            f"{observation.id} census_peripheral_usage "
-            f"{result.get('peripheral')}: "
-            f"status={result.get('status')}"
+    def _finish_tool() -> dict[str, Any]:
+        notes = {"type": "array", "items": {"type": "string"}}
+        return _function_tool(
+            "finish",
+            "End research, optionally with hypotheses and open questions.",
+            {"reason": {"type": "string"}, "hypotheses": notes, "open_questions": notes},
+            ["reason"],
         )
 
-        if result.get("status") != "ok":
-            return (
-                f"{header} "
-                f"({result.get('diagnostic')})"
-            )
+    # -- validation -------------------------------------------------------------
 
-        functions = [
-            item.get("function")
-            for item in result.get(
-                "functions",
-                [],
-            )[:6]
-        ]
+    def _analysis_problem(self, session: ResearchSession, peripheral: Any, palette: _Palette | None = None) -> str:
+        palette = palette or _Palette(tools=[])
 
-        unattributed = [
-            str(item.get("site"))
-            for item in result.get(
-                "unattributed_sites",
-                [],
-            )[:4]
-        ]
+        for observation in self._census_observations(session):
+            if observation.arguments.get("peripheral") == peripheral:
+                palette.duplicate = "analyze_peripheral"
+                return (
+                    f"{peripheral} was already analyzed in {observation.id}; choose a "
+                    "different listed peripheral or another action"
+                )
 
-        return (
-            f"{header} "
-            f"mmio_sites={result.get('total_mmio_sites')} "
-            f"address_constants="
-            f"{result.get('total_address_constants')} "
-            f"(unreferenced="
-            f"{result.get('unreferenced_address_constants')}) "
-            f"functions={result.get('total_functions')} "
-            f"[{', '.join(functions)}]"
-            + (
-                f" unattributed_sites=[{', '.join(unattributed)}]"
-                if unattributed
-                else ""
-            )
-        )
+        return "analyze_peripheral requires one of the listed peripherals"
 
-    def _state_digest(
+    def _resolve_set(self, palette: _Palette, items: Any) -> tuple[list[str], str] | str:
+        if not isinstance(items, list) or not 1 <= len(items) <= 4:
+            return "find_common_paths sets need 1-4 names"
+
+        functions: list[str] = []
+        labels: list[str] = []
+
+        for item in items:
+            name = str(item).strip()
+            upper = name.upper()
+
+            if upper in palette.set_names:
+                functions.extend(palette.set_names[upper])
+                labels.append(upper)
+            elif _FUNCTION_RE.fullmatch(name) and name in palette.known:
+                functions.append(name)
+                labels.append(name)
+            else:
+                usable = ", ".join(sorted(palette.set_names)) or "none yet"
+                return (
+                    f"unknown set member {name[:40]!r}; use analyzed peripheral names "
+                    f"({usable}) or FUN_ names from evidence"
+                )
+
+        return list(dict.fromkeys(functions)), "+".join(labels)[:40]
+
+    def _parse_structural(
         self,
         session: ResearchSession,
-    ) -> str:
-        state = session.state
-        sections: list[str] = []
+        palette: _Palette,
+        name: str,
+        arguments: dict[str, Any],
+    ) -> tuple[str, dict[str, Any]] | str | None:
+        """Validated (action, arguments), a problem, or None if not structural."""
 
-        proven = [
-            claim
-            for claim in state.claims
-            if claim.grade.value == "PROVEN"
-        ]
+        offered = palette.names()
 
-        supported = [
-            claim
-            for claim in state.claims
-            if claim.grade.value == "SUPPORTED"
-        ]
+        if name == "analyze_peripheral" and name in offered:
+            peripheral = arguments.get("peripheral")
 
-        if proven:
-            sections.append(
-                "AUTHORITATIVE PROVEN FACTS\n"
-                + "\n".join(
-                    f"{claim.id}: "
-                    f"{claim.statement} "
-                    f"[{','.join(claim.evidence_ids)}]"
-                    for claim in proven
+            if peripheral in palette.analyzable:
+                return name, {"peripheral": peripheral}
+
+            return self._analysis_problem(session, peripheral, palette)
+
+        if name == "analyze_usb_interface" and name in offered:
+            return name, {}
+
+        if name == "find_common_paths" and name in offered:
+            extra = sorted(set(arguments) - {"left", "right"})
+
+            if extra:
+                return f"find_common_paths accepts only left and right, not {', '.join(extra)}"
+
+            left = self._resolve_set(palette, arguments.get("left"))
+            right = self._resolve_set(palette, arguments.get("right"))
+
+            for side in (left, right):
+                if isinstance(side, str):
+                    return side
+
+            signature = (left[1], right[1])
+
+            for observation in self._observations(session, "census_common_paths"):
+                done = (observation.arguments.get("left_label"), observation.arguments.get("right_label"))
+
+                if done in (signature, signature[::-1]):
+                    palette.duplicate = name
+                    return f"paths {left[1]}|{right[1]} were already analyzed in {observation.id}"
+
+            return name, {"left": left[0], "right": right[0], "left_label": left[1], "right_label": right[1]}
+
+        if name == "analyze_function_effects" and name in offered:
+            extra = sorted(set(arguments) - {"function", "r0", "r1"})
+
+            if extra:
+                return (
+                    "analyze_function_effects accepts only function and r0/r1 integers; "
+                    f"rejected {', '.join(extra)}"
                 )
-            )
 
-        if supported:
-            sections.append(
-                "SUPPORTED INTERPRETATION\n"
-                + "\n".join(
-                    f"{claim.id}: "
-                    f"{claim.statement} "
-                    f"[{','.join(claim.evidence_ids)}]"
-                    for claim in supported
-                )
-            )
+            function = str(arguments.get("function", "")).strip()
 
-        if state.hypotheses:
-            sections.append(
-                "HYPOTHESES\n"
-                + "\n".join(
-                    f"{item.id}: "
-                    f"{item.statement}"
-                    for item in state.hypotheses
-                )
-            )
+            if not _FUNCTION_RE.fullmatch(function) or function not in palette.known:
+                return "analyze_function_effects requires a FUN_ name already present in evidence"
 
-        if state.contradictions:
-            sections.append(
-                "CONTRADICTIONS\n"
-                + "\n".join(
-                    f"{item.id}: "
-                    f"{item.description}"
-                    for item in state.contradictions
-                )
-            )
+            specialize: dict[str, int] = {}
 
-        if state.open_questions:
-            sections.append(
-                "OPEN QUESTIONS\n"
-                + "\n".join(
-                    f"{item.id}: "
-                    f"{item.question}"
-                    for item in state.open_questions
-                    if item.status.value == "OPEN"
-                )
-            )
+            for register in ("r0", "r1"):
+                value = arguments.get(register)
 
-        recent = session.ledger.all()[
-            -self.recent_evidence_limit:
-        ]
+                if value is None:
+                    continue
 
-        if recent:
-            sections.append(
-                "RECENT EVIDENCE\n"
-                + "\n\n".join(
-                    self._format_observation(
-                        observation
-                    )
-                    for observation in recent
-                )
-            )
+                if isinstance(value, bool) or not isinstance(value, int) or not 0 <= value <= 0xFFFFFFFF:
+                    return f"{register} must be an integer in 0..4294967295"
 
-        if not sections:
-            return "(no research state yet)"
+                specialize[register] = value
 
-        return "\n\n".join(sections)
+            for observation in self._observations(session, "function_effects"):
+                if (
+                    observation.arguments.get("function") == function
+                    and (observation.arguments.get("specialize") or {}) == specialize
+                ):
+                    palette.duplicate = name
+                    return f"{function} effects were already analyzed in {observation.id}"
 
-    def _planner_open_leads(
+            return name, {"function": function, "specialize": specialize}
+
+        return None
+
+    # -- planner I/O ------------------------------------------------------------
+
+    def _record_request(
         self,
+        phase: str,
+        messages: list[dict[str, Any]],
+        tools: list[dict[str, Any]],
+        state_chars: int,
         session: ResearchSession,
-    ):
-        """
-        Return a bounded deterministic working set for the planner.
+    ) -> dict[str, Any]:
+        messages_json = json.dumps(messages, separators=(",", ":"), ensure_ascii=False)
+        tools_json = json.dumps(tools, separators=(",", ":"), ensure_ascii=False)
+        record = {
+            "phase": phase,
+            "evidence": len(session.ledger),
+            "open_leads": len(session.state.open_leads()),
+            "claims": len(session.state.claims),
+            "prompt_chars": len(str(messages[-1]["content"])),
+            "state_chars": state_chars,
+            "message_bytes": len(messages_json.encode("utf-8")),
+            "tool_bytes": len(tools_json.encode("utf-8")),
+            "tools": [tool["function"]["name"] for tool in tools],
+        }
+        record["total_bytes"] = record["message_bytes"] + record["tool_bytes"]
+        self.planner_requests.append(record)
+        return record
 
-        APTrace retains the complete research graph. The planner sees
-        a compact frontier so graph growth cannot make every decision
-        prompt grow without bound.
-        """
+    @staticmethod
+    def _tool_call(response: Any) -> tuple[Any, str, dict[str, Any]] | tuple[Any, str]:
+        """(message, name, arguments) for exactly one valid call, else (message, problem)."""
 
-        open_leads = (
-            session.state.open_leads()
-        )
+        choices = getattr(response, "choices", None)
 
-        limit = 24
+        if not choices:
+            return None, "planner response contained no choices"
 
-        if len(open_leads) <= limit:
-            return open_leads
+        message = getattr(choices[0], "message", None)
 
-        # Preserve some older unresolved breadth while emphasizing the
-        # newest frontier produced by forward graph expansion.
-        selected = (
-            list(open_leads[:8])
-            + list(open_leads[-16:])
-        )
+        if message is None:
+            return None, "planner response choice contained no message"
 
-        result = []
-        seen = set()
+        tool_calls = getattr(message, "tool_calls", None) or []
 
-        for lead in selected:
-            if lead.id in seen:
-                continue
+        if not tool_calls:
+            return message, "expected exactly one tool call, received 0"
 
-            seen.add(lead.id)
-            result.append(lead)
-
-        return result
-
-    def _compact_lead(
-        self,
-        session: ResearchSession,
-        lead,
-    ) -> str:
-        """
-        Give the planner only the structural identity needed to choose
-        a lead. APTrace retains descriptions, provenance and arguments.
-        """
+        # Several parallel calls: take the first; APTrace validates it like
+        # any other, and the rest are ignored.
+        call = tool_calls[0]
 
         try:
-            action = session.registry.resolve(
-                lead.id
+            arguments = json.loads(call.function.arguments)
+        except (TypeError, json.JSONDecodeError):
+            return message, "tool arguments were not valid JSON"
+
+        if not isinstance(arguments, dict):
+            return message, "tool arguments were not a JSON object"
+
+        return message, call.function.name, arguments
+
+    def _begin_decision(self) -> None:
+        """Choose this decision's projection before its palette is built."""
+
+        compact = self._compact_decisions > 0
+        self._compact_decisions = max(0, self._compact_decisions - 1)
+        self.projection = self.compact_projection if compact else self.normal_projection
+
+    def _create(self, messages: list[dict[str, Any]], tools: list[dict[str, Any]]) -> tuple[Any, bool]:
+        """One planner call; (response, rejected-at-prefill)."""
+
+        try:
+            response = self.planner_client.chat.completions.create(
+                model=self.planner_model,
+                temperature=0.0,
+                max_tokens=512,
+                messages=messages,
+                tools=tools,
+                tool_choice="auto",
             )
-        except (KeyError, ValueError):
-            return (
-                f"{lead.id} [{lead.kind}]"
-            )
+        except Exception as exc:
+            if not _prefill_rejected(exc):
+                raise
 
-        tool = action.tool
-        args = action.arguments
+            return None, True
 
-        if tool in {
-            "function_facts",
-            "function_disassembly",
-        }:
-            target = args.get(
-                "function",
-                "?",
-            )
+        return response, _prefill_rejected(response)
 
-            return (
-                f"{lead.id} {tool} "
-                f"{target}"
-            )
-
-        if tool == "callsite_context":
-            function = args.get(
-                "function",
-                "?",
-            )
-
-            address = args.get(
-                "address",
-                "?",
-            )
-
-            return (
-                f"{lead.id} callsite "
-                f"{function}@{address}"
-            )
-
-        if tool == "census_peripheral_usage":
-            return (
-                f"{lead.id} census peripheral "
-                f"{args.get('peripheral', '?')}"
-            )
-
-        if tool == "pin_table_entry":
-            return (
-                f"{lead.id} pin_table_entry "
-                f"index={args.get('index', '?')}"
-            )
-
-        if tool == "search_case_evidence":
-            query = str(
-                args.get(
-                    "query",
-                    "",
-                )
-            )
-
-            if len(query) > 80:
-                query = (
-                    query[:77]
-                    + "..."
-                )
-
-            return (
-                f"{lead.id} case_search "
-                f"{query!r}"
-            )
-
-        return (
-            f"{lead.id} [{lead.kind}] "
-            f"{tool}"
-        )
-
-    def _prompt(
+    def _ask(
         self,
         session: ResearchSession,
-        analyzable: list[str],
-    ) -> str:
-        all_open_leads = (
-            session.state.open_leads()
-        )
-
-        open_leads = (
-            self._planner_open_leads(
-                session
-            )
-        )
-
-        actions = (
-            "follow_lead or analyze_peripheral"
-            if analyzable
-            else "follow_lead"
-        )
-
-        lead_text = "\n".join(
-            self._compact_lead(
-                session,
-                lead,
-            )
-            for lead in open_leads
-        )
-
-        if (
-            len(all_open_leads)
-            > len(open_leads)
-        ):
-            lead_text += (
-                "\n"
-                f"[showing {len(open_leads)} "
-                f"of {len(all_open_leads)} "
-                "open leads; full graph retained "
-                "by APTrace]"
-            )
-
-        return f"""OBJECTIVE
-
-{session.state.objective}
-
-RESEARCH STATE
-
-{self._state_digest(session)}
-
-OPEN APTRACE-VALIDATED LEADS
-
-{lead_text}
-{self._analysis_guidance(session, analyzable)}
-TASK
-
-Choose the single highest-value next research action.
-
-APTrace has already validated the executable form of every lead. Choose
-based on expected information value and the stated objective.
-
-Prefer actions that:
-- resolve important remaining uncertainty,
-- follow a meaningful newly discovered relationship,
-- independently verify a load-bearing interpretation, or
-- reconcile evidence across domains.
-
-Avoid redundant enumeration when existing evidence already answers the
-same question.
-
-Do not invent addresses, GPIOs, logical pin indexes, function identities,
-or other structural arguments.
-
-If the available evidence is sufficient for the objective, or the
-remaining leads are unlikely to materially improve the result, use
-finish.
-
-Otherwise use {actions} exactly once.
-"""
-
-    def _request_decision(
-        self,
-        session: ResearchSession,
+        *,
+        phase: str,
+        system: str,
+        prompt_for: Any,
+        palette: _Palette,
+        parse: Any,
+        contract: str,
+        exhausted: str,
     ) -> tuple[str, dict[str, Any]]:
-        open_leads = (
-            self._planner_open_leads(
-                session
+        """One planner decision with a single correction retry."""
+
+        try:
+            return self._ask_once(
+                session,
+                phase=phase,
+                system=system,
+                prompt_for=prompt_for,
+                palette=palette,
+                parse=parse,
+                contract=contract,
+                exhausted=exhausted,
             )
-        )
+        finally:
+            self.projection = self.normal_projection
 
-        lead_ids = [
-            lead.id
-            for lead in open_leads
-        ]
-
-        analyzable = (
-            self._analyzable_peripherals(
-                session
-            )
-        )
-
-        tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": "follow_lead",
-                    "description": (
-                        "Follow one APTrace-validated "
-                        "research lead."
-                    ),
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "lead_id": {
-                                "type": "string",
-                                "enum": lead_ids,
-                            }
-                        },
-                        "required": [
-                            "lead_id",
-                        ],
-                        "additionalProperties": False,
-                    },
-                },
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "finish",
-                    "description": (
-                        "End research because current "
-                        "evidence is sufficient or the "
-                        "remaining leads are low value."
-                    ),
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "reason": {
-                                "type": "string",
-                            }
-                        },
-                        "required": [
-                            "reason",
-                        ],
-                        "additionalProperties": False,
-                    },
-                },
-            },
-        ]
-
-        if analyzable:
-            tools.insert(
-                1,
-                self._analysis_tool(
-                    analyzable
-                ),
-            )
-
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You direct a bounded firmware "
-                    "research investigation. APTrace "
-                    "owns evidence, structural facts, "
-                    "tool arguments, and provenance. "
-                    "You choose research direction. "
-                    "Make exactly one tool call."
-                ),
-            },
-            {
-                "role": "user",
-                "content": self._prompt(
-                    session,
-                    analyzable,
-                ),
-            },
-        ]
-
-        if (
-            os.environ.get(
-                "APTRACE_DEBUG_PLANNER_REQUEST"
-            )
-            == "1"
-        ):
-            prompt_text = str(
-                messages[-1]["content"]
-            )
-
-            messages_json = json.dumps(
-                messages,
-                separators=(",", ":"),
-                ensure_ascii=False,
-            )
-
-            tools_json = json.dumps(
-                tools,
-                separators=(",", ":"),
-                ensure_ascii=False,
-            )
-
-            message_bytes = len(
-                messages_json.encode("utf-8")
-            )
-
-            tool_bytes = len(
-                tools_json.encode("utf-8")
-            )
-
-            print(
-                "[planner-request] "
-                f"open_total="
-                f"{len(session.state.open_leads())} "
-                f"open_visible={len(open_leads)} "
-                f"recent_evidence="
-                f"{min(len(session.ledger.all()), self.recent_evidence_limit)} "
-                f"prompt_chars={len(prompt_text)} "
-                f"message_bytes={message_bytes} "
-                f"tool_bytes={tool_bytes} "
-                f"total_bytes={message_bytes + tool_bytes}",
-                file=sys.stderr,
-            )
-
+    def _ask_once(
+        self,
+        session: ResearchSession,
+        *,
+        phase: str,
+        system: str,
+        prompt_for: Any,
+        palette: _Palette,
+        parse: Any,
+        contract: str,
+        exhausted: str,
+    ) -> tuple[str, dict[str, Any]]:
+        prompt, state_chars = prompt_for(palette)
+        messages = [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
         first_problem: str | None = None
+        attempt = 0
+        duplicates = 0
 
-        for attempt in range(2):
-            try:
-                response = (
-                    self.planner_client
-                    .chat.completions.create(
-                        model=self.planner_model,
-                        temperature=0.0,
-                        max_tokens=512,
-                        messages=messages,
-                        tools=tools,
-                        tool_choice="auto",
-                    )
-                )
-            except Exception as exc:
-                error_text = str(
-                    exc
-                )
+        while attempt < 2:
+            record = self._record_request(phase, messages, palette.tools, state_chars, session)
+            record["attempt"] = attempt
 
-                if (
-                    "prefill_memory_exceeded"
-                    in error_text
-                ):
+            if self.projection is self.compact_projection:
+                record["compact"] = True
+
+            response, rejected = self._create(messages, palette.tools)
+
+            if rejected:
+                record["error"] = "prefill_memory_exceeded"
+
+                # The local server's prefill envelope moves with its memory
+                # state. Pause, then retry with the compact projection (fewer
+                # facts, one result, fewer leads), and stay compact for the
+                # rest of this decision and the next three.
+                for delay in (self.prefill_retry_delay, self.prefill_retry_delay * 3.3):
+                    time.sleep(delay)
+                    self.projection = self.compact_projection
+                    self._compact_decisions = 3
+                    prompt, state_chars = prompt_for(palette)
+                    messages = [messages[0], {"role": "user", "content": prompt}]
+                    record = self._record_request(phase, messages, palette.tools, state_chars, session)
+                    record["attempt"] = attempt
+                    record["compact"] = True
+                    response, rejected = self._create(messages, palette.tools)
+
+                    if not rejected:
+                        break
+
+                    record["error"] = "prefill_memory_exceeded"
+
+                if rejected:
                     return (
                         "planner_prefill_exhausted",
                         {
                             "reason": (
-                                "Planner request exceeded "
-                                "the local model prefill "
-                                "memory guard. Research "
-                                "stopped cleanly with all "
-                                "accumulated evidence "
-                                "retained."
+                                "Planner request exceeded the local model prefill memory "
+                                "guard, also with the compact projection. Research stopped "
+                                "cleanly with all accumulated evidence retained."
                             )
                         },
                     )
 
-                raise
+            usage = getattr(response, "usage", None)
+            record["prompt_tokens"] = getattr(usage, "prompt_tokens", None)
 
-            choices = getattr(
-                response,
-                "choices",
-                None,
-            )
+            if os.environ.get("APTRACE_DEBUG_PLANNER_REQUEST") == "1":
+                print(f"[planner-request] {json.dumps(record, sort_keys=True)}", file=sys.stderr)
 
-            message = None
+            log_path = os.environ.get("APTRACE_PLANNER_LOG")
 
-            if not choices:
-                problem = (
-                    "planner response contained "
-                    "no choices"
-                )
+            if log_path:
+                with open(log_path, "a", encoding="utf-8") as log:
+                    message = (getattr(response, "choices", None) or [SimpleNamespace(message=None)])[0].message
+                    calls = getattr(message, "tool_calls", None) or []
+                    log.write(
+                        json.dumps(
+                            {
+                                "record": record,
+                                "messages": messages,
+                                "tools": palette.tools,
+                                "content": getattr(message, "content", None),
+                                "calls": [[c.function.name, c.function.arguments] for c in calls],
+                            },
+                            default=str,
+                        )
+                        + "\n"
+                    )
 
-                tool_calls = []
+            parsed = self._tool_call(response)
+            message = parsed[0]
+
+            if len(parsed) == 3:
+                _message, name, arguments = parsed
+                outcome = parse(palette, name, arguments)
+
+                if isinstance(outcome, tuple):
+                    record["decision"] = outcome[0]
+                    return outcome
+
+                problem = outcome
             else:
-                message = getattr(
-                    choices[0],
-                    "message",
-                    None,
-                )
+                problem = parsed[1]
 
-                if message is None:
-                    problem = (
-                        "planner response choice "
-                        "contained no message"
-                    )
-
-                    tool_calls = []
-                else:
-                    tool_calls = (
-                        getattr(
-                            message,
-                            "tool_calls",
-                            None,
-                        )
-                        or []
-                    )
-
-            if message is not None and len(tool_calls) == 1:
-                call = tool_calls[0]
-
-                try:
-                    arguments = json.loads(
-                        call.function.arguments
-                    )
-                except (
-                    TypeError,
-                    json.JSONDecodeError,
-                ):
-                    problem = (
-                        "tool arguments were not "
-                        "valid JSON"
-                    )
-                else:
-                    name = (
-                        call.function.name
-                    )
-
-                    if name == "follow_lead":
-                        lead_id = arguments.get(
-                            "lead_id"
-                        )
-
-                        if lead_id in lead_ids:
-                            return (
-                                name,
-                                arguments,
-                            )
-
-                        problem = (
-                            "follow_lead referenced "
-                            "an unavailable lead"
-                        )
-
-                    elif (
-                        name == "analyze_peripheral"
-                        and analyzable
-                    ):
-                        peripheral = arguments.get(
-                            "peripheral"
-                        )
-
-                        if peripheral in analyzable:
-                            return (
-                                name,
-                                {
-                                    "peripheral": peripheral,
-                                },
-                            )
-
-                        problem = self._analysis_problem(
-                            session,
-                            peripheral,
-                        )
-
-                    elif name == "finish":
-                        reason = arguments.get(
-                            "reason"
-                        )
-
-                        if (
-                            isinstance(reason, str)
-                            and reason.strip()
-                        ):
-                            return (
-                                name,
-                                arguments,
-                            )
-
-                        problem = (
-                            "finish requires a "
-                            "non-empty reason"
-                        )
-
-                    else:
-                        problem = (
-                            "unexpected tool "
-                            f"{name!r}"
-                        )
-            elif message is not None:
-                problem = (
-                    "expected exactly one tool call, "
-                    f"received {len(tool_calls)}"
-                )
-
-            if attempt == 0:
-                first_problem = problem
-
-                if "already analyzed" in problem:
-                    # Retry a repeated analysis request as a fresh,
-                    # smaller request without the analysis tool, so the
-                    # planner must choose a lead or finish.
-                    analyzable = []
-                    tools = [
-                        tool
-                        for tool in tools
-                        if tool["function"]["name"]
-                        != "analyze_peripheral"
-                    ]
-                    messages = [
-                        messages[0],
-                        {
-                            "role": "user",
-                            "content": self._prompt(
-                                session,
-                                analyzable,
-                            ),
-                        },
-                    ]
-
-                    continue
-
-                messages = (
-                    messages
-                    + [
-                        {
-                            "role": "assistant",
-                            "content": (
-                                (
-                                    getattr(
-                                        message,
-                                        "content",
-                                        None,
-                                    )
-                                    or ""
-                                )
-                                if message is not None
-                                else ""
-                            ),
-                        },
-                        {
-                            "role": "user",
-                            "content": (
-                                "Your previous response "
-                                "did not satisfy the "
-                                "controller contract: "
-                                f"{problem}. "
-                                "Make exactly one valid "
-                                "follow_lead, "
-                                + (
-                                    "analyze_peripheral, "
-                                    if analyzable
-                                    else ""
-                                )
-                                + "or finish "
-                                "tool call now."
-                            ),
-                        },
-                    ]
-                )
-
+            if palette.duplicate and duplicates < len(STRUCTURAL_TOOLS) + 1:
+                # A repeated analysis is detected deterministically: retry
+                # as a fresh, smaller request without that tool, keep it
+                # withheld for the next two decisions, and do not spend the
+                # single correction on it.
+                duplicates += 1
+                first_problem = first_problem or problem
+                self._cooldown[palette.duplicate] = 2
+                palette.drop(palette.duplicate)
+                palette.duplicate = None
+                prompt, state_chars = prompt_for(palette)
+                messages = [messages[0], {"role": "user", "content": prompt}]
                 continue
 
+            if attempt == 0:
+                first_problem = first_problem or problem
+                attempt = 1
+                content = (getattr(message, "content", None) or "") if message is not None else ""
+                messages = messages + [
+                    {"role": "assistant", "content": content},
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Your previous response did not satisfy the {contract} contract: "
+                            f"{problem}. Make exactly one valid "
+                            + ", ".join(name for name in palette.names() if name != "finish")
+                            + " or finish tool call now."
+                        ),
+                    },
+                ]
+                continue
+
+            if exhausted == "finish":
+                return (
+                    "finish",
+                    {
+                        "reason": (
+                            "Discovery planner could not produce a new valid search direction "
+                            f"after one correction; first error: {first_problem}; second error: {problem}"
+                        )
+                    },
+                )
+
             return (
-                "planner_contract_exhausted",
+                exhausted,
                 {
                     "reason": (
-                        "Planner could not produce a valid "
-                        "research decision after one correction; "
-                        f"first error: {first_problem}; "
-                        f"second error: {problem}"
+                        "Planner could not produce a valid research decision after one "
+                        f"correction; first error: {first_problem}; second error: {problem}"
                     )
                 },
             )
 
-        raise AssertionError(
-            "unreachable"
+        raise AssertionError("unreachable")
+
+    # -- prompts ----------------------------------------------------------------
+
+    def _state_digest(self, session: ResearchSession) -> str:
+        return self.projection.render(session)
+
+    def _analysis_guidance(self, session: ResearchSession, palette: _Palette | list[str]) -> str:
+        if isinstance(palette, list):
+            names = ["analyze_peripheral"] if palette else []
+            set_names: dict[str, list[str]] = {}
+        else:
+            names = palette.names()
+            set_names = palette.set_names
+
+        structural = [
+            name
+            for name in ("analyze_peripheral", "analyze_usb_interface", "find_common_paths", "analyze_function_effects")
+            if name in names
+        ]
+
+        if not structural:
+            return ""
+
+        order = ["case evidence"]
+
+        if "analyze_peripheral" in structural:
+            done = ", ".join(
+                str(observation.arguments.get("peripheral"))
+                for observation in self._census_observations(session)
+            )
+            order.append(
+                "analyze_peripheral for a peripheral relevant to the objective"
+                + (f" (already run: {done})" if done else "")
+            )
+
+        if "analyze_usb_interface" in structural:
+            order.append("analyze_usb_interface")
+
+        if "find_common_paths" in structural:
+            order.append(
+                "find_common_paths (sets: "
+                + (", ".join(sorted(set_names)) or "FUN_ names")
+                + ")"
+            )
+
+        if "analyze_function_effects" in structural:
+            order.append("analyze_function_effects if dataflow matters")
+
+        order += ["leads", "caller/callee expansion only for a specific question"]
+
+        return (
+            "\nSTRUCTURAL ANALYSIS (prefer earlier): "
+            + "; ".join(order)
+            + ". Census facts do not identify attached devices.\n"
+        )
+
+    def _planner_open_leads(self, session: ResearchSession):
+        """
+        Return a bounded, ranked working set for the planner.
+
+        Structural narrowing (census, inventory, graph, effects, case
+        discovery) ranks before per-function crawling; within a rank the
+        newest lead comes first. APTrace retains the complete lead graph.
+        """
+
+        def rank(lead) -> tuple[int, int]:
+            number = int(lead.id.lstrip("L") or 0)
+
+            try:
+                action = session.registry.resolve(lead.id)
+            except (KeyError, ValueError):
+                return 9, -number
+
+            structural = False
+
+            for evidence_id in lead.source_evidence_ids:
+                try:
+                    structural |= session.ledger.get(evidence_id).tool in _STRUCTURAL_SOURCES
+                except KeyError:
+                    pass
+
+            if not lead.source_evidence_ids:
+                structural = True
+
+            base = {
+                "function_facts": 0,
+                "function_disassembly": 1,
+                "pin_table_entry": 2,
+                "search_case_evidence": 2,
+                "census_peripheral_usage": 0,
+                "callsite_context": 4,
+            }.get(action.tool, 3)
+
+            if not structural and action.tool in ("function_facts", "function_disassembly"):
+                base += 2
+
+            return base, -number
+
+        ranked = sorted(session.state.open_leads(), key=rank)
+        limit = 4 if self.projection is self.compact_projection else self.max_visible_leads
+        return ranked[:limit]
+
+    def _compact_lead(self, session: ResearchSession, lead) -> str:
+        """
+        Give the planner only the structural identity needed to choose a
+        lead. APTrace retains descriptions, provenance and arguments.
+        """
+
+        try:
+            action = session.registry.resolve(lead.id)
+        except (KeyError, ValueError):
+            return f"{lead.id} [{lead.kind}]"
+
+        tool = action.tool
+        args = action.arguments
+        origin = ""
+
+        if tool in {"function_facts", "function_disassembly"}:
+            return f"{lead.id} {tool} {args.get('function', '?')}{origin}"
+
+        if tool == "callsite_context":
+            return f"{lead.id} callsite {args.get('function', '?')}@{args.get('address', '?')}{origin}"
+
+        if tool == "census_peripheral_usage":
+            return f"{lead.id} census peripheral {args.get('peripheral', '?')}"
+
+        if tool == "pin_table_entry":
+            return f"{lead.id} pin_table_entry index={args.get('index', '?')}{origin}"
+
+        if tool == "search_case_evidence":
+            return f"{lead.id} case_search {clip(str(args.get('query', '')), 80)!r}"
+
+        return f"{lead.id} [{lead.kind}] {tool}"
+
+    def _research_state(self, session: ResearchSession) -> tuple[str, int]:
+        state = self._state_digest(session)
+        return f"STATE ({len(session.ledger)} evidence records retained)\n{state}", len(state)
+
+    def _prompt(self, session: ResearchSession, palette: _Palette | list[str]) -> str:
+        return self._decision_prompt(session, palette)[0]
+
+    def _decision_prompt(self, session: ResearchSession, palette: _Palette | list[str]) -> tuple[str, int]:
+        if isinstance(palette, list):
+            # Compatibility path: a bare list of analyzable peripherals.
+            built = self._decision_palette(session)
+
+            if not palette:
+                built.drop("analyze_peripheral")
+
+            palette = built
+
+        open_leads = [lead for lead in self._planner_open_leads(session) if lead.id in palette.lead_ids]
+        all_open = session.state.open_leads()
+        lead_text = "\n".join(self._compact_lead(session, lead) for lead in open_leads) or "(none)"
+
+        if len(all_open) > len(open_leads):
+            lead_text += f"\n[{len(open_leads)} of {len(all_open)} shown]"
+
+        state, state_chars = self._research_state(session)
+
+        return (
+            f"""OBJECTIVE: {self.projection.objective(session)}
+
+{state}
+
+LEADS (APTrace-validated)
+{lead_text}
+{self._analysis_guidance(session, palette)}
+TASK: make exactly one tool call, by the first rule that applies:
+1) a subsystem the objective names is not under ALREADY RUN: analyze it;
+2) the objective asks whether subsystems connect and their sets exist:
+   find_common_paths (once per pair);
+3) otherwise follow LEADS the analyses named (caller/callee leads only for
+   a specific question);
+4) evidence suffices: finish, listing hypotheses and open questions.
+Never repeat an ALREADY RUN analysis or invent identifiers.
+""",
+            state_chars,
         )
 
     def _discovery_prompt(
         self,
         session: ResearchSession,
         attempted_queries: set[str],
-        analyzable: list[str],
+        palette: _Palette | list[str],
     ) -> str:
-        attempted = (
-            "\n".join(
-                f"- {query}"
-                for query
-                in sorted(attempted_queries)
-            )
-            or "(none)"
-        )
+        return self._discovery_prompt_sized(session, attempted_queries, palette)[0]
 
-        return f"""OBJECTIVE
-
-{session.state.objective}
-
-CURRENT DISCOVERY STATE
-
-{self._state_digest(session)}
-
-DISCOVERY SEARCHES ALREADY TRIED
-
-{attempted}
-
-TASK
-
-Choose one bounded semantic search of the existing Performing Rigs case
-evidence that is most likely to reveal concrete firmware functions or
-other documented firmware anchors relevant to the objective.
-
-The case-evidence search is primarily lexical. Prefer a short query
-containing one to three discriminative engineering terms rather than a
-sentence or a long collection of terms.
-
-Each new search must explore a materially different investigative angle.
-Do not merely append generic words such as "firmware", "function", or
-"code" to a query that has already been tried. For example, different
-angles might involve a device name, peripheral family, protocol,
-chip-select terminology, motor-control terminology, or a documented
-hardware signal.
-
-Do not invent function names, addresses, GPIOs, or other structural
-identifiers. APTrace will extract and validate any concrete firmware
-identities found by the search.
-
-Use search_case_evidence exactly once. If no additional documentary
-search is likely to produce a useful firmware starting point, use finish.
-{self._discovery_analysis_guidance(session, analyzable)}"""
-
-    def _discovery_analysis_guidance(
+    def _discovery_prompt_sized(
         self,
         session: ResearchSession,
-        analyzable: list[str],
-    ) -> str:
-        if not analyzable:
+        attempted_queries: set[str],
+        palette: _Palette | list[str],
+    ) -> tuple[str, int]:
+        attempted = "; ".join(sorted(attempted_queries)) or "(none)"
+        state, state_chars = self._research_state(session)
+
+        return (
+            f"""OBJECTIVE: {self.projection.objective(session)}
+
+TASK: one lexical search (1-3 discriminative terms, a new angle each time:
+device, peripheral, protocol, signal) of case documents for firmware anchors
+or hardware facts. Never invent identifiers. Use search_case_evidence once,
+or finish if no search would help.
+{self._discovery_analysis_guidance(session, palette)}
+{state}
+
+SEARCHES TRIED: {attempted}
+""",
+            state_chars,
+        )
+
+    def _discovery_analysis_guidance(self, session: ResearchSession, palette: _Palette | list[str]) -> str:
+        guidance = self._analysis_guidance(session, palette)
+
+        if not guidance:
             return ""
 
         return (
-            "\nIf the objective concerns an MCU peripheral or "
-            "interface, analyze_peripheral may be used instead: it "
-            "returns subsystem-level structural firmware evidence "
-            "from APTrace's census in one step.\n"
-            + self._analysis_guidance(
-                session,
-                analyzable,
-            )
+            "For a peripheral or interface, a structural analysis (such as "
+            "analyze_peripheral) may be used instead.\n" + guidance
+        )
+
+    # -- requests ---------------------------------------------------------------
+
+    def _request_decision(self, session: ResearchSession) -> tuple[str, dict[str, Any]]:
+        self._begin_decision()
+        palette = self._decision_palette(session)
+
+        def parse(palette: _Palette, name: str, arguments: dict[str, Any]):
+            if name == "follow_lead" and "follow_lead" in palette.names():
+                if arguments.get("lead_id") in palette.lead_ids:
+                    return name, {"lead_id": arguments["lead_id"]}
+
+                return "follow_lead referenced an unavailable lead"
+
+            if name == "finish":
+                reason = arguments.get("reason")
+
+                if isinstance(reason, str) and reason.strip():
+                    return name, arguments
+
+                return "finish requires a non-empty reason"
+
+            outcome = self._parse_structural(session, palette, name, arguments)
+            return outcome if outcome is not None else f"unexpected tool {name!r}"
+
+        return self._ask(
+            session,
+            phase="decision",
+            system=(
+                "You direct a bounded firmware research investigation. APTrace owns "
+                "evidence, structural facts, tool arguments, and provenance. You choose "
+                "research direction. Make exactly one tool call."
+            ),
+            prompt_for=lambda palette: self._decision_prompt(session, palette),
+            palette=palette,
+            parse=parse,
+            contract="controller",
+            exhausted="planner_contract_exhausted",
         )
 
     def _request_discovery(
@@ -1238,644 +1057,222 @@ search is likely to produce a useful firmware starting point, use finish.
         session: ResearchSession,
         attempted_queries: set[str],
     ) -> tuple[str, dict[str, Any]]:
-        analyzable = (
-            self._analyzable_peripherals(
-                session
-            )
-        )
+        self._begin_decision()
+        palette = self._discovery_palette(session)
 
-        tools = [
-            {
-                "type": "function",
-                "function": {
-                    "name": "search_case_evidence",
-                    "description": (
-                        "Search bounded existing Performing "
-                        "Rigs case evidence using semantic terms."
-                    ),
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "query": {
-                                "type": "string",
-                                "minLength": 2,
-                                "maxLength": 120,
-                            }
-                        },
-                        "required": [
-                            "query",
-                        ],
-                        "additionalProperties": False,
-                    },
-                },
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "finish",
-                    "description": (
-                        "End discovery because no further "
-                        "bounded documentary search is useful."
-                    ),
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "reason": {
-                                "type": "string",
-                            }
-                        },
-                        "required": [
-                            "reason",
-                        ],
-                        "additionalProperties": False,
-                    },
-                },
-            },
-        ]
+        def parse(palette: _Palette, name: str, arguments: dict[str, Any]):
+            if name == "search_case_evidence":
+                query = str(arguments.get("query", "")).strip()
 
-        if analyzable:
-            tools.insert(
-                1,
-                self._analysis_tool(
-                    analyzable
-                ),
-            )
+                if not 2 <= len(query) <= 120:
+                    return "discovery query must be 2..120 characters"
 
-        messages = [
-            {
-                "role": "system",
-                "content": (
-                    "You choose semantic discovery direction "
-                    "for a bounded firmware investigation. "
-                    "APTrace owns structural identities and "
-                    "validates anything discovered. Make "
-                    "exactly one tool call."
-                ),
-            },
-            {
-                "role": "user",
-                "content": self._discovery_prompt(
-                    session,
-                    attempted_queries,
-                    analyzable,
-                ),
-            },
-        ]
+                if query.casefold() in attempted_queries:
+                    return "discovery query was already tried"
 
-        first_problem: str | None = None
+                return name, {"query": query}
 
-        for attempt in range(2):
-            response = (
-                self.planner_client
-                .chat.completions.create(
-                    model=self.planner_model,
-                    temperature=0.0,
-                    max_tokens=512,
-                    messages=messages,
-                    tools=tools,
-                    tool_choice="auto",
-                )
-            )
+            if name == "finish":
+                reason = str(arguments.get("reason", "")).strip()
+                return (name, {"reason": reason}) if reason else "finish requires a non-empty reason"
 
-            choices = getattr(
-                response,
-                "choices",
-                None,
-            )
+            outcome = self._parse_structural(session, palette, name, arguments)
+            return outcome if outcome is not None else f"unexpected discovery tool {name!r}"
 
-            message = None
-
-            if not choices:
-                problem = (
-                    "planner response contained no choices"
-                )
-                tool_calls = []
-            else:
-                message = getattr(
-                    choices[0],
-                    "message",
-                    None,
-                )
-
-                if message is None:
-                    problem = (
-                        "planner response choice contained "
-                        "no message"
-                    )
-                    tool_calls = []
-                else:
-                    tool_calls = (
-                        getattr(
-                            message,
-                            "tool_calls",
-                            None,
-                        )
-                        or []
-                    )
-
-            if (
-                message is not None
-                and len(tool_calls) == 1
-            ):
-                call = tool_calls[0]
-
-                try:
-                    arguments = json.loads(
-                        call.function.arguments
-                    )
-                except (
-                    TypeError,
-                    json.JSONDecodeError,
-                ):
-                    problem = (
-                        "tool arguments were not valid JSON"
-                    )
-                else:
-                    name = call.function.name
-
-                    if name == "search_case_evidence":
-                        query = str(
-                            arguments.get(
-                                "query",
-                                "",
-                            )
-                        ).strip()
-
-                        normalized = (
-                            query.casefold()
-                        )
-
-                        if not (
-                            2 <= len(query) <= 120
-                        ):
-                            problem = (
-                                "discovery query must be "
-                                "2..120 characters"
-                            )
-                        elif (
-                            normalized
-                            in attempted_queries
-                        ):
-                            problem = (
-                                "discovery query was already tried"
-                            )
-                        else:
-                            return (
-                                name,
-                                {
-                                    "query": query,
-                                },
-                            )
-
-                    elif (
-                        name == "analyze_peripheral"
-                        and analyzable
-                    ):
-                        peripheral = arguments.get(
-                            "peripheral"
-                        )
-
-                        if peripheral in analyzable:
-                            return (
-                                name,
-                                {
-                                    "peripheral": peripheral,
-                                },
-                            )
-
-                        problem = self._analysis_problem(
-                            session,
-                            peripheral,
-                        )
-
-                    elif name == "finish":
-                        reason = str(
-                            arguments.get(
-                                "reason",
-                                "",
-                            )
-                        ).strip()
-
-                        if reason:
-                            return (
-                                name,
-                                {
-                                    "reason": reason,
-                                },
-                            )
-
-                        problem = (
-                            "finish requires a non-empty reason"
-                        )
-
-                    else:
-                        problem = (
-                            f"unexpected discovery tool {name!r}"
-                        )
-
-            elif message is not None:
-                problem = (
-                    "expected exactly one tool call, "
-                    f"received {len(tool_calls)}"
-                )
-
-            if attempt == 0:
-                first_problem = problem
-
-                if "already analyzed" in problem:
-                    analyzable = []
-                    tools = [
-                        tool
-                        for tool in tools
-                        if tool["function"]["name"]
-                        != "analyze_peripheral"
-                    ]
-                    messages = [
-                        messages[0],
-                        {
-                            "role": "user",
-                            "content": self._discovery_prompt(
-                                session,
-                                attempted_queries,
-                                analyzable,
-                            ),
-                        },
-                    ]
-
-                    continue
-
-                messages = (
-                    messages
-                    + [
-                        {
-                            "role": "assistant",
-                            "content": (
-                                (
-                                    getattr(
-                                        message,
-                                        "content",
-                                        None,
-                                    )
-                                    or ""
-                                )
-                                if message
-                                is not None
-                                else ""
-                            ),
-                        },
-                        {
-                            "role": "user",
-                            "content": (
-                                "Your previous response "
-                                "did not satisfy the "
-                                "discovery contract: "
-                                f"{problem}. Make exactly "
-                                "one valid search_case_evidence, "
-                                + (
-                                    "analyze_peripheral, "
-                                    if analyzable
-                                    else ""
-                                )
-                                + "or finish tool call now."
-                            ),
-                        },
-                    ]
-                )
-
-                continue
-
-            return (
-                "finish",
-                {
-                    "reason": (
-                        "Discovery planner could not produce "
-                        "a new valid search direction after "
-                        "one correction; "
-                        f"first error: {first_problem}; "
-                        f"second error: {problem}"
-                    )
-                },
-            )
-
-        raise AssertionError(
-            "unreachable"
-        )
-
-    def _follow_discovery_search(
-        self,
-        session: ResearchSession,
-        query: str,
-    ):
-        lead = session.registry.register(
-            kind="discovery",
-            description=(
-                f"Search existing case evidence "
-                f"for discovery query {query!r}"
+        return self._ask(
+            session,
+            phase="discovery",
+            system=(
+                "You choose semantic discovery direction for a bounded firmware "
+                "investigation. APTrace owns structural identities and validates "
+                "anything discovered. Make exactly one tool call."
             ),
-            tool="search_case_evidence",
-            arguments={
-                "query": query,
-                "max_results": 8,
-                "purpose": "discovery",
-            },
+            prompt_for=lambda palette: self._discovery_prompt_sized(session, attempted_queries, palette),
+            palette=palette,
+            parse=parse,
+            contract="discovery",
+            exhausted="finish",
+        )
+
+    # -- execution --------------------------------------------------------------
+
+    def _follow_new_lead(self, session: ResearchSession, *, kind: str, description: str, tool: str, arguments: dict[str, Any]):
+        lead = session.registry.register(
+            kind=kind,
+            description=description,
+            tool=tool,
+            arguments=arguments,
             source_evidence_ids=[],
         )
 
-        if all(
-            existing.id != lead.id
-            for existing
-            in session.state.leads
-        ):
-            session.state.add_lead(
-                lead
-            )
+        if all(existing.id != lead.id for existing in session.state.leads):
+            session.state.add_lead(lead)
 
-        observation = (
-            session.follow_lead(
-                lead.id
-            )
+        return lead, session.follow_lead(lead.id)
+
+    def _follow_peripheral_analysis(self, session: ResearchSession, peripheral: str):
+        return self._follow_new_lead(
+            session,
+            kind="census",
+            description=f"Census structural usage of peripheral {peripheral}",
+            tool="census_peripheral_usage",
+            arguments={"peripheral": peripheral, "limit": 25},
         )
 
-        return lead, observation
+    def _follow_discovery_search(self, session: ResearchSession, query: str):
+        return self._follow_new_lead(
+            session,
+            kind="discovery",
+            description=f"Search existing case evidence for discovery query {query!r}",
+            tool="search_case_evidence",
+            arguments={"query": query, "max_results": 8, "purpose": "discovery"},
+        )
 
-    def _has_case_evidence(
-        self,
-        session: ResearchSession,
-    ) -> bool:
+    def _execute_structural(self, session: ResearchSession, action: str, arguments: dict[str, Any]):
+        """Run one validated structural action; return (step action, lead, observation)."""
+
+        if action == "analyze_peripheral":
+            lead, observation = self._follow_peripheral_analysis(session, arguments["peripheral"])
+            return "analyze", lead, observation
+
+        if action == "analyze_usb_interface":
+            lead, observation = self._follow_new_lead(
+                session,
+                kind="usb-inventory",
+                description="USB structural inventory",
+                tool="census_usb_inventory",
+                arguments={},
+            )
+            return "usb_inventory", lead, observation
+
+        if action == "find_common_paths":
+            lead, observation = self._follow_new_lead(
+                session,
+                kind="graph",
+                description=f"Common paths {arguments['left_label']} | {arguments['right_label']}",
+                tool="census_common_paths",
+                arguments=arguments,
+            )
+            return "common_paths", lead, observation
+
+        if action == "analyze_function_effects":
+            lead, observation = self._follow_new_lead(
+                session,
+                kind="effects",
+                description=f"Function effects of {arguments['function']}",
+                tool="function_effects",
+                arguments=arguments,
+            )
+            return "effects", lead, observation
+
+        raise ValueError(f"not a structural action: {action}")
+
+    def _record_conclusions(self, session: ResearchSession, arguments: dict[str, Any]) -> None:
+        """Planner-proposed hypotheses and open questions; never PROVEN."""
+
+        for key, merge in (
+            ("hypotheses", lambda text: self.updater.merge_hypothesis(session.state, statement=text, evidence_ids=[], source="planner")),
+            ("open_questions", lambda text: self.updater.merge_open_question(session.state, question=text, evidence_ids=[], source="planner")),
+        ):
+            items = arguments.get(key)
+
+            if not isinstance(items, list):
+                continue
+
+            for item in items[:3]:
+                if isinstance(item, str) and item.strip():
+                    merge(clip(item, 240))
+
+    def _has_case_evidence(self, session: ResearchSession) -> bool:
         return any(
-            (
-                observation.tool
-                == "search_case_evidence"
-                and observation.arguments.get(
-                    "purpose"
-                )
-                != "discovery"
-            )
-            for observation
-            in session.ledger.all()
+            observation.tool == "search_case_evidence"
+            and observation.arguments.get("purpose") != "discovery"
+            for observation in session.ledger.all()
         )
 
-    def _reconcile_terminal(
-        self,
-        session: ResearchSession,
-    ) -> bool:
-        if not self._has_case_evidence(
-            session
-        ):
+    def _reconcile_terminal(self, session: ResearchSession) -> bool:
+        if not self._has_case_evidence(session):
             return False
 
-        self.reconciler.run(
-            session
-        )
-
+        self.reconciler.run(session)
         return True
 
-    def run(
-        self,
-        session: ResearchSession,
-    ) -> ResearchRunResult:
-        steps: list[ResearchStep] = []
+    def _structural_available(self, session: ResearchSession) -> bool:
+        palette = _Palette(tools=[])
+        self._structural_palette(session, palette)
+        return bool(palette.tools)
 
-        objective_discovery = (
-            not session.ledger.all()
-            and not session.state.open_leads()
+    def _result(self, stop_reason: str, steps: list[ResearchStep], reconciled: bool) -> ResearchRunResult:
+        return ResearchRunResult(
+            stop_reason=stop_reason,
+            steps=tuple(steps),
+            reconciled=reconciled,
+            planner_requests=tuple(self.planner_requests),
         )
 
+    def run(self, session: ResearchSession) -> ResearchRunResult:
+        steps: list[ResearchStep] = []
+        objective_discovery = not session.ledger.all() and not session.state.open_leads()
         discovery_attempts = 0
         discovery_queries: set[str] = set()
 
-        for step_number in range(
-            1,
-            self.max_steps + 1,
-        ):
-            open_leads = (
-                session.state.open_leads()
+        for step_number in range(1, self.max_steps + 1):
+            open_leads = session.state.open_leads()
+            discovering = (
+                not open_leads
+                and objective_discovery
+                and discovery_attempts < self.max_discovery_steps
             )
 
-            if not open_leads:
-                if (
-                    objective_discovery
-                    and discovery_attempts
-                    < self.max_discovery_steps
-                ):
-                    action, arguments = (
-                        self._request_discovery(
-                            session,
-                            discovery_queries,
-                        )
-                    )
-
-                    if action == "finish":
-                        reason = str(
-                            arguments["reason"]
-                        ).strip()
-
-                        steps.append(
-                            ResearchStep(
-                                number=step_number,
-                                action="finish",
-                                reason=reason,
-                            )
-                        )
-
-                        return ResearchRunResult(
-                            stop_reason=(
-                                "discovery_finished"
-                            ),
-                            steps=tuple(steps),
-                            reconciled=False,
-                        )
-
-                    if action == "analyze_peripheral":
-                        lead, observation = (
-                            self._follow_peripheral_analysis(
-                                session,
-                                arguments["peripheral"],
-                            )
-                        )
-
-                        steps.append(
-                            ResearchStep(
-                                number=step_number,
-                                action="analyze",
-                                lead_id=lead.id,
-                                evidence_id=(
-                                    observation.id
-                                ),
-                            )
-                        )
-
-                        continue
-
-                    query = str(
-                        arguments["query"]
-                    ).strip()
-
-                    discovery_queries.add(
-                        query.casefold()
-                    )
-
-                    lead, observation = (
-                        self._follow_discovery_search(
-                            session,
-                            query,
-                        )
-                    )
-
-                    discovery_attempts += 1
-
-                    steps.append(
-                        ResearchStep(
-                            number=step_number,
-                            action="discover",
-                            lead_id=lead.id,
-                            evidence_id=(
-                                observation.id
-                            ),
-                        )
-                    )
-
-                    continue
-
+            # With no lead left, research continues only through an enabled
+            # structural analysis that has not yet run.
+            if (
+                not open_leads
+                and not discovering
+                and not (self.structural_tools and self._structural_available(session))
+            ):
                 if (
                     objective_discovery
                     and self.max_discovery_steps > 0
-                    and discovery_attempts
-                    >= self.max_discovery_steps
+                    and discovery_attempts >= self.max_discovery_steps
                 ):
-                    return ResearchRunResult(
-                        stop_reason=(
-                            "discovery_exhausted"
-                        ),
-                        steps=tuple(steps),
-                        reconciled=False,
-                    )
+                    return self._result("discovery_exhausted", steps, False)
 
-                reconciled = (
-                    self._reconcile_terminal(
-                        session
-                    )
-                )
+                return self._result("research_graph_exhausted", steps, self._reconcile_terminal(session))
 
-                return ResearchRunResult(
-                    stop_reason=(
-                        "research_graph_exhausted"
-                    ),
-                    steps=tuple(steps),
-                    reconciled=reconciled,
-                )
+            if discovering:
+                action, arguments = self._request_discovery(session, discovery_queries)
+            else:
+                action, arguments = self._request_decision(session)
 
-            action, arguments = (
-                self._request_decision(
-                    session
-                )
-            )
-
-            if action in {
-                "planner_prefill_exhausted",
-                "planner_contract_exhausted",
-            }:
-                reason = str(
-                    arguments["reason"]
-                ).strip()
-
-                steps.append(
-                    ResearchStep(
-                        number=step_number,
-                        action="finish",
-                        reason=reason,
-                    )
-                )
-
-                reconciled = (
-                    self._reconcile_terminal(
-                        session
-                    )
-                )
-
-                return ResearchRunResult(
-                    stop_reason=action,
-                    steps=tuple(steps),
-                    reconciled=reconciled,
-                )
+            if action in {"planner_prefill_exhausted", "planner_contract_exhausted"}:
+                steps.append(ResearchStep(number=step_number, action="finish", reason=str(arguments["reason"]).strip()))
+                return self._result(action, steps, self._reconcile_terminal(session))
 
             if action == "finish":
-                reason = str(
-                    arguments["reason"]
-                ).strip()
+                steps.append(ResearchStep(number=step_number, action="finish", reason=str(arguments["reason"]).strip()))
 
-                steps.append(
-                    ResearchStep(
-                        number=step_number,
-                        action="finish",
-                        reason=reason,
-                    )
-                )
+                if discovering:
+                    return self._result("discovery_finished", steps, False)
 
-                reconciled = (
-                    self._reconcile_terminal(
-                        session
-                    )
-                )
+                self._record_conclusions(session, arguments)
+                return self._result("planner_finished", steps, self._reconcile_terminal(session))
 
-                return ResearchRunResult(
-                    stop_reason=(
-                        "planner_finished"
-                    ),
-                    steps=tuple(steps),
-                    reconciled=reconciled,
-                )
-
-            if action == "analyze_peripheral":
-                lead, observation = (
-                    self._follow_peripheral_analysis(
-                        session,
-                        arguments["peripheral"],
-                    )
-                )
-
-                steps.append(
-                    ResearchStep(
-                        number=step_number,
-                        action="analyze",
-                        lead_id=lead.id,
-                        evidence_id=(
-                            observation.id
-                        ),
-                    )
-                )
-
+            if action == "search_case_evidence":
+                query = str(arguments["query"]).strip()
+                discovery_queries.add(query.casefold())
+                lead, observation = self._follow_discovery_search(session, query)
+                discovery_attempts += 1
+                steps.append(ResearchStep(number=step_number, action="discover", lead_id=lead.id, evidence_id=observation.id))
                 continue
 
-            lead_id = str(
-                arguments["lead_id"]
-            )
+            if action == "follow_lead":
+                lead_id = str(arguments["lead_id"])
+                observation = session.follow_lead(lead_id)
+                steps.append(ResearchStep(number=step_number, action="follow_lead", lead_id=lead_id, evidence_id=observation.id))
+                continue
 
-            observation = (
-                session.follow_lead(
-                    lead_id
-                )
-            )
+            step_action, lead, observation = self._execute_structural(session, action, arguments)
+            steps.append(ResearchStep(number=step_number, action=step_action, lead_id=lead.id, evidence_id=observation.id))
 
-            steps.append(
-                ResearchStep(
-                    number=step_number,
-                    action="follow_lead",
-                    lead_id=lead_id,
-                    evidence_id=(
-                        observation.id
-                    ),
-                )
-            )
-
-        reconciled = (
-            self._reconcile_terminal(
-                session
-            )
-        )
-
-        return ResearchRunResult(
-            stop_reason="step_budget_exhausted",
-            steps=tuple(steps),
-            reconciled=reconciled,
-        )
+        return self._result("step_budget_exhausted", steps, self._reconcile_terminal(session))

@@ -7,6 +7,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from aptrace_agent.research.projection import conclusion
 from aptrace_agent.investigator import (
     AutonomousInvestigationRun,
     run_autonomous_investigation,
@@ -51,6 +52,12 @@ def _research_payload(
             }
             for step in run.result.steps
         ],
+        "planner_requests": list(
+            run.result.planner_requests
+        ),
+        "conclusion": conclusion(
+            run.state
+        ),
         "evidence": [
             observation.model_dump()
             for observation in run.evidence
@@ -78,78 +85,23 @@ def _print_research_summary(
         f"  steps: {len(run.result.steps)}"
     )
 
-    proven = [
-        claim
-        for claim in run.state.claims
-        if claim.grade.value == "PROVEN"
-    ]
+    answer = conclusion(
+        run.state
+    )
 
-    supported = [
-        claim
-        for claim in run.state.claims
-        if claim.grade.value == "SUPPORTED"
-    ]
+    for heading, key in (
+        ("PROVEN", "proven"),
+        ("PROBABLE / HYPOTHESIS", "probable"),
+        ("OPEN / UNRESOLVED", "open"),
+    ):
+        print()
+        print(heading)
 
-    open_questions = [
-        question
-        for question
-        in run.state.open_questions
-        if question.status.value == "OPEN"
-    ]
+        if not answer[key]:
+            print("  (none)")
 
-    print()
-    print("PROVEN")
-
-    if not proven:
-        print("  (none)")
-
-    for claim in proven:
-        print(
-            f"  {claim.id}: "
-            f"{claim.statement}"
-        )
-        print(
-            "    evidence: "
-            + ",".join(
-                claim.evidence_ids
-            )
-        )
-
-    print()
-    print("SUPPORTED")
-
-    if not supported:
-        print("  (none)")
-
-    for claim in supported:
-        print(
-            f"  {claim.id}: "
-            f"{claim.statement}"
-        )
-        print(
-            "    evidence: "
-            + ",".join(
-                claim.evidence_ids
-            )
-        )
-
-    print()
-    print("OPEN QUESTIONS")
-
-    if not open_questions:
-        print("  (none)")
-
-    for question in open_questions:
-        print(
-            f"  {question.id}: "
-            f"{question.question}"
-        )
-        print(
-            "    evidence: "
-            + ",".join(
-                question.evidence_ids
-            )
-        )
+        for line in answer[key]:
+            print(f"  {line}")
 
     remaining = (
         run.state.open_leads()
@@ -160,8 +112,10 @@ def _print_research_summary(
 
     if not remaining:
         print("  (none)")
+    elif len(remaining) > 10:
+        print(f"  ({len(remaining)} total; first 10 shown)")
 
-    for lead in remaining:
+    for lead in remaining[:10]:
         print(
             f"  {lead.id}: "
             f"[{lead.kind}] "

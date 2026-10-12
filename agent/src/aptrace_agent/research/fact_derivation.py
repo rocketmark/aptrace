@@ -288,6 +288,217 @@ def _census_claims(
     return statements
 
 
+def _names(items: list[dict], limit: int = 4) -> str:
+    names = [str(item.get("function")) for item in items[:limit]]
+    return ",".join(names) + ("..." if len(items) > limit else "")
+
+
+def _common_path_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    """Structural statements from one census common-path analysis."""
+
+    status = result.get("status")
+    left, right = result.get("left_label"), result.get("right_label")
+    hops = result.get("max_hops")
+    statements: list[tuple[str, str]] = []
+    questions: list[str] = []
+
+    if status not in ("KNOWN_COMMON_PATH", "NO_KNOWN_PATH", "SHARED_UTILITIES_ONLY"):
+        return statements, questions
+
+    for label, members in ((left, result.get("left", [])), (right, result.get("right", []))):
+        roots = sorted({root for member in members for root in member.get("roots", [])})
+        statements.append(
+            (
+                "census-graph",
+                f"{label} set [{_names(members)}] is reached in the census call graph "
+                f"from roots: {', '.join(roots) or 'no vector root (census)'}.",
+            )
+        )
+
+    specific = [c for c in result.get("common", []) if not c.get("shared_utility")]
+
+    if status == "KNOWN_COMMON_PATH":
+        statements.append(
+            (
+                "census-graph",
+                f"{left} and {right} sets share {result.get('common_total')} known downstream "
+                f"function(s) within {hops} hops ({len(specific)} listed are not shared utilities).",
+            )
+        )
+
+        for item in specific[:2]:
+            statements.append(
+                (
+                    "census-graph",
+                    f"{item['function']} is a known common descendant of {left} "
+                    f"(via {' > '.join(item['path_left'])}) and {right} "
+                    f"(via {' > '.join(item['path_right'])}).",
+                )
+            )
+    elif status == "SHARED_UTILITIES_ONLY":
+        utilities = ", ".join(c["function"] for c in result.get("common", [])[:3])
+        statements.append(
+            (
+                "census-graph",
+                f"{left} and {right} sets share only widely called utilities ({utilities}) within "
+                f"{hops} hops; no specific convergence is known (not proof of unreachability).",
+            )
+        )
+    else:
+        statements.append(
+            (
+                "census-graph",
+                f"NO_KNOWN_PATH: the census strong call graph has no common descendant of the "
+                f"{left} and {right} sets within {hops} hops (explored "
+                f"{result.get('explored_left')}/{result.get('explored_right')} functions); "
+                "this is not proof of unreachability.",
+            )
+        )
+
+    for item in result.get("shared_state", [])[:2]:
+        statements.append(
+            (
+                "census-graph",
+                f"RAM {item['address']} is accessed by {left}-side "
+                f"{','.join(item['left_functions'])} ({item['left']}) and {right}-side "
+                f"{','.join(item['right_functions'])} ({item['right']}) (constant-address accesses).",
+            )
+        )
+
+    frontier = result.get("frontier", [])
+
+    if frontier:
+        sites = ", ".join(f"{f['site']} in {f['function']}" for f in frontier[:2])
+        questions.append(
+            f"Do unresolved indirect transfers in the {left}/{right} region "
+            f"({result.get('frontier_total')} sites, e.g. {sites}) connect the two paths?"
+        )
+
+    return statements, questions
+
+
+def _usb_inventory_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    statements: list[tuple[str, str]] = []
+    questions: list[str] = []
+
+    if result.get("status") != "ok":
+        return statements, questions
+
+    users = result.get("register_users", [])
+    statements.append(
+        (
+            "census",
+            f"{len(users)} census function(s) access USB registers at constant addresses: "
+            + "; ".join(
+                f"{u['function']} (R:{','.join(u['reads']) or '-'} W:{','.join(u['writes']) or '-'}; "
+                f"{u.get('reachability') or 'reachability unknown'})"
+                for u in users[:4]
+            )
+            + ".",
+        )
+    )
+
+    outside = [v for v in result.get("irq_vectors", []) if v.get("handler") and not v.get("in_census_vector_table")]
+
+    vectors = []
+
+    for vector in result.get("irq_vectors", []):
+        if not vector.get("handler"):
+            continue
+
+        where = (
+            "census function"
+            if vector.get("census_function_at_entry")
+            else f"inside {vector['inside_census_function']}"
+            if vector.get("inside_census_function")
+            else "not a census function"
+        )
+        vectors.append(f"{vector['name']}(IRQ{vector['irq']})->{vector['handler']} [{where}]")
+
+    if vectors:
+        statements.append(
+            (
+                "census",
+                "Image vector table USB handlers: " + "; ".join(vectors)
+                + ("; outside the census vector table, so not census roots" if outside else "")
+                + ".",
+            )
+        )
+
+    for descriptor in result.get("descriptors", [])[:2]:
+        statements.append(
+            (
+                "census",
+                f"Flash holds a standard USB {descriptor['kind']} descriptor at {descriptor['address']} "
+                f"({descriptor['detail']}), referenced by {descriptor['code_references']} code site(s).",
+            )
+        )
+
+    if outside:
+        handlers = ", ".join(v["handler"] for v in outside[:4])
+        questions.append(
+            f"What do the USB IRQ handlers ({handlers}) call? They are outside census "
+            "vector coverage, so census graph paths from them are unknown."
+        )
+
+    return statements, questions
+
+
+def _effects_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    statements: list[tuple[str, str]] = []
+
+    if not str(result.get("status", "")).startswith(("complete", "partial", "bounded: step limit")):
+        return statements, []
+
+    function = result.get("function")
+    mmio = {
+        (a.get("kind"), a.get("pc"))
+        for a in result.get("accesses", [])
+        if (a.get("region") or "").startswith("MMIO")
+    }
+    coverage = result.get("coverage", "complete")
+    scope = (
+        "(Crucible, all inputs symbolic)"
+        if coverage == "complete"
+        else f"(Crucible, all inputs symbolic; {coverage}; counts are lower bounds)"
+    )
+    statements.append(
+        (
+            "raw-symbolic",
+            f"{function} {scope}: inputs used "
+            f"{','.join(result.get('inputs_used', [])) or 'none'}; {result.get('reads')} reads, "
+            f"{result.get('writes')} writes, {len(result.get('calls', []))} calls; "
+            f"{len(mmio)} MMIO access site(s); return depends on "
+            f"{'+'.join(result.get('return_depends_on', [])) or 'no symbolic input'}.",
+        )
+    )
+
+    for call in list({(c.get("pc"), c.get("target")): c for c in result.get("calls", [])}.values())[:3]:
+        statements.append(
+            (
+                "raw-symbolic",
+                f"{function} calls {call.get('target') or 'a computed target'} at {call.get('pc')}.",
+            )
+        )
+
+    if result.get("return_bit_valued") == "proven":
+        statements.append(("solver", f"{function} return value is always 0 or 1."))
+
+    for item in result.get("specialized", []):
+        if item.get("register_name") in (None, "FLASH", "RAM"):
+            continue
+
+        statements.append(
+            (
+                "solver",
+                f"Under {item['assumption']}, {function} {item['kind']} at {item['pc']} "
+                f"accesses exactly {item['address']} ({item['register_name']}).",
+            )
+        )
+
+    return statements, []
+
+
 class StateFactDeriver:
     """
     Convert structurally explicit evidence into atomic PROVEN claims.
@@ -337,6 +548,7 @@ class StateFactDeriver:
                             f"(group {group}, bit {bit})."
                         ),
                         grade=ClaimGrade.PROVEN,
+                        basis="static-table",
                         evidence_ids=[
                             observation.id,
                         ],
@@ -379,6 +591,7 @@ class StateFactDeriver:
                             f"(0x{literal:x})."
                         ),
                         grade=ClaimGrade.PROVEN,
+                        basis="disassembly",
                         evidence_ids=[
                             observation.id,
                         ],
@@ -399,7 +612,36 @@ class StateFactDeriver:
                         evidence_ids=[
                             observation.id,
                         ],
+                        basis="census",
                     )
+                )
+
+        derived = {
+            "census_common_paths": _common_path_facts,
+            "census_usb_inventory": _usb_inventory_facts,
+            "function_effects": _effects_facts,
+        }.get(observation.tool)
+
+        if derived is not None:
+            statements, questions = derived(observation.result)
+
+            for basis, statement in statements:
+                claims.append(
+                    self.updater.merge_claim(
+                        state,
+                        statement=statement,
+                        grade=ClaimGrade.PROVEN,
+                        evidence_ids=[observation.id],
+                        basis=basis,
+                    )
+                )
+
+            for question in questions:
+                self.updater.merge_open_question(
+                    state,
+                    question=question,
+                    evidence_ids=[observation.id],
+                    source="aptrace",
                 )
 
         return FactDerivationResult(

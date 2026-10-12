@@ -42,6 +42,9 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SCRIPT_PATH="$REPO_ROOT/tools/ghidra/scripts"
 OUT_JSON="${3:-$REPO_ROOT/cases/performing-rigs/research/runs/ghidra/${BASENAME}.json}"
 EXTRA_SEEDS="${4:-}"
+# Vector words to seed after the initial SP (15 system + target IRQ count);
+# defaults to the case-configured value aptrace_ghidra.py also uses.
+SEED_VECTOR_WORDS="${SEED_VECTOR_WORDS:-$(cd "$REPO_ROOT/tools/ghidra" && python3 -c 'import aptrace_ghidra; print(aptrace_ghidra.SEED_VECTOR_WORDS)')}"
 
 resolve_headless() {
   if command -v analyzeHeadless >/dev/null 2>&1; then
@@ -81,7 +84,7 @@ trap 'rm -rf "$PROJECT_DIR"' EXIT
   -loader BinaryLoader \
   -loader-baseAddr "$LOAD_ADDR" \
   -scriptPath "$SCRIPT_PATH" \
-  -preScript APTraceSeedVectorTable.java 56 "$EXTRA_SEEDS" \
+  -preScript APTraceSeedVectorTable.java "$SEED_VECTOR_WORDS" "$EXTRA_SEEDS" \
   -postScript APTraceExportStaticAnalysis.java "$OUT_JSON" \
   -deleteProject \
   -analysisTimeoutPerFile 300

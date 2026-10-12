@@ -39,3 +39,7 @@ dist-newstyle/
 __pycache__/
 *.py[cod]
 .pytest_cache/
+
+# Cached function-effects analyses (agent function_effects action) --
+# regenerable via `aptrace function-effects`; not distributed.
+/cases/performing-rigs/research/runs/function_effects/
