@@ -15,6 +15,7 @@ library
                   , APTrace.MacawIsaClassify
                   , APTrace.MacawNormalize
                   , APTrace.MacawRefinement
+                  , APTrace.EffectsSpike
                   , APTrace.Case.PerformingRigs
                   , APTrace.Case.PerformingRigsScenarios
   hs-source-dirs:   src

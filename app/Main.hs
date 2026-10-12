@@ -19,6 +19,7 @@ import           APTrace.Case.PerformingRigs ( ramBase, ramSize, numIrq, default
 import           APTrace.Case.PerformingRigsScenarios
   ( runSolve, runProtocol, runTrigger, runTriggerCrossCheck )
 import           APTrace.DebugHarness ( runDebug )
+import           APTrace.EffectsSpike ( runEffectsSpike )
 import           APTrace.FirmwareLoader
   ( buildMemory, resolveEntry, resolveEntries, macawCortexMEntry, armCortexMInfo )
 import           APTrace.MacawCensus ( runMacawCensus )
@@ -42,9 +43,27 @@ main = do
     ["macaw-census", path, flashBaseS]  -> runMacawCensus path (parseHexWord flashBaseS) ramBase ramSize numIrq
     ["macaw-census-expand", path]             -> runMacawCensusExpand path defaultFlashBase ramBase ramSize numIrq
     ["macaw-census-expand", path, flashBaseS] -> runMacawCensusExpand path (parseHexWord flashBaseS) ramBase ramSize numIrq
+    ("effects-spike" : path : entryS : opts) ->
+      let (argOvs, mmio) = parseSpikeOpts [ o | o <- opts, o /= "--raw-only", take 4 o /= "out=" ]
+          rawOnly = "--raw-only" `elem` opts
+          outPrefix = last ("effects-spike" : [ drop 4 o | o <- opts, take 4 o == "out=" ])
+      in runEffectsSpike path defaultFlashBase ramBase ramSize mmio (parseHexWord entryS) argOvs 200000 rawOnly outPrefix
     [path]                      -> run path defaultFlashBase
     [path, flashBaseS]          -> run path (parseHexWord flashBaseS)
     _ -> die "usage: aptrace FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace solve FIRMWARE.bin [FLASH_BASE_HEX]\n       aptrace explore FIRMWARE.bin [FLASH_BASE_HEX] ENTRY_ADDR_HEX\n       aptrace protocol FIRMWARE.bin\n       aptrace trigger FIRMWARE.bin\n       aptrace trigger-crosscheck FIRMWARE.bin\n       aptrace debug FIRMWARE.bin ENTRY_ADDR_HEX  (experimental, crucible-debug prototype)\n       aptrace macaw-census FIRMWARE.bin [FLASH_BASE_HEX]  (standalone Macaw static-discovery census, phase 1)\n       aptrace macaw-census-expand FIRMWARE.bin [FLASH_BASE_HEX]  (macaw-normalized classify_failure recovery, fed back into Macaw's own incremental discovery)"
+
+-- | @effects-spike@ options: @rN=HEX@ (N in 0..3) concrete argument
+-- overrides, and @mmio=BASE:SIZE@ MMIO ranges. Also @--raw-only@ and
+-- @out=PREFIX@ (handled by the caller). Experimental spike CLI only: MMIO
+-- ranges belong to the target configuration, not to callers, and this
+-- option is scaffolding to be removed.
+parseSpikeOpts :: [String] -> ([(Int, Word32)], [(Word32, Word32)])
+parseSpikeOpts = foldr step ([], [])
+  where
+    step opt (argOvs, mmio) = case break (== '=') opt of
+      ('r' : n, '=' : v) | n `elem` ["0", "1", "2", "3"] -> ((read n, parseHexWord v) : argOvs, mmio)
+      ("mmio", '=' : range) | (b, ':' : s) <- break (== ':') range -> (argOvs, (parseHexWord b, parseHexWord s) : mmio)
+      _ -> error ("bad effects-spike option: " ++ opt)
 
 parseHexWord :: String -> Word32
 parseHexWord s =

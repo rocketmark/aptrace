@@ -15,6 +15,8 @@ development. Concrete target findings and evidence belong to a case under
 - [`case-boundary.md`](case-boundary.md) — intentional single-case integration
   seams and deferred extraction work.
 - [`toolchain.md`](toolchain.md) — build and development environment.
+- [`aptrace-agent-framework.md`](aptrace-agent-framework.md) — roadmap for the
+  Galois-first binary map, local-model labeling, and investigation tooling.
 
 ## Tooling and methodology
 
