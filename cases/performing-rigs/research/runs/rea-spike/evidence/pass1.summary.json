@@ -1,0 +1,10 @@
+{
+ "procedures": 202,
+ "cold_first_query_s": 10.306,
+ "total_session_s": 14.438,
+ "analyze_function_median_s": 0.009,
+ "p95_s": 0.0461,
+ "max_s": 0.6776,
+ "sum_s": 3.959,
+ "server_exit": 0
+}

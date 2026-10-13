@@ -1,0 +1,1506 @@
+{
+ "block_start_disagreements": [
+  {
+   "entry": "0x5858",
+   "macaw_only": [],
+   "rea_only": [
+    "0x5868",
+    "0x586a",
+    "0x5874",
+    "0x5878",
+    "0x587c",
+    "0x5880"
+   ]
+  },
+  {
+   "entry": "0x9724",
+   "macaw_only": [],
+   "rea_only": [
+    "0x9758"
+   ]
+  },
+  {
+   "entry": "0x990e",
+   "macaw_only": [
+    "0xe648",
+    "0xe652",
+    "0xe654",
+    "0xe656",
+    "0xe662"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x99c2",
+   "macaw_only": [
+    "0x9984"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xa000",
+   "macaw_only": [],
+   "rea_only": [
+    "0x9fc4",
+    "0xa00c",
+    "0xa010",
+    "0xa01e",
+    "0xa02c",
+    "0xb43e",
+    "0xb44a",
+    "0xb450"
+   ]
+  },
+  {
+   "entry": "0xa03c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xa040",
+    "0xa044",
+    "0xa048",
+    "0xa04c",
+    "0xa056"
+   ]
+  },
+  {
+   "entry": "0xa2d4",
+   "macaw_only": [],
+   "rea_only": [
+    "0xa2da",
+    "0xa2e4",
+    "0xa2ea",
+    "0xa2f0"
+   ]
+  },
+  {
+   "entry": "0xa608",
+   "macaw_only": [],
+   "rea_only": [
+    "0xa62e",
+    "0xa6cc",
+    "0xa6d4",
+    "0xa6d6",
+    "0xa6da",
+    "0xa6e4",
+    "0xa6ea",
+    "0xa6ec"
+   ]
+  },
+  {
+   "entry": "0xb216",
+   "macaw_only": [],
+   "rea_only": [
+    "0xb21e",
+    "0xb236"
+   ]
+  },
+  {
+   "entry": "0xb2a8",
+   "macaw_only": [
+    "0xb26c",
+    "0xb27e",
+    "0xb29e"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xb47a",
+   "macaw_only": [],
+   "rea_only": [
+    "0xb486",
+    "0xb48a"
+   ]
+  },
+  {
+   "entry": "0xb50c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xb51a",
+    "0xb51c",
+    "0xb52c",
+    "0xb534",
+    "0xb536",
+    "0xb538",
+    "0xb53c",
+    "0xb544"
+   ]
+  },
+  {
+   "entry": "0xb5bc",
+   "macaw_only": [
+    "0xb50c",
+    "0xb512",
+    "0xb552"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xcd50",
+   "macaw_only": [],
+   "rea_only": [
+    "0xcd56",
+    "0xcd5c",
+    "0xcd60",
+    "0xcd6c",
+    "0xcd74"
+   ]
+  },
+  {
+   "entry": "0xd300",
+   "macaw_only": [],
+   "rea_only": [
+    "0xd326",
+    "0xd33c",
+    "0xd354",
+    "0xd36c"
+   ]
+  },
+  {
+   "entry": "0xd40c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xd44a"
+   ]
+  },
+  {
+   "entry": "0xd86c",
+   "macaw_only": [
+    "0xd8a8",
+    "0xd8c2",
+    "0xd8c8",
+    "0xd8da",
+    "0xd8e0",
+    "0xd8ee",
+    "0xd8f4",
+    "0xd8fc"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xd870",
+   "macaw_only": [],
+   "rea_only": [
+    "0xd89a",
+    "0xd9a8",
+    "0xda00",
+    "0xda08",
+    "0xda42",
+    "0xda6a",
+    "0xda76",
+    "0xda82"
+   ]
+  },
+  {
+   "entry": "0xdae8",
+   "macaw_only": [
+    "0xd9a8",
+    "0xd9c4",
+    "0xd9c8",
+    "0xd9da",
+    "0xd9de",
+    "0xd9f4",
+    "0xda0c",
+    "0xda2a"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xdb08",
+   "macaw_only": [
+    "0xd9a8",
+    "0xd9c4",
+    "0xd9c8",
+    "0xd9da",
+    "0xd9de",
+    "0xd9f4",
+    "0xda0c",
+    "0xda2a"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xdbdc",
+   "macaw_only": [],
+   "rea_only": [
+    "0xdc1e",
+    "0xdc52",
+    "0xdc5c",
+    "0xdc7c",
+    "0xdc90",
+    "0xdcb0",
+    "0xdcba",
+    "0xdcbe"
+   ]
+  },
+  {
+   "entry": "0xde30",
+   "macaw_only": [
+    "0xde26"
+   ],
+   "rea_only": [
+    "0xde64",
+    "0xde98",
+    "0xde9e",
+    "0xdf12",
+    "0xdf30",
+    "0xdf36",
+    "0xdf4e",
+    "0xdf5c"
+   ]
+  },
+  {
+   "entry": "0xe08c",
+   "macaw_only": [
+    "0xe09c",
+    "0xe0ac"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe09c",
+   "macaw_only": [
+    "0xe0ac"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe0c0",
+   "macaw_only": [
+    "0xe0ce"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe0fc",
+   "macaw_only": [
+    "0xe10a"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe29c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xe2b8",
+    "0xe2ca",
+    "0xe2e8",
+    "0xe2f2",
+    "0xe2f8",
+    "0xe2fc",
+    "0xe314",
+    "0xe31e"
+   ]
+  },
+  {
+   "entry": "0xe628",
+   "macaw_only": [
+    "0xe7a0",
+    "0xe7b6",
+    "0xe7ba",
+    "0xe7be",
+    "0xe7c0",
+    "0xe7c2",
+    "0xe7cc",
+    "0xe7ce"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe674",
+   "macaw_only": [
+    "0x105e8",
+    "0x1078c"
+   ],
+   "rea_only": [
+    "0xe6c8",
+    "0xe6cc",
+    "0xe6d4",
+    "0xe6e0",
+    "0xe6ec",
+    "0xe6ee",
+    "0xe6f4"
+   ]
+  },
+  {
+   "entry": "0xf3dc",
+   "macaw_only": [],
+   "rea_only": [
+    "0xf3f4"
+   ]
+  },
+  {
+   "entry": "0x10780",
+   "macaw_only": [
+    "0x105e6"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x1078c",
+   "macaw_only": [
+    "0x105e8"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x10800",
+   "macaw_only": [],
+   "rea_only": [
+    "0x1081c",
+    "0x1082c"
+   ]
+  }
+ ],
+ "block_starts_N4": {
+  "AGREE": 28,
+  "DISAGREE": 33
+ },
+ "call_disagreements": [
+  {
+   "entry": "0x990e",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0x990e",
+     "0xe648"
+    ]
+   ]
+  },
+  {
+   "entry": "0x99c2",
+   "macaw_only": [
+    [
+     "0x9984",
+     "0xd388"
+    ],
+    [
+     "0x9994",
+     "0xa000"
+    ],
+    [
+     "0x999e",
+     "0xa05c"
+    ],
+    [
+     "0x99a6",
+     "0xa05c"
+    ],
+    [
+     "0x99ae",
+     "0xa03c"
+    ],
+    [
+     "0x99b6",
+     "0xd388"
+    ]
+   ],
+   "rea_only": [
+    [
+     "0x99c2",
+     "0x9984"
+    ]
+   ]
+  },
+  {
+   "entry": "0xa000",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     null,
+     "0xb452"
+    ],
+    [
+     null,
+     "0xb48e"
+    ],
+    [
+     null,
+     "0xb6b4"
+    ]
+   ]
+  },
+  {
+   "entry": "0xb216",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     null,
+     "0xf3fc"
+    ]
+   ]
+  },
+  {
+   "entry": "0xb2a8",
+   "macaw_only": [
+    [
+     "0xb29e",
+     "0xb216"
+    ]
+   ],
+   "rea_only": [
+    [
+     "0xb2e0",
+     "0xb26c"
+    ]
+   ]
+  },
+  {
+   "entry": "0xb5bc",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0xb62a",
+     "0xb50c"
+    ]
+   ]
+  },
+  {
+   "entry": "0xcd50",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     null,
+     "0xccdc"
+    ],
+    [
+     null,
+     "0xcd88"
+    ]
+   ]
+  },
+  {
+   "entry": "0xd40c",
+   "macaw_only": [
+    [
+     "0xd446",
+     "0xd300"
+    ]
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xdbdc",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0xdbdc",
+     "0xddb8"
+    ]
+   ]
+  },
+  {
+   "entry": "0xde30",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0xde30",
+     "0xdf9e"
+    ]
+   ]
+  },
+  {
+   "entry": "0xe08c",
+   "macaw_only": [
+    [
+     "0xe09c",
+     "0xe010"
+    ],
+    [
+     "0xe0ac",
+     "0xe09c"
+    ]
+   ],
+   "rea_only": [
+    [
+     "0xe08c",
+     "0xe09c"
+    ]
+   ]
+  },
+  {
+   "entry": "0xe09c",
+   "macaw_only": [
+    [
+     "0xe0ac",
+     "0xe09c"
+    ]
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe628",
+   "macaw_only": [
+    [
+     "0xe7c2",
+     "0x10780"
+    ],
+    [
+     "0xe7d4",
+     "0xf3dc"
+    ],
+    [
+     "0xe7dc",
+     "0xf3dc"
+    ],
+    [
+     "0xe7de",
+     "0xf3dc"
+    ],
+    [
+     "0xe7ea",
+     "0x1078c"
+    ],
+    [
+     "0xe808",
+     "0x1078c"
+    ]
+   ],
+   "rea_only": [
+    [
+     "0xe628",
+     "0xe7a0"
+    ]
+   ]
+  },
+  {
+   "entry": "0xe674",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0xe698",
+     "0x1078c"
+    ]
+   ]
+  },
+  {
+   "entry": "0xe7a0",
+   "macaw_only": [
+    [
+     "0xe7de",
+     "0xf3dc"
+    ],
+    [
+     "0xe812",
+     "0x1078c"
+    ]
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x10780",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0x10780",
+     "0x105e6"
+    ]
+   ]
+  },
+  {
+   "entry": "0x1078c",
+   "macaw_only": [],
+   "rea_only": [
+    [
+     "0x1078c",
+     "0x105e8"
+    ]
+   ]
+  }
+ ],
+ "cfg_disagreements": [
+  {
+   "entry": "0x5858",
+   "macaw_only": [],
+   "rea_only": [
+    "0x5868",
+    "0x586a",
+    "0x5874",
+    "0x5878",
+    "0x587c",
+    "0x5880"
+   ]
+  },
+  {
+   "entry": "0x990e",
+   "macaw_only": [
+    "0xe648",
+    "0xe652",
+    "0xe654",
+    "0xe656",
+    "0xe662"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x99c2",
+   "macaw_only": [
+    "0x9984"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xa000",
+   "macaw_only": [],
+   "rea_only": [
+    "0x9fc4",
+    "0xa00c",
+    "0xa010",
+    "0xa01e",
+    "0xa02c",
+    "0xb43e",
+    "0xb44a",
+    "0xb450"
+   ]
+  },
+  {
+   "entry": "0xa03c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xa040",
+    "0xa044",
+    "0xa048",
+    "0xa04c",
+    "0xa056"
+   ]
+  },
+  {
+   "entry": "0xa2d4",
+   "macaw_only": [],
+   "rea_only": [
+    "0xa2da",
+    "0xa2e4",
+    "0xa2ea",
+    "0xa2f0"
+   ]
+  },
+  {
+   "entry": "0xa608",
+   "macaw_only": [],
+   "rea_only": [
+    "0xa62e",
+    "0xa6cc",
+    "0xa6d4",
+    "0xa6d6",
+    "0xa6da",
+    "0xa6e4",
+    "0xa6ea",
+    "0xa6ec"
+   ]
+  },
+  {
+   "entry": "0xb216",
+   "macaw_only": [],
+   "rea_only": [
+    "0xb21e",
+    "0xb236"
+   ]
+  },
+  {
+   "entry": "0xb2a8",
+   "macaw_only": [
+    "0xb26c",
+    "0xb27e",
+    "0xb29e"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xb47a",
+   "macaw_only": [],
+   "rea_only": [
+    "0xb486",
+    "0xb48a"
+   ]
+  },
+  {
+   "entry": "0xb50c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xb51a",
+    "0xb51c",
+    "0xb52c",
+    "0xb534",
+    "0xb536",
+    "0xb538",
+    "0xb53c",
+    "0xb544"
+   ]
+  },
+  {
+   "entry": "0xb5bc",
+   "macaw_only": [
+    "0xb50c",
+    "0xb512",
+    "0xb552"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xcd50",
+   "macaw_only": [],
+   "rea_only": [
+    "0xcd56",
+    "0xcd5c",
+    "0xcd60",
+    "0xcd6c",
+    "0xcd74"
+   ]
+  },
+  {
+   "entry": "0xd300",
+   "macaw_only": [],
+   "rea_only": [
+    "0xd326",
+    "0xd33c",
+    "0xd354",
+    "0xd36c"
+   ]
+  },
+  {
+   "entry": "0xd86c",
+   "macaw_only": [
+    "0xd8a8",
+    "0xd8c2",
+    "0xd8c8",
+    "0xd8da",
+    "0xd8e0",
+    "0xd8ee",
+    "0xd8f4",
+    "0xd8fc"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xd870",
+   "macaw_only": [],
+   "rea_only": [
+    "0xd89a",
+    "0xd9a8",
+    "0xda00",
+    "0xda08",
+    "0xda42",
+    "0xda6a",
+    "0xda76",
+    "0xda82"
+   ]
+  },
+  {
+   "entry": "0xdae8",
+   "macaw_only": [
+    "0xd9a8",
+    "0xd9c4",
+    "0xd9c8",
+    "0xd9da",
+    "0xd9de",
+    "0xd9f4",
+    "0xda0c",
+    "0xda2a"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xdb08",
+   "macaw_only": [
+    "0xd9a8",
+    "0xd9c4",
+    "0xd9c8",
+    "0xd9da",
+    "0xd9de",
+    "0xd9f4",
+    "0xda0c",
+    "0xda2a"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xdbdc",
+   "macaw_only": [],
+   "rea_only": [
+    "0xdc1e",
+    "0xdc52",
+    "0xdc5c",
+    "0xdc7c",
+    "0xdc90",
+    "0xdcb0",
+    "0xdcba",
+    "0xdcbe"
+   ]
+  },
+  {
+   "entry": "0xde30",
+   "macaw_only": [
+    "0xde26"
+   ],
+   "rea_only": [
+    "0xde64",
+    "0xde98",
+    "0xde9e",
+    "0xdf12",
+    "0xdf30",
+    "0xdf36",
+    "0xdf4e",
+    "0xdf5c"
+   ]
+  },
+  {
+   "entry": "0xe08c",
+   "macaw_only": [
+    "0xe09c",
+    "0xe0ac"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe09c",
+   "macaw_only": [
+    "0xe0ac"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe0c0",
+   "macaw_only": [
+    "0xe0ce"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe0fc",
+   "macaw_only": [
+    "0xe10a"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe29c",
+   "macaw_only": [],
+   "rea_only": [
+    "0xe2b8",
+    "0xe2ca",
+    "0xe2e8",
+    "0xe2f2",
+    "0xe2f8",
+    "0xe2fc",
+    "0xe314",
+    "0xe31e"
+   ]
+  },
+  {
+   "entry": "0xe628",
+   "macaw_only": [
+    "0xe7a0",
+    "0xe7b6",
+    "0xe7ba",
+    "0xe7be",
+    "0xe7c0",
+    "0xe7c2",
+    "0xe7cc",
+    "0xe7ce"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0xe674",
+   "macaw_only": [
+    "0x105e8",
+    "0x1078c"
+   ],
+   "rea_only": [
+    "0xe6c8",
+    "0xe6cc",
+    "0xe6d4",
+    "0xe6e0",
+    "0xe6ec",
+    "0xe6ee",
+    "0xe6f4"
+   ]
+  },
+  {
+   "entry": "0xf3dc",
+   "macaw_only": [],
+   "rea_only": [
+    "0xf3f4"
+   ]
+  },
+  {
+   "entry": "0x10780",
+   "macaw_only": [
+    "0x105e6"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x1078c",
+   "macaw_only": [
+    "0x105e8"
+   ],
+   "rea_only": []
+  },
+  {
+   "entry": "0x10800",
+   "macaw_only": [],
+   "rea_only": [
+    "0x1081c",
+    "0x1082c"
+   ]
+  }
+ ],
+ "cfg_targets_N5": {
+  "AGREE": 30,
+  "DISAGREE": 31
+ },
+ "common_thumb_functions": 61,
+ "counts": {
+  "aptrace_ghidra_cortex_functions": 414,
+  "macaw_functions": 193,
+  "macaw_root_reachable": 191,
+  "rea_a32_or_unproven": 1,
+  "rea_procedures": 202,
+  "rea_root_reachable": 0,
+  "rea_thumb": 201
+ },
+ "coverage_bytes": {
+  "both(thumb)": 4526,
+  "macaw_code_bytes": 14846,
+  "macaw_only": 10320,
+  "rea_a32_function_bytes": 112,
+  "rea_a32_over_macaw_thumb(DISAGREE_decode_mode)": 0,
+  "rea_thumb_function_bytes": 19420,
+  "rea_thumb_only": 14894
+ },
+ "decode_mode_conflicts": [],
+ "direct_calls_N3": {
+  "AGREE": 39,
+  "MACAW_extra": 21,
+  "REA_extra": 17
+ },
+ "function_entries": {
+  "AGREE_entry": [
+   "0x5858",
+   "0x5958",
+   "0x9724",
+   "0x990e",
+   "0x9984",
+   "0x99c2",
+   "0xa000",
+   "0xa03c",
+   "0xa05c",
+   "0xa2ac",
+   "0xa2d4",
+   "0xa608",
+   "0xb216",
+   "0xb242",
+   "0xb248",
+   "0xb26c",
+   "0xb2a8",
+   "0xb2ea",
+   "0xb3de",
+   "0xb424",
+   "0xb452",
+   "0xb47a",
+   "0xb48e",
+   "0xb4b4",
+   "0xb50c",
+   "0xb5bc",
+   "0xb6b4",
+   "0xccdc",
+   "0xcd50",
+   "0xcd88",
+   "0xd300",
+   "0xd388",
+   "0xd3dc",
+   "0xd40c",
+   "0xd86c",
+   "0xd870",
+   "0xdae8",
+   "0xdb08",
+   "0xdbdc",
+   "0xde30",
+   "0xe010",
+   "0xe08c",
+   "0xe09c",
+   "0xe0c0",
+   "0xe0fc",
+   "0xe110",
+   "0xe13c",
+   "0xe29c",
+   "0xe5d0",
+   "0xe618",
+   "0xe628",
+   "0xe648",
+   "0xe664",
+   "0xe674",
+   "0xe7a0",
+   "0xf3dc",
+   "0x10780",
+   "0x1078c",
+   "0x10800",
+   "0x11038",
+   "0x11068"
+  ],
+  "MACAW_only": {
+   "other": [
+    "0x10000"
+   ],
+   "root_reachable_via_macaw_calls(REA_COVERAGE_GAP)": [
+    "0x42a4",
+    "0x4328",
+    "0x434c",
+    "0x43ac",
+    "0x4440",
+    "0x44ec",
+    "0x4644",
+    "0x4b64",
+    "0x4c20",
+    "0x4cdc",
+    "0x54b8",
+    "0x5c00",
+    "0x5d24",
+    "0x5d44",
+    "0x5dd0",
+    "0x5fac",
+    "0x607c",
+    "0x6098",
+    "0x60b4",
+    "0x60d0",
+    "0x60ec",
+    "0x610c",
+    "0x6190",
+    "0x6260",
+    "0x6338",
+    "0x693c",
+    "0x6968",
+    "0x6fd8",
+    "0x7514",
+    "0x7770",
+    "0x7b8c",
+    "0x7e2c",
+    "0x801c",
+    "0x8960",
+    "0x8a80",
+    "0x8c10",
+    "0x8e18",
+    "0x9268",
+    "0x93fc",
+    "0x9464",
+    "0x952c",
+    "0x9768",
+    "0x97a0",
+    "0x9978",
+    "0x9980",
+    "0x99fe",
+    "0x9a0c",
+    "0x9a64",
+    "0x9b10",
+    "0x9b18",
+    "0x9b20",
+    "0x9bb0",
+    "0x9c14",
+    "0x9cac",
+    "0x9cdc",
+    "0x9cf8",
+    "0x9d2a",
+    "0x9d88",
+    "0x9e70",
+    "0xa064",
+    "0xa084",
+    "0xa0a8",
+    "0xa0cc",
+    "0xa1f4",
+    "0xa37c",
+    "0xa3a8",
+    "0xa59c",
+    "0xa5a4",
+    "0xa5d4",
+    "0xa604",
+    "0xa970",
+    "0xa982",
+    "0xa9cc",
+    "0xaa44",
+    "0xb0fc",
+    "0xb108",
+    "0xb10c",
+    "0xb110",
+    "0xb114",
+    "0xb120",
+    "0xb124",
+    "0xb128",
+    "0xb12c",
+    "0xb138",
+    "0xb13c",
+    "0xb140",
+    "0xb23a",
+    "0xb258",
+    "0xb2fe",
+    "0xb81c",
+    "0xbc44",
+    "0xbd64",
+    "0xcbb0",
+    "0xcbb6",
+    "0xcbbc",
+    "0xcbc2",
+    "0xcbc8",
+    "0xcbce",
+    "0xcbd4",
+    "0xcbda",
+    "0xcbe0",
+    "0xcbe6",
+    "0xcbec",
+    "0xcbf2",
+    "0xcbf8",
+    "0xcbfe",
+    "0xcc04",
+    "0xcc0a",
+    "0xcc10",
+    "0xcc14",
+    "0xcc24",
+    "0xcca4",
+    "0xccb6",
+    "0xccba",
+    "0xccbe",
+    "0xccc4",
+    "0xccd0",
+    "0xcd34",
+    "0xcd8a",
+    "0xcd8e",
+    "0xcd90",
+    "0xcdd8",
+    "0xcfd0",
+    "0xd1b4",
+    "0xd5a8",
+    "0xd5d8",
+    "0xd61c",
+    "0xd6d8",
+    "0xdb2c",
+    "0xe18c",
+    "0xe26c"
+   ]
+  },
+  "REA_only": {
+   "a32_or_unproven": [
+    "0x4000"
+   ],
+   "thumb_not_root_reachable(INCOMPARABLE_scope)": [
+    "0x4264",
+    "0x449c",
+    "0x5898",
+    "0x593c",
+    "0x97a4",
+    "0x981c",
+    "0x984c",
+    "0x98d8",
+    "0x98f0",
+    "0x991a",
+    "0x99cc",
+    "0x9f60",
+    "0xa2fc",
+    "0xa314",
+    "0xa7e4",
+    "0xa84a",
+    "0xab08",
+    "0xabb4",
+    "0xabbc",
+    "0xabe8",
+    "0xabf8",
+    "0xac0c",
+    "0xac28",
+    "0xacd8",
+    "0xadb8",
+    "0xae1c",
+    "0xaef0",
+    "0xafb8",
+    "0xb040",
+    "0xb312",
+    "0xb31a",
+    "0xb352",
+    "0xb376",
+    "0xb3c0",
+    "0xb3ca",
+    "0xb3d2",
+    "0xb3e8",
+    "0xb3f4",
+    "0xb3fe",
+    "0xb406",
+    "0xb414",
+    "0xb41c",
+    "0xb658",
+    "0xb6fa",
+    "0xb702",
+    "0xb754",
+    "0xb868",
+    "0xb87c",
+    "0xb958",
+    "0xb966",
+    "0xb972",
+    "0xb9cc",
+    "0xba12",
+    "0xbf14",
+    "0xbffc",
+    "0xc034",
+    "0xc12c",
+    "0xc768",
+    "0xc786",
+    "0xc7aa",
+    "0xc7c0",
+    "0xc8a0",
+    "0xc8bc",
+    "0xc910",
+    "0xc922",
+    "0xc93e",
+    "0xc948",
+    "0xc974",
+    "0xc980",
+    "0xca58",
+    "0xcdd4",
+    "0xddb8",
+    "0xdf9e",
+    "0xe0ac",
+    "0xe0d4",
+    "0xe0e8",
+    "0xe564",
+    "0xe5ac",
+    "0xe638",
+    "0xe854",
+    "0xe882",
+    "0xe8a8",
+    "0xeb08",
+    "0xebcc",
+    "0xec48",
+    "0xf0b4",
+    "0xf190",
+    "0xf3fc",
+    "0xf40c",
+    "0xf4b0",
+    "0xf58c",
+    "0xf59a",
+    "0xf6b0",
+    "0x1026c",
+    "0x10378",
+    "0x103f0",
+    "0x10444",
+    "0x10470",
+    "0x1047c",
+    "0x10488",
+    "0x104a0",
+    "0x10510",
+    "0x1059c",
+    "0x105dc",
+    "0x105e4",
+    "0x105e6",
+    "0x105e8",
+    "0x105ea",
+    "0x10634",
+    "0x106e0",
+    "0x10798",
+    "0x1082e",
+    "0x108aa",
+    "0x108ea",
+    "0x1094a",
+    "0x1095c",
+    "0x10a94",
+    "0x10b30",
+    "0x10bee",
+    "0x10c26",
+    "0x10d12",
+    "0x10db2",
+    "0x10e20",
+    "0x10e54",
+    "0x10e58",
+    "0x10e7a",
+    "0x10eb2",
+    "0x10f3c",
+    "0x10f60",
+    "0x10f80",
+    "0x10fa4",
+    "0x10fc8",
+    "0x10fd8",
+    "0x10fe8",
+    "0x10ff8",
+    "0x11008",
+    "0x11018",
+    "0x11028",
+    "0x11054",
+    "0x11064"
+   ],
+   "thumb_reachable_from_vector_roots_via_rea_calls": []
+  }
+ },
+ "function_entries_counts": {
+  "AGREE": 61,
+  "MACAW_only_other": 1,
+  "MACAW_only_root_reachable": 131,
+  "REA_only_a32_or_unproven": 1,
+  "REA_only_thumb_not_root_reachable": 140,
+  "REA_only_thumb_root_reachable": 0
+ },
+ "function_extent": {
+  "AGREE": 32,
+  "DISAGREE": 29
+ },
+ "function_extent_disagreements": [
+  {
+   "entry": "0x5858",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 26
+  },
+  {
+   "entry": "0x990e",
+   "macaw_only_bytes": 28,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0x99c2",
+   "macaw_only_bytes": 62,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xa000",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 122
+  },
+  {
+   "entry": "0xa03c",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 24
+  },
+  {
+   "entry": "0xa2d4",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 24
+  },
+  {
+   "entry": "0xa608",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 52
+  },
+  {
+   "entry": "0xb216",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 28
+  },
+  {
+   "entry": "0xb2a8",
+   "macaw_only_bytes": 60,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xb47a",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 8
+  },
+  {
+   "entry": "0xb50c",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 134
+  },
+  {
+   "entry": "0xb5bc",
+   "macaw_only_bytes": 16,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xcd50",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 32
+  },
+  {
+   "entry": "0xd300",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 90
+  },
+  {
+   "entry": "0xd86c",
+   "macaw_only_bytes": 536,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xd870",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 94
+  },
+  {
+   "entry": "0xdae8",
+   "macaw_only_bytes": 154,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xdb08",
+   "macaw_only_bytes": 154,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xdbdc",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 172
+  },
+  {
+   "entry": "0xde30",
+   "macaw_only_bytes": 62,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xe08c",
+   "macaw_only_bytes": 34,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xe09c",
+   "macaw_only_bytes": 18,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xe29c",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 170
+  },
+  {
+   "entry": "0xe628",
+   "macaw_only_bytes": 170,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0xe674",
+   "macaw_only_bytes": 8,
+   "rea_only_bytes": 68
+  },
+  {
+   "entry": "0xf3dc",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 2
+  },
+  {
+   "entry": "0x10780",
+   "macaw_only_bytes": 2,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0x1078c",
+   "macaw_only_bytes": 2,
+   "rea_only_bytes": 0
+  },
+  {
+   "entry": "0x10800",
+   "macaw_only_bytes": 0,
+   "rea_only_bytes": 18
+  }
+ ],
+ "inputs": {
+  "firmware_bytes": 70768,
+  "macaw_census": "out/macaw-census.json",
+  "rea_dossiers": "out/pass1.dossiers.jsonl"
+ },
+ "instruction_boundary": {
+  "macaw_block_starts_on_rea_instruction": 460,
+  "not_on_rea_instruction": 0,
+  "samples": []
+ },
+ "memory_accesses": "UNAVAILABLE: Macaw census emits no memory/MMIO access relation",
+ "vector_roots": 42,
+ "vs_existing_aptrace_ghidra(same engine family, NOT corroboration)": {
+  "aptrace_ghidra_entries_not_in_rea": 214,
+  "rea_entries_not_in_aptrace_ghidra": [
+   "0x4000",
+   "0xca58"
+  ]
+ }
+}

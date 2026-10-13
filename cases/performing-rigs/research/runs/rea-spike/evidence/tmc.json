@@ -1,0 +1,456 @@
+{
+ "byte_fidelity": [
+  {
+   "address": "0x4000",
+   "equal": false,
+   "file": "0000032025cc000011cc000011cc0000",
+   "provider": null
+  },
+  {
+   "address": "0x99c2",
+   "equal": false,
+   "file": "002201f07f01fff7dcbf10b513210446",
+   "provider": null
+  },
+  {
+   "address": "0xa000",
+   "equal": false,
+   "file": "17b4837a6c4684e8060043b19a070dd5",
+   "provider": null
+  },
+  {
+   "address": "0xcc24",
+   "equal": false,
+   "file": "194b1a481a4a834210b51dd09a421dd0",
+   "provider": null
+  },
+  {
+   "address": "0x15400",
+   "equal": false,
+   "file": "00000000000000000000000000000000",
+   "provider": null
+  }
+ ],
+ "callers_graph": {
+  "0x9f60": null,
+  "0xa000": null
+ },
+ "constants": {
+  "PORT_GROUP1(PB)": {
+   "constant": "0x41008080",
+   "hits": [],
+   "pattern": "80800041"
+  },
+  "PORT_PA_OUTCLR": {
+   "constant": "0x41008014",
+   "hits": [
+    {
+     "literal_at": "0xc89c",
+     "xrefs": [
+      {
+       "containing": {
+        "found": true,
+        "procedure": {
+         "address": "0xc7c0",
+         "body": {
+          "available": true,
+          "contains_entry": true,
+          "non_contiguous": true,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+           {
+            "end": "0xb3a3",
+            "start": "0xb390"
+           },
+           {
+            "end": "0xc893",
+            "start": "0xc7c0"
+           }
+          ],
+          "span_bytes": 5380,
+          "total_bytes": 232
+         },
+         "classification": {
+          "external": false,
+          "provenance": "ghidra-function-manager",
+          "thunk": false,
+          "thunk_target": null
+         },
+         "name": "FUN_0000c7c0"
+        },
+        "query_address": "0xc830"
+       },
+       "kind": null,
+       "source": "0xc830"
+      }
+     ]
+    }
+   ],
+   "pattern": "14800041"
+  },
+  "PORT_PA_OUTSET": {
+   "constant": "0x41008018",
+   "hits": [
+    {
+     "literal_at": "0xc898",
+     "xrefs": [
+      {
+       "containing": {
+        "found": true,
+        "procedure": {
+         "address": "0xc7c0",
+         "body": {
+          "available": true,
+          "contains_entry": true,
+          "non_contiguous": true,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+           {
+            "end": "0xb3a3",
+            "start": "0xb390"
+           },
+           {
+            "end": "0xc893",
+            "start": "0xc7c0"
+           }
+          ],
+          "span_bytes": 5380,
+          "total_bytes": 232
+         },
+         "classification": {
+          "external": false,
+          "provenance": "ghidra-function-manager",
+          "thunk": false,
+          "thunk_target": null
+         },
+         "name": "FUN_0000c7c0"
+        },
+        "query_address": "0xc824"
+       },
+       "kind": null,
+       "source": "0xc824"
+      }
+     ]
+    }
+   ],
+   "pattern": "18800041"
+  },
+  "PORT_PB_OUTCLR": {
+   "constant": "0x41008094",
+   "hits": [],
+   "pattern": "94800041"
+  },
+  "PORT_PB_OUTSET": {
+   "constant": "0x41008098",
+   "hits": [],
+   "pattern": "98800041"
+  },
+  "PORT_PB_PINCFG0": {
+   "constant": "0x410080c0",
+   "hits": [],
+   "pattern": "c0800041"
+  },
+  "PORT_PB_PMUX0": {
+   "constant": "0x410080b0",
+   "hits": [],
+   "pattern": "b0800041"
+  },
+  "PORT_base(GROUP0)": {
+   "constant": "0x41008000",
+   "hits": [
+    {
+     "literal_at": "0x6108",
+     "xrefs": [
+      {
+       "containing": {
+        "found": false,
+        "procedure": null,
+        "query_address": "0x60f6",
+        "reason": "not_in_procedure"
+       },
+       "kind": null,
+       "source": "0x60f6"
+      }
+     ]
+    },
+    {
+     "literal_at": "0xbd58",
+     "xrefs": []
+    },
+    {
+     "literal_at": "0xd3d8",
+     "xrefs": [
+      {
+       "containing": {
+        "found": true,
+        "procedure": {
+         "address": "0xd388",
+         "body": {
+          "available": true,
+          "contains_entry": true,
+          "non_contiguous": false,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+           {
+            "end": "0xd3d3",
+            "start": "0xd388"
+           }
+          ],
+          "span_bytes": 76,
+          "total_bytes": 76
+         },
+         "classification": {
+          "external": false,
+          "provenance": "ghidra-function-manager",
+          "thunk": false,
+          "thunk_target": null
+         },
+         "name": "FUN_0000d388"
+        },
+        "query_address": "0xd3c6"
+       },
+       "kind": null,
+       "source": "0xd3c6"
+      }
+     ]
+    },
+    {
+     "literal_at": "0xd4bc",
+     "xrefs": [
+      {
+       "containing": {
+        "found": true,
+        "procedure": {
+         "address": "0xd40c",
+         "body": {
+          "available": true,
+          "contains_entry": true,
+          "non_contiguous": false,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+           {
+            "end": "0xd4b7",
+            "start": "0xd40c"
+           }
+          ],
+          "span_bytes": 172,
+          "total_bytes": 172
+         },
+         "classification": {
+          "external": false,
+          "provenance": "ghidra-function-manager",
+          "thunk": false,
+          "thunk_target": null
+         },
+         "name": "FUN_0000d40c"
+        },
+        "query_address": "0xd462"
+       },
+       "kind": null,
+       "source": "0xd462"
+      }
+     ]
+    }
+   ],
+   "pattern": "00800041"
+  },
+  "SERCOM5_DATA": {
+   "constant": "0x43000428",
+   "hits": [
+    {
+     "literal_at": "0x1417c",
+     "xrefs": []
+    }
+   ],
+   "pattern": "28040043"
+  },
+  "SERCOM5_INTFLAG": {
+   "constant": "0x43000418",
+   "hits": [],
+   "pattern": "18040043"
+  },
+  "SERCOM5_base": {
+   "constant": "0x43000400",
+   "hits": [
+    {
+     "literal_at": "0xb1dc",
+     "xrefs": [
+      {
+       "containing": {
+        "found": false,
+        "procedure": null,
+        "query_address": "0xb17e",
+        "reason": "not_in_procedure"
+       },
+       "kind": null,
+       "source": "0xb17e"
+      }
+     ]
+    },
+    {
+     "literal_at": "0xb508",
+     "xrefs": [
+      {
+       "containing": {
+        "found": true,
+        "procedure": {
+         "address": "0xb4b4",
+         "body": {
+          "available": true,
+          "contains_entry": true,
+          "non_contiguous": false,
+          "provenance": "ghidra-function-body-address-set",
+          "ranges": [
+           {
+            "end": "0xb4fd",
+            "start": "0xb4b4"
+           }
+          ],
+          "span_bytes": 74,
+          "total_bytes": 74
+         },
+         "classification": {
+          "external": false,
+          "provenance": "ghidra-function-manager",
+          "thunk": false,
+          "thunk_target": null
+         },
+         "name": "FUN_0000b4b4"
+        },
+        "query_address": "0xb4d8"
+       },
+       "kind": null,
+       "source": "0xb4d8"
+      }
+     ]
+    },
+    {
+     "literal_at": "0x14878",
+     "xrefs": []
+    }
+   ],
+   "pattern": "00040043"
+  }
+ },
+ "latency": {
+  "call_graph_s": [
+   0.0032,
+   0.0027
+  ],
+  "decompile_s": [
+   [
+    "0x9f60",
+    0.013,
+    false
+   ],
+   [
+    "0xa000",
+    0.0057,
+    false
+   ],
+   [
+    "0x9f60",
+    0.0044,
+    false
+   ]
+  ],
+  "first_query_cold_s": 10.542,
+  "xrefs_repeat_s": [
+   0.0006,
+   0.0005,
+   0.0006
+  ],
+  "xrefs_s": [
+   0.0027,
+   0.0013,
+   0.0013,
+   0.0009,
+   0.0007,
+   0.0005,
+   0.0046,
+   0.0007,
+   0.0008,
+   0.0006
+  ]
+ },
+ "pin_pairs": {
+  "PA18": {
+   "hits": [
+    "0x14374",
+    "0x14584"
+   ],
+   "pattern": "0000000012000000"
+  },
+  "PA19": {
+   "hits": [
+    "0x1438c",
+    "0x1459c"
+   ],
+   "pattern": "0000000013000000"
+  },
+  "PB01": {
+   "hits": [
+    "0x14764",
+    "0x14cd4",
+    "0x14cd8",
+    "0x14cdc",
+    "0x14d88",
+    "0x14d8c",
+    "0x14d90",
+    "0x14d94"
+   ],
+   "pattern": "0100000001000000"
+  },
+  "PB02": {
+   "hits": [
+    "0x14015",
+    "0x143dc",
+    "0x143f4",
+    "0x14464",
+    "0x1446c",
+    "0x14484",
+    "0x14494",
+    "0x145ec",
+    "0x14604",
+    "0x1461c"
+   ],
+   "pattern": "0100000002000000"
+  },
+  "PB03": {
+   "hits": [
+    "0x1447c",
+    "0x144ac",
+    "0x14768"
+   ],
+   "pattern": "0100000003000000"
+  },
+  "PB08": {
+   "hits": [
+    "0x14434",
+    "0x147ac"
+   ],
+   "pattern": "0100000008000000"
+  },
+  "PB09": {
+   "hits": [
+    "0x1444c",
+    "0x147c4"
+   ],
+   "pattern": "0100000009000000"
+  }
+ },
+ "strings": [
+  {
+   "address": "0x1406c",
+   "value": "p_sercom != NULL"
+  },
+  {
+   "address": "0x1407d",
+   "value": "SPIClass::SPIClass(SERCOM*, uint8_t, uint8_t, uint8_t, SercomSpiTXPad, SercomRXPad)"
+  },
+  {
+   "address": "0x140d1",
+   "value": "C:\\Arduinos\\Arduino ATSAMD51 - autopilot\\portable\\packages\\adafruit\\hardware\\samd\\1.7.11\\libraries\\SPI\\SPI.cpp"
+  }
+ ]
+}
