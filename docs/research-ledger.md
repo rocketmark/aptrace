@@ -43,6 +43,11 @@ Every JSON record is written once; rewriting different content raises.
 An `InvestigationRun` may carry `work_item_id`, an opaque reference to the
 work item it was executed for ([`work-store.md`](work-store.md)). It is set
 at recording, and it is absent from standalone and older runs.
+A follow-up run also carries `followup` (`FollowUpProvenance`): the
+candidate key, source run, cited claim/audit/verification/evidence ids, the
+seeded leads, and the bounded text the planner was given; `parent_run_id`
+names the source run ([`spikes/investigation-continuity.md`](spikes/investigation-continuity.md)).
+Prior claims in that context are unverified hypotheses, never evidence.
 Current claim and evidence state is folded from `events.jsonl` and never
 stored on a record, so history is never rewritten.
 

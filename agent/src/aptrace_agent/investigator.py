@@ -15,6 +15,7 @@ from aptrace_agent.research import (
     ResearchSession,
     ResearchState,
 )
+from aptrace_agent.research.followups import FollowUpCandidate, seed_session
 from aptrace_agent.router import route_question
 from aptrace_agent.schemas import (
     EvidenceBundle,
@@ -124,6 +125,7 @@ def run_autonomous_investigation(
     controller: ResearchController | None = None,
     executor: EvidenceExecutor | None = None,
     claim_contract: bool = False,
+    followup: FollowUpCandidate | None = None,
 ) -> AutonomousInvestigationRun:
     """
     Run one bounded autonomous firmware investigation.
@@ -131,6 +133,10 @@ def run_autonomous_investigation(
     If a seed function is supplied, APTrace starts from that firmware
     function. Otherwise the ResearchController performs bounded
     objective-driven discovery before entering the normal lead graph.
+
+    A follow-up candidate seeds the session with its bounded prior context
+    (leads, open questions, the prior claim as a hypothesis); see
+    research/followups.py.
     """
 
     objective = objective.strip()
@@ -195,6 +201,9 @@ def run_autonomous_investigation(
                 ),
             )
         )
+
+    if followup is not None:
+        seed_session(session, followup)
 
     research_controller = (
         controller

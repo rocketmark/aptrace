@@ -1,6 +1,7 @@
 """
-Work-item commands for aptrace-agent: `work init|create|reconcile|complete`
-and the `research --ledger --work-item` hand-off.
+Work-item commands for aptrace-agent: `work init|create|reconcile|complete`,
+`followups` (preview / create follow-up work for a recorded run), and the
+`research --ledger --work-item` hand-off.
 
 Beads is reached only from here, and only when one of these is used: plain
 `research` never imports the work package, initializes a store, or needs
@@ -61,6 +62,22 @@ def add_work_commands(subparsers: Any) -> None:
     complete.add_argument("--reason", default="", help="Operator note recorded in the close reason")
     complete.add_argument("--ledger-dir", help="Research ledger directory (default: the case ledger)")
     _store_options(complete)
+
+
+def add_followup_command(subparsers: Any) -> None:
+    followups = subparsers.add_parser(
+        "followups",
+        help="Rank follow-up investigations for a recorded run (preview; --create makes Beads work items)",
+    )
+    followups.add_argument("run_id", help="Recorded investigation run id (R-...)")
+    followups.add_argument("--limit", type=int, default=3, help="Shortlist size (default: 3)")
+    followups.add_argument("--create", action="store_true", help="Create work items for the selected shortlist candidates")
+    followups.add_argument("--select", action="append", default=[], help="With --create: shortlist position (1-based) or key prefix (repeatable; default: none)")
+    followups.add_argument("--json", action="store_true", help="Emit the report as JSON")
+    followups.add_argument("--no-store", action="store_true", help="Preview without reading the work store")
+    followups.add_argument("--ledger-dir", help="Research ledger directory (default: the case ledger)")
+    followups.add_argument("--prefix", default="apt", help="Work item id prefix of the store (default: apt)")
+    _store_options(followups)
 
 
 def _open(args: argparse.Namespace, *, initialize: bool = False):
@@ -162,6 +179,162 @@ def handle_work_command(args: argparse.Namespace) -> bool:
     return False
 
 
+def _followup_report(ledger: ResearchLedger, run_id: str, *, executor, context, limit: int = 3):
+    from aptrace_agent.ledger_wiring import lead_deriver_factory
+    from aptrace_agent.research.followups import generate_followups
+
+    return generate_followups(ledger, run_id, context=context, deriver_for=lead_deriver_factory(executor), limit=limit)
+
+
+def _select(report, selectors: list[str]) -> list:
+    chosen = []
+
+    for selector in selectors:
+        if selector.isdigit() and 1 <= int(selector) <= len(report.shortlist):
+            chosen.append(report.shortlist[int(selector) - 1])
+            continue
+
+        matches = [c for c in report.shortlist if c.key.startswith(selector)]
+
+        if len(matches) != 1:
+            raise SystemExit(f"aptrace-agent followups: --select {selector!r} matches {len(matches)} shortlist candidate(s)")
+
+        chosen.append(matches[0])
+
+    return list({c.key: c for c in chosen}.values())
+
+
+def print_followup_report(report, annotations: dict[str, str]) -> None:
+    print(f"FOLLOW-UPS for {report.run_id} ({report.case}/{report.firmware_key}, {report.generator_version})")
+    print(f"  frontier: {report.frontier.status}: {report.frontier.detail}")
+
+    for limitation in report.limitations:
+        print(f"  limitation: {limitation}")
+
+    sections = (("SHORTLIST", report.shortlist), ("DEFERRED (beyond --limit)", report.deferred), ("SUPPRESSED", report.suppressed))
+
+    for title, candidates in sections:
+        if not candidates:
+            continue
+
+        print()
+        print(title)
+
+        for position, c in enumerate(candidates, start=1):
+            print(f"  {position}. [rank {c.rank} {c.category}] key {c.key}" + (f"  {c.status.upper()}: {c.status_detail}" if c.status != "proposed" else ""))
+            print(f"     objective: {c.objective}")
+            print(f"     why: {c.reason}")
+            print(f"     gain: {c.information_gain}")
+
+            for line in c.priority_basis:
+                print(f"     basis: {line}")
+
+            refs = c.claim_versions + c.audit_ids + c.verification_ids
+            print(f"     refs: run {c.source_run_id}" + (f"; {', '.join(refs)}" if refs else "") + f"; evidence {', '.join(c.evidence_ids) or '-'}")
+            print(f"     leads: {c.lead_count} consolidated, {len(c.seeded_leads)} seeded; context {c.context_chars()} chars")
+
+            if c.key in annotations:
+                print(f"     work: {annotations[c.key]}")
+
+
+def handle_followups_command(args: argparse.Namespace) -> bool:
+    if args.command != "followups":
+        return False
+
+    from aptrace_agent.executor import EvidenceExecutor
+    from aptrace_agent.ledger_wiring import context_provider
+    from aptrace_agent.work import WorkStoreError
+    from aptrace_agent.work import followups as work_followups
+
+    ledger = ResearchLedger(ledger_dir(args.ledger_dir))
+    executor = EvidenceExecutor()
+    context = context_provider(executor)()
+
+    try:
+        run = ledger.run(args.run_id)
+    except KeyError:
+        raise SystemExit(f"aptrace-agent followups: run {args.run_id} is not in the ledger") from None
+
+    report = _followup_report(ledger, run.run_id, executor=executor, context=context, limit=args.limit)
+    selected = _select(report, args.select) if args.create else []
+
+    if args.create and not selected:
+        raise SystemExit("aptrace-agent followups: --create needs at least one --select (shortlist position or key prefix)")
+
+    store = None
+    annotations: dict[str, str] = {}
+    created: list[dict[str, Any]] = []
+
+    try:
+        if args.create or not args.no_store:
+            try:
+                store, _locks = _open(args)
+            except WorkStoreError as exc:
+                if args.create:
+                    raise
+                annotations = {c.key: f"work store unavailable ({exc}); not checked" for c in report.candidates()}
+
+        if store is not None:
+            for c in report.candidates():
+                found = work_followups.existing_followups(store, c, prefix=args.prefix)
+                exact, prior = found["exact"], found["prior"]
+                text = f"{exact.id} [{exact.status}]" if exact else f"not created (would be {found['item_id']})"
+
+                if prior:
+                    text += f"; earlier items for the same question: {', '.join(f'{p.id} [{p.status}]' for p in prior)}"
+
+                annotations[c.key] = text
+
+        for c in selected:
+            outcome = work_followups.materialize(store, c, context=context, prefix=args.prefix, source_item=run.work_item_id)
+            created.append({"key": c.key, **outcome.as_dict()})
+            annotations[c.key] = outcome.detail + "".join(f"; {note}" for note in outcome.notes)
+    except (WorkStoreError, work_followups.FollowUpRefused) as exc:
+        raise SystemExit(f"aptrace-agent followups: {exc}") from exc
+
+    if args.json:
+        print(json.dumps({"report": report.model_dump(mode="json"), "work": annotations, "created": created}, indent=2))
+    else:
+        print_followup_report(report, annotations)
+
+        for row in created:
+            print(f"\n{row['detail']}: run with `aptrace-agent research --ledger --work-item {row['item_id']}`")
+
+    return True
+
+
+def followup_for_work_item(args: argparse.Namespace, *, executor, context):
+    """
+    The follow-up candidate a work item was created from, re-assembled from
+    the ledger, or None for an ordinary investigation item. Refuses when the
+    candidate's evidence basis changed since the item was created.
+    """
+
+    from aptrace_agent.work import WorkStoreError
+    from aptrace_agent.work.followups import followup_reference
+
+    try:
+        store, _locks = _open(args)
+        reference = followup_reference(store.get_work(args.work_item))
+    except WorkStoreError as exc:
+        raise SystemExit(f"aptrace-agent research: {exc}") from exc
+
+    if reference is None:
+        return None
+
+    run_id, key = reference
+    ledger = ResearchLedger(ledger_dir(args.ledger_dir))
+    candidate = _followup_report(ledger, run_id, executor=executor, context=context).find(key)
+
+    if candidate is None:
+        raise SystemExit(
+            f"aptrace-agent research: {args.work_item} follows up candidate {key} of run {run_id}, which no longer derives from the ledger "
+            f"(its evidence basis or inputs changed). Review `aptrace-agent followups {run_id}`; the item is left as is."
+        )
+
+    return candidate
+
+
 def research_work_item(
     args: argparse.Namespace,
     objective: str,
@@ -220,4 +393,13 @@ def print_work_summary(work: dict[str, Any]) -> None:
         print(f"  possible duplicate proposals (not merged): {', '.join(group)}")
 
 
-__all__ = ["add_research_work_options", "add_work_commands", "handle_work_command", "print_work_summary", "research_work_item"]
+__all__ = [
+    "add_followup_command",
+    "add_research_work_options",
+    "add_work_commands",
+    "followup_for_work_item",
+    "handle_followups_command",
+    "handle_work_command",
+    "print_work_summary",
+    "research_work_item",
+]

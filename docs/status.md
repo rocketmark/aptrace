@@ -59,6 +59,14 @@ belong in each case's status document.
   item id (`InvestigationRun.work_item_id`), and exact reconciliation repairs
   a failed write-back without re-running. Ownership is a Beads claim plus a
   host-local item lock. Closing work never changes claim state.
+- Propose follow-up investigations from a recorded run
+  ([`spikes/investigation-continuity.md`](spikes/investigation-continuity.md)):
+  `followups <run-id>` re-derives the run's open-lead frontier from durable
+  evidence, finds evidence gaps, audit requests, unmet verification
+  conditions and stale claims, consolidates related leads, and ranks a
+  shortlist by documented categories; `--create` persists a selected
+  candidate as a deduplicated Beads item, and the follow-up run records the
+  bounded prior context it received (`InvestigationRun.followup`).
 
 ## Current limitations
 
@@ -118,6 +126,13 @@ belong in each case's status document.
   host-local (one host per work store), an interrupted investigation restarts
   from its objective rather than resuming, and restarts may duplicate
   `PROPOSED` claims (reported, not merged).
+- Follow-up generation re-derives open leads because runs do not record
+  them; it refuses when the run's input artifacts differ from the current
+  ones. Its evidence-gap rule covers peripheral-access assertions only, and
+  matches assertion prose. A follow-up run's planner does not see the source
+  run's analyses as already run, so the local planner may repeat them; an
+  inconclusive follow-up suppresses its question until the evidence basis
+  changes or an operator reruns the item.
 - Case selection is currently wired explicitly by the application and some
   scripts. A plugin/provider architecture is intentionally deferred until more
   than one real case demonstrates the need.

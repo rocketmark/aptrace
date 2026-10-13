@@ -1,0 +1,253 @@
+{
+  "budgets": {
+    "max_steps": 8
+  },
+  "case": "performing-rigs",
+  "claim_versions": [],
+  "context_id": "X-bb5103e57baa4458",
+  "ended_at": "2026-10-13T22:19:54.608257+00:00",
+  "evidence_ids": [
+    "EV-6747f59bdaf27673",
+    "EV-be1965ceaf243a66"
+  ],
+  "execution_config": {
+    "claim_contract": true,
+    "endpoint": "local-omlx",
+    "max_tokens": 512,
+    "temperature": 0.0
+  },
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "followup": {
+    "audit_ids": [],
+    "category": "claim-followup",
+    "claim_versions": [
+      "C9:v1"
+    ],
+    "context_chars": 1273,
+    "followup_key": "34aa722266ae1091ee464ad0",
+    "generator_version": "followups-v1",
+    "open_questions": [
+      "C9:v1 relates FUN_0000b4b4 to SERCOM0 access, but census EV-be19 shows 1 literal-pool constant load(s) of 0x40003000 (pool 0x0000b500) and mmio_site_count 0; function_effects EV-f9a9: 0 MMIO access..."
+    ],
+    "prior_evidence_ids": [
+      "EV-be1965ceaf243a66",
+      "EV-f9a9ae317433aceb",
+      "EV-c1fe494f721a9ed9",
+      "EV-184217522163aaa3",
+      "EV-d52c88103ef32b68",
+      "EV-6b51302810fa3152",
+      "EV-29fef5d8723a352a",
+      "EV-ead6dfad1110ee1c"
+    ],
+    "prior_hypotheses": [
+      "[prior C9:v1 PROPOSED, unverified] FUN_0000b4b4 is definitively reachable and involves SERCOM0 peripheral access."
+    ],
+    "question_key": "1c3a558e793937d5",
+    "seeded_leads": [
+      {
+        "arguments": {
+          "address": "0x0000a068",
+          "after": 8,
+          "before": 8,
+          "function": "FUN_0000a064"
+        },
+        "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a064 at 0x0000a068",
+        "source_evidence_ids": [
+          "EV-d52c88103ef32b68",
+          "EV-6b51302810fa3152"
+        ],
+        "tool": "callsite_context"
+      },
+      {
+        "arguments": {
+          "address": "0x0000a088",
+          "after": 8,
+          "before": 8,
+          "function": "FUN_0000a084"
+        },
+        "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a084 at 0x0000a088",
+        "source_evidence_ids": [
+          "EV-d52c88103ef32b68"
+        ],
+        "tool": "callsite_context"
+      },
+      {
+        "arguments": {
+          "address": "0x0000a0ac",
+          "after": 8,
+          "before": 8,
+          "function": "FUN_0000a0a8"
+        },
+        "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a0a8 at 0x0000a0ac",
+        "source_evidence_ids": [
+          "EV-d52c88103ef32b68"
+        ],
+        "tool": "callsite_context"
+      },
+      {
+        "arguments": {
+          "address": "0x0000b5c2",
+          "after": 8,
+          "before": 8,
+          "function": "FUN_0000b5bc"
+        },
+        "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000b5bc at 0x0000b5c2",
+        "source_evidence_ids": [
+          "EV-d52c88103ef32b68"
+        ],
+        "tool": "callsite_context"
+      },
+      {
+        "arguments": {
+          "address": "0x0000a144",
+          "after": 8,
+          "before": 8,
+          "function": "FUN_0000a0cc"
+        },
+        "description": "Inspect incoming call to FUN_0000a064 from FUN_0000a0cc at 0x0000a144",
+        "source_evidence_ids": [
+          "EV-6b51302810fa3152"
+        ],
+        "tool": "callsite_context"
+      },
+      {
+        "arguments": {
+          "address": "0x0000a166",
+          "after": 8,
+          "before": 8,
+          "function": "FUN_0000a0cc"
+        },
+        "description": "Inspect incoming call to FUN_0000a064 from FUN_0000a0cc at 0x0000a166",
+        "source_evidence_ids": [
+          "EV-6b51302810fa3152"
+        ],
+        "tool": "callsite_context"
+      }
+    ],
+    "source_run_id": "R-20261013T190420-edcfa7",
+    "verification_ids": []
+  },
+  "invocation_ids": [
+    "TI-3ba8defe30790c58",
+    "TI-89d123e2b9170838"
+  ],
+  "kind": "investigation",
+  "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "objective": "Follow up C9:v1 (PROPOSED, unverified) from run R-20261013T190420-edcfa7. Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, or only use SERCOM0's address 0x40003000 as a value? Open leads consolidated here: 6 from FUN_0000b4b4, FUN_0000a064. Confirm or falsify with firmware-derived evidence; do not assume the claim is true. Already recorded by R-20261013T190420-edcfa7 (repeat only with a new reason): census SERCOM0; effects FUN_0000b4b4; facts FUN_0000b4b4, FUN_0000a064; dis FUN_0000b4b4, FUN_0000a064.",
+  "parent_run_id": "R-20261013T190420-edcfa7",
+  "planner_requests": [
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "follow_lead",
+      "evidence": 0,
+      "message_bytes": 2172,
+      "open_leads": 6,
+      "phase": "decision",
+      "prompt_chars": 1900,
+      "prompt_tokens": 1456,
+      "state_chars": 264,
+      "tool_bytes": 1444,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3616
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "analyze_peripheral",
+      "evidence": 1,
+      "message_bytes": 2435,
+      "open_leads": 5,
+      "phase": "decision",
+      "prompt_chars": 2153,
+      "prompt_tokens": 1747,
+      "state_chars": 507,
+      "tool_bytes": 1836,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4271
+    },
+    {
+      "attempt": 0,
+      "claims": 4,
+      "evidence": 2,
+      "message_bytes": 3296,
+      "open_leads": 11,
+      "phase": "decision",
+      "prompt_chars": 3003,
+      "prompt_tokens": null,
+      "state_chars": 1290,
+      "tool_bytes": 1835,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 5131
+    },
+    {
+      "attempt": 1,
+      "claims": 4,
+      "evidence": 2,
+      "message_bytes": 3567,
+      "open_leads": 11,
+      "phase": "decision",
+      "prompt_chars": 208,
+      "prompt_tokens": null,
+      "state_chars": 1290,
+      "tool_bytes": 1835,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 5402
+    }
+  ],
+  "planner_version": "controller:dcb88bdceb11 projection:e02583098ea2",
+  "run_id": "R-20261013T221954-1b911e",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "1047e7f97c1f933a",
+    "git_branch": "spike/investigation-continuity",
+    "git_commit": "aa80916dbaf5ebc5522966670ff623a6cd6081e3"
+  },
+  "started_at": "2026-10-13T22:19:35.217529+00:00",
+  "termination_reason": "planner_contract_exhausted",
+  "trajectory": [
+    {
+      "action": "follow_lead",
+      "evidence_id": "E1",
+      "lead_id": "L6",
+      "number": 1,
+      "reason": null
+    },
+    {
+      "action": "analyze",
+      "evidence_id": "E2",
+      "lead_id": "L7",
+      "number": 2,
+      "reason": null
+    },
+    {
+      "action": "finish",
+      "evidence_id": null,
+      "lead_id": null,
+      "number": 3,
+      "reason": "Planner could not produce a valid research decision after one correction; first error: planner response contained no choices; second error: planner response contained no choices"
+    }
+  ],
+  "work_item_id": "apt-fq34aa722266"
+}

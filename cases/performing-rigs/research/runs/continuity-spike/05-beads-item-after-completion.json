@@ -1,0 +1,61 @@
+[
+  {
+    "id": "apt-fq34aa722266",
+    "title": "Follow up C9:v1: Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, o",
+    "description": "Follow up C9:v1 (PROPOSED, unverified) from run R-20261013T190420-edcfa7. Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, or only use SERCOM0's address 0x40003000 as a value? Open leads consolidated here: 6 from FUN_0000b4b4, FUN_0000a064. Confirm or falsify with firmware-derived evidence; do not assume the claim is true.\n\nWhy: C9:v1 relates FUN_0000b4b4 to SERCOM0 access, but census EV-be19 shows 1 literal-pool constant load(s) of 0x40003000 (pool 0x0000b500) and mmio_site_count 0; function_effects EV-f9a9: 0 MMIO accesses, 0 write(s), address(es) from input(s) r0\nExpected information gain: decides the unestablished part of C9:v1: Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, or only use SERCOM0's address 0x40003000 as a value?\nPriority basis: rank 1: PERIPHERAL_ACCESS_UNESTABLISHED on C9:v1 (PROPOSED) — pattern-matched: assertion names the function, the peripheral, and an access verb; gap fields are structured census/effects results; consolidates 6 open lead(s) about FUN_0000b4b4 and its direct call neighbours; C9:v1 has no typed semantics: deterministic verification holds it PROPOSED (claim_semantics check not applicable)\nSource run: R-20261013T190420-edcfa7\nClaims (unverified; closing this item never changes them): C9:v1\nContext is re-assembled from the APTrace ledger when run (followups followups-v1, key 34aa722266ae1091ee464ad0).",
+    "status": "closed",
+    "priority": 1,
+    "issue_type": "task",
+    "assignee": "aptrace-agent",
+    "owner": "markstalzer@hotmail.com",
+    "created_at": "2026-10-13T22:15:28Z",
+    "created_by": "aptrace-agent",
+    "updated_at": "2026-10-13T22:20:41Z",
+    "started_at": "2026-10-13T22:15:40Z",
+    "closed_at": "2026-10-13T22:20:41Z",
+    "close_reason": "spike demo: reviewed run B; question still open. Investigation work completed; ledger run(s) R-20261013T221650-31e3c5. Claim state is owned by the APTrace ledger.",
+    "metadata": {
+      "aptrace_case": "performing-rigs",
+      "aptrace_kind": "investigation",
+      "aptrace_run_ids": [
+        "R-20261013T221650-31e3c5"
+      ],
+      "aptrace_objective": "Follow up C9:v1 (PROPOSED, unverified) from run R-20261013T190420-edcfa7. Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, or only use SERCOM0's address 0x40003000 as a value? Open leads consolidated here: 6 from FUN_0000b4b4, FUN_0000a064. Confirm or falsify with firmware-derived evidence; do not assume the claim is true.",
+      "aptrace_attempt_id": "WA-20261013T221540-c51cf3",
+      "aptrace_context_id": "X-bb5103e57baa4458",
+      "aptrace_source_run": "R-20261013T190420-edcfa7",
+      "aptrace_attempt_pid": 58449,
+      "aptrace_attempt_host": "MODOK.local",
+      "aptrace_evidence_ids": [
+        "EV-be1965ceaf243a66",
+        "EV-f9a9ae317433aceb",
+        "EV-c1fe494f721a9ed9",
+        "EV-184217522163aaa3",
+        "EV-d52c88103ef32b68",
+        "EV-6b51302810fa3152",
+        "EV-29fef5d8723a352a",
+        "EV-ead6dfad1110ee1c"
+      ],
+      "aptrace_firmware_key": "autopilot868",
+      "aptrace_followup_key": "34aa722266ae1091ee464ad0",
+      "aptrace_attempt_actor": "aptrace-agent",
+      "aptrace_attempt_state": "recorded",
+      "aptrace_attempt_detail": "recorded run(s) R-20261013T221650-31e3c5",
+      "aptrace_claim_versions": [
+        "C9:v1"
+      ],
+      "aptrace_run_link_basis": {
+        "R-20261013T221650-31e3c5": "direct"
+      },
+      "aptrace_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "aptrace_followup_category": "claim-followup",
+      "aptrace_followup_question": "1c3a558e793937d5",
+      "aptrace_attempt_started_at": "2026-10-13T22:15:40.407+00:00",
+      "aptrace_followup_generator": "followups-v1"
+    },
+    "dependent_count": 0,
+    "dependency_count": 0,
+    "comment_count": 0,
+    "revision": "-1401164057327080062"
+  }
+]

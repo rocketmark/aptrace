@@ -116,6 +116,32 @@ class SourceRevision(_Record):
     dirty_fingerprint: str | None = None
 
 
+class FollowUpProvenance(_Record):
+    """
+    The prior context a follow-up investigation was given, fixed when its
+    run is recorded. It references ledger records by id; the bounded text
+    the planner saw is kept so the supplied context can be audited. Nothing
+    here is evidence: prior claims are passed as unverified hypotheses.
+    """
+
+    followup_key: str
+    question_key: str
+    generator_version: str
+    category: str
+    source_run_id: str
+    claim_versions: list[str] = Field(default_factory=list)
+    audit_ids: list[str] = Field(default_factory=list)
+    verification_ids: list[str] = Field(default_factory=list)
+    # Durable evidence the follow-up context cites or seeded leads derive from.
+    prior_evidence_ids: list[str] = Field(default_factory=list)
+    # tool, arguments, description, source_evidence_ids of each seeded lead.
+    seeded_leads: list[dict[str, Any]] = Field(default_factory=list)
+    open_questions: list[str] = Field(default_factory=list)
+    prior_hypotheses: list[str] = Field(default_factory=list)
+    # Characters of objective + questions + hypotheses + lead descriptions.
+    context_chars: int = 0
+
+
 class InvestigationRun(_Record):
     schema_version: int = LEDGER_SCHEMA_VERSION
     run_id: str
@@ -147,13 +173,18 @@ class InvestigationRun(_Record):
     # records, and omitted from the serialized record when unset so those
     # records are unchanged.
     work_item_id: str | None = None
+    # Prior context supplied when this run followed up an earlier one
+    # (parent_run_id names that run). Absent on standalone runs and older
+    # records, and omitted from the serialized record when unset.
+    followup: FollowUpProvenance | None = None
 
     @model_serializer(mode="wrap")
     def _omit_unset_work_item(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
         data = handler(self)
 
-        if data.get("work_item_id") is None:
-            data.pop("work_item_id", None)
+        for name in ("work_item_id", "followup"):
+            if data.get(name) is None:
+                data.pop(name, None)
 
         return data
 

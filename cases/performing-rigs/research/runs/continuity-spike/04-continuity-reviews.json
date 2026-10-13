@@ -1,0 +1,82 @@
+{
+  "b1": {
+    "run_id": "R-20261013T221650-31e3c5",
+    "source_run_id": "R-20261013T190420-edcfa7",
+    "followup_key": "34aa722266ae1091ee464ad0",
+    "termination_reason": "step_budget_exhausted",
+    "new_evidence_ids": [
+      "EV-6747f59bdaf27673",
+      "EV-4a8978344849622a"
+    ],
+    "reused_evidence_ids": [
+      "EV-be1965ceaf243a66",
+      "EV-f9a9ae317433aceb",
+      "EV-29fef5d8723a352a",
+      "EV-d52c88103ef32b68",
+      "EV-6b51302810fa3152",
+      "EV-ead6dfad1110ee1c"
+    ],
+    "proposed_claims": {},
+    "originating_claims": {
+      "C9:v1": "PROPOSED"
+    },
+    "seeded_leads_followed": [
+      {
+        "lead": "callsite_context({\"address\":\"0x0000a144\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"})",
+        "evidence_id": "EV-4a8978344849622a",
+        "input_evidence_ids": [
+          "EV-6b51302810fa3152",
+          "E7"
+        ]
+      },
+      {
+        "lead": "callsite_context({\"address\":\"0x0000a166\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"})",
+        "evidence_id": "EV-6747f59bdaf27673",
+        "input_evidence_ids": [
+          "EV-6b51302810fa3152",
+          "E7"
+        ]
+      }
+    ],
+    "seeded_leads_unfollowed": [
+      "callsite_context({\"address\":\"0x0000a068\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a064\"})",
+      "callsite_context({\"address\":\"0x0000a088\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a084\"})",
+      "callsite_context({\"address\":\"0x0000a0ac\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0a8\"})",
+      "callsite_context({\"address\":\"0x0000b5c2\",\"after\":8,\"before\":8,\"function\":\"FUN_0000b5bc\"})"
+    ],
+    "question_status": "OPEN: the follow-up ran; whether it answered the question is decided by verifying or auditing the claims, not by the run finishing"
+  },
+  "b2": {
+    "run_id": "R-20261013T221954-1b911e",
+    "source_run_id": "R-20261013T190420-edcfa7",
+    "followup_key": "34aa722266ae1091ee464ad0",
+    "termination_reason": "planner_contract_exhausted",
+    "new_evidence_ids": [
+      "EV-6747f59bdaf27673"
+    ],
+    "reused_evidence_ids": [
+      "EV-be1965ceaf243a66"
+    ],
+    "proposed_claims": {},
+    "originating_claims": {
+      "C9:v1": "PROPOSED"
+    },
+    "seeded_leads_followed": [
+      {
+        "lead": "callsite_context({\"address\":\"0x0000a166\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"})",
+        "evidence_id": "EV-6747f59bdaf27673",
+        "input_evidence_ids": [
+          "EV-6b51302810fa3152"
+        ]
+      }
+    ],
+    "seeded_leads_unfollowed": [
+      "callsite_context({\"address\":\"0x0000a068\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a064\"})",
+      "callsite_context({\"address\":\"0x0000a088\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a084\"})",
+      "callsite_context({\"address\":\"0x0000a0ac\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0a8\"})",
+      "callsite_context({\"address\":\"0x0000b5c2\",\"after\":8,\"before\":8,\"function\":\"FUN_0000b5bc\"})",
+      "callsite_context({\"address\":\"0x0000a144\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"})"
+    ],
+    "question_status": "OPEN: the follow-up ran; whether it answered the question is decided by verifying or auditing the claims, not by the run finishing"
+  }
+}

@@ -1,0 +1,800 @@
+{
+  "report": {
+    "generator_version": "followups-v1",
+    "run_id": "R-20261013T190420-edcfa7",
+    "case": "performing-rigs",
+    "firmware_key": "autopilot868",
+    "run_context_id": "X-bb5103e57baa4458",
+    "current_context_id": "X-bb5103e57baa4458",
+    "limit": 3,
+    "frontier": {
+      "status": "re-derived",
+      "detail": "re-derived 25 open lead(s) from 12 durable observation(s); run recorded 25",
+      "recorded_open_count": 25,
+      "leads": [
+        {
+          "kind": "function",
+          "description": "Inspect firmware function FUN_0000cc24 mentioned by discovery query 'peripheral SERCOM0'",
+          "tool": "function_facts",
+          "arguments": {
+            "function": "FUN_0000cc24"
+          },
+          "source_evidence_ids": [
+            "EV-184217522163aaa3"
+          ],
+          "anchor": "query:peripheral SERCOM0",
+          "documentary": true
+        },
+        {
+          "kind": "function-disassembly",
+          "description": "Inspect disassembly of FUN_0000cc24 mentioned by discovery query 'peripheral SERCOM0'",
+          "tool": "function_disassembly",
+          "arguments": {
+            "function": "FUN_0000cc24"
+          },
+          "source_evidence_ids": [
+            "EV-184217522163aaa3"
+          ],
+          "anchor": "query:peripheral SERCOM0",
+          "documentary": true
+        },
+        {
+          "kind": "function",
+          "description": "Inspect firmware function FUN_0000cc10 mentioned by discovery query 'peripheral SERCOM0'",
+          "tool": "function_facts",
+          "arguments": {
+            "function": "FUN_0000cc10"
+          },
+          "source_evidence_ids": [
+            "EV-184217522163aaa3"
+          ],
+          "anchor": "query:peripheral SERCOM0",
+          "documentary": true
+        },
+        {
+          "kind": "function-disassembly",
+          "description": "Inspect disassembly of FUN_0000cc10 mentioned by discovery query 'peripheral SERCOM0'",
+          "tool": "function_disassembly",
+          "arguments": {
+            "function": "FUN_0000cc10"
+          },
+          "source_evidence_ids": [
+            "EV-184217522163aaa3"
+          ],
+          "anchor": "query:peripheral SERCOM0",
+          "documentary": true
+        },
+        {
+          "kind": "function",
+          "description": "Inspect firmware function FUN_0000cca4 mentioned by discovery query 'peripheral SERCOM0'",
+          "tool": "function_facts",
+          "arguments": {
+            "function": "FUN_0000cca4"
+          },
+          "source_evidence_ids": [
+            "EV-184217522163aaa3"
+          ],
+          "anchor": "query:peripheral SERCOM0",
+          "documentary": true
+        },
+        {
+          "kind": "function-disassembly",
+          "description": "Inspect disassembly of FUN_0000cca4 mentioned by discovery query 'peripheral SERCOM0'",
+          "tool": "function_disassembly",
+          "arguments": {
+            "function": "FUN_0000cca4"
+          },
+          "source_evidence_ids": [
+            "EV-184217522163aaa3"
+          ],
+          "anchor": "query:peripheral SERCOM0",
+          "documentary": true
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a064 at 0x0000a068",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000a064",
+            "address": "0x0000a068",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-d52c88103ef32b68",
+            "EV-6b51302810fa3152"
+          ],
+          "anchor": "FUN_0000b4b4",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a084 at 0x0000a088",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000a084",
+            "address": "0x0000a088",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-d52c88103ef32b68"
+          ],
+          "anchor": "FUN_0000b4b4",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a0a8 at 0x0000a0ac",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000a0a8",
+            "address": "0x0000a0ac",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-d52c88103ef32b68"
+          ],
+          "anchor": "FUN_0000b4b4",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000b5bc at 0x0000b5c2",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b5bc",
+            "address": "0x0000b5c2",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-d52c88103ef32b68"
+          ],
+          "anchor": "FUN_0000b4b4",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b154",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b154",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "function",
+          "description": "Inspect outgoing callee FUN_0000b312 from FUN_0000b144",
+          "tool": "function_facts",
+          "arguments": {
+            "function": "FUN_0000b312"
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "function-disassembly",
+          "description": "Inspect disassembly of outgoing callee FUN_0000b312 from FUN_0000b144",
+          "tool": "function_disassembly",
+          "arguments": {
+            "function": "FUN_0000b312"
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b15c",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b15c",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b164",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b164",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b16c",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b16c",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b176",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b176",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b182",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b182",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000c8bc at 0x0000b192",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b192",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "function",
+          "description": "Inspect outgoing callee FUN_0000c8bc from FUN_0000b144",
+          "tool": "function_facts",
+          "arguments": {
+            "function": "FUN_0000c8bc"
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "function-disassembly",
+          "description": "Inspect disassembly of outgoing callee FUN_0000c8bc from FUN_0000b144",
+          "tool": "function_disassembly",
+          "arguments": {
+            "function": "FUN_0000c8bc"
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000c8bc at 0x0000b1a2",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b1a2",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000c8bc at 0x0000b1b2",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000b144",
+            "address": "0x0000b1b2",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-ac405fc25791b548"
+          ],
+          "anchor": "FUN_0000b144",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect incoming call to FUN_0000a064 from FUN_0000a0cc at 0x0000a144",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000a0cc",
+            "address": "0x0000a144",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-6b51302810fa3152"
+          ],
+          "anchor": "FUN_0000a064",
+          "documentary": false
+        },
+        {
+          "kind": "callsite",
+          "description": "Inspect incoming call to FUN_0000a064 from FUN_0000a0cc at 0x0000a166",
+          "tool": "callsite_context",
+          "arguments": {
+            "function": "FUN_0000a0cc",
+            "address": "0x0000a166",
+            "before": 8,
+            "after": 8
+          },
+          "source_evidence_ids": [
+            "EV-6b51302810fa3152"
+          ],
+          "anchor": "FUN_0000a064",
+          "documentary": false
+        }
+      ],
+      "issues": []
+    },
+    "shortlist": [
+      {
+        "key": "9dc2ae1ed5e67f7575fdddf2",
+        "question_key": "14969ef1e170df8a",
+        "category": "lead-group",
+        "rank": 2,
+        "priority_basis": [
+          "rank 2: anchor appears in firmware-derived evidence supporting C9:v1",
+          "consolidates 13 open lead(s) (9 callsite, 2 function, 2 function-disassembly) sharing anchor FUN_0000b144"
+        ],
+        "objective": "Continue run R-20261013T190420-edcfa7: resolve the unresolved call relationships of FUN_0000b144. Determine what FUN_0000b144's related functions FUN_0000b312, FUN_0000c8bc do, as it bears on C9:v1.",
+        "reason": "13 open lead(s) left by run R-20261013T190420-edcfa7 share anchor FUN_0000b144",
+        "information_gain": "resolves 13 open relationship(s) bearing on C9:v1",
+        "source_run_id": "R-20261013T190420-edcfa7",
+        "claim_versions": [
+          "C9:v1"
+        ],
+        "audit_ids": [],
+        "verification_ids": [],
+        "evidence_ids": [
+          "EV-ac405fc25791b548"
+        ],
+        "seeded_leads": [
+          {
+            "kind": "callsite",
+            "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b154",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b144",
+              "address": "0x0000b154",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "function",
+            "description": "Inspect outgoing callee FUN_0000b312 from FUN_0000b144",
+            "tool": "function_facts",
+            "arguments": {
+              "function": "FUN_0000b312"
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "function-disassembly",
+            "description": "Inspect disassembly of outgoing callee FUN_0000b312 from FUN_0000b144",
+            "tool": "function_disassembly",
+            "arguments": {
+              "function": "FUN_0000b312"
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b15c",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b144",
+              "address": "0x0000b15c",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b164",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b144",
+              "address": "0x0000b164",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b16c",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b144",
+              "address": "0x0000b16c",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b176",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b144",
+              "address": "0x0000b176",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect outgoing call from FUN_0000b144 to FUN_0000b312 at 0x0000b182",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b144",
+              "address": "0x0000b182",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-ac405fc25791b548"
+            ],
+            "anchor": "FUN_0000b144",
+            "documentary": false
+          }
+        ],
+        "lead_count": 13,
+        "open_questions": [
+          "Determine what FUN_0000b144's related functions FUN_0000b312, FUN_0000c8bc do, as it bears on C9:v1."
+        ],
+        "prior_hypotheses": [],
+        "analyses_performed": [
+          "function_facts({\"function\":\"FUN_0000b144\"}) -> EV-ac405fc25791b548"
+        ],
+        "limitations": [
+          "5 further open lead(s) not seeded (bound 8)"
+        ],
+        "status": "proposed",
+        "status_detail": "",
+        "blocker": null,
+        "firmware_derived": true
+      },
+      {
+        "key": "3e6905926946461f4a8e7b1e",
+        "question_key": "12cce6bffcfea069",
+        "category": "lead-group",
+        "rank": 3,
+        "priority_basis": [
+          "rank 3: linked to C9:v1 only through documentary evidence",
+          "consolidates 6 open lead(s) (3 function, 3 function-disassembly) sharing anchor query:peripheral SERCOM0"
+        ],
+        "objective": "Continue run R-20261013T190420-edcfa7: resolve functions FUN_0000cc24, FUN_0000cc10, FUN_0000cca4 named by case documents (query:peripheral SERCOM0). Determine from firmware-derived evidence whether these functions belong to the investigated path; the documents are prior human findings.",
+        "reason": "6 open lead(s) left by run R-20261013T190420-edcfa7 share anchor query:peripheral SERCOM0",
+        "information_gain": "resolves 6 open relationship(s) bearing on C9:v1",
+        "source_run_id": "R-20261013T190420-edcfa7",
+        "claim_versions": [
+          "C9:v1"
+        ],
+        "audit_ids": [],
+        "verification_ids": [],
+        "evidence_ids": [
+          "EV-184217522163aaa3"
+        ],
+        "seeded_leads": [
+          {
+            "kind": "function",
+            "description": "Inspect firmware function FUN_0000cc24 mentioned by discovery query 'peripheral SERCOM0'",
+            "tool": "function_facts",
+            "arguments": {
+              "function": "FUN_0000cc24"
+            },
+            "source_evidence_ids": [
+              "EV-184217522163aaa3"
+            ],
+            "anchor": "query:peripheral SERCOM0",
+            "documentary": true
+          },
+          {
+            "kind": "function-disassembly",
+            "description": "Inspect disassembly of FUN_0000cc24 mentioned by discovery query 'peripheral SERCOM0'",
+            "tool": "function_disassembly",
+            "arguments": {
+              "function": "FUN_0000cc24"
+            },
+            "source_evidence_ids": [
+              "EV-184217522163aaa3"
+            ],
+            "anchor": "query:peripheral SERCOM0",
+            "documentary": true
+          },
+          {
+            "kind": "function",
+            "description": "Inspect firmware function FUN_0000cc10 mentioned by discovery query 'peripheral SERCOM0'",
+            "tool": "function_facts",
+            "arguments": {
+              "function": "FUN_0000cc10"
+            },
+            "source_evidence_ids": [
+              "EV-184217522163aaa3"
+            ],
+            "anchor": "query:peripheral SERCOM0",
+            "documentary": true
+          },
+          {
+            "kind": "function-disassembly",
+            "description": "Inspect disassembly of FUN_0000cc10 mentioned by discovery query 'peripheral SERCOM0'",
+            "tool": "function_disassembly",
+            "arguments": {
+              "function": "FUN_0000cc10"
+            },
+            "source_evidence_ids": [
+              "EV-184217522163aaa3"
+            ],
+            "anchor": "query:peripheral SERCOM0",
+            "documentary": true
+          },
+          {
+            "kind": "function",
+            "description": "Inspect firmware function FUN_0000cca4 mentioned by discovery query 'peripheral SERCOM0'",
+            "tool": "function_facts",
+            "arguments": {
+              "function": "FUN_0000cca4"
+            },
+            "source_evidence_ids": [
+              "EV-184217522163aaa3"
+            ],
+            "anchor": "query:peripheral SERCOM0",
+            "documentary": true
+          },
+          {
+            "kind": "function-disassembly",
+            "description": "Inspect disassembly of FUN_0000cca4 mentioned by discovery query 'peripheral SERCOM0'",
+            "tool": "function_disassembly",
+            "arguments": {
+              "function": "FUN_0000cca4"
+            },
+            "source_evidence_ids": [
+              "EV-184217522163aaa3"
+            ],
+            "anchor": "query:peripheral SERCOM0",
+            "documentary": true
+          }
+        ],
+        "lead_count": 6,
+        "open_questions": [
+          "Determine from firmware-derived evidence whether these functions belong to the investigated path; the documents are prior human findings."
+        ],
+        "prior_hypotheses": [],
+        "analyses_performed": [
+          "search_case_evidence({\"max_results\":8,\"purpose\":\"discovery\",\"query\":\"peripheral SERCOM0\"}) -> EV-184217522163aaa3"
+        ],
+        "limitations": [],
+        "status": "proposed",
+        "status_detail": "",
+        "blocker": null,
+        "firmware_derived": false
+      }
+    ],
+    "deferred": [],
+    "suppressed": [
+      {
+        "key": "34aa722266ae1091ee464ad0",
+        "question_key": "1c3a558e793937d5",
+        "category": "claim-followup",
+        "rank": 1,
+        "priority_basis": [
+          "rank 1: PERIPHERAL_ACCESS_UNESTABLISHED on C9:v1 (PROPOSED) \u2014 pattern-matched: assertion names the function, the peripheral, and an access verb; gap fields are structured census/effects results",
+          "consolidates 6 open lead(s) about FUN_0000b4b4 and its direct call neighbours",
+          "C9:v1 has no typed semantics: deterministic verification holds it PROPOSED (claim_semantics check not applicable)"
+        ],
+        "objective": "Follow up C9:v1 (PROPOSED, unverified) from run R-20261013T190420-edcfa7. Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, or only use SERCOM0's address 0x40003000 as a value? Open leads consolidated here: 6 from FUN_0000b4b4, FUN_0000a064. Confirm or falsify with firmware-derived evidence; do not assume the claim is true.",
+        "reason": "C9:v1 relates FUN_0000b4b4 to SERCOM0 access, but census EV-be19 shows 1 literal-pool constant load(s) of 0x40003000 (pool 0x0000b500) and mmio_site_count 0; function_effects EV-f9a9: 0 MMIO accesses, 0 write(s), address(es) from input(s) r0",
+        "information_gain": "decides the unestablished part of C9:v1: Does FUN_0000b4b4 read or write SERCOM0 registers via the r0 address its callers supply, or only use SERCOM0's address 0x40003000 as a value?",
+        "source_run_id": "R-20261013T190420-edcfa7",
+        "claim_versions": [
+          "C9:v1"
+        ],
+        "audit_ids": [],
+        "verification_ids": [],
+        "evidence_ids": [
+          "EV-be1965ceaf243a66",
+          "EV-f9a9ae317433aceb",
+          "EV-c1fe494f721a9ed9",
+          "EV-184217522163aaa3",
+          "EV-d52c88103ef32b68",
+          "EV-6b51302810fa3152",
+          "EV-29fef5d8723a352a",
+          "EV-ead6dfad1110ee1c"
+        ],
+        "seeded_leads": [
+          {
+            "kind": "callsite",
+            "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a064 at 0x0000a068",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000a064",
+              "address": "0x0000a068",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-d52c88103ef32b68",
+              "EV-6b51302810fa3152"
+            ],
+            "anchor": "FUN_0000b4b4",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a084 at 0x0000a088",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000a084",
+              "address": "0x0000a088",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-d52c88103ef32b68"
+            ],
+            "anchor": "FUN_0000b4b4",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000a0a8 at 0x0000a0ac",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000a0a8",
+              "address": "0x0000a0ac",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-d52c88103ef32b68"
+            ],
+            "anchor": "FUN_0000b4b4",
+            "documentary": false
+          },
+          {
+            "kind": "callsite",
+            "description": "Inspect incoming call to FUN_0000b4b4 from FUN_0000b5bc at 0x0000b5c2",
+            "tool": "callsite_context",
+            "arguments": {
+              "function": "FUN_0000b5bc",
+              "address": "0x0000b5c2",
+              "before": 8,
+              "after": 8
+            },
+            "source_evidence_ids": [
+              "EV-d52c88103ef32b68"
+            ],
+            "anchor": "FUN_0000b4b4",
+            "documentary": false
+          }
+        ],
+        "lead_count": 6,
+        "open_questions": [
+          "C9:v1 relates FUN_0000b4b4 to SERCOM0 access, but census EV-be19 shows 1 literal-pool constant load(s) of 0x40003000 (pool 0x0000b500) and mmio_site_count 0; function_effects EV-f9a9: 0 MMIO access...",
+          "Already recorded under current inputs (repeat only with a new reason): callsite_context({\"address\":\"0x0000a144\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"}); callsite_context({\"address\":\"0x0000..."
+        ],
+        "prior_hypotheses": [
+          "[prior C9:v1 PROPOSED, unverified] FUN_0000b4b4 is definitively reachable and involves SERCOM0 peripheral access."
+        ],
+        "analyses_performed": [
+          "census_peripheral_usage({\"limit\":25,\"peripheral\":\"SERCOM0\"}) -> EV-be1965ceaf243a66",
+          "function_disassembly({\"function\":\"FUN_0000a064\"}) -> EV-ead6dfad1110ee1c",
+          "function_disassembly({\"function\":\"FUN_0000b4b4\"}) -> EV-29fef5d8723a352a",
+          "function_effects({\"function\":\"FUN_0000b4b4\",\"specialize\":{}}) -> EV-f9a9ae317433aceb",
+          "function_facts({\"function\":\"FUN_0000a064\"}) -> EV-6b51302810fa3152",
+          "function_facts({\"function\":\"FUN_0000b4b4\"}) -> EV-d52c88103ef32b68",
+          "search_case_evidence({\"max_results\":8,\"purpose\":\"discovery\",\"query\":\"firmware firmware\"}) -> EV-c1fe494f721a9ed9",
+          "search_case_evidence({\"max_results\":8,\"purpose\":\"discovery\",\"query\":\"peripheral SERCOM0\"}) -> EV-184217522163aaa3",
+          "callsite_context({\"address\":\"0x0000a144\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"}) -> EV-4a8978344849622a (run R-20261013T221650-31e3c5)",
+          "callsite_context({\"address\":\"0x0000a166\",\"after\":8,\"before\":8,\"function\":\"FUN_0000a0cc\"}) -> EV-6747f59bdaf27673 (run R-20261013T221650-31e3c5)"
+        ],
+        "limitations": [
+          "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+          "FUNCTION_BOUNDARIES_HEURISTIC",
+          "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY"
+        ],
+        "status": "redundant",
+        "status_detail": "already investigated under the same evidence basis by run(s) R-20261013T221650-31e3c5 (2/6 seeded leads followed, step_budget_exhausted); an unanswered question returns when its evidence basis changes, or by an operator --rerun of the item",
+        "blocker": null,
+        "firmware_derived": true
+      }
+    ],
+    "limitations": []
+  },
+  "work": {},
+  "created": []
+}

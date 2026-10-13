@@ -90,3 +90,11 @@ def irq_handler_resolver(executor) -> Callable[[str], list[str]]:
         return list(dict.fromkeys(fn for name, fn in handlers() if name.upper().startswith(prefix)))
 
     return resolve
+
+
+def lead_deriver_factory(executor):
+    """The investigator's LeadDeriver wiring, for re-deriving a run's open leads."""
+
+    from aptrace_agent.research import LeadDeriver
+
+    return lambda registry: LeadDeriver(registry=registry, callsite_reader=executor.callsite_reader, function_facts_reader=executor.ghidra)

@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from typing import Any
 
 from aptrace_agent.ledger.hashing import digest
-from aptrace_agent.ledger.models import ExecutionContext, InvestigationRun, SourceRevision
+from aptrace_agent.ledger.models import ExecutionContext, FollowUpProvenance, InvestigationRun, SourceRevision
 from aptrace_agent.ledger.operations import DETERMINISTIC_TOOLS, input_artifacts
 from aptrace_agent.ledger.store import ResearchLedger, new_id, now
 from aptrace_agent.schemas import EvidenceObservation
@@ -82,6 +82,7 @@ def record_investigation(
     source: SourceRevision,
     parent_run_id: str | None = None,
     work_item_id: str | None = None,
+    followup: FollowUpProvenance | None = None,
 ) -> InvestigationRun:
     run_id = new_id("R")
     session_to_durable: dict[str, str] = {}
@@ -104,7 +105,11 @@ def record_investigation(
             ended_at=trace.ended_at if trace else started_at,
             runtime_ms=trace.runtime_ms if trace else 0.0,
             result=observation.result,
-            input_evidence_ids=[session_to_durable.get(e, e) for e in sources],
+            # Inputs are evidence that existed before this execution: earlier
+            # session observations, or durable ledger evidence (a follow-up's
+            # seeded leads). A later observation that re-derived the same
+            # lead is not an input to it.
+            input_evidence_ids=[session_to_durable.get(e, e) for e in sources if e in session_to_durable or ledger.has_evidence(e)],
             replayable=observation.tool in DETERMINISTIC_TOOLS,
             session_evidence_id=observation.id,
         )
@@ -162,7 +167,7 @@ def record_investigation(
             started_at=started_at,
             ended_at=ended_at,
             termination_reason=run.result.stop_reason,
-            parent_run_id=parent_run_id,
+            parent_run_id=parent_run_id or (followup.source_run_id if followup else None),
             source=source,
             invocation_ids=invocation_ids,
             evidence_ids=list(dict.fromkeys(session_to_durable.values())),
@@ -173,5 +178,6 @@ def record_investigation(
                 for s in run.result.steps
             ],
             work_item_id=work_item_id,
+            followup=followup,
         )
     )

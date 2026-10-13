@@ -13,8 +13,10 @@ from aptrace_agent.ledger_cli import (
     record_research_run,
 )
 from aptrace_agent.work_cli import (
+    add_followup_command,
     add_research_work_options,
     add_work_commands,
+    handle_followups_command,
     handle_work_command,
 )
 from aptrace_agent.research.projection import conclusion
@@ -249,6 +251,7 @@ def main() -> None:
     add_research_work_options(research)
     add_ledger_commands(subparsers)
     add_work_commands(subparsers)
+    add_followup_command(subparsers)
 
     args = parser.parse_args()
 
@@ -256,6 +259,9 @@ def main() -> None:
         return
 
     if handle_work_command(args):
+        return
+
+    if handle_followups_command(args):
         return
 
     if args.command == "research":
@@ -279,6 +285,13 @@ def main() -> None:
             recorder = RecordingExecutor(EvidenceExecutor())
 
         completed: dict = {}
+        followup = None
+
+        if args.work_item:
+            from aptrace_agent.ledger_wiring import context_provider
+            from aptrace_agent.work_cli import followup_for_work_item
+
+            followup = followup_for_work_item(args, executor=recorder.inner, context=context_provider(recorder.inner)())
 
         def investigate(
             objective: str,
@@ -297,6 +310,7 @@ def main() -> None:
                         if recorder is not None
                         else {}
                     ),
+                    **({"followup": followup} if followup is not None else {}),
                 )
             )
 
@@ -321,6 +335,7 @@ def main() -> None:
                 max_steps=args.max_steps,
                 controller_cls=ResearchController,
                 work_item_id=work_item_id,
+                **({"followup": followup.provenance()} if followup is not None else {}),
             )
             return payload["ledger_run_id"]
 

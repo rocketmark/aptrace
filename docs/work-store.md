@@ -275,10 +275,24 @@ run ids, and dependencies, but **not history**. Treat it as a portable
 snapshot, not a backup. Lock files need no backup. Backups are manual: no
 scheduled or background backup exists.
 
+## Follow-up work from a recorded run
+
+`aptrace-agent followups <run-id>` ranks at most three follow-up
+investigations for a recorded run (preview: no ledger or work-store
+writes). `--create --select N` makes the selected candidate an ordinary
+`investigation` item with a deterministic id (`apt-fq<key>`), the specific
+objective, `discovered-from` the source run's work item, and ledger ids in
+`aptrace_*` metadata. `research --ledger --work-item` re-assembles the
+candidate's bounded context from the ledger and seeds the session with it.
+Selection, ranking, identity and context are APTrace's; see
+[`spikes/investigation-continuity.md`](spikes/investigation-continuity.md).
+
 ## Not yet automated
 
 - choosing or claiming work automatically (`bd ready`/`claim_next` are not
   used by any command), scheduling, and multiple concurrent workers;
+- creating or executing follow-ups without an operator selecting them
+  (`followups --create` requires `--select`);
 - lease heartbeat and reclaiming abandoned work;
 - completing work items;
 - resuming an interrupted ResearchController run (only a fresh attempt);
