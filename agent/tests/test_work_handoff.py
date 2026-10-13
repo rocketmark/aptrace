@@ -145,8 +145,16 @@ def test_persisted_case_ledger_runs_still_load():
     if not (DEFAULT_LEDGER_DIR / "runs").is_dir():
         pytest.skip("no case ledger in this checkout")
 
+    # Runs recorded before the work handoff have no work_item_id key and
+    # load as unlinked; linked runs recorded since keep their reference.
     runs = ResearchLedger(DEFAULT_LEDGER_DIR).runs()
-    assert runs and all(run.work_item_id is None for run in runs)
+    assert runs
+
+    for run in runs:
+        stored = json.loads((DEFAULT_LEDGER_DIR / "runs" / f"{run.run_id}.json").read_text())
+        assert run.work_item_id == stored.get("work_item_id")
+
+    assert any("work_item_id" not in json.loads(p.read_text()) for p in (DEFAULT_LEDGER_DIR / "runs").glob("*.json"))
 
 
 def test_standalone_runs_serialize_without_a_work_item_field(env):

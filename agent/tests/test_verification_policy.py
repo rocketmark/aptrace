@@ -12,12 +12,12 @@ import pytest
 
 from aptrace_agent import ledger_cli
 from aptrace_agent.ledger.auditor import AuditBudget, ClaimAuditor
-from aptrace_agent.ledger.gate import PolicyGateEvaluator, assess_policy
+from aptrace_agent.ledger.gate import PolicyGateEvaluator, assess_policy, structural_addresses
 from aptrace_agent.ledger.hashing import digest
 from aptrace_agent.ledger.models import ClaimState, LifecycleEvent, VerificationCheck, VerificationRecord
 from aptrace_agent.ledger.pipeline import audit_if_eligible
 from aptrace_agent.ledger.policy import POLICY_ID, POLICY_VERSION, current_policy, policy_definition
-from aptrace_agent.ledger.store import ResearchLedger
+from aptrace_agent.ledger.store import ResearchLedger, new_id
 from aptrace_agent.ledger.verifier import ClaimVerifier
 
 from ledger_support import FIRMWARE, INDEPENDENT_ENVELOPE, USB_EDGE, ScriptedAuditModel, irq_handlers, request, stack, verdict
@@ -365,6 +365,76 @@ def test_insufficient_independence_metadata_never_satisfies(tmp_path, change, co
     condition = next(c for c in gated.precheck.record.gate.conditions if c.kind == "corroboration")
     assert condition.code == code
     assert condition.status == ("UNEVALUABLE" if code == "INDEPENDENCE_METADATA_MISSING" else "UNMET")
+
+
+def test_caller_supplied_provenance_cannot_manufacture_corroboration(tmp_path):
+    # Real sources declare no envelope; a caller asserts one in the tool
+    # arguments and in a non-agreement result shaped like an agreement.
+    ledger, executor, _context, runner = stack(tmp_path)
+    forged = {"lineage": ["macaw"], "firmware_sha256": FIRMWARE, "engine_version": "macaw-9", "assisted": False}
+    _inv, agreement = runner.run("R-model", "structural_source_agreement", {
+        "addresses": ["0x0000bcda"],
+        "sources": [{"source": "macaw", **forged}, {"source": "ghidra", **forged, "lineage": ["ghidra"]}],
+        "lineage": ["macaw"],
+    })
+    executor.drift["function_facts"] = {"agreements": agreement and ledger.evidence_result(agreement.evidence_id)[0]["agreements"],
+                                        "sources": [{"source": "macaw", **forged}, {"source": "ghidra", **forged, "lineage": ["ghidra"]}]}
+    _inv, mimic = runner.run("R-model", "function_facts", {"function": "FUN_0000bc44"})
+    claim = ledger.propose_claim(
+        subject="code at 0x0000bcda", assertion="Code exists at 0x0000bcda in the function at 0x0000bc44.",
+        claim_type="STRUCTURE", proposed_grade="STRONG", proposed_by="model",
+        supporting_evidence_ids=[agreement.evidence_id, mimic.evidence_id],
+        semantics={"predicate": "CODE_PRESENCE", "code_presence": {"address": "0x0000bcda", "function_entry": "0x0000bc44"}},
+    )
+
+    gated, client = _gated(ledger, runner, claim.key)
+
+    assert client.requests == [] and ledger.state(claim.key) == ClaimState.PROPOSED
+    assert all("lineage" not in s for s in ledger.evidence_result(agreement.evidence_id)[0]["sources"])
+    assert mimic.evidence_id not in gated.precheck.record.gate.agreement_evidence_ids
+    condition = next(c for c in gated.precheck.record.gate.conditions if c.kind == "corroboration")
+    assert (condition.code, condition.status) == ("INDEPENDENCE_METADATA_MISSING", "UNEVALUABLE")
+
+
+# -- structural comparison evidence identity --------------------------------------
+
+
+def _evidence_files(ledger):
+    return {p.name: p.read_bytes() for p in (ledger.root / "evidence").glob("*.json")}
+
+
+def test_repeated_verification_reuses_structural_comparison_evidence(tmp_path):
+    ledger, executor, _context, runner = stack(tmp_path)
+    claim = _code_claim(ledger, runner, executor)
+    verifier = ClaimVerifier(ledger, runner=runner)
+
+    first = verifier.precheck(claim.key).record.gate
+    before = _evidence_files(ledger)
+    second = verifier.precheck(claim.key).record.gate
+
+    assert len(first.agreement_evidence_ids) == 2  # the claim's own scope and the gate's (address + entry)
+    assert first.agreement_evidence_ids == second.agreement_evidence_ids
+    assert _evidence_files(ledger) == before
+
+
+def test_changed_comparison_inputs_produce_new_structural_evidence(tmp_path):
+    # The exact operation the gate records, under changed effective inputs.
+    ledger, executor, context, runner = stack(tmp_path)
+    claim = _code_claim(ledger, runner, executor)
+    arguments = {"addresses": structural_addresses(claim)}
+    compare = lambda: runner.run(new_id("VG"), "structural_source_agreement", arguments)[1].evidence_id
+    baseline = compare()
+    before = _evidence_files(ledger)
+
+    assert compare() == baseline
+    context.artifacts["ghidra_export"] = "d" * 64  # same result, different input artifact
+    changed_input = compare()
+    executor.code["macaw"] = None  # same inputs, different comparison result
+    changed_result = compare()
+
+    assert len({baseline, changed_input, changed_result}) == 3
+    after = _evidence_files(ledger)
+    assert {name: after[name] for name in before} == before
 
 
 def test_failed_structural_analysis_is_unevaluable(tmp_path):
