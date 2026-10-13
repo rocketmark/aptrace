@@ -1,0 +1,29 @@
+{
+  "arguments": {
+    "address": "0x0000c550",
+    "after": 8,
+    "before": 8,
+    "function": "FUN_0000c4b8"
+  },
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:40:45.894+00:00",
+  "error": null,
+  "evidence_id": "EV-bbf390cd10de8cb4",
+  "input_artifacts": {
+    "ghidra_export": "8f016a326f3b3e8a5eb059a814909c0365217edcd512306d0c1afa863f33556a"
+  },
+  "input_evidence_ids": [
+    "EV-d6573be1ce4ddff5"
+  ],
+  "invocation_id": "TI-c2acded82b2320b8",
+  "operation_key": "9fd8a4791ec945e60a550e45f447bfe291e07799ffccaed8edf8e298c2e7a90b",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "0ab87fc8c60b23ee764c0e3c213ed560f8075c11419c34bcf0fadb53a569d007",
+  "run_id": "R-20261012T234101-1401dc",
+  "runtime_ms": 1.853,
+  "session_evidence_id": "E11",
+  "started_at": "2026-10-12T23:40:45.892+00:00",
+  "status": "ok",
+  "tool": "callsite_context"
+}

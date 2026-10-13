@@ -1,0 +1,54 @@
+{
+  "note": "Audit contract audit-v0.1 trial (scratch ledger, superseded by audit-v0.2). Gemma gave a verdict on decision 1 with zero analysis requests for every claim and SUPPORTED the misleading EIC convergence claim.",
+  "audits": [
+    {
+      "audit_id": "A-20261012T232325-888ceb",
+      "template": "audit-v0.1",
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "claim_assertion": "The USB callback target is FUN_0000ccc4 and the result is EXACT.",
+      "proposed_grade": "EXACT",
+      "verdict": "CHALLENGED",
+      "analysis_requests": 0,
+      "reasoning": "The claim asserts that the USB callback target is FUN_0000ccc4 with an EXACT grade. However, the provided evidence [EV-d9343c6252f6f61a] shows a resolved indirect edge at address 0x0000cc1a (which is within the USB IRQ handler range) where FUN_0000cc14 forwards to 0x0000c724 via a RAM pointer (0x200052e8). The evidence does not mention FUN_0000ccc4 as a target, nor does it provide a mechanism to establish an EXACT relationship for that specific address. Furthermore, the limitation [COMPUTED_POINTER_WRITES_NOT_EXCLUDED] explicitly states that stores through computed pointers are not excluded, meaning a static analysis of a single store cannot provide an EXACT grade if the pointer could be overwritten. The evidence provided is labeled as STRONG, not EXACT.",
+      "challenges": [
+        "The address FUN_0000ccc4 is not identified as a target in the provided evidence.",
+        "The proposed grade of EXACT is not supported by the evidence, which is labeled as STRONG and carries a limitation regarding computed pointer writes.",
+        "The evidence shows a dispatch to 0x0000c724, not FUN_0000ccc4."
+      ],
+      "limitations": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ]
+    },
+    {
+      "audit_id": "A-20261012T232401-d20bb0",
+      "template": "audit-v0.1",
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "claim_assertion": "The indirect call at 0x0000cc1a in the USB_OTHER interrupt handler FUN_0000cc14 loads its target from RAM slot 0x200052e8, whose only known store (0x0000ccc6 in FUN_0000ccc4, storing the r0 argument of the call at 0x0000bcda) holds the raw Thumb pointer 0x0000c725; the canonical target is 0x0000c724 (FUN_0000c724), which forwards to 0x0000c5cc.",
+      "proposed_grade": "STRONG",
+      "verdict": "SUPPORTED",
+      "analysis_requests": 0,
+      "reasoning": "The claim accurately describes the relationship between the indirect call at 0x0000cc1a, the RAM slot 0x200052e8, and the store at 0x0000ccc6. The evidence [EV-d9343c6252f6f61a] explicitly maps the resolved_indirect edge: 0x0000cc1a (in FUN_0000cc14) loads from 0x200052e8, which contains 0x0000c725 (stored at 0x0000ccc6). The claim correctly identifies that 0x0000c725 is a raw Thumb pointer (LSB=1) and the canonical target is 0x0000c724. The grade 'STRONG' is appropriate as the relationship is based on a static census of a single known store to a specific RAM location.",
+      "challenges": [],
+      "limitations": [
+        "The claim is limited to the single known store to 0x200052e8; it does not account for potential writes via computed pointers or other runtime modifications."
+      ]
+    },
+    {
+      "audit_id": "A-20261012T232413-ffbdb4",
+      "template": "audit-v0.1",
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "claim_assertion": "The physical/EIC interrupt-dispatch path converges with the USB interrupt path.",
+      "proposed_grade": "STRONG",
+      "verdict": "SUPPORTED",
+      "analysis_requests": 0,
+      "reasoning": "The evidence demonstrates a convergence of the USB interrupt path and the EIC interrupt path within the census call graph. Specifically, EV-aec58644e0021efd identifies multiple points of convergence (FUN_0000e628, FUN_0000e7a0, FUN_0000f3dc) where paths originating from USB IRQ handlers (e.g., USB_OTHER, USB_TRCPT0) and EIC interrupt handlers (EIC_EXTINT_0..15) meet. The paths are within the stated census hop bounds (4-6 hops). The grade 'STRONG' is appropriate as the convergence is based on a deterministic call graph analysis of the census sets, though it is subject to the limitations of the heuristic function boundaries and unresolved indirect sites.",
+      "challenges": [],
+      "limitations": [
+        "The convergence is within the census call graph and may be affected by the heuristic nature of function boundaries.",
+        "The presence of unresolved indirect sites (7 in the explored region) means the full reachability of these paths is not exhaustively proven, but the existing paths are deterministic.",
+        "The convergence is structural (call graph) and does not imply hardware-level signal convergence."
+      ]
+    }
+  ]
+}

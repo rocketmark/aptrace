@@ -1,0 +1,74 @@
+{
+  "arguments": {
+    "left": [
+      "FUN_0000954c",
+      "FUN_0000bd94",
+      "FUN_0000c5cc",
+      "FUN_0000cdd8",
+      "FUN_0000cc14",
+      "FUN_0000ccb6",
+      "FUN_0000ccba",
+      "FUN_0000ccbe"
+    ],
+    "left_label": "USB",
+    "right": [
+      "FUN_0000cbb0",
+      "FUN_0000cbb6",
+      "FUN_0000cbbc",
+      "FUN_0000cbc2",
+      "FUN_0000cbc8",
+      "FUN_0000cbce",
+      "FUN_0000cbd4",
+      "FUN_0000cbda",
+      "FUN_0000cbe0",
+      "FUN_0000cbe6",
+      "FUN_0000cbec",
+      "FUN_0000cbf2",
+      "FUN_0000cbf8",
+      "FUN_0000cbfe",
+      "FUN_0000cc04",
+      "FUN_0000cc0a"
+    ],
+    "right_label": "IRQ:EIC"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-7af50a9ee492b01a",
+  "evidence_id": "EV-bab8f6cc269494ab",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "BOUNDED",
+  "grade_basis": "NO_KNOWN_PATH within census hop bound",
+  "invocation_id": "TI-bb924fc173c22207",
+  "limitations": [
+    {
+      "code": "COMPUTED_POINTER_WRITES_NOT_EXCLUDED",
+      "source_evidence_ids": [],
+      "text": "resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "NO_KNOWN_PATH_IS_NOT_UNREACHABILITY",
+      "source_evidence_ids": [],
+      "text": "NO_KNOWN_PATH means no path this census can construct within the hop bound; it is not a proof of unreachability."
+    },
+    {
+      "code": "PERIPHERAL_SET_IS_MMIO_USAGE:USB",
+      "source_evidence_ids": [],
+      "text": "Set 'USB' is the census structural set for USB (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path."
+    },
+    {
+      "code": "UNRESOLVED_INDIRECT_FRONTIER",
+      "source_evidence_ids": [],
+      "text": "7 unresolved indirect transfer site(s) in the explored region; paths through them are unknown."
+    }
+  ],
+  "path_status": "NO_KNOWN_PATH",
+  "result_bytes": 6210,
+  "result_sha256": "e0b3be773d9d7d5019aec3e4a6ac332c6a9193d2103aba6a263afa556791ea5a",
+  "summary": "common paths USB[FUN_0000954c,FUN_0000bd94,FUN_0000c5cc,FUN_0000cdd8...] | IRQ:EIC[FUN_0000cbb0,FUN_0000cbb6,FUN_0000cbbc,FUN_0000cbc2...] (census strong graph, <= 8 hops): NO_KNOWN_PATH; explored 45/16 functions\n  roots reaching left: USB_OTHER,USB_SOF_HSOF,USB_TRCPT0,USB_TRCPT0..1,USB_TRCPT1,reset; right: EIC_EXTINT_0..15,EIC_EXTINT_1,EIC_EXTINT_10,EIC_EXTINT_11,EIC_EXTINT_12,EIC_EXTINT_13,EIC_EXTINT_14,EIC_EXTINT_15,EIC_EXTINT_2,EIC_EXTINT_3,EIC_EXTINT_4,EIC_EXTINT_5,EIC_EXTINT_6,EIC_EXTINT_7,EIC_EXTINT_8,EIC_EXTINT_9\n  resolved_indirect edges (RAM function pointer, not direct calls): 0x000",
+  "tool": "census_common_paths"
+}

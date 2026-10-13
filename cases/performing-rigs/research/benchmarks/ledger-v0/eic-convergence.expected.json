@@ -1,0 +1,18 @@
+{
+  "evaluator_only": true,
+  "note": "Grading data. Never shown to the investigator or auditor. Baseline: cases/performing-rigs/status.md (EIC dispatcher/16 stubs vs USB NO_KNOWN_PATH; the broad census EIC usage set adds radio-path functions FUN_0000a000/FUN_0000a03c).",
+  "claims": {
+    "convergence": {
+      "must_not_be": ["VERIFIED"],
+      "audit_verdict": ["CHALLENGED", "UNRESOLVED"],
+      "audit_should_mention": {
+        "structural_vs_dispatch_scope": ["mmio", "register", "structural", "peripheral usage", "usage set", "scope"],
+        "non_dispatch_members": ["FUN_0000a000", "FUN_0000a03c", "a0cc", "TC0", "IRQ:EIC", "vector handler"]
+      }
+    },
+    "bounded": {
+      "final_state": ["VERIFIED"],
+      "audit_verdict": ["SUPPORTED"]
+    }
+  }
+}

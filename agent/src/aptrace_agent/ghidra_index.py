@@ -26,6 +26,10 @@ class GhidraIndex:
         self._callers: dict[str, list[CallSite]] = {}
         self._callees: dict[str, list[CallSite]] = {}
         self._rejected_edges: list[RejectedCallEdge] = []
+        # Export name -> canonical FUN_<entry> identity. A seeded project
+        # export may carry provenance labels; APTrace evidence names
+        # functions by entry (the census convention), so labels are mapped.
+        self._canonical: dict[str, str] = {}
 
         with artifact.open("r", encoding="utf-8") as f:
             data = json.load(f)
@@ -55,12 +59,21 @@ class GhidraIndex:
                 and name.startswith("FUN_")
             ):
                 self._functions.setdefault(name, record)
+            elif (
+                isinstance(name, str)
+                and isinstance(entry, str)
+                and "size" in record
+                and "thunk" in record
+            ):
+                canonical = f"FUN_{int(entry, 16):08x}"
+                self._canonical.setdefault(name, canonical)
+                self._functions.setdefault(canonical, {**record, "name": canonical, "label": name})
 
         seen_edges: set[tuple[str, str, str]] = set()
 
         for record in records:
-            from_fn = record.get("fromFunction")
-            to_fn = record.get("toFunction")
+            from_fn = self._canonical.get(record.get("fromFunction"), record.get("fromFunction"))
+            to_fn = self._canonical.get(record.get("toFunction"), record.get("toFunction"))
             from_addr = record.get("from")
 
             if not (
@@ -206,18 +219,88 @@ class GhidraIndex:
         )
 
 
-def autopilot_ghidra_index() -> GhidraIndex:
-    repo_root = Path(__file__).resolve().parents[3]
+AUTOPILOT_GHIDRA_KEY = "autopilot868"
 
-    artifact = (
-        repo_root
-        / "cases"
-        / "performing-rigs"
-        / "research"
-        / "runs"
-        / "ghidra"
-        / "firmware_autopilot868.json"
-    )
+
+class GhidraCacheStale(RuntimeError):
+    pass
+
+
+def _aptrace_ghidra():
+    import sys
+
+    tools = Path(__file__).resolve().parents[3] / "tools" / "ghidra"
+
+    if str(tools) not in sys.path:
+        sys.path.insert(0, str(tools))
+
+    import aptrace_ghidra
+
+    return aptrace_ghidra
+
+
+def ghidra_cache_identity(key: str = AUTOPILOT_GHIDRA_KEY) -> dict[str, Any]:
+    """
+    The persistent Ghidra project's recorded identity (meta.json), after
+    checking it against the current firmware, build scripts and generated
+    seeds. A stale cache is refused, never silently used.
+
+    When analyzeHeadless is not installed the installed Ghidra version
+    cannot be compared; every other identity field still is.
+    """
+
+    ag = _aptrace_ghidra()
+
+    try:
+        state, meta, expected = ag.cache_status(key)
+    except SystemExit:
+        meta = ag.read_meta(key)
+
+        if meta is None:
+            raise GhidraCacheStale(f"Ghidra cache for {key} has not been built")
+
+        path, _base, _labels = ag.firmware_info(key)
+        expected = dict(meta, firmware_sha256=ag.sha256_of(path))
+
+        for script in ag.BUILD_SCRIPTS:
+            expected[f"script_sha256:{script}"] = ag._file_identity_hash(ag.SCRIPTS_DIR / script)
+
+        if ag.seed_file(key).exists():
+            expected["derived_seeds_sha256"] = ag.sha256_of(ag.seed_file(key))
+
+        state = "fresh" if meta == expected else "stale"
+
+    if state != "fresh":
+        changed = sorted(k for k in expected if (meta or {}).get(k) != expected[k])
+        raise GhidraCacheStale(
+            f"Ghidra cache for {key} is {state} ({', '.join(changed) or 'not built'}); "
+            f"run tools/ghidra/aptrace_ghidra.py rebuild {key}"
+        )
+
+    return dict(meta)
+
+
+def ghidra_cache_paths(key: str = AUTOPILOT_GHIDRA_KEY) -> dict[str, Path]:
+    cache = _aptrace_ghidra().cache_dir(key)
+    return {
+        "static_export": cache / "static_export.json",
+        "census_export": cache / "census_export.json",
+        "meta": cache / "meta.json",
+    }
+
+
+def autopilot_ghidra_index() -> GhidraIndex:
+    """
+    Ghidra index over the persistent, seeded Ghidra project export: the
+    same Ghidra analysis the census is built from (vector table plus the
+    generated function-pointer seeds), checked fresh before use.
+
+    The legacy one-shot export under research/runs/ghidra/ was produced
+    without the generated seeds and is no longer read here.
+    """
+
+    ghidra_cache_identity()
+    artifact = ghidra_cache_paths()["static_export"]
 
     if not artifact.is_file():
         raise FileNotFoundError(artifact)

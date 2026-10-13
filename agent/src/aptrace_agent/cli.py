@@ -7,6 +7,11 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from aptrace_agent.ledger_cli import (
+    add_ledger_commands,
+    handle_ledger_command,
+    record_research_run,
+)
 from aptrace_agent.research.projection import conclusion
 from aptrace_agent.investigator import (
     AutonomousInvestigationRun,
@@ -213,17 +218,46 @@ def main() -> None:
     )
 
     research.add_argument(
+        "--ledger",
+        action="store_true",
+        help=(
+            "Record the run, its invocations, evidence and the "
+            "planner's structured claim proposals in the research "
+            "ledger (enables the finish claim contract)"
+        ),
+    )
+
+    research.add_argument(
+        "--ledger-dir",
+        help="Research ledger directory (default: the case ledger)",
+    )
+
+    research.add_argument(
         "objective",
         nargs="+",
         help="Research objective",
     )
 
+    add_ledger_commands(subparsers)
+
     args = parser.parse_args()
+
+    if handle_ledger_command(args):
+        return
 
     if args.command == "research":
         objective = " ".join(
             args.objective
         )
+
+        recorder = None
+        started_at = datetime.now(timezone.utc).isoformat()
+
+        if args.ledger:
+            from aptrace_agent.executor import EvidenceExecutor
+            from aptrace_agent.ledger.recorder import RecordingExecutor
+
+            recorder = RecordingExecutor(EvidenceExecutor())
 
         run = (
             run_autonomous_investigation(
@@ -232,12 +266,32 @@ def main() -> None:
                     args.seed_function
                 ),
                 max_steps=args.max_steps,
+                **(
+                    {"executor": recorder, "claim_contract": True}
+                    if recorder is not None
+                    else {}
+                ),
             )
         )
 
         payload = _research_payload(
             run
         )
+
+        if recorder is not None:
+            from aptrace_agent.research import ResearchController
+
+            payload["proposed_claims"] = list(run.result.proposed_claims)
+            payload["ledger_run_id"] = record_research_run(
+                run,
+                executor=recorder.inner,
+                recorder=recorder,
+                ledger_dir_override=args.ledger_dir,
+                started_at=started_at,
+                ended_at=datetime.now(timezone.utc).isoformat(),
+                max_steps=args.max_steps,
+                controller_cls=ResearchController,
+            )
 
         output_path = None
 

@@ -1,0 +1,9 @@
+{
+  "evaluator_only": true,
+  "note": "Grading data. Deterministic outcomes only: these claims are evaluated with --no-audit; the bad and EIC claims must be BLOCKED by deterministic verification before any audit model is consulted.",
+  "claims": {
+    "good": {"must_not_be": ["BLOCKED", "STALE"]},
+    "bad": {"final_state": ["BLOCKED"], "audit_skipped": true, "semantic_failures": ["ENTITY_ROLE_MISMATCH"], "verifier_failed_checks": ["claim_semantics", "grade_ceiling"]},
+    "eic_dispatch_convergence": {"final_state": ["BLOCKED"], "audit_skipped": true, "semantic_failures": ["SCOPE_MISMATCH"], "verifier_failed_checks": ["claim_semantics"]}
+  }
+}

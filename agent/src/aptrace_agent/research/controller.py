@@ -41,6 +41,20 @@ STRUCTURAL_TOOLS = (
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 _SET_NAME_RE = re.compile(r"[A-Z][A-Z0-9_]{0,23}")
 
+# Optional structured claim-output contract on finish.
+CLAIM_TYPES = ("RESOLUTION", "PATH_EXISTS", "NO_KNOWN_PATH", "UNREACHABLE", "BEHAVIOR", "STRUCTURE", "OTHER")
+CLAIM_GRADES = ("EXACT", "STRONG", "PROBABLE")
+MAX_PROPOSED_CLAIMS = 3
+# Claims are one scalar string, one claim per line: the local planner's
+# tool-call output degenerates on nested array-of-object arguments (and
+# often on additional array arguments). "STRONG RESOLUTION E2,E4 text".
+CLAIM_FORMAT = "GRADE [TYPE] E#,E# assertion"
+_CLAIM_LINE_RE = re.compile(
+    r"\s*(?P<grade>EXACT|STRONG|PROBABLE)\s+(?:(?P<type>" + "|".join(CLAIM_TYPES) + r")\s+)?"
+    r"(?P<evidence>E\d+(?:\s*,\s*E\d+)*)\s*[:\-]?\s+(?P<assertion>\S.*)",
+    re.IGNORECASE | re.DOTALL,
+)
+
 # Sources whose function leads are structural narrowing rather than
 # caller/callee crawling; their leads rank first for the planner.
 _STRUCTURAL_SOURCES = {
@@ -67,6 +81,9 @@ class ResearchRunResult:
     steps: tuple[ResearchStep, ...]
     reconciled: bool
     planner_requests: tuple[dict[str, Any], ...] = ()
+    # Structured claims the planner proposed at finish (claim contract only).
+    # Proposals, never facts: APTrace records them as PROPOSED claim versions.
+    proposed_claims: tuple[dict[str, Any], ...] = ()
 
 
 @dataclass
@@ -152,6 +169,7 @@ class ResearchController:
         max_visible_leads: int = 6,
         prefill_retry_delay: float = 3.0,
         projection_budget: ProjectionBudget | None = None,
+        claim_contract: bool = False,
     ) -> None:
         if max_steps < 1:
             raise ValueError("max_steps must be at least 1")
@@ -199,6 +217,8 @@ class ResearchController:
         self.max_path_analyses = max_path_analyses
         self.max_visible_leads = max_visible_leads
         self.prefill_retry_delay = prefill_retry_delay
+        self.claim_contract = claim_contract
+        self.proposed_claims: list[dict[str, Any]] = []
 
         budget = projection_budget or ProjectionBudget(latest_count=recent_evidence_limit)
         self.normal_projection = PlannerProjection(budget)
@@ -382,15 +402,82 @@ class ResearchController:
         )
         return palette
 
-    @staticmethod
-    def _finish_tool() -> dict[str, Any]:
+    def _finish_tool(self) -> dict[str, Any]:
         notes = {"type": "array", "items": {"type": "string"}}
+        properties: dict[str, Any] = {"reason": {"type": "string"}, "hypotheses": notes, "open_questions": notes}
+
+        if not self.claim_contract:
+            return _function_tool(
+                "finish",
+                "End research, optionally with hypotheses and open questions.",
+                properties,
+                ["reason"],
+            )
+
+        properties["claims"] = {"type": "string", "description": f"one claim per line: {CLAIM_FORMAT}"}
         return _function_tool(
             "finish",
-            "End research, optionally with hypotheses and open questions.",
-            {"reason": {"type": "string"}, "hypotheses": notes, "open_questions": notes},
+            "End research, optionally with hypotheses, open questions, and evidence-backed claims, "
+            f"each one string '{CLAIM_FORMAT}' (GRADE EXACT|STRONG|PROBABLE; TYPE optional: "
+            + "|".join(CLAIM_TYPES)
+            + ").",
+            properties,
             ["reason"],
         )
+
+    @staticmethod
+    def _sanitize_claims(items: Any) -> list[dict[str, Any]]:
+        """Well-formed claim proposals only; references are validated later by APTrace."""
+
+        if isinstance(items, str):
+            items = [line for line in items.splitlines() if line.strip()]
+
+        if not isinstance(items, list):
+            return []
+
+        out: list[dict[str, Any]] = []
+
+        for item in items[: MAX_PROPOSED_CLAIMS * 3]:
+            if len(out) == MAX_PROPOSED_CLAIMS:
+                break
+
+            if isinstance(item, str):
+                match = _CLAIM_LINE_RE.fullmatch(item.strip())
+
+                if match is None:
+                    continue
+
+                item = {
+                    "assertion": match["assertion"],
+                    "grade": match["grade"],
+                    "claim_type": match["type"] or "OTHER",
+                    "evidence_ids": [e.strip().upper() for e in match["evidence"].split(",")],
+                }
+
+            if not isinstance(item, dict):
+                continue
+
+            assertion = item.get("assertion")
+            grade = str(item.get("grade", "")).upper()
+
+            if not isinstance(assertion, str) or not assertion.strip() or grade not in CLAIM_GRADES:
+                continue
+
+            claim_type = str(item.get("claim_type", "OTHER")).upper()
+            evidence = item.get("evidence_ids") if isinstance(item.get("evidence_ids"), list) else []
+            limitations = item.get("limitations") if isinstance(item.get("limitations"), list) else []
+            out.append(
+                {
+                    "subject": clip(str(item.get("subject") or ""), 120),
+                    "assertion": clip(assertion.strip(), 400),
+                    "claim_type": claim_type if claim_type in CLAIM_TYPES else "OTHER",
+                    "grade": grade,
+                    "evidence_ids": [str(e).strip() for e in evidence if isinstance(e, (str, int))][:8],
+                    "limitations": [clip(str(x), 240) for x in limitations if isinstance(x, str)][:4],
+                }
+            )
+
+        return out
 
     # -- validation -------------------------------------------------------------
 
@@ -964,11 +1051,17 @@ TASK: make exactly one tool call, by the first rule that applies:
    find_common_paths (once per pair);
 3) otherwise follow LEADS the analyses named (caller/callee leads only for
    a specific question);
-4) evidence suffices: finish, listing hypotheses and open questions.
+4) evidence suffices: finish, listing hypotheses and open questions{self._claim_guidance()}.
 Never repeat an ALREADY RUN analysis or invent identifiers.
 """,
             state_chars,
         )
+
+    def _claim_guidance(self) -> str:
+        if not self.claim_contract:
+            return ""
+
+        return f",\n   and claims (one '{CLAIM_FORMAT}' line each) for evidence-backed conclusions"
 
     def _discovery_prompt(
         self,
@@ -1094,6 +1187,51 @@ SEARCHES TRIED: {attempted}
             exhausted="finish",
         )
 
+    def _request_final_claims(self, session: ResearchSession) -> tuple[str, dict[str, Any]]:
+        """
+        Claim contract only: after the step budget, one finish-only request
+        so the planner can state its evidence-backed claims. No analysis
+        tool is offered; research direction is unaffected.
+        """
+
+        self._begin_decision()
+        palette = _Palette(tools=[self._finish_tool()])
+
+        def prompt_for(palette: _Palette) -> tuple[str, int]:
+            state, state_chars = self._research_state(session)
+            return (
+                f"""OBJECTIVE: {self.projection.objective(session)}
+
+{state}
+
+TASK: the step budget is exhausted; no further analysis is possible. Call
+finish now with your reason and claims: one line per evidence-backed
+conclusion, formatted '{CLAIM_FORMAT}', for example
+'STRONG RESOLUTION E2 <assertion>'.
+""",
+                state_chars,
+            )
+
+        def parse(palette: _Palette, name: str, arguments: dict[str, Any]):
+            if name == "finish" and isinstance(arguments.get("reason"), str) and arguments["reason"].strip():
+                return name, arguments
+
+            return "call finish with a non-empty reason"
+
+        return self._ask(
+            session,
+            phase="final-claims",
+            system=(
+                "You concluded a bounded firmware research investigation. APTrace owns "
+                "evidence and verification. Make exactly one finish tool call."
+            ),
+            prompt_for=prompt_for,
+            palette=palette,
+            parse=parse,
+            contract="final claims",
+            exhausted="planner_contract_exhausted",
+        )
+
     # -- execution --------------------------------------------------------------
 
     def _follow_new_lead(self, session: ResearchSession, *, kind: str, description: str, tool: str, arguments: dict[str, Any]):
@@ -1208,6 +1346,7 @@ SEARCHES TRIED: {attempted}
             steps=tuple(steps),
             reconciled=reconciled,
             planner_requests=tuple(self.planner_requests),
+            proposed_claims=tuple(self.proposed_claims),
         )
 
     def run(self, session: ResearchSession) -> ResearchRunResult:
@@ -1256,6 +1395,9 @@ SEARCHES TRIED: {attempted}
                     return self._result("discovery_finished", steps, False)
 
                 self._record_conclusions(session, arguments)
+
+                if self.claim_contract:
+                    self.proposed_claims = self._sanitize_claims(arguments.get("claims"))
                 return self._result("planner_finished", steps, self._reconcile_terminal(session))
 
             if action == "search_case_evidence":
@@ -1274,5 +1416,12 @@ SEARCHES TRIED: {attempted}
 
             step_action, lead, observation = self._execute_structural(session, action, arguments)
             steps.append(ResearchStep(number=step_number, action=step_action, lead_id=lead.id, evidence_id=observation.id))
+
+        if self.claim_contract:
+            action, arguments = self._request_final_claims(session)
+
+            if action == "finish":
+                self._record_conclusions(session, arguments)
+                self.proposed_claims = self._sanitize_claims(arguments.get("claims"))
 
         return self._result("step_budget_exhausted", steps, self._reconcile_terminal(session))

@@ -1,0 +1,39 @@
+{
+  "budgets": {},
+  "case": "performing-rigs",
+  "claim_versions": [],
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:46:05.358+00:00",
+  "evidence_ids": [
+    "EV-d9343c6252f6f61a",
+    "EV-d816b5c25a8f750b",
+    "EV-aec58644e0021efd",
+    "EV-bab8f6cc269494ab"
+  ],
+  "execution_config": {},
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-c4dcc1eff756e8cb",
+    "TI-de9955ee736cb17d",
+    "TI-77cc1d70ca84f536",
+    "TI-bb924fc173c22207"
+  ],
+  "kind": "benchmark-setup",
+  "model": null,
+  "objective": "Determine whether external-interrupt (EIC) events and USB interrupt handling converge in firmware control flow.",
+  "parent_run_id": null,
+  "planner_requests": [],
+  "planner_version": null,
+  "run_id": "R-20261012T234605-3218bc",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "ca995dc5578105dd",
+    "git_branch": "feat/pydantic-investigator",
+    "git_commit": "112e1668b2662b30d975282aab407a8c141570b3"
+  },
+  "started_at": "2026-10-12T23:46:05.333+00:00",
+  "termination_reason": "setup_complete",
+  "trajectory": []
+}

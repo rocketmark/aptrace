@@ -1,0 +1,121 @@
+{
+  "generated_at": "2026-10-12",
+  "template_version": "audit-v0.4",
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "generation": {
+    "temperature": 0.0,
+    "max_tokens": 1200
+  },
+  "groups": {
+    "C2-v1": {
+      "claim_version": "C2:v1",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "template_version": "audit-v0.4",
+      "runs": 10,
+      "verdicts": {
+        "SUPPORTED": 10
+      },
+      "modal_verdict": "SUPPORTED",
+      "verdict_agreement": 1.0,
+      "model_verdicts": {
+        "SUPPORTED": 10
+      },
+      "tool_sequence_agreement": 1.0,
+      "first_tool_agreement": 1.0,
+      "distinct_tool_sequences": 1,
+      "distinct_challenge_sets": 0,
+      "challenges_citing_coverage_gaps": 0,
+      "runs_with_coverage_gap_results": 0,
+      "runs_claiming_contradictory_evidence": 0,
+      "falsification_unsatisfied": 0,
+      "mean_prompt_tokens": 10967.0,
+      "mean_completion_tokens": 617.1,
+      "served_models": [
+        "gemma-4-26b-a4b-it-4bit"
+      ],
+      "batch_id": "B-20261013T002035-256882"
+    },
+    "C3-v1": {
+      "claim_version": "C3:v1",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "template_version": "audit-v0.4",
+      "runs": 10,
+      "verdicts": {
+        "CHALLENGED": 1,
+        "SUPPORTED": 9
+      },
+      "modal_verdict": "SUPPORTED",
+      "verdict_agreement": 0.9,
+      "model_verdicts": {
+        "CHALLENGED": 1,
+        "SUPPORTED": 9
+      },
+      "tool_sequence_agreement": 1.0,
+      "first_tool_agreement": 1.0,
+      "distinct_tool_sequences": 1,
+      "distinct_challenge_sets": 1,
+      "challenges_citing_coverage_gaps": 0,
+      "runs_with_coverage_gap_results": 0,
+      "runs_claiming_contradictory_evidence": 1,
+      "falsification_unsatisfied": 0,
+      "mean_prompt_tokens": 6590.9,
+      "mean_completion_tokens": 518.9,
+      "served_models": [
+        "gemma-4-26b-a4b-it-4bit"
+      ],
+      "batch_id": "B-20261013T002337-4ada15"
+    },
+    "C4-v1": {
+      "claim_version": "C4:v1",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "template_version": "audit-v0.4",
+      "runs": 10,
+      "verdicts": {
+        "CHALLENGED": 4,
+        "SUPPORTED": 1,
+        "UNRESOLVED": 5
+      },
+      "modal_verdict": "UNRESOLVED",
+      "verdict_agreement": 0.5,
+      "model_verdicts": {
+        "CHALLENGED": 4,
+        "SUPPORTED": 1,
+        "UNRESOLVED": 5
+      },
+      "tool_sequence_agreement": 0.8,
+      "first_tool_agreement": 0.9,
+      "distinct_tool_sequences": 3,
+      "distinct_challenge_sets": 5,
+      "challenges_citing_coverage_gaps": 0,
+      "runs_with_coverage_gap_results": 0,
+      "runs_claiming_contradictory_evidence": 0,
+      "falsification_unsatisfied": 0,
+      "mean_prompt_tokens": 27289.3,
+      "mean_completion_tokens": 1181.4,
+      "served_models": [
+        "gemma-4-26b-a4b-it-4bit"
+      ],
+      "batch_id": "B-20261013T002531-2a7d1c"
+    }
+  },
+  "c4_intended_verdicts_including_malformed_final_json": {
+    "CHALLENGED": 8,
+    "SUPPORTED": 2,
+    "note": "5 recorded UNRESOLVED runs ended with verdict JSON missing \"action\":\"verdict\" (rejected twice by the parser); intended verdicts read from raw_response: 4 CHALLENGED, 1 SUPPORTED."
+  },
+  "runtime_determinism_probe": {
+    "method": "Identical first audit request (system prompt + recorded initial_context), temperature 0, max_tokens 1200, sent 4x directly to oMLX 0.6.4; no ledger records.",
+    "C4_first_request_from": "A-20261013T002634-e8b598",
+    "C4_distinct_completions": 4,
+    "C4_completion_tokens": [
+      129,
+      125,
+      142,
+      327
+    ],
+    "C3_first_request_from": "A-20261013T002337-5db236",
+    "C3_distinct_completions": 1,
+    "C3_batch_first_step_timing": "run 1 cold prefill 8.20s (87 tokens, CHALLENGED path); runs 2-10 warm prefix-cache ~2.04s (88 tokens, SUPPORTED path)",
+    "conclusion": "Concrete: the serving runtime returns different completions for byte-identical requests at temperature 0. Root cause (prefix-cache restore / quantized KV / kernel nondeterminism / per-model sampling defaults) not isolated; not changed."
+  }
+}

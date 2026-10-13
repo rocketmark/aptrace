@@ -1,0 +1,54 @@
+{
+  "arguments": {
+    "left": [
+      "FUN_0000954c",
+      "FUN_0000bd94",
+      "FUN_0000c5cc",
+      "FUN_0000cdd8",
+      "FUN_0000cc14",
+      "FUN_0000ccb6",
+      "FUN_0000ccba",
+      "FUN_0000ccbe"
+    ],
+    "left_label": "USB",
+    "right": [
+      "FUN_0000cbb0",
+      "FUN_0000cbb6",
+      "FUN_0000cbbc",
+      "FUN_0000cbc2",
+      "FUN_0000cbc8",
+      "FUN_0000cbce",
+      "FUN_0000cbd4",
+      "FUN_0000cbda",
+      "FUN_0000cbe0",
+      "FUN_0000cbe6",
+      "FUN_0000cbec",
+      "FUN_0000cbf2",
+      "FUN_0000cbf8",
+      "FUN_0000cbfe",
+      "FUN_0000cc04",
+      "FUN_0000cc0a"
+    ],
+    "right_label": "IRQ:EIC"
+  },
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:46:51.291+00:00",
+  "error": null,
+  "evidence_id": "EV-bab8f6cc269494ab",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-7dc2e736c51937cf",
+  "operation_key": "574f85f703cb90b1f7120c5b47ad050a464c96a61cc18d24c3058986ecb35288",
+  "replay_of": "TI-bb924fc173c22207",
+  "replayable": true,
+  "result_sha256": "e0b3be773d9d7d5019aec3e4a6ac332c6a9193d2103aba6a263afa556791ea5a",
+  "run_id": "RV-20261012T234651-cad228",
+  "runtime_ms": 0.222,
+  "session_evidence_id": null,
+  "started_at": "2026-10-12T23:46:51.291+00:00",
+  "status": "ok",
+  "tool": "census_common_paths"
+}

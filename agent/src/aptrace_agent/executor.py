@@ -10,6 +10,7 @@ from aptrace_agent.function_effects import planner_summary as effects_summary
 from aptrace_agent.structural_wiring import (
     performing_rigs_function_effects,
     performing_rigs_graph,
+    performing_rigs_source_agreement,
     performing_rigs_usb_inventory,
 )
 from aptrace_agent.ghidra_index import autopilot_ghidra_index
@@ -42,6 +43,7 @@ class EvidenceExecutor:
         self.census = performing_rigs_census()
         self.graph = performing_rigs_graph(self.census)
         self.usb = performing_rigs_usb_inventory(self.census, self.graph)
+        self.source_agreement = performing_rigs_source_agreement(self.census, self.usb)
         self._effects = None
 
     @property
@@ -146,6 +148,9 @@ class EvidenceExecutor:
                 self.usb.inventory()
                 .model_dump(mode="json")
             )
+
+        elif tool == "structural_source_agreement":
+            result = self.source_agreement(list(arguments["addresses"]))
 
         elif tool == "function_effects":
             effects = self.effects.analyze(

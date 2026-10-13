@@ -1,0 +1,30 @@
+{
+  "benchmark": "usb-callback",
+  "description": "Known-answer benchmark A: resolution of the USB_OTHER interrupt handler's RAM callback. The 'bad' claim is a deliberately incorrect proposal (wrong entity role, overstated grade).",
+  "objective": "Determine what the USB interrupt handler's indirect callback dispatch invokes, and how strongly the evidence supports it.",
+  "setup": [
+    {"name": "usb", "tool": "census_usb_inventory", "arguments": {}}
+  ],
+  "claims": [
+    {
+      "label": "good",
+      "subject": "Indirect call at 0x0000cc1a in USB_OTHER handler FUN_0000cc14",
+      "assertion": "The indirect call at 0x0000cc1a in the USB_OTHER interrupt handler FUN_0000cc14 loads its target from RAM slot 0x200052e8, whose only known store (0x0000ccc6 in FUN_0000ccc4, storing the r0 argument of the call at 0x0000bcda) holds the raw Thumb pointer 0x0000c725; the canonical target is 0x0000c724 (FUN_0000c724), which forwards to 0x0000c5cc.",
+      "claim_type": "RESOLUTION",
+      "proposed_grade": "STRONG",
+      "scope": "Static census resolved function pointers for firmware autopilot868; RAM slot 0x200052e8 only.",
+      "assumptions": ["The registration call at 0x0000bcda executes before USB_OTHER interrupts that reach 0x0000cc1a are serviced; ordering is not established by this evidence."],
+      "limitations": ["Stores to 0x200052e8 through computed pointers are not excluded by static analysis."],
+      "evidence": ["usb"]
+    },
+    {
+      "label": "bad",
+      "subject": "USB callback target",
+      "assertion": "The USB callback target is FUN_0000ccc4 and the result is EXACT.",
+      "claim_type": "RESOLUTION",
+      "proposed_grade": "EXACT",
+      "scope": "USB interrupt callback dispatch.",
+      "evidence": ["usb"]
+    }
+  ]
+}

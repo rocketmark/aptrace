@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "USB device descriptor"
+  },
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:34:15.092+00:00",
+  "error": null,
+  "evidence_id": "EV-2e768a8ef46dbf83",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-0047b2187a8f4e64",
+  "operation_key": "ce9a7f6ad8045a803b735ed47719d6674320428d485bd2c7a40945b516ec5264",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "8559fbc025eca839827a39c3e19491f6a793b0719c5f6bd2009832192feeb401",
+  "run_id": "R-20261012T233415-004e1b",
+  "runtime_ms": 263.818,
+  "session_evidence_id": "E12",
+  "started_at": "2026-10-12T23:34:14.828+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

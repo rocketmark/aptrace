@@ -122,6 +122,8 @@ def run_autonomous_investigation(
     planner_model: str | None = None,
     review_model: str | None = None,
     controller: ResearchController | None = None,
+    executor: EvidenceExecutor | None = None,
+    claim_contract: bool = False,
 ) -> AutonomousInvestigationRun:
     """
     Run one bounded autonomous firmware investigation.
@@ -148,7 +150,7 @@ def run_autonomous_investigation(
                 "seed function must not be empty"
             )
 
-    executor = EvidenceExecutor()
+    executor = executor or EvidenceExecutor()
     registry = LeadRegistry()
 
     session = ResearchSession(
@@ -208,6 +210,7 @@ def run_autonomous_investigation(
                 "common_paths",
                 "function_effects",
             ),
+            claim_contract=claim_contract,
         )
     )
 

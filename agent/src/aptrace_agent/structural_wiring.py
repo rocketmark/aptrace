@@ -95,3 +95,73 @@ def performing_rigs_function_effects(
         entry_allowed=entry_allowed,
         resolve_register=svd.resolve,
     )
+
+
+MACAW_CENSUS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "macaw"
+GHIDRA_SEEDS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "ghidra_seeds"
+
+
+def macaw_census_path(firmware_key: str) -> Path:
+    """`aptrace macaw-census` output for one image (regenerable, untracked)."""
+
+    return MACAW_CENSUS_DIR / f"{firmware_key}.macaw-census.json"
+
+
+def ghidra_seeds_path(firmware_key: str) -> Path:
+    return GHIDRA_SEEDS_DIR / f"{firmware_key}.json"
+
+
+def performing_rigs_source_agreement(census: CensusReader, usb: UsbInventoryReader):
+    """
+    Structural source agreement over the census database, the seeded Ghidra
+    project export the census is built from, and the Macaw census. Returns
+    a callable taking a bounded list of code addresses.
+    """
+
+    import json
+
+    from aptrace_agent.ghidra_index import ghidra_cache_identity, ghidra_cache_paths
+    from aptrace_agent.ledger.hashing import file_sha256
+    from aptrace_agent.source_agreement import (
+        CensusDbSource,
+        GhidraExportSource,
+        MacawCensusSource,
+        source_agreement,
+    )
+
+    def run(addresses):
+        meta = ghidra_cache_identity(census.firmware_key)
+        paths = ghidra_cache_paths(census.firmware_key)
+        seeds = {entry: "vector-table" for entry in usb.vector_handlers().values()}
+        seed_doc = ghidra_seeds_path(census.firmware_key)
+
+        if seed_doc.is_file():
+            for seed in json.loads(seed_doc.read_text()).get("seeds", []):
+                seeds[int(seed["addr"], 16)] = f"derived-seed:{seed.get('role', 'seed')}"
+
+        ghidra_version = file_sha256(paths["static_export"])
+        seeds_note = f"seeded Ghidra project (cache seeds sha256 {str(meta.get('derived_seeds_sha256'))[:16]})"
+        sources = [
+            CensusDbSource(
+                census.db_path,
+                census.firmware_key,
+                version=file_sha256(census.db_path),
+                derived_from=f"ghidra:{(ghidra_version or '')[:16]}",
+                seeds=seeds,
+            ),
+            GhidraExportSource(
+                paths["static_export"],
+                census_export=paths["census_export"],
+                version=ghidra_version,
+                seeds=seeds,
+                note=seeds_note,
+            ),
+            MacawCensusSource(
+                macaw_census_path(census.firmware_key),
+                version=file_sha256(macaw_census_path(census.firmware_key)),
+                expected_size=census.firmware_image.stat().st_size if census.firmware_image.is_file() else None,
+            ),
+        ]
+        return source_agreement(sources, addresses)
+
+    return run

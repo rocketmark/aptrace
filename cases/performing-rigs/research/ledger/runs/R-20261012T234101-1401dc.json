@@ -1,0 +1,543 @@
+{
+  "budgets": {
+    "max_steps": 12
+  },
+  "case": "performing-rigs",
+  "claim_versions": [],
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:41:01.053493+00:00",
+  "evidence_ids": [
+    "EV-2bdc3898b4a334e2",
+    "EV-d9343c6252f6f61a",
+    "EV-0584b43428839045",
+    "EV-1ad3ca6d2d5fbd49",
+    "EV-4c390694cd4b5cbc",
+    "EV-4b50451dd24fb220",
+    "EV-b8c4afe9f178fcab",
+    "EV-d6573be1ce4ddff5",
+    "EV-06be4aed6dd16ba1",
+    "EV-42c4333da4cd7ef8",
+    "EV-bbf390cd10de8cb4",
+    "EV-2e768a8ef46dbf83"
+  ],
+  "execution_config": {
+    "claim_contract": true,
+    "endpoint": "local-omlx",
+    "max_tokens": 512,
+    "temperature": 0.0
+  },
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-db74112b018f3c24",
+    "TI-21d1c226c25c2795",
+    "TI-f1d53592ff93b514",
+    "TI-f1a12d206c376483",
+    "TI-d16373164e3b4e49",
+    "TI-d533c14cbda5099f",
+    "TI-452486e90f08df5a",
+    "TI-78d885aaab616e7c",
+    "TI-addb95518bfa6747",
+    "TI-363647c430f1b42d",
+    "TI-c2acded82b2320b8",
+    "TI-f2e21207a2c3a056"
+  ],
+  "kind": "investigation",
+  "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "objective": "Determine what the USB interrupt handler's indirect callback dispatch invokes, and how strongly the evidence supports it.",
+  "parent_run_id": null,
+  "planner_requests": [
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 0,
+      "message_bytes": 1083,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 833,
+      "prompt_tokens": 772,
+      "state_chars": 23,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 2315
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "analyze_usb_interface",
+      "evidence": 1,
+      "message_bytes": 1763,
+      "open_leads": 4,
+      "phase": "decision",
+      "prompt_chars": 1491,
+      "prompt_tokens": 1189,
+      "state_chars": 343,
+      "tool_bytes": 1644,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 3407
+    },
+    {
+      "attempt": 0,
+      "claims": 3,
+      "evidence": 2,
+      "message_bytes": 2471,
+      "open_leads": 6,
+      "phase": "decision",
+      "prompt_chars": 2190,
+      "prompt_tokens": 1559,
+      "state_chars": 957,
+      "tool_bytes": 1808,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4279
+    },
+    {
+      "attempt": 1,
+      "claims": 3,
+      "decision": "follow_lead",
+      "evidence": 2,
+      "message_bytes": 2778,
+      "open_leads": 6,
+      "phase": "decision",
+      "prompt_chars": 244,
+      "prompt_tokens": 1602,
+      "state_chars": 957,
+      "tool_bytes": 1808,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4586
+    },
+    {
+      "attempt": 0,
+      "claims": 3,
+      "decision": "analyze_function_effects",
+      "evidence": 3,
+      "message_bytes": 2551,
+      "open_leads": 5,
+      "phase": "decision",
+      "prompt_chars": 2269,
+      "prompt_tokens": 1631,
+      "state_chars": 1073,
+      "tool_bytes": 1803,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4354
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 4,
+      "message_bytes": 2717,
+      "open_leads": 5,
+      "phase": "decision",
+      "prompt_chars": 2434,
+      "prompt_tokens": 1678,
+      "state_chars": 1238,
+      "tool_bytes": 1803,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4520
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 4,
+      "message_bytes": 2671,
+      "open_leads": 5,
+      "phase": "decision",
+      "prompt_chars": 2388,
+      "prompt_tokens": 1527,
+      "state_chars": 1238,
+      "tool_bytes": 1406,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4077
+    },
+    {
+      "attempt": 1,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 4,
+      "message_bytes": 2936,
+      "open_leads": 5,
+      "phase": "decision",
+      "prompt_chars": 202,
+      "prompt_tokens": 1563,
+      "state_chars": 1238,
+      "tool_bytes": 1406,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4342
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 5,
+      "message_bytes": 2732,
+      "open_leads": 4,
+      "phase": "decision",
+      "prompt_chars": 2449,
+      "prompt_tokens": 1559,
+      "state_chars": 1330,
+      "tool_bytes": 1401,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4133
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 6,
+      "message_bytes": 2424,
+      "open_leads": 3,
+      "phase": "decision",
+      "prompt_chars": 2144,
+      "prompt_tokens": 1449,
+      "state_chars": 1056,
+      "tool_bytes": 1396,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3820
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 7,
+      "message_bytes": 2471,
+      "open_leads": 2,
+      "phase": "decision",
+      "prompt_chars": 2192,
+      "prompt_tokens": 1592,
+      "state_chars": 1095,
+      "tool_bytes": 1788,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4259
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 7,
+      "message_bytes": 2425,
+      "open_leads": 2,
+      "phase": "decision",
+      "prompt_chars": 2146,
+      "prompt_tokens": 1441,
+      "state_chars": 1095,
+      "tool_bytes": 1391,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3816
+    },
+    {
+      "attempt": 1,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 7,
+      "message_bytes": 2690,
+      "open_leads": 2,
+      "phase": "decision",
+      "prompt_chars": 202,
+      "prompt_tokens": 1477,
+      "state_chars": 1095,
+      "tool_bytes": 1391,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4081
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 8,
+      "message_bytes": 2452,
+      "open_leads": 2,
+      "phase": "decision",
+      "prompt_chars": 2173,
+      "prompt_tokens": 1466,
+      "state_chars": 1116,
+      "tool_bytes": 1392,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3844
+    },
+    {
+      "attempt": 1,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 8,
+      "message_bytes": 2717,
+      "open_leads": 2,
+      "phase": "decision",
+      "prompt_chars": 202,
+      "prompt_tokens": 1502,
+      "state_chars": 1116,
+      "tool_bytes": 1392,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4109
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 9,
+      "message_bytes": 2446,
+      "open_leads": 2,
+      "phase": "decision",
+      "prompt_chars": 2167,
+      "prompt_tokens": 1485,
+      "state_chars": 1104,
+      "tool_bytes": 1393,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3839
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 10,
+      "message_bytes": 2620,
+      "open_leads": 1,
+      "phase": "decision",
+      "prompt_chars": 2336,
+      "prompt_tokens": 1741,
+      "state_chars": 1263,
+      "tool_bytes": 1784,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4404
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 10,
+      "message_bytes": 2574,
+      "open_leads": 1,
+      "phase": "decision",
+      "prompt_chars": 2290,
+      "prompt_tokens": 1590,
+      "state_chars": 1263,
+      "tool_bytes": 1387,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3961
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "search_case_evidence",
+      "evidence": 11,
+      "message_bytes": 2527,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 2252,
+      "prompt_tokens": 1576,
+      "state_chars": 1385,
+      "tool_bytes": 1386,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 3913
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 12,
+      "message_bytes": 2136,
+      "open_leads": 16,
+      "phase": "final-claims",
+      "prompt_chars": 1915,
+      "prompt_tokens": 1193,
+      "state_chars": 1466,
+      "tool_bytes": 625,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 2761
+    },
+    {
+      "attempt": 1,
+      "claims": 5,
+      "evidence": 12,
+      "message_bytes": 3220,
+      "open_leads": 16,
+      "phase": "final-claims",
+      "prompt_chars": 158,
+      "prompt_tokens": 1437,
+      "state_chars": 1466,
+      "tool_bytes": 625,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 3845
+    }
+  ],
+  "planner_version": "controller:986fdb1fa902 projection:e02583098ea2",
+  "run_id": "R-20261012T234101-1401dc",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "a6f6c3dbb061ca36",
+    "git_branch": "feat/pydantic-investigator",
+    "git_commit": "112e1668b2662b30d975282aab407a8c141570b3"
+  },
+  "started_at": "2026-10-12T23:39:22.116660+00:00",
+  "termination_reason": "step_budget_exhausted",
+  "trajectory": [
+    {
+      "action": "discover",
+      "evidence_id": "E1",
+      "lead_id": "L1",
+      "number": 1,
+      "reason": null
+    },
+    {
+      "action": "usb_inventory",
+      "evidence_id": "E2",
+      "lead_id": "L6",
+      "number": 2,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E3",
+      "lead_id": "L5",
+      "number": 3,
+      "reason": null
+    },
+    {
+      "action": "effects",
+      "evidence_id": "E4",
+      "lead_id": "L9",
+      "number": 4,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E5",
+      "lead_id": "L4",
+      "number": 5,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E6",
+      "lead_id": "L2",
+      "number": 6,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E7",
+      "lead_id": "L3",
+      "number": 7,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E8",
+      "lead_id": "L8",
+      "number": 8,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E9",
+      "lead_id": "L7",
+      "number": 9,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E10",
+      "lead_id": "L11",
+      "number": 10,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E11",
+      "lead_id": "L10",
+      "number": 11,
+      "reason": null
+    },
+    {
+      "action": "discover",
+      "evidence_id": "E12",
+      "lead_id": "L12",
+      "number": 12,
+      "reason": null
+    }
+  ]
+}

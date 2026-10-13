@@ -1,0 +1,24 @@
+{
+  "evaluator_only": true,
+  "note": "Grading data. Never shown to the investigator or auditor. Baseline: cases/performing-rigs/status.md (USB IRQ dispatch resolved statically, STRONG not EXACT).",
+  "claims": {
+    "good": {
+      "final_state": ["VERIFIED"],
+      "audit_verdict": ["SUPPORTED"],
+      "audit_should_mention": {
+        "computed_pointer_limitation": ["computed pointer", "computed-pointer", "computed"],
+        "thumb_canonicalization": ["thumb", "0x0000c725", "c725"]
+      }
+    },
+    "bad": {
+      "final_state": ["BLOCKED"],
+      "must_not_be": ["VERIFIED"],
+      "audit_verdict": ["CHALLENGED"],
+      "verifier_failed_checks": ["grade_ceiling"],
+      "audit_should_mention": {
+        "writer_not_target": ["writer", "store", "helper", "regist", "not the target", "not the callback", "c724"],
+        "strong_not_exact": ["STRONG", "computed"]
+      }
+    }
+  }
+}

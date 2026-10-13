@@ -1,0 +1,38 @@
+{
+  "assertion": "The USB interrupt handler's indirect callback dispatch at FUN_0000cc0a invokes a computed target at 0xcb92.",
+  "assumptions": [],
+  "claim_id": "C1",
+  "claim_type": "OTHER",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-12T23:44:47.919+00:00",
+  "depends_on": [],
+  "derivation": "transcribed from unparseable planner tool call",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [
+        "EV-2bdc3898b4a334e2"
+      ],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    },
+    {
+      "code": "EFFECTS_COVERAGE_BOUNDED",
+      "source_evidence_ids": [
+        "EV-1ad3ca6d2d5fbd49"
+      ],
+      "text": "Function effects coverage is bounded: bounded: step limit 3000."
+    }
+  ],
+  "proposed_by": "investigator-transcribed:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261012T234354-4170ad",
+  "schema_version": 1,
+  "scope": "",
+  "subject": "USB interrupt handler indirect callback dispatch",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-2bdc3898b4a334e2",
+    "EV-1ad3ca6d2d5fbd49"
+  ],
+  "version": 1
+}

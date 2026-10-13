@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-13T00:35:09.629+00:00",
+  "audit_id": "A-20261013T002518-d9234e",
+  "audit_verdict": "SUPPORTED",
+  "checks": [
+    {
+      "detail": "1 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "1 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed EXACT; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG)",
+      "name": "grade_ceiling",
+      "passed": false,
+      "severity": "block"
+    },
+    {
+      "detail": "2 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234535-2ccfbe CHALLENGED this version (later A-20261013T002518-d9234e SUPPORTED does not override)",
+      "name": "independent_audit",
+      "passed": false,
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C3:v1",
+  "context_id": "X-bb5103e57baa4458",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "replay_invocation_ids": [
+    "TI-cc37ed5db7b48a96"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261013T003509-b779d9"
+}

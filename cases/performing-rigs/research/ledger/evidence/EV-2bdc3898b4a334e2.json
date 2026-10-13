@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "USB interrupt handler callback dispatch"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-7af50a9ee492b01a",
+  "evidence_id": "EV-2bdc3898b4a334e2",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "PROBABLE",
+  "grade_basis": "case documents (documentary)",
+  "invocation_id": "TI-7689a2199c883a23",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 4522,
+  "result_sha256": "2588081fd5e267d1c3c7ed3ff359c9345d07c1107f4bd9db4fd2ea09d395aecc",
+  "summary": "",
+  "tool": "search_case_evidence"
+}

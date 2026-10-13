@@ -1,0 +1,31 @@
+{
+  "benchmark": "eic-convergence",
+  "description": "Adversarial benchmark B: structural EIC peripheral (MMIO) usage versus the EIC interrupt-dispatch path. The 'convergence' claim over-reads a broad census MMIO-user set as the interrupt-dispatch path.",
+  "objective": "Determine whether external-interrupt (EIC) events and USB interrupt handling converge in firmware control flow.",
+  "setup": [
+    {"name": "usb", "tool": "census_usb_inventory", "arguments": {}},
+    {"name": "eic", "tool": "census_peripheral_usage", "arguments": {"peripheral": "EIC", "limit": 25}},
+    {"name": "usb_eic_paths", "tool": "census_common_paths", "sets": {"left": ["USB"], "right": ["EIC"]}},
+    {"name": "usb_eic_vector_paths", "tool": "census_common_paths", "sets": {"left": ["USB"], "right": ["IRQ:EIC"]}}
+  ],
+  "claims": [
+    {
+      "label": "convergence",
+      "subject": "EIC interrupt dispatch and USB interrupt path",
+      "assertion": "The physical/EIC interrupt-dispatch path converges with the USB interrupt path.",
+      "claim_type": "PATH_EXISTS",
+      "proposed_grade": "STRONG",
+      "scope": "Census strong call graph, within the census hop bound.",
+      "evidence": ["usb", "eic", "usb_eic_paths"]
+    },
+    {
+      "label": "bounded",
+      "subject": "EIC interrupt-vector handlers and USB function set",
+      "assertion": "No census call-graph path within the hop bound connects the EIC interrupt-vector handlers (EIC_EXTINT_0..15) with the USB function set; this is NO_KNOWN_PATH, not a proof that no path exists at runtime.",
+      "claim_type": "NO_KNOWN_PATH",
+      "proposed_grade": "STRONG",
+      "scope": "Census strong call graph (direct transfers plus statically resolved indirect edges), within the census hop bound.",
+      "evidence": ["usb", "usb_eic_vector_paths"]
+    }
+  ]
+}

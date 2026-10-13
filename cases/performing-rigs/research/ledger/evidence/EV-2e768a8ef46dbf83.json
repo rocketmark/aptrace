@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "USB device descriptor"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-7af50a9ee492b01a",
+  "evidence_id": "EV-2e768a8ef46dbf83",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "PROBABLE",
+  "grade_basis": "case documents (documentary)",
+  "invocation_id": "TI-0047b2187a8f4e64",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 6291,
+  "result_sha256": "8559fbc025eca839827a39c3e19491f6a793b0719c5f6bd2009832192feeb401",
+  "summary": "",
+  "tool": "search_case_evidence"
+}

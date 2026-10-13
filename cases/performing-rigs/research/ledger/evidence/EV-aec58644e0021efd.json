@@ -1,0 +1,61 @@
+{
+  "arguments": {
+    "left": [
+      "FUN_0000954c",
+      "FUN_0000bd94",
+      "FUN_0000c5cc",
+      "FUN_0000cdd8",
+      "FUN_0000cc14",
+      "FUN_0000ccb6",
+      "FUN_0000ccba",
+      "FUN_0000ccbe"
+    ],
+    "left_label": "USB",
+    "right": [
+      "FUN_0000a000",
+      "FUN_0000a03c",
+      "FUN_0000cbb0"
+    ],
+    "right_label": "EIC"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-7af50a9ee492b01a",
+  "evidence_id": "EV-aec58644e0021efd",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "census strong graph path (KNOWN_COMMON_PATH)",
+  "invocation_id": "TI-77cc1d70ca84f536",
+  "limitations": [
+    {
+      "code": "COMPUTED_POINTER_WRITES_NOT_EXCLUDED",
+      "source_evidence_ids": [],
+      "text": "resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "PERIPHERAL_SET_IS_MMIO_USAGE:EIC",
+      "source_evidence_ids": [],
+      "text": "Set 'EIC' is the census structural set for EIC (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path."
+    },
+    {
+      "code": "PERIPHERAL_SET_IS_MMIO_USAGE:USB",
+      "source_evidence_ids": [],
+      "text": "Set 'USB' is the census structural set for USB (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path."
+    },
+    {
+      "code": "UNRESOLVED_INDIRECT_FRONTIER",
+      "source_evidence_ids": [],
+      "text": "7 unresolved indirect transfer site(s) in the explored region; paths through them are unknown."
+    }
+  ],
+  "path_status": "KNOWN_COMMON_PATH",
+  "result_bytes": 7269,
+  "result_sha256": "b784bf8495797acae756ad49d5efc752bb79d0eba2b5c5a8b0c810dabd3c44ba",
+  "summary": "common paths USB[FUN_0000954c,FUN_0000bd94,FUN_0000c5cc,FUN_0000cdd8...] | EIC[FUN_0000a000,FUN_0000a03c,FUN_0000cbb0] (census strong graph, <= 8 hops): KNOWN_COMMON_PATH; explored 45/38 functions\n  roots reaching left: USB_OTHER,USB_SOF_HSOF,USB_TRCPT0,USB_TRCPT0..1,USB_TRCPT1,reset; right: EIC_EXTINT_0..15,TC0,reset\n  converge at FUN_0000e628 (FUN_0000e628) hops 4/3 via FUN_0000bef4>FUN_0000be18>FUN_0000e628 and FUN_0000a1f4>FUN_0000a0cc>FUN_0000e628\n  converge at FUN_0000e7a0 (FUN_0000e7a0) hops 5/4 via FUN_0000be18>FUN_0000e628>FUN_0000e7a0 and FUN_0000a0cc>FUN_0000e628>FUN_0000e7a0\n  conv",
+  "tool": "census_common_paths"
+}

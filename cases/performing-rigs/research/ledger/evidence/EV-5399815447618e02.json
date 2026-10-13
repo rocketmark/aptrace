@@ -1,0 +1,42 @@
+{
+  "arguments": {
+    "addresses": [
+      "0x0000bcda",
+      "0x0000c5cc",
+      "0x0000c724",
+      "0x0000cc14",
+      "0x0000cc1a",
+      "0x0000ccc6"
+    ]
+  },
+  "case": "performing-rigs",
+  "context_id": "X-bb5103e57baa4458",
+  "evidence_id": "EV-5399815447618e02",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "static structural agreement between code-discovery sources (heuristic boundaries)",
+  "invocation_id": "TI-2d71df2ebaf542d6",
+  "limitations": [
+    {
+      "code": "AGREEMENT_SOURCES_NOT_INDEPENDENT",
+      "source_evidence_ids": [],
+      "text": "Not every agreeing source is independent (census <- ghidra:2c80bf9dfade293e)."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "SOURCE_AGREEMENT_IS_STRUCTURAL",
+      "source_evidence_ids": [],
+      "text": "Source agreement is structural consistency between analysis sources about where code and functions are; it does not establish behavior, and a source coverage gap is not negative evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 12478,
+  "result_sha256": "a15353d2fa55f29ce24fc70ae51034aae201f83e48da87564c4ed92cc9ce7e52",
+  "summary": "structural source agreement:\n  0x0000bcda AGREE census=FUN_0000bc44[0x0000bc44,0x0000bd42) ghidra=FUN_0000bc44[0x0000bc44,0x0000bd42) macaw=FUN_0000bc44[0x0000bc44,0x0000bd42)\n  0x0000c5cc PARTIAL_AGREEMENT census=FUN_0000c5cc[0x0000c5cc,0x0000c706) ghidra=FUN_0000c5cc[0x0000c5cc,0x0000c706) macaw=- gaps=MACAW_COVERAGE_GAP\n  0x0000c724 PARTIAL_AGREEMENT census=FUN_0000c724[0x0000c724,0x0000c72a) ghidra=FUN_0000c724[0x0000c724,0x0000c72a) macaw=- gaps=MACAW_COVERAGE_GAP\n  0x0000cc14 PARTIAL_AGREEMENT census=FUN_0000cc14[0x0000cc14,0x0000cc1e) ghidra=FUN_0000cc14[0x0000cc14,0x0000cc1e) macaw=FUN",
+  "tool": "structural_source_agreement"
+}

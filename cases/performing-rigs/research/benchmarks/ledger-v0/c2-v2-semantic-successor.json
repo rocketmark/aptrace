@@ -1,0 +1,21 @@
+{
+  "note": "Change spec for `aptrace-agent supersede C2:v1`: adds typed semantics (authoritative for verification) and the structural source-agreement evidence that establishes the registration caller. Assertion prose and scope are unchanged. C2:v1 and its audit history are kept.",
+  "reason": "typed RESOLVED_FUNCTION_POINTER semantics; source-agreement evidence for the registration caller (v1 was challenged on a stale Ghidra export since replaced)",
+  "proposed_by": "benchmark-fixture:semantic-usb-eic",
+  "supporting_evidence_ids": ["EV-d9343c6252f6f61a", "EV-5399815447618e02"],
+  "semantics": {
+    "predicate": "RESOLVED_FUNCTION_POINTER",
+    "resolved_pointer": {
+      "slot": "0x200052e8",
+      "writer": "FUN_0000ccc4",
+      "writer_instruction": "0x0000ccc6",
+      "registration_caller": "FUN_0000bc44",
+      "registration_callsite": "0x0000bcda",
+      "raw_pointer": "0x0000c725",
+      "canonical_target": "0x0000c724",
+      "forwarding_target": "0x0000c5cc",
+      "indirect_site": "0x0000cc1a",
+      "indirect_caller": "FUN_0000cc14"
+    }
+  }
+}

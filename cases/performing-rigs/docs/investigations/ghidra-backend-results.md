@@ -120,7 +120,12 @@ persists) -- use `aptrace_ghidra.py` instead for any firmware you expect
 to query more than once. A reference run against `firmware_autopilot868.bin`
 from before the persistent-cache workflow existed is checked in at
 `cases/performing-rigs/research/runs/ghidra/firmware_autopilot868.json`, kept for historical
-investigations that cite it by that path.
+investigations that cite it by that path. It was produced without the
+generated function-pointer seeds and lacks `FUN_0000cc14`, `FUN_0000c724`
+and `FUN_0000c5cc` (414 functions vs 438 in the seeded cache). Until
+2026-10-12 `aptrace-agent` read it for `function_facts`/`function_disassembly`
+while the census was built from the seeded cache; the agent now reads the
+identity-checked cache export (`ghidra_cache/autopilot868/static_export.json`).
 
 ## Why `ARM:LE:32:Cortex`, specifically
 

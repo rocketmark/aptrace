@@ -131,15 +131,22 @@ class CommonPathResult(BaseModel):
     planner_summary: str = ""
 
 
+RESOLVED_INDIRECT_LIMITATION = (
+    "resolved_indirect edges come from statically initialized RAM function "
+    "pointers whose every known store is one constant code pointer; stores "
+    "through computed pointers are not excluded."
+)
+NO_KNOWN_PATH_LIMITATION = (
+    "NO_KNOWN_PATH means no path this census can construct within the hop "
+    "bound; it is not a proof of unreachability."
+)
+
 _LIMITATIONS = [
     "Graph edges are the census strong graph (resolved direct transfers plus "
     "statically resolved or dynamically observed indirect targets); "
     "unresolved indirect transfers are frontier, not edges.",
-    "resolved_indirect edges come from statically initialized RAM function "
-    "pointers whose every known store is one constant code pointer; stores "
-    "through computed pointers are not excluded.",
-    "NO_KNOWN_PATH means no path this census can construct within the hop "
-    "bound; it is not a proof of unreachability.",
+    RESOLVED_INDIRECT_LIMITATION,
+    NO_KNOWN_PATH_LIMITATION,
     "Shared RAM state is from constant-address accesses only; "
     "pointer-based accesses are not attributed.",
 ]

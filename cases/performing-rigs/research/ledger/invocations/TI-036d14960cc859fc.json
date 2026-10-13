@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "USB interrupt handler callback dispatch"
+  },
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:42:25.461+00:00",
+  "error": null,
+  "evidence_id": "EV-2bdc3898b4a334e2",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-036d14960cc859fc",
+  "operation_key": "7819167c12af68a7d6791dd8972b1211e3a9a1c0bcbdd63ee5febae7e63acac2",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "2588081fd5e267d1c3c7ed3ff359c9345d07c1107f4bd9db4fd2ea09d395aecc",
+  "run_id": "R-20261012T234354-4170ad",
+  "runtime_ms": 154.688,
+  "session_evidence_id": "E1",
+  "started_at": "2026-10-12T23:42:25.306+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

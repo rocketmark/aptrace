@@ -1,0 +1,54 @@
+{
+  "arguments": {
+    "left": [
+      "FUN_0000cc14",
+      "FUN_0000ccb6",
+      "FUN_0000ccba",
+      "FUN_0000ccbe"
+    ],
+    "left_label": "IRQ:USB",
+    "right": [
+      "FUN_0000cbb0",
+      "FUN_0000cbb6",
+      "FUN_0000cbbc",
+      "FUN_0000cbc2",
+      "FUN_0000cbc8",
+      "FUN_0000cbce",
+      "FUN_0000cbd4",
+      "FUN_0000cbda",
+      "FUN_0000cbe0",
+      "FUN_0000cbe6",
+      "FUN_0000cbec",
+      "FUN_0000cbf2",
+      "FUN_0000cbf8",
+      "FUN_0000cbfe",
+      "FUN_0000cc04",
+      "FUN_0000cc0a"
+    ],
+    "right_label": "IRQ:EIC"
+  },
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:46:20.455+00:00",
+  "error": null,
+  "evidence_id": "EV-92cabbedc8e56683",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [
+    "EV-d9343c6252f6f61a",
+    "EV-d816b5c25a8f750b",
+    "EV-aec58644e0021efd"
+  ],
+  "invocation_id": "TI-d0a6cfbcb9ee8f56",
+  "operation_key": "3eae0fa44ef2c6d1193b53ca8de55013bba61c35744da7a9d7ffd8552a812e3a",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "9d13571096cb57cd55505be09c47044b8d9b2769f6a61a0d08e224d1ea330b20",
+  "run_id": "A-20261012T234605-72b150",
+  "runtime_ms": 0.403,
+  "session_evidence_id": null,
+  "started_at": "2026-10-12T23:46:20.454+00:00",
+  "status": "ok",
+  "tool": "census_common_paths"
+}

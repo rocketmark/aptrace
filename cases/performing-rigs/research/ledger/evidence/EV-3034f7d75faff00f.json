@@ -1,0 +1,19 @@
+{
+  "arguments": {
+    "function": "FUN_0000ccc4"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-bb5103e57baa4458",
+  "evidence_id": "EV-3034f7d75faff00f",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "EXACT",
+  "grade_basis": "decoded from the hash-verified firmware image",
+  "invocation_id": "TI-831ef3116bd585e7",
+  "limitations": [],
+  "path_status": null,
+  "result_bytes": 527,
+  "result_sha256": "f370a612ebd529c0e1ab675572a37bfd71d4ad05619d695bb570766619457cd4",
+  "summary": "",
+  "tool": "function_disassembly"
+}

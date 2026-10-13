@@ -1,0 +1,689 @@
+{
+  "generated_at": "2026-10-13T00:23:37.193387+00:00",
+  "batch_id": "B-20261013T002035-256882",
+  "claim_version": "C2:v1",
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "generation": {
+    "temperature": 0.0,
+    "max_tokens": 1200
+  },
+  "runtime_config": {
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "server": {
+      "version": "1.0",
+      "scheduler": {
+        "max_concurrent_requests": 1,
+        "embedding_batch_size": 32,
+        "chunked_prefill": false,
+        "prefill_priority": "context",
+        "decode_fairness": true
+      },
+      "cache": {
+        "enabled": true,
+        "hot_cache_only": false,
+        "gdn_ssd_split_enabled": true,
+        "gdn_snapshot_storage": "auto",
+        "gdn_ssd_pending_max_size": "512MB",
+        "gdn_sidecar_precision": "fp32",
+        "ssd_cache_dir": "/Users/mstalzer/.omlx/cache",
+        "ssd_cache_max_size": "46GB",
+        "hot_cache_max_size": "0",
+        "hot_cache_write_through": false,
+        "ane_compile_cache": false,
+        "initial_cache_blocks": 256
+      },
+      "sampling": {
+        "max_context_window": 32768,
+        "max_context_window_policy": null,
+        "max_tokens": 32768,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 0,
+        "repetition_penalty": 1.0
+      }
+    },
+    "model_settings": {
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "min_p": 0.05,
+      "force_sampling": false,
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": false,
+      "thinking_budget_enabled": false,
+      "guided_grammar_enabled": false,
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_skip_last": true,
+      "qwen35_ane_prefill_enabled": false,
+      "qwen35_ane_prefill_sequence_length": 2048,
+      "qwen35_ane_prefill_tail_padding_min_tokens": 0,
+      "qwen35_ane_prefill_fraction": 0.53,
+      "qwen35_ane_prefill_fused_down": false,
+      "qwen35_ane_prefill_max_layers": 64,
+      "qwen35_ane_prefill_dual_ane": true,
+      "qwen35_ane_prefill_gdn": true,
+      "qwen35_ane_prefill_gdn_fraction": 0.5,
+      "qwen35_ane_prefill_gdn_max_layers": 48,
+      "qwen35_ane_prefill_cpu_enabled": false,
+      "qwen35_ane_prefill_cpu_fraction": 0.135,
+      "qwen35_ane_prefill_cpu_down_fraction": 0.0,
+      "qwen35_ane_prefill_cpu_gdn_fraction": 0.0,
+      "qwen35_ane_prefill_cpu_threads": 8,
+      "qwen35_ane_prefill_cpu_shared_resource": true,
+      "specprefill_enabled": false,
+      "dflash_enabled": false,
+      "dflash_draft_quant_enabled": false,
+      "dflash_in_memory_cache": true,
+      "dflash_in_memory_cache_max_entries": 4,
+      "dflash_in_memory_cache_max_bytes": 8589934592,
+      "dflash_ssd_cache": false,
+      "dflash_ssd_cache_max_bytes": 21474836480,
+      "dflash_draft_sink_size": 0,
+      "mtp_enabled": false,
+      "vlm_mtp_enabled": false,
+      "is_pinned": false,
+      "is_default": false,
+      "is_hidden": false,
+      "is_favorite": false,
+      "trust_remote_code": false
+    }
+  },
+  "repeat": 10,
+  "distinct_fingerprints": [
+    "AI-782d9c510216db1a"
+  ],
+  "groups": [
+    {
+      "claim_version": "C2:v1",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "template_version": "audit-v0.4",
+      "runs": 10,
+      "verdicts": {
+        "SUPPORTED": 10
+      },
+      "modal_verdict": "SUPPORTED",
+      "verdict_agreement": 1.0,
+      "model_verdicts": {
+        "SUPPORTED": 10
+      },
+      "tool_sequence_agreement": 1.0,
+      "first_tool_agreement": 1.0,
+      "distinct_tool_sequences": 1,
+      "distinct_challenge_sets": 0,
+      "challenges_citing_coverage_gaps": 0,
+      "runs_with_coverage_gap_results": 0,
+      "runs_claiming_contradictory_evidence": 0,
+      "falsification_unsatisfied": 0,
+      "mean_prompt_tokens": 10967.0,
+      "mean_completion_tokens": 617.1,
+      "served_models": [
+        "gemma-4-26b-a4b-it-4bit"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "audit_id": "A-20261013T002035-2e542c",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the target relationship (0x0000c725 -> 0x0000c724 -> 0x0000c5cc).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the single RAM slot 0x200052e8 and the specific function relationship described."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10994,
+      "completion_tokens": 655,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002121-2d6725",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14 at 0x0000cc1a), the writer (FUN_0000ccc4 at 0x0000ccc6), the RAM slot (0x200052e8), and the relationship between the stored value (0x0000c725) and its canonical target (0x0000c724).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the specific RAM slot and the static relationship established by the provided evidence; it does not account for potential runtime overwrites via computed pointers, which is correctly noted in the limitations."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10966,
+      "completion_tokens": 643,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002137-2c2e2a",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the relationship between the registration argument (r0) and the target (0x0000c724).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the specific RAM slot and the static relationship between the registration and the interrupt handler."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10963,
+      "completion_tokens": 594,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002152-931af3",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14 at 0x0000cc1a), the writer (FUN_0000ccc4 at 0x0000ccc6), the RAM slot (0x200052e8), and the relationship between the stored value (0x0000c725) and its canonical target (0x0000c724).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the specific RAM slot and the static relationship established by the known stores."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10966,
+      "completion_tokens": 603,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002207-8bcdd7",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14 at 0x0000cc1a), the writer (FUN_0000ccc4 at 0x0000ccc6), the RAM slot (0x200052e8), and the relationship between the stored value (0x0000c725) and its canonical target (0x0000c724).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the specific RAM slot and the static relationship established by the provided evidence; it does not account for potential runtime overwrites via computed pointers, which is correctly noted in the limitations."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10966,
+      "completion_tokens": 643,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002223-622969",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the relationship between the r0 argument at 0x0000bcda and the target 0x0000c724.",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the single RAM slot 0x200052e8 and the specific function relationship identified."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10963,
+      "completion_tokens": 609,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002237-5ce4da",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the relationship between the registration argument (r0) and the target (0x0000c724).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the specific RAM slot and the static relationship between the registration and the interrupt handler."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10963,
+      "completion_tokens": 594,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002252-7e508b",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the relationship between the r0 argument at 0x0000bcda and the target 0x0000c724.",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the single RAM slot 0x200052e8 and the specific function relationship described."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10963,
+      "completion_tokens": 618,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002307-aab0c1",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the relationship between the registration argument (r0) and the target (0x0000c724).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the specific RAM slot and the static relationship between the registration and the interrupt handler."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10963,
+      "completion_tokens": 594,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002322-2a48cb",
+      "claim_version": "C2:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-782d9c510216db1a",
+      "batch_id": "B-20261013T002035-256882",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion correctly identifies the consumer (FUN_0000cc14), the indirect call site (0x0000cc1a), the RAM slot (0x200052e8), the writer (FUN_0000ccc4), the store instruction (0x0000ccc6), and the relationship between the r0 argument at 0x0000bcda and the target 0x0000c724.",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000cc14\"}",
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-5399815447618e02",
+        "EV-eb4514b736b3cc58",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The claim is limited to the single RAM slot 0x200052e8 and the specific function relationship described."
+      ],
+      "falsification": {
+        "requested": 2,
+        "rejected": 0,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 10963,
+      "completion_tokens": 618,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    }
+  ]
+}

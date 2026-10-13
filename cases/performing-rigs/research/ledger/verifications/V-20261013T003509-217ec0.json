@@ -1,0 +1,90 @@
+{
+  "at": "2026-10-13T00:35:09.660+00:00",
+  "audit_id": "A-20261013T003244-5a930c",
+  "audit_verdict": "UNRESOLVED",
+  "checks": [
+    {
+      "detail": "3 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "3 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG, EV-d816b5c25a8f750b=STRONG, EV-aec58644e0021efd=STRONG)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "6 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234605-72b150 CHALLENGED this version (later A-20261013T003244-5a930c UNRESOLVED does not override)",
+      "name": "independent_audit",
+      "passed": false,
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C4:v1",
+  "context_id": "X-bb5103e57baa4458",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "replay_invocation_ids": [
+    "TI-6e0e75268425c023",
+    "TI-62ed44212d57fe89",
+    "TI-bf071b35ab7273cd"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261013T003509-217ec0"
+}

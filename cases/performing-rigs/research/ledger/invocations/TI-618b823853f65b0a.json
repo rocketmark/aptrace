@@ -1,0 +1,33 @@
+{
+  "arguments": {
+    "addresses": [
+      "0x0000bcda",
+      "0x0000c5cc",
+      "0x0000c724",
+      "0x0000cc14",
+      "0x0000cc1a",
+      "0x0000ccc6"
+    ]
+  },
+  "context_id": "X-bb5103e57baa4458",
+  "ended_at": "2026-10-13T01:17:07.306+00:00",
+  "error": null,
+  "evidence_id": "EV-5399815447618e02",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "ghidra_export": "2c80bf9dfade293e86a90f7a56e63792c68b9628dd06fd30c482d5c43fffc1f2",
+    "macaw_census": "d568cf00249fb3e29e918f9c34b27392ca8a55b0902d28822b1df1f867ad1814"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-618b823853f65b0a",
+  "operation_key": "27bf59c787036a4ca5126e5d2be904d06629a4ebae831005daf972004b115d11",
+  "replay_of": "TI-2d71df2ebaf542d6",
+  "replayable": true,
+  "result_sha256": "a15353d2fa55f29ce24fc70ae51034aae201f83e48da87564c4ed92cc9ce7e52",
+  "run_id": "RV-20261013T011707-56e7e6",
+  "runtime_ms": 27.899,
+  "session_evidence_id": null,
+  "started_at": "2026-10-13T01:17:07.278+00:00",
+  "status": "ok",
+  "tool": "structural_source_agreement"
+}

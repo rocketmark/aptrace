@@ -1,0 +1,61 @@
+{
+  "assertion": "No census call-graph path within the hop bound connects the EIC interrupt-vector handlers (EIC_EXTINT_0..15) with the USB function set; this is NO_KNOWN_PATH, not a proof that no path exists at runtime.",
+  "assumptions": [],
+  "claim_id": "C5",
+  "claim_type": "NO_KNOWN_PATH",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-12T23:46:05.478+00:00",
+  "depends_on": [],
+  "derivation": "",
+  "limitations": [
+    {
+      "code": "COMPUTED_POINTER_WRITES_NOT_EXCLUDED",
+      "source_evidence_ids": [
+        "EV-bab8f6cc269494ab",
+        "EV-d9343c6252f6f61a"
+      ],
+      "text": "resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-bab8f6cc269494ab",
+        "EV-d9343c6252f6f61a"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "NO_KNOWN_PATH_IS_NOT_UNREACHABILITY",
+      "source_evidence_ids": [
+        "EV-bab8f6cc269494ab"
+      ],
+      "text": "NO_KNOWN_PATH means no path this census can construct within the hop bound; it is not a proof of unreachability."
+    },
+    {
+      "code": "PERIPHERAL_SET_IS_MMIO_USAGE:USB",
+      "source_evidence_ids": [
+        "EV-bab8f6cc269494ab"
+      ],
+      "text": "Set 'USB' is the census structural set for USB (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path."
+    },
+    {
+      "code": "UNRESOLVED_INDIRECT_FRONTIER",
+      "source_evidence_ids": [
+        "EV-bab8f6cc269494ab"
+      ],
+      "text": "7 unresolved indirect transfer site(s) in the explored region; paths through them are unknown."
+    }
+  ],
+  "proposed_by": "benchmark-fixture:eic-convergence",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261012T234605-3218bc",
+  "schema_version": 1,
+  "scope": "Census strong call graph (direct transfers plus statically resolved indirect edges), within the census hop bound.",
+  "subject": "EIC interrupt-vector handlers and USB function set",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-d9343c6252f6f61a",
+    "EV-bab8f6cc269494ab"
+  ],
+  "version": 1
+}

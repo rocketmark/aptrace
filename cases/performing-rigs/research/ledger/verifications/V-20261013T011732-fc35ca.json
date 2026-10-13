@@ -1,0 +1,203 @@
+{
+  "at": "2026-10-13T01:17:32.928+00:00",
+  "audit_id": null,
+  "audit_skipped": false,
+  "audit_verdict": null,
+  "checks": [
+    {
+      "detail": "2 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "RESOLVED_FUNCTION_POINTER(slot=0x200052e8, writer=FUN_0000ccc4, writer_instruction=0x0000ccc6, registration_caller=FUN_0000bc44, registration_callsite=0x0000bcda, raw_pointer=0x0000c725, canonical_target=0x0000c724, forwarding_target=0x0000c5cc, indirect_site=0x0000cc1a, indirect_caller=FUN_0000cc14) consistent with supporting evidence (9 check(s))",
+      "name": "claim_semantics",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG, EV-5399815447618e02=STRONG)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "4 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "phase": "C",
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "phase": "C",
+      "severity": "stale"
+    },
+    {
+      "detail": "2 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "phase": "C",
+      "severity": "stale"
+    }
+  ],
+  "claim_version": "C2:v2",
+  "context_id": "X-bb5103e57baa4458",
+  "mode": "precheck",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "PROPOSED",
+  "phases": {
+    "A": "passed",
+    "B": "passed",
+    "C": "passed",
+    "D": "skipped"
+  },
+  "replay_invocation_ids": [
+    "TI-a0f1a96cebdb59c8",
+    "TI-36c6fe99107f3e4f"
+  ],
+  "schema_version": 1,
+  "semantic_checks": [
+    {
+      "claimed": "FUN_0000ccc4",
+      "claimed_role": "writer",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "writer",
+      "evidence_value": "FUN_0000ccc4",
+      "field": "writer",
+      "passed": true
+    },
+    {
+      "claimed": "0x0000ccc6",
+      "claimed_role": "writer_instruction",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "writer_instruction",
+      "evidence_value": "0x0000ccc6",
+      "field": "writer_instruction",
+      "passed": true
+    },
+    {
+      "claimed": "FUN_0000bc44",
+      "claimed_role": "registration_caller",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-5399815447618e02",
+      "evidence_role": "registration_caller",
+      "evidence_value": "FUN_0000bc44",
+      "field": "registration_caller",
+      "passed": true
+    },
+    {
+      "claimed": "0x0000bcda",
+      "claimed_role": "registration_callsite",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "registration_callsite",
+      "evidence_value": "0x0000bcda",
+      "field": "registration_callsite",
+      "passed": true
+    },
+    {
+      "claimed": "0x0000c725",
+      "claimed_role": "raw_pointer",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "raw_pointer",
+      "evidence_value": "0x0000c725",
+      "field": "raw_pointer",
+      "passed": true
+    },
+    {
+      "claimed": "0x0000c724",
+      "claimed_role": "canonical_target",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "canonical_target",
+      "evidence_value": "0x0000c724",
+      "field": "canonical_target",
+      "passed": true
+    },
+    {
+      "claimed": "0x0000c5cc",
+      "claimed_role": "forwarding_target",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "forwarding_target",
+      "evidence_value": "0x0000c5cc",
+      "field": "forwarding_target",
+      "passed": true
+    },
+    {
+      "claimed": "0x0000cc1a",
+      "claimed_role": "indirect_site",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "indirect_site",
+      "evidence_value": "0x0000cc1a",
+      "field": "indirect_site",
+      "passed": true
+    },
+    {
+      "claimed": "FUN_0000cc14",
+      "claimed_role": "indirect_caller",
+      "code": "CONSISTENT",
+      "detail": "",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "indirect_caller",
+      "evidence_value": "FUN_0000cc14",
+      "field": "indirect_caller",
+      "passed": true
+    }
+  ],
+  "verification_id": "V-20261013T011732-fc35ca"
+}

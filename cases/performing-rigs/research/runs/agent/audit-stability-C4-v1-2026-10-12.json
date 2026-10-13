@@ -1,0 +1,726 @@
+{
+  "generated_at": "2026-10-13T00:33:26.705475+00:00",
+  "batch_id": "B-20261013T002531-2a7d1c",
+  "claim_version": "C4:v1",
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "generation": {
+    "temperature": 0.0,
+    "max_tokens": 1200
+  },
+  "runtime_config": {
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "server": {
+      "version": "1.0",
+      "scheduler": {
+        "max_concurrent_requests": 1,
+        "embedding_batch_size": 32,
+        "chunked_prefill": false,
+        "prefill_priority": "context",
+        "decode_fairness": true
+      },
+      "cache": {
+        "enabled": true,
+        "hot_cache_only": false,
+        "gdn_ssd_split_enabled": true,
+        "gdn_snapshot_storage": "auto",
+        "gdn_ssd_pending_max_size": "512MB",
+        "gdn_sidecar_precision": "fp32",
+        "ssd_cache_dir": "/Users/mstalzer/.omlx/cache",
+        "ssd_cache_max_size": "46GB",
+        "hot_cache_max_size": "0",
+        "hot_cache_write_through": false,
+        "ane_compile_cache": false,
+        "initial_cache_blocks": 256
+      },
+      "sampling": {
+        "max_context_window": 32768,
+        "max_context_window_policy": null,
+        "max_tokens": 32768,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 0,
+        "repetition_penalty": 1.0
+      }
+    },
+    "model_settings": {
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "min_p": 0.05,
+      "force_sampling": false,
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": false,
+      "thinking_budget_enabled": false,
+      "guided_grammar_enabled": false,
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_skip_last": true,
+      "qwen35_ane_prefill_enabled": false,
+      "qwen35_ane_prefill_sequence_length": 2048,
+      "qwen35_ane_prefill_tail_padding_min_tokens": 0,
+      "qwen35_ane_prefill_fraction": 0.53,
+      "qwen35_ane_prefill_fused_down": false,
+      "qwen35_ane_prefill_max_layers": 64,
+      "qwen35_ane_prefill_dual_ane": true,
+      "qwen35_ane_prefill_gdn": true,
+      "qwen35_ane_prefill_gdn_fraction": 0.5,
+      "qwen35_ane_prefill_gdn_max_layers": 48,
+      "qwen35_ane_prefill_cpu_enabled": false,
+      "qwen35_ane_prefill_cpu_fraction": 0.135,
+      "qwen35_ane_prefill_cpu_down_fraction": 0.0,
+      "qwen35_ane_prefill_cpu_gdn_fraction": 0.0,
+      "qwen35_ane_prefill_cpu_threads": 8,
+      "qwen35_ane_prefill_cpu_shared_resource": true,
+      "specprefill_enabled": false,
+      "dflash_enabled": false,
+      "dflash_draft_quant_enabled": false,
+      "dflash_in_memory_cache": true,
+      "dflash_in_memory_cache_max_entries": 4,
+      "dflash_in_memory_cache_max_bytes": 8589934592,
+      "dflash_ssd_cache": false,
+      "dflash_ssd_cache_max_bytes": 21474836480,
+      "dflash_draft_sink_size": 0,
+      "mtp_enabled": false,
+      "vlm_mtp_enabled": false,
+      "is_pinned": false,
+      "is_default": false,
+      "is_hidden": false,
+      "is_favorite": false,
+      "trust_remote_code": false
+    }
+  },
+  "repeat": 10,
+  "distinct_fingerprints": [
+    "AI-485712c83ee950c1"
+  ],
+  "groups": [
+    {
+      "claim_version": "C4:v1",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "template_version": "audit-v0.4",
+      "runs": 10,
+      "verdicts": {
+        "CHALLENGED": 4,
+        "SUPPORTED": 1,
+        "UNRESOLVED": 5
+      },
+      "modal_verdict": "UNRESOLVED",
+      "verdict_agreement": 0.5,
+      "model_verdicts": {
+        "CHALLENGED": 4,
+        "SUPPORTED": 1,
+        "UNRESOLVED": 5
+      },
+      "tool_sequence_agreement": 0.8,
+      "first_tool_agreement": 0.9,
+      "distinct_tool_sequences": 3,
+      "distinct_challenge_sets": 5,
+      "challenges_citing_coverage_gaps": 0,
+      "runs_with_coverage_gap_results": 0,
+      "runs_claiming_contradictory_evidence": 0,
+      "falsification_unsatisfied": 0,
+      "mean_prompt_tokens": 27289.3,
+      "mean_completion_tokens": 1181.4,
+      "served_models": [
+        "gemma-4-26b-a4b-it-4bit"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "audit_id": "A-20261013T002531-184181",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "UNRESOLVED",
+      "model_verdict": null,
+      "verdict_synthesized": true,
+      "termination_reason": "decision_budget_exhausted",
+      "scope_check": "",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB_OTHER\", \"USB_SOF_HSOF\", \"USB_TRCPT0\", \"USB_TRCPT1\", \"reset\"], \"right\": [\"EIC_EXTINT_0\", \"EIC_EXTINT_1\", \"EIC_EXTINT_2\", \"EIC_EXTINT_3\", \"EIC_EXTINT_4\", \"EIC_EXTINT_5\", \"EIC_EXTINT_6\", \"EIC_EXTINT_7\", \"EIC_EXTINT_8\", \"EIC_EXTINT_9\", \"EIC_EXTINT_10\", \"EIC_EXTINT_11\", \"EIC_EXTINT_12\", \"EIC_EXTINT_13\", \"EIC_EXTINT_14\", \"EIC_EXTINT_15\", \"TC0\", \"reset\"]}",
+        "find_common_paths {\"left\": [\"USB_OTHER\", \"USB_SOF_HSOF\", \"USB_TRCPT0\", \"USB_TRCPT1\"], \"right\": [\"EIC_EXTINT_0\", \"EIC_EXTINT_1\", \"EIC_EXTINT_2\", \"EIC_EXTINT_3\"]}",
+        "find_common_paths {\"left\": [\"USB\", \"FUN_0000cc14\", \"FUN_0000ccb6\", \"FUN_0000ccba\", \"FUN_0000ccbe\"], \"right\": [\"EIC\", \"FUN_0000a000\", \"FUN_0000a03c\", \"FUN_0000cbb0\"]}",
+        "find_common_paths {\"left\": [\"USB\", \"FUN_0000cc14\"], \"right\": [\"EIC\", \"FUN_0000a000\"]}"
+      ],
+      "executed_operations": [
+        "find_common_paths {\"left\": [\"USB\", \"FUN_0000cc14\"], \"right\": [\"EIC\", \"FUN_0000a000\"]}"
+      ],
+      "step_outcomes": [
+        "rejected:invalid_arguments",
+        "rejected:invalid_arguments",
+        "rejected:invalid_arguments",
+        "executed:success",
+        "parse_failure",
+        "parse_failure"
+      ],
+      "evidence_inspected": [
+        "EV-9bb45350b02d18c2"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [],
+      "falsification": {
+        "requested": 4,
+        "rejected": 3,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 2,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 35078,
+      "completion_tokens": 1693,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002634-e8b598",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "CHALLENGED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The assertion claims convergence between the EIC interrupt-dispatch path and the USB interrupt path. The evidence provided (EV-aec58644e0021efd) identifies convergence at specific functions (FUN_0000e628, FUN_0000e7a0, FUN_0000f3dc) within a census-based call graph. The scope of the claim is the relationship between these two interrupt paths.",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-d816b5c25a8f750b",
+        "EV-aec58644e0021efd",
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [
+        "The convergence at FUN_0000e628 is a trivial structural jump-table dispatch, not a functional intersection of the interrupt handling logic, making the 'STRONG' grade unjustified."
+      ],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The convergence is structural (jump table) rather than functional."
+      ],
+      "falsification": {
+        "requested": 3,
+        "rejected": 1,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 21683,
+      "completion_tokens": 996,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002715-63232f",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "UNRESOLVED",
+      "model_verdict": null,
+      "verdict_synthesized": true,
+      "termination_reason": "decision_budget_exhausted",
+      "scope_check": "",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "analyze_peripheral {\"peripheral\": \"EIC\"}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success",
+        "parse_failure",
+        "parse_failure"
+      ],
+      "evidence_inspected": [
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [],
+      "falsification": {
+        "requested": 4,
+        "rejected": 2,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 2,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 34400,
+      "completion_tokens": 1151,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002800-34400f",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "CHALLENGED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The claim refers to the 'physical/EIC interrupt-dispatch path' and 'USB interrupt path'. The evidence provided (EV-aec58644e0021efd) uses 'EIC' and 'USB' sets defined as MMIO users (structural sets), not the semantic interrupt dispatch paths. While the paths converge in the call graph, the convergence occurs at a function (FUN_0000e628) that appears to be a simple jump/branch (as seen in its disassembly: `ldr r3, [pc, #8]; mov r1, r0; ldr r0, [r3]; b.w #0xe7a0`), which is characteristic of a tail-call or a jump table entry rather than a semantic convergence of control flow logic. The 'EIC' set is a structural set of MMIO users, not the interrupt dispatch path itself. Therefore, the evidence does not prove the *interrupt dispatch paths* converge, but rather that two sets of functions (one being EIC-related and one being USB-related) share a common descendant in the call graph. The grade 'STRONG' is not supported because the relationship is a structural graph property of MMIO-using functions, not a proof of interrupt path convergence.",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-d816b5c25a8f750b",
+        "EV-aec58644e0021efd",
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [
+        "The claim targets the 'interrupt-dispatch path', but the evidence uses 'EIC' and 'USB' sets which are defined as MMIO users, not the interrupt handlers or dispatch paths themselves.",
+        "The convergence point (FUN_0000e628) is a trivial jump/branch, which does not represent a semantic convergence of logic, but rather a shared call graph node."
+      ],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The 'EIC' and 'USB' sets are structural MMIO usage sets, not semantic interrupt paths.",
+        "The convergence is a graph-based property of MMIO users, not necessarily a functional convergence of interrupt handling logic."
+      ],
+      "falsification": {
+        "requested": 3,
+        "rejected": 1,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 21587,
+      "completion_tokens": 1082,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002846-3502da",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The claim refers to the 'EIC interrupt-dispatch path' and 'USB interrupt path'. The evidence uses the 'EIC' and 'USB' sets, which are defined as the census structural sets (MMIO users) for these peripherals. The convergence is shown within the census hop bound, which is the scope of the claim.",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-d816b5c25a8f750b",
+        "EV-aec58644e0021efd",
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The convergence is identified within a specific census hop bound; paths outside this bound are not explored.",
+        "The 'EIC' and 'USB' sets are based on MMIO usage, not semantic subsystem definitions."
+      ],
+      "falsification": {
+        "requested": 3,
+        "rejected": 1,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 21559,
+      "completion_tokens": 827,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002926-277bcd",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "UNRESOLVED",
+      "model_verdict": null,
+      "verdict_synthesized": true,
+      "termination_reason": "decision_budget_exhausted",
+      "scope_check": "",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "analyze_peripheral {\"peripheral\": \"EIC\"}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success",
+        "parse_failure"
+      ],
+      "evidence_inspected": [
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [],
+      "falsification": {
+        "requested": 4,
+        "rejected": 2,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 1,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 27200,
+      "completion_tokens": 965,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T003010-8095a3",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "UNRESOLVED",
+      "model_verdict": null,
+      "verdict_synthesized": true,
+      "termination_reason": "decision_budget_exhausted",
+      "scope_check": "",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "analyze_peripheral {\"peripheral\": \"EIC\"}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success",
+        "parse_failure",
+        "parse_failure"
+      ],
+      "evidence_inspected": [
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [],
+      "falsification": {
+        "requested": 4,
+        "rejected": 2,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 2,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 34573,
+      "completion_tokens": 2033,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T003110-606145",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "CHALLENGED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The claim scope is the 'census strong call graph, within the census hop bound'. The evidence provided (EV-aec58644e0021efd) identifies convergence at FUN_0000e628, FUN_0000e7a0, and FUN_0000f3dc. The USB path is defined by its interrupt handlers and the census-reachable functions. The EIC path is defined by its interrupt handlers and the census-reachable functions. The convergence points are within the scope.",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-d816b5c25a8f750b",
+        "EV-aec58644e0021efd",
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [
+        "The 'STRONG' grade is inappropriate because the convergence is trivial (a jump/trampoline) rather than a meaningful intersection of interrupt handling logic."
+      ],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The convergence is structural (jump targets) rather than semantic (shared logic)."
+      ],
+      "falsification": {
+        "requested": 3,
+        "rejected": 1,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 21636,
+      "completion_tokens": 1089,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T003158-f33c05",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "CHALLENGED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The claim refers to the 'EIC interrupt-dispatch path', but the evidence provided (EV-aec58644e0021efd) uses a set of functions derived from MMIO usage (EV-d816b5c25a8f750b) rather than the actual interrupt vector/handler path. The convergence at FUN_0000e628 and FUN_0000e7a0 involves functions that appear to be common subroutines rather than the dispatch logic itself.",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "analyze_peripheral {\"peripheral\": \"EIC\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "rejected:duplicate",
+        "executed:success",
+        "parse_failure"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-d816b5c25a8f750b",
+        "EV-aec58644e0021efd",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [
+        "The evidence uses a set of MMIO-using functions as a proxy for the 'EIC interrupt-dispatch path', which is a scope mismatch.",
+        "The convergence occurs in common subroutines rather than the interrupt dispatch logic itself."
+      ],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "The EIC set is defined by MMIO usage, not by the interrupt-dispatch path.",
+        "The USB set is defined by MMIO usage, not by the interrupt-dispatch path."
+      ],
+      "falsification": {
+        "requested": 3,
+        "rejected": 2,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 1,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 28066,
+      "completion_tokens": 1097,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T003244-5a930c",
+      "claim_version": "C4:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-485712c83ee950c1",
+      "batch_id": "B-20261013T002531-2a7d1c",
+      "verdict": "UNRESOLVED",
+      "model_verdict": null,
+      "verdict_synthesized": true,
+      "termination_reason": "decision_budget_exhausted",
+      "scope_check": "",
+      "requested_operations": [
+        "find_common_paths {\"left\": [\"USB\"], \"right\": [\"EIC\"]}",
+        "analyze_peripheral {\"peripheral\": \"EIC\"}",
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000e628\"}",
+        "function_disassembly {\"function\": \"FUN_0000a0cc\"}"
+      ],
+      "step_outcomes": [
+        "rejected:duplicate",
+        "rejected:duplicate",
+        "executed:success",
+        "executed:success",
+        "parse_failure"
+      ],
+      "evidence_inspected": [
+        "EV-6c95569eb0aca81c",
+        "EV-31f9e34bc91f9056"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [],
+      "falsification": {
+        "requested": 4,
+        "rejected": 2,
+        "executed": 2,
+        "successful": 2,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 1,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 27111,
+      "completion_tokens": 881,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    }
+  ]
+}

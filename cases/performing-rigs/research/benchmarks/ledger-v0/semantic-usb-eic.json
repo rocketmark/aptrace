@@ -1,0 +1,64 @@
+{
+  "benchmark": "semantic-usb-eic",
+  "description": "Typed-semantics benchmark: the USB resolved-pointer claims and the EIC convergence claim carry explicit structured predicates, so entity roles, relations and set scope are verified deterministically before any audit model is consulted.",
+  "objective": "Determine what the USB interrupt handler's indirect callback dispatch invokes, and whether the EIC interrupt-dispatch path converges with USB interrupt handling.",
+  "setup": [
+    {"name": "usb", "tool": "census_usb_inventory", "arguments": {}},
+    {"name": "usb_agreement", "tool": "structural_source_agreement", "arguments": {"addresses": ["0x0000bcda", "0x0000c5cc", "0x0000c724", "0x0000cc14", "0x0000cc1a", "0x0000ccc6"]}},
+    {"name": "eic", "tool": "census_peripheral_usage", "arguments": {"peripheral": "EIC", "limit": 25}},
+    {"name": "usb_eic_paths", "tool": "census_common_paths", "sets": {"left": ["USB"], "right": ["EIC"]}}
+  ],
+  "claims": [
+    {
+      "label": "good",
+      "subject": "RAM function pointer 0x200052e8 consumed by the USB_OTHER handler",
+      "assertion": "The indirect call at 0x0000cc1a in FUN_0000cc14 loads RAM slot 0x200052e8, written by FUN_0000ccc4 at 0x0000ccc6 with the r0 argument of the call at 0x0000bcda in FUN_0000bc44; the stored raw Thumb pointer 0x0000c725 has canonical target 0x0000c724 (FUN_0000c724), which forwards to 0x0000c5cc.",
+      "claim_type": "RESOLUTION",
+      "proposed_grade": "STRONG",
+      "scope": "Static census resolved function pointers for firmware autopilot868; RAM slot 0x200052e8 only.",
+      "assumptions": ["The registration call at 0x0000bcda executes before USB_OTHER interrupts that reach 0x0000cc1a are serviced; ordering is not established by this evidence."],
+      "evidence": ["usb", "usb_agreement"],
+      "semantics": {
+        "predicate": "RESOLVED_FUNCTION_POINTER",
+        "resolved_pointer": {
+          "slot": "0x200052e8",
+          "writer": "FUN_0000ccc4",
+          "writer_instruction": "0x0000ccc6",
+          "registration_caller": "FUN_0000bc44",
+          "registration_callsite": "0x0000bcda",
+          "raw_pointer": "0x0000c725",
+          "canonical_target": "0x0000c724",
+          "forwarding_target": "0x0000c5cc",
+          "indirect_site": "0x0000cc1a",
+          "indirect_caller": "FUN_0000cc14"
+        }
+      }
+    },
+    {
+      "label": "bad",
+      "subject": "USB callback target",
+      "assertion": "The USB callback target is FUN_0000ccc4 and the result is EXACT.",
+      "claim_type": "RESOLUTION",
+      "proposed_grade": "EXACT",
+      "scope": "USB interrupt callback dispatch.",
+      "evidence": ["usb", "usb_agreement"],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "function_role": {"function": "FUN_0000ccc4", "role": "CALLBACK_TARGET", "slot": "0x200052e8"}
+      }
+    },
+    {
+      "label": "eic_dispatch_convergence",
+      "subject": "EIC interrupt dispatch and USB interrupt path",
+      "assertion": "The physical/EIC interrupt-dispatch path converges with the USB interrupt path.",
+      "claim_type": "PATH_EXISTS",
+      "proposed_grade": "STRONG",
+      "scope": "Census strong call graph, within the census hop bound.",
+      "evidence": ["usb", "eic", "usb_eic_paths"],
+      "semantics": {
+        "predicate": "PATH_RELATION",
+        "path": {"status": "KNOWN_COMMON_PATH", "left": "INTERRUPT_DISPATCH_SET:EIC", "right": "INTERFACE_INVENTORY:USB"}
+      }
+    }
+  ]
+}

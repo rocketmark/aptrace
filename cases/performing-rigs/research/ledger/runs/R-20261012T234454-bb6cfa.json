@@ -1,0 +1,33 @@
+{
+  "budgets": {},
+  "case": "performing-rigs",
+  "claim_versions": [],
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:44:54.974+00:00",
+  "evidence_ids": [
+    "EV-d9343c6252f6f61a"
+  ],
+  "execution_config": {},
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-851daf76714f5888"
+  ],
+  "kind": "benchmark-setup",
+  "model": null,
+  "objective": "Determine what the USB interrupt handler's indirect callback dispatch invokes, and how strongly the evidence supports it.",
+  "parent_run_id": null,
+  "planner_requests": [],
+  "planner_version": null,
+  "run_id": "R-20261012T234454-bb6cfa",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "ca995dc5578105dd",
+    "git_branch": "feat/pydantic-investigator",
+    "git_commit": "112e1668b2662b30d975282aab407a8c141570b3"
+  },
+  "started_at": "2026-10-12T23:44:54.949+00:00",
+  "termination_reason": "setup_complete",
+  "trajectory": []
+}

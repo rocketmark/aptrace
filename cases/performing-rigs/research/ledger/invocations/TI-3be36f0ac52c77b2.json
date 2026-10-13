@@ -1,0 +1,27 @@
+{
+  "arguments": {},
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:47:52.589+00:00",
+  "error": null,
+  "evidence_id": "EV-d9343c6252f6f61a",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [
+    "EV-2bdc3898b4a334e2",
+    "EV-1ad3ca6d2d5fbd49",
+    "EV-0584b43428839045"
+  ],
+  "invocation_id": "TI-3be36f0ac52c77b2",
+  "operation_key": "d7e8651a4814e65db87e8ab3b699de0f3bb649ba7d9e84de2f4a485f54e8b1d5",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "372b1f264b5c6d828ab0280c5f5d274f3181810dcf29a773fbec3d1a7774dd0f",
+  "run_id": "A-20261012T234733-efc740",
+  "runtime_ms": 32.074,
+  "session_evidence_id": null,
+  "started_at": "2026-10-12T23:47:52.557+00:00",
+  "status": "ok",
+  "tool": "census_usb_inventory"
+}

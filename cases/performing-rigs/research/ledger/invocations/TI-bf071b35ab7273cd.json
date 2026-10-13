@@ -1,0 +1,41 @@
+{
+  "arguments": {
+    "left": [
+      "FUN_0000954c",
+      "FUN_0000bd94",
+      "FUN_0000c5cc",
+      "FUN_0000cdd8",
+      "FUN_0000cc14",
+      "FUN_0000ccb6",
+      "FUN_0000ccba",
+      "FUN_0000ccbe"
+    ],
+    "left_label": "USB",
+    "right": [
+      "FUN_0000a000",
+      "FUN_0000a03c",
+      "FUN_0000cbb0"
+    ],
+    "right_label": "EIC"
+  },
+  "context_id": "X-bb5103e57baa4458",
+  "ended_at": "2026-10-13T00:35:09.657+00:00",
+  "error": null,
+  "evidence_id": "EV-aec58644e0021efd",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-bf071b35ab7273cd",
+  "operation_key": "7c2cc18cfcbf6f3712f52bbd20a2cd6880c10d51b80df268cfc4f34c65c62a4d",
+  "replay_of": "TI-77cc1d70ca84f536",
+  "replayable": true,
+  "result_sha256": "b784bf8495797acae756ad49d5efc752bb79d0eba2b5c5a8b0c810dabd3c44ba",
+  "run_id": "RV-20261013T003509-812d98",
+  "runtime_ms": 0.277,
+  "session_evidence_id": null,
+  "started_at": "2026-10-13T00:35:09.656+00:00",
+  "status": "ok",
+  "tool": "census_common_paths"
+}

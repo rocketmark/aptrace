@@ -1,0 +1,22 @@
+{
+  "arguments": {
+    "address": "0x0000c550",
+    "after": 8,
+    "before": 8,
+    "function": "FUN_0000c4b8"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-7af50a9ee492b01a",
+  "evidence_id": "EV-bbf390cd10de8cb4",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "EXACT",
+  "grade_basis": "decoded from the hash-verified firmware image",
+  "invocation_id": "TI-708af4eebd485981",
+  "limitations": [],
+  "path_status": null,
+  "result_bytes": 1724,
+  "result_sha256": "0ab87fc8c60b23ee764c0e3c213ed560f8075c11419c34bcf0fadb53a569d007",
+  "summary": "",
+  "tool": "callsite_context"
+}

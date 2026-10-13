@@ -1,0 +1,152 @@
+{
+  "allowed_tools": [
+    "inspect_evidence",
+    "function_facts",
+    "function_disassembly",
+    "analyze_peripheral",
+    "analyze_usb_interface",
+    "find_common_paths",
+    "analyze_function_effects",
+    "replay_evidence"
+  ],
+  "audit_id": "A-20261012T234733-efc740",
+  "budgets": {
+    "max_decisions": 5,
+    "max_tokens": 1200,
+    "max_tool_requests": 4,
+    "temperature": 0.0
+  },
+  "challenges": [
+    "The claim identifies 0xcb92 as the target, but the evidence identifies 0xcb92 as the location of the computed call (the dispatch site)."
+  ],
+  "claim_version": "C1:v1",
+  "contradictory_evidence": [
+    "EV-1ad3ca6d2d5fbd49"
+  ],
+  "ended_at": "2026-10-12T23:48:24.153+00:00",
+  "evidence_inspected": [
+    "EV-2bdc3898b4a334e2",
+    "EV-1ad3ca6d2d5fbd49",
+    "EV-0584b43428839045",
+    "EV-d9343c6252f6f61a"
+  ],
+  "follow_up_requests": [],
+  "initial_context": "AUDIT TARGET: claim C1:v1\nINVESTIGATION OBJECTIVE: Determine what the USB interrupt handler's indirect callback dispatch invokes, and how strongly the evidence supports it.\nCLAIM SUBJECT: USB interrupt handler indirect callback dispatch\nASSERTION: The USB interrupt handler's indirect callback dispatch at FUN_0000cc0a invokes a computed target at 0xcb92.\nCLAIM TYPE: OTHER\nPROPOSED GRADE: STRONG\nSCOPE: (not stated)\nASSUMPTIONS:\n  (none)\nLIMITATIONS ON RECORD:\n  - [DOCUMENTARY_NOT_FIRMWARE_DERIVED] Case documents are prior human findings, not firmware-derived evidence.\n  - [EFFECTS_COVERAGE_BOUNDED] Function effects coverage is bounded: bounded: step limit 3000.\nDEPENDS ON:\n  (none)\n\nSUPPORTING EVIDENCE (deterministic APTrace results, compact):\n[EV-2bdc3898b4a334e2] search_case_evidence({\"max_results\": 8, \"purpose\": \"discovery\", \"query\": \"USB interrupt handler callback dispatch\"}) grade=PROBABLE (case documents (documentary))\n  EV-2bdc3898b4a334e2 search_case_evidence query='USB interrupt handler callback dispatch': 8 match(es) [cases/performing-rigs/docs/replacement/autopilot-gap-audit.md:246, cases/performing-rigs/research/generated/autopilot-replacement-gaps.json:90, cases/performing-rigs/status.md:279]\n    top: 244: already names (IRQ12-27), immediately adjacent to the already-resolved 245: `0xcbb0` (Pass 7's `INTERRUPT_HANDLER_EIC`), and disassembly confirms 246: all 16 entries (including `0xcbb0`) are structurally identical 6-byte 247: stubs...\n  carried limitations:\n    - [DOCUMENTARY_NOT_FIRMWARE_DERIVED] Case documents are prior human findings, not firmware-derived evidence.\n[EV-1ad3ca6d2d5fbd49] function_effects({\"function\": \"FUN_0000cc0a\", \"specialize\": {}}) grade=BOUNDED (function effects bounded: step limit 3000)\n  EV-1ad3ca6d2d5fbd49 FUN_0000cc0a effects [RAW bounded: bounded: step limit 3000; computed control transfer(s) at 0xcb92 modeled as opaque calls; code reachable only through them was not simulated; 8 blocks]: inputs r1; 538 reads, 112 writes at 11 sites, 107 calls\n    MMIO: read @0xcb86 0x40002814(EIC.INTFLAG) guard=always-true; write @0xcb96 0x40002814(EIC.INTFLAG) guard=conditional\n    other: write @0xcb6c 0xfe8(STACK); read @0xcb70 0xcba0(FLASH) [flash]; read @0xcb72 0xcba4(FLASH) [flash]; read @0xcb74 0xcba8(FLASH) [flash]\n    call sites: @0xcb92->computed\n    return r0 depends on nothing symbolic\n    [SOLVER] 3 access(es) conditional on input-derived guards\n  carried limitations:\n    - [EFFECTS_COVERAGE_BOUNDED] Function effects coverage is bounded: bounded: step limit 3000.\n\nCONTRADICTORY EVIDENCE ON RECORD:\n  (none)\n\nAVAILABLE APTRACE ANALYSES:\n- inspect_evidence {\"evidence_id\": \"EV-...\", \"field\": optional top-level result key}: full structured result field of listed evidence\n- function_facts {\"function\": \"FUN_xxxxxxxx\"}: Ghidra callers/callees of a function named in evidence\n- function_disassembly {\"function\": \"FUN_xxxxxxxx\"}: decoded instructions of a function named in evidence\n- analyze_peripheral {\"peripheral\": \"<NAME>\"}: census functions using one MCU peripheral's registers\n- analyze_usb_interface {}: USB register users, IRQ handlers, descriptors, resolved indirect edges\n- find_common_paths {\"left\": [...], \"right\": [...]}: do two function sets converge in the census call graph? Members: analyzed peripheral names (e.g. \"USB\"), FUN_ names from evidence, or \"IRQ:<PREFIX>\" for the interrupt-vector handlers whose interrupt name starts with PREFIX\n- analyze_function_effects {\"function\": \"FUN_...\", \"r0\": optional int, \"r1\": optional int}: symbolic MMIO/RAM effects\n- replay_evidence {\"evidence_id\": \"EV-...\"}: re-run the analysis that produced listed evidence and compare its result hash\n\nRESPONSE FORMAT (one JSON object):\nTo request one analysis:\n{\"action\": \"request\", \"tool\": \"<tool name>\", \"arguments\": {...}, \"purpose\": \"<what you are trying to falsify>\"}\nTo finish:\n{\"action\": \"verdict\", \"verdict\": \"SUPPORTED\" | \"CHALLENGED\" | \"UNRESOLVED\",\n \"scope_check\": \"<for each function set, bound, or relationship the evidence uses: is it exactly the one the assertion names?>\",\n \"reasoning\": \"<concise>\", \"challenges\": [\"<each specific problem>\"],\n \"evidence_inspected\": [\"EV-...\"], \"contradictory_evidence\": [\"EV-...\"],\n \"limitations\": [\"<limitations that apply to the claim>\"],\n \"follow_up_requests\": [{\"question\": \"<evidence that would decide>\", \"suggested_tool\": \"<tool or null>\"}]}\n\nBUDGET: at most 5 decisions including the verdict, at most 4 analysis requests.",
+  "limitations": [
+    "The analysis of FUN_0000cc0a is bounded to 3000 steps."
+  ],
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "reasoning": "The claim asserts that the dispatch at FUN_0000cc0a invokes a target at 0xcb92. However, the evidence (EV-1ad3ca6d2d5fbd49) identifies 0xcb92 as a 'computed control transfer' site (the call site itself) within the function. In standard terminology, a dispatch 'at' an address invokes a target 'at' another address. If 0xcb92 is the location of the instruction performing the dispatch, it cannot be the target being invoked by that same instruction. The claim confuses the dispatch site with the target.",
+  "schema_version": 1,
+  "scope_check": "The claim specifies the dispatch occurs at FUN_0000cc0a and invokes a target at 0xcb92. The evidence provided for FUN_0000cc0a (EV-1ad3ca6d2d5fbd49) shows a call site at 0xcb92, which implies 0xcb92 is the address of the instruction performing the call (the dispatch site), not the target being invoked. The disassembly (EV-0584b43428839045) shows the function ends with a branch to 0xcb6c, and the effect analysis shows a call site at 0xcb92. If 0xcb92 is the call site, it cannot be the target.",
+  "started_at": "2026-10-12T23:47:33.378+00:00",
+  "steps": [
+    {
+      "action": "request",
+      "arguments": {
+        "function": "FUN_0000cc0a"
+      },
+      "attempt": 0,
+      "completion_tokens": 92,
+      "error": null,
+      "evidence_id": "EV-0584b43428839045",
+      "invocation_id": "TI-e9dde2186b1ff299",
+      "number": 1,
+      "prompt_tokens": 2145,
+      "raw_response": "```json\n{\"action\": \"request\", \"tool\": \"function_disassembly\", \"arguments\": {\"function\": \"FUN_0000cc0a\"}, \"purpose\": \"To examine the instruction at the call site @0xcb92 to understand how the target is computed and verify if it is indeed an indirect dispatch to 0xcb92 or if 0xcb92 is the target itself.\"}\n```",
+      "rejection": null,
+      "request_chars": 6171,
+      "request_messages": 2,
+      "result_summary": "[EV-0584b43428839045] FUN_0000cc0a entry=0x0000cc0a bounds=Ghidra function metadata 0x0000cc0a movs r0, #0xf 0x0000cc0c b.w #0xcb6c",
+      "tool": "function_disassembly"
+    },
+    {
+      "action": "request",
+      "arguments": {},
+      "attempt": 0,
+      "completion_tokens": 69,
+      "error": null,
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "invocation_id": "TI-3be36f0ac52c77b2",
+      "number": 2,
+      "prompt_tokens": 2361,
+      "raw_response": "```json\n{\"action\": \"request\", \"tool\": \"analyze_usb_interface\", \"arguments\": {}, \"purpose\": \"To identify the relationship between the USB interrupt handler and the address 0xcb92, and to see if 0xcb92 is identified as a dispatch site or a target.\"}\n```",
+      "rejection": null,
+      "request_chars": 6699,
+      "request_messages": 4,
+      "result_summary": "[EV-d9343c6252f6f61a] census_usb_inventory({}) grade=STRONG (census structure; resolved_indirect confidence STRONG)\n  EV-d9343c6252f6f61a USB inventory (census+SVD+image; structure only, no function labeled a handler):\n    register users (4): FUN_0000954c R:CTRLA,SYNCBUSY W:CTRLA [DEFINITELY_REACHABLE]; FUN_0000bd94 R:DADD W:DADD [DEFINITELY_REACHABLE]; FUN_0000c5cc W:DEVICE_ENDPOINT0.EPSTATUSSET [DEFINITELY_REACHABLE]; FUN_0000cdd8 W:PADCAL [DEFINITELY_REACHABLE]\n    unattributed USB sites: 0x0000c736 DATA DEVICE.CTRLA/HOST.CTRLA\n    IRQ handlers: USB_OTHER(80)->FUN_0000cc14; USB_SOF_HSOF(81)->FUN_0000ccb6; USB_TRCPT0(82)->FUN_0000ccba; USB_TRCPT1(83)->FUN_0000ccbe\n    census vectors 0..151 (IRQ0..135); image vector table has 43 populated non-default IRQ handlers, 0 beyond census coverage\n    descriptor candidates: device@0x000148e3 bcdUSB=0x0200 class=miscellaneous/IAD-composite VID=0x239a PID=0x8020 refs=2\n    string candidates: 'Metro M4'@0x000148cc refs FUN_0000c3d0; 'Adafruit'@0x000148da refs FUN_0000c3d0\n    downstream <= 4 hops of census USB functions: 36 functions; switch-table dispatch in: FUN_0000c4b8(h1); unresolved indirect sites: 5\n    reachable from USB IRQ handlers ",
+      "tool": "analyze_usb_interface"
+    },
+    {
+      "action": "request",
+      "arguments": {
+        "left": [
+          "FUN_0000cc0a",
+          "USB_OTHER"
+        ],
+        "right": [
+          "0xcb92"
+        ]
+      },
+      "attempt": 0,
+      "completion_tokens": 100,
+      "error": null,
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 3,
+      "prompt_tokens": 3169,
+      "raw_response": "```json\n{\"action\": \"request\", \"tool\": \"find_common_paths\", \"arguments\": {\"left\": [\"FUN_0000cc0a\", \"USB_OTHER\"], \"right\": [\"0xcb92\"]}, \"purpose\": \"To determine if the USB interrupt handler (or its related functions) has a path to the address 0xcb92, and to clarify the relationship between the handler and the address mentioned in the claim.\"}\n```",
+      "rejection": "unknown set member 'USB_OTHER'; use peripheral names, IRQ:<PREFIX>, or FUN_ names from evidence",
+      "request_chars": 8856,
+      "request_messages": 6,
+      "result_summary": null,
+      "tool": "find_common_paths"
+    },
+    {
+      "action": "request",
+      "arguments": {
+        "left": [
+          "FUN_0000cc0a",
+          "IRQ:80"
+        ],
+        "right": [
+          "0xcb92"
+        ]
+      },
+      "attempt": 0,
+      "completion_tokens": 101,
+      "error": null,
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 4,
+      "prompt_tokens": 3333,
+      "raw_response": "```json\n{\"action\": \"request\", \"tool\": \"find_common_paths\", \"arguments\": {\"left\": [\"FUN_0000cc0a\", \"IRQ:80\"], \"right\": [\"0xcb92\"]}, \"purpose\": \"To determine if the USB interrupt handler (or its related functions) has a path to the address 0xcb92, and to clarify the relationship between the handler and the address mentioned in the claim.\"}\n```",
+      "rejection": "unknown set member 'IRQ:80'; use peripheral names, IRQ:<PREFIX>, or FUN_ names from evidence",
+      "request_chars": 9382,
+      "request_messages": 8,
+      "result_summary": null,
+      "tool": "find_common_paths"
+    },
+    {
+      "action": "verdict",
+      "arguments": {},
+      "attempt": 0,
+      "completion_tokens": 508,
+      "error": null,
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 5,
+      "prompt_tokens": 3514,
+      "raw_response": "```json\n{\"action\": \"verdict\", \"verdict\": \"CHALLENGED\", \"scope_check\": \"The claim specifies the dispatch occurs at FUN_0000cc0a and invokes a target at 0xcb92. The evidence provided for FUN_0000cc0a (EV-1ad3ca6d2d5fbd49) shows a call site at 0xcb92, which implies 0xcb92 is the address of the instruction performing the call (the dispatch site), not the target being invoked. The disassembly (EV-0584b43428839045) shows the function ends with a branch to 0xcb6c, and the effect analysis shows a call site at 0xcb92. If 0xcb92 is the call site, it cannot be the target.\", \"reasoning\": \"The claim asserts that the dispatch at FUN_0000cc0a invokes a target at 0xcb92. However, the evidence (EV-1ad3ca6d2d5fbd49) identifies 0xcb92 as a 'computed control transfer' site (the call site itself) within the function. In standard terminology, a dispatch 'at' an address invokes a target 'at' another address. If 0xcb92 is the location of the instruction performing the dispatch, it cannot be the target being invoked by that same instruction. The claim confuses the dispatch site with the target.\", \"challenges\": [\"The claim identifies 0xcb92 as the target, but the evidence identifies 0xcb92 as the location of the computed call (the dispatch site).\"], \"evidence_inspected\": [\"EV-2bdc3898b4a334e2\", \"EV-1ad3ca6d2d5fbd49\", \"EV-0584b43428839045\", \"EV-d9343c6252f6f61a\"], \"contradictory_evidence\": [\"EV-1ad3ca6d2d5fbd49\"], \"limitations\": [\"The analysis of FUN_0000cc0a is bounded to 3000 steps.\"]}\n```",
+      "rejection": null,
+      "request_chars": 9969,
+      "request_messages": 10,
+      "result_summary": null,
+      "tool": null
+    }
+  ],
+  "template_version": "audit-v0.3",
+  "termination_reason": "verdict",
+  "verdict": "CHALLENGED",
+  "verdict_synthesized": false
+}

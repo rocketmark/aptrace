@@ -1,0 +1,654 @@
+{
+  "generated_at": "2026-10-13T00:25:30.528206+00:00",
+  "batch_id": "B-20261013T002337-4ada15",
+  "claim_version": "C3:v1",
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "generation": {
+    "temperature": 0.0,
+    "max_tokens": 1200
+  },
+  "runtime_config": {
+    "endpoint": "http://127.0.0.1:8000/v1",
+    "server": {
+      "version": "1.0",
+      "scheduler": {
+        "max_concurrent_requests": 1,
+        "embedding_batch_size": 32,
+        "chunked_prefill": false,
+        "prefill_priority": "context",
+        "decode_fairness": true
+      },
+      "cache": {
+        "enabled": true,
+        "hot_cache_only": false,
+        "gdn_ssd_split_enabled": true,
+        "gdn_snapshot_storage": "auto",
+        "gdn_ssd_pending_max_size": "512MB",
+        "gdn_sidecar_precision": "fp32",
+        "ssd_cache_dir": "/Users/mstalzer/.omlx/cache",
+        "ssd_cache_max_size": "46GB",
+        "hot_cache_max_size": "0",
+        "hot_cache_write_through": false,
+        "ane_compile_cache": false,
+        "initial_cache_blocks": 256
+      },
+      "sampling": {
+        "max_context_window": 32768,
+        "max_context_window_policy": null,
+        "max_tokens": 32768,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 0,
+        "repetition_penalty": 1.0
+      }
+    },
+    "model_settings": {
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "temperature": 0.2,
+      "top_p": 0.95,
+      "top_k": 64,
+      "min_p": 0.05,
+      "force_sampling": false,
+      "enable_thinking": false,
+      "qwen4_ple_ssd_offload": false,
+      "thinking_budget_enabled": false,
+      "guided_grammar_enabled": false,
+      "turboquant_kv_enabled": true,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_skip_last": true,
+      "qwen35_ane_prefill_enabled": false,
+      "qwen35_ane_prefill_sequence_length": 2048,
+      "qwen35_ane_prefill_tail_padding_min_tokens": 0,
+      "qwen35_ane_prefill_fraction": 0.53,
+      "qwen35_ane_prefill_fused_down": false,
+      "qwen35_ane_prefill_max_layers": 64,
+      "qwen35_ane_prefill_dual_ane": true,
+      "qwen35_ane_prefill_gdn": true,
+      "qwen35_ane_prefill_gdn_fraction": 0.5,
+      "qwen35_ane_prefill_gdn_max_layers": 48,
+      "qwen35_ane_prefill_cpu_enabled": false,
+      "qwen35_ane_prefill_cpu_fraction": 0.135,
+      "qwen35_ane_prefill_cpu_down_fraction": 0.0,
+      "qwen35_ane_prefill_cpu_gdn_fraction": 0.0,
+      "qwen35_ane_prefill_cpu_threads": 8,
+      "qwen35_ane_prefill_cpu_shared_resource": true,
+      "specprefill_enabled": false,
+      "dflash_enabled": false,
+      "dflash_draft_quant_enabled": false,
+      "dflash_in_memory_cache": true,
+      "dflash_in_memory_cache_max_entries": 4,
+      "dflash_in_memory_cache_max_bytes": 8589934592,
+      "dflash_ssd_cache": false,
+      "dflash_ssd_cache_max_bytes": 21474836480,
+      "dflash_draft_sink_size": 0,
+      "mtp_enabled": false,
+      "vlm_mtp_enabled": false,
+      "is_pinned": false,
+      "is_default": false,
+      "is_hidden": false,
+      "is_favorite": false,
+      "trust_remote_code": false
+    }
+  },
+  "repeat": 10,
+  "distinct_fingerprints": [
+    "AI-254895dbc1ad1fc1"
+  ],
+  "groups": [
+    {
+      "claim_version": "C3:v1",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "template_version": "audit-v0.4",
+      "runs": 10,
+      "verdicts": {
+        "CHALLENGED": 1,
+        "SUPPORTED": 9
+      },
+      "modal_verdict": "SUPPORTED",
+      "verdict_agreement": 0.9,
+      "model_verdicts": {
+        "CHALLENGED": 1,
+        "SUPPORTED": 9
+      },
+      "tool_sequence_agreement": 1.0,
+      "first_tool_agreement": 1.0,
+      "distinct_tool_sequences": 1,
+      "distinct_challenge_sets": 1,
+      "challenges_citing_coverage_gaps": 0,
+      "runs_with_coverage_gap_results": 0,
+      "runs_claiming_contradictory_evidence": 1,
+      "falsification_unsatisfied": 0,
+      "mean_prompt_tokens": 6590.9,
+      "mean_completion_tokens": 518.9,
+      "served_models": [
+        "gemma-4-26b-a4b-it-4bit"
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "audit_id": "A-20261013T002337-5db236",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "CHALLENGED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The claim identifies FUN_0000ccc4 as the 'USB callback target'. However, the evidence shows FUN_0000ccc4 is the *writer* of the pointer (at 0x0000ccc6) that is later loaded and used as an indirect branch at 0x0000cc1a in FUN_0000cc14. The actual target of the dispatch is FUN_0000c724 (via the pointer stored in RAM 0x200052e8).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [
+        "EV-d9343c6252f6f61a"
+      ],
+      "challenges": [
+        "The claim identifies the writer (FUN_0000ccc4) as the target. The evidence shows the target is FUN_0000c724."
+      ],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6590,
+      "completion_tokens": 569,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002356-d6cbba",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 494,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002406-90840c",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED] resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded.",
+        "[FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 451,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002415-983d14",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 624,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002428-9d23bf",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 494,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002438-94a3a4",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 494,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002448-3c6e14",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 494,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002458-a32bf9",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 494,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002508-2977f3",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED] resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded.",
+        "[FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 451,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    },
+    {
+      "audit_id": "A-20261013T002518-d9234e",
+      "claim_version": "C3:v1",
+      "template_version": "audit-v0.4",
+      "input_fingerprint": "AI-254895dbc1ad1fc1",
+      "batch_id": "B-20261013T002337-4ada15",
+      "verdict": "SUPPORTED",
+      "model_verdict": null,
+      "verdict_synthesized": false,
+      "termination_reason": "verdict",
+      "scope_check": "The scope is the USB interrupt callback dispatch. The evidence identifies the writer of the callback pointer (FUN_0000ccc4) and the consumer (FUN_0000cc14).",
+      "requested_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "executed_operations": [
+        "function_disassembly {\"function\": \"FUN_0000ccc4\"}"
+      ],
+      "step_outcomes": [
+        "executed:success"
+      ],
+      "evidence_inspected": [
+        "EV-d9343c6252f6f61a",
+        "EV-3034f7d75faff00f"
+      ],
+      "coverage_gaps_encountered": [],
+      "contradictory_evidence_claimed": [],
+      "challenges": [],
+      "challenge_cites_coverage_gap": false,
+      "limitations_identified": [
+        "[COMPUTED_POINTER_WRITES_NOT_EXCLUDED]",
+        "[FUNCTION_BOUNDARIES_HEURISTIC]"
+      ],
+      "falsification": {
+        "requested": 1,
+        "rejected": 0,
+        "executed": 1,
+        "successful": 1,
+        "coverage_gap": 0,
+        "tool_error": 0,
+        "parse_failure": 0,
+        "verdict_rejected": 0,
+        "satisfied": true
+      },
+      "prompt_tokens": 6591,
+      "completion_tokens": 624,
+      "runtime": {
+        "served_models": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "system_fingerprints": []
+      }
+    }
+  ]
+}

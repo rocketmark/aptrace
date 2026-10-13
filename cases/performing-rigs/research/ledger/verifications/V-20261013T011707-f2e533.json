@@ -1,0 +1,91 @@
+{
+  "at": "2026-10-13T01:17:07.322+00:00",
+  "audit_id": null,
+  "audit_skipped": true,
+  "audit_verdict": null,
+  "checks": [
+    {
+      "detail": "3 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "SCOPE_MISMATCH: no supporting common-path evidence was computed over the claimed set scopes; no APTrace derivation establishes equivalence between different set kinds",
+      "name": "claim_semantics",
+      "passed": false,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG, EV-d816b5c25a8f750b=STRONG, EV-aec58644e0021efd=STRONG)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "6 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C8:v1",
+  "context_id": "X-bb5103e57baa4458",
+  "mode": "full",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "phases": {
+    "A": "passed",
+    "B": "failed",
+    "C": "skipped",
+    "D": "skipped"
+  },
+  "replay_invocation_ids": [],
+  "schema_version": 1,
+  "semantic_checks": [
+    {
+      "claimed": "INTERFACE_INVENTORY:USB | INTERRUPT_DISPATCH_SET:EIC",
+      "claimed_role": null,
+      "code": "SCOPE_MISMATCH",
+      "detail": "no supporting common-path evidence was computed over the claimed set scopes; no APTrace derivation establishes equivalence between different set kinds",
+      "evidence_id": "EV-aec58644e0021efd",
+      "evidence_role": null,
+      "evidence_value": "EV-aec58644e0021efd: INTERFACE_INVENTORY:USB | PERIPHERAL_MMIO_USAGE:EIC = KNOWN_COMMON_PATH",
+      "field": "scope",
+      "passed": false
+    }
+  ],
+  "verification_id": "V-20261013T011707-f2e533"
+}

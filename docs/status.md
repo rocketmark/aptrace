@@ -39,6 +39,20 @@ belong in each case's status document.
   and validated per-function leads. The planner sees a character-budgeted
   projection of the research state; the evidence ledger, claims and
   provenance stay complete in APTrace.
+- Keep a durable research ledger with adversarial audit and deterministic
+  verification ([`research-ledger.md`](research-ledger.md)): content-addressed
+  evidence with typed-operation replay, versioned claims with dependencies,
+  an APTrace-owned lifecycle (`PROPOSED`/`VERIFIED`/`BLOCKED`/`STALE`/
+  `SUPERSEDED`), a bounded audit-model loop over one claim version with a
+  typed tool allowlist, deterministic staleness propagation, and a generated
+  Markdown report. Audits record structural source agreement (census,
+  Ghidra, Macaw; coverage gap vs boundary disagreement vs conflict), count
+  only successful analyses toward falsification, and carry a deterministic
+  audit-input fingerprint for repeated-audit stability measurement. Claims
+  may carry typed semantics (resolved function pointer, function role, typed
+  path relation over set scopes) that APTrace verifies deterministically in
+  phased verification; the audit model is consulted only for claims that
+  pass structural, semantic, and replay checks.
 
 ## Current limitations
 
@@ -64,6 +78,14 @@ belong in each case's status document.
   serving a 30B 4-bit model this was measured at roughly 1.2–3.7k prompt
   tokens and moves with server memory state; the agent retries rejected
   requests with a compact projection.
+- The research ledger's verification is mechanical: references, context,
+  hashes, replay, grade ceilings, inherited limitations, bounded negatives,
+  and the audit verdict. It cannot check that an assertion's entities and
+  roles match the evidence; that is left to the audit model, whose verdicts
+  are not stable across runs on identical input.
+- The local Qwen3-Coder planner does not reliably emit structured claim
+  output as tool arguments: nested and multiple array arguments degrade into
+  malformed tool-call text.
 - Case selection is currently wired explicitly by the application and some
   scripts. A plugin/provider architecture is intentionally deferred until more
   than one real case demonstrates the need.

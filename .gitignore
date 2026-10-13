@@ -43,3 +43,17 @@ __pycache__/
 # Cached function-effects analyses (agent function_effects action) --
 # regenerable via `aptrace function-effects`; not distributed.
 /cases/performing-rigs/research/runs/function_effects/
+
+# Research-ledger results above the large-blob threshold (e.g. full
+# function-effects records): content-addressed, hash-identified by the
+# tracked evidence records, and regenerable by `aptrace-agent replay`.
+/cases/performing-rigs/research/ledger/blobs-large/
+
+# Macaw census outputs (`aptrace macaw-census`) used for structural source
+# agreement: regenerable, identified in the ledger by content hash.
+/cases/performing-rigs/research/runs/macaw/
+
+# `research --ledger` session transcripts embed full evidence results (a
+# single function-effects result can be ~640 MB). The ledger records that
+# evidence content-addressed and replayable, so the transcripts are redundant.
+/cases/performing-rigs/research/runs/agent/usb-callback-ledger-*.json

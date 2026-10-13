@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-10-12T23:46:51.293011+00:00",
+  "results": [
+    {
+      "benchmark": "usb-callback",
+      "setup_run_id": "R-20261012T234454-bb6cfa",
+      "evidence": {
+        "usb": "EV-d9343c6252f6f61a"
+      },
+      "claims": [
+        {
+          "label": "good",
+          "key": "C2:v1",
+          "audit_id": "A-20261012T234455-90a51c",
+          "audit_verdict": "CHALLENGED",
+          "final_state": "BLOCKED",
+          "failed_checks": [
+            "independent_audit"
+          ],
+          "expectations": {
+            "final_state": false,
+            "audit_verdict": false,
+            "audit_mentions": {
+              "computed_pointer_limitation": false,
+              "thumb_canonicalization": false
+            }
+          },
+          "passed": false
+        },
+        {
+          "label": "bad",
+          "key": "C3:v1",
+          "audit_id": "A-20261012T234535-2ccfbe",
+          "audit_verdict": "CHALLENGED",
+          "final_state": "BLOCKED",
+          "failed_checks": [
+            "grade_ceiling",
+            "independent_audit"
+          ],
+          "expectations": {
+            "final_state": true,
+            "audit_verdict": true,
+            "must_not_be": true,
+            "verifier_fails:grade_ceiling": true,
+            "audit_mentions": {
+              "writer_not_target": true,
+              "strong_not_exact": false
+            }
+          },
+          "passed": true
+        }
+      ],
+      "passed": false
+    },
+    {
+      "benchmark": "eic-convergence",
+      "setup_run_id": "R-20261012T234605-3218bc",
+      "evidence": {
+        "usb": "EV-d9343c6252f6f61a",
+        "eic": "EV-d816b5c25a8f750b",
+        "usb_eic_paths": "EV-aec58644e0021efd",
+        "usb_eic_vector_paths": "EV-bab8f6cc269494ab"
+      },
+      "claims": [
+        {
+          "label": "convergence",
+          "key": "C4:v1",
+          "audit_id": "A-20261012T234605-72b150",
+          "audit_verdict": "CHALLENGED",
+          "final_state": "BLOCKED",
+          "failed_checks": [
+            "independent_audit"
+          ],
+          "expectations": {
+            "audit_verdict": true,
+            "must_not_be": true,
+            "audit_mentions": {
+              "structural_vs_dispatch_scope": true,
+              "non_dispatch_members": true
+            }
+          },
+          "passed": true
+        },
+        {
+          "label": "bounded",
+          "key": "C5:v1",
+          "audit_id": "A-20261012T234634-b982e2",
+          "audit_verdict": "SUPPORTED",
+          "final_state": "VERIFIED",
+          "failed_checks": [],
+          "expectations": {
+            "final_state": true,
+            "audit_verdict": true
+          },
+          "passed": true
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

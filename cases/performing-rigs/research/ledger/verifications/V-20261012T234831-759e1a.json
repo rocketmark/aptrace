@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-12T23:48:31.455+00:00",
+  "audit_id": "A-20261012T234733-efc740",
+  "audit_verdict": "CHALLENGED",
+  "checks": [
+    {
+      "detail": "2 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "1 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits PROBABLE (EV-2bdc3898b4a334e2=PROBABLE, EV-1ad3ca6d2d5fbd49=BOUNDED)",
+      "name": "grade_ceiling",
+      "passed": false,
+      "severity": "block"
+    },
+    {
+      "detail": "2 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234733-efc740 CHALLENGED: The claim identifies 0xcb92 as the target, but the evidence identifies 0xcb92 as the location of the computed call (the dispatch site).",
+      "name": "independent_audit",
+      "passed": false,
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C1:v1",
+  "context_id": "X-7af50a9ee492b01a",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "replay_invocation_ids": [
+    "TI-d98b9f120516d2aa"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261012T234831-759e1a"
+}

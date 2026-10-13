@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-12T23:46:05.331+00:00",
+  "audit_id": "A-20261012T234535-2ccfbe",
+  "audit_verdict": "CHALLENGED",
+  "checks": [
+    {
+      "detail": "1 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "1 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed EXACT; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG)",
+      "name": "grade_ceiling",
+      "passed": false,
+      "severity": "block"
+    },
+    {
+      "detail": "2 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234535-2ccfbe CHALLENGED: The claim confuses the function performing the store (the dispatcher/setup) with the function being stored (the target).; The evidence shows the store happens at 0x0000ccc6, which is inside FUN_0000ccc4, making it the source of the write, not the destination of the indirect call.",
+      "name": "independent_audit",
+      "passed": false,
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C3:v1",
+  "context_id": "X-7af50a9ee492b01a",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "replay_invocation_ids": [
+    "TI-80f37e23e52d3bf3"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261012T234605-f1c51b"
+}

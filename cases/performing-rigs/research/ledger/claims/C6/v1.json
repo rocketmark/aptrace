@@ -1,0 +1,72 @@
+{
+  "assertion": "The indirect call at 0x0000cc1a in FUN_0000cc14 loads RAM slot 0x200052e8, written by FUN_0000ccc4 at 0x0000ccc6 with the r0 argument of the call at 0x0000bcda in FUN_0000bc44; the stored raw Thumb pointer 0x0000c725 has canonical target 0x0000c724 (FUN_0000c724), which forwards to 0x0000c5cc.",
+  "assumptions": [
+    "The registration call at 0x0000bcda executes before USB_OTHER interrupts that reach 0x0000cc1a are serviced; ordering is not established by this evidence."
+  ],
+  "claim_id": "C6",
+  "claim_type": "RESOLUTION",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-13T01:17:07.256+00:00",
+  "depends_on": [],
+  "derivation": "",
+  "limitations": [
+    {
+      "code": "AGREEMENT_SOURCES_NOT_INDEPENDENT",
+      "source_evidence_ids": [
+        "EV-5399815447618e02"
+      ],
+      "text": "Not every agreeing source is independent (census <- ghidra:2c80bf9dfade293e)."
+    },
+    {
+      "code": "COMPUTED_POINTER_WRITES_NOT_EXCLUDED",
+      "source_evidence_ids": [
+        "EV-d9343c6252f6f61a"
+      ],
+      "text": "resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-5399815447618e02",
+        "EV-d9343c6252f6f61a"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "SOURCE_AGREEMENT_IS_STRUCTURAL",
+      "source_evidence_ids": [
+        "EV-5399815447618e02"
+      ],
+      "text": "Source agreement is structural consistency between analysis sources about where code and functions are; it does not establish behavior, and a source coverage gap is not negative evidence."
+    }
+  ],
+  "proposed_by": "benchmark-fixture:semantic-usb-eic",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261013T011707-ea649e",
+  "schema_version": 1,
+  "scope": "Static census resolved function pointers for firmware autopilot868; RAM slot 0x200052e8 only.",
+  "semantics": {
+    "function_role": null,
+    "path": null,
+    "predicate": "RESOLVED_FUNCTION_POINTER",
+    "resolved_pointer": {
+      "canonical_target": "0x0000c724",
+      "forwarding_target": "0x0000c5cc",
+      "indirect_caller": "FUN_0000cc14",
+      "indirect_site": "0x0000cc1a",
+      "raw_pointer": "0x0000c725",
+      "registration_caller": "FUN_0000bc44",
+      "registration_callsite": "0x0000bcda",
+      "slot": "0x200052e8",
+      "writer": "FUN_0000ccc4",
+      "writer_instruction": "0x0000ccc6"
+    }
+  },
+  "subject": "RAM function pointer 0x200052e8 consumed by the USB_OTHER handler",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-d9343c6252f6f61a",
+    "EV-5399815447618e02"
+  ],
+  "version": 1
+}

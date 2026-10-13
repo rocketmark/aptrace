@@ -1,0 +1,201 @@
+{
+  "allowed_tools": [
+    "inspect_evidence",
+    "function_facts",
+    "function_disassembly",
+    "analyze_peripheral",
+    "analyze_usb_interface",
+    "find_common_paths",
+    "analyze_function_effects",
+    "replay_evidence"
+  ],
+  "audit_id": "A-20261013T002926-277bcd",
+  "batch_id": "B-20261013T002531-2a7d1c",
+  "budgets": {
+    "max_decisions": 5,
+    "max_tokens": 1200,
+    "max_tool_requests": 4,
+    "temperature": 0.0
+  },
+  "challenges": [],
+  "claim_version": "C4:v1",
+  "contradictory_evidence": [],
+  "ended_at": "2026-10-13T00:30:10.244+00:00",
+  "evidence_inspected": [
+    "EV-6c95569eb0aca81c",
+    "EV-31f9e34bc91f9056"
+  ],
+  "falsification": {
+    "coverage_gap": 0,
+    "executed": 2,
+    "parse_failure": 1,
+    "rejected": 2,
+    "requested": 4,
+    "satisfied": true,
+    "successful": 2,
+    "tool_error": 0,
+    "verdict_rejected": 0
+  },
+  "follow_up_requests": [],
+  "initial_context": "AUDIT TARGET: claim C4:v1\nINVESTIGATION OBJECTIVE: Determine whether external-interrupt (EIC) events and USB interrupt handling converge in firmware control flow.\nCLAIM SUBJECT: EIC interrupt dispatch and USB interrupt path\nASSERTION: The physical/EIC interrupt-dispatch path converges with the USB interrupt path.\nCLAIM TYPE: PATH_EXISTS\nPROPOSED GRADE: STRONG\nSCOPE: Census strong call graph, within the census hop bound.\nASSUMPTIONS:\n  (none)\nLIMITATIONS ON RECORD:\n  - [COMPUTED_POINTER_WRITES_NOT_EXCLUDED] resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded.\n  - [FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic.\n  - [PERIPHERAL_SET_IS_MMIO_USAGE:EIC] Set 'EIC' is the census structural set for EIC (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path.\n  - [PERIPHERAL_SET_IS_MMIO_USAGE:USB] Set 'USB' is the census structural set for USB (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path.\n  - [STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY] Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence.\n  - [UNRESOLVED_INDIRECT_FRONTIER] 7 unresolved indirect transfer site(s) in the explored region; paths through them are unknown.\nDEPENDS ON:\n  (none)\n\nSUPPORTING EVIDENCE (deterministic APTrace results, compact):\n[EV-d9343c6252f6f61a] census_usb_inventory({}) grade=STRONG (census structure; resolved_indirect confidence STRONG)\n  EV-d9343c6252f6f61a USB inventory (census+SVD+image; structure only, no function labeled a handler):\n    register users (4): FUN_0000954c R:CTRLA,SYNCBUSY W:CTRLA [DEFINITELY_REACHABLE]; FUN_0000bd94 R:DADD W:DADD [DEFINITELY_REACHABLE]; FUN_0000c5cc W:DEVICE_ENDPOINT0.EPSTATUSSET [DEFINITELY_REACHABLE]; FUN_0000cdd8 W:PADCAL [DEFINITELY_REACHABLE]\n    unattributed USB sites: 0x0000c736 DATA DEVICE.CTRLA/HOST.CTRLA\n    IRQ handlers: USB_OTHER(80)->FUN_0000cc14; USB_SOF_HSOF(81)->FUN_0000ccb6; USB_TRCPT0(82)->FUN_0000ccba; USB_TRCPT1(83)->FUN_0000ccbe\n    census vectors 0..151 (IRQ0..135); image vector table has 43 populated non-default IRQ handlers, 0 beyond census coverage\n    descriptor candidates: device@0x000148e3 bcdUSB=0x0200 class=miscellaneous/IAD-composite VID=0x239a PID=0x8020 refs=2\n    string candidates: 'Metro M4'@0x000148cc refs FUN_0000c3d0; 'Adafruit'@0x000148da refs FUN_0000c3d0\n    downstream <= 4 hops of census USB functions: 36 functions; switch-table dispatch in: FUN_0000c4b8(h1); unresolved indirect sites: 5\n    reachable from USB IRQ handlers (<= census hop bound): 40 functions\n    resolved_indirect 0x0000cc1a FUN_0000cc14=>FUN_0000c724 (forwards to 0x0000c5cc): RAM 0x200052e8=0x0000c725 stored at 0x0000ccc6 from r0 of call 0x0000bcda [STRONG, static]\n  resolved pointer provenance (structured fields of this evidence):\n    - consumer: indirect transfer at 0x0000cc1a in FUN_0000cc14 loads RAM slot 0x200052e8\n      writer: FUN_0000ccc4, store instruction 0x0000ccc6\n      registration: callsite 0x0000bcda in FUN_0000bc44 passes r0 = raw pointer 0x0000c725\n      raw pointer 0x0000c725 -> canonical target 0x0000c724 (Thumb bit cleared) = FUN_0000c724\n      forwarding: FUN_0000c724 forwards to 0x0000c5cc\n      edge grade STRONG; derivation callsite-argument\n  carried limitations:\n    - [COMPUTED_POINTER_WRITES_NOT_EXCLUDED] resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded.\n    - [FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic.\n[EV-d816b5c25a8f750b] census_peripheral_usage({\"limit\": 25, \"peripheral\": \"EIC\"}) grade=STRONG (census constant-address MMIO references (heuristic function boundaries))\n  EV-d816b5c25a8f750b census_peripheral_usage EIC: status=ok mmio_sites=4 address_constants=3 (unreferenced=0) functions=3 [FUN_0000a000, FUN_0000a03c, FUN_0000cbb0]\n  carried limitations:\n    - [FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic.\n    - [STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY] Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence.\n[EV-aec58644e0021efd] census_common_paths({\"left_label\": \"USB\", \"right_label\": \"EIC\"}) grade=STRONG (census strong graph path (KNOWN_COMMON_PATH))\n  EV-aec58644e0021efd common paths USB[FUN_0000954c,FUN_0000bd94,FUN_0000c5cc,FUN_0000cdd8...] | EIC[FUN_0000a000,FUN_0000a03c,FUN_0000cbb0] (census strong graph, <= 8 hops): KNOWN_COMMON_PATH; explored 45/38 functions\n    roots reaching left: USB_OTHER,USB_SOF_HSOF,USB_TRCPT0,USB_TRCPT0..1,USB_TRCPT1,reset; right: EIC_EXTINT_0..15,TC0,reset\n    converge at FUN_0000e628 (FUN_0000e628) hops 4/3 via FUN_0000bef4>FUN_0000be18>FUN_0000e628 and FUN_0000a1f4>FUN_0000a0cc>FUN_0000e628\n    converge at FUN_0000e7a0 (FUN_0000e7a0) hops 5/4 via FUN_0000be18>FUN_0000e628>FUN_0000e7a0 and FUN_0000a0cc>FUN_0000e628>FUN_0000e7a0\n    converge at FUN_0000f3dc (FUN_0000f3dc) hops 6/5 via FUN_0000e628>FUN_0000e7a0>FUN_0000f3dc and FUN_0000e628>FUN_0000e7a0>FUN_0000f3dc\n    resolved_indirect edges (RAM function pointer, not direct calls): 0x0000cc1a FUN_0000cc14=>FUN_0000c724 via RAM 0x200052e8=0x0000c725 (store 0x0000ccc6 arg r0@0x0000bcda, STRONG)\n    unresolved indirect sites in explored region: 7 (e.g. 0x0000b8a4 in FUN_0000b890, 0x0000be62 in FUN_0000be18, 0x0000c6d8 in FUN_0000c5cc); paths through them are unknown\n  resolved pointer provenance (structured fields of this evidence):\n    - consumer: indirect transfer at 0x0000cc1a in FUN_0000cc14 loads RAM slot 0x200052e8\n      writer: FUN_0000ccc4, store instruction 0x0000ccc6\n      registration: callsite 0x0000bcda in FUN_0000bc44 passes r0 = raw pointer 0x0000c725\n      raw pointer 0x0000c725 -> canonical target 0x0000c724 (Thumb bit cleared) = FUN_0000c724\n      forwarding: FUN_0000c724 forwards to 0x0000c5cc\n      edge grade STRONG; derivation callsite-argument\n  carried limitations:\n    - [COMPUTED_POINTER_WRITES_NOT_EXCLUDED] resolved_indirect edges come from statically initialized RAM function pointers whose every known store is one constant code pointer; stores through computed pointers are not excluded.\n    - [FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic.\n    - [PERIPHERAL_SET_IS_MMIO_USAGE:EIC] Set 'EIC' is the census structural set for EIC (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path.\n    - [PERIPHERAL_SET_IS_MMIO_USAGE:USB] Set 'USB' is the census structural set for USB (constant-address register/MMIO users), not a semantic subsystem, event, or interrupt-dispatch path.\n    - [UNRESOLVED_INDIRECT_FRONTIER] 7 unresolved indirect transfer site(s) in the explored region; paths through them are unknown.\n\nCONTRADICTORY EVIDENCE ON RECORD:\n  (none)\n\nSTRUCTURAL SOURCE AGREEMENT (recorded by APTrace for the code addresses the evidence names; structural only):\n[EV-5399815447618e02] structural_source_agreement grade=STRONG; sources: census 31376900a722 (derived from ghidra:2c80bf9dfade293e); ghidra 2c80bf9dfade; macaw d568cf00249f\n  0x0000bcda (registration callsite): AGREE [CONSISTENT] — census/ghidra/macaw FUN_0000bc44 [0x0000bc44,0x0000bd42)\n  0x0000c5cc (forwarding target): PARTIAL_AGREEMENT [CONSISTENT] — census/ghidra FUN_0000c5cc [0x0000c5cc,0x0000c706); MACAW_COVERAGE_GAP\n  0x0000c724 (canonical pointer target): PARTIAL_AGREEMENT [CONSISTENT] — census/ghidra FUN_0000c724 [0x0000c724,0x0000c72a); MACAW_COVERAGE_GAP\n  0x0000cc14 (consumer function entry): PARTIAL_AGREEMENT [CONSISTENT] — census/ghidra FUN_0000cc14 [0x0000cc14,0x0000cc1e); macaw FUN_0000cc14 [0x0000cc14,0x0000cc1a); block coverage subset\n  0x0000cc1a (indirect transfer site): PARTIAL_AGREEMENT [CONSISTENT] — census/ghidra FUN_0000cc14 [0x0000cc14,0x0000cc1e); MACAW_COVERAGE_GAP\n  0x0000ccc6 (pointer store instruction): AGREE [CONSISTENT] — census/ghidra/macaw FUN_0000ccc4 [0x0000ccc4,0x0000ccca)\n  semantics: SOURCE_MISSING / <SOURCE>_COVERAGE_GAP: a source has no code there; a coverage gap, not evidence against a claim. BOUNDARY_DISAGREEMENT: sources see code but disagree on function extent; structural, not a contradiction of a claim. PARTIAL_AGREEMENT: one source covers a subset. Only CONFLICT is contradictory structural evidence.\n\nAVAILABLE APTRACE ANALYSES:\n- inspect_evidence {\"evidence_id\": \"EV-...\", \"field\": optional top-level result key}: full structured result field of listed evidence\n- function_facts {\"function\": \"FUN_xxxxxxxx\"}: Ghidra callers/callees of a function named in evidence\n- function_disassembly {\"function\": \"FUN_xxxxxxxx\"}: decoded instructions of a function named in evidence\n- analyze_peripheral {\"peripheral\": \"<NAME>\"}: census functions using one MCU peripheral's registers\n- analyze_usb_interface {}: USB register users, IRQ handlers, descriptors, resolved indirect edges\n- find_common_paths {\"left\": [...], \"right\": [...]}: do two function sets converge in the census call graph? Members: analyzed peripheral names (e.g. \"USB\"), FUN_ names from evidence, or \"IRQ:<PREFIX>\" for the interrupt-vector handlers whose interrupt name starts with PREFIX\n- analyze_function_effects {\"function\": \"FUN_...\", \"r0\": optional int, \"r1\": optional int}: symbolic MMIO/RAM effects\n- replay_evidence {\"evidence_id\": \"EV-...\"}: re-run the analysis that produced listed evidence and compare its result hash\n\nRESPONSE FORMAT (one JSON object):\nTo request one analysis:\n{\"action\": \"request\", \"tool\": \"<tool name>\", \"arguments\": {...}, \"purpose\": \"<what you are trying to falsify>\"}\nTo finish:\n{\"action\": \"verdict\", \"verdict\": \"SUPPORTED\" | \"CHALLENGED\" | \"UNRESOLVED\",\n \"scope_check\": \"<for each function set, bound, or relationship the evidence uses: is it exactly the one the assertion names?>\",\n \"reasoning\": \"<concise>\", \"challenges\": [\"<each specific problem>\"],\n \"evidence_inspected\": [\"EV-...\"], \"contradictory_evidence\": [\"EV-...\"],\n \"limitations\": [\"<limitations that apply to the claim>\"],\n \"follow_up_requests\": [{\"question\": \"<evidence that would decide>\", \"suggested_tool\": \"<tool or null>\"}]}\n\nBUDGET: at most 5 decisions including the verdict, at most 4 executed analyses.",
+  "input_components": {
+    "budget": "5eddddb602765556",
+    "claim": "3bcbf93f95aa1dd0",
+    "context": "8c50337ac29edefb",
+    "evidence": "f3be07814c16a567",
+    "generation": "c640f6511e9362cb",
+    "limitations": "bab207c12d65b245",
+    "model": "d0867eee56b7126c",
+    "source_agreement": "3344165ff0b5b35e",
+    "template": "60788cf0bed2f0a6",
+    "tools": "2e26360ba4da9428"
+  },
+  "input_fingerprint": "AI-485712c83ee950c1",
+  "limitations": [],
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "model_verdict": null,
+  "reasoning": "No valid verdict was produced (decision_budget_exhausted); APTrace recorded UNRESOLVED.",
+  "runtime": {
+    "served_models": [
+      "gemma-4-26b-a4b-it-4bit"
+    ],
+    "system_fingerprints": []
+  },
+  "schema_version": 1,
+  "scope_check": "",
+  "source_agreement_evidence": "EV-5399815447618e02",
+  "started_at": "2026-10-13T00:29:26.879+00:00",
+  "steps": [
+    {
+      "action": "request",
+      "arguments": {
+        "left": [
+          "USB"
+        ],
+        "right": [
+          "EIC"
+        ]
+      },
+      "attempt": 0,
+      "completion_tokens": 154,
+      "counts_as_falsification": false,
+      "error": null,
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 1,
+      "outcome": "rejected:duplicate",
+      "prompt_tokens": 4730,
+      "raw_response": "{\"action\": \"request\", \"tool\": \"find_common_paths\", \"arguments\": {\"left\": [\"USB\"], \"right\": [\"EIC\"]}, \"purpose\": \"The claim asserts convergence between EIC and USB interrupt paths. The evidence EV-aec58644e0021efd already shows convergence at specific functions (FUN_0000e628, FUN_0000e7a0, FUN_0000f3dc). I need to verify if these paths are truly 'interrupt-dispatch' paths or just general code convergence, and if the 'EIC' and 'USB' sets used in the evidence match the semantic interrupt-dispatch paths implied by the claim.\"}",
+      "rejection": "duplicate request: find_common_paths with these arguments was already answered; it does not count as an analysis. Choose a different check or give a verdict",
+      "request_chars": 12804,
+      "request_messages": 2,
+      "result_summary": null,
+      "tool": "find_common_paths"
+    },
+    {
+      "action": "request",
+      "arguments": {
+        "peripheral": "EIC"
+      },
+      "attempt": 0,
+      "completion_tokens": 128,
+      "counts_as_falsification": false,
+      "error": null,
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 2,
+      "outcome": "rejected:duplicate",
+      "prompt_tokens": 4966,
+      "raw_response": "{\"action\": \"request\", \"tool\": \"analyze_peripheral\", \"arguments\": {\"peripheral\": \"EIC\"}, \"purpose\": \"The claim is about the 'EIC interrupt-dispatch path'. The current evidence for EIC (EV-d816b5c25a8f750b) only lists MMIO users. I need to identify the actual interrupt handlers (vectors) for EIC to see if the convergence points (FUN_0000e628, etc.) are reachable from the actual EIC interrupt entry points, not just any function using EIC registers.\"}",
+      "rejection": "duplicate request: analyze_peripheral with these arguments was already answered; it does not count as an analysis. Choose a different check or give a verdict",
+      "request_chars": 13619,
+      "request_messages": 4,
+      "result_summary": null,
+      "tool": "analyze_peripheral"
+    },
+    {
+      "action": "request",
+      "arguments": {
+        "function": "FUN_0000e628"
+      },
+      "attempt": 0,
+      "completion_tokens": 140,
+      "counts_as_falsification": true,
+      "error": null,
+      "evidence_id": "EV-6c95569eb0aca81c",
+      "invocation_id": "TI-7b43ec3bee645e09",
+      "number": 3,
+      "outcome": "executed:success",
+      "prompt_tokens": 5172,
+      "raw_response": "{\"action\": \"request\", \"tool\": \"function_disassembly\", \"arguments\": {\"function\": \"FUN_0000e628\"}, \"purpose\": \"The claim asserts that the EIC interrupt-dispatch path converges with the USB interrupt path. The evidence EV-aec58644e0021efd shows convergence at FUN_0000e628. I need to examine the disassembly of this function to determine if it is a shared utility function, a common interrupt handler, or a high-level application function, which will clarify if this is a meaningful 'convergence' of interrupt paths or just a common call site.\"}",
+      "rejection": null,
+      "request_chars": 14359,
+      "request_messages": 6,
+      "result_summary": "[EV-6c95569eb0aca81c] FUN_0000e628 entry=0x0000e628 bounds=Ghidra function metadata 0x0000e628 ldr r3, [pc, #8] 0x0000e62a mov r1, r0 0x0000e62c ldr r0, [r3] 0x0000e62e b.w #0xe7a0",
+      "tool": "function_disassembly"
+    },
+    {
+      "action": "request",
+      "arguments": {
+        "function": "FUN_0000a0cc"
+      },
+      "attempt": 0,
+      "completion_tokens": 121,
+      "counts_as_falsification": true,
+      "error": null,
+      "evidence_id": "EV-31f9e34bc91f9056",
+      "invocation_id": "TI-80c97e32fc37d091",
+      "number": 4,
+      "outcome": "executed:success",
+      "prompt_tokens": 5477,
+      "raw_response": "{\"action\": \"request\", \"tool\": \"function_disassembly\", \"arguments\": {\"function\": \"FUN_0000a0cc\"}, \"purpose\": \"The evidence EV-aec58644e0021efd shows the EIC path reaches the convergence point via FUN_0000a0cc. I need to understand the role of this function in the EIC interrupt dispatch to see if it is part of the interrupt handling logic or a higher-level caller, which is critical to evaluating the 'interrupt-dispatch path' claim.\"}",
+      "rejection": null,
+      "request_chars": 15170,
+      "request_messages": 8,
+      "result_summary": "[EV-31f9e34bc91f9056] FUN_0000a0cc entry=0x0000a0cc bounds=Ghidra function metadata 0x0000a0cc push.w {r4, r5, r6, r7, r8, lr} 0x0000a0d0 add.w r6, r0, #0x10 0x0000a0d4 sub sp, #0x18 0x0000a0d6 mov r5, r0 0x0000a0d8 mov r0, r6 0x0000a0da bl #0xa3a8 0x0000a0de cmp r0, #0 0x0000a0e0 bne.w #0xa1e6 0x0000a0e4 add.w r7, r5, #0x24 0x0000a0e8 mov r0, r7 0x0000a0ea bl #0xa3a8 0x0000a0ee mov r4, r0 0x0000a0f0 cmp r0, #0 0x0000a0f2 bne #0xa1da 0x0000a0f4 mov r0, r5 0x0000a0f6 bl #0xa0a8 0x0000a0fa uxtb r1, r0 0x0000a0fc mov r0, r6 0x0000a0fe bl #0xa5a4 0x0000a102 movs r1, #2 0x0000a104 mov r0, r6 0x0000a106 bl #0xa5d4 0x0000a10a movs r2, #1 0x0000a10c ldr r1, [pc, #0xdc] 0x0000a10e ldr.w r8, [pc, #0xe0] 0x0000a112 mov r0, r6 0x0000a114 bl #0xa59c 0x0000a118 mov r0, r6 0x0000a11a bl #0xa604 0x0000a11e str.w r5, [r8, r0, lsl #2] 0x0000a122 mov r0, r5 0x0000a124 bl #0xa084 0x0000a128 uxtb r1, r0 0x0000a12a mov r0, r7 0x0000a12c bl #0xa5a4 0x0000a130 movs r1, #2 0x0000a132 mov r0, r7 0x0000a134 bl #0xa5d4 0x0000a138 mov r0, r7 0x0000a13a bl #0xa604 0x0000a13e str.w r5, [r8, r0, lsl #2] 0x0000a142 mov r0, r5 0x0000a144 bl #0xa064 0x0000a148 mov.w r8, #1 0x0000a14c mov r1, r0 0x0000a14e mov r3, r4",
+      "tool": "function_disassembly"
+    },
+    {
+      "action": "error",
+      "arguments": {},
+      "attempt": 0,
+      "completion_tokens": null,
+      "counts_as_falsification": null,
+      "error": "prefill_memory_exceeded",
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 5,
+      "outcome": null,
+      "prompt_tokens": null,
+      "raw_response": null,
+      "rejection": null,
+      "request_chars": 17328,
+      "request_messages": 10,
+      "result_summary": null,
+      "tool": null
+    },
+    {
+      "action": "invalid",
+      "arguments": {},
+      "attempt": 1,
+      "completion_tokens": 422,
+      "counts_as_falsification": false,
+      "error": null,
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 5,
+      "outcome": "parse_failure",
+      "prompt_tokens": 6855,
+      "raw_response": "```json\n{\n  \"verdict\": \"CHALLENGED\",\n  \"analysis\": \"The claim asserts that the physical/EIC interrupt-dispatch path converges with the USB interrupt path. The evidence provided in EV-aec58644e0021efd shows a 'convergence' at FUN_0000e628, where the paths from USB and EIC meet. However, the disassembly of FUN_0000e628 (EV-6c95569eb0aca81c) reveals it is a simple jump/branch instruction: it loads a value from a memory location (via r3) and branches to it (b.w #0xe7a0). This indicates that FUN_0000e628 is not a functional 'convergence point' in the sense of a shared handler or a common processing block, but rather a jump table entry or a simple trampoline. Furthermore, the EIC path reaches this point via FUN_0000a0cc. The disassembly of FUN_0000a0cc (EV-31f9e34bc91f9056) shows a complex function with multiple calls to other functions (e.g., bl #0xa3a8, bl #0xa5a4, etc.), which looks like application-level logic or a driver initialization routine rather than a low-level interrupt dispatch path. The 'convergence' identified is a structural artifact of the call graph (a shared call site or a jump target) rather than a semantic convergence of the interrupt-handling logic itself. Because the claim specifically targets the 'interrupt-dispatch path' and the evidence shows the convergence occurs at a trivial jump instruction (a trampoline) or a high-level function, the claim that the dispatch paths themselves converge is not supported by the evidence provided. The grade 'STRONG' is inappropriate for a structural artifact that does not represent a functional convergence of interrupt handling.\"\n}\n```",
+      "rejection": "action must be \"request\" or \"verdict\"",
+      "request_chars": 17328,
+      "request_messages": 10,
+      "result_summary": null,
+      "tool": null
+    }
+  ],
+  "template_version": "audit-v0.4",
+  "termination_reason": "decision_budget_exhausted",
+  "verdict": "UNRESOLVED",
+  "verdict_synthesized": true
+}

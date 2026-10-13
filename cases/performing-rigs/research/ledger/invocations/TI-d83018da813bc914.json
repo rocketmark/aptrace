@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "function": "FUN_0000c5cc"
+  },
+  "context_id": "X-7af50a9ee492b01a",
+  "ended_at": "2026-10-12T23:45:24.586+00:00",
+  "error": "KeyError: 'Function not found: FUN_0000c5cc'",
+  "evidence_id": null,
+  "input_artifacts": {
+    "ghidra_export": "8f016a326f3b3e8a5eb059a814909c0365217edcd512306d0c1afa863f33556a"
+  },
+  "input_evidence_ids": [
+    "EV-d9343c6252f6f61a",
+    "EV-2b4ede98fb3145cc"
+  ],
+  "invocation_id": "TI-d83018da813bc914",
+  "operation_key": "60a1eba2b3f04493283e3ad3c810712236d34768e4cae1e49b51a166ccb0e8fa",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": null,
+  "run_id": "A-20261012T234455-90a51c",
+  "runtime_ms": 0.046,
+  "session_evidence_id": null,
+  "started_at": "2026-10-12T23:45:24.586+00:00",
+  "status": "error",
+  "tool": "function_disassembly"
+}

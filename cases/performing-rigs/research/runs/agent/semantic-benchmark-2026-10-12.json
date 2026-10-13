@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-10-13T01:17:07.323781+00:00",
+  "results": [
+    {
+      "benchmark": "semantic-usb-eic",
+      "setup_run_id": "R-20261013T011707-ea649e",
+      "evidence": {
+        "usb": "EV-d9343c6252f6f61a",
+        "usb_agreement": "EV-5399815447618e02",
+        "eic": "EV-d816b5c25a8f750b",
+        "usb_eic_paths": "EV-aec58644e0021efd"
+      },
+      "claims": [
+        {
+          "label": "good",
+          "key": "C6:v1",
+          "audit_id": null,
+          "audit_verdict": null,
+          "final_state": "PROPOSED",
+          "failed_checks": [
+            "independent_audit"
+          ],
+          "expectations": {
+            "must_not_be": true
+          },
+          "passed": true,
+          "audit_skipped": false,
+          "semantic_codes": []
+        },
+        {
+          "label": "bad",
+          "key": "C7:v1",
+          "audit_id": null,
+          "audit_verdict": null,
+          "final_state": "BLOCKED",
+          "failed_checks": [
+            "claim_semantics",
+            "grade_ceiling"
+          ],
+          "expectations": {
+            "final_state": true,
+            "verifier_fails:claim_semantics": true,
+            "verifier_fails:grade_ceiling": true,
+            "audit_skipped": true,
+            "semantic:ENTITY_ROLE_MISMATCH": true
+          },
+          "passed": true,
+          "audit_skipped": true,
+          "semantic_codes": [
+            "ENTITY_ROLE_MISMATCH"
+          ]
+        },
+        {
+          "label": "eic_dispatch_convergence",
+          "key": "C8:v1",
+          "audit_id": null,
+          "audit_verdict": null,
+          "final_state": "BLOCKED",
+          "failed_checks": [
+            "claim_semantics"
+          ],
+          "expectations": {
+            "final_state": true,
+            "verifier_fails:claim_semantics": true,
+            "audit_skipped": true,
+            "semantic:SCOPE_MISMATCH": true
+          },
+          "passed": true,
+          "audit_skipped": true,
+          "semantic_codes": [
+            "SCOPE_MISMATCH"
+          ]
+        }
+      ],
+      "passed": true
+    }
+  ]
+}

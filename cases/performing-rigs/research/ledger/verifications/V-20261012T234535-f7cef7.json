@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-12T23:45:35.131+00:00",
+  "audit_id": "A-20261012T234455-90a51c",
+  "audit_verdict": "CHALLENGED",
+  "checks": [
+    {
+      "detail": "1 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "1 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "2 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234455-90a51c CHALLENGED: The tool failed to find FUN_0000cc14, making it impossible to verify the indirect call at 0x0000cc1a.; The tool failed to find FUN_0000c724, making it impossible to verify the target of the call.; The tool failed to find FUN_0000c5cc, making it impossible to verify the forwarding behavior.",
+      "name": "independent_audit",
+      "passed": false,
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C2:v1",
+  "context_id": "X-7af50a9ee492b01a",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "replay_invocation_ids": [
+    "TI-e877b967bd041354"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261012T234535-f7cef7"
+}

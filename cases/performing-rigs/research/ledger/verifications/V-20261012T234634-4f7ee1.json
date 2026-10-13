@@ -1,0 +1,90 @@
+{
+  "at": "2026-10-12T23:46:34.495+00:00",
+  "audit_id": "A-20261012T234605-72b150",
+  "audit_verdict": "CHALLENGED",
+  "checks": [
+    {
+      "detail": "3 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "3 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG, EV-d816b5c25a8f750b=STRONG, EV-aec58644e0021efd=STRONG)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "6 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234605-72b150 CHALLENGED: The claim is based on a misundersoin of the evidence: the convergence in EV-aec58644e0021efd was between peripheral MMIO users, not the interrupt-dispatch paths. The actual interrupt handlers (IRQ:USB and IRQ:EIC) do not converge within the census hop bound.",
+      "name": "independent_audit",
+      "passed": false,
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C4:v1",
+  "context_id": "X-7af50a9ee492b01a",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "replay_invocation_ids": [
+    "TI-296f93deb882c31b",
+    "TI-18a9fb4b015417bc",
+    "TI-ec5e7502bedd7c16"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261012T234634-4f7ee1"
+}

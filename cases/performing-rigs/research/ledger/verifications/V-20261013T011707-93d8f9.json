@@ -1,0 +1,91 @@
+{
+  "at": "2026-10-13T01:17:07.317+00:00",
+  "audit_id": null,
+  "audit_skipped": true,
+  "audit_verdict": null,
+  "checks": [
+    {
+      "detail": "2 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "ENTITY_ROLE_MISMATCH: supporting evidence identifies FUN_0000ccc4 as WRITER, not CALLBACK_TARGET",
+      "name": "claim_semantics",
+      "passed": false,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "proposed EXACT; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG, EV-5399815447618e02=STRONG)",
+      "name": "grade_ceiling",
+      "passed": false,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "4 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    }
+  ],
+  "claim_version": "C7:v1",
+  "context_id": "X-bb5103e57baa4458",
+  "mode": "full",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "BLOCKED",
+  "phases": {
+    "A": "passed",
+    "B": "failed",
+    "C": "skipped",
+    "D": "skipped"
+  },
+  "replay_invocation_ids": [],
+  "schema_version": 1,
+  "semantic_checks": [
+    {
+      "claimed": "FUN_0000ccc4",
+      "claimed_role": "CALLBACK_TARGET",
+      "code": "ENTITY_ROLE_MISMATCH",
+      "detail": "supporting evidence identifies FUN_0000ccc4 as WRITER, not CALLBACK_TARGET",
+      "evidence_id": "EV-d9343c6252f6f61a",
+      "evidence_role": "WRITER",
+      "evidence_value": null,
+      "field": "role",
+      "passed": false
+    }
+  ],
+  "verification_id": "V-20261013T011707-93d8f9"
+}

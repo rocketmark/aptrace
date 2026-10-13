@@ -1,0 +1,89 @@
+{
+  "at": "2026-10-12T23:46:51.292+00:00",
+  "audit_id": "A-20261012T234634-b982e2",
+  "audit_verdict": "SUPPORTED",
+  "checks": [
+    {
+      "detail": "2 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "2 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "severity": "stale"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "all dependencies VERIFIED",
+      "name": "dependencies_verified",
+      "passed": true,
+      "severity": "hold"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-d9343c6252f6f61a=STRONG, EV-bab8f6cc269494ab=BOUNDED)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "5 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "severity": "block"
+    },
+    {
+      "detail": "A-20261012T234634-b982e2 SUPPORTED",
+      "name": "independent_audit",
+      "passed": true,
+      "severity": "hold"
+    }
+  ],
+  "claim_version": "C5:v1",
+  "context_id": "X-7af50a9ee492b01a",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "VERIFIED",
+  "replay_invocation_ids": [
+    "TI-96cbab4e0c17c4ba",
+    "TI-7dc2e736c51937cf"
+  ],
+  "schema_version": 1,
+  "verification_id": "V-20261012T234651-f05b9b"
+}
