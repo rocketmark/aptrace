@@ -31,6 +31,9 @@ events.jsonl                       lifecycle events (append-only)
 ```
 
 Every JSON record is written once; rewriting different content raises.
+An `InvestigationRun` may carry `work_item_id`, an opaque reference to the
+work item it was executed for ([`work-store.md`](work-store.md)). It is set
+at recording, and it is absent from standalone and older runs.
 Current claim and evidence state is folded from `events.jsonl` and never
 stored on a record, so history is never rewritten.
 
@@ -233,6 +236,7 @@ claims are not repaired automatically.
 
 ```sh
 aptrace-agent research --ledger "<objective>"   # record run, evidence, claim proposals
+aptrace-agent research --ledger --work-item ID  # same, for a Beads work item (work-store.md)
 aptrace-agent claims                            # current state of every claim version
 aptrace-agent propose spec.json                 # record a PROPOSED claim from a spec
 aptrace-agent audit C7                          # adversarial audit (latest version)

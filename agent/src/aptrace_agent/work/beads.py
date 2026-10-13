@@ -40,6 +40,16 @@ def find_bd() -> str | None:
     return os.environ.get("APTRACE_BD") or shutil.which("bd")
 
 
+def _inside_git(path: Path) -> bool:
+    existing = next((p for p in (path, *path.parents) if p.is_dir()), None)
+
+    if existing is None:
+        return False
+
+    inside = subprocess.run(["git", "-C", str(existing), "rev-parse", "--is-inside-work-tree"], capture_output=True, text=True)
+    return inside.returncode == 0 and inside.stdout.strip() == "true"
+
+
 def _edge(raw: dict[str, Any]) -> tuple[str, str]:
     # `show` embeds the other issue (id, dependency_type); `list`/`ready`
     # return edge rows (issue_id, depends_on_id, type).
@@ -100,15 +110,16 @@ class BeadsWorkStore:
 
     def _exec(self, args: list[str], *, actor: str | None = None) -> subprocess.CompletedProcess[str]:
         if not self.bd:
-            raise WorkStoreUnavailable("bd executable not found (set APTRACE_BD or put bd on PATH)")
+            raise WorkStoreUnavailable(f"Beads CLI not found: install bd {PINNED_BEADS_VERSION} and set APTRACE_BD or put bd on PATH")
 
         command = [self.bd, *args, "--actor", actor or self.actor]
-        self.beads_dir.parent.mkdir(parents=True, exist_ok=True)
+        # Only initialize() creates the store root; `bd version` may run before it exists.
+        cwd = self.beads_dir.parent if self.beads_dir.parent.is_dir() else None
 
         try:
             return subprocess.run(
                 command,
-                cwd=self.beads_dir.parent,
+                cwd=cwd,
                 env=self._environment(),
                 capture_output=True,
                 text=True,
@@ -116,7 +127,7 @@ class BeadsWorkStore:
                 stdin=subprocess.DEVNULL,
             )
         except FileNotFoundError as exc:
-            raise WorkStoreUnavailable(f"bd executable not runnable: {exc}") from exc
+            raise WorkStoreUnavailable(f"Beads CLI not runnable ({exc}): install bd {PINNED_BEADS_VERSION} and set APTRACE_BD or put bd on PATH") from exc
         except subprocess.TimeoutExpired as exc:
             raise WorkStoreUnavailable(f"bd {args[0]} timed out after {self.timeout}s") from exc
 
@@ -161,9 +172,24 @@ class BeadsWorkStore:
         version = self.version()
 
         if not version.startswith(SUPPORTED_SERIES):
-            raise WorkStoreError(f"bd {version} is untested; this adapter is pinned to {PINNED_BEADS_VERSION}")
+            raise WorkStoreUnavailable(f"bd {version} is untested; this adapter is pinned to {PINNED_BEADS_VERSION} (set APTRACE_BD to a 1.3.x binary)")
 
         return version
+
+    def open_checked(self) -> BeadsWorkStore:
+        """
+        Production entry: a supported bd, an existing store, and a store
+        outside any git work tree. Never creates or initializes anything.
+        """
+
+        self.check_version()
+
+        if _inside_git(self.beads_dir.parent):
+            raise WorkStoreError(f"refusing to use a Beads store inside git work tree {self.beads_dir.parent}; keep it outside the checkout")
+        if not (self.beads_dir / "metadata.json").is_file():
+            raise WorkStoreUnavailable(f"no Beads store at {self.beads_dir}; create one with `aptrace-agent work init`")
+
+        return self
 
     def initialize(self, *, prefix: str = "apt", allow_inside_git: bool = False) -> None:
         """
@@ -179,13 +205,8 @@ class BeadsWorkStore:
         self.check_version()
         parent = self.beads_dir.parent
         parent.mkdir(parents=True, exist_ok=True)
-        inside = subprocess.run(
-            ["git", "-C", str(parent), "rev-parse", "--is-inside-work-tree"],
-            capture_output=True,
-            text=True,
-        )
 
-        if inside.returncode == 0 and inside.stdout.strip() == "true" and not allow_inside_git:
+        if not allow_inside_git and _inside_git(parent):
             raise WorkStoreError(f"refusing to initialize Beads inside git work tree {parent}")
 
         self.beads_dir.mkdir(parents=True, exist_ok=True)
@@ -247,8 +268,12 @@ class BeadsWorkStore:
         rows = self._json(["ready", "--claim"], actor=actor) or []
         return _item(rows[0]) if rows else None
 
+    # Leases: claims carry a 5-minute lease in bd 1.3.1 (not configurable from
+    # the CLI). A lease only matters to `bd reclaim`. APTrace's production path
+    # never heartbeats or reclaims; these two exist for experiments and for a
+    # future supervisor (see docs/work-store.md).
+
     def heartbeat(self, item_id: str, actor: str) -> None:
-        # Claims carry a 5-minute lease in bd 1.3.1 (not configurable from the CLI).
         self._json(["heartbeat", item_id], actor=actor)
 
     def reclaim_stale(self, *, older_than: str = "10m") -> Any:

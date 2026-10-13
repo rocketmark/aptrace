@@ -53,6 +53,12 @@ belong in each case's status document.
   path relation over set scopes) that APTrace verifies deterministically in
   phased verification; the audit model is consulted only for claims that
   pass structural, semantic, and replay checks.
+- Track long-horizon investigation work in an optional Beads store
+  ([`work-store.md`](work-store.md)): `research --ledger --work-item` runs a
+  validated work item through the normal pipeline, the run records the
+  item id (`InvestigationRun.work_item_id`), and exact reconciliation repairs
+  a failed write-back without re-running. Ownership is a Beads claim plus a
+  host-local item lock. Closing work never changes claim state.
 
 ## Current limitations
 
@@ -86,6 +92,11 @@ belong in each case's status document.
 - The local Qwen3-Coder planner does not reliably emit structured claim
   output as tool arguments: nested and multiple array arguments degrade into
   malformed tool-call text.
+- Work items are run and completed only by explicit operator commands.
+  There is no scheduler, lease heartbeat, or reclaim. Ownership liveness is
+  host-local (one host per work store), an interrupted investigation restarts
+  from its objective rather than resuming, and restarts may duplicate
+  `PROPOSED` claims (reported, not merged).
 - Case selection is currently wired explicitly by the application and some
   scripts. A plugin/provider architecture is intentionally deferred until more
   than one real case demonstrates the need.

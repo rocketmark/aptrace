@@ -17,8 +17,12 @@ development. Concrete target findings and evidence belong to a case under
 - [`toolchain.md`](toolchain.md) — build and development environment.
 - [`aptrace-agent-framework.md`](aptrace-agent-framework.md) — roadmap for the
   Galois-first binary map, local-model labeling, and investigation tooling.
-- [`spikes/beads-work-store.md`](spikes/beads-work-store.md) — spike: Beads as
-  the long-horizon work store beside the research ledger (not adopted).
+- [`research-ledger.md`](research-ledger.md) — research ledger, adversarial
+  audit, and deterministic verification.
+- [`work-store.md`](work-store.md) — optional Beads-backed investigation work
+  items: hand-off to the ledger, reconciliation, ownership, backup.
+- [`spikes/beads-work-store.md`](spikes/beads-work-store.md) — the spike that
+  evaluated Beads as the work store (adopted with conditions).
 
 ## Tooling and methodology
 

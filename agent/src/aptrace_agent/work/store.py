@@ -39,6 +39,10 @@ class DuplicateWork(WorkStoreError):
     """A work item with this explicit id already exists."""
 
 
+class WorkActive(WorkStoreError):
+    """Another local process is executing (or reconciling) this work item."""
+
+
 @dataclass(frozen=True)
 class WorkItem:
     id: str

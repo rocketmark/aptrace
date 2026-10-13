@@ -81,6 +81,7 @@ def record_investigation(
     ended_at: str,
     source: SourceRevision,
     parent_run_id: str | None = None,
+    work_item_id: str | None = None,
 ) -> InvestigationRun:
     run_id = new_id("R")
     session_to_durable: dict[str, str] = {}
@@ -171,5 +172,6 @@ def record_investigation(
                 {"number": s.number, "action": s.action, "lead_id": s.lead_id, "evidence_id": s.evidence_id, "reason": s.reason}
                 for s in run.result.steps
             ],
+            work_item_id=work_item_id,
         )
     )

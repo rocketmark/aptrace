@@ -11,7 +11,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, SerializerFunctionWrapHandler, model_serializer
 
 from aptrace_agent.ledger.claim_semantics import ClaimSemantics, SemanticCheck
 
@@ -141,6 +141,21 @@ class InvestigationRun(_Record):
     # Bounded planner request size history, as recorded by the controller.
     planner_requests: list[dict[str, Any]] = Field(default_factory=list)
     trajectory: list[dict[str, Any]] = Field(default_factory=list)
+    # Opaque id of the external work item this run was executed for, fixed
+    # when the run is recorded. The ledger does not interpret it; several
+    # runs may carry the same id. Absent on standalone runs and older
+    # records, and omitted from the serialized record when unset so those
+    # records are unchanged.
+    work_item_id: str | None = None
+
+    @model_serializer(mode="wrap")
+    def _omit_unset_work_item(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        data = handler(self)
+
+        if data.get("work_item_id") is None:
+            data.pop("work_item_id", None)
+
+        return data
 
 
 class ToolInvocation(_Record):

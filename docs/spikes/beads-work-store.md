@@ -1,7 +1,10 @@
 # Spike: Beads as APTrace's Long-Horizon Work Store
 
-Status: **spike, not adopted**. Branch `spike/beads-workstore` from
-`46a7799`. Nothing here changes the research ledger, audit, or verification.
+Status: **spike, adopted with conditions**. Branch `spike/beads-workstore`
+from `46a7799`. This report describes the spike as run. The production
+integration, which adds the exact run reference (condition 1), explicit
+restarts (2), and a lease-free ownership model (3), is documented in
+[`../work-store.md`](../work-store.md).
 
 **Recommendation: ADOPT WITH CONDITIONS** (see the end of this document).
 

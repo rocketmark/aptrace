@@ -452,8 +452,12 @@ def handle_ledger_command(args: argparse.Namespace) -> bool:
     return False
 
 
-def record_research_run(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls) -> str:
-    """Record a finished `research --ledger` run; returns the run id."""
+def record_research_run(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None) -> str:
+    """Record a finished `research --ledger` run; returns the run id.
+
+    work_item_id, when given, is stored on the run as an opaque reference to
+    the work item the run was executed for (see `aptrace-agent work`).
+    """
 
     from aptrace_agent.ledger.operations import source_revision
     from aptrace_agent.ledger.recorder import code_identity, record_investigation
@@ -472,6 +476,7 @@ def record_research_run(run, *, executor, recorder, ledger_dir_override, started
         started_at=started_at,
         ended_at=ended_at,
         source=source_revision(REPO_ROOT),
+        work_item_id=work_item_id,
     )
 
     for key in recorded.claim_versions:

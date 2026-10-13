@@ -5,11 +5,11 @@ Needs the Beads CLI (`bd`, pinned 1.3.1) on PATH or in APTRACE_BD; skipped
 otherwise. No model, network, census, or Ghidra: investigations run the real
 ResearchController with a scripted planner over the shared fake executor.
 Every store lives under tmp_path with a sandbox HOME, outside any git tree.
+Policy coverage without bd is in test_work_handoff.py and test_work_cli.py.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
 import shutil
@@ -19,22 +19,20 @@ import textwrap
 import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
-from types import SimpleNamespace
 
 import pytest
 
-from aptrace_agent.investigator import AutonomousInvestigationRun
 from aptrace_agent.ledger.auditor import ClaimAuditor
-from aptrace_agent.ledger.models import ClaimState, SourceRevision
-from aptrace_agent.ledger.recorder import RecordingExecutor, record_investigation
+from aptrace_agent.ledger.models import ClaimState
 from aptrace_agent.ledger.store import now
 from aptrace_agent.ledger.verifier import ClaimVerifier
-from aptrace_agent.research import LeadFollower, LeadRegistry, ResearchController, ResearchSession
 from aptrace_agent.work import handoff
 from aptrace_agent.work.beads import PINNED_BEADS_VERSION, BeadsWorkStore, find_bd
+from aptrace_agent.work.ownership import ItemLock
 from aptrace_agent.work.store import CLOSED, IN_PROGRESS, OPEN, ClaimConflict, WorkStoreError, WorkStoreUnavailable
 
-from ledger_support import FakeExecutor, ScriptedAuditModel, irq_handlers, request, stack, verdict
+from ledger_support import ScriptedAuditModel, irq_handlers, request, stack, verdict
+from work_support import OBJECTIVE, investigator as _investigator, snapshot as _snapshot
 
 
 BD = find_bd()
@@ -70,54 +68,6 @@ def _open(root: Path, actor: str = "aptrace-test") -> BeadsWorkStore:
     return BeadsWorkStore(root / "work" / ".beads", env={"HOME": str(root / "home")}, actor=actor)
 
 
-def _snapshot(root: Path) -> dict[str, str]:
-    return {
-        str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-        for p in sorted(root.rglob("*"))
-        if p.is_file()
-    }
-
-
-class _Planner:
-    """Follows the first lead, then answers the finish-only claim request."""
-
-    def __init__(self, claims: str):
-        self.claims = claims
-        self.chat = SimpleNamespace(completions=SimpleNamespace(create=self._create))
-
-    def _create(self, **kwargs):
-        names = [t["function"]["name"] for t in kwargs["tools"]]
-
-        if names == ["finish"]:
-            name, arguments = "finish", {"reason": "budget", "claims": self.claims}
-        else:
-            lead = kwargs["tools"][0]["function"]["parameters"]["properties"]["lead_id"]["enum"][0]
-            name, arguments = "follow_lead", {"lead_id": lead}
-
-        call = SimpleNamespace(function=SimpleNamespace(name=name, arguments=json.dumps(arguments)))
-        return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=None, tool_calls=[call]))])
-
-
-def _investigator(ledger, context, claims="PROBABLE STRUCTURE E1 FUN_0000cc14 is the USB_OTHER interrupt handler."):
-    """The `research --ledger` path: controller run, then record_investigation."""
-
-    def investigate(objective: str) -> str:
-        registry = LeadRegistry()
-        executor = RecordingExecutor(FakeExecutor())
-        session = ResearchSession(objective=objective, registry=registry, follower=LeadFollower(registry=registry, executor=executor))
-        session.state.add_lead(registry.register(kind="function", description="USB handler", tool="function_facts", arguments={"function": "FUN_0000cc14"}))
-        started = now()
-        result = ResearchController(planner_client=_Planner(claims), planner_model="scripted", reconciler=object(), max_steps=1, claim_contract=True).run(session)
-        run = AutonomousInvestigationRun(objective=objective, seed_function=None, result=result, state=session.state.model_copy(deep=True), evidence=tuple(session.ledger.all()))
-        recorded = record_investigation(
-            ledger, run, context=context(), recorder=executor, model="scripted", execution_config={}, planner_version="test",
-            budgets={"max_steps": 1}, started_at=started, ended_at=now(), source=SourceRevision(),
-        )
-        return recorded.run_id
-
-    return investigate
-
-
 def _auditor(ledger, runner, decisions):
     return ClaimAuditor(
         ledger=ledger, runner=runner, client=ScriptedAuditModel(decisions), model="gemma-test",
@@ -135,9 +85,6 @@ def _usb_claim(ledger, runner):
         proposed_by="test",
         supporting_evidence_ids=[artifact.evidence_id],
     )
-
-
-OBJECTIVE = "Determine which handler services USB_OTHER and what it dispatches."
 
 
 # -- A: durable investigation work --------------------------------------------
@@ -244,20 +191,38 @@ def test_c_holder_reclaim_is_idempotent_and_release_is_compare_and_swap(work):
 # -- D: hand-off to a recorded investigation run ------------------------------
 
 
+def _run(work, ledger, context, item_id, tmp_path, *, actor="controller", **flags):
+    return handoff.run_investigation(
+        work, ledger, item_id, actor=actor, context=context(), investigate=_investigator(ledger, context),
+        lock_dir=tmp_path / "locks", **flags,
+    )
+
+
+def _reconcile(work, ledger, item_id, tmp_path, actor="controller"):
+    return handoff.reconcile(work, ledger, item_id, actor=actor, lock=ItemLock(tmp_path / "locks", item_id))
+
+
 @needs_bd
 def test_d_work_item_drives_existing_investigation_and_records_run_id(work, tmp_path):
     ledger, _executor, context, _runner = stack(tmp_path)
     item = handoff.create_investigation(work, context=context(), objective=OBJECTIVE)
 
-    run_id = handoff.run_investigation(work, item.id, actor="controller", investigate=_investigator(ledger, context))
+    outcome = _run(work, ledger, context, item.id, tmp_path)
 
-    run = ledger.run(run_id)
-    done = work.get_work(item.id)
-    assert run.objective == OBJECTIVE and run.case == "performing-rigs"
-    assert done.status == CLOSED and done.metadata["aptrace_run_ids"] == [run_id]
-    assert done.metadata["aptrace_run_link_basis"] == {run_id: handoff.LINK_DIRECT}
-    assert "owned by the APTrace ledger" in done.close_reason
+    run = ledger.run(outcome.run_id)
+    after = work.get_work(item.id)
+    assert run.objective == OBJECTIVE and run.case == "performing-rigs" and run.work_item_id == item.id
+    assert (after.status, after.assignee) == (IN_PROGRESS, "controller")  # not closed automatically
+    assert after.metadata["aptrace_run_ids"] == [run.run_id]
+    assert after.metadata["aptrace_run_link_basis"] == {run.run_id: handoff.LINK_DIRECT}
+    assert outcome.reconciliation.state == handoff.AWAITING_COMPLETION
+
+    before = _snapshot(ledger.root)
+    done = handoff.complete_investigation(work, ledger, item.id, actor="controller", lock_dir=tmp_path / "locks")
+    closed = work.get_work(item.id)
+    assert done.state == handoff.COMPLETED and closed.status == CLOSED and "owned by the APTrace ledger" in closed.close_reason
     # Closing the work did not touch the claims the run proposed.
+    assert _snapshot(ledger.root) == before
     assert run.claim_versions and all(ledger.state(k) == ClaimState.PROPOSED for k in run.claim_versions)
     assert all(e.actor == "aptrace-ledger" for e in ledger.events())
 
@@ -266,23 +231,30 @@ def test_d_work_item_drives_existing_investigation_and_records_run_id(work, tmp_
 
 
 @needs_bd
-def test_e_crash_before_any_run_means_restart(work, tmp_path):
+def test_e_crash_before_any_run_needs_explicit_restart(work, tmp_path):
     ledger, _executor, context, _runner = stack(tmp_path)
     item = handoff.create_investigation(work, context=context(), objective=OBJECTIVE)
     work.claim_work(item.id, "controller")
-    work.update_metadata(item.id, {handoff.ATTEMPT_STARTED: now(), handoff.ATTEMPT_ACTOR: "controller"})
+    work.update_metadata(item.id, {
+        handoff.ATTEMPT_ID: "WA-dead", handoff.ATTEMPT_STATE: handoff.RUNNING, handoff.ATTEMPT_STARTED: now(),
+        handoff.ATTEMPT_ACTOR: "controller", handoff.ATTEMPT_HOST: handoff.hostname(),
+    })
     # ... process dies here: the controller never finished, so no run exists.
 
-    recovery = handoff.recover(_open(tmp_path / "beads"), ledger, item.id)
+    recovery = _reconcile(_open(tmp_path / "beads"), ledger, item.id, tmp_path)
 
-    assert recovery.next_action == "restart"
+    assert recovery.state == handoff.INTERRUPTED
     assert (recovery.item.status, recovery.item.assignee) == (IN_PROGRESS, "controller")
-    assert recovery.linked_runs == recovery.orphan_runs == []
+    assert recovery.linked_runs == recovery.unlinked_runs == []
     assert not ledger.runs()
-    # The same controller may resume ownership; a different worker may not.
-    work.claim_work(item.id, "controller")
-    with pytest.raises(ClaimConflict):
+    with pytest.raises(handoff.WorkRefused, match="--restart"):
+        _run(work, ledger, context, item.id, tmp_path)
+    # A different worker cannot take over; the same controller may restart deliberately.
+    with pytest.raises(handoff.WorkRefused, match="claimed-by-other"):
+        _run(work, ledger, context, item.id, tmp_path, actor="other-worker", restart=True)
+    with pytest.raises(ClaimConflict):  # and Beads itself refuses the claim
         work.claim_work(item.id, "other-worker")
+    assert _run(work, ledger, context, item.id, tmp_path, restart=True).owned
 
 
 class _FailsAfterInvestigation:
@@ -305,32 +277,31 @@ class _FailsAfterInvestigation:
 
 
 @needs_bd
-def test_e_run_recorded_but_not_linked_is_recovered_once_without_touching_ledger(work, tmp_path):
+def test_e_run_recorded_but_not_linked_is_recovered_exactly_without_touching_ledger(work, tmp_path):
     ledger, _executor, context, _runner = stack(tmp_path)
     item = handoff.create_investigation(work, context=context(), objective=OBJECTIVE)
 
-    with pytest.raises(WorkStoreUnavailable):
-        handoff.run_investigation(_FailsAfterInvestigation(work), item.id, actor="controller", investigate=_investigator(ledger, context))
+    with pytest.raises(handoff.WriteBackFailed):
+        _run(_FailsAfterInvestigation(work), ledger, context, item.id, tmp_path)
 
     (run,) = ledger.runs()
+    assert run.work_item_id == item.id
     before = _snapshot(ledger.root)
-    fresh = _open(tmp_path / "beads")
-    recovery = handoff.recover(fresh, ledger, item.id)
+    recovery = _reconcile(_open(tmp_path / "beads"), ledger, item.id, tmp_path)
 
-    assert recovery.next_action == "link-orphan-run" and recovery.orphan_runs == [run.run_id]
-
-    with pytest.raises(ClaimConflict):  # another worker cannot take over a live claim
-        handoff.apply_recovery(fresh, ledger, item.id, actor="other-worker")
+    assert recovery.state == handoff.LINK_RUNS and recovery.unlinked_runs == [run.run_id]
 
     for _ in range(3):  # repeated recovery is idempotent
-        final = handoff.apply_recovery(_open(tmp_path / "beads"), ledger, item.id, actor="controller")
+        final = handoff.apply_reconciliation(_open(tmp_path / "beads"), ledger, item.id, actor="controller", lock_dir=tmp_path / "locks")
 
-    item = fresh.get_work(item.id)
-    assert final.next_action == "none" and item.status == CLOSED
-    assert item.metadata["aptrace_run_ids"] == [run.run_id]
-    assert item.metadata["aptrace_run_link_basis"] == {run.run_id: handoff.LINK_RECOVERED}
+    linked = work.get_work(item.id)
+    assert final.state == handoff.AWAITING_COMPLETION and linked.status == IN_PROGRESS
+    assert linked.metadata["aptrace_run_ids"] == [run.run_id]
+    assert linked.metadata["aptrace_run_link_basis"] == {run.run_id: handoff.LINK_RECONCILED}
     assert final.claim_states == {k: "PROPOSED" for k in run.claim_versions}
     assert _snapshot(ledger.root) == before  # recovery read the ledger only
+    assert handoff.complete_investigation(work, ledger, item.id, actor="controller", lock_dir=tmp_path / "locks").state == handoff.COMPLETED
+    assert len(ledger.runs()) == 1
 
 
 @needs_bd
@@ -338,8 +309,8 @@ def test_e_recovery_from_a_fresh_python_process(work, tmp_path):
     ledger, _executor, context, _runner = stack(tmp_path)
     item = handoff.create_investigation(work, context=context(), objective=OBJECTIVE)
 
-    with pytest.raises(WorkStoreUnavailable):
-        handoff.run_investigation(_FailsAfterInvestigation(work), item.id, actor="controller", investigate=_investigator(ledger, context))
+    with pytest.raises(handoff.WriteBackFailed):
+        _run(_FailsAfterInvestigation(work), ledger, context, item.id, tmp_path)
 
     script = textwrap.dedent(
         f"""
@@ -347,27 +318,27 @@ def test_e_recovery_from_a_fresh_python_process(work, tmp_path):
         from pathlib import Path
         from aptrace_agent.ledger.store import ResearchLedger
         from aptrace_agent.work.beads import BeadsWorkStore
-        from aptrace_agent.work.handoff import recover
+        from aptrace_agent.work.handoff import apply_reconciliation
         root = Path({str(tmp_path / 'beads')!r})
         store = BeadsWorkStore(root / "work" / ".beads", env={{"HOME": str(root / "home")}})
-        r = recover(store, ResearchLedger(Path({str(ledger.root)!r})), {item.id!r})
+        r = apply_reconciliation(store, ResearchLedger(Path({str(ledger.root)!r})), {item.id!r}, actor="controller", lock_dir=Path({str(tmp_path / 'locks')!r}))
         print(json.dumps({{"status": r.item.status, "assignee": r.item.assignee, "objective": r.item.metadata["aptrace_objective"],
-                          "orphans": r.orphan_runs, "next": r.next_action}}))
+                          "linked": r.linked_runs, "state": r.state}}))
         """
     )
     done = subprocess.run([sys.executable, "-c", script], capture_output=True, text=True, timeout=120, env={**os.environ, "APTRACE_BD": BD})
 
     assert done.returncode == 0, done.stderr
     state = json.loads(done.stdout)
-    assert state == {"status": IN_PROGRESS, "assignee": "controller", "objective": OBJECTIVE, "orphans": [ledger.runs()[0].run_id], "next": "link-orphan-run"}
+    assert state == {"status": IN_PROGRESS, "assignee": "controller", "objective": OBJECTIVE, "linked": [ledger.runs()[0].run_id], "state": handoff.AWAITING_COMPLETION}
 
 
 @needs_bd
 def test_e_restarting_reuses_evidence_but_proposes_new_claims(work, tmp_path):
     ledger, _executor, context, _runner = stack(tmp_path)
     investigate = _investigator(ledger, context)
-    first = ledger.run(investigate(OBJECTIVE))
-    second = ledger.run(investigate(OBJECTIVE))
+    first = ledger.run(investigate(OBJECTIVE, "apt-x"))
+    second = ledger.run(investigate(OBJECTIVE, "apt-x"))
 
     assert first.evidence_ids == second.evidence_ids  # content-addressed: no duplicate evidence
     assert len(ledger.all_evidence()) == len(first.evidence_ids)
@@ -383,6 +354,9 @@ def test_e_abandoned_claim_is_reclaimed_after_lease_expiry(work):
     assert work.get_work(item.id).assignee == "dead-worker"  # lease still live
 
     time.sleep(5 * 60 + 10)
+    # Lease expiry alone releases nothing: another actor still cannot claim.
+    with pytest.raises(ClaimConflict):
+        work.claim_work(item.id, "new-worker")
     work.reclaim_stale(older_than="0s")
 
     assert (work.get_work(item.id).status, work.get_work(item.id).assignee) == (OPEN, None)
@@ -481,7 +455,8 @@ def test_h_history_and_jsonl_round_trip_preserve_ids_links_and_dependencies(work
     ledger, _executor, context, _runner = stack(tmp_path)
     first = handoff.create_investigation(work, context=context(), objective=OBJECTIVE)
     second = handoff.create_investigation(work, context=context(), objective="Second objective", depends_on=(first.id,))
-    run_id = handoff.run_investigation(work, first.id, actor="controller", investigate=_investigator(ledger, context))
+    run_id = _run(work, ledger, context, first.id, tmp_path).run_id
+    handoff.complete_investigation(work, ledger, first.id, actor="controller", lock_dir=tmp_path / "locks")
 
     events = [e["event_type"] for e in work.history(first.id)]
     assert {"created", "claimed", "closed"} <= set(events)
@@ -507,10 +482,15 @@ def test_missing_beads_binary_is_unavailable_and_ledger_is_untouched(tmp_path):
     store = BeadsWorkStore(tmp_path / "w" / ".beads", bd=str(tmp_path / "no-such-bd"))
     called = []
 
-    with pytest.raises(WorkStoreUnavailable):
+    with pytest.raises(WorkStoreUnavailable, match="install bd 1.3.1"):
         store.version()
     with pytest.raises(WorkStoreUnavailable):
-        handoff.run_investigation(store, "apt-x", actor="c", investigate=lambda o: called.append(o) or "R-x")
+        store.open_checked()
+    with pytest.raises(WorkStoreUnavailable):
+        handoff.run_investigation(
+            store, ledger, "apt-x", actor="c", context=context(), lock_dir=tmp_path / "locks",
+            investigate=lambda o, i: called.append(o) or "R-x",
+        )
 
     assert called == [] and not ledger.root.exists()
 
@@ -525,6 +505,7 @@ def test_missing_store_is_unavailable(tmp_path):
 def test_research_still_records_without_any_work_store(tmp_path):
     ledger, _executor, context, _runner = stack(tmp_path)
     run = ledger.run(_investigator(ledger, context)(OBJECTIVE))
+    assert run.work_item_id is None
     assert run.claim_versions and ledger.state(run.claim_versions[0]) == ClaimState.PROPOSED
 
 
@@ -544,3 +525,80 @@ def test_initialize_refuses_inside_a_git_work_tree(tmp_path):
         BeadsWorkStore(repo / "work" / ".beads", env={"HOME": str(tmp_path)}).initialize()
 
     assert (repo / ".gitignore").read_text() == "dist/\n" and not (repo / "work" / ".beads" / "metadata.json").exists()
+
+
+@needs_bd
+def test_open_checked_refuses_a_missing_store_or_a_git_work_tree(work, tmp_path):
+    assert work.open_checked() is work
+
+    with pytest.raises(WorkStoreUnavailable, match="work init"):
+        BeadsWorkStore(tmp_path / "absent" / ".beads", env={"HOME": str(tmp_path)}).open_checked()
+    assert not (tmp_path / "absent").exists()  # opening never creates a store
+
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    subprocess.run(["git", "init", "-q", str(repo)], check=True)
+    shutil.copytree(work.beads_dir, repo / "work" / ".beads")
+    with pytest.raises(WorkStoreError, match="inside git work tree"):
+        BeadsWorkStore(repo / "work" / ".beads", env={"HOME": str(tmp_path)}).open_checked()
+
+
+# -- CLI end to end against a real store ----------------------------------------
+
+
+@needs_bd
+def test_cli_research_work_item_and_reconcile_against_real_beads(work, tmp_path, monkeypatch, capsys):
+    from aptrace_agent import cli, ledger_wiring
+    from aptrace_agent import executor as executor_module
+    from aptrace_agent.ledger.models import SourceRevision
+    from aptrace_agent.ledger.recorder import record_investigation
+
+    from ledger_support import FakeExecutor
+
+    ledger, _executor, context, _runner = stack(tmp_path)
+    item = handoff.create_investigation(work, context=context(), objective=OBJECTIVE)
+    seen = {}
+
+    def record(run, *, recorder, started_at, ended_at, work_item_id=None, **_kwargs):
+        return record_investigation(
+            ledger, run, context=context(), recorder=recorder, model="scripted", execution_config={}, planner_version="test",
+            budgets={}, started_at=started_at, ended_at=ended_at, source=SourceRevision(), work_item_id=work_item_id,
+        ).run_id
+
+    def autonomous(objective, **_kwargs):
+        seen["objective"] = objective
+        return cli.AutonomousInvestigationRun(objective=objective, seed_function=None, result=_result(), state=_state(objective), evidence=())
+
+    monkeypatch.setenv("HOME", str(tmp_path / "beads" / "home"))
+    monkeypatch.setattr(executor_module, "EvidenceExecutor", FakeExecutor)
+    monkeypatch.setattr(ledger_wiring, "context_provider", lambda _executor: context)
+    monkeypatch.setattr(cli, "run_autonomous_investigation", autonomous)
+    monkeypatch.setattr(cli, "record_research_run", record)
+    base = ["aptrace-agent", "research", "--ledger", "--ledger-dir", str(ledger.root), "--work-dir", str(tmp_path / "beads" / "work"), "--actor", "controller"]
+
+    monkeypatch.setattr(sys, "argv", [*base, "--work-item", item.id, "--json"])
+    cli.main()
+    payload = json.loads(capsys.readouterr().out)
+
+    assert seen["objective"] == OBJECTIVE
+    assert ledger.run(payload["ledger_run_id"]).work_item_id == item.id
+    assert payload["work_item"]["reconciliation"]["state"] == handoff.AWAITING_COMPLETION
+    assert work.get_work(item.id).metadata["aptrace_run_ids"] == [payload["ledger_run_id"]]
+    assert (tmp_path / "beads" / "work" / "aptrace-locks" / f"{item.id}.lock").is_file()
+
+    monkeypatch.setattr(sys, "argv", ["aptrace-agent", "work", "complete", item.id, "--ledger-dir", str(ledger.root), "--work-dir", str(tmp_path / "beads" / "work"), "--actor", "controller"])
+    cli.main()
+    assert "state: completed" in capsys.readouterr().out and work.get_work(item.id).status == CLOSED
+
+
+def _result():
+    from aptrace_agent.research import ResearchRunResult
+
+    return ResearchRunResult(stop_reason="planner_finished", steps=(), reconciled=True)
+
+
+def _state(objective):
+    from aptrace_agent.research import ResearchState
+
+    return ResearchState(objective=objective)
+

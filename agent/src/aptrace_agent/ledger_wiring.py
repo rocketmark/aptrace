@@ -28,10 +28,19 @@ DEFAULT_LEDGER_DIR = _RESEARCH / "ledger"
 DEFAULT_REPORT_PATH = _RESEARCH / "generated" / "research-ledger.md"
 BENCHMARK_DIR = _RESEARCH / "benchmarks" / "ledger-v0"
 REPO_ROOT = PERFORMING_RIGS_CASE.parents[1]
+# The Beads work store lives outside the checkout: `bd` writes .gitignore
+# files into its working directory, and work state is not research evidence.
+DEFAULT_WORK_DIR = Path("~/.aptrace/work") / CASE_NAME
 
 
 def ledger_dir(override: str | None = None) -> Path:
     return Path(override or os.environ.get("APTRACE_LEDGER_DIR") or DEFAULT_LEDGER_DIR).expanduser()
+
+
+def work_dir(override: str | None = None) -> Path:
+    """Work-store root: holds the Beads store (.beads/) and the item locks."""
+
+    return Path(override or os.environ.get("APTRACE_WORK_DIR") or DEFAULT_WORK_DIR).expanduser()
 
 
 def context_artifacts(executor) -> dict[str, str]:

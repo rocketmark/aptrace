@@ -12,6 +12,11 @@ from aptrace_agent.ledger_cli import (
     handle_ledger_command,
     record_research_run,
 )
+from aptrace_agent.work_cli import (
+    add_research_work_options,
+    add_work_commands,
+    handle_work_command,
+)
 from aptrace_agent.research.projection import conclusion
 from aptrace_agent.investigator import (
     AutonomousInvestigationRun,
@@ -234,15 +239,23 @@ def main() -> None:
 
     research.add_argument(
         "objective",
-        nargs="+",
-        help="Research objective",
+        nargs="*",
+        help=(
+            "Research objective (required unless "
+            "--work-item supplies it)"
+        ),
     )
 
+    add_research_work_options(research)
     add_ledger_commands(subparsers)
+    add_work_commands(subparsers)
 
     args = parser.parse_args()
 
     if handle_ledger_command(args):
+        return
+
+    if handle_work_command(args):
         return
 
     if args.command == "research":
@@ -250,8 +263,14 @@ def main() -> None:
             args.objective
         )
 
+        if args.work_item and not args.ledger:
+            parser.error("--work-item requires --ledger")
+        if not args.work_item and (args.restart or args.rerun):
+            parser.error("--restart and --rerun require --work-item")
+        if not args.work_item and not objective:
+            parser.error("a research objective is required")
+
         recorder = None
-        started_at = datetime.now(timezone.utc).isoformat()
 
         if args.ledger:
             from aptrace_agent.executor import EvidenceExecutor
@@ -259,26 +278,36 @@ def main() -> None:
 
             recorder = RecordingExecutor(EvidenceExecutor())
 
-        run = (
-            run_autonomous_investigation(
-                objective,
-                seed_function=(
-                    args.seed_function
-                ),
-                max_steps=args.max_steps,
-                **(
-                    {"executor": recorder, "claim_contract": True}
-                    if recorder is not None
-                    else {}
-                ),
+        completed: dict = {}
+
+        def investigate(
+            objective: str,
+            work_item_id: str | None = None,
+        ) -> str | None:
+            started_at = datetime.now(timezone.utc).isoformat()
+            run = (
+                run_autonomous_investigation(
+                    objective,
+                    seed_function=(
+                        args.seed_function
+                    ),
+                    max_steps=args.max_steps,
+                    **(
+                        {"executor": recorder, "claim_contract": True}
+                        if recorder is not None
+                        else {}
+                    ),
+                )
             )
-        )
 
-        payload = _research_payload(
-            run
-        )
+            payload = _research_payload(
+                run
+            )
+            completed.update(run=run, payload=payload)
 
-        if recorder is not None:
+            if recorder is None:
+                return None
+
             from aptrace_agent.research import ResearchController
 
             payload["proposed_claims"] = list(run.result.proposed_claims)
@@ -291,7 +320,30 @@ def main() -> None:
                 ended_at=datetime.now(timezone.utc).isoformat(),
                 max_steps=args.max_steps,
                 controller_cls=ResearchController,
+                work_item_id=work_item_id,
             )
+            return payload["ledger_run_id"]
+
+        work = work_error = None
+
+        if args.work_item:
+            from aptrace_agent.ledger_wiring import context_provider
+            from aptrace_agent.work_cli import research_work_item
+
+            work, work_error = research_work_item(
+                args,
+                objective,
+                context_provider(recorder.inner)(),
+                investigate,
+            )
+        else:
+            investigate(objective)
+
+        run = completed["run"]
+        payload = completed["payload"]
+
+        if work is not None:
+            payload["work_item"] = work
 
         output_path = None
 
@@ -320,17 +372,24 @@ def main() -> None:
                     indent=2,
                 )
             )
-            return
-
-        _print_research_summary(
-            run
-        )
-
-        if output_path is not None:
-            print()
-            print(
-                f"Artifact: {output_path}"
+        else:
+            _print_research_summary(
+                run
             )
+
+            if work is not None:
+                from aptrace_agent.work_cli import print_work_summary
+
+                print_work_summary(work)
+
+            if output_path is not None:
+                print()
+                print(
+                    f"Artifact: {output_path}"
+                )
+
+        if work_error:
+            raise SystemExit(work_error)
 
         return
 
