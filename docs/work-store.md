@@ -32,6 +32,12 @@ claim: `work/` contains no ledger write path, and `ledger/` and `research/`
 do not import `work/`. Work dependencies order work. They are never claim
 dependencies.
 
+The same holds for cross-engine discrepancies
+([`cross-engine-verification.md`](cross-engine-verification.md)): a
+discrepancy and its resolution are ledger records, and a work item that
+schedules its investigation only references the discrepancy id. Closing that
+item never resolves the discrepancy.
+
 ## The link between a work item and its runs
 
 Correlation is exact in both directions:

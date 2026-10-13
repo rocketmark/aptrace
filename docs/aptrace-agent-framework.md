@@ -36,7 +36,11 @@ out of scope for this roadmap beyond tool evaluation.
   with ASL-derived instruction semantics; macaw-symbolic, Crucible, and What4
   provide function effect summaries and solver-backed resolution. Ghidra
   becomes an optional second source and human viewing surface, not the
-  critical path.
+  critical path *for building the map*. Promoting a claim is different: a
+  claim class that requires cross-engine corroboration
+  ([`cross-engine-verification.md`](cross-engine-verification.md)) needs an
+  independent second engine, so "Ghidra optional" means the map can be built
+  without it, not that corroboration can be skipped.
 - **Local models label; they do not establish facts.** Qwen and Gemma, served
   locally through an OpenAI-compatible endpoint such as oMLX, perform bounded,
   schema-constrained, per-function tasks over machine-derived evidence. Frontier
@@ -76,8 +80,11 @@ parts are reused in later phases.
 - Add a **coverage ledger** classifying every flash range as code, data,
   padding, or unknown, with its source.
 - Record unresolved indirect transfers and Macaw/Ghidra disagreements as
-  explicit work items; use macaw-refinement with What4/Z3 to resolve indirect
-  transfers where possible.
+  ledger discrepancy records
+  ([`cross-engine-verification.md`](cross-engine-verification.md)); a work
+  item may reference a discrepancy to schedule its investigation but is never
+  where it is recorded. Use macaw-refinement with What4/Z3 to resolve
+  indirect transfers where possible.
 - Add an `aptrace_census.py coverage` report.
 
 *Exit:* a case census builds with Ghidra disabled, and the coverage report
@@ -132,7 +139,9 @@ summary statuses it depends on.
 - A deterministic validator rejects any label citing an address, register,
   or callee absent from the packet.
 - Gemma labels independently; disagreements go to a review queue for a human
-  or an escalated frontier model.
+  or an escalated frontier model. Labels are candidate discoveries: agreement
+  between models is not engine corroboration and never satisfies a
+  verification policy.
 - Store model, prompt hash, and label so the map can be regenerated when
   models change.
 - Produce subsystem rollups and a map report.

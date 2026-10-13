@@ -19,6 +19,9 @@ development. Concrete target findings and evidence belong to a case under
   Galois-first binary map, local-model labeling, and investigation tooling.
 - [`research-ledger.md`](research-ledger.md) — research ledger, adversarial
   audit, and deterministic verification.
+- [`cross-engine-verification.md`](cross-engine-verification.md) — normative
+  requirements for independent discovery, deterministic cross-engine
+  comparison, discrepancy retention, and claim-class verification policy.
 - [`work-store.md`](work-store.md) — optional Beads-backed investigation work
   items: hand-off to the ledger, reconciliation, ownership, backup.
 - [`spikes/beads-work-store.md`](spikes/beads-work-store.md) — the spike that

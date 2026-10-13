@@ -24,7 +24,7 @@ from aptrace_agent.ledger_wiring import (
 )
 
 
-LEDGER_COMMANDS = ("claims", "propose", "supersede", "audit", "audit-repeat", "runtime-probe", "verify", "replay", "check", "report", "benchmark")
+LEDGER_COMMANDS = ("claims", "policy-status", "propose", "supersede", "audit", "audit-repeat", "runtime-probe", "verify", "replay", "check", "report", "benchmark")
 
 
 def add_ledger_commands(subparsers: Any) -> None:
@@ -34,6 +34,12 @@ def add_ledger_commands(subparsers: Any) -> None:
         return parser
 
     ledger_parser("claims", "List claim versions with APTrace lifecycle state")
+
+    policy_status = ledger_parser(
+        "policy-status",
+        "Read-only: which verification policy each VERIFIED decision applied, and how the current policy assesses recorded evidence",
+    )
+    policy_status.add_argument("claims", nargs="*", help="Claim id or CLAIM:vN (default: every VERIFIED claim version)")
 
     propose = ledger_parser("propose", "Record a PROPOSED claim version from a JSON claim spec")
     propose.add_argument("spec", help="JSON file: subject, assertion, claim_type, proposed_grade, proposed_by, supporting_evidence_ids, ...")
@@ -167,6 +173,12 @@ def _print_verification(outcome) -> None:
     for check in record.checks:
         print(f"  [{check.phase or '-'}:{'pass' if check.passed else 'FAIL'}:{check.severity}] {check.name}: {check.detail}")
 
+    if record.gate is not None:
+        gate = record.gate
+        print(f"  policy {gate.policy.policy_id} v{gate.policy.version} ({gate.policy.digest[:12]}) class={gate.claim_class}: gate {gate.status}")
+    elif record.policy is not None:
+        print(f"  policy {record.policy.policy_id} v{record.policy.version}: gate not reached")
+
     for item in record.semantic_checks:
         if not item.passed:
             print(
@@ -185,10 +197,34 @@ def handle_ledger_command(args: argparse.Namespace) -> bool:
     if args.command == "claims":
         ledger = ResearchLedger(ledger_dir(args.ledger_dir))
 
+        from aptrace_agent.ledger.gate import verified_decision
+
         for claim, state in ledger.iter_current():
             audit = ledger.latest_audit(claim.key)
             verdict = audit.verdict.value if audit else "-"
-            print(f"{claim.key:<8} {state.value:<10} {claim.proposed_grade.value:<8} audit={verdict:<10} {claim.assertion[:100]}")
+            marker = ""
+
+            if state == ClaimState.VERIFIED:
+                record = verified_decision(ledger, claim.key)
+                marker = " [pre-policy]" if record is None or record.policy is None else f" [policy v{record.policy.version}]"
+
+            print(f"{claim.key:<8} {state.value + marker:<24} {claim.proposed_grade.value:<8} audit={verdict:<10} {claim.assertion[:100]}")
+
+        return True
+
+    if args.command == "policy-status":
+        from aptrace_agent.ledger.gate import assess_policy
+
+        ledger = ResearchLedger(ledger_dir(args.ledger_dir))
+        keys = [ensure_key(ledger, k) for k in args.claims] or [c.key for c, s in ledger.iter_current() if s == ClaimState.VERIFIED]
+
+        for key in keys:
+            assessment = assess_policy(ledger, key)
+            print(assessment.summary())
+
+            for condition in assessment.current.conditions:
+                if condition.status not in ("SATISFIED",):
+                    print(f"  {condition.status} {condition.kind}/{condition.code}: {condition.detail}" + (f" [{', '.join(condition.evidence_ids)}]" if condition.evidence_ids else ""))
 
         return True
 

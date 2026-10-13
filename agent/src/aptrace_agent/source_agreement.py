@@ -462,6 +462,26 @@ def parse_addresses(values: Iterable[Any], limit: int = 16) -> list[int]:
     return unique
 
 
+# Independence envelope a source may declare (docs/cross-engine-verification.md):
+# lineage (engines whose findings fed it), firmware_sha256 (digest of the
+# bytes it analyzed), engine_version, assisted (received cross-engine hints).
+# Emitted only when declared, so results of sources without it are unchanged;
+# the verification policy treats absent fields as unevaluable independence.
+ENVELOPE_FIELDS = ("lineage", "firmware_sha256", "engine_version", "assisted")
+
+
+def _source_identity(source: CodeSource) -> dict[str, Any]:
+    entry = {"source": source.name, "version": getattr(source, "version", None), "derived_from": getattr(source, "derived_from", None)}
+
+    for name in ENVELOPE_FIELDS:
+        value = getattr(source, name, None)
+
+        if value:
+            entry[name] = sorted(value) if name == "lineage" else value
+
+    return entry
+
+
 def source_agreement(sources: Sequence[CodeSource], addresses: Iterable[Any]) -> dict[str, Any]:
     """Deterministic agreement result for a bounded set of code addresses."""
 
@@ -485,10 +505,7 @@ def source_agreement(sources: Sequence[CodeSource], addresses: Iterable[Any]) ->
         "status": "ok",
         "agreements": [entry.model_dump(mode="json") for entry in entries],
         "status_counts": dict(sorted(counts.items())),
-        "sources": [
-            {"source": s.name, "version": getattr(s, "version", None), "derived_from": getattr(s, "derived_from", None)}
-            for s in sources
-        ],
+        "sources": [_source_identity(s) for s in sources],
         "semantics": AGREEMENT_SEMANTICS,
         "planner_summary": "structural source agreement:\n  " + "\n  ".join(lines),
     }

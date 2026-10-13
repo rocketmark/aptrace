@@ -10,12 +10,15 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from aptrace_agent.ledger.gate import assess_policy
 from aptrace_agent.ledger.models import ClaimState
 from aptrace_agent.ledger.stability import stability_summary
 from aptrace_agent.ledger.store import ResearchLedger
 
 
 FINGERPRINT_RE = re.compile(r"<!-- ledger-fingerprint: ([0-9a-f]+) -->")
+
+_PHASE_ORDER = {"A": 0, "B": 1, "C": 2, "P": 3, "D": 4}
 
 _STATE_ORDER = {
     ClaimState.VERIFIED: 0,
@@ -49,7 +52,9 @@ def render_report(ledger: ResearchLedger, *, title: str = "Research ledger repor
         ">",
         "> **VERIFIED** means consistent with the currently recorded evidence and APTrace's "
         "deterministic checks, after an independent audit returned SUPPORTED. It is not a proof "
-        "of semantic truth. Evidence grade and lifecycle state are independent.",
+        "of semantic truth. Evidence grade and lifecycle state are independent. A VERIFIED decision "
+        "made before the verification policy existed names no policy; its current-policy "
+        "eligibility is shown separately.",
         "",
         "States: " + (", ".join(f"{k} {v}" for k, v in sorted(counts.items())) or "no claims"),
         "",
@@ -188,7 +193,20 @@ def render_report(ledger: ResearchLedger, *, title: str = "Research ledger repor
             )
 
             if last.phases:
-                lines.append("  - Phases: " + ", ".join(f"{k} {v}" for k, v in sorted(last.phases.items())))
+                lines.append("  - Phases: " + ", ".join(f"{k} {v}" for k, v in sorted(last.phases.items(), key=lambda kv: _PHASE_ORDER.get(kv[0], 9))))
+
+            if last.gate is not None:
+                gate = last.gate
+                lines.append(
+                    f"  - Verification policy `{gate.policy.policy_id}` v{gate.policy.version}, class {gate.claim_class}: gate **{gate.status}**"
+                )
+                lines += [
+                    f"    - {c.status} `{c.code}`" + (f" ({c.address})" if c.address else "") + f": {_cell(c.detail)}"
+                    + (" — " + ", ".join(f"`{e}`" for e in c.evidence_ids) if c.evidence_ids else "")
+                    for c in gate.conditions
+                ]
+            elif last.policy is None:
+                lines.append("  - Verification policy: none recorded (decision predates the verification policy).")
 
             for item in last.semantic_checks:
                 lines.append(
@@ -201,6 +219,15 @@ def render_report(ledger: ResearchLedger, *, title: str = "Research ledger repor
 
             if last.audit_skipped:
                 lines.append("  - Audit model not consulted: deterministic verification failed before phase D.")
+
+        if state == ClaimState.VERIFIED:
+            assessment = assess_policy(ledger, claim.key)
+
+            if not assessment.decision_under_current_policy:
+                lines.append(
+                    "- **Current-policy eligibility (read-only assessment of recorded evidence; historical decision unchanged):** "
+                    + _cell(assessment.summary())
+                )
 
         history = ledger.history(claim.key)
         lines.append("- **Lifecycle:** " + " → ".join(f"{e.state} ({e.actor})" for e in history))

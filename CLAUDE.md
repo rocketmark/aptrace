@@ -56,5 +56,12 @@ solver-confirmed, probable/pattern-matched, or unknown/bounded. State harness
 assumptions separately from firmware-produced state. Preserve exhaustive
 negative results and provenance.
 
+Independent discovery and deterministic cross-engine comparison are required
+for verifying applicable firmware-derived claims; see
+[`docs/cross-engine-verification.md`](docs/cross-engine-verification.md). Do
+not pass one engine's findings into another engine's independent run, do not
+count a derived source or a re-run as corroboration, and never treat missing
+corroboration or static agreement as proof.
+
 Framework capability status lives in [`docs/status.md`](docs/status.md).
 Case-investigation status lives in the applicable case.

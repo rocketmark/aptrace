@@ -3,6 +3,15 @@
 APTrace treats findings as versioned, executable research artifacts. The
 ledger is canonical; Markdown reports are generated views of it.
 
+Cross-engine corroboration requirements for promotion (independent discovery,
+deterministic comparison, discrepancy retention, claim-class verification
+policy) are defined in
+[`cross-engine-verification.md`](cross-engine-verification.md). They extend
+the verification described here. A first safety gate (verification policy v1,
+phase P) is enforced; most cross-engine capabilities are not yet built, so
+most claim classes cannot reach `VERIFIED` today. See
+[Verification](#verification).
+
 ## Three layers, three authorities
 
 | Layer | Who | May | May not |
@@ -97,6 +106,7 @@ establishes mechanically exist:
 | `RESOLVED_FUNCTION_POINTER` | `slot`, and any of `writer`, `writer_instruction`, `registration_caller`, `registration_callsite`, `raw_pointer`, `canonical_target`, `forwarding_target`, `indirect_site`, `indirect_caller` |
 | `FUNCTION_ROLE` | `function`, `role` (`WRITER`, `CALLBACK_TARGET`, `FORWARDING_TARGET`, `REGISTRATION_CALLER`, `INDIRECT_CALLER`, `INTERRUPT_VECTOR_HANDLER`, `MMIO_USER`), optional `slot`/`peripheral` context |
 | `PATH_RELATION` | `status` (`KNOWN_COMMON_PATH`/`NO_KNOWN_PATH`), typed `left`/`right` set scopes |
+| `CODE_PRESENCE` | `address`, optional `function_entry` (the containing function's entry); checked against structural source-agreement evidence |
 
 Set scopes are `KIND:NAME` with kinds `PERIPHERAL_MMIO_USAGE`,
 `INTERFACE_INVENTORY` (MMIO register users plus IRQ vector handlers, e.g. the
@@ -134,6 +144,19 @@ necessarily independent: each observation records what it is derived from
 discovery is seeded only from vector-table roots, so code reached only
 through resolved pointers is a Macaw coverage gap. Code:
 `aptrace_agent/source_agreement.py`.
+
+The verification-policy gate (phase P, below) records source agreement for
+a typed claim's asserted code addresses before any audit and evaluates it
+mechanically: a `CONFLICT` at an address the claim asserts is code blocks
+the claim; a function-start disagreement where the claim asserts the
+containing function is an unresolved discrepancy that holds it; conflicts
+elsewhere are recorded as not material. The audit model still receives
+source agreement as context. Agreement counts as independent corroboration
+only when each source declares an independence envelope (`lineage`,
+`firmware_sha256`, `engine_version`; optional `assisted`) and two sources
+with disjoint lineages agree. No current source declares one, so real
+source agreement does not satisfy corroboration yet. See
+[`cross-engine-verification.md`](cross-engine-verification.md).
 
 ## Audit
 
@@ -183,20 +206,26 @@ one fingerprint (measurement only; verification still uses the rule below).
 
 ## Verification
 
-Verification runs in phases; a failure in A or B skips C and D, and a
-failure in C skips D:
+Verification runs in phases. A failure in A or B skips the later phases; a
+failure in C skips P and D. A failure in P is final for promotion. D still
+reads recorded audits and dependencies, so a CHALLENGED audit still blocks,
+but no audit verdict can override P:
 
 - **A structural:** evidence references, supporting evidence present, same
   firmware/case, dependency references exist.
 - **B deterministic semantics:** typed semantics (when present), grade
   ceiling, inherited limitations, bounded-negative wording.
 - **C replay/freshness:** stored hashes, evidence validity, deterministic replay.
+- **P verification policy:** contradictory evidence, structural conflicts,
+  and independent corroboration for the claim's class, under the versioned
+  policy (`ledger/policy.py`, `ledger/gate.py`).
 - **D audit:** dependencies verified, latest non-diagnostic audit.
 
-`precheck` runs A-C and never advances a claim. The normal audit pipeline
+`precheck` runs A-C and P and never advances a claim. The normal audit pipeline
 (`ledger/pipeline.py`, used by `audit`, `audit-repeat`, and benchmarks) is
-precheck → audit model only if eligible → full verification, so the audit
-model is never consulted about a claim APTrace already knows is invalid. A
+precheck → audit model only if A-C and P passed → full verification, so the
+audit model is never consulted about a claim APTrace already knows is
+invalid or cannot meet its verification policy. A
 `--diagnostic` audit of an ineligible claim is recorded with
 `diagnostic: true` and never used by verification. Each VerificationRecord
 stores its mode, per-phase results, semantic-check results, and whether the
@@ -204,7 +233,20 @@ audit was skipped.
 
 `VERIFIED` means *consistent with the currently recorded evidence and
 APTrace's deterministic checks, after an independent audit returned
-SUPPORTED*. It is not a proof of semantic truth. Checks:
+SUPPORTED*. It is not a proof of semantic truth. "Independent audit" means the
+auditor is separated from the investigator's transcript and derivation; it is
+not independent engine corroboration, and the two never substitute for each
+other.
+
+Every verification record names the policy it applied (`policy`: id,
+version, digest of the canonical definition) and, once phase P runs, the
+gate result (`gate`: claim class, status, conditions with evidence ids).
+Records written before the policy have `policy: null`; they are never
+rewritten. `aptrace-agent policy-status` reports, read-only, which policy
+each `VERIFIED` decision applied and how the current policy assesses the
+recorded evidence. A new `verify` of such a claim applies the current
+policy and appends its own record and event. None of the checks below is
+relaxed by the policy. Checks:
 
 | Check | Fail → |
 |---|---|
@@ -217,7 +259,21 @@ SUPPORTED*. It is not a proof of semantic truth. Checks:
 | proposed grade ≤ strongest supporting derivation | BLOCKED |
 | inherited limitations present | BLOCKED |
 | no unreachability claim; no absolute-negative wording over `NO_KNOWN_PATH` | BLOCKED |
+| verification policy gate (P): no typed assertion contradicted by contradictory evidence or a structural `CONFLICT` | BLOCKED |
+| verification policy gate (P): no unresolved potentially material contradiction or discrepancy; required independent corroboration present and evaluable; claim class determinable | stays PROPOSED, conditions named |
 | latest audit of this exact version SUPPORTED | none/UNRESOLVED: PROPOSED; CHALLENGED: BLOCKED |
+
+The gate's result is `PASSED`, `BLOCKED` (a typed assertion is
+contradicted), `HELD` (a required kind of support is missing, or a
+potentially material contradiction or discrepancy is unresolved), or
+`UNEVALUABLE` (the requirement cannot be evaluated, for example because no
+evidence contract exists for the class or independence metadata is
+missing). Each condition records its code, status, evidence ids, and the
+typed field or address concerned. A held or unevaluable claim may still be
+correct. It stays `PROPOSED` and can be re-verified when new evidence
+exists. `ledger.transition(..., VERIFIED)` is refused unless it cites a full
+verification of that exact version, under the current policy, whose gate
+passed.
 
 Any CHALLENGED audit blocks that version permanently; a later SUPPORTED
 audit does not override it. A challenge is answered with a new claim
@@ -238,6 +294,7 @@ claims are not repaired automatically.
 aptrace-agent research --ledger "<objective>"   # record run, evidence, claim proposals
 aptrace-agent research --ledger --work-item ID  # same, for a Beads work item (work-store.md)
 aptrace-agent claims                            # current state of every claim version
+aptrace-agent policy-status [C2:v2 ...]         # read-only: policy of VERIFIED decisions vs current policy
 aptrace-agent propose spec.json                 # record a PROPOSED claim from a spec
 aptrace-agent audit C7                          # adversarial audit (latest version)
 aptrace-agent audit-repeat C7:v1 --repeat 10    # repeated identical audits; stability summary

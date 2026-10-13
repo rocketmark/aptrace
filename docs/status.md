@@ -86,9 +86,30 @@ belong in each case's status document.
   requests with a compact projection.
 - The research ledger's verification is mechanical: references, context,
   hashes, replay, grade ceilings, inherited limitations, bounded negatives,
-  and the audit verdict. It cannot check that an assertion's entities and
-  roles match the evidence; that is left to the audit model, whose verdicts
-  are not stable across runs on identical input.
+  typed semantics when a claim carries them, and the audit verdict. For
+  claims without typed semantics, whether the assertion's entities and roles
+  match the evidence is left to the audit model, whose verdicts are not
+  stable across runs on identical input.
+- Cross-engine verification
+  ([`cross-engine-verification.md`](cross-engine-verification.md)) is
+  enforced only as a safety gate: verification policy v1 (phase P). Before
+  any audit model, it evaluates `contradictory_evidence_ids` against typed
+  assertions, gates on structural `CONFLICT`s at asserted code, and
+  requires independent corroboration per claim class. It records the policy
+  identity and named conditions on every verification. Only
+  `CODE_EXISTENCE` (`CODE_PRESENCE`) claims have an evidence contract, and
+  only when sources declare an independence envelope, which no real source
+  does yet. Every other class, including resolved pointers, paths, bounded
+  negatives, MMIO usage, and untyped claims, stays `PROPOSED` as
+  `UNEVALUABLE`, so no current case claim can newly reach `VERIFIED`.
+  Pre-policy `VERIFIED` decisions (`C2:v2`, `C5:v1`) are unchanged and are
+  reported as pre-policy by `policy-status`. There is still no per-observation
+  lineage, assisted marking by the engines themselves, common
+  target-configuration record, discrepancy record or resolution lifecycle,
+  or comparison of CFG edges, calls, or memory accesses in the ledger. The Macaw/Ghidra function
+  and call comparison (`tools/census/macaw_compare.py`) is standalone and not
+  recorded as ledger evidence; Macaw census output does not carry the
+  firmware digest; Unicorn concrete execution is not a ledger operation.
 - The local Qwen3-Coder planner does not reliably emit structured claim
   output as tool arguments: nested and multiple array arguments degrade into
   malformed tool-call text.

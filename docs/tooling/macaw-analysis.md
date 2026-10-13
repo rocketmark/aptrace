@@ -14,6 +14,14 @@ Framework modules include `APTrace.MacawCensus`, `APTrace.MacawExpand`,
 `APTrace.MacawIsaClassify`, `APTrace.MacawNormalize`, and
 `APTrace.MacawRefinement`. Target geometry and firmware roots are caller inputs.
 
+`aptrace macaw-census` is an independent discovery run by construction: it is
+seeded only from vector-table roots and never consults Ghidra, Capstone, or
+census data. Seeding it from another engine's findings would make its results
+assisted, not independent
+([`../cross-engine-verification.md`](../cross-engine-verification.md)). Its
+output records image geometry but not the firmware digest, and its toolchain
+version is not yet recorded on ledger evidence.
+
 Material boundaries and disagreements should be cross-checked against Ghidra or
 concrete execution. The detailed Performing Rigs results that motivated the
 normalization and classification layers are preserved in

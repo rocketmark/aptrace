@@ -245,8 +245,18 @@ def test_only_aptrace_verifier_owns_the_verified_transition(tmp_path):
     assert ledger.state(claim.key) == ClaimState.PROPOSED
 
     outcome = ClaimVerifier(ledger, runner=runner).verify(claim.key)
-    assert outcome.current == ClaimState.VERIFIED
-    assert ledger.history(claim.key)[-1].actor == "aptrace-verifier"
+    # Untyped: the verification policy cannot classify it, so a SUPPORTED
+    # audit does not promote it, and even the verifier actor cannot mark it
+    # VERIFIED without citing a passing policy verification.
+    assert outcome.current == ClaimState.PROPOSED
+    assert outcome.record.gate.status == "UNEVALUABLE"
+    assert [c.code for c in outcome.record.gate.conditions] == ["CLAIM_CLASS_UNDETERMINED"]
+
+    for refs in ([], [outcome.record.verification_id]):
+        with pytest.raises(PermissionError):
+            ledger.transition(claim.key, ClaimState.VERIFIED, actor="aptrace-verifier", reason="direct", refs=refs)
+
+    assert ledger.state(claim.key) == ClaimState.PROPOSED
 
 
 # 12
@@ -359,7 +369,11 @@ def test_no_known_path_cannot_become_unreachable_verified_claim(tmp_path):
         guard = next(c for c in outcome.record.checks if c.name == "no_unreachability_promotion")
 
         if name == "bounded":
-            assert guard.passed and outcome.current == ClaimState.VERIFIED
+            # Not blocked by the unreachability guard; held by the policy,
+            # which needs bounded absences from two independent engines.
+            assert guard.passed and outcome.current == ClaimState.PROPOSED
+            assert outcome.record.gate.claim_class == "BOUNDED_NEGATIVE"
+            assert {c.code for c in outcome.record.gate.conditions} == {"NO_EVIDENCE_CONTRACT"}
         else:
             assert not guard.passed and outcome.current == ClaimState.BLOCKED, name
 
@@ -407,7 +421,11 @@ def test_usb_good_claim_passes_complete_pipeline(tmp_path):
     ])
     good = outcomes["good"]
 
-    assert good.final_state == "VERIFIED" and good.passed
+    # Policy v1: an untyped claim cannot be classified, so it is held before
+    # the audit model; replay (phase C) still ran.
+    assert good.final_state == "PROPOSED" and good.passed
+    assert good.audit_skipped and good.audit_verdict is None
+    assert good.gate_status == "UNEVALUABLE" and good.policy_conditions == ["CLAIM_CLASS_UNDETERMINED"]
     assert ledger.verifications_for(good.key)[-1].replay_invocation_ids
 
 
@@ -436,19 +454,21 @@ def test_bad_usb_claim_is_blocked_before_audit(tmp_path):
     assert "grade_ceiling" in bad.failed_checks and "independent_audit" not in bad.failed_checks
 
 
-@pytest.mark.parametrize("auditor_verdict, state", [("CHALLENGED", "BLOCKED"), ("UNRESOLVED", "PROPOSED")])
-def test_misleading_eic_convergence_claim_is_not_verified(tmp_path, auditor_verdict, state):
-    ledger, outcomes = _bench(tmp_path, "eic-convergence", [
-        request("find_common_paths", left=["USB"], right=["IRQ:EIC"]), verdict(auditor_verdict),
-        request("function_facts", function="FUN_0000cc14"), verdict("SUPPORTED"),
-    ])
+def test_misleading_eic_convergence_claim_is_not_verified(tmp_path):
+    ledger, _executor, _context, runner = stack(tmp_path)
+    auditor, model = _auditor(ledger, runner, [verdict("SUPPORTED"), verdict("SUPPORTED")])
+    result = run_benchmark("eic-convergence", directory=BENCHMARK_DIR, ledger=ledger, runner=runner, auditor=auditor, irq_handlers=irq_handlers)
+    outcomes = {c.label: c for c in result.claims}
     convergence = outcomes["convergence"]
 
-    assert convergence.final_state == state
+    # Neither claim can meet policy v1, so the audit model is never asked.
+    assert model.requests == []
+    assert convergence.final_state == "PROPOSED" and convergence.passed
+    assert convergence.gate_status == "UNEVALUABLE" and "NO_EVIDENCE_CONTRACT" in convergence.policy_conditions
     # Scope is preserved mechanically: the broad set's limitation is inherited.
     codes = {lim.code for lim in ledger.claim(convergence.key).limitations}
     assert "PERIPHERAL_SET_IS_MMIO_USAGE:EIC" in codes
-    assert outcomes["bounded"].final_state == "VERIFIED"
+    assert outcomes["bounded"].final_state == "PROPOSED" and outcomes["bounded"].passed
 
 
 # Qwen structured claim contract (opt-in; Agent v0 default unchanged).
@@ -598,4 +618,8 @@ def test_challenged_version_cannot_be_reaudited_into_verification(tmp_path):
     v2 = ledger.supersede_claim(claim.key, proposed_by="test", reason="address challenge", scope="narrowed")
     auditor, _model = _auditor(ledger, runner, [request("function_facts", function="FUN_0000ccc4"), verdict("SUPPORTED")])
     auditor.audit(v2.key)
-    assert verifier.verify(v2.key).current == ClaimState.VERIFIED
+    # The challenge is answered, but the untyped claim still cannot meet
+    # the verification policy: PROPOSED, not VERIFIED, and no longer BLOCKED.
+    outcome = verifier.verify(v2.key)
+    assert outcome.current == ClaimState.PROPOSED
+    assert next(c for c in outcome.record.checks if c.name == "independent_audit").passed

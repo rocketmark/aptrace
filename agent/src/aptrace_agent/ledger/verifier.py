@@ -4,8 +4,10 @@ APTrace deterministic claim verification.
 This is the only component that may move a claim to VERIFIED. It checks
 what APTrace can determine mechanically: evidence references, firmware
 context, stored-result integrity, deterministic replay, dependency state,
-grade ceilings, inherited limitations, bounded-negative scope, and the
-latest independent audit verdict for the exact claim version.
+grade ceilings, inherited limitations, bounded-negative scope, the
+versioned verification policy (contradictions, structural conflicts,
+independent corroboration; see gate.py), and the latest independent audit
+verdict for the exact claim version.
 
 VERIFIED means "consistent with the currently recorded evidence and these
 deterministic checks". It does not establish semantic truth.
@@ -16,16 +18,28 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from aptrace_agent.ledger.claim_semantics import SemanticCheck, verify_semantics
+from aptrace_agent.ledger.gate import (
+    AGREEMENT_TOOL,
+    FAILING,
+    MAX_STRUCTURAL_ADDRESSES,
+    UNEVALUABLE,
+    PolicyGateEvaluator,
+    structural_addresses,
+)
 from aptrace_agent.ledger.models import (
     GRADE_RANK,
     AuditVerdict,
     ClaimState,
     ClaimType,
+    ClaimVersion,
     ExecutionContext,
+    GateCondition,
+    PolicyGate,
     VerificationCheck,
     VerificationRecord,
 )
 from aptrace_agent.ledger.operations import LedgerOperationRunner, input_artifacts
+from aptrace_agent.ledger.policy import SEVERITY, current_policy
 from aptrace_agent.ledger.semantics import asserts_absolute_negative, grade_ceiling
 from aptrace_agent.ledger.store import EVIDENCE_INVALIDATED, ResearchLedger, new_id, now
 
@@ -33,6 +47,14 @@ from aptrace_agent.ledger.store import EVIDENCE_INVALIDATED, ResearchLedger, new
 BLOCK = "block"
 STALE = "stale"
 HOLD = "hold"
+
+# Phase P checks, one per gate condition kind.
+GATE_CHECKS = {
+    "class": "claim_class",
+    "contradiction": "contradictory_evidence",
+    "structural": "structural_conflicts",
+    "corroboration": "independent_corroboration",
+}
 
 
 @dataclass
@@ -68,9 +90,10 @@ class ClaimVerifier:
 
     def precheck(self, key: str) -> VerificationOutcome:
         """
-        Phases A-C only: structural validity, deterministic semantics, and
-        replay/freshness. Run before any audit; a claim that fails here is
-        BLOCKED (or STALE) without consulting the audit model.
+        Phases A-C and P: structural validity, deterministic semantics,
+        replay/freshness, and the verification-policy gate. Run before any
+        audit; a claim that fails here is BLOCKED (or STALE) or held without
+        consulting the audit model.
         """
 
         return self.verify(key, mode="precheck")
@@ -82,8 +105,13 @@ class ClaimVerifier:
           B deterministic semantics (typed roles/relations/scope, grade
             ceiling, inherited limitations, bounded-negative wording)
           C replay and freshness (stored hashes, validity, replay)
+          P verification policy gate (contradictory evidence, structural
+            conflicts, independent corroboration for the claim class)
           D independent audit and dependency verification (full mode only)
-        A failure in A or B skips C and D; a failure in C skips D.
+        A failure in A or B skips the later phases; a failure in C skips P
+        and D. A failure in P is final for promotion: D still reads recorded
+        audits and dependencies (a CHALLENGED audit still blocks), but no
+        audit verdict can override P. Precheck mode stops after P.
         """
 
         claim = self.ledger.claim(key)
@@ -110,7 +138,7 @@ class ClaimVerifier:
 
         if previous in (ClaimState.SUPERSEDED, ClaimState.STALE):
             check("lifecycle_eligible", False, HOLD, f"{claim.key} is {previous.value}; propose a new version instead")
-            skip("A", "B", "C", "D")
+            skip("A", "B", "C", "P", "D")
             return self._finish(claim.key, previous, checks, replays, None, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=True)
 
         # -- Phase A: structural validity ------------------------------------
@@ -143,7 +171,7 @@ class ClaimVerifier:
         phase = "B"
 
         if not structural_ok:
-            skip("B", "C", "D")
+            skip("B", "C", "P", "D")
             return self._finish(claim.key, previous, checks, replays, None, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=True)
 
         if claim.semantics is None:
@@ -192,7 +220,7 @@ class ClaimVerifier:
             check("no_unreachability_promotion", True, BLOCK, "no bounded-negative promotion")
 
         if not close("B"):
-            skip("C", "D")
+            skip("C", "P", "D")
             return self._finish(claim.key, previous, checks, replays, None, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=True)
 
         # -- Phase C: replay and freshness -------------------------------------
@@ -263,9 +291,33 @@ class ClaimVerifier:
         for evidence_id, reason in invalidated:
             self.ledger.invalidate_evidence(evidence_id, reason=reason)
 
-        if not close("C") or mode == "precheck":
-            skip("D")
+        if not close("C"):
+            skip("P", "D")
             return self._finish(claim.key, previous, checks, replays, None, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=mode != "precheck")
+
+        # -- Phase P: verification policy gate ---------------------------------
+        phase = "P"
+        gate = self._gate(claim, context, expected_firmware)
+
+        for kind, name in GATE_CHECKS.items():
+            items = [c for c in gate.conditions if c.kind == kind]
+            failing = [c for c in items if c.status in FAILING]
+            severity = BLOCK if any(SEVERITY[c.status] == BLOCK for c in failing) else HOLD
+
+            if items:
+                check(
+                    name,
+                    not failing,
+                    severity,
+                    "; ".join(f"{c.status} {c.code}: {c.detail}" + (f" [{', '.join(c.evidence_ids)}]" if c.evidence_ids else "") for c in failing)[:1500]
+                    or "; ".join(f"{c.status} {c.code}: {c.detail}" for c in items)[:600],
+                )
+
+        phases["P"] = "passed" if gate.status == "PASSED" else "failed"
+
+        if mode == "precheck":
+            skip("D")
+            return self._finish(claim.key, previous, checks, replays, None, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=mode != "precheck", gate=gate)
 
         # -- Phase D: dependencies and independent audit -----------------------
         phase = "D"
@@ -294,7 +346,48 @@ class ClaimVerifier:
             check("independent_audit", True, HOLD, f"{audit.audit_id} SUPPORTED")
 
         close("D")
-        return self._finish(claim.key, previous, checks, replays, audit, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=False)
+        return self._finish(claim.key, previous, checks, replays, audit, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=False, gate=gate)
+
+    def _gate(self, claim: ClaimVersion, context: ExecutionContext | None, firmware: str | None) -> PolicyGate:
+        """
+        Phase P. Records structural source agreement for the claim's typed
+        code addresses (when an operation runner is available), then
+        evaluates the policy over it, the supporting agreement evidence
+        (replay-verified in phase C), and agreement evidence audits of this
+        version recorded (conflicts only).
+        """
+
+        extra: list[GateCondition] = []
+        fresh: list[str] = []
+        addresses = structural_addresses(claim)
+
+        if self.runner is not None and addresses:
+            if len(addresses) > MAX_STRUCTURAL_ADDRESSES:
+                extra.append(GateCondition(
+                    code="STRUCTURAL_SCOPE_TRUNCATED", kind="structural", status=UNEVALUABLE,
+                    detail=f"{len(addresses)} asserted code addresses; structural agreement covers {MAX_STRUCTURAL_ADDRESSES}",
+                ))
+                addresses = addresses[:MAX_STRUCTURAL_ADDRESSES]
+
+            invocation, artifact = self.runner.run(new_id("VG"), AGREEMENT_TOOL, {"addresses": addresses})
+
+            if artifact is None:
+                extra.append(GateCondition(
+                    code="STRUCTURAL_AGREEMENT_FAILED", kind="structural", status=UNEVALUABLE,
+                    evidence_ids=[], detail=f"{invocation.invocation_id}: {invocation.error or 'no result'}",
+                ))
+            else:
+                fresh.append(artifact.evidence_id)
+
+        supporting = [e for e in claim.supporting_evidence_ids if self.ledger.has_evidence(e) and self.ledger.evidence(e).tool == AGREEMENT_TOOL]
+        audited = [a.source_agreement_evidence for a in self.ledger.audits_for(claim.key) if a.source_agreement_evidence]
+        evaluator = PolicyGateEvaluator(self.ledger, firmware_sha256=firmware, case=context.case if context else None)
+        return evaluator.evaluate(
+            claim,
+            corroborating_agreements=supporting + fresh,
+            conflict_agreements=audited,
+            extra_conditions=extra,
+        )
 
     def _result(self, artifact) -> dict | None:
         try:
@@ -304,7 +397,7 @@ class ClaimVerifier:
 
         return result if isinstance(result, dict) else None
 
-    def _finish(self, key, previous, checks, replays, audit, context, *, mode="full", phases=None, semantic=(), audit_skipped=False) -> VerificationOutcome:
+    def _finish(self, key, previous, checks, replays, audit, context, *, mode="full", phases=None, semantic=(), audit_skipped=False, gate=None) -> VerificationOutcome:
         failed = {c.severity for c in checks if not c.passed}
         current_state = self.ledger.state(key)
 
@@ -339,6 +432,8 @@ class ClaimVerifier:
                 phases=dict(phases or {}),
                 semantic_checks=list(semantic),
                 audit_skipped=audit_skipped,
+                policy=current_policy(),
+                gate=gate,
             )
         )
 
@@ -350,7 +445,7 @@ class ClaimVerifier:
                 key,
                 outcome,
                 actor="aptrace-verifier" if outcome != ClaimState.STALE else "aptrace-staleness",
-                reason=failing or "all deterministic checks passed and audit SUPPORTED",
+                reason=failing or "all deterministic checks and the verification policy gate passed, and audit SUPPORTED",
                 refs=[record.verification_id],
             )
 

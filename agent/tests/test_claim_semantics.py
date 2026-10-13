@@ -18,7 +18,7 @@ from aptrace_agent.ledger.pipeline import audit_if_eligible
 from aptrace_agent.ledger.report import render_report
 from aptrace_agent.ledger.verifier import ClaimVerifier
 
-from ledger_support import EIC_STUBS, USB_FUNCTIONS, ScriptedAuditModel, irq_handlers, request, stack, verdict
+from ledger_support import EIC_STUBS, INDEPENDENT_ENVELOPE, USB_FUNCTIONS, ScriptedAuditModel, irq_handlers, request, stack, verdict
 
 SLOT = "0x200052e8"
 
@@ -33,6 +33,18 @@ def role(function, value, **context):
 
 def path(status, left, right):
     return {"predicate": "PATH_RELATION", "path": {"status": status, "left": left, "right": right}}
+
+
+def code(address, entry=None):
+    return {"predicate": "CODE_PRESENCE", "code_presence": {"address": address, "function_entry": entry}}
+
+
+def _code_claim(ledger, runner, executor, address="0x0000bcda", entry="0x0000bc44"):
+    """A CODE_PRESENCE claim whose sources declare complete independence metadata."""
+
+    executor.envelope = INDEPENDENT_ENVELOPE
+    _inv, sa = runner.run("R-setup", "structural_source_agreement", {"addresses": [address]})
+    return _claim(ledger, [sa.evidence_id], code(address, entry), claim_type="STRUCTURE", assertion=f"Code at {address} in FUN at {entry}.")
 
 
 def _usb(ledger, runner, *, agreement=True):
@@ -180,7 +192,7 @@ def test_broad_eic_evidence_cannot_verify_dispatch_convergence(tmp_path):
 
     assert outcome.current == ClaimState.BLOCKED
     assert [c.code for c in outcome.record.semantic_checks] == [CheckCode.SCOPE_MISMATCH]
-    assert outcome.record.phases == {"A": "passed", "B": "failed", "C": "skipped", "D": "skipped"}
+    assert outcome.record.phases == {"A": "passed", "B": "failed", "C": "skipped", "P": "skipped", "D": "skipped"}
     assert outcome.record.audit_skipped
 
 
@@ -258,29 +270,46 @@ def test_semantic_failure_blocks_before_the_audit_model(tmp_path):
 
 
 def test_valid_claim_proceeds_to_audit_and_lifecycle_decision(tmp_path):
+    ledger, executor, _context, runner = stack(tmp_path)
+    good = _code_claim(ledger, runner, executor)
+    auditor, client = _auditor(ledger, runner, [request("function_facts", function="FUN_0000bc44"), verdict("SUPPORTED")])
+
+    gated = audit_if_eligible(good.key, verifier=ClaimVerifier(ledger, runner=runner), auditor=auditor)
+
+    assert gated.precheck.record.mode == "precheck" and gated.precheck.current == ClaimState.PROPOSED
+    assert gated.precheck.record.phases == {"A": "passed", "B": "passed", "C": "passed", "P": "passed", "D": "skipped"}
+    assert client.requests and gated.audit.verdict.value == "SUPPORTED"
+    assert "STRUCTURED SEMANTICS" in gated.audit.initial_context and "CONSISTENT" in gated.audit.initial_context
+    assert gated.verification.current == ClaimState.VERIFIED
+
+
+def test_typed_pointer_claim_is_held_before_the_audit_model(tmp_path):
     ledger, _executor, _context, runner = stack(tmp_path)
     good = _claim(ledger, _usb(ledger, runner), rfp(writer="FUN_0000ccc4", raw_pointer="0xc725", canonical_target="0xc724"))
     auditor, client = _auditor(ledger, runner, [request("function_facts", function="FUN_0000ccc4"), verdict("SUPPORTED")])
 
     gated = audit_if_eligible(good.key, verifier=ClaimVerifier(ledger, runner=runner), auditor=auditor)
 
-    assert gated.precheck.record.mode == "precheck" and gated.precheck.current == ClaimState.PROPOSED
-    assert gated.precheck.record.phases == {"A": "passed", "B": "passed", "C": "passed", "D": "skipped"}
-    assert client.requests and gated.audit.verdict.value == "SUPPORTED"
-    assert "STRUCTURED SEMANTICS" in gated.audit.initial_context and "CONSISTENT" in gated.audit.initial_context
-    assert gated.verification.current == ClaimState.VERIFIED
+    # Semantically consistent and replayed, but no ledger evidence contract
+    # can corroborate a resolved indirect call yet: held, never audited.
+    assert gated.precheck.record.phases == {"A": "passed", "B": "passed", "C": "passed", "P": "failed", "D": "skipped"}
+    assert gated.audit is None and client.requests == []
+    assert ledger.state(good.key) == ClaimState.PROPOSED
+    gate = gated.precheck.record.gate
+    assert gate.claim_class == "RESOLVED_INDIRECT_CALL" and gate.status == "UNEVALUABLE"
+    assert [c.code for c in gate.conditions if c.status != "NOT_MATERIAL"] == ["NO_EVIDENCE_CONTRACT"]
+    assert "verification policy gate UNEVALUABLE" in gated.skipped_reason
 
 
 # 19
 def test_diagnostic_audits_are_recorded_but_never_counted(tmp_path):
-    ledger, _executor, _context, runner = stack(tmp_path)
-    ids = _usb(ledger, runner)
-    good = _claim(ledger, ids, rfp(canonical_target="0xc724"))
-    auditor, _client = _auditor(ledger, runner, [request("function_facts", function="FUN_0000ccc4"), verdict("SUPPORTED")])
+    ledger, executor, _context, runner = stack(tmp_path)
+    good = _code_claim(ledger, runner, executor)
+    auditor, _client = _auditor(ledger, runner, [request("function_facts", function="FUN_0000bc44"), verdict("SUPPORTED")])
     first = audit_if_eligible(good.key, verifier=ClaimVerifier(ledger, runner=runner), auditor=auditor).audit
     original = (tmp_path / "ledger" / "audits" / f"{first.audit_id}.json").read_bytes()
 
-    diag, _client = _auditor(ledger, runner, [request("function_facts", function="FUN_0000c724"), verdict("CHALLENGED")])
+    diag, _client = _auditor(ledger, runner, [request("function_facts", function="FUN_0000bc44"), verdict("CHALLENGED")])
     diagnostic = diag.audit(good.key, diagnostic=True)
     outcome = ClaimVerifier(ledger, runner=runner).verify(good.key)
 

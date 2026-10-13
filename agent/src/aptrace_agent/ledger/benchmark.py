@@ -39,6 +39,9 @@ class ClaimOutcome:
     passed: bool | None = None
     audit_skipped: bool = False
     semantic_codes: list[str] = field(default_factory=list)
+    # Verification-policy gate (phase P) status and failing condition codes.
+    gate_status: str | None = None
+    policy_conditions: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -207,6 +210,12 @@ def evaluate(outcome: ClaimOutcome, expected: dict[str, Any] | None, audit_text:
     for code in expected.get("semantic_failures", []):
         checks[f"semantic:{code}"] = code in outcome.semantic_codes
 
+    if "gate_status" in expected:
+        checks["gate_status"] = outcome.gate_status in expected["gate_status"]
+
+    for code in expected.get("policy_conditions", []):
+        checks[f"policy:{code}"] = code in outcome.policy_conditions
+
     if "audit_should_mention" in expected and outcome.audit_verdict is not None:
         checks["audit_mentions"] = _mentions(audit_text, expected["audit_should_mention"])
 
@@ -248,6 +257,10 @@ def run_benchmark(
             failed_checks=[c.name for c in verification.record.checks if not c.passed],
             audit_skipped=(gated is not None and gated.audit is None) or (gated is None and verification.record.audit_skipped),
             semantic_codes=sorted({c.code.value for c in verification.record.semantic_checks if not c.passed}),
+            gate_status=None if verification.record.gate is None else verification.record.gate.status,
+            policy_conditions=sorted(
+                {c.code for c in (verification.record.gate.conditions if verification.record.gate else []) if c.status not in ("SATISFIED", "NOT_MATERIAL")}
+            ),
         )
         outcomes.append(evaluate(outcome, (expected or {}).get("claims", {}).get(label), audit_text))
 

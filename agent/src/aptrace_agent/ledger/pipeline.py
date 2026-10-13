@@ -1,10 +1,12 @@
 """
 Verification-gated audit orchestration.
 
-claim proposed -> deterministic verification (phases A-C) -> audit model
-(only if eligible) -> APTrace lifecycle decision (phase D). The audit model
-is never asked about a claim APTrace already knows is structurally or
-semantically invalid, or whose evidence no longer replays.
+claim proposed -> deterministic verification (phases A-C) -> verification
+policy gate (phase P) -> audit model (only if eligible) -> APTrace lifecycle
+decision (phase D). The audit model is never asked about a claim APTrace
+already knows is structurally or semantically invalid, whose evidence no
+longer replays, or that cannot meet its verification policy (contradicted,
+uncorroborated, or unevaluable): a SUPPORTED verdict could not override that.
 """
 
 from __future__ import annotations
@@ -29,7 +31,12 @@ class GatedAudit:
 
 
 def eligible(precheck: VerificationOutcome) -> bool:
-    return precheck.record.phases.get("C") == "passed" and precheck.current not in (ClaimState.BLOCKED, ClaimState.STALE, ClaimState.SUPERSEDED)
+    phases = precheck.record.phases
+    return (
+        phases.get("C") == "passed"
+        and phases.get("P") == "passed"
+        and precheck.current not in (ClaimState.BLOCKED, ClaimState.STALE, ClaimState.SUPERSEDED)
+    )
 
 
 def semantic_summary(precheck: VerificationOutcome) -> str:
@@ -51,8 +58,13 @@ def audit_if_eligible(
     precheck = verifier.precheck(key)
 
     if not eligible(precheck):
-        failed = [c.name for c in precheck.record.checks if not c.passed and c.severity in ("block", "stale")]
+        failed = [c.name for c in precheck.record.checks if not c.passed and (c.severity in ("block", "stale") or c.phase == "P")]
+        gate = precheck.record.gate
         reason = f"deterministic verification {precheck.current.value}: {', '.join(failed) or 'not eligible'}"
+
+        if gate is not None and gate.status != "PASSED":
+            codes = sorted({c.code for c in gate.conditions if c.status not in ("SATISFIED", "NOT_MATERIAL")})
+            reason += f"; verification policy gate {gate.status} ({gate.claim_class}: {', '.join(codes)})"
 
         if not diagnostic:
             return GatedAudit(precheck=precheck, audit=None, verification=None, skipped_reason=reason)

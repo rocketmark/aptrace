@@ -33,6 +33,28 @@ raw firmware + case recipe
 Tool roles and selection guidance are in
 [`tooling/tool-selection.md`](tooling/tool-selection.md).
 
+## Verification architecture
+
+Findings become claims in a research ledger that only APTrace can promote.
+Promotion of a firmware-derived claim rests on four distinct stages:
+
+1. **Independent discovery** — engines analyze the same firmware digest under
+   equivalent, recorded target configurations and bounded scopes, without
+   receiving each other's findings.
+2. **Deterministic comparison** — APTrace compares compatible structured
+   observations and records agreement, disagreement, coverage gaps,
+   incomparable observations, and unavailable analysis.
+3. **Reconciliation** — disagreements are retained as investigation targets;
+   hint-assisted results are marked assisted, never independent.
+4. **Claim verification** — APTrace applies the claim class's verification
+   policy, deterministic checks, replay, and an independent audit.
+
+Independent analysis is a required verification capability, not an optional
+agent behavior; agreement between engines is never sufficient on its own.
+The normative definition and current implementation status are in
+[`cross-engine-verification.md`](cross-engine-verification.md); ledger
+mechanics are in [`research-ledger.md`](research-ledger.md).
+
 ## Framework and case dependency direction
 
 The framework owns engines. A case owns recipes and evidence.

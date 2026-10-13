@@ -46,6 +46,7 @@ from aptrace_agent.ledger.models import (
     parse_version_key,
     version_key,
 )
+from aptrace_agent.ledger.policy import current_policy
 from aptrace_agent.ledger.semantics import (
     canonical_result,
     evidence_grade,
@@ -473,6 +474,11 @@ class ResearchLedger:
         if not self.has_claim(key) or parse_version_key(key)[1] is None:
             raise KeyError(f"unknown claim version {key}")
 
+        refs = list(refs)
+
+        if state == ClaimState.VERIFIED:
+            self._require_policy_verification(self.claim(key).key, refs)
+
         return self._append_event(
             LifecycleEvent(
                 seq=len(self.events()) + 1,
@@ -484,6 +490,39 @@ class ResearchLedger:
                 reason=reason,
                 refs=list(refs),
             )
+        )
+
+    def _require_policy_verification(self, key: str, refs: list[str]) -> None:
+        """
+        VERIFIED must cite a full verification of this exact version, with
+        outcome VERIFIED, that applied the current verification policy and
+        whose policy gate passed. No path to VERIFIED bypasses the gate.
+        """
+
+        policy = current_policy()
+
+        for ref in refs:
+            path = self._path("verifications", f"{ref}.json")
+
+            if not path.is_file():
+                continue
+
+            record = self._read(path, VerificationRecord)
+
+            if (
+                record.claim_version == key
+                and record.mode == "full"
+                and record.outcome == ClaimState.VERIFIED
+                and record.policy == policy
+                and record.gate is not None
+                and record.gate.policy == policy
+                and record.gate.status == "PASSED"
+            ):
+                return
+
+        raise PermissionError(
+            f"VERIFIED for {key} must cite a full verification under policy {policy.policy_id} v{policy.version} "
+            "whose verification-policy gate PASSED"
         )
 
     def state(self, key: str) -> ClaimState:

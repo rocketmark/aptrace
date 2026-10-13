@@ -3,7 +3,11 @@
   "note": "Grading data. Never shown to the investigator or auditor. Baseline: cases/performing-rigs/status.md (USB IRQ dispatch resolved statically, STRONG not EXACT).",
   "claims": {
     "good": {
-      "final_state": ["VERIFIED"],
+      "note": "Correct claim, but untyped: verification policy aptrace-claim-verification v1 cannot determine its claim class, so it stays PROPOSED and the audit model is not consulted. Before the policy it reached VERIFIED.",
+      "final_state": ["PROPOSED"],
+      "must_not_be": ["VERIFIED", "BLOCKED"],
+      "gate_status": ["UNEVALUABLE"],
+      "policy_conditions": ["CLAIM_CLASS_UNDETERMINED"],
       "audit_verdict": ["SUPPORTED"],
       "audit_should_mention": {
         "computed_pointer_limitation": ["computed pointer", "computed-pointer", "computed"],

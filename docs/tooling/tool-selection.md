@@ -22,6 +22,12 @@ answers the question and disclose the resulting evidence level.
   not a substitute for ordinary concrete replay.
 - When tools disagree, reproduce the same input/state, locate the first
   divergence, and fix the narrowest responsible layer.
+- Choosing a tool for a question is the agent's decision; the corroboration a
+  claim needs before promotion is not. Verification policy, analysis
+  independence, and cross-engine comparison are defined in
+  [`../cross-engine-verification.md`](../cross-engine-verification.md).
+  Agreement between static engines is corroboration, not proof of runtime
+  behavior.
 
 Escalate observability from a normal run, to coarse sampling, to fine-grained
 tracing. Treat failures of a harness as harness findings until independently

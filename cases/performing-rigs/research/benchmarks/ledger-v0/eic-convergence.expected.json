@@ -11,7 +11,11 @@
       }
     },
     "bounded": {
-      "final_state": ["VERIFIED"],
+      "note": "Correctly bounded, but policy v1 requires bounded absences from two independent engines and no ledger operation besides the census produces path evidence, so it stays PROPOSED with the requirement named. Before the policy it reached VERIFIED.",
+      "final_state": ["PROPOSED"],
+      "must_not_be": ["VERIFIED", "BLOCKED"],
+      "gate_status": ["UNEVALUABLE"],
+      "policy_conditions": ["NO_EVIDENCE_CONTRACT"],
       "audit_verdict": ["SUPPORTED"]
     }
   }

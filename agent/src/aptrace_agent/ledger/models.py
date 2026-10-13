@@ -354,8 +354,56 @@ class VerificationCheck(_Record):
     severity: str
     detail: str = ""
     # Verification phase: A structural, B deterministic semantics,
-    # C replay/freshness, D adversarial audit. Absent on older records.
+    # C replay/freshness, P verification policy, D adversarial audit.
+    # Absent on older records.
     phase: str | None = None
+
+
+class PolicyRef(_Record):
+    """Identity of the verification policy a verification applied."""
+
+    policy_id: str
+    version: str
+    # sha256 over the canonical policy definition (see policy.py).
+    digest: str
+
+
+class GateCondition(_Record):
+    """
+    One condition the deterministic verification-policy gate evaluated.
+
+    status:
+      CONTRADICTED  a typed assertion is affirmatively contradicted (blocks)
+      UNRESOLVED    a material or potentially material contradiction or
+                    discrepancy that cannot be classified or is unresolved
+      UNMET         a required kind of support is absent from the evidence
+      UNEVALUABLE   the requirement cannot be evaluated: no evidence
+                    contract, missing metadata, or incompatible evidence
+      NOT_MATERIAL  evaluated and outside the claim's typed assertions
+      SATISFIED     evaluated and met
+    """
+
+    code: str
+    # contradiction | structural | corroboration | class
+    kind: str
+    status: str
+    evidence_ids: list[str] = Field(default_factory=list)
+    field: str | None = None
+    address: str | None = None
+    detail: str = ""
+
+
+class PolicyGate(_Record):
+    """Deterministic verification-policy gate result (phase P)."""
+
+    policy: PolicyRef
+    claim_class: str
+    class_basis: str = ""
+    # PASSED | BLOCKED (contradicted) | HELD (unmet/unresolved) | UNEVALUABLE
+    status: str
+    conditions: list[GateCondition] = Field(default_factory=list)
+    # Structural source-agreement evidence the gate evaluated.
+    agreement_evidence_ids: list[str] = Field(default_factory=list)
 
 
 class VerificationRecord(_Record):
@@ -369,13 +417,18 @@ class VerificationRecord(_Record):
     checks: list[VerificationCheck] = Field(default_factory=list)
     replay_invocation_ids: list[str] = Field(default_factory=list)
     outcome: ClaimState
-    # precheck (phases A-C, before any audit) or full (A-D).
+    # precheck (phases A-C and P, before any audit) or full (A-D).
     mode: str = "full"
     # Phase -> passed | failed | skipped. Absent on older records.
     phases: dict[str, str] = Field(default_factory=dict)
     semantic_checks: list[SemanticCheck] = Field(default_factory=list)
-    # True when phase D did not consult any audit because A-C failed.
+    # True when phase D did not consult any audit because A-C or P failed.
     audit_skipped: bool = False
+    # Verification policy applied. None on records written before any
+    # policy existed, which makes those decisions mechanically identifiable.
+    policy: PolicyRef | None = None
+    # Phase P result; None when an earlier phase failed or on older records.
+    gate: PolicyGate | None = None
     note: str = (
         "Verified means: consistent with the currently recorded evidence and "
         "APTrace's deterministic checks. It is not a proof of semantic truth."

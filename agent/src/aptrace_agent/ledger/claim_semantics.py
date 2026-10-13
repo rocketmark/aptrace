@@ -28,6 +28,9 @@ class Predicate(StrEnum):
     FUNCTION_ROLE = "FUNCTION_ROLE"
     # Two typed function sets have (or have no known) census common path.
     PATH_RELATION = "PATH_RELATION"
+    # Executable code exists at an address (optionally: in the function
+    # whose entry is stated). Established by structural source agreement.
+    CODE_PRESENCE = "CODE_PRESENCE"
 
 
 class FunctionRole(StrEnum):
@@ -186,6 +189,18 @@ class PathRelation(_Model):
         return SetScope.parse(value) if isinstance(value, str) else value
 
 
+class CodePresence(_Model):
+    """Code at an address; function_entry, when set, is the containing entry."""
+
+    address: str
+    function_entry: str | None = None
+
+    @field_validator("address", "function_entry")
+    @classmethod
+    def _address(cls, value: Any) -> str | None:
+        return None if value is None else addr(value)
+
+
 class ClaimSemantics(_Model):
     """Structured predicate of a claim; authoritative for verification."""
 
@@ -193,6 +208,7 @@ class ClaimSemantics(_Model):
     resolved_pointer: ResolvedPointer | None = None
     function_role: FunctionRoleClaim | None = None
     path: PathRelation | None = None
+    code_presence: CodePresence | None = None
 
     @model_validator(mode="after")
     def _one_body(self) -> "ClaimSemantics":
@@ -200,6 +216,7 @@ class ClaimSemantics(_Model):
             Predicate.RESOLVED_FUNCTION_POINTER: self.resolved_pointer,
             Predicate.FUNCTION_ROLE: self.function_role,
             Predicate.PATH_RELATION: self.path,
+            Predicate.CODE_PRESENCE: self.code_presence,
         }
 
         if bodies[self.predicate] is None or sum(b is not None for b in bodies.values()) != 1:
@@ -217,6 +234,11 @@ class ClaimSemantics(_Model):
             context = "".join(f", {k}={v}" for k, v in (("slot", role.slot), ("peripheral", role.peripheral)) if v)
             return f"{self.predicate.value}({role.function} is {role.role.value}{context})"
 
+        if self.code_presence:
+            code = self.code_presence
+            entry = f" in function at {code.function_entry}" if code.function_entry else ""
+            return f"{self.predicate.value}({code.address}{entry})"
+
         assert self.path is not None
         return f"{self.predicate.value}({self.path.left} {self.path.status} {self.path.right})"
 
@@ -226,6 +248,7 @@ COMPATIBLE_CLAIM_TYPES: dict[Predicate, frozenset[str]] = {
     Predicate.RESOLVED_FUNCTION_POINTER: frozenset({"RESOLUTION"}),
     Predicate.FUNCTION_ROLE: frozenset({"RESOLUTION", "STRUCTURE", "BEHAVIOR"}),
     Predicate.PATH_RELATION: frozenset({"PATH_EXISTS", "NO_KNOWN_PATH"}),
+    Predicate.CODE_PRESENCE: frozenset({"STRUCTURE"}),
 }
 
 PATH_CLAIM_TYPE = {"KNOWN_COMMON_PATH": "PATH_EXISTS", "NO_KNOWN_PATH": "NO_KNOWN_PATH"}
@@ -606,6 +629,70 @@ def check_path(claim: PathRelation, facts: EvidenceFacts) -> list[SemanticCheck]
     ]
 
 
+def check_code_presence(claim: CodePresence, evidence: list[tuple[Any, dict[str, Any]]]) -> list[SemanticCheck]:
+    """
+    Some source in supporting structural-agreement evidence recognizes code
+    at the address (and, if stated, places it in the function at the entry).
+    Corroboration by independent sources is the verification policy's
+    concern, not this consistency check.
+    """
+
+    address = to_int(claim.address)
+    entry = None if claim.function_entry is None else to_int(claim.function_entry)
+    starts: dict[int, str] = {}
+    seen = None
+
+    for artifact, result in evidence:
+        if artifact.tool != "structural_source_agreement":
+            continue
+
+        for item in result.get("agreements", []):
+            if _maybe_int(item.get("address")) != address:
+                continue
+
+            for observation in item.get("observations", []):
+                if observation.get("available") and observation.get("recognizes_code"):
+                    seen = seen or artifact.evidence_id
+
+                    if (start := _maybe_int(observation.get("start"))) is not None:
+                        starts.setdefault(start, artifact.evidence_id)
+
+    if seen is None:
+        return [
+            SemanticCheck(
+                code=CheckCode.RELATION_UNSUPPORTED,
+                passed=False,
+                field="address",
+                claimed=claim.address,
+                detail="no supporting structural source agreement recognizes code at this address",
+            )
+        ]
+
+    if entry is None:
+        return [SemanticCheck(code=CheckCode.CONSISTENT, passed=True, field="address", claimed=claim.address, evidence_id=seen)]
+
+    if entry in starts:
+        return [
+            SemanticCheck(
+                code=CheckCode.CONSISTENT, passed=True, field="function_entry", claimed=claim.function_entry,
+                evidence_value=addr(entry), evidence_id=starts[entry],
+            )
+        ]
+
+    shown = ", ".join(addr(s) for s in sorted(starts)) or "no function"
+    return [
+        SemanticCheck(
+            code=CheckCode.RELATION_MISMATCH,
+            passed=False,
+            field="function_entry",
+            claimed=claim.function_entry,
+            evidence_value=shown,
+            evidence_id=seen,
+            detail=f"supporting evidence places {claim.address} in {shown}",
+        )
+    ]
+
+
 def verify_semantics(semantics: ClaimSemantics, claim_type: str, evidence: list[tuple[Any, dict[str, Any]]]) -> list[SemanticCheck]:
     checks: list[SemanticCheck] = []
 
@@ -628,5 +715,7 @@ def verify_semantics(semantics: ClaimSemantics, claim_type: str, evidence: list[
         checks += check_function_role(semantics.function_role, facts)
     elif semantics.path is not None:
         checks += check_path(semantics.path, facts)
+    elif semantics.code_presence is not None:
+        checks += check_code_presence(semantics.code_presence, evidence)
 
     return checks

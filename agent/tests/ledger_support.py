@@ -81,16 +81,32 @@ CODE = {
 }
 
 
+# Independence envelope a source may declare. Real sources declare none
+# today (the default here, too); tests opt in to model complete metadata.
+INDEPENDENT_ENVELOPE = {
+    "census": {"lineage": ["ghidra"], "firmware_sha256": FIRMWARE, "engine_version": "census-test"},
+    "ghidra": {"lineage": ["ghidra"], "firmware_sha256": FIRMWARE, "engine_version": "ghidra-test"},
+    "macaw": {"lineage": ["macaw"], "firmware_sha256": FIRMWARE, "engine_version": "macaw-test"},
+}
+
+
 class FakeCodeSource:
-    def __init__(self, name: str, functions: dict[int, int] | None, version: str = "v1"):
+    def __init__(self, name: str, functions: dict[int, int] | None, version: str = "v1", envelope: dict | None = None, non_code: set[int] | None = None):
         self.name = name
         self.functions = functions
         self.version = version
         self.derived_from = "ghidra:v1" if name == "census" else None
+        self.non_code = non_code or set()
+
+        for field, value in (envelope or {}).items():
+            setattr(self, field, value)
 
     def observe(self, address: int) -> SourceObservation:
         if self.functions is None:
             return SourceObservation(source=self.name, available=False)
+
+        if address in self.non_code:
+            return SourceObservation(source=self.name, available=True, version=self.version, recognizes_code=False, non_code=True)
 
         for start, end in self.functions.items():
             if start <= address < end:
@@ -110,6 +126,9 @@ class FakeExecutor:
         self.calls: list[tuple[str, dict]] = []
         self.drift: dict[str, dict] = {}
         self.code = copy.deepcopy(CODE)
+        # source -> independence envelope; source -> addresses it calls data.
+        self.envelope: dict[str, dict] = {}
+        self.non_code: dict[str, set[int]] = {}
         self.census = SimpleNamespace(available_peripherals=lambda: ["EIC", "TCC1", "SERCOM2", "USB"])
 
     def execute_operation(self, tool, arguments, *, evidence_id):
@@ -128,7 +147,10 @@ class FakeExecutor:
         elif tool == "function_disassembly":
             result = {"name": arguments["function"], "entry": "0x0", "instructions": [{"address": "0x0", "mnemonic": "bx", "operands": "lr"}]}
         elif tool == "structural_source_agreement":
-            sources = [FakeCodeSource(name, functions) for name, functions in self.code.items()]
+            sources = [
+                FakeCodeSource(name, functions, envelope=self.envelope.get(name), non_code=self.non_code.get(name))
+                for name, functions in self.code.items()
+            ]
             result = source_agreement(sources, arguments["addresses"])
         else:
             result = {"value": tool}
