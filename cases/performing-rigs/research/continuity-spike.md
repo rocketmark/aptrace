@@ -130,3 +130,6 @@ reverted.
 Next for this question: run the item again once the follow-up planner
 treats prior analyses as already run (framework next milestone), or have
 an operator inspect the four callers' call sites directly.
+
+Follow-up: the controller-continuity benchmark on this question is in
+[`continuity-v2-benchmark.md`](continuity-v2-benchmark.md).

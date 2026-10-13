@@ -227,6 +227,8 @@ now only earlier session observations or durable ledger evidence.
 
 ## Next milestone
 
+Implemented as continuity-v1: [`../research-continuity.md`](../research-continuity.md).
+
 Make the follow-up planner see the source run's analyses as already run.
 At session seeding, put the prior analyses the candidate cites (durable
 `operation_key`s) into the projection's `ALREADY RUN` / `INSPECTED`

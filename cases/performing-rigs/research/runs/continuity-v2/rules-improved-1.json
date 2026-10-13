@@ -1,0 +1,59 @@
+{
+  "run_id": "R-20261013T225844-f88d3a",
+  "stop": "planner_finished",
+  "steps": 9,
+  "steps_charged": 7,
+  "planner_requests": 10,
+  "max_prompt_chars": 3148,
+  "max_prompt_tokens": 0,
+  "rejected_requests": 1,
+  "planner_runtime_errors": 0,
+  "tool_executions": 7,
+  "tool_failures": 0,
+  "seeded_leads": 6,
+  "seeded_attempted": 6,
+  "seeded_completed": 6,
+  "redundant_executions": 0,
+  "redundant_operations": [],
+  "reused_preload": 6,
+  "reused_on_request": 1,
+  "reuse_refusals": [
+    "search_case_evidence: search_case_evidence is not a deterministic replay-verifiable operation",
+    "search_case_evidence: search_case_evidence is not a deterministic replay-verifiable operation"
+  ],
+  "new_operations": 7,
+  "new_evidence": 7,
+  "direct_callers_inspected": 4,
+  "claims_proposed": [],
+  "seeded_outcomes": [
+    "executed",
+    "executed",
+    "executed",
+    "executed",
+    "executed",
+    "executed"
+  ],
+  "fallbacks": 0,
+  "trajectory": [
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead(reused)",
+    "finish"
+  ],
+  "provenance": {
+    "no_reused_operation_reexecuted": true,
+    "reused_evidence_not_run_evidence": true,
+    "reused_originals_exist": true,
+    "inputs_are_durable": true
+  },
+  "mode": "improved",
+  "planner": "rules",
+  "elapsed_s": 0.1,
+  "error": null,
+  "repeat": 1
+}

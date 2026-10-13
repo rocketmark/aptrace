@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, SerializerFunctionWrapHandler, model_serializer
 
 
 class CallSite(BaseModel):
@@ -81,6 +81,18 @@ class EvidenceObservation(BaseModel):
     tool: str
     arguments: dict[str, Any]
     result: dict[str, Any]
+    # Durable evidence id when this session entry is a historical result
+    # used by reference (research/history.py), not a new execution.
+    reused_from: str | None = None
+
+    @model_serializer(mode="wrap")
+    def _omit_unset_reuse(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        data = handler(self)
+
+        if data.get("reused_from") is None:
+            data.pop("reused_from", None)
+
+        return data
 
 
 class EvidenceBundle(BaseModel):

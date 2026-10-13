@@ -1,0 +1,74 @@
+{
+  "run_id": "R-20261013T230111-e533cd",
+  "stop": "planner_contract_exhausted",
+  "steps": 7,
+  "steps_charged": 6,
+  "planner_requests": 11,
+  "max_prompt_chars": 2983,
+  "max_prompt_tokens": 1945,
+  "rejected_requests": 4,
+  "planner_runtime_errors": 0,
+  "tool_executions": 6,
+  "tool_failures": 0,
+  "seeded_leads": 6,
+  "seeded_attempted": 6,
+  "seeded_completed": 6,
+  "redundant_executions": 0,
+  "redundant_operations": [],
+  "reused_preload": 6,
+  "reused_on_request": 0,
+  "reuse_refusals": [
+    "search_case_evidence: search_case_evidence is not a deterministic replay-verifiable operation",
+    "search_case_evidence: search_case_evidence is not a deterministic replay-verifiable operation"
+  ],
+  "new_operations": 6,
+  "new_evidence": 6,
+  "direct_callers_inspected": 4,
+  "claims_proposed": [
+    {
+      "key": "C10:v1",
+      "assertion": "E0000b4b4 does not read or write SERCOM0 registers via r0 address; it only uses the address as a value.",
+      "grade": "STRONG",
+      "evidence": [
+        "EV-be1965ceaf243a66",
+        "EV-f9a9ae317433aceb",
+        "EV-d52c88103ef32b68",
+        "EV-6b51302810fa3152",
+        "EV-29fef5d8723a352a",
+        "EV-ead6dfad1110ee1c",
+        "EV-6747f59bdaf27673",
+        "EV-4a8978344849622a"
+      ],
+      "state": "PROPOSED"
+    }
+  ],
+  "seeded_outcomes": [
+    "executed",
+    "executed",
+    "executed",
+    "executed",
+    "executed",
+    "executed"
+  ],
+  "fallbacks": 0,
+  "trajectory": [
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "finish"
+  ],
+  "provenance": {
+    "no_reused_operation_reexecuted": true,
+    "reused_evidence_not_run_evidence": true,
+    "reused_originals_exist": true,
+    "inputs_are_durable": true
+  },
+  "mode": "improved",
+  "planner": "qwen",
+  "elapsed_s": 9.0,
+  "error": null,
+  "repeat": 2
+}

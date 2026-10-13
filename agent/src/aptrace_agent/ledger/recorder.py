@@ -91,7 +91,16 @@ def record_investigation(
     lead_sources = {lead.id: list(lead.source_evidence_ids) for lead in run.state.leads}
     step_lead = {step.evidence_id: step.lead_id for step in run.result.steps if step.evidence_id}
 
+    executed: list[str] = []
+
     for seq, observation in enumerate(run.evidence, start=1):
+        if getattr(observation, "reused_from", None):
+            # A historical result used by reference: no invocation is
+            # written and it is not this run's evidence; references to the
+            # session alias resolve to the original evidence id.
+            session_to_durable[observation.id] = observation.reused_from
+            continue
+
         trace = traces.get(observation.id)
         sources = lead_sources.get(step_lead.get(observation.id) or "", [])
         invocation, artifact = ledger.record_invocation(
@@ -117,6 +126,7 @@ def record_investigation(
 
         if artifact is not None:
             session_to_durable[observation.id] = artifact.evidence_id
+            executed.append(artifact.evidence_id)
 
     for offset, failure in enumerate(recorder.failures if recorder else [], start=len(run.evidence) + 1):
         invocation, _ = ledger.record_invocation(
@@ -170,14 +180,16 @@ def record_investigation(
             parent_run_id=parent_run_id or (followup.source_run_id if followup else None),
             source=source,
             invocation_ids=invocation_ids,
-            evidence_ids=list(dict.fromkeys(session_to_durable.values())),
+            evidence_ids=list(dict.fromkeys(executed)),
             claim_versions=claim_keys,
             planner_requests=list(run.result.planner_requests),
             trajectory=[
                 {"number": s.number, "action": s.action, "lead_id": s.lead_id, "evidence_id": s.evidence_id, "reason": s.reason}
+                | ({"reused_from": s.reused_from} if getattr(s, "reused_from", None) else {})
                 for s in run.result.steps
             ],
             work_item_id=work_item_id,
             followup=followup,
+            continuity=getattr(run, "continuity", None),
         )
     )

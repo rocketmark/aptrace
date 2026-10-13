@@ -286,12 +286,22 @@ def main() -> None:
 
         completed: dict = {}
         followup = None
+        history = None
 
         if args.work_item:
             from aptrace_agent.ledger_wiring import context_provider
             from aptrace_agent.work_cli import followup_for_work_item
 
             followup = followup_for_work_item(args, executor=recorder.inner, context=context_provider(recorder.inner)())
+
+            if followup is not None:
+                from aptrace_agent.ledger.store import ResearchLedger
+                from aptrace_agent.ledger_wiring import ledger_dir
+                from aptrace_agent.research.history import HistoricalOperations
+
+                history = HistoricalOperations.for_followup(
+                    ResearchLedger(ledger_dir(args.ledger_dir)), context_provider(recorder.inner)(), followup
+                )
 
         def investigate(
             objective: str,
@@ -310,7 +320,7 @@ def main() -> None:
                         if recorder is not None
                         else {}
                     ),
-                    **({"followup": followup} if followup is not None else {}),
+                    **({"followup": followup, "history": history} if followup is not None else {}),
                 )
             )
 

@@ -67,6 +67,14 @@ belong in each case's status document.
   shortlist by documented categories; `--create` persists a selected
   candidate as a deduplicated Beads item, and the follow-up run records the
   bounded prior context it received (`InvestigationRun.followup`).
+- Continue follow-ups from prior operations
+  ([`research-continuity.md`](research-continuity.md)): a follow-up session
+  uses compatible historical results by reference (same tool, canonical
+  arguments, firmware, input artifacts, analysis version; valid, intact
+  evidence) instead of re-executing them, records no new invocation or
+  evidence for a reuse, ranks its seeded leads first, withholds broad
+  peripheral rediscovery while they are open, and bounds reuse and planner
+  fallback in its step budget (`InvestigationRun.continuity`).
 
 ## Current limitations
 
@@ -129,10 +137,10 @@ belong in each case's status document.
 - Follow-up generation re-derives open leads because runs do not record
   them; it refuses when the run's input artifacts differ from the current
   ones. Its evidence-gap rule covers peripheral-access assertions only, and
-  matches assertion prose. A follow-up run's planner does not see the source
-  run's analyses as already run, so the local planner may repeat them; an
-  inconclusive follow-up suppresses its question until the evidence basis
-  changes or an operator reruns the item.
+  matches assertion prose. An inconclusive follow-up suppresses its
+  question until the evidence basis changes or an operator reruns the item.
+  Historical reuse does not detect tool changes that do not bump a declared
+  analysis version (replay does).
 - Case selection is currently wired explicitly by the application and some
   scripts. A plugin/provider architecture is intentionally deferred until more
   than one real case demonstrates the need.

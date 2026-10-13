@@ -142,6 +142,60 @@ class FollowUpProvenance(_Record):
     context_chars: int = 0
 
 
+class OperationReuse(_Record):
+    """
+    A historical result a run used by reference instead of executing. The
+    original invocation and evidence are unchanged; no ToolInvocation is
+    written for the reuse and the evidence is not one of the run's own.
+    """
+
+    session_evidence_id: str
+    evidence_id: str
+    invocation_id: str
+    source_run_id: str
+    tool: str
+    arguments: dict[str, Any]
+    operation_key: str
+    # preload (cited prior evidence made visible) | lead | fallback
+    trigger: str
+    step: int | None = None
+
+
+class ReuseRefusal(_Record):
+    """A historical operation with the same tool and arguments that was not reusable."""
+
+    tool: str
+    arguments: dict[str, Any]
+    invocation_id: str
+    reason: str
+    trigger: str
+
+
+class SeededLeadOutcome(_Record):
+    tool: str
+    arguments: dict[str, Any]
+    description: str
+    # executed | reused | attempted-failed | offered | not-offered
+    outcome: str
+    session_evidence_id: str | None = None
+    evidence_id: str | None = None
+    step: int | None = None
+
+
+class ContinuityRecord(_Record):
+    """How a follow-up run used prior research (research/history.py)."""
+
+    policy: str
+    history_runs: list[str] = Field(default_factory=list)
+    history_invocations: int = 0
+    reused: list[OperationReuse] = Field(default_factory=list)
+    refused: list[ReuseRefusal] = Field(default_factory=list)
+    seeded_leads: list[SeededLeadOutcome] = Field(default_factory=list)
+    # max_steps, steps_charged, decisions, free_reuses, max_free_reuses,
+    # fallbacks, max_fallbacks
+    budget: dict[str, int] = Field(default_factory=dict)
+
+
 class InvestigationRun(_Record):
     schema_version: int = LEDGER_SCHEMA_VERSION
     run_id: str
@@ -177,12 +231,15 @@ class InvestigationRun(_Record):
     # (parent_run_id names that run). Absent on standalone runs and older
     # records, and omitted from the serialized record when unset.
     followup: FollowUpProvenance | None = None
+    # Historical reuse, refusals, seeded-lead outcomes and budget of a
+    # follow-up run. Absent on standalone and older runs.
+    continuity: ContinuityRecord | None = None
 
     @model_serializer(mode="wrap")
     def _omit_unset_work_item(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
         data = handler(self)
 
-        for name in ("work_item_id", "followup"):
+        for name in ("work_item_id", "followup", "continuity"):
             if data.get(name) is None:
                 data.pop(name, None)
 

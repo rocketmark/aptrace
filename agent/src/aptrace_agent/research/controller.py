@@ -73,6 +73,9 @@ class ResearchStep:
     lead_id: str | None = None
     evidence_id: str | None = None
     reason: str | None = None
+    # Durable evidence id when the step used a historical result by
+    # reference instead of executing (follow-up sessions only).
+    reused_from: str | None = None
 
 
 @dataclass(frozen=True)
@@ -243,13 +246,29 @@ class ResearchController:
     def _observations(session: ResearchSession, tool: str) -> list:
         return [observation for observation in session.ledger.all() if observation.tool == tool]
 
+    @classmethod
+    def _executed(cls, session: ResearchSession, tool: str) -> list:
+        """Observations of tool this session executed; reused historical results excluded."""
+
+        return [observation for observation in cls._observations(session, tool) if observation.reused_from is None]
+
+    @staticmethod
+    def _seeded_open(session: ResearchSession) -> list:
+        continuity = getattr(session, "continuity", None)
+        return continuity.open_seeded(session.state) if continuity is not None else []
+
     def _census_observations(self, session: ResearchSession) -> list:
         return self._observations(session, "census_peripheral_usage")
 
     def _analyzable_peripherals(self, session: ResearchSession) -> list[str]:
         done = self._census_observations(session)
 
-        if len(done) >= self.max_structural_analyses:
+        if len(self._executed(session, "census_peripheral_usage")) >= self.max_structural_analyses:
+            return []
+
+        # Follow-up policy: no broad peripheral rediscovery while the leads
+        # the follow-up exists for are still open.
+        if self._seeded_open(session):
             return []
 
         analyzed = {observation.arguments.get("peripheral") for observation in done}
@@ -307,6 +326,7 @@ class ResearchController:
             "usb_inventory" in self.structural_tools
             and usb_relevant
             and not self._observations(session, "census_usb_inventory")
+            and not self._seeded_open(session)
         ):
             palette.tools.append(
                 _function_tool(
@@ -323,7 +343,7 @@ class ResearchController:
 
         if (
             "common_paths" in self.structural_tools
-            and len(self._observations(session, "census_common_paths")) < self.max_path_analyses
+            and len(self._executed(session, "census_common_paths")) < self.max_path_analyses
             and len(palette.set_names) >= 2
         ):
             members = {"type": "array", "items": {"type": "string"}, "maxItems": 4}
@@ -338,7 +358,7 @@ class ResearchController:
 
         if (
             "function_effects" in self.structural_tools
-            and len(self._observations(session, "function_effects")) < self.max_effects_analyses
+            and len(self._executed(session, "function_effects")) < self.max_effects_analyses
             and palette.known
         ):
             value = {"type": "integer"}
@@ -378,6 +398,12 @@ class ResearchController:
         self._structural_palette(session, palette)
         palette.tools.append(self._finish_tool())
         self._apply_cooldown(palette)
+
+        continuity = getattr(session, "continuity", None)
+
+        if continuity is not None and "follow_lead" in palette.names():
+            continuity.offered.update(palette.lead_ids)
+
         return palette
 
     def _discovery_palette(self, session: ResearchSession) -> _Palette:
@@ -487,10 +513,15 @@ class ResearchController:
         for observation in self._census_observations(session):
             if observation.arguments.get("peripheral") == peripheral:
                 palette.duplicate = "analyze_peripheral"
+                prior = f" (prior run evidence {observation.reused_from})" if observation.reused_from else ""
                 return (
-                    f"{peripheral} was already analyzed in {observation.id}; choose a "
+                    f"{peripheral} was already analyzed in {observation.id}{prior}; choose a "
                     "different listed peripheral or another action"
                 )
+
+        if self._seeded_open(session):
+            return "peripheral discovery is withheld while follow-up leads are open; follow a [follow-up] lead"
+
 
         return "analyze_peripheral requires one of the listed peripherals"
 
@@ -975,11 +1006,16 @@ class ResearchController:
 
             return base, -number
 
-        ranked = sorted(session.state.open_leads(), key=rank)
+        # Follow-up leads first: they are why this run exists.
+        ranked = sorted(session.state.open_leads(), key=lambda lead: (lead.origin is None, *rank(lead)))
         limit = 4 if self.projection is self.compact_projection else self.max_visible_leads
         return ranked[:limit]
 
     def _compact_lead(self, session: ResearchSession, lead) -> str:
+        text = self._compact_lead_text(session, lead)
+        return text + " [follow-up]" if lead.origin else text
+
+    def _compact_lead_text(self, session: ResearchSession, lead) -> str:
         """
         Give the planner only the structural identity needed to choose a
         lead. APTrace retains descriptions, provenance and arguments.
@@ -1013,7 +1049,9 @@ class ResearchController:
 
     def _research_state(self, session: ResearchSession) -> tuple[str, int]:
         state = self._state_digest(session)
-        return f"STATE ({len(session.ledger)} evidence records retained)\n{state}", len(state)
+        reused = sum(o.reused_from is not None for o in session.ledger.all())
+        count = f"{len(session.ledger)} evidence records retained" + (f", {reused} reused from prior runs" if reused else "")
+        return f"STATE ({count})\n{state}", len(state)
 
     def _prompt(self, session: ResearchSession, palette: _Palette | list[str]) -> str:
         return self._decision_prompt(session, palette)[0]
@@ -1046,7 +1084,7 @@ LEADS (APTrace-validated)
 {lead_text}
 {self._analysis_guidance(session, palette)}
 TASK: make exactly one tool call, by the first rule that applies:
-1) a subsystem the objective names is not under ALREADY RUN: analyze it;
+{self._followup_rule(session)}1) a subsystem the objective names is not under ALREADY RUN: analyze it;
 2) the objective asks whether subsystems connect and their sets exist:
    find_common_paths (once per pair);
 3) otherwise follow LEADS the analyses named (caller/callee leads only for
@@ -1056,6 +1094,12 @@ Never repeat an ALREADY RUN analysis or invent identifiers.
 """,
             state_chars,
         )
+
+    def _followup_rule(self, session: ResearchSession) -> str:
+        if not self._seeded_open(session):
+            return ""
+
+        return "0) [follow-up] leads are the open question this run exists for: follow one;\n"
 
     def _claim_guidance(self) -> str:
         if not self.claim_contract:
@@ -1234,7 +1278,7 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
 
     # -- execution --------------------------------------------------------------
 
-    def _follow_new_lead(self, session: ResearchSession, *, kind: str, description: str, tool: str, arguments: dict[str, Any]):
+    def _follow_new_lead(self, session: ResearchSession, *, kind: str, description: str, tool: str, arguments: dict[str, Any], step: int | None = None):
         lead = session.registry.register(
             kind=kind,
             description=description,
@@ -1246,11 +1290,12 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
         if all(existing.id != lead.id for existing in session.state.leads):
             session.state.add_lead(lead)
 
-        return lead, session.follow_lead(lead.id)
+        return lead, session.follow_lead(lead.id, step=step)
 
-    def _follow_peripheral_analysis(self, session: ResearchSession, peripheral: str):
+    def _follow_peripheral_analysis(self, session: ResearchSession, peripheral: str, step: int | None = None):
         return self._follow_new_lead(
             session,
+            step=step,
             kind="census",
             description=f"Census structural usage of peripheral {peripheral}",
             tool="census_peripheral_usage",
@@ -1266,16 +1311,17 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
             arguments={"query": query, "max_results": 8, "purpose": "discovery"},
         )
 
-    def _execute_structural(self, session: ResearchSession, action: str, arguments: dict[str, Any]):
+    def _execute_structural(self, session: ResearchSession, action: str, arguments: dict[str, Any], step: int | None = None):
         """Run one validated structural action; return (step action, lead, observation)."""
 
         if action == "analyze_peripheral":
-            lead, observation = self._follow_peripheral_analysis(session, arguments["peripheral"])
+            lead, observation = self._follow_peripheral_analysis(session, arguments["peripheral"], step)
             return "analyze", lead, observation
 
         if action == "analyze_usb_interface":
             lead, observation = self._follow_new_lead(
                 session,
+                step=step,
                 kind="usb-inventory",
                 description="USB structural inventory",
                 tool="census_usb_inventory",
@@ -1286,6 +1332,7 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
         if action == "find_common_paths":
             lead, observation = self._follow_new_lead(
                 session,
+                step=step,
                 kind="graph",
                 description=f"Common paths {arguments['left_label']} | {arguments['right_label']}",
                 tool="census_common_paths",
@@ -1296,6 +1343,7 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
         if action == "analyze_function_effects":
             lead, observation = self._follow_new_lead(
                 session,
+                step=step,
                 kind="effects",
                 description=f"Function effects of {arguments['function']}",
                 tool="function_effects",
@@ -1349,13 +1397,49 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
             proposed_claims=tuple(self.proposed_claims),
         )
 
+    def _fallback_lead(self, session: ResearchSession):
+        """Top open follow-up lead APTrace may follow when the planner fails, or None."""
+
+        continuity = getattr(session, "continuity", None)
+
+        if continuity is None or continuity.fallbacks >= continuity.max_fallbacks:
+            return None
+
+        seeded = [lead for lead in self._planner_open_leads(session) if lead.origin]
+        return seeded[0] if seeded else None
+
     def run(self, session: ResearchSession) -> ResearchRunResult:
+        """
+        Budget: each executed action charges one step (max_steps). In a
+        follow-up session (session.continuity) an action satisfied by a
+        historical result charges nothing for the first max_free_reuses
+        reuses and one step after that, so decisions never exceed
+        max_steps + max_free_reuses. Without continuity every decision is
+        one step, exactly as before.
+        """
+
         steps: list[ResearchStep] = []
         objective_discovery = not session.ledger.all() and not session.state.open_leads()
         discovery_attempts = 0
         discovery_queries: set[str] = set()
+        continuity = getattr(session, "continuity", None)
+        charged = 0
+        decision = 0
 
-        for step_number in range(1, self.max_steps + 1):
+        def charge(observation) -> None:
+            nonlocal charged
+            charged += continuity.charge(observation.reused_from is not None) if continuity is not None else 1
+
+            if continuity is not None:
+                continuity.steps_charged = charged
+
+        while charged < self.max_steps:
+            decision += 1
+            step_number = decision
+
+            if continuity is not None:
+                continuity.decisions = decision
+
             open_leads = session.state.open_leads()
             discovering = (
                 not open_leads
@@ -1384,8 +1468,36 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
             else:
                 action, arguments = self._request_decision(session)
 
+            if action == "planner_contract_exhausted" and (lead := self._fallback_lead(session)) is not None:
+                # The planner produced no valid decision; APTrace takes the
+                # top open follow-up lead instead of ending the run.
+                continuity.fallbacks += 1
+                observation = session.follow_lead(lead.id, step=step_number, trigger="fallback")
+                steps.append(
+                    ResearchStep(
+                        number=step_number,
+                        action="fallback_lead",
+                        lead_id=lead.id,
+                        evidence_id=observation.id,
+                        reason=str(arguments["reason"]).strip()[:300],
+                        reused_from=observation.reused_from,
+                    )
+                )
+                charge(observation)
+                continue
+
             if action in {"planner_prefill_exhausted", "planner_contract_exhausted"}:
                 steps.append(ResearchStep(number=step_number, action="finish", reason=str(arguments["reason"]).strip()))
+
+                # A follow-up whose planner fails after doing work still gets
+                # the bounded final-claims request, as at budget exhaustion.
+                if continuity is not None and action == "planner_contract_exhausted" and self.claim_contract and charged:
+                    final, final_arguments = self._request_final_claims(session)
+
+                    if final == "finish":
+                        self._record_conclusions(session, final_arguments)
+                        self.proposed_claims = self._sanitize_claims(final_arguments.get("claims"))
+
                 return self._result(action, steps, self._reconcile_terminal(session))
 
             if action == "finish":
@@ -1405,17 +1517,20 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
                 discovery_queries.add(query.casefold())
                 lead, observation = self._follow_discovery_search(session, query)
                 discovery_attempts += 1
-                steps.append(ResearchStep(number=step_number, action="discover", lead_id=lead.id, evidence_id=observation.id))
+                steps.append(ResearchStep(number=step_number, action="discover", lead_id=lead.id, evidence_id=observation.id, reused_from=observation.reused_from))
+                charge(observation)
                 continue
 
             if action == "follow_lead":
                 lead_id = str(arguments["lead_id"])
-                observation = session.follow_lead(lead_id)
-                steps.append(ResearchStep(number=step_number, action="follow_lead", lead_id=lead_id, evidence_id=observation.id))
+                observation = session.follow_lead(lead_id, step=step_number)
+                steps.append(ResearchStep(number=step_number, action="follow_lead", lead_id=lead_id, evidence_id=observation.id, reused_from=observation.reused_from))
+                charge(observation)
                 continue
 
-            step_action, lead, observation = self._execute_structural(session, action, arguments)
-            steps.append(ResearchStep(number=step_number, action=step_action, lead_id=lead.id, evidence_id=observation.id))
+            step_action, lead, observation = self._execute_structural(session, action, arguments, step=step_number)
+            steps.append(ResearchStep(number=step_number, action=step_action, lead_id=lead.id, evidence_id=observation.id, reused_from=observation.reused_from))
+            charge(observation)
 
         if self.claim_contract:
             action, arguments = self._request_final_claims(session)

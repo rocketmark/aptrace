@@ -68,6 +68,9 @@ class Lead(BaseModel):
     description: str
     source_evidence_ids: list[str] = Field(default_factory=list)
     status: LeadStatus = LeadStatus.OPEN
+    # Set on leads seeded by a follow-up ("followup:<key>"); such leads are
+    # the reason the run exists and rank first.
+    origin: str | None = None
 
 
 class ResearchState(BaseModel):

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from aptrace_agent.executor import EvidenceExecutor
 from aptrace_agent.investigation_tools import (
@@ -16,6 +17,7 @@ from aptrace_agent.research import (
     ResearchState,
 )
 from aptrace_agent.research.followups import FollowUpCandidate, seed_session
+from aptrace_agent.research.history import HistoricalOperations
 from aptrace_agent.router import route_question
 from aptrace_agent.schemas import (
     EvidenceBundle,
@@ -42,6 +44,8 @@ class AutonomousInvestigationRun:
     result: ResearchRunResult
     state: ResearchState
     evidence: tuple[EvidenceObservation, ...]
+    # ContinuityRecord of a follow-up run with history; None otherwise.
+    continuity: Any = None
 
 
 def run_investigation(
@@ -126,6 +130,7 @@ def run_autonomous_investigation(
     executor: EvidenceExecutor | None = None,
     claim_contract: bool = False,
     followup: FollowUpCandidate | None = None,
+    history: HistoricalOperations | None = None,
 ) -> AutonomousInvestigationRun:
     """
     Run one bounded autonomous firmware investigation.
@@ -203,7 +208,7 @@ def run_autonomous_investigation(
         )
 
     if followup is not None:
-        seed_session(session, followup)
+        seed_session(session, followup, history=history)
 
     research_controller = (
         controller
@@ -236,5 +241,10 @@ def run_autonomous_investigation(
         ),
         evidence=tuple(
             session.ledger.all()
+        ),
+        continuity=(
+            session.continuity.record(max_steps=research_controller.max_steps)
+            if session.continuity is not None
+            else None
         ),
     )

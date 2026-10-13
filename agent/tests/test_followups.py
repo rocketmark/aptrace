@@ -83,7 +83,7 @@ def effects(function: str, *, mmio: bool) -> dict:
     if mmio:
         accesses.append({"address": BASE, "depends_on": [], "kind": "write", "region": "MMIO", "width": 4})
 
-    return {"function": function, "coverage": "complete", "accesses": accesses, "calls": []}
+    return {"function": function, "coverage": "complete", "accesses": accesses, "calls": [], "provenance": {"analysis_version": 1}}
 
 
 def facts(function: str) -> dict:
@@ -606,8 +606,8 @@ def test_cli_preview_create_and_run_a_followup(world, monkeypatch, capsys):
     planner = ScriptedPlanner([], f"PROBABLE STRUCTURE E1 {CALLERS[0][0]} calls {GAP}.")
     received = {}
 
-    def autonomous(objective, *, seed_function, max_steps, executor=None, claim_contract=False, followup=None):
-        received.update(objective=objective, followup=followup)
+    def autonomous(objective, *, seed_function, max_steps, executor=None, claim_contract=False, followup=None, history=None):
+        received.update(objective=objective, followup=followup, history=history)
         registry = LeadRegistry()
         session = ResearchSession(objective=objective, registry=registry, follower=LeadFollower(registry=registry, executor=executor), deriver=deriver_for(registry))
         seed_session(session, followup)
@@ -653,6 +653,7 @@ def test_cli_preview_create_and_run_a_followup(world, monkeypatch, capsys):
 
     assert received["objective"] == world.store.items[item_id]["metadata"]["aptrace_objective"]
     assert received["followup"].key == world.store.items[item_id]["metadata"]["aptrace_followup_key"]
+    assert received["history"] is not None and world.run_a.run_id in received["history"].run_ids
     assert run_b.followup.followup_key == received["followup"].key and run_b.parent_run_id == world.run_a.run_id
     assert world.ledger.state(world.claim) == ClaimState.PROPOSED
 

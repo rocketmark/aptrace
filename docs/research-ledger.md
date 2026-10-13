@@ -48,6 +48,10 @@ candidate key, source run, cited claim/audit/verification/evidence ids, the
 seeded leads, and the bounded text the planner was given; `parent_run_id`
 names the source run ([`spikes/investigation-continuity.md`](spikes/investigation-continuity.md)).
 Prior claims in that context are unverified hypotheses, never evidence.
+Its `continuity` record lists historical results the run used by reference
+(original invocation and evidence ids; no new invocation or evidence is
+written for them), refused reuse with reasons, seeded-lead outcomes, and
+the step budget ([`research-continuity.md`](research-continuity.md)).
 Current claim and evidence state is folded from `events.jsonl` and never
 stored on a record, so history is never rewritten.
 

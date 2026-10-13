@@ -59,6 +59,7 @@ from aptrace_agent.ledger.models import (
 from aptrace_agent.ledger.operations import TOOL_INPUTS, input_artifacts
 from aptrace_agent.ledger.store import ResearchLedger
 from aptrace_agent.research.derivation import LeadDeriver
+from aptrace_agent.research.history import ContinuityTracker, HistoricalOperations
 from aptrace_agent.research.leads import LeadRegistry
 from aptrace_agent.research.projection import ProjectionBudget, clip
 from aptrace_agent.research.session import ResearchSession
@@ -1024,13 +1025,21 @@ def continuity_review(ledger: ResearchLedger, run_id: str) -> dict[str, Any]:
 # -- follow-up session context --------------------------------------------------------
 
 
-def seed_session(session: ResearchSession, candidate: FollowUpCandidate) -> None:
+def seed_session(session: ResearchSession, candidate: FollowUpCandidate, *, history: HistoricalOperations | None = None) -> None:
     """
     Give a new session the candidate's bounded prior context: its seeded
-    leads (executed only if the planner follows them), its open questions,
-    and the prior claim as an unverified hypothesis. Prior evidence is
-    referenced by durable id, never replayed into the session ledger.
+    leads (executed only if followed), its open questions, and the prior
+    claim as an unverified hypothesis. Prior evidence is never replayed
+    into the session as new observations.
+
+    With `history` (research/history.py) the session also tracks its
+    seeded leads, uses compatible historical operations by reference, and
+    preloads the candidate's cited prior results that are reusable (facts
+    only, no step). Without it, seeding is the spike behaviour.
     """
+
+    source = f"followup:{candidate.key}"
+    seeded: list[tuple[str, FrontierLead]] = []
 
     for lead in candidate.seeded_leads:
         registered = session.registry.register(
@@ -1044,13 +1053,29 @@ def seed_session(session: ResearchSession, candidate: FollowUpCandidate) -> None
         if all(existing.id != registered.id for existing in session.state.leads):
             session.state.add_lead(registered)
 
-    source = f"followup:{candidate.key}"
+        seeded.append((registered.id, lead))
 
     for number, question in enumerate(candidate.open_questions, start=1):
         session.state.open_questions.append(OpenQuestion(id=f"PQ{number}", question=question, source=source))
 
     for number, statement in enumerate(candidate.prior_hypotheses, start=1):
         session.state.hypotheses.append(Hypothesis(id=f"PH{number}", statement=statement, source=source))
+
+    if history is None:
+        return
+
+    tracker = ContinuityTracker(history=history, origin=source)
+    session.continuity = tracker
+
+    for lead_id, lead in seeded:
+        session.state.lead(lead_id).origin = source
+        tracker.seeded[lead_id] = (lead.tool, dict(lead.arguments), lead.description)
+
+    for evidence_id in candidate.evidence_ids:
+        artifact = _evidence(history.ledger, evidence_id)
+
+        if artifact is not None:
+            session.preload(artifact.tool, dict(artifact.arguments))
 
 
 __all__ = [

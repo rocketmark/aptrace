@@ -297,8 +297,9 @@ class PlannerProjection:
     # -- sections -----------------------------------------------------------
 
     def _analyses(self, observations: Sequence[EvidenceObservation]) -> str:
+        # A reused historical result is marked: it is not a new observation.
         labels = [
-            f"{label}({obs.id})"
+            f"{label}({obs.id}{'=prior' if obs.reused_from else ''})"
             for obs in observations
             if (label := analysis_label(obs)) is not None
         ]
@@ -456,6 +457,10 @@ class PlannerProjection:
 
     def sections(self, session: ResearchSession) -> list[str]:
         observations = session.ledger.all()
+        continuity = getattr(session, "continuity", None)
+        # Preloaded prior results are context, not this run's newest results.
+        preloaded = continuity.preloaded if continuity is not None else set()
+        recent = [obs for obs in observations if obs.id not in preloaded]
 
         return [
             section
@@ -464,7 +469,7 @@ class PlannerProjection:
                 self._inspected(observations),
                 self._facts(session.state.claims),
                 self._open_items(session),
-                self._latest(observations),
+                self._latest(recent),
             )
             if section
         ]
