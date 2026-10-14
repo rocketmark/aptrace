@@ -1,0 +1,215 @@
+{
+ "replayed_with": "baseline 3c74b5a (pre-change admission)",
+ "trials": [
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": false,
+     "call_details": [],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": "C10:v1",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c7c0 is called by FUN_0000c5cc",
+     "recorded_codes": [],
+     "recorded_decision": "admitted",
+     "recorded_notes": [],
+     "replayed": {
+      "codes": [],
+      "decision": "admitted"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1183,
+     "requests": 1
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T180744-e252f3",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 1
+  },
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": false,
+     "call_details": [],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": "C11:v1",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [],
+     "recorded_decision": "admitted",
+     "recorded_notes": [],
+     "replayed": {
+      "codes": [],
+      "decision": "admitted"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T180811-705e61",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 2
+  },
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": false,
+     "call_details": [],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": "C12:v1",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [],
+     "recorded_decision": "admitted",
+     "recorded_notes": [],
+     "replayed": {
+      "codes": [],
+      "decision": "admitted"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T180837-f03db6",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 3
+  }
+ ]
+}

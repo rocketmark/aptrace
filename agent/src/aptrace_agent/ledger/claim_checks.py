@@ -16,6 +16,9 @@ claim can get mechanically wrong:
   needs complete function-effects evidence whose accesses do not depend on
   unresolved inputs. Otherwise the absence holds only for the recorded
   analysis, and the claim must say so.
+- call relations (ledger/call_relations.py, codes CALL_*): an asserted call,
+  dispatch, reachability or call absence must be supported by the cited
+  evidence at its asserted kind and scope.
 
 Which claims the access rules apply to is decided from assertion wording
 (function name, peripheral name, access verb, negation, qualification);
@@ -54,6 +57,21 @@ ABSENCE_SCOPED = "ABSENCE_SCOPED"
 EVIDENCE_OMITTED = "EVIDENCE_OMITTED"
 OMISSION_EXPLAINED = "OMISSION_EXPLAINED"
 HISTORICAL_REFERENCE = "HISTORICAL_REFERENCE"
+# Call relations (ledger/call_relations.py). Reject:
+CALL_RELATION_UNSUPPORTED = "CALL_RELATION_UNSUPPORTED"  # no cited edge connects source and target
+CALL_SOURCE_MISMATCH = "CALL_SOURCE_MISMATCH"  # cited edges reach the target from other functions only
+CALL_TARGET_MISMATCH = "CALL_TARGET_MISMATCH"  # the named site, or the source's enumerated calls, go elsewhere
+CALL_SITE_MISMATCH = "CALL_SITE_MISMATCH"  # the edge exists, at another site
+CALL_KIND_MISMATCH = "CALL_KIND_MISMATCH"  # the edge exists, as another transfer kind
+CALL_TARGET_UNRESOLVED = "CALL_TARGET_UNRESOLVED"  # the relevant indirect site has no derived target
+CALL_CONDITION_OMITTED = "CALL_CONDITION_OMITTED"  # only a conditional target; the claim drops the condition
+CALL_SCOPE_EXCEEDED = "CALL_SCOPE_EXCEEDED"  # observed in one scenario, or asserted for every execution
+CALL_REACHABILITY_UNSUPPORTED = "CALL_REACHABILITY_UNSUPPORTED"  # no cited path from a stated root
+CALL_ABSENCE_NOT_ESTABLISHED = "CALL_ABSENCE_NOT_ESTABLISHED"  # a missing edge stated as impossible
+# Note:
+CALL_RELATION_CHECKED = "CALL_RELATION_CHECKED"  # which evidence and edge kind support the relation
+CALL_ABSENCE_SCOPED = "CALL_ABSENCE_SCOPED"  # absence stated for the recorded analysis only
+CALL_RELATION_UNCHECKED = "CALL_RELATION_UNCHECKED"  # call wording without identifiable endpoints
 # Candidate selection (research/candidates.py).
 CANDIDATE_UNKNOWN = "CANDIDATE_UNKNOWN"
 CANDIDATE_NOT_OFFERED = "CANDIDATE_NOT_OFFERED"
@@ -239,6 +257,19 @@ __all__ = [
     "ABSENCE_NOT_ESTABLISHED",
     "ABSENCE_SCOPED",
     "ACCESS_NOT_ESTABLISHED",
+    "CALL_ABSENCE_NOT_ESTABLISHED",
+    "CALL_ABSENCE_SCOPED",
+    "CALL_CONDITION_OMITTED",
+    "CALL_KIND_MISMATCH",
+    "CALL_REACHABILITY_UNSUPPORTED",
+    "CALL_RELATION_CHECKED",
+    "CALL_RELATION_UNCHECKED",
+    "CALL_RELATION_UNSUPPORTED",
+    "CALL_SCOPE_EXCEEDED",
+    "CALL_SITE_MISMATCH",
+    "CALL_SOURCE_MISMATCH",
+    "CALL_TARGET_MISMATCH",
+    "CALL_TARGET_UNRESOLVED",
     "CANDIDATE_NOT_OFFERED",
     "CANDIDATE_UNKNOWN",
     "CLAIM_EQUIVALENT_EXISTS",

@@ -1,0 +1,435 @@
+{
+ "live": [
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_MALFORMED",
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8"
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "CALL_RELATION_CHECKED",
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0"
+    }
+   ],
+   "decision_requests": 8,
+   "ledger_run_id": "R-20261014T203458-11b4a7",
+   "resolve_offered_in": 1,
+   "resolved_sites": [
+    "0x0000c6d8"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000c6d8 (blx r3, 0x0000c5cc) branches to the word at slot +0x0 of the table its receiver points to; potential targets 0x0000991a if vptr 0x00014050, 0x0000acd8 if vptr 0x0001419c, 0x0000acd8 if vptr 0x000141d8, 0x0000acd8 if vptr 0x00014214 +4 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "analyze",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 1
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_MALFORMED",
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8"
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "CALL_RELATION_CHECKED",
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0"
+    }
+   ],
+   "decision_requests": 8,
+   "ledger_run_id": "R-20261014T203525-330c77",
+   "resolve_offered_in": 1,
+   "resolved_sites": [
+    "0x0000c6d8"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000c6d8 (blx r3, 0x0000c5cc) branches to the word at slot +0x0 of the table its receiver points to; potential targets 0x0000991a if vptr 0x00014050, 0x0000acd8 if vptr 0x0001419c, 0x0000acd8 if vptr 0x000141d8, 0x0000acd8 if vptr 0x00014214 +4 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "analyze",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 2
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_MALFORMED",
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8"
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "CALL_RELATION_CHECKED",
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0"
+    }
+   ],
+   "decision_requests": 8,
+   "ledger_run_id": "R-20261014T203552-4838ed",
+   "resolve_offered_in": 1,
+   "resolved_sites": [
+    "0x0000c6d8"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000c6d8 (blx r3, 0x0000c5cc) branches to the word at slot +0x0 of the table its receiver points to; potential targets 0x0000991a if vptr 0x00014050, 0x0000acd8 if vptr 0x0001419c, 0x0000acd8 if vptr 0x000141d8, 0x0000acd8 if vptr 0x00014214 +4 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "analyze",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 3
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_MALFORMED",
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8"
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "CALL_RELATION_CHECKED",
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0"
+    }
+   ],
+   "decision_requests": 8,
+   "ledger_run_id": "R-20261014T203619-cba2f9",
+   "resolve_offered_in": 1,
+   "resolved_sites": [
+    "0x0000c6d8"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000c6d8 (blx r3, 0x0000c5cc) branches to the word at slot +0x0 of the table its receiver points to; potential targets 0x0000991a if vptr 0x00014050, 0x0000acd8 if vptr 0x0001419c, 0x0000acd8 if vptr 0x000141d8, 0x0000acd8 if vptr 0x00014214 +4 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "analyze",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 4
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_MALFORMED",
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8"
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "CALL_RELATION_CHECKED",
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "evidence_ids": [
+      "E7",
+      "E8"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0"
+    }
+   ],
+   "decision_requests": 8,
+   "ledger_run_id": "R-20261014T203646-c984b6",
+   "resolve_offered_in": 1,
+   "resolved_sites": [
+    "0x0000c6d8"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000c6d8 (blx r3, 0x0000c5cc) branches to the word at slot +0x0 of the table its receiver points to; potential targets 0x0000991a if vptr 0x00014050, 0x0000acd8 if vptr 0x0001419c, 0x0000acd8 if vptr 0x000141d8, 0x0000acd8 if vptr 0x00014214 +4 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "analyze",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 5
+  }
+ ],
+ "max_steps": 6,
+ "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+ "objective": "Determine which code the register-indirect call near the end of FUN_0000c5cc can transfer control to, and whether that call could dispatch through slot 7 or slot 8 of the vtable at 0x14900.",
+ "scratch_ledger": "copy of the canonical ledger",
+ "scripted": {
+  "claim_admission": [],
+  "decision_requests": 2,
+  "ledger_run_id": "R-20261014T203431-d8d171",
+  "mode": "scripted (not autonomous selection)",
+  "recorded": [
+   {
+    "arguments": {
+     "site": "0x0000c6d8"
+    },
+    "evidence_id": "EV-5a99256e8d42eb97",
+    "grade": "PROBABLE",
+    "input_artifacts": [
+     "census_db",
+     "census_fnptr_resolve",
+     "census_indexed_writes",
+     "census_indirect_resolve",
+     "indirect_target_tool"
+    ],
+    "invocation": "TI-fe66ce4c80e7abbc",
+    "limitation_codes": [
+     "DISPATCH_IS_NOT_REACHABILITY",
+     "FUNCTION_BOUNDARIES_HEURISTIC",
+     "INTRAPROCEDURAL_DERIVATION_ONLY",
+     "POTENTIAL_TARGET_NOT_DISPATCH"
+    ],
+    "operation_key": "fa8cf85ba5d324eeb0c2cd4e90b96a2ec4da7f2a525f67b49e07a1964fac38eb",
+    "replay_matches": true
+   }
+  ],
+  "resolve_offered_in": 1,
+  "resolved_sites": [
+   "0x0000c6d8"
+  ],
+  "session_facts": [
+   "Indirect site 0x0000c6d8 (blx r3, 0x0000c5cc) branches to the word at slot +0x0 of the table its receiver points to; potential targets 0x0000991a if vptr 0x00014050, 0x0000acd8 if vptr 0x0001419c, 0x0000acd8 if vptr 0x000141d8, 0x0000acd8 if vptr 0x00014214 +4 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths."
+  ],
+  "steps": [
+   {
+    "action": "indirect_target",
+    "evidence": "E3",
+    "n": 1
+   },
+   {
+    "action": "finish",
+    "evidence": null,
+    "n": 2
+   }
+  ],
+  "stop_reason": "planner_finished"
+ },
+ "seed": "FUN_0000c5cc"
+}

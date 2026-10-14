@@ -20,7 +20,9 @@ Rules (diagnostic codes in ledger/claim_checks.py):
 2. entity identity: canonical identifiers, known functions, known
    peripherals;
 3. typed semantics, when given: valid and consistent with cited evidence;
-   untyped prose: peripheral access/absence rules;
+   untyped prose: peripheral access/absence rules, and call relations
+   (ledger/call_relations.py: a stated call, dispatch, reachability or
+   call absence must be supported by cited edges at its stated scope);
 4. grade: within the cited evidence's ceiling (grade_ceiling); untyped
    claims are hypotheses and may be at most PROBABLE, because nothing
    checks their assertion mechanically;
@@ -58,6 +60,7 @@ from aptrace_agent.ledger.claim_checks import (
     access_diagnostics,
     entity_diagnostics,
 )
+from aptrace_agent.ledger.call_relations import call_diagnostics, typed_grade_diagnostics
 from aptrace_agent.ledger.claim_semantics import ClaimSemantics, verify_semantics
 from aptrace_agent.ledger.models import GRADE_RANK, ClaimAdmission, ClaimDiagnostic, ClaimType, EvidenceGrade
 from aptrace_agent.ledger.semantics import evidence_grade, grade_ceiling
@@ -190,14 +193,18 @@ def admit(
             if not check.passed:
                 diagnostics.append(
                     ClaimDiagnostic(
-                        code=SEMANTICS_INCONSISTENT, severity=REJECT, detail=f"{check.code.value}: {check.detail or check.field}",
+                        code=check.diagnostic or SEMANTICS_INCONSISTENT, severity=REJECT, detail=f"{check.code.value}: {check.detail or check.field}",
                         value=check.claimed, evidence_ids=[check.evidence_id] if check.evidence_id else [],
                     )
                 )
-    elif proposal.get("semantics") is None:
-        diagnostics += access_diagnostics(proposal["assertion"], pairs)
 
     grade = EvidenceGrade(proposal["grade"])
+
+    if semantics is not None and semantics.call is not None:
+        diagnostics += typed_grade_diagnostics(semantics.call, pairs, grade)
+    elif proposal.get("semantics") is None:
+        diagnostics += access_diagnostics(proposal["assertion"], pairs)
+        diagnostics += call_diagnostics(proposal["assertion"], pairs, grade=grade)
 
     if pairs:
         try:

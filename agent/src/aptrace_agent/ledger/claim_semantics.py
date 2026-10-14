@@ -31,6 +31,9 @@ class Predicate(StrEnum):
     # Executable code exists at an address (optionally: in the function
     # whose entry is stated). Established by structural source agreement.
     CODE_PRESENCE = "CODE_PRESENCE"
+    # One control transfer from a source function to a target, of a stated
+    # kind and scope (ledger/call_relations.py).
+    CALL_RELATION = "CALL_RELATION"
 
 
 class FunctionRole(StrEnum):
@@ -65,6 +68,26 @@ class SetKind(StrEnum):
     FUNCTION_SET = "FUNCTION_SET"
     # A set label APTrace cannot attribute to evidence.
     UNATTRIBUTED = "UNATTRIBUTED"
+
+
+class CallEdgeKind(StrEnum):
+    """
+    Kinds of call relation APTrace evidence establishes, strongest scope
+    first. They are not interchangeable: a potential target is not a
+    dispatch, and an observed dispatch holds for its scenario only.
+    """
+
+    # A decoded BL/BLX immediate, or a Ghidra call reference.
+    DIRECT_CALL = "DIRECT_CALL"
+    # A decoded B/B.W/B<c>.W immediate leaving the source function.
+    TAIL_TRANSFER = "TAIL_TRANSFER"
+    # An indirect transfer whose target is statically established.
+    ESTABLISHED_INDIRECT = "ESTABLISHED_INDIRECT"
+    # A target an indirect transfer can take under stated conditions
+    # (e.g. the receiver's vptr); not a dispatch.
+    POTENTIAL_INDIRECT = "POTENTIAL_INDIRECT"
+    # A transfer concretely taken in one scenario's execution.
+    OBSERVED_DISPATCH = "OBSERVED_DISPATCH"
 
 
 class CheckCode(StrEnum):
@@ -207,6 +230,47 @@ class CodePresence(_Model):
         return None if value is None else addr(value)
 
 
+class CallRelation(_Model):
+    """
+    A control transfer from `source` (a function) to `target`. POTENTIAL_INDIRECT
+    must state the conditions the cited evidence attaches to the target;
+    OBSERVED_DISPATCH must state the scenario it was observed in.
+    """
+
+    source: str
+    target: str
+    kind: CallEdgeKind
+    site: str | None = None
+    conditions: tuple[str, ...] = ()
+    scenario: str | None = None
+
+    @field_validator("source")
+    @classmethod
+    def _source(cls, value: Any) -> str:
+        return fun(value)
+
+    @field_validator("target", "site")
+    @classmethod
+    def _address(cls, value: Any) -> str | None:
+        return None if value is None else addr(value)
+
+    @model_validator(mode="after")
+    def _scope(self) -> "CallRelation":
+        if self.kind == CallEdgeKind.POTENTIAL_INDIRECT and not any(c.strip() for c in self.conditions):
+            raise ValueError("a POTENTIAL_INDIRECT relation needs the conditions its target depends on")
+
+        if self.kind == CallEdgeKind.OBSERVED_DISPATCH and not (self.scenario or "").strip():
+            raise ValueError("an OBSERVED_DISPATCH relation needs the scenario it was observed in")
+
+        return self
+
+    def summary(self) -> str:
+        site = f" at {self.site}" if self.site else ""
+        scope = f" if {'; '.join(self.conditions)}" if self.conditions else ""
+        scope += f" in scenario {self.scenario}" if self.scenario else ""
+        return f"{self.source} -> {self.target}{site} {self.kind.value}{scope}"
+
+
 class ClaimSemantics(_Model):
     """Structured predicate of a claim; authoritative for verification."""
 
@@ -215,6 +279,7 @@ class ClaimSemantics(_Model):
     function_role: FunctionRoleClaim | None = None
     path: PathRelation | None = None
     code_presence: CodePresence | None = None
+    call: CallRelation | None = None
 
     @model_validator(mode="after")
     def _one_body(self) -> "ClaimSemantics":
@@ -223,6 +288,7 @@ class ClaimSemantics(_Model):
             Predicate.FUNCTION_ROLE: self.function_role,
             Predicate.PATH_RELATION: self.path,
             Predicate.CODE_PRESENCE: self.code_presence,
+            Predicate.CALL_RELATION: self.call,
         }
 
         if bodies[self.predicate] is None or sum(b is not None for b in bodies.values()) != 1:
@@ -245,6 +311,9 @@ class ClaimSemantics(_Model):
             entry = f" in function at {code.function_entry}" if code.function_entry else ""
             return f"{self.predicate.value}({code.address}{entry})"
 
+        if self.call:
+            return f"{self.predicate.value}({self.call.summary()})"
+
         assert self.path is not None
         return f"{self.predicate.value}({self.path.left} {self.path.status} {self.path.right})"
 
@@ -255,6 +324,7 @@ COMPATIBLE_CLAIM_TYPES: dict[Predicate, frozenset[str]] = {
     Predicate.FUNCTION_ROLE: frozenset({"RESOLUTION", "STRUCTURE", "BEHAVIOR"}),
     Predicate.PATH_RELATION: frozenset({"PATH_EXISTS", "NO_KNOWN_PATH"}),
     Predicate.CODE_PRESENCE: frozenset({"STRUCTURE"}),
+    Predicate.CALL_RELATION: frozenset({"STRUCTURE", "RESOLUTION", "BEHAVIOR"}),
 }
 
 PATH_CLAIM_TYPE = {"KNOWN_COMMON_PATH": "PATH_EXISTS", "NO_KNOWN_PATH": "NO_KNOWN_PATH"}
@@ -270,6 +340,9 @@ class SemanticCheck(_Model):
     evidence_role: str | None = None
     evidence_id: str | None = None
     detail: str = ""
+    # Stable admission diagnostic code for this failure, when the predicate
+    # has its own (call relations); absent on other checks and older records.
+    diagnostic: str | None = None
 
 
 # -- facts extracted from structured evidence --------------------------------
@@ -745,5 +818,9 @@ def verify_semantics(semantics: ClaimSemantics, claim_type: str, evidence: list[
         checks += check_path(semantics.path, facts)
     elif semantics.code_presence is not None:
         checks += check_code_presence(semantics.code_presence, evidence)
+    elif semantics.call is not None:
+        from aptrace_agent.ledger.call_relations import typed_call_checks
+
+        checks += typed_call_checks(semantics.call, evidence)
 
     return checks

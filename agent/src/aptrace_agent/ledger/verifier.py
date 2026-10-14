@@ -17,7 +17,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from aptrace_agent.ledger.claim_checks import entity_diagnostics
+from aptrace_agent.ledger.call_relations import call_diagnostics, typed_grade_diagnostics
+from aptrace_agent.ledger.claim_checks import REJECT, entity_diagnostics
 from aptrace_agent.ledger.claim_semantics import SemanticCheck, verify_semantics
 from aptrace_agent.ledger.gate import (
     AGREEMENT_TOOL,
@@ -103,8 +104,9 @@ class ClaimVerifier:
         """
         Phased verification:
           A structural validity (references, context, dependency references)
-          B deterministic semantics (typed roles/relations/scope, grade
-            ceiling, inherited limitations, bounded-negative wording)
+          B deterministic semantics (typed roles/relations/scope, call
+            relations, grade ceiling, inherited limitations, bounded-negative
+            wording)
           C replay and freshness (stored hashes, validity, replay)
           P verification policy gate (contradictory evidence, structural
             conflicts, independent corroboration for the claim class)
@@ -183,11 +185,23 @@ class ClaimVerifier:
             "; ".join(d.detail for d in malformed) if malformed else "identifiers are canonical",
         )
 
+        evidence = [(a, r) for a in artifacts if (r := self._result(a)) is not None]
+
         if claim.semantics is None:
             check("claim_semantics", True, HOLD, "no structured semantics; typed role/relation/scope checks not applicable")
+            calls = [d for d in call_diagnostics(claim.assertion, evidence, grade=claim.proposed_grade) if d.severity == REJECT]
+            # A result not present locally is not evidence against the relation.
+            unread = [a.evidence_id for a in artifacts if all(a is not b for b, _ in evidence)]
+            check(
+                "call_relations",
+                not calls,
+                HOLD if calls and unread else BLOCK,
+                ("; ".join(f"{d.code}: {d.detail}" for d in calls)[:1500] + (f" (results not available locally: {', '.join(unread)})" if unread else ""))
+                if calls
+                else "no unsupported call relation asserted",
+            )
         else:
-            evidence = [(a, self._result(a)) for a in artifacts]
-            semantic = verify_semantics(claim.semantics, claim.claim_type.value, [(a, r) for a, r in evidence if r is not None])
+            semantic = verify_semantics(claim.semantics, claim.claim_type.value, evidence)
             failures = [c for c in semantic if not c.passed]
             check(
                 "claim_semantics",
@@ -197,6 +211,10 @@ class ClaimVerifier:
                 if failures
                 else f"{claim.semantics.summary()} consistent with supporting evidence ({len(semantic)} check(s))",
             )
+
+        if claim.semantics is not None and claim.semantics.call is not None:
+            over = typed_grade_diagnostics(claim.semantics.call, evidence, claim.proposed_grade)
+            check("call_relation_grade", not over, BLOCK, "; ".join(d.detail for d in over) if over else "within the supporting edge's grade")
 
         if artifacts:
             ceiling = grade_ceiling(claim.claim_type, artifacts)

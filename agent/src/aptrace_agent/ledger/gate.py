@@ -103,6 +103,10 @@ def material_code(semantics: ClaimSemantics | None) -> dict[int, MaterialAddress
 
         if c.function_entry is not None:
             add(c.function_entry, "function_entry", c.function_entry)
+    elif semantics.call is not None:
+        add(semantics.call.source, "source", semantics.call.source)
+        add(semantics.call.site, "site", semantics.call.source)
+        add(semantics.call.target, "target", None)
 
     return out
 
@@ -121,6 +125,8 @@ def _entities(semantics: ClaimSemantics | None) -> set[int]:
         values += [semantics.function_role.function, semantics.function_role.slot]
     elif semantics.code_presence is not None:
         values += [semantics.code_presence.address, semantics.code_presence.function_entry]
+    elif semantics.call is not None:
+        values += [semantics.call.source, semantics.call.target, semantics.call.site]
 
     return {_canon(v) for value in values if value is not None and (v := _maybe_int(value)) is not None}
 

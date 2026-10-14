@@ -320,6 +320,12 @@ Headline items still unresolved:
   [`research/sercom0-scenario-observation-v2.md`](research/sercom0-scenario-observation-v2.md)
   and
   [`research/indirect-dispatch-resolution-v1.md`](research/indirect-dispatch-resolution-v1.md).
+  - The planner-trial claims of a `c5cc → c7c0` call (scratch ledger
+    only) are now rejected by call-relation admission
+    (`CALL_RELATION_UNSUPPORTED`). Canonical `C9:v1` ("`FUN_0000b4b4` is
+    definitively reachable") states reachability with no root or scope and
+    is reported as unsupported in that form; its state is unchanged. See
+    [`research/call-relation-admission-benchmark.md`](research/call-relation-admission-benchmark.md).
 
 ## Tooling limitations that still matter
 

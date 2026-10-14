@@ -1,0 +1,420 @@
+{
+ "replayed_with": "hardened (call-relation admission)",
+ "trials": [
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [
+      "CALL_RELATION_UNCHECKED: call wording APTrace could not check: 'E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8': no identifiable source and target for 'can call'; the claim stays an unchecked hypothesis"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": true,
+     "call_details": [
+      "CALL_RELATION_CHECKED: FUN_0000c5cc -> FUN_0000c4b8: supported by E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL",
+      "CALL_RELATION_UNSUPPORTED: FUN_0000c5cc -> FUN_0000c7c0: no cited evidence connects FUN_0000c5cc to 0x0000c7c0 (edges from FUN_0000c5cc: E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL; E8 lists no callers of FUN_0000c7c0); naming both functions in cited results is not an edge"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_CHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "CALL_RELATION_UNSUPPORTED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T203458-11b4a7",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 1
+  },
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [
+      "CALL_RELATION_UNCHECKED: call wording APTrace could not check: 'E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8': no identifiable source and target for 'can call'; the claim stays an unchecked hypothesis"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": true,
+     "call_details": [
+      "CALL_RELATION_CHECKED: FUN_0000c5cc -> FUN_0000c4b8: supported by E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL",
+      "CALL_RELATION_UNSUPPORTED: FUN_0000c5cc -> FUN_0000c7c0: no cited evidence connects FUN_0000c5cc to 0x0000c7c0 (edges from FUN_0000c5cc: E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL; E8 lists no callers of FUN_0000c7c0); naming both functions in cited results is not an edge"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_CHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "CALL_RELATION_UNSUPPORTED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T203525-330c77",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 2
+  },
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [
+      "CALL_RELATION_UNCHECKED: call wording APTrace could not check: 'E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8': no identifiable source and target for 'can call'; the claim stays an unchecked hypothesis"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": true,
+     "call_details": [
+      "CALL_RELATION_CHECKED: FUN_0000c5cc -> FUN_0000c4b8: supported by E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL",
+      "CALL_RELATION_UNSUPPORTED: FUN_0000c5cc -> FUN_0000c7c0: no cited evidence connects FUN_0000c5cc to 0x0000c7c0 (edges from FUN_0000c5cc: E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL; E8 lists no callers of FUN_0000c7c0); naming both functions in cited results is not an edge"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_CHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "CALL_RELATION_UNSUPPORTED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T203552-4838ed",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 3
+  },
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [
+      "CALL_RELATION_UNCHECKED: call wording APTrace could not check: 'E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8': no identifiable source and target for 'can call'; the claim stays an unchecked hypothesis"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": true,
+     "call_details": [
+      "CALL_RELATION_CHECKED: FUN_0000c5cc -> FUN_0000c4b8: supported by E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL",
+      "CALL_RELATION_UNSUPPORTED: FUN_0000c5cc -> FUN_0000c7c0: no cited evidence connects FUN_0000c5cc to 0x0000c7c0 (edges from FUN_0000c5cc: E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL; E8 lists no callers of FUN_0000c7c0); naming both functions in cited results is not an edge"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_CHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "CALL_RELATION_UNSUPPORTED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T203619-cba2f9",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 4
+  },
+  {
+   "proposals": [
+    {
+     "call_assertion": false,
+     "call_details": [
+      "CALL_RELATION_UNCHECKED: call wording APTrace could not check: 'E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8': no identifiable source and target for 'can call'; the claim stays an unchecked hypothesis"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 E0000c5cc can call FUN_0000c7c0 or FUN_0000c4b8",
+     "recorded_codes": [
+      "ENTITY_MALFORMED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_UNCHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "ENTITY_MALFORMED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 1
+    },
+    {
+     "call_assertion": true,
+     "call_details": [
+      "CALL_RELATION_CHECKED: FUN_0000c5cc -> FUN_0000c4b8: supported by E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL",
+      "CALL_RELATION_UNSUPPORTED: FUN_0000c5cc -> FUN_0000c7c0: no cited evidence connects FUN_0000c5cc to 0x0000c7c0 (edges from FUN_0000c5cc: E7: FUN_0000c5cc -> 0x0000c4b8 at 0x0000c66a DIRECT_CALL; E8 lists no callers of FUN_0000c7c0); naming both functions in cited results is not an edge"
+     ],
+     "cited_tools": [
+      "function_facts"
+     ],
+     "cites_indirect_call_target": false,
+     "claim_version": null,
+     "raw": "PROBABLE STRUCTURE E7,E8 FUN_0000c5cc can call FUN_0000c4b8 or FUN_0000c7c0",
+     "recorded_codes": [
+      "CALL_RELATION_UNSUPPORTED"
+     ],
+     "recorded_decision": "rejected",
+     "recorded_notes": [
+      "CALL_RELATION_CHECKED"
+     ],
+     "replayed": {
+      "codes": [
+       "CALL_RELATION_UNSUPPORTED"
+      ],
+      "decision": "rejected"
+     },
+     "round": 2
+    }
+   ],
+   "requests_by_phase": {
+    "claim-correction": {
+     "prompt_tokens": 1211,
+     "requests": 2
+    },
+    "decision": {
+     "prompt_tokens": 15101,
+     "requests": 8
+    },
+    "final-claims": {
+     "prompt_tokens": 1105,
+     "requests": 2
+    }
+   },
+   "resolve_indirect_call_selected": true,
+   "run_id": "R-20261014T203646-c984b6",
+   "steps": [
+    "indirect_target",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trial": 5
+  }
+ ]
+}

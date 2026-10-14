@@ -19,7 +19,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Any
 
-from aptrace_agent.ledger.claim_semantics import ClaimSemantics, FunctionRole, Predicate
+from aptrace_agent.ledger.claim_semantics import CallEdgeKind, ClaimSemantics, FunctionRole, Predicate
 from aptrace_agent.ledger.hashing import digest
 from aptrace_agent.ledger.models import ClaimType, PolicyRef
 
@@ -138,6 +138,15 @@ def claim_class(claim_type: ClaimType | str, semantics: ClaimSemantics | None) -
 
     if semantics.predicate == Predicate.RESOLVED_FUNCTION_POINTER:
         return ClaimClass.RESOLVED_INDIRECT_CALL, "predicate RESOLVED_FUNCTION_POINTER"
+
+    if semantics.predicate == Predicate.CALL_RELATION:
+        assert semantics.call is not None
+        kind = semantics.call.kind
+
+        if kind in (CallEdgeKind.ESTABLISHED_INDIRECT, CallEdgeKind.POTENTIAL_INDIRECT):
+            return ClaimClass.RESOLVED_INDIRECT_CALL, f"CALL_RELATION {kind.value}"
+
+        return ClaimClass.CONTROL_FLOW, f"CALL_RELATION {kind.value}"
 
     if semantics.predicate == Predicate.PATH_RELATION:
         assert semantics.path is not None

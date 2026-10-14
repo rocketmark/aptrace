@@ -43,6 +43,7 @@ Pattern-matched applicability is marked `basis: pattern-matched`.
 | 3 | Entity identity (below) | `ENTITY_MALFORMED`, `ENTITY_SESSION_REFERENCE`, `ENTITY_UNKNOWN`, `PERIPHERAL_UNKNOWN` |
 | 4 | Typed semantics, when given: valid, and consistent with the cited evidence | `SEMANTICS_INVALID`, `SEMANTICS_INCONSISTENT` |
 | 5 | Untyped prose about peripheral access: an asserted access needs an access in the evidence; an asserted absence needs complete effects evidence with no input-dependent addresses, or wording that limits it to the recorded analysis | `ACCESS_NOT_ESTABLISHED`, `ABSENCE_NOT_ESTABLISHED`, `ABSENCE_SCOPED` (note) |
+| 5b | Call relations (calls, dispatches, reachability, call absence; prose or typed `CALL_RELATION`): supported by cited edges at the asserted kind and scope ([`claim-call-relations.md`](claim-call-relations.md)) | `CALL_*`, e.g. `CALL_RELATION_UNSUPPORTED`, `CALL_CONDITION_OMITTED`, `CALL_SCOPE_EXCEEDED`; `CALL_RELATION_CHECKED` (note) |
 | 6 | Grade: at most the cited evidence's ceiling (`grade_ceiling`). Untyped claims are hypotheses nothing checks mechanically, so they are at most `PROBABLE` | `GRADE_ABOVE_CEILING`, `UNTYPED_GRADE` |
 | 7 | Accountability in follow-up sessions: evidence of executed or reused follow-up leads about a function the claim names is cited, or its omission is explained (`[omit E#: reason]`) | `EVIDENCE_OMITTED`, `OMISSION_EXPLAINED` (note) |
 | 8 | Historical evidence cited by its session alias resolves to the original evidence id; it is a prior observation, not independent corroboration | `HISTORICAL_REFERENCE` (note) |
@@ -69,7 +70,8 @@ required to name one.
 
 The verifier's phase B applies the canonical-identifier and session-id
 checks (`entity_identity`, BLOCK) to every claim, including
-operator-proposed ones. No persisted claim is affected.
+operator-proposed ones, and the call-relation rule (`call_relations`, BLOCK)
+to untyped ones. No persisted claim is affected.
 
 ## Constant load is not an access (typed-fact fix)
 
@@ -101,6 +103,7 @@ Typed semantics keep the distinctions the evidence supports:
 | peripheral register access | `MMIO_USER` |
 | reachability | `PATH_RELATION` |
 | resolved pointer writer and target | `RESOLVED_FUNCTION_POINTER` |
+| call, tail transfer, indirect target (established or conditional), observed dispatch | `CALL_RELATION` |
 
 Pointer propagation, plain memory read and write, and concrete
 caller-supplied values have **no** typed predicate. Claims about them are

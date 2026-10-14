@@ -149,6 +149,14 @@ belong in each case's status document.
   proposals are recorded on the run with diagnostics and never become
   claims. Typed `MMIO_USER` now requires an actual access; a constant-only
   census entry is `ADDRESS_CONSTANT_LOADER`.
+- Check asserted call relations against cited call edges
+  ([`claim-call-relations.md`](claim-call-relations.md)), in admission and
+  verification phase B, for prose and typed `CALL_RELATION` claims: direct
+  calls, decoded tail transfers, established and conditional indirect
+  targets, and scenario-scoped observed dispatches stay distinct; a
+  conditional target needs its condition, an observation its scenario,
+  reachability a cited path from a stated root, and a call absence is only
+  ever scoped to the recorded analysis.
 - Offer mechanically derived claim candidates for selection by id
   ([`claim-candidates.md`](claim-candidates.md)): typed `FUNCTION_ROLE`
   (`MMIO_USER`, `ADDRESS_CONSTANT_LOADER`) and `RESOLVED_FUNCTION_POINTER`
@@ -221,10 +229,12 @@ belong in each case's status document.
 - The local Qwen3-Coder planner does not reliably emit structured claim
   output as tool arguments: nested and multiple array arguments degrade into
   malformed tool-call text. Typed claims therefore reach the ledger through
-  candidate selection, which covers only the facts its extractors derive;
-  call-site relations, bounded effects observations, and accesses observed
-  only under argument specialization have no typed predicate and no
-  candidate.
+  candidate selection, which covers only the facts its extractors derive.
+  Bounded effects observations and accesses observed only under argument
+  specialization have no typed predicate; call relations have one
+  (`CALL_RELATION`) but no candidate extractor, so the planner's call claims
+  are prose, classified by a deliberately small pattern set; other wordings
+  are capped at PROBABLE, not checked.
 - Work items are run and completed only by explicit operator commands.
   There is no scheduler, lease heartbeat, or reclaim. Ownership liveness is
   host-local (one host per work store), an interrupted investigation restarts
