@@ -84,6 +84,14 @@ belong in each case's status document.
   proposals are recorded on the run with diagnostics and never become
   claims. Typed `MMIO_USER` now requires an actual access; a constant-only
   census entry is `ADDRESS_CONSTANT_LOADER`.
+- Offer mechanically derived claim candidates for selection by id
+  ([`claim-candidates.md`](claim-candidates.md)): typed `FUNCTION_ROLE`
+  (`MMIO_USER`, `ADDRESS_CONSTANT_LOADER`) and `RESOLVED_FUNCTION_POINTER`
+  facts generated from session evidence with stable content-derived ids,
+  scope, limitations and an evidence-grade ceiling. The planner selects
+  ids only; selected candidates pass unchanged admission, and an
+  equivalent existing typed claim creates no new version. Read-only
+  preview: `aptrace-agent candidates <run-id>`.
 
 ## Current limitations
 
@@ -137,7 +145,11 @@ belong in each case's status document.
   firmware digest; Unicorn concrete execution is not a ledger operation.
 - The local Qwen3-Coder planner does not reliably emit structured claim
   output as tool arguments: nested and multiple array arguments degrade into
-  malformed tool-call text.
+  malformed tool-call text. Typed claims therefore reach the ledger through
+  candidate selection, which covers only the facts its extractors derive;
+  call-site relations, bounded effects observations, and accesses observed
+  only under argument specialization have no typed predicate and no
+  candidate.
 - Work items are run and completed only by explicit operator commands.
   There is no scheduler, lease heartbeat, or reclaim. Ownership liveness is
   host-local (one host per work store), an interrupted investigation restarts

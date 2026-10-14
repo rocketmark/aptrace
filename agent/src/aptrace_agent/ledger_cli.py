@@ -24,7 +24,7 @@ from aptrace_agent.ledger_wiring import (
 )
 
 
-LEDGER_COMMANDS = ("claims", "policy-status", "propose", "supersede", "audit", "audit-repeat", "runtime-probe", "verify", "replay", "check", "report", "benchmark")
+LEDGER_COMMANDS = ("claims", "candidates", "policy-status", "propose", "supersede", "audit", "audit-repeat", "runtime-probe", "verify", "replay", "check", "report", "benchmark")
 
 
 def add_ledger_commands(subparsers: Any) -> None:
@@ -34,6 +34,11 @@ def add_ledger_commands(subparsers: Any) -> None:
         return parser
 
     ledger_parser("claims", "List claim versions with APTrace lifecycle state")
+
+    candidates = ledger_parser("candidates", "Read-only: claim candidates APTrace derives from a recorded run's valid evidence")
+    candidates.add_argument("run_id", help="Investigation run id (R-...)")
+    candidates.add_argument("--limit", type=int, default=0, help="Show only the top N candidates (default: all)")
+    candidates.add_argument("--json", action="store_true", help="Emit candidates and withheld facts as JSON")
 
     policy_status = ledger_parser(
         "policy-status",
@@ -209,6 +214,26 @@ def handle_ledger_command(args: argparse.Namespace) -> bool:
                 marker = " [pre-policy]" if record is None or record.policy is None else f" [policy v{record.policy.version}]"
 
             print(f"{claim.key:<8} {state.value + marker:<24} {claim.proposed_grade.value:<8} audit={verdict:<10} {claim.assertion[:100]}")
+
+        return True
+
+    if args.command == "candidates":
+        from aptrace_agent.research.candidates import candidates_for_run
+
+        generated = candidates_for_run(ResearchLedger(ledger_dir(args.ledger_dir)), args.run_id)
+        shown = generated.candidates[: args.limit] if args.limit > 0 else generated.candidates
+
+        if args.json:
+            print(json.dumps({"candidates": [c.model_dump(mode="json") for c in shown], "withheld": [w.model_dump(mode="json") for w in generated.withheld]}, indent=2))
+            return True
+
+        for candidate in shown:
+            print(f"{candidate.candidate_id} {candidate.grade:<8} {candidate.claim_type:<10} {candidate.semantics.summary()}")
+            print(f"  {candidate.assertion}")
+            print(f"  evidence: {', '.join(candidate.supporting_evidence_ids)}" + (f"; already recorded: {', '.join(candidate.existing_claims)}" if candidate.existing_claims else ""))
+
+        for item in generated.withheld:
+            print(f"withheld {item.code}: {item.fact}: {item.detail}")
 
         return True
 
@@ -488,7 +513,7 @@ def handle_ledger_command(args: argparse.Namespace) -> bool:
     return False
 
 
-def record_research_run(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None, followup=None) -> str:
+def record_research_run(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None, followup=None, claim_candidates=0) -> str:
     """Record a finished `research --ledger` run; returns the run id.
 
     work_item_id, when given, is stored on the run as an opaque reference to
@@ -508,7 +533,7 @@ def record_research_run(run, *, executor, recorder, ledger_dir_override, started
         context=context_provider(executor)(),
         recorder=recorder,
         model=os.environ.get("APTRACE_MODEL"),
-        execution_config={"temperature": 0.0, "max_tokens": 512, "endpoint": "local-omlx", "claim_contract": True},
+        execution_config={"temperature": 0.0, "max_tokens": 512, "endpoint": "local-omlx", "claim_contract": True, "claim_candidates": claim_candidates},
         planner_version=f"controller:{code_identity(controller_cls)} projection:{code_identity(projection)}",
         budgets={"max_steps": max_steps},
         started_at=started_at,

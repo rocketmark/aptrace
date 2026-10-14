@@ -16,8 +16,9 @@ import time
 from dataclasses import dataclass, field
 from typing import Any
 
+from aptrace_agent.ledger.claim_checks import CLAIM_EQUIVALENT_EXISTS, NOTE
 from aptrace_agent.ledger.hashing import digest
-from aptrace_agent.ledger.models import ExecutionContext, FollowUpProvenance, InvestigationRun, SourceRevision
+from aptrace_agent.ledger.models import ClaimDiagnostic, ExecutionContext, FollowUpProvenance, InvestigationRun, SourceRevision
 from aptrace_agent.ledger.operations import DETERMINISTIC_TOOLS, input_artifacts
 from aptrace_agent.ledger.store import ResearchLedger, new_id, now
 from aptrace_agent.schemas import EvidenceObservation
@@ -146,19 +147,36 @@ def record_investigation(
 
     claim_keys: list[str] = []
     admitted: dict[int, str] = {}
+    duplicates: dict[int, list[tuple[str, str]]] = {}
 
     # Only admitted proposals (research/admission.py) reach the ledger as claims.
     for proposal in getattr(run.result, "proposed_claims", ()):
         refs = [session_to_durable.get(e, e) for e in proposal.get("evidence_ids", [])]
+        candidate = proposal.get("candidate_id")
+
+        if candidate is not None:
+            # A selected candidate whose typed fact is already claimed
+            # (by any run, or earlier in this one) creates no new version;
+            # the existing claims are not touched.
+            from aptrace_agent.research.candidates import equivalent_claims
+
+            existing = equivalent_claims(ledger, proposal.get("semantics"))
+
+            if existing:
+                duplicates[proposal["admission"]] = existing
+                continue
+
         claim = ledger.propose_claim(
             subject=proposal.get("subject") or proposal["assertion"][:80],
             assertion=proposal["assertion"],
             claim_type=proposal.get("claim_type", "OTHER"),
             proposed_grade=proposal["grade"],
-            proposed_by=f"investigator:{model}",
+            proposed_by=f"candidate-selection:{model}" if candidate else f"investigator:{model}",
             supporting_evidence_ids=refs,
+            scope=proposal.get("scope", ""),
+            assumptions=proposal.get("assumptions", []),
             limitations=proposal.get("limitations", []),
-            derivation="planner finish claim proposal",
+            derivation=proposal.get("derivation") or "planner finish claim proposal",
             run_id=run_id,
             semantics=proposal.get("semantics"),
         )
@@ -167,15 +185,38 @@ def record_investigation(
         if proposal.get("admission") is not None:
             admitted[proposal["admission"]] = claim.key
 
-    admission = [
-        record.model_copy(
+    def admission_record(index: int, record: Any) -> Any:
+        update: dict[str, Any] = {
+            "durable_evidence_ids": [session_to_durable.get(e, e) for e in record.evidence_ids],
+            "claim_version": admitted.get(index),
+        }
+
+        if index in duplicates:
+            shown = ", ".join(f"{key} ({state})" for key, state in duplicates[index])
+            update["decision"] = "duplicate"
+            update["diagnostics"] = [
+                *record.diagnostics,
+                ClaimDiagnostic(
+                    code=CLAIM_EQUIVALENT_EXISTS, severity=NOTE,
+                    detail=f"an equivalent typed claim already exists: {shown}; no claim version was created and the existing claims are unchanged",
+                    value=duplicates[index][0][0],
+                ),
+            ]
+
+        return record.model_copy(update=update)
+
+    admission = [admission_record(index, record) for index, record in enumerate(getattr(run.result, "claim_admission", ()) or ())]
+    selection = getattr(run.result, "candidate_selection", None)
+
+    if selection is not None:
+        selection = selection.model_copy(
             update={
-                "durable_evidence_ids": [session_to_durable.get(e, e) for e in record.evidence_ids],
-                "claim_version": admitted.get(index),
+                "offered": [
+                    c.model_copy(update={"durable_evidence_ids": [session_to_durable.get(e, e) for e in c.supporting_evidence_ids]})
+                    for c in selection.offered
+                ]
             }
         )
-        for index, record in enumerate(getattr(run.result, "claim_admission", ()) or ())
-    ]
 
     return ledger.record_run(
         InvestigationRun(
@@ -208,5 +249,6 @@ def record_investigation(
             followup=followup,
             continuity=getattr(run, "continuity", None),
             claim_admission=admission or None,
+            candidate_selection=selection,
         )
     )

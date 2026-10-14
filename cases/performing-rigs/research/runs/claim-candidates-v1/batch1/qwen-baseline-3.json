@@ -1,0 +1,352 @@
+{
+  "claim_quality": {
+    "proposals": 4,
+    "admitted": 2,
+    "rejected": 2,
+    "unparseable": 0,
+    "correction_rounds": 2,
+    "reject_codes": [
+      "ABSENCE_NOT_ESTABLISHED",
+      "ENTITY_MALFORMED"
+    ],
+    "note_codes": [],
+    "records": [
+      {
+        "round": 1,
+        "decision": "rejected",
+        "raw": "PROBABLE STRUCTURE E3,E5 E0000b4b4 does not read or write SERCOM0 registers.",
+        "claim_version": null
+      },
+      {
+        "round": 2,
+        "decision": "rejected",
+        "raw": "PROBABLE STRUCTURE E3,E5 FUN_0000b4b4 does not read or write SERCOM0 registers",
+        "claim_version": null
+      },
+      {
+        "round": 3,
+        "decision": "admitted",
+        "raw": "select K-1a234180aad3",
+        "claim_version": "C10:v1"
+      },
+      {
+        "round": 3,
+        "decision": "admitted",
+        "raw": "select K-880293731f9c",
+        "claim_version": "C11:v1"
+      }
+    ],
+    "prechecks": {
+      "C10:v1": {
+        "outcome": "PROPOSED",
+        "failed": [
+          "claim_class"
+        ]
+      },
+      "C11:v1": {
+        "outcome": "PROPOSED",
+        "failed": [
+          "claim_class"
+        ]
+      }
+    }
+  },
+  "candidates": {
+    "generator": "candidates-v1",
+    "limit": 5,
+    "generated": 3,
+    "offered": [
+      {
+        "id": "K-1a234180aad3",
+        "fact": "FUNCTION_ROLE(FUN_0000a064 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+        "grade": "STRONG",
+        "evidence": [
+          "EV-be1965ceaf243a66"
+        ],
+        "existing": [],
+        "considered": 0,
+        "limitations": 1
+      },
+      {
+        "id": "K-880293731f9c",
+        "fact": "FUNCTION_ROLE(FUN_0000b4b4 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+        "grade": "STRONG",
+        "evidence": [
+          "EV-be1965ceaf243a66"
+        ],
+        "existing": [],
+        "considered": 1,
+        "limitations": 2
+      },
+      {
+        "id": "K-38b9e4b82265",
+        "fact": "FUNCTION_ROLE(FUN_0000b144 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+        "grade": "STRONG",
+        "evidence": [
+          "EV-be1965ceaf243a66"
+        ],
+        "existing": [],
+        "considered": 0,
+        "limitations": 1
+      }
+    ],
+    "omitted": 0,
+    "withheld": [],
+    "outcome": "selected",
+    "response": "K-1a234180aad3,K-880293731f9c",
+    "selected": [
+      "K-1a234180aad3",
+      "K-880293731f9c"
+    ],
+    "invalid": [],
+    "admitted": 2,
+    "duplicates": 0,
+    "rejected": 0,
+    "reject_codes": [],
+    "selection_requests": [
+      {
+        "attempt": 0,
+        "prompt_chars": 1436,
+        "total_bytes": 2005,
+        "prompt_tokens": 784,
+        "decision": "select_claims",
+        "error": null
+      }
+    ]
+  },
+  "run_id": "R-20261014T130658-7ad9e3",
+  "stop": "step_budget_exhausted",
+  "steps": 8,
+  "steps_charged": 8,
+  "planner_requests": 15,
+  "max_prompt_chars": 3000,
+  "max_prompt_tokens": 2003,
+  "rejected_requests": 4,
+  "planner_runtime_errors": 0,
+  "tool_executions": 8,
+  "tool_failures": 0,
+  "seeded_leads": 6,
+  "seeded_attempted": 2,
+  "seeded_completed": 2,
+  "redundant_executions": 6,
+  "redundant_operations": [
+    "census_peripheral_usage({\"limit\": 25, \"peripheral\": \"SERCOM0\"})",
+    "function_disassembly({\"function\": \"FUN_0000a064\"})",
+    "function_disassembly({\"function\": \"FUN_0000b4b4\"})",
+    "function_effects({\"function\": \"FUN_0000b4b4\", \"specialize\": {}})",
+    "function_facts({\"function\": \"FUN_0000a064\"})",
+    "function_facts({\"function\": \"FUN_0000b4b4\"})"
+  ],
+  "reused_preload": 0,
+  "reused_on_request": 0,
+  "reuse_refusals": [],
+  "new_operations": 2,
+  "new_evidence": 2,
+  "direct_callers_inspected": 0,
+  "claims_proposed": [
+    {
+      "key": "C10:v1",
+      "assertion": "FUN_0000a064 loads SERCOM0 address constant 0x40003028 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "grade": "STRONG",
+      "semantics": "FUNCTION_ROLE(FUN_0000a064 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+      "proposed_by": "candidate-selection:qwen",
+      "evidence": [
+        "EV-be1965ceaf243a66"
+      ],
+      "state": "PROPOSED"
+    },
+    {
+      "key": "C11:v1",
+      "assertion": "FUN_0000b4b4 loads SERCOM0 address constant 0x40003000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "grade": "STRONG",
+      "semantics": "FUNCTION_ROLE(FUN_0000b4b4 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+      "proposed_by": "candidate-selection:qwen",
+      "evidence": [
+        "EV-be1965ceaf243a66"
+      ],
+      "state": "PROPOSED"
+    }
+  ],
+  "seeded_outcomes": null,
+  "fallbacks": 0,
+  "trajectory": [
+    "follow_lead",
+    "analyze",
+    "effects",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead"
+  ],
+  "provenance": {
+    "no_reused_operation_reexecuted": true,
+    "reused_evidence_not_run_evidence": true,
+    "reused_originals_exist": true,
+    "inputs_are_durable": true
+  },
+  "mode": "baseline",
+  "planner": "qwen",
+  "elapsed_s": 16.0,
+  "error": null,
+  "restart": {
+    "claim_quality": {
+      "proposals": 4,
+      "admitted": 0,
+      "rejected": 2,
+      "unparseable": 0,
+      "correction_rounds": 2,
+      "reject_codes": [
+        "ABSENCE_NOT_ESTABLISHED",
+        "ENTITY_MALFORMED"
+      ],
+      "note_codes": [
+        "CLAIM_EQUIVALENT_EXISTS",
+        "CLAIM_EQUIVALENT_EXISTS"
+      ],
+      "records": [
+        {
+          "round": 1,
+          "decision": "rejected",
+          "raw": "PROBABLE STRUCTURE E3,E5 E0000b4b4 does not read or write SERCOM0 registers.",
+          "claim_version": null
+        },
+        {
+          "round": 2,
+          "decision": "rejected",
+          "raw": "PROBABLE STRUCTURE E3,E5 FUN_0000b4b4 does not read or write SERCOM0 registers",
+          "claim_version": null
+        },
+        {
+          "round": 3,
+          "decision": "duplicate",
+          "raw": "select K-1a234180aad3",
+          "claim_version": null
+        },
+        {
+          "round": 3,
+          "decision": "duplicate",
+          "raw": "select K-880293731f9c",
+          "claim_version": null
+        }
+      ],
+      "prechecks": {}
+    },
+    "candidates": {
+      "generator": "candidates-v1",
+      "limit": 5,
+      "generated": 3,
+      "offered": [
+        {
+          "id": "K-1a234180aad3",
+          "fact": "FUNCTION_ROLE(FUN_0000a064 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+          "grade": "STRONG",
+          "evidence": [
+            "EV-be1965ceaf243a66"
+          ],
+          "existing": [],
+          "considered": 0,
+          "limitations": 1
+        },
+        {
+          "id": "K-880293731f9c",
+          "fact": "FUNCTION_ROLE(FUN_0000b4b4 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+          "grade": "STRONG",
+          "evidence": [
+            "EV-be1965ceaf243a66"
+          ],
+          "existing": [],
+          "considered": 1,
+          "limitations": 2
+        },
+        {
+          "id": "K-38b9e4b82265",
+          "fact": "FUNCTION_ROLE(FUN_0000b144 is ADDRESS_CONSTANT_LOADER, peripheral=SERCOM0)",
+          "grade": "STRONG",
+          "evidence": [
+            "EV-be1965ceaf243a66"
+          ],
+          "existing": [],
+          "considered": 0,
+          "limitations": 1
+        }
+      ],
+      "omitted": 0,
+      "withheld": [],
+      "outcome": "selected",
+      "response": "K-1a234180aad3,K-880293731f9c",
+      "selected": [
+        "K-1a234180aad3",
+        "K-880293731f9c"
+      ],
+      "invalid": [],
+      "admitted": 0,
+      "duplicates": 2,
+      "rejected": 0,
+      "reject_codes": [],
+      "selection_requests": [
+        {
+          "attempt": 0,
+          "prompt_chars": 1436,
+          "total_bytes": 2005,
+          "prompt_tokens": 784,
+          "decision": "select_claims",
+          "error": null
+        }
+      ]
+    },
+    "run_id": "R-20261014T130714-5c9d3c",
+    "stop": "step_budget_exhausted",
+    "steps": 8,
+    "steps_charged": 8,
+    "planner_requests": 15,
+    "max_prompt_chars": 3000,
+    "max_prompt_tokens": 2003,
+    "rejected_requests": 4,
+    "planner_runtime_errors": 0,
+    "tool_executions": 8,
+    "tool_failures": 0,
+    "seeded_leads": 6,
+    "seeded_attempted": 2,
+    "seeded_completed": 2,
+    "redundant_executions": 6,
+    "redundant_operations": [
+      "census_peripheral_usage({\"limit\": 25, \"peripheral\": \"SERCOM0\"})",
+      "function_disassembly({\"function\": \"FUN_0000a064\"})",
+      "function_disassembly({\"function\": \"FUN_0000b4b4\"})",
+      "function_effects({\"function\": \"FUN_0000b4b4\", \"specialize\": {}})",
+      "function_facts({\"function\": \"FUN_0000a064\"})",
+      "function_facts({\"function\": \"FUN_0000b4b4\"})"
+    ],
+    "reused_preload": 0,
+    "reused_on_request": 0,
+    "reuse_refusals": [],
+    "new_operations": 2,
+    "new_evidence": 2,
+    "direct_callers_inspected": 0,
+    "claims_proposed": [],
+    "seeded_outcomes": null,
+    "fallbacks": 0,
+    "trajectory": [
+      "follow_lead",
+      "analyze",
+      "effects",
+      "follow_lead",
+      "follow_lead",
+      "follow_lead",
+      "follow_lead",
+      "follow_lead"
+    ],
+    "provenance": {
+      "no_reused_operation_reexecuted": true,
+      "reused_evidence_not_run_evidence": true,
+      "reused_originals_exist": true,
+      "inputs_are_durable": true
+    },
+    "mode": "baseline",
+    "planner": "qwen",
+    "elapsed_s": 16.1,
+    "error": null
+  },
+  "repeat": 3
+}

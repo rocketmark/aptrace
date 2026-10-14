@@ -617,7 +617,7 @@ def test_cli_preview_create_and_run_a_followup(world, monkeypatch, capsys):
     planner = ScriptedPlanner([], f"PROBABLE STRUCTURE E1 {CALLERS[0][0]} calls {GAP}.")
     received = {}
 
-    def autonomous(objective, *, seed_function, max_steps, executor=None, claim_contract=False, followup=None, history=None):
+    def autonomous(objective, *, seed_function, max_steps, executor=None, claim_contract=False, claim_candidates=0, followup=None, history=None):
         received.update(objective=objective, followup=followup, history=history)
         registry = LeadRegistry()
         session = ResearchSession(objective=objective, registry=registry, follower=LeadFollower(registry=registry, executor=executor), deriver=deriver_for(registry))
@@ -625,7 +625,7 @@ def test_cli_preview_create_and_run_a_followup(world, monkeypatch, capsys):
         result = ResearchController(planner_client=planner, planner_model="scripted", reconciler=object(), max_steps=2, claim_contract=claim_contract).run(session)
         return AutonomousInvestigationRun(objective=objective, seed_function=None, result=result, state=session.state.model_copy(deep=True), evidence=tuple(session.ledger.all()))
 
-    def record(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None, followup=None):
+    def record(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None, followup=None, claim_candidates=0):
         return record_investigation(
             ResearchLedger(ledger_dir_override), run, context=world.context(), recorder=recorder, model="scripted", execution_config={},
             planner_version="test", budgets={"max_steps": max_steps}, started_at=started_at, ended_at=ended_at,

@@ -92,6 +92,9 @@ class ResearchRunResult:
     proposed_claims: tuple[dict[str, Any], ...] = ()
     # Every admission decision (ClaimAdmission), admitted or not.
     claim_admission: tuple[Any, ...] = ()
+    # Claim candidates offered and selected (CandidateSelection), when
+    # candidate selection is enabled.
+    candidate_selection: Any = None
 
 
 @dataclass
@@ -178,6 +181,7 @@ class ResearchController:
         prefill_retry_delay: float = 3.0,
         projection_budget: ProjectionBudget | None = None,
         claim_contract: bool = False,
+        max_claim_candidates: int = 0,
     ) -> None:
         if max_steps < 1:
             raise ValueError("max_steps must be at least 1")
@@ -230,6 +234,13 @@ class ResearchController:
         self.claim_admission: list[Any] = []
         # Correction rounds the planner gets after a rejected claim proposal.
         self.max_claim_corrections = 1
+        # Claim candidates offered for selection at the end of a run
+        # (research/candidates.py); 0 disables candidate selection.
+        if max_claim_candidates < 0:
+            raise ValueError("max_claim_candidates must be at least 0")
+
+        self.max_claim_candidates = max_claim_candidates
+        self.candidate_selection: Any = None
 
         budget = projection_budget or ProjectionBudget(latest_count=recent_evidence_limit)
         self.normal_projection = PlannerProjection(budget)
@@ -587,6 +598,90 @@ class ResearchController:
 
             if action == "finish":
                 self.claim_admission += self._admit_round(session, arguments.get("claims"), 2)
+
+    def _select_candidates(self, session: ResearchSession) -> None:
+        """
+        Offer the run's mechanically derived claim candidates
+        (research/candidates.py) and admit the ones the planner selects.
+
+        The planner returns candidate ids only. Each id is resolved against
+        the immutable candidate record, which alone forms the proposal, and
+        the proposal passes the same admission as any other. Unknown or
+        unoffered ids are recorded as rejected selections. There is no
+        correction round: a candidate cannot be corrected, only selected.
+        """
+
+        if not (self.claim_contract and self.max_claim_candidates > 0):
+            return
+
+        from aptrace_agent.ledger.claim_checks import CANDIDATE_NOT_OFFERED, CANDIDATE_UNKNOWN, REJECT
+        from aptrace_agent.ledger.models import CandidateSelection, ClaimAdmission, ClaimDiagnostic
+        from aptrace_agent.research import candidates
+        from aptrace_agent.research.admission import admit, function_resolver
+
+        resolver = function_resolver(session)
+        peripherals = self.census_peripherals or None
+        # A follow-up session can read the durable ledger through its
+        # history; the recorder applies the authoritative equivalence check.
+        ledger = getattr(getattr(getattr(session, "continuity", None), "history", None), "ledger", None)
+        existing = None
+
+        if ledger is not None:
+            def existing(semantics):
+                return [f"{key} {state}" for key, state in candidates.equivalent_claims(ledger, semantics)]
+
+        generated = candidates.generate_candidates(
+            session.ledger.all(), objective=session.state.objective, seeded=candidates.seeded_evidence(session),
+            function_exists=resolver, peripherals=peripherals, existing=existing,
+        )
+        offered, omitted = generated.offer(self.max_claim_candidates)
+        summary = {
+            "generator": candidates.GENERATOR, "limit": self.max_claim_candidates, "generated": len(generated.candidates),
+            "offered": list(offered), "omitted": list(omitted), "withheld": list(generated.withheld),
+        }
+
+        if not offered:
+            self.candidate_selection = CandidateSelection(**summary, outcome="no-candidates")
+            return
+
+        requests = len(self.planner_requests)
+        action, arguments = self._request_candidate_selection(session, offered, len(omitted))
+        prompt_chars = max((r.get("prompt_chars") or 0 for r in self.planner_requests[requests:]), default=0)
+
+        if action != "select_claims":
+            self.candidate_selection = CandidateSelection(
+                **summary, outcome="planner-failed", response=str(arguments.get("reason") or "")[:300], prompt_chars=prompt_chars
+            )
+            return
+
+        by_id = {c.candidate_id: c for c in offered}
+        selected, invalid = candidates.parse_selection(arguments.get("selected"), by_id)
+        round = max((r.round for r in self.claim_admission), default=0) + 1
+        records: list[Any] = []
+
+        for token in invalid:
+            code = CANDIDATE_NOT_OFFERED if token in omitted else CANDIDATE_UNKNOWN
+            detail = "a valid candidate that was not offered in this request" if token in omitted else "names no candidate APTrace offered"
+            records.append(
+                ClaimAdmission(
+                    round=round, raw=f"select {token}", decision="rejected", candidate_id=token if token.startswith("K-") else None,
+                    diagnostics=[ClaimDiagnostic(code=code, severity=REJECT, detail=f"{token!r} {detail}; nothing is reinterpreted", value=token)],
+                )
+            )
+
+        for candidate_id in selected:
+            proposal = candidates.proposal_for(by_id[candidate_id])
+            record = admit(proposal, session, round=round, function_exists=resolver, peripherals=peripherals).model_copy(update={"candidate_id": candidate_id})
+            records.append(record)
+
+            if record.decision == "admitted":
+                self.proposed_claims.append({**proposal, "admission": len(self.claim_admission) + len(records) - 1})
+
+        self.claim_admission = list(self.claim_admission) + records
+        self.candidate_selection = CandidateSelection(
+            **summary, outcome="selected" if selected else "none", response=str(arguments.get("selected"))[:600],
+            selected=selected, invalid=invalid, prompt_chars=prompt_chars,
+        )
 
     # -- validation -------------------------------------------------------------
 
@@ -1409,6 +1504,68 @@ what the cited evidence shows. To leave out follow-up evidence, append
             exhausted="planner_contract_exhausted",
         )
 
+    def _request_candidate_selection(self, session: ResearchSession, offered: Sequence[Any], omitted: int) -> tuple[str, dict[str, Any]]:
+        """
+        One small request: the objective and the bounded candidate list, no
+        research state. The tool takes one string of ids, the planner's
+        reliable output form.
+        """
+
+        from aptrace_agent.research.candidates import render
+
+        self._begin_decision()
+        listing = render(offered, omitted)
+        palette = _Palette(
+            tools=[
+                _function_tool(
+                    "select_claims",
+                    "Select APTrace claim candidates by id.",
+                    {
+                        "selected": {"type": "string", "description": "candidate ids, comma-separated (e.g. 'K-0123456789ab'), or 'none'"},
+                        "reason": {"type": "string"},
+                    },
+                    ["selected"],
+                )
+            ]
+        )
+
+        def prompt_for(palette: _Palette) -> tuple[str, int]:
+            return (
+                f"""OBJECTIVE: {self.projection.objective(session)}
+
+APTrace derived these candidate facts mechanically from the recorded
+evidence. Each has fixed typed semantics, evidence, grade and scope; you
+cannot change a candidate, only select it.
+{listing}
+
+TASK: call select_claims with the ids of the candidates that matter for
+the objective, comma-separated, or 'none'. A selected candidate is
+recorded as a PROPOSED claim. It states only its own fact and does not
+answer any other question.
+""",
+                len(listing),
+            )
+
+        def parse(palette: _Palette, name: str, arguments: dict[str, Any]):
+            if name == "select_claims" and isinstance(arguments.get("selected"), str):
+                return name, arguments
+
+            return "call select_claims with a 'selected' string of candidate ids or 'none'"
+
+        return self._ask(
+            session,
+            phase="candidate-selection",
+            system=(
+                "You concluded a bounded firmware research investigation. APTrace owns "
+                "evidence, claims and verification. Make exactly one select_claims tool call."
+            ),
+            prompt_for=prompt_for,
+            palette=palette,
+            parse=parse,
+            contract="candidate selection",
+            exhausted="planner_contract_exhausted",
+        )
+
     # -- execution --------------------------------------------------------------
 
     def _follow_new_lead(self, session: ResearchSession, *, kind: str, description: str, tool: str, arguments: dict[str, Any], step: int | None = None):
@@ -1529,6 +1686,7 @@ what the cited evidence shows. To leave out follow-up evidence, append
             planner_requests=tuple(self.planner_requests),
             proposed_claims=tuple(self.proposed_claims),
             claim_admission=tuple(self.claim_admission),
+            candidate_selection=self.candidate_selection,
         )
 
     def _fallback_lead(self, session: ResearchSession):
@@ -1632,6 +1790,8 @@ what the cited evidence shows. To leave out follow-up evidence, append
                         self._record_conclusions(session, final_arguments)
                         self._accept_claims(session, final_arguments.get("claims"))
 
+                    self._select_candidates(session)
+
                 return self._result(action, steps, self._reconcile_terminal(session))
 
             if action == "finish":
@@ -1644,6 +1804,8 @@ what the cited evidence shows. To leave out follow-up evidence, append
 
                 if self.claim_contract:
                     self._accept_claims(session, arguments.get("claims"))
+                    self._select_candidates(session)
+
                 return self._result("planner_finished", steps, self._reconcile_terminal(session))
 
             if action == "search_case_evidence":
@@ -1672,5 +1834,7 @@ what the cited evidence shows. To leave out follow-up evidence, append
             if action == "finish":
                 self._record_conclusions(session, arguments)
                 self._accept_claims(session, arguments.get("claims"))
+
+            self._select_candidates(session)
 
         return self._result("step_budget_exhausted", steps, self._reconcile_terminal(session))

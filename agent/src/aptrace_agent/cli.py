@@ -19,6 +19,7 @@ from aptrace_agent.work_cli import (
     handle_followups_command,
     handle_work_command,
 )
+from aptrace_agent.research.candidates import DEFAULT_LIMIT as DEFAULT_CANDIDATE_LIMIT
 from aptrace_agent.research.projection import conclusion
 from aptrace_agent.investigator import (
     AutonomousInvestigationRun,
@@ -240,6 +241,17 @@ def main() -> None:
     )
 
     research.add_argument(
+        "--claim-candidates",
+        type=int,
+        default=DEFAULT_CANDIDATE_LIMIT,
+        help=(
+            "With --ledger: offer at most this many mechanically derived "
+            "claim candidates for selection by id at the end of the run; "
+            f"0 disables (default: {DEFAULT_CANDIDATE_LIMIT})"
+        ),
+    )
+
+    research.add_argument(
         "objective",
         nargs="*",
         help=(
@@ -316,7 +328,7 @@ def main() -> None:
                     ),
                     max_steps=args.max_steps,
                     **(
-                        {"executor": recorder, "claim_contract": True}
+                        {"executor": recorder, "claim_contract": True, "claim_candidates": args.claim_candidates}
                         if recorder is not None
                         else {}
                     ),
@@ -345,6 +357,7 @@ def main() -> None:
                 max_steps=args.max_steps,
                 controller_cls=ResearchController,
                 work_item_id=work_item_id,
+                claim_candidates=args.claim_candidates,
                 **({"followup": followup.provenance()} if followup is not None else {}),
             )
             return payload["ledger_run_id"]

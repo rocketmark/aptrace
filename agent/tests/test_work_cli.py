@@ -36,7 +36,7 @@ def cli_env(monkeypatch, tmp_path):
     ledger_dir = tmp_path / "ledger"
     calls = []
 
-    def autonomous(objective, *, seed_function, max_steps, executor=None, claim_contract=False):
+    def autonomous(objective, *, seed_function, max_steps, executor=None, claim_contract=False, claim_candidates=0):
         calls.append(objective)
         registry = LeadRegistry()
         session = ResearchSession(objective=objective, registry=registry, follower=LeadFollower(registry=registry, executor=executor))
@@ -44,7 +44,7 @@ def cli_env(monkeypatch, tmp_path):
         result = ResearchController(planner_client=Planner(), planner_model="scripted", reconciler=object(), max_steps=1, claim_contract=claim_contract).run(session)
         return AutonomousInvestigationRun(objective=objective, seed_function=seed_function, result=result, state=session.state.model_copy(deep=True), evidence=tuple(session.ledger.all()))
 
-    def record(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None):
+    def record(run, *, executor, recorder, ledger_dir_override, started_at, ended_at, max_steps, controller_cls, work_item_id=None, claim_candidates=0):
         return record_investigation(
             ResearchLedger(ledger_dir_override), run, context=context(), recorder=recorder, model="scripted", execution_config={},
             planner_version="test", budgets={"max_steps": max_steps}, started_at=started_at, ended_at=ended_at,

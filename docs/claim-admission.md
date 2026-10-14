@@ -130,7 +130,10 @@ untyped hypotheses, and rules 5–6 apply.
   still capped at `PROBABLE` as untyped.
 - The planner's claim line cannot carry typed semantics. Structured claims
   (dicts) can, but the local planner emits lines, so its claims are untyped
-  hypotheses.
+  hypotheses. Typed claims the evidence establishes mechanically reach
+  admission as selected candidates instead
+  ([`claim-candidates.md`](claim-candidates.md)); they pass these same
+  rules.
 - Accountability covers follow-up sessions, through their seeded leads.
   Standalone runs have no lead-relevance record to check against.
 - Unknown-function checks need a FunctionFacts reader. Without one, only

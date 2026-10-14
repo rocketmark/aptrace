@@ -219,7 +219,8 @@ class ClaimAdmission(_Record):
 
     round: int
     raw: str
-    # admitted | rejected | unparseable
+    # admitted | rejected | unparseable | duplicate (admitted, but an
+    # equivalent claim already exists, so no claim version was created)
     decision: str
     assertion: str = ""
     grade: str | None = None
@@ -230,6 +231,84 @@ class ClaimAdmission(_Record):
     omissions: dict[str, str] = Field(default_factory=dict)
     diagnostics: list[ClaimDiagnostic] = Field(default_factory=list)
     claim_version: str | None = None
+    # The selected ClaimCandidate this proposal was built from. Absent on
+    # free-form proposals and older records.
+    candidate_id: str | None = None
+
+    @model_serializer(mode="wrap")
+    def _omit_unset_candidate(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
+        data = handler(self)
+
+        if data.get("candidate_id") is None:
+            data.pop("candidate_id", None)
+
+        return data
+
+
+class ClaimCandidate(_Record):
+    """
+    A typed fact APTrace derived mechanically from session evidence
+    (research/candidates.py). It is not a claim: it has no claim id or
+    lifecycle state. A planner may select it by candidate_id; the selection
+    then passes the same admission as any proposal. Nothing here comes from
+    a model.
+    """
+
+    # "K-" + 12 hex of a digest over generator, semantics, claim type,
+    # grade, and the content identity of the supporting evidence.
+    candidate_id: str
+    extractor: str
+    subject: str
+    claim_type: str
+    semantics: ClaimSemantics
+    grade: str
+    # Generated from the semantics and evidence fields; presentation only.
+    assertion: str
+    scope: str
+    assumptions: list[str] = Field(default_factory=list)
+    limitations: list[str] = Field(default_factory=list)
+    # Session evidence that establishes the fact; durable ids are filled
+    # when the run is recorded (historical evidence by its original id).
+    supporting_evidence_ids: list[str] = Field(default_factory=list)
+    durable_evidence_ids: list[str] = Field(default_factory=list)
+    # Original durable ids of supporting evidence reused from earlier runs.
+    prior_evidence_ids: list[str] = Field(default_factory=list)
+    # Followed seeded-lead evidence about the candidate's functions that is
+    # not support: session id -> why it is not cited.
+    considered: dict[str, str] = Field(default_factory=dict)
+    # Seeded leads whose evidence supports or was considered.
+    seeded_leads: list[str] = Field(default_factory=list)
+    # Equivalent claim versions already in the ledger (key and state).
+    existing_claims: list[str] = Field(default_factory=list)
+
+
+class CandidateWithheld(_Record):
+    """A fact the generator found but did not offer, and why."""
+
+    code: str
+    fact: str
+    detail: str
+    evidence_ids: list[str] = Field(default_factory=list)
+
+
+class CandidateSelection(_Record):
+    """How a run's claim candidates were generated, offered and selected."""
+
+    generator: str
+    limit: int
+    generated: int
+    offered: list[ClaimCandidate] = Field(default_factory=list)
+    # Valid candidates not offered because of the limit (ids, ranked).
+    omitted: list[str] = Field(default_factory=list)
+    withheld: list[CandidateWithheld] = Field(default_factory=list)
+    # Raw selection text the planner returned, and the offered ids it named.
+    response: str | None = None
+    selected: list[str] = Field(default_factory=list)
+    # Selection tokens that named no offered candidate.
+    invalid: list[str] = Field(default_factory=list)
+    # selected | none | no-candidates | planner-failed
+    outcome: str
+    prompt_chars: int = 0
 
 
 class InvestigationRun(_Record):
@@ -273,12 +352,15 @@ class InvestigationRun(_Record):
     # Admission decisions for the planner's claim proposals, admitted or
     # not. Absent on runs recorded before claim admission existed.
     claim_admission: list[ClaimAdmission] | None = None
+    # Mechanically derived claim candidates and the planner's selection.
+    # Absent when candidate selection was not enabled and on older runs.
+    candidate_selection: CandidateSelection | None = None
 
     @model_serializer(mode="wrap")
     def _omit_unset_work_item(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
         data = handler(self)
 
-        for name in ("work_item_id", "followup", "continuity", "claim_admission"):
+        for name in ("work_item_id", "followup", "continuity", "claim_admission", "candidate_selection"):
             if data.get(name) is None:
                 data.pop(name, None)
 

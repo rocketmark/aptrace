@@ -22,6 +22,11 @@ Planners:
             the first offered lead
   qwen      the local planner (APTRACE_MODEL via OMLX_BASE_URL)
 
+Claim candidates (--candidates N, research/candidates.py): after the
+final-claims phase the planner is offered at most N mechanically derived
+candidates and selects them by id. --restart runs the same follow-up a
+second time in the same scratch ledger, measuring duplicate avoidance.
+
 Usage (from the repository root):
 
   uv run --project agent python cases/performing-rigs/scripts/continuity_benchmark.py \
@@ -78,6 +83,13 @@ class RulesPlanner:
         if list(tools) == ["finish"]:
             return self._call("finish", {"reason": "budget", "claims": ""})
 
+        if list(tools) == ["select_claims"]:
+            # Select candidates whose line names a function of the objective.
+            wanted = set(re.findall(r"FUN_[0-9a-f]{8}", objective))
+            lines = re.findall(r"^(K-[0-9a-f]{12}) (.*)$", prompt, re.MULTILINE)
+            chosen = [cid for cid, text in lines if wanted & set(re.findall(r"FUN_[0-9a-f]{8}", text))]
+            return self._call("select_claims", {"selected": ",".join(chosen) or "none"})
+
         if "analyze_peripheral" in tools:
             for peripheral in tools["analyze_peripheral"]["function"]["parameters"]["properties"]["peripheral"]["enum"]:
                 if peripheral in objective and ("peripheral", peripheral) not in self.asked:
@@ -102,7 +114,7 @@ class RulesPlanner:
         return SimpleNamespace(choices=[SimpleNamespace(message=SimpleNamespace(content=None, tool_calls=[call]))], usage=None)
 
 
-def trial(mode: str, planner: str, canonical: Path) -> dict:
+def trial(mode: str, planner: str, canonical: Path, candidates: int = 0, restart: bool = False) -> dict:
     work = Path(tempfile.mkdtemp(prefix="continuity-bench-"))
     shutil.copytree(canonical, work / "ledger")
     ledger = ResearchLedger(work / "ledger")
@@ -113,6 +125,17 @@ def trial(mode: str, planner: str, canonical: Path) -> dict:
     if candidate is None:
         raise SystemExit(f"candidate {CANDIDATE} does not derive from {canonical}")
 
+    metrics = follow_up(ledger, executor, context, candidate, mode, planner, candidates)
+
+    if restart and not metrics.get("error"):
+        # The same follow-up again, in the same scratch ledger: a restart.
+        metrics["restart"] = follow_up(ledger, executor, context, candidate, mode, planner, candidates)
+
+    shutil.rmtree(work, ignore_errors=True)
+    return metrics
+
+
+def follow_up(ledger, executor, context, candidate, mode: str, planner: str, candidates: int) -> dict:
     history = HistoricalOperations.for_followup(ledger, context, candidate) if mode == "improved" else None
     recorder = RecordingExecutor(executor)
     controller = None
@@ -121,6 +144,7 @@ def trial(mode: str, planner: str, canonical: Path) -> dict:
         controller = ResearchController(
             planner_client=RulesPlanner(), planner_model="rules", reconciler=object(), max_steps=MAX_STEPS,
             census_peripherals=executor.census.available_peripherals(), structural_tools=STRUCTURAL, claim_contract=True,
+            max_claim_candidates=candidates,
         )
 
     started = datetime.now(timezone.utc).isoformat()
@@ -129,7 +153,7 @@ def trial(mode: str, planner: str, canonical: Path) -> dict:
 
     try:
         run = run_autonomous_investigation(
-            candidate.objective, max_steps=MAX_STEPS, executor=recorder, claim_contract=True,
+            candidate.objective, max_steps=MAX_STEPS, executor=recorder, claim_contract=True, claim_candidates=candidates,
             followup=candidate, history=history, controller=controller,
         )
     except Exception as exc:  # recorded as a trial outcome
@@ -142,13 +166,13 @@ def trial(mode: str, planner: str, canonical: Path) -> dict:
         return {"mode": mode, "planner": planner, "error": error, "elapsed_s": elapsed}
 
     recorded = record_investigation(
-        ledger, run, context=context, recorder=recorder, model=planner, execution_config={"temperature": 0.0, "max_tokens": 512},
+        ledger, run, context=context, recorder=recorder, model=planner,
+        execution_config={"temperature": 0.0, "max_tokens": 512, "claim_candidates": candidates},
         planner_version="benchmark", budgets={"max_steps": MAX_STEPS}, started_at=started,
         ended_at=datetime.now(timezone.utc).isoformat(), source=SourceRevision(), followup=candidate.provenance(),
     )
     metrics = measure(ledger, recorded, candidate, recorder)
     metrics.update(mode=mode, planner=planner, elapsed_s=elapsed, error=error)
-    shutil.rmtree(work, ignore_errors=True)
     return metrics
 
 
@@ -182,6 +206,36 @@ def measure(ledger: ResearchLedger, run, candidate, recorder: RecordingExecutor)
         record = ClaimVerifier(ledger, context=context_provider(EvidenceExecutor())(), replay=False).precheck(key).record
         prechecks[key] = {"outcome": record.outcome.value, "failed": [c.name for c in record.checks if not c.passed]}
 
+    selection = run.candidate_selection
+    candidate_quality = None
+
+    if selection is not None:
+        from_candidates = [r for r in admission if r.candidate_id]
+        candidate_quality = {
+            "generator": selection.generator,
+            "limit": selection.limit,
+            "generated": selection.generated,
+            "offered": [
+                {"id": c.candidate_id, "fact": c.semantics.summary(), "grade": c.grade, "evidence": c.durable_evidence_ids,
+                 "existing": c.existing_claims, "considered": len(c.considered), "limitations": len(c.limitations)}
+                for c in selection.offered
+            ],
+            "omitted": len(selection.omitted),
+            "withheld": sorted(f"{w.code}: {w.fact}" for w in selection.withheld),
+            "outcome": selection.outcome,
+            "response": selection.response,
+            "selected": selection.selected,
+            "invalid": selection.invalid,
+            "admitted": sum(r.decision == "admitted" for r in from_candidates),
+            "duplicates": sum(r.decision == "duplicate" for r in from_candidates),
+            "rejected": sum(r.decision == "rejected" for r in from_candidates),
+            "reject_codes": sorted(d.code for r in from_candidates for d in r.diagnostics if d.severity == "reject"),
+            "selection_requests": [
+                {k: r.get(k) for k in ("attempt", "prompt_chars", "total_bytes", "prompt_tokens", "decision", "error")}
+                for r in run.planner_requests if r.get("phase") == "candidate-selection"
+            ],
+        }
+
     claim_quality = {
         "proposals": len(admission),
         "admitted": sum(r.decision == "admitted" for r in admission),
@@ -196,6 +250,7 @@ def measure(ledger: ResearchLedger, run, candidate, recorder: RecordingExecutor)
 
     return {
         "claim_quality": claim_quality,
+        "candidates": candidate_quality,
         "run_id": run.run_id,
         "stop": run.termination_reason,
         "steps": len(run.trajectory),
@@ -220,6 +275,8 @@ def measure(ledger: ResearchLedger, run, candidate, recorder: RecordingExecutor)
         "direct_callers_inspected": len(callers & DIRECT_CALLERS),
         "claims_proposed": [
             {"key": key, "assertion": ledger.claim(key).assertion, "grade": ledger.claim(key).proposed_grade.value,
+             "semantics": ledger.claim(key).semantics.summary() if ledger.claim(key).semantics else None,
+             "proposed_by": ledger.claim(key).proposed_by,
              "evidence": ledger.claim(key).supporting_evidence_ids, "state": ledger.state(key).value}
             for key in run.claim_versions
         ],
@@ -237,6 +294,8 @@ def main() -> None:
     parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--ledger", default=str(DEFAULT_LEDGER_DIR), help="Ledger to copy (read only)")
     parser.add_argument("--out", required=True, help="Directory for per-trial JSON")
+    parser.add_argument("--candidates", type=int, default=0, help="Claim candidates offered for selection (0: off)")
+    parser.add_argument("--restart", action="store_true", help="Run the follow-up a second time in the same scratch ledger")
     args = parser.parse_args()
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -244,13 +303,20 @@ def main() -> None:
     # Alternate modes so drift in the local runtime affects both equally.
     for n in range(1, args.repeat + 1):
         for mode in args.mode:
-            result = trial(mode, args.planner, Path(args.ledger))
+            result = trial(mode, args.planner, Path(args.ledger), args.candidates, args.restart)
             result["repeat"] = n
             path = out / f"{args.planner}-{mode}-{n}.json"
             path.write_text(json.dumps(result, indent=2) + "\n")
             summary = {k: result.get(k) for k in ("stop", "steps_charged", "tool_executions", "redundant_executions", "seeded_attempted", "direct_callers_inspected", "new_evidence", "fallbacks")}
             quality = result.get("claim_quality") or {}
             summary.update({k: quality.get(k) for k in ("proposals", "admitted", "rejected", "unparseable", "correction_rounds", "reject_codes")})
+            chosen = result.get("candidates") or {}
+            summary.update({f"cand_{k}": chosen.get(k) for k in ("generated", "outcome", "selected", "admitted", "duplicates", "rejected")} if chosen else {})
+
+            if result.get("restart"):
+                again = result["restart"].get("candidates") or {}
+                summary["restart"] = {k: again.get(k) for k in ("outcome", "admitted", "duplicates")}
+
             print(f"{args.planner} {mode} #{n}: {json.dumps(summary)}", flush=True)
 
 

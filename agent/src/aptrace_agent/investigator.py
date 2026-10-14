@@ -129,6 +129,7 @@ def run_autonomous_investigation(
     controller: ResearchController | None = None,
     executor: EvidenceExecutor | None = None,
     claim_contract: bool = False,
+    claim_candidates: int = 0,
     followup: FollowUpCandidate | None = None,
     history: HistoricalOperations | None = None,
 ) -> AutonomousInvestigationRun:
@@ -225,6 +226,7 @@ def run_autonomous_investigation(
                 "function_effects",
             ),
             claim_contract=claim_contract,
+            max_claim_candidates=claim_candidates,
         )
     )
 
