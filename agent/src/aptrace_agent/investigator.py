@@ -225,6 +225,7 @@ def run_autonomous_investigation(
                 "common_paths",
                 "function_effects",
                 "observed_call_arguments",
+                "indirect_call_target",
             ),
             observation_scenarios=(
                 executor.observed_calls.supported_scenarios()
@@ -235,6 +236,11 @@ def run_autonomous_investigation(
                 executor.observed_calls.scenario_note()
                 if hasattr(executor, "observed_calls")
                 else ""
+            ),
+            indirect_sites=(
+                executor.indirect_targets.sites()
+                if hasattr(executor, "indirect_targets")
+                else ()
             ),
             claim_contract=claim_contract,
             max_claim_candidates=claim_candidates,

@@ -45,6 +45,10 @@ EXECUTION_BUDGET = "EXECUTION_BUDGET_BOUND"
 WATCH_ABSENCE = "NO_OBSERVED_WRITE_NOT_IMMUTABLE"
 WRITE_LOG_TRUNCATED = "WATCHED_WRITES_TRUNCATED"
 SCENARIO_FAILED = "SCENARIO_FAILED"
+POTENTIAL_TARGET = "POTENTIAL_TARGET_NOT_DISPATCH"
+DISPATCH_NOT_REACHABILITY = "DISPATCH_IS_NOT_REACHABILITY"
+INTRAPROCEDURAL = "INTRAPROCEDURAL_DERIVATION_ONLY"
+DERIVATION_PARTIAL = "TARGET_DERIVATION_PARTIAL"
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 
@@ -211,6 +215,18 @@ def evidence_grade(tool: str, result: dict[str, Any]) -> tuple[EvidenceGrade, st
     if tool == "search_case_evidence":
         return EvidenceGrade.PROBABLE, "case documents (documentary)"
 
+    if tool == "indirect_call_target":
+        if result.get("status") != "ok":
+            return EvidenceGrade.UNKNOWN, f"indirect target status {result.get('status')}"
+
+        if result.get("resolution_status") == "STATICALLY_ESTABLISHED" and result.get("derivation_status") == "ESTABLISHED":
+            return EvidenceGrade.STRONG, "static intraprocedural target derivation (heuristic block boundaries)"
+
+        if result.get("derivation_status") in ("ESTABLISHED", "PARTIAL"):
+            return EvidenceGrade.PROBABLE, "static dataflow shape; targets conditional or not derived"
+
+        return EvidenceGrade.UNKNOWN, f"indirect target derivation {result.get('derivation_status')}"
+
     if tool == "structural_source_agreement":
         if result.get("status") != "ok" or "CONFLICT" in (result.get("status_counts") or {}):
             return EvidenceGrade.UNKNOWN, "source agreement contains a structural CONFLICT or failed"
@@ -345,6 +361,27 @@ def evidence_limitations(tool: str, arguments: dict[str, Any], result: dict[str,
 
     if tool == "search_case_evidence":
         out[DOCUMENTARY] = "Case documents are prior human findings, not firmware-derived evidence."
+
+    if tool == "indirect_call_target":
+        out[FUNCTION_BOUNDARIES] = _STRUCTURAL_TEXT
+        out[INTRAPROCEDURAL] = (
+            "The target derivation is intraprocedural over census blocks: argument and call-result values are not "
+            "followed into callers or callees, and blocks entered through code pointers have unseen predecessors."
+        )
+        out[POTENTIAL_TARGET] = (
+            "A candidate target is a table entry the site could load if the receiver holds that vptr; it is not "
+            "an observed dispatch."
+        )
+        out[DISPATCH_NOT_REACHABILITY] = (
+            "A possible dispatch is not a reachable path: whether the site executes with such a receiver is not "
+            "established by this analysis."
+        )
+
+        if result.get("derivation_status") != "ESTABLISHED":
+            out[DERIVATION_PARTIAL] = (
+                f"The derivation is {result.get('derivation_status')}: some reaching definitions are unknown, "
+                "bounded or entered indirectly."
+            )
 
     return sorted(out.items())
 

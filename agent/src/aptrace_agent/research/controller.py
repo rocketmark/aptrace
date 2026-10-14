@@ -37,10 +37,14 @@ STRUCTURAL_TOOLS = (
     "common_paths",
     "function_effects",
     "observed_call_arguments",
+    "indirect_call_target",
 )
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 _SET_NAME_RE = re.compile(r"[A-Z][A-Z0-9_]{0,23}")
+_ADDRESS_RE = re.compile(r"\b0x([0-9a-fA-F]{1,8})\b")
+# Grounded indirect sites offered to the planner at once.
+MAX_OFFERED_SITES = 12
 
 # Optional structured claim-output contract on finish.
 CLAIM_TYPES = ("RESOLUTION", "PATH_EXISTS", "NO_KNOWN_PATH", "UNREACHABLE", "BEHAVIOR", "STRUCTURE", "OTHER")
@@ -66,6 +70,7 @@ _STRUCTURAL_SOURCES = {
     "census_common_paths",
     "function_effects",
     "observed_call_arguments",
+    "indirect_call_target",
     "search_case_evidence",
 }
 
@@ -108,6 +113,8 @@ class _Palette:
     analyzable: list[str] = field(default_factory=list)
     set_names: dict[str, list[str]] = field(default_factory=dict)
     known: set[str] = field(default_factory=set)
+    # Census register-indirect sites already present in evidence.
+    indirect_sites: list[str] = field(default_factory=list)
     # Tool whose request repeated an analysis already in evidence.
     duplicate: str | None = None
 
@@ -182,6 +189,8 @@ class ResearchController:
         observation_scenarios: Sequence[str] = (),
         observation_note: str = "",
         max_observations: int = 2,
+        indirect_sites: Sequence[int] = (),
+        max_indirect_targets: int = 2,
         max_visible_leads: int = 6,
         prefill_retry_delay: float = 3.0,
         projection_budget: ProjectionBudget | None = None,
@@ -237,6 +246,10 @@ class ResearchController:
         self.observation_scenarios = tuple(dict.fromkeys(observation_scenarios))
         self.observation_note = observation_note
         self.max_observations = max_observations
+        # APTrace-validated census register-indirect sites; the planner may
+        # name one only once it appears in evidence.
+        self.indirect_sites = frozenset(int(site) for site in indirect_sites)
+        self.max_indirect_targets = max_indirect_targets
         self.max_visible_leads = max_visible_leads
         self.prefill_retry_delay = prefill_retry_delay
         self.claim_contract = claim_contract
@@ -417,6 +430,43 @@ class ResearchController:
                     ["function", "scenario"],
                 )
             )
+
+        if (
+            "indirect_call_target" in self.structural_tools
+            and self.indirect_sites
+            and len(self._executed(session, "indirect_call_target")) < self.max_indirect_targets
+        ):
+            palette.indirect_sites = self._grounded_sites(session)
+
+            if palette.indirect_sites:
+                palette.tools.append(
+                    _function_tool(
+                        "resolve_indirect_call",
+                        "Only when what an indirect call (blx/bx register) can reach matters: static derivation of "
+                        "one listed site's target register (vtable slot, callback argument, table...). Potential "
+                        "targets are table entries, not observed dispatches, and a dispatch is not a reachable path.",
+                        {"site": {"type": "string", "enum": palette.indirect_sites}},
+                        ["site"],
+                    )
+                )
+
+    def _grounded_sites(self, session: ResearchSession) -> list[str]:
+        """Census indirect sites named in evidence, most recent evidence first."""
+
+        found: dict[int, None] = {}
+        done = {str(o.arguments.get("site")) for o in self._observations(session, "indirect_call_target")}
+
+        for observation in reversed(session.ledger.all()):
+            if observation.tool == "indirect_call_target":
+                continue
+
+            for match in _ADDRESS_RE.finditer(json.dumps(observation.result, default=str)):
+                address = int(match.group(1), 16)
+
+                if address in self.indirect_sites and f"0x{address:08x}" not in done:
+                    found.setdefault(address)
+
+        return [f"0x{address:08x}" for address in list(found)[:MAX_OFFERED_SITES]]
 
     def _apply_cooldown(self, palette: _Palette) -> None:
         for name, remaining in list(self._cooldown.items()):
@@ -866,6 +916,24 @@ class ResearchController:
 
             return name, {"function": function, "scenario": scenario}
 
+        if name == "resolve_indirect_call" and name in offered:
+            extra = sorted(set(arguments) - {"site"})
+
+            if extra:
+                return f"resolve_indirect_call accepts only site; rejected {', '.join(extra)}"
+
+            site = str(arguments.get("site", "")).strip().lower()
+
+            for observation in self._observations(session, "indirect_call_target"):
+                if observation.arguments.get("site") == site:
+                    palette.duplicate = name
+                    return f"{site} was already resolved in {observation.id}"
+
+            if site not in palette.indirect_sites:
+                return "resolve_indirect_call site must be one of the listed indirect sites"
+
+            return name, {"site": site}
+
         return None
 
     # -- planner I/O ------------------------------------------------------------
@@ -1157,7 +1225,7 @@ class ResearchController:
         structural = [
             name
             for name in ("analyze_peripheral", "analyze_usb_interface", "find_common_paths", "analyze_function_effects",
-                         "observe_call_arguments")
+                         "observe_call_arguments", "resolve_indirect_call")
             if name in names
         ]
 
@@ -1191,6 +1259,9 @@ class ResearchController:
 
         if "observe_call_arguments" in structural:
             order.append("observe_call_arguments if the values callers actually pass matter (one scenario, observed only)")
+
+        if "resolve_indirect_call" in structural:
+            order.append("resolve_indirect_call if an indirect call's possible targets matter (static; potential, not dispatched)")
 
         order += ["leads", "caller/callee expansion only for a specific question"]
 
@@ -1709,6 +1780,17 @@ answer any other question.
                 arguments=arguments,
             )
             return "observation", lead, observation
+
+        if action == "resolve_indirect_call":
+            lead, observation = self._follow_new_lead(
+                session,
+                step=step,
+                kind="indirect-target",
+                description=f"Static target derivation of indirect site {arguments['site']}",
+                tool="indirect_call_target",
+                arguments=arguments,
+            )
+            return "indirect_target", lead, observation
 
         raise ValueError(f"not a structural action: {action}")
 

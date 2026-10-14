@@ -30,6 +30,7 @@ class Claim(BaseModel):
     # Evidence level of the derivation, e.g. "census" (static structure),
     # "raw-symbolic" (Crucible extraction), "solver" (What4/Z3-proved),
     # "concrete-observed" (one concrete scenario's observation, scoped to it),
+    # "static-dataflow" (one indirect site's static target derivation),
     # "case-document". None for claims predating the field.
     basis: str | None = None
 

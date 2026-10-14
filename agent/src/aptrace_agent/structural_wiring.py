@@ -12,6 +12,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
+import sys
 from pathlib import Path
 
 from aptrace_agent.census import (
@@ -22,6 +23,7 @@ from aptrace_agent.census import (
 from aptrace_agent.census_graph import CensusGraph
 from aptrace_agent.call_observation import ObservedCallArgumentsRunner
 from aptrace_agent.function_effects import FunctionEffectsRunner
+from aptrace_agent.indirect_target import IndirectTargetRunner
 from aptrace_agent.interface_inventory import UsbInventoryReader
 
 
@@ -182,6 +184,30 @@ def performing_rigs_observed_calls(
         scenarios=performing_rigs_observation_scenarios(),
         ram=_case_ram_window(),
     )
+
+CENSUS_TOOLS = REPO_ROOT / "tools" / "census"
+# Files whose content defines an indirect_call_target result beyond the
+# firmware and census: the census analysis and the census modules it reuses.
+INDIRECT_TARGET_INPUTS = {
+    "indirect_target_tool": CENSUS_TOOLS / "indirect_target.py",
+    "census_fnptr_resolve": CENSUS_TOOLS / "fnptr_resolve.py",
+    "census_indexed_writes": CENSUS_TOOLS / "indexed_writes.py",
+    "census_indirect_resolve": CENSUS_TOOLS / "indirect_resolve.py",
+}
+
+
+def performing_rigs_indirect_targets(census: CensusReader) -> IndirectTargetRunner:
+    """Static target derivation for one census register-indirect site."""
+
+    return IndirectTargetRunner(
+        python=Path(sys.executable),
+        script=INDIRECT_TARGET_INPUTS["indirect_target_tool"],
+        firmware_key=census.firmware_key,
+        firmware_image=census.firmware_image,
+        expected_sha256=census.expected_sha256,
+        db_path=census.db_path,
+    )
+
 
 MACAW_CENSUS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "macaw"
 GHIDRA_SEEDS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "ghidra_seeds"

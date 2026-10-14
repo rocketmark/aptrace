@@ -29,6 +29,8 @@ def image():
     put(0x06, [0x6803, 0x69DB, 0x2201, 0x4798])  # ldr r3,[r0]; ldr r3,[r3,#0x1c]; movs r2,#1; blx r3 (slot 7)
     put(0x0E, [0x6A1B, 0x681B, 0x4718])          # ldr r3,[r3,#0x20]; ldr r3,[r3]; bx r3   (redefined: not slot 8)
     put(0x14, [0xF000, 0xF804])                  # bl 0x4020
+    put(0x18, [0xF000, 0xB802])                  # b.w 0x4020 (tail branch)
+    put(0x1C, [0xF000, 0x8000])                  # beq.w 0x4020
     struct.pack_into("<I", buf, 0x30, 0x4021)    # Thumb pointer to 0x4020
     return bytes(buf)
 
@@ -43,6 +45,10 @@ def main():
           not any(d["load"] == "0x0000400e" for d in out["dispatch_sites"]), out["dispatch_sites"])
     check("direct BL to a target found", out["direct_calls"] == [{"site": "0x00004014", "target": "0x00004020"}],
           out["direct_calls"])
+    check("direct B.W and B<c>.W tail branches to a target found",
+          out["direct_branches"] == [{"site": "0x00004018", "kind": "b.w", "target": "0x00004020"},
+                                     {"site": "0x0000401c", "kind": "b<c>.w", "target": "0x00004020"}],
+          out["direct_branches"])
     check("aligned Thumb pointer word found",
           out["thumb_pointer_words"] == [{"location": "0x00004030", "value": "0x00004021"}], out["thumb_pointer_words"])
     if FAILURES:

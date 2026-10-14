@@ -482,6 +482,42 @@ def _observation_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
     return [("concrete-observed", statement)], questions
 
 
+def _indirect_target_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    """Scoped facts of one static target derivation: its shape and potential targets, nothing more."""
+
+    if result.get("status") != "ok" or not result.get("patterns"):
+        return [], []
+
+    site = result.get("site")
+    where = result.get("containing_function") or "unattributed code"
+    shapes = []
+
+    for p in result["patterns"][:3]:
+        if p.get("pattern") in ("vtable-slot", "object-table-slot"):
+            shapes.append(f"the word at slot +0x{p['slot_offset']:x} of the table its receiver points to")
+        elif p.get("pattern") == "argument":
+            shapes.append(f"the callback passed in r{p.get('arg')}")
+        else:
+            shapes.append(str(p.get("pattern")))
+
+    targets = sorted({t["target"] + (f" if vptr {t['vtable']}" if t.get("vtable") else "")
+                      for t in result.get("candidate_targets") or [] if t.get("is_code_pointer")})
+    statement = (
+        f"Indirect site {site} ({result.get('instruction')}, {where}) branches to "
+        + " or ".join(shapes)
+        + (f"; potential targets {', '.join(targets[:4])}" + (f" +{len(targets) - 4}" if len(targets) > 4 else "")
+           if targets else "")
+        + f" (derivation {result.get('derivation_status')}); potential table targets are not observed dispatches "
+        "or reachable paths."
+    )
+    questions = []
+
+    if result.get("derivation_status") != "ESTABLISHED":
+        questions.append(f"Which receivers or values reach indirect site {site}? Its derivation is partial.")
+
+    return [("static-dataflow", statement)], questions
+
+
 def _effects_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
     statements: list[tuple[str, str]] = []
 
@@ -659,6 +695,7 @@ class StateFactDeriver:
             "census_usb_inventory": _usb_inventory_facts,
             "function_effects": _effects_facts,
             "observed_call_arguments": _observation_facts,
+            "indirect_call_target": _indirect_target_facts,
         }.get(observation.tool)
 
         if derived is not None:

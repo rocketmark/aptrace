@@ -18,7 +18,12 @@ from pathlib import Path
 from aptrace_agent.census import PERFORMING_RIGS_CASE, performing_rigs_svd
 from aptrace_agent.ledger.hashing import file_sha256
 from aptrace_agent.ledger.models import ExecutionContext
-from aptrace_agent.structural_wiring import OBSERVATION_INPUTS, ghidra_seeds_path, macaw_census_path
+from aptrace_agent.structural_wiring import (
+    INDIRECT_TARGET_INPUTS,
+    OBSERVATION_INPUTS,
+    ghidra_seeds_path,
+    macaw_census_path,
+)
 
 
 CASE_NAME = "performing-rigs"
@@ -51,6 +56,7 @@ def context_artifacts(executor) -> dict[str, str]:
         "ghidra_seeds": ghidra_seeds_path(executor.census.firmware_key),
         "macaw_census": macaw_census_path(executor.census.firmware_key),
         **OBSERVATION_INPUTS,
+        **INDIRECT_TARGET_INPUTS,
     }
     meta = Path(executor.ghidra.artifact).parent / "meta.json"
 

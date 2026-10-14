@@ -8,8 +8,10 @@ from aptrace_agent.census import performing_rigs_census
 from aptrace_agent.disassembly import autopilot_disassembler
 from aptrace_agent.call_observation import planner_summary as observation_summary
 from aptrace_agent.function_effects import planner_summary as effects_summary
+from aptrace_agent.indirect_target import planner_summary as indirect_target_summary
 from aptrace_agent.structural_wiring import (
     performing_rigs_function_effects,
+    performing_rigs_indirect_targets,
     performing_rigs_observed_calls,
     performing_rigs_graph,
     performing_rigs_source_agreement,
@@ -48,6 +50,14 @@ class EvidenceExecutor:
         self.source_agreement = performing_rigs_source_agreement(self.census, self.usb)
         self._effects = None
         self._observed_calls = None
+        self._indirect_targets = None
+
+    @property
+    def indirect_targets(self):
+        if self._indirect_targets is None:
+            self._indirect_targets = performing_rigs_indirect_targets(self.census)
+
+        return self._indirect_targets
 
     @property
     def observed_calls(self):
@@ -183,6 +193,11 @@ class EvidenceExecutor:
             )
             observed.planner_summary = observation_summary(observed)
             result = observed.model_dump(mode="json")
+
+        elif tool == "indirect_call_target":
+            target = self.indirect_targets.resolve(arguments["site"])
+            target.planner_summary = indirect_target_summary(target)
+            result = target.model_dump(mode="json")
 
         else:
             raise ValueError(

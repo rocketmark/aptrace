@@ -41,6 +41,9 @@ TOOL_INPUTS: dict[str, tuple[str, ...]] = {
     "function_disassembly": ("ghidra_export",),
     "callsite_context": ("ghidra_export",),
     "structural_source_agreement": ("census_db", "ghidra_export", "macaw_census"),
+    "indirect_call_target": (
+        "census_db", "indirect_target_tool", "census_fnptr_resolve", "census_indexed_writes", "census_indirect_resolve",
+    ),
     "pin_table_entry": (),
     "search_case_evidence": (),
 }

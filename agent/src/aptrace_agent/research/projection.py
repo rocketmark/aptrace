@@ -19,6 +19,7 @@ SUBSYSTEM_TOOLS = (
     "census_common_paths",
     "function_effects",
     "observed_call_arguments",
+    "indirect_call_target",
 )
 
 # Per-function inspection tools, summarized as "already inspected".
@@ -40,6 +41,7 @@ _BASIS_TAGS = {
     "disassembly": "dis",
     "static-table": "table",
     "concrete-observed": "OBS",
+    "static-dataflow": "DF",
 }
 
 
@@ -273,6 +275,9 @@ def analysis_label(observation: EvidenceObservation) -> str | None:
 
     if observation.tool == "observed_call_arguments":
         return f"observed {args.get('function')}@{args.get('scenario') or 'boot'}"
+
+    if observation.tool == "indirect_call_target":
+        return f"indirect {args.get('site')}"
 
     if (
         observation.tool == "search_case_evidence"

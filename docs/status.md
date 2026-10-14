@@ -52,10 +52,42 @@ belong in each case's status document.
   historical lookup also accepts a record's key as recorded.
 - Sweep an image for function-pointer table slot dispatch
   (`tools/census/slot_dispatch.py`): every `ldr rX,[rY,#off]` feeding a
-  `blx`/`bx rX` for the requested slot offsets, every `BL` to the requested
-  targets, and every Thumb pointer word to them, over every halfword offset
-  regardless of function boundaries. Pattern-matched static evidence: a
-  slot with no site found is not thereby unreachable.
+  `blx`/`bx rX` for the requested slot offsets, every `BL` and every
+  `B.W`/`B<c>.W` tail branch to the requested targets, and every Thumb
+  pointer word to them, over every halfword offset regardless of function
+  boundaries. Pattern-matched static evidence: a slot with no site found is
+  not thereby unreachable.
+- Derive one register-indirect transfer's target
+  (`tools/census/indirect_target.py`, `resolve_indirect_call`). It computes
+  the definitions of the branch register that reach the site, over the
+  census's blocks and resolved edges:
+  - every predecessor is followed, not a single-predecessor chain;
+  - it handles IT-conditional definitions, call clobbers, register moves,
+    writebacks, `LDRD`, stack slots and literal pools;
+  - a block entered through a code pointer is reported as an indirect entry,
+    and the derivation is then partial;
+  - the result is bounded by block count and nesting depth.
+
+  It names the dataflow shape: constant, constant slot (immutable flash
+  word, or RAM slot with `fnptr_resolve` writers), vtable slot, object-table
+  slot, object field, indexed table, pointer iteration, argument, call
+  result, multiple, or unresolved.
+
+  Vtable-slot candidates are computed only against vtables the caller
+  supplies; `vptr_installations` lists the constructor vptr stores it can
+  find. Each candidate is a *potential* table target, conditional on the
+  receiver's vptr: the analysis never claims a dispatch or a reachable path.
+
+  The agent operation `indirect_call_target(site)` accepts only a census
+  register-indirect site:
+  - its recorded inputs are the census DB and the four census modules;
+  - it grades STRONG only for a statically established target, PROBABLE for
+    a conditional shape;
+  - its limitations name the potential-target, not-reachability and
+    intraprocedural bounds.
+
+  The ResearchController offers it as `resolve_indirect_call(site)` only for
+  sites already named in session evidence, at most two per session.
 - Resolve statically initialized RAM function pointers
   (`tools/census/fnptr_resolve.py`): an unresolved `bx`/`blx` whose target
   is loaded from one constant RAM slot, every known store to that slot a
@@ -143,6 +175,11 @@ belong in each case's status document.
   computed transfers; these are modeled as opaque calls and the summary is
   marked `bounded`. Callee effects, write values, and loops are not
   summarized.
+- Indirect-target derivation is intraprocedural. Argument and call-result
+  values are not followed into callers or callees, and a block entered
+  through an unresolved computed jump has predecessors it cannot see. It
+  does not enumerate runtime tables, so indexed and iterated tables in RAM
+  stay unresolved.
 - RAM function-pointer resolution sees only stores Ghidra attributed to the
   slot's constant address; stores through computed pointers are not excluded,
   so results are graded STRONG (static), never EXACT. No indexed slots,

@@ -7,8 +7,9 @@ vtable's entries), a linear Thumb sweep reports every
     ...                      (at most `window` instructions, rX not redefined)
     blx rX | bx rX
 
-shape, plus every BL whose decoded target is in a requested target set and
-every aligned Thumb pointer word equal to one of those targets. It is a
+shape, plus every BL, and every B.W / B<c>.W tail branch, whose decoded target
+is in a requested target set, and every aligned Thumb pointer word equal to one
+of those targets. It is a
 pattern scan over every halfword offset, independent of any function
 boundary, so it also covers code a disassembler left unattributed.
 
@@ -37,6 +38,10 @@ def _md():
 def _bl_target(hw1, hw2, address):
     if (hw1 & 0xF800) != 0xF000 or (hw2 & 0xD000) != 0xD000:
         return None
+    return _t4_target(hw1, hw2, address)
+
+
+def _t4_target(hw1, hw2, address):
     s = (hw1 >> 10) & 1
     i1 = 1 ^ (((hw2 >> 13) & 1) ^ s)
     i2 = 1 ^ (((hw2 >> 11) & 1) ^ s)
@@ -46,10 +51,26 @@ def _bl_target(hw1, hw2, address):
     return (address + 4 + imm) & 0xFFFFFFFF
 
 
+def _wide_branch_target(hw1, hw2, address):
+    """B.W (T4) or B<c>.W (T3): a direct tail branch, which a BL scan misses."""
+    if (hw1 & 0xF800) != 0xF000:
+        return None
+    if (hw2 & 0xD000) == 0x9000:
+        return "b.w", _t4_target(hw1, hw2, address)
+    if (hw2 & 0xD000) == 0x8000 and ((hw1 >> 6) & 0xE) != 0xE:
+        s = (hw1 >> 10) & 1
+        imm = (s << 20) | (((hw2 >> 11) & 1) << 19) | (((hw2 >> 13) & 1) << 18) | ((hw1 & 0x3F) << 12) \
+            | ((hw2 & 0x7FF) << 1)
+        if s:
+            imm -= 1 << 21
+        return "b<c>.w", (address + 4 + imm) & 0xFFFFFFFF
+    return None
+
+
 def sweep(image, base, offsets, targets, window=6):
     md = _md()
     offsets, targets = set(offsets), {t & ~1 for t in targets}
-    dispatches, calls, pointers = [], [], []
+    dispatches, calls, branches, pointers = [], [], [], []
 
     for off in range(0, len(image) - 4, 2):
         address = base + off
@@ -58,6 +79,9 @@ def sweep(image, base, offsets, targets, window=6):
         target = _bl_target(hw1, hw2, address)
         if target is not None and target & ~1 in targets:
             calls.append({"site": f"0x{address:08x}", "target": f"0x{target:08x}"})
+        wide = _wide_branch_target(hw1, hw2, address)
+        if wide is not None and wide[1] & ~1 in targets:
+            branches.append({"site": f"0x{address:08x}", "kind": wide[0], "target": f"0x{wide[1]:08x}"})
 
         if off % 4 == 0:
             word = int.from_bytes(image[off:off + 4], "little")
@@ -84,13 +108,14 @@ def sweep(image, base, offsets, targets, window=6):
 
     return {
         "analysis": "slot_dispatch_sweep",
-        "analysis_version": 1,
+        "analysis_version": 2,
         "basis": "static linear Thumb pattern sweep over every halfword offset (pattern-matched)",
         "offsets": sorted(f"0x{o:x}" for o in offsets),
         "targets": sorted(f"0x{t:08x}" for t in targets),
         "window": window,
         "dispatch_sites": dispatches,
         "direct_calls": calls,
+        "direct_branches": branches,
         "thumb_pointer_words": pointers,
     }
 
