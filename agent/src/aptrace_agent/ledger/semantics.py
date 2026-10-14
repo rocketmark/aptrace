@@ -34,6 +34,11 @@ DOCUMENTARY = "DOCUMENTARY_NOT_FIRMWARE_DERIVED"
 EFFECTS_BOUNDED = "EFFECTS_COVERAGE_BOUNDED"
 SOURCE_AGREEMENT_STRUCTURAL = "SOURCE_AGREEMENT_IS_STRUCTURAL"
 SOURCES_NOT_INDEPENDENT = "AGREEMENT_SOURCES_NOT_INDEPENDENT"
+HARNESS_ASSUMPTIONS = "CONCRETE_HARNESS_ASSUMPTIONS"
+OBSERVED_CONTEXTS_ONLY = "OBSERVED_CONTEXTS_ONLY"
+UNOBSERVED_CALL_SITES = "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+OBSERVATION_TRUNCATED = "OBSERVATION_TRUNCATED"
+HYPOTHETICAL_SPECIALIZATION = "HYPOTHETICAL_ARGUMENT_SPECIALIZATION"
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 
@@ -159,6 +164,17 @@ def evidence_grade(tool: str, result: dict[str, Any]) -> tuple[EvidenceGrade, st
 
         return EvidenceGrade.BOUNDED, f"function effects {status or 'unknown'}"
 
+    if tool == "observed_call_arguments":
+        status = str(result.get("status", ""))
+
+        if (status == "ok" or status.startswith("bounded")) and result.get("observed_entries"):
+            return EvidenceGrade.STRONG, "concrete execution under disclosed harness assumptions; observed contexts only"
+
+        if status == "ok":
+            return EvidenceGrade.BOUNDED, "function not entered within the scenario bound"
+
+        return EvidenceGrade.UNKNOWN, f"observed call arguments {status or 'unknown'}"
+
     if tool == "search_case_evidence":
         return EvidenceGrade.PROBABLE, "case documents (documentary)"
 
@@ -215,6 +231,13 @@ def evidence_limitations(tool: str, arguments: dict[str, Any], result: dict[str,
     if tool == "function_effects" and not str(result.get("status", "")).startswith("complete"):
         out[EFFECTS_BOUNDED] = f"Function effects coverage is bounded: {result.get('status')}."
 
+    if tool == "function_effects" and arguments.get("specialize"):
+        spec = ", ".join(f"{k}={v:#x}" if isinstance(v, int) else f"{k}={v}" for k, v in sorted(arguments["specialize"].items()))
+        out[HYPOTHETICAL_SPECIALIZATION] = (
+            f"Specialized facts assume {spec}, chosen by the requester; they are hypothetical, not "
+            "caller-grounded runtime values, and do not show that any caller supplies that value."
+        )
+
     if tool == "structural_source_agreement":
         out[FUNCTION_BOUNDARIES] = _STRUCTURAL_TEXT
         out[SOURCE_AGREEMENT_STRUCTURAL] = (
@@ -225,6 +248,29 @@ def evidence_limitations(tool: str, arguments: dict[str, Any], result: dict[str,
         if any(source.get("derived_from") for source in result.get("sources", [])):
             derived = ", ".join(f"{s['source']} <- {s['derived_from']}" for s in result["sources"] if s.get("derived_from"))
             out[SOURCES_NOT_INDEPENDENT] = f"Not every agreeing source is independent ({derived})."
+
+    if tool == "observed_call_arguments":
+        out[HARNESS_ASSUMPTIONS] = (
+            f"Concrete values were observed under {len(result.get('harness_assumptions') or [])} disclosed "
+            "harness assumption(s) of the scenario recipe; they are firmware-produced only within that harness."
+        )
+        out[OBSERVED_CONTEXTS_ONLY] = (
+            "Only argument values and call sites the scenario reached are reported; other values or "
+            "contexts are not thereby impossible."
+        )
+        unobserved = [s.get("call_site") for s in result.get("call_sites") or [] if s.get("status") == "UNOBSERVED"]
+
+        if unobserved:
+            out[UNOBSERVED_CALL_SITES] = (
+                f"Static call site(s) {', '.join(map(str, unobserved))} were never reached in the scenario; "
+                "their argument values are unknown, not excluded."
+            )
+
+        if str(result.get("status", "")).startswith("bounded"):
+            out[OBSERVATION_TRUNCATED] = f"The scenario observation was truncated: {result.get('status')}."
+
+        if result.get("mmio_in_function") is not None:
+            out[FUNCTION_BOUNDARIES] = "The MMIO cross-check extent is a Ghidra function boundary (heuristic)."
 
     if tool == "search_case_evidence":
         out[DOCUMENTARY] = "Case documents are prior human findings, not firmware-derived evidence."

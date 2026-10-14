@@ -23,6 +23,17 @@ belong in each case's status document.
   return dependencies; one Z3 session adds guard, region, return-range and
   argument-specialization facts. Geometry comes from the case; callers supply
   only the entry and optional `rN=` specializations.
+- Observe caller-grounded arguments (`observed_call_arguments`, a typed,
+  replayable ledger operation): a case scenario is replayed concretely in
+  Unicorn with a passive watch at one function entry; every entry is
+  attributed to its call instruction (decoded `BL`/`BLX rm`, or `OTHER` for
+  a tail branch), and each argument value and the word it points at is
+  classified against the case geometry (`tools/unicorn/call_observation.py`,
+  `ConcreteMachine.run(watch_reg_pointee=...)`). Static call sites never
+  reached are reported `UNOBSERVED`, not unreachable; evidence is labeled
+  `CALLER_GROUNDED_CONCRETE` and carries the scenario's harness
+  assumptions. Chosen-input `function_effects` specializations are labeled
+  `HYPOTHETICAL_ARGUMENT_SPECIALIZATION`.
 - Resolve statically initialized RAM function pointers
   (`tools/census/fnptr_resolve.py`): an unresolved `bx`/`blx` whose target
   is loaded from one constant RAM slot, every known store to that slot a
@@ -101,6 +112,9 @@ belong in each case's status document.
   boundary is material to a conclusion.
 - Symbolic execution works best for targeted, already-understood regions; whole
   firmware replay is neither its purpose nor a supported workflow.
+- Caller-grounded observation covers only the contexts one scenario reaches
+  (currently the case boot recipe); it is not exposed to the planner, and it
+  reports immediate call sites only, not full calling contexts.
 - Function effects do not resolve Thumb `tbb`/`tbh` jump tables or other
   computed transfers; these are modeled as opaque calls and the summary is
   marked `bounded`. Callee effects, write values, and loops are not

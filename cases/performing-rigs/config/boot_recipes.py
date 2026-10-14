@@ -507,7 +507,7 @@ def build_machine(recipe, firmware_path, flash_base, ram_base, ram_size, mmio_ba
 
 
 def apply_recipe(machine, recipe, extra_watch=(), collect_coverage=True, log_ram=False, log_mmio=True,
-                   max_watch_hits=None):
+                   max_watch_hits=None, watch_reg_pointee=(), max_mmio_log=5000):
     """Run `recipe` on `machine` (a fresh or reset ConcreteMachine),
     returning the RunResult. `extra_watch` is merged into the recipe's
     own milestone/steady-state watch list (e.g. currently-unresolved
@@ -552,6 +552,7 @@ def apply_recipe(machine, recipe, extra_watch=(), collect_coverage=True, log_ram
         watch=sorted(watch), max_watch_hits=max_watch_hits,
         max_instructions=recipe.get("max_instructions", 300_000),
         collect_coverage=collect_coverage, log_ram=log_ram, log_mmio=log_mmio,
+        watch_reg_pointee=watch_reg_pointee, max_mmio_log=max_mmio_log,
         label="boot", fresh=True,
     )
 

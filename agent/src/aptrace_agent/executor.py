@@ -6,9 +6,11 @@ from aptrace_agent.case_evidence import performing_rigs_case_evidence
 from aptrace_agent.census import performing_rigs_census
 
 from aptrace_agent.disassembly import autopilot_disassembler
+from aptrace_agent.call_observation import planner_summary as observation_summary
 from aptrace_agent.function_effects import planner_summary as effects_summary
 from aptrace_agent.structural_wiring import (
     performing_rigs_function_effects,
+    performing_rigs_observed_calls,
     performing_rigs_graph,
     performing_rigs_source_agreement,
     performing_rigs_usb_inventory,
@@ -45,6 +47,19 @@ class EvidenceExecutor:
         self.usb = performing_rigs_usb_inventory(self.census, self.graph)
         self.source_agreement = performing_rigs_source_agreement(self.census, self.usb)
         self._effects = None
+        self._observed_calls = None
+
+    @property
+    def observed_calls(self):
+        if self._observed_calls is None:
+            self._observed_calls = performing_rigs_observed_calls(
+                self.census,
+                self.graph,
+                self.usb,
+                self.ghidra,
+            )
+
+        return self._observed_calls
 
     @property
     def effects(self):
@@ -159,6 +174,11 @@ class EvidenceExecutor:
             )
             effects.planner_summary = effects_summary(effects)
             result = effects.model_dump(mode="json")
+
+        elif tool == "observed_call_arguments":
+            observed = self.observed_calls.observe(arguments["function"])
+            observed.planner_summary = observation_summary(observed)
+            result = observed.model_dump(mode="json")
 
         else:
             raise ValueError(

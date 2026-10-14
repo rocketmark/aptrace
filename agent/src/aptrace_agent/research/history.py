@@ -65,9 +65,10 @@ DEFAULT_FALLBACKS = 3
 
 
 def current_analysis_versions() -> dict[str, int]:
+    from aptrace_agent.call_observation import ANALYSIS_VERSION as OBSERVATION_VERSION
     from aptrace_agent.function_effects import ANALYSIS_VERSION
 
-    return {"function_effects": ANALYSIS_VERSION}
+    return {"function_effects": ANALYSIS_VERSION, "observed_call_arguments": OBSERVATION_VERSION}
 
 
 def _operation(tool: str, arguments: dict[str, Any]) -> str:

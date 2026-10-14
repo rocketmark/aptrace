@@ -532,7 +532,7 @@ class ConcreteMachine:
 
     def run(self, entry, sp=None, reg_seed=(), seed_mem=(), stub_calls=(), stop_at=(),
             dump_mem=(), dump_reg_pointee=(), watch=(), watch_mem=(), max_watch_hits=2000,
-            max_instructions=200000, trace=False, trace_every=1, trace_last=DEFAULT_TRACE_LAST,
+            watch_reg_pointee=(), max_instructions=200000, trace=False, trace_every=1, trace_last=DEFAULT_TRACE_LAST,
             fake_tick=(), mmio_force_bits=(), mmio_clear_bits=(), force_reg=(), force_mem=(),
             log_mmio=False, max_mmio_log=5000, watch_mem_write=(), max_mem_write_log=2000,
             collect_coverage=False, log_ram=False, max_ram_log=5000,
@@ -553,6 +553,14 @@ class ConcreteMachine:
         from that address, in this SAME run (see the module docstring's
         point 2 -- this is what let capture_tx_bytes drop from two runs
         to one).
+
+        `watch_reg_pointee`: sequence of (reg_name, length) -- at every
+        `watch` hit, also read that register's value and `length` bytes
+        at it (the per-hit analogue of `dump_reg_pointee`). Recorded in
+        the hit's `reg_pointee` as {reg: {"address", "bytes"}}; "bytes"
+        is None when the address is unmapped. Uses `mem_read`, which
+        fires no memory hooks, so it never perturbs the MMIO model,
+        force/clear bits, or the MMIO/RAM logs.
 
         `collect_coverage`: accumulate every unique PC this run executes
         into the result's `visited_pcs` (a set, unlike `recent_pcs`'
@@ -631,6 +639,23 @@ class ConcreteMachine:
                     mem[f"0x{addr:08x}"] = f"error: {e}"
             return mem
 
+        pointee_regs = []
+        for reg_name, length in watch_reg_pointee:
+            if reg_name.lower() not in REG_BY_NAME:
+                raise ValueError(f"unknown register '{reg_name}' in watch_reg_pointee")
+            pointee_regs.append((reg_name.lower(), length))
+
+        def capture_reg_pointees():
+            out = {}
+            for reg_name, length in pointee_regs:
+                ptr = uc.reg_read(REG_BY_NAME[reg_name])
+                try:
+                    data = uc.mem_read(ptr, length).hex()
+                except UcError:
+                    data = None
+                out[reg_name] = {"address": f"0x{ptr:08x}", "bytes": data}
+            return out
+
         def hook_code(uc_, address, size, _user_data):
             state["instructions"] += 1
             if state["recent_pcs"] is not None:
@@ -677,6 +702,7 @@ class ConcreteMachine:
                     "address": f"0x{address:08x}",
                     "registers": {k: f"0x{v:08x}" for k, v in capture_registers().items()},
                     "memory": capture_watch_memory(),
+                    **({"reg_pointee": capture_reg_pointees()} if pointee_regs else {}),
                 })
             if address in stop_addrs:
                 state["stop_reason"] = f"reached stop address 0x{address:08x}"

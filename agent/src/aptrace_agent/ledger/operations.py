@@ -33,6 +33,7 @@ TOOL_INPUTS: dict[str, tuple[str, ...]] = {
     "census_common_paths": ("census_db", "svd"),
     "census_usb_inventory": ("census_db", "svd"),
     "function_effects": ("census_db", "svd"),
+    "observed_call_arguments": ("census_db", "ghidra_export", "svd", "boot_recipe", "unicorn_harness", "call_observation"),
     "function_facts": ("ghidra_export",),
     "function_disassembly": ("ghidra_export",),
     "callsite_context": ("ghidra_export",),

@@ -19,6 +19,7 @@ from aptrace_agent.census import (
     performing_rigs_svd,
 )
 from aptrace_agent.census_graph import CensusGraph
+from aptrace_agent.call_observation import ObservedCallArgumentsRunner
 from aptrace_agent.function_effects import FunctionEffectsRunner
 from aptrace_agent.interface_inventory import UsbInventoryReader
 
@@ -96,6 +97,64 @@ def performing_rigs_function_effects(
         resolve_register=svd.resolve,
     )
 
+
+
+REPO_ROOT = PERFORMING_RIGS_CASE.parents[1]
+UNICORN_PYTHON = REPO_ROOT / "tools" / "unicorn" / ".venv" / "bin" / "python3"
+OBSERVE_CALLS_SCRIPT = PERFORMING_RIGS_CASE / "scripts" / "observe_call_arguments.py"
+# Files whose content defines an observed_call_arguments result beyond the
+# firmware and census: the boot recipe and the concrete harness.
+OBSERVATION_INPUTS = {
+    "boot_recipe": PERFORMING_RIGS_CASE / "config" / "boot_recipes.py",
+    "unicorn_harness": REPO_ROOT / "tools" / "unicorn" / "concrete.py",
+    "call_observation": REPO_ROOT / "tools" / "unicorn" / "call_observation.py",
+}
+
+
+def performing_rigs_observed_calls(
+    census: CensusReader,
+    graph: CensusGraph,
+    usb: UsbInventoryReader,
+    ghidra,
+) -> ObservedCallArgumentsRunner:
+    """Caller-grounded argument observation over the case boot recipe."""
+
+    svd = performing_rigs_svd()
+    handler_entries = set(usb.vector_handlers().values())
+
+    def entry_allowed(entry: int) -> bool:
+        return graph.function_entry(f"FUN_{entry:08x}") is not None or entry in handler_entries
+
+    def facts(name: str):
+        try:
+            return ghidra.function_facts(name, max_edges=10_000)
+        except KeyError:
+            return None
+
+    def static_call_sites(name: str) -> list[tuple[str, str | None]]:
+        record = facts(name)
+        return [(f"0x{int(c.address, 16):08x}", c.function) for c in record.callers] if record else []
+
+    def function_extent(name: str) -> tuple[int, int] | None:
+        record = facts(name)
+
+        if record is None or not record.size:
+            return None
+
+        start = int(record.entry, 16)
+        return start, start + int(record.size)
+
+    return ObservedCallArgumentsRunner(
+        python=UNICORN_PYTHON,
+        script=OBSERVE_CALLS_SCRIPT,
+        firmware_key=census.firmware_key,
+        firmware_image=census.firmware_image,
+        expected_sha256=census.expected_sha256,
+        entry_allowed=entry_allowed,
+        static_call_sites=static_call_sites,
+        function_extent=function_extent,
+        resolve_register=svd.resolve,
+    )
 
 MACAW_CENSUS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "macaw"
 GHIDRA_SEEDS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "ghidra_seeds"
