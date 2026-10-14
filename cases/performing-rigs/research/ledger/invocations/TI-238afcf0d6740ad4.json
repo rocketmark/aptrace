@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "peripheral SERCOM0"
+  },
+  "context_id": "X-bb5103e57baa4458",
+  "ended_at": "2026-10-13T19:03:41.751+00:00",
+  "error": null,
+  "evidence_id": "EV-184217522163aaa3",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-238afcf0d6740ad4",
+  "operation_key": "fabd3bf0e8708811aab90b66a7060d4691fe77d3c9cd90095c748b9b0a3d58b1",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "65f3d56355d143e08a861a1a74add050a551094e40c4414a09f54def655ade4a",
+  "run_id": "R-20261013T190420-edcfa7",
+  "runtime_ms": 66.446,
+  "session_evidence_id": "E2",
+  "started_at": "2026-10-13T19:03:41.685+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

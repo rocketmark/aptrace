@@ -1,0 +1,470 @@
+{
+  "budgets": {
+    "max_steps": 12
+  },
+  "case": "performing-rigs",
+  "claim_versions": [
+    "C9:v1"
+  ],
+  "context_id": "X-bb5103e57baa4458",
+  "ended_at": "2026-10-13T19:04:20.715549+00:00",
+  "evidence_ids": [
+    "EV-c1fe494f721a9ed9",
+    "EV-184217522163aaa3",
+    "EV-be1965ceaf243a66",
+    "EV-f9a9ae317433aceb",
+    "EV-d52c88103ef32b68",
+    "EV-ac405fc25791b548",
+    "EV-6b51302810fa3152",
+    "EV-7521254c0bf36bf2",
+    "EV-05746c957754749e",
+    "EV-29fef5d8723a352a",
+    "EV-ead6dfad1110ee1c",
+    "EV-65f343e33efc2201"
+  ],
+  "execution_config": {
+    "claim_contract": true,
+    "endpoint": "local-omlx",
+    "max_tokens": 512,
+    "temperature": 0.0
+  },
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-ff883c33911901ec",
+    "TI-238afcf0d6740ad4",
+    "TI-faaecd0f1615e397",
+    "TI-4a863db8ff1a59f6",
+    "TI-af4d6094d903e0d6",
+    "TI-35822617660962f5",
+    "TI-e1cca42d033c6d71",
+    "TI-d512cd0f7ce33af5",
+    "TI-97504d83f9743669",
+    "TI-794515037bb04fcf",
+    "TI-1fb6cd4a0627fbda",
+    "TI-27af23adf52c9846"
+  ],
+  "kind": "investigation",
+  "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "objective": "Investigate a bounded firmware function",
+  "parent_run_id": null,
+  "planner_requests": [
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 0,
+      "message_bytes": 978,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 728,
+      "prompt_tokens": 716,
+      "state_chars": 23,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 1973
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 1,
+      "message_bytes": 1275,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 1021,
+      "prompt_tokens": 804,
+      "state_chars": 305,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2270
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "analyze_peripheral",
+      "evidence": 2,
+      "message_bytes": 1963,
+      "open_leads": 8,
+      "phase": "decision",
+      "prompt_chars": 1687,
+      "prompt_tokens": 1251,
+      "state_chars": 560,
+      "tool_bytes": 1445,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3408
+    },
+    {
+      "attempt": 0,
+      "claims": 4,
+      "decision": "analyze_function_effects",
+      "evidence": 3,
+      "message_bytes": 2571,
+      "open_leads": 14,
+      "phase": "decision",
+      "prompt_chars": 2289,
+      "prompt_tokens": 1658,
+      "state_chars": 1102,
+      "tool_bytes": 1834,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4405
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 4,
+      "message_bytes": 2713,
+      "open_leads": 14,
+      "phase": "decision",
+      "prompt_chars": 2427,
+      "prompt_tokens": 1778,
+      "state_chars": 1240,
+      "tool_bytes": 1834,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4547
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 4,
+      "message_bytes": 2667,
+      "open_leads": 14,
+      "phase": "decision",
+      "prompt_chars": 2381,
+      "prompt_tokens": 1627,
+      "state_chars": 1240,
+      "tool_bytes": 1437,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4104
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 5,
+      "message_bytes": 2653,
+      "open_leads": 17,
+      "phase": "decision",
+      "prompt_chars": 2367,
+      "prompt_tokens": 1616,
+      "state_chars": 1227,
+      "tool_bytes": 1436,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 4089
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 6,
+      "message_bytes": 2388,
+      "open_leads": 29,
+      "phase": "decision",
+      "prompt_chars": 2105,
+      "prompt_tokens": 1513,
+      "state_chars": 959,
+      "tool_bytes": 1436,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3824
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 7,
+      "message_bytes": 2461,
+      "open_leads": 30,
+      "phase": "decision",
+      "prompt_chars": 2178,
+      "prompt_tokens": 1677,
+      "state_chars": 980,
+      "tool_bytes": 1833,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4294
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 7,
+      "message_bytes": 2375,
+      "open_leads": 30,
+      "phase": "decision",
+      "prompt_chars": 2092,
+      "prompt_tokens": 1454,
+      "state_chars": 980,
+      "tool_bytes": 1322,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 3697
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 8,
+      "message_bytes": 2412,
+      "open_leads": 29,
+      "phase": "decision",
+      "prompt_chars": 2129,
+      "prompt_tokens": 1464,
+      "state_chars": 1017,
+      "tool_bytes": 1322,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 3734
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 9,
+      "message_bytes": 2440,
+      "open_leads": 28,
+      "phase": "decision",
+      "prompt_chars": 2157,
+      "prompt_tokens": 1479,
+      "state_chars": 1038,
+      "tool_bytes": 1323,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 3763
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 10,
+      "message_bytes": 2531,
+      "open_leads": 27,
+      "phase": "decision",
+      "prompt_chars": 2248,
+      "prompt_tokens": 1700,
+      "state_chars": 1043,
+      "tool_bytes": 1833,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 4364
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 10,
+      "message_bytes": 2485,
+      "open_leads": 27,
+      "phase": "decision",
+      "prompt_chars": 2202,
+      "prompt_tokens": 1549,
+      "state_chars": 1043,
+      "tool_bytes": 1436,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3921
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 10,
+      "message_bytes": 2235,
+      "open_leads": 27,
+      "phase": "decision",
+      "prompt_chars": 1954,
+      "prompt_tokens": 1295,
+      "state_chars": 1043,
+      "tool_bytes": 925,
+      "tools": [
+        "follow_lead",
+        "finish"
+      ],
+      "total_bytes": 3160
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 11,
+      "message_bytes": 2273,
+      "open_leads": 26,
+      "phase": "decision",
+      "prompt_chars": 1992,
+      "prompt_tokens": 1304,
+      "state_chars": 1082,
+      "tool_bytes": 924,
+      "tools": [
+        "follow_lead",
+        "finish"
+      ],
+      "total_bytes": 3197
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "finish",
+      "evidence": 12,
+      "message_bytes": 1635,
+      "open_leads": 25,
+      "phase": "final-claims",
+      "prompt_chars": 1422,
+      "prompt_tokens": 1021,
+      "state_chars": 1086,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 2287
+    }
+  ],
+  "planner_version": "controller:dcb88bdceb11 projection:e02583098ea2",
+  "run_id": "R-20261013T190420-edcfa7",
+  "schema_version": 1,
+  "source": {
+    "dirty": false,
+    "dirty_fingerprint": null,
+    "git_branch": "spike/beads-workstore",
+    "git_commit": "e1971f4226be5f97a23786ec144573b3b6aca1ba"
+  },
+  "started_at": "2026-10-13T19:03:39.332116+00:00",
+  "termination_reason": "step_budget_exhausted",
+  "trajectory": [
+    {
+      "action": "discover",
+      "evidence_id": "E1",
+      "lead_id": "L1",
+      "number": 1,
+      "reason": null
+    },
+    {
+      "action": "discover",
+      "evidence_id": "E2",
+      "lead_id": "L2",
+      "number": 2,
+      "reason": null
+    },
+    {
+      "action": "analyze",
+      "evidence_id": "E3",
+      "lead_id": "L11",
+      "number": 3,
+      "reason": null
+    },
+    {
+      "action": "effects",
+      "evidence_id": "E4",
+      "lead_id": "L18",
+      "number": 4,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E5",
+      "lead_id": "L16",
+      "number": 5,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E6",
+      "lead_id": "L14",
+      "number": 6,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E7",
+      "lead_id": "L12",
+      "number": 7,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E8",
+      "lead_id": "L15",
+      "number": 8,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E9",
+      "lead_id": "L9",
+      "number": 9,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E10",
+      "lead_id": "L17",
+      "number": 10,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E11",
+      "lead_id": "L13",
+      "number": 11,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E12",
+      "lead_id": "L10",
+      "number": 12,
+      "reason": null
+    }
+  ],
+  "work_item_id": "apt-d1z"
+}

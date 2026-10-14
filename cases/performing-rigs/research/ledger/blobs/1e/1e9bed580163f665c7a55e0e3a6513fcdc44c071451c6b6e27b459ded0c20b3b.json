@@ -1,0 +1,1 @@
+{"callees":[{"address":"0x0000a068","function":"FUN_0000b4b4"}],"callees_truncated":false,"callers":[{"address":"0x0000a144","function":"FUN_0000a0cc"},{"address":"0x0000a166","function":"FUN_0000a0cc"}],"callers_truncated":false,"callsite_count":2,"entry":"0x0000a064","name":"FUN_0000a064","outgoing_callsite_count":1,"size":26,"unique_callee_count":1,"unique_caller_count":1}

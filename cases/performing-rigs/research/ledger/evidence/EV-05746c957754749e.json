@@ -1,0 +1,19 @@
+{
+  "arguments": {
+    "function": "FUN_0000952c"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-bb5103e57baa4458",
+  "evidence_id": "EV-05746c957754749e",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "Ghidra call graph (heuristic boundaries)",
+  "invocation_id": "TI-97504d83f9743669",
+  "limitations": [],
+  "path_status": null,
+  "result_bytes": 227,
+  "result_sha256": "334b6edf217c9e6dfb4603d02f471921f545a22c0880d278c2e52ab7ca2eee23",
+  "summary": "",
+  "tool": "function_facts"
+}

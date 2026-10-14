@@ -1,0 +1,49 @@
+{
+  "assertion": "FUN_0000b4b4 is definitively reachable and involves SERCOM0 peripheral access.",
+  "assumptions": [],
+  "claim_id": "C9",
+  "claim_type": "RESOLUTION",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-13T19:04:20.909+00:00",
+  "depends_on": [],
+  "derivation": "planner finish claim proposal",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [
+        "EV-184217522163aaa3",
+        "EV-c1fe494f721a9ed9"
+      ],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-be1965ceaf243a66"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [
+        "EV-be1965ceaf243a66"
+      ],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "proposed_by": "investigator:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261013T190420-edcfa7",
+  "schema_version": 1,
+  "scope": "",
+  "semantics": null,
+  "subject": "FUN_0000b4b4 is definitively reachable and involves SERCOM0 peripheral access.",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-c1fe494f721a9ed9",
+    "EV-184217522163aaa3",
+    "EV-be1965ceaf243a66",
+    "EV-f9a9ae317433aceb"
+  ],
+  "version": 1
+}

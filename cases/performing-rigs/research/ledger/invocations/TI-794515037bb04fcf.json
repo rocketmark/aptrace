@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "function": "FUN_0000b4b4"
+  },
+  "context_id": "X-bb5103e57baa4458",
+  "ended_at": "2026-10-13T19:04:08.190+00:00",
+  "error": null,
+  "evidence_id": "EV-29fef5d8723a352a",
+  "input_artifacts": {
+    "ghidra_export": "2c80bf9dfade293e86a90f7a56e63792c68b9628dd06fd30c482d5c43fffc1f2"
+  },
+  "input_evidence_ids": [
+    "EV-be1965ceaf243a66",
+    "EV-6b51302810fa3152"
+  ],
+  "invocation_id": "TI-794515037bb04fcf",
+  "operation_key": "8862b261808fec4e84ca2e4176c0dc048e5db1e656a8a8277592f70b3d20d87f",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "e9a6a94e9ca86c97e10f7578299616d40c164de80dd33a5a69411cbb0306a6b6",
+  "run_id": "R-20261013T190420-edcfa7",
+  "runtime_ms": 0.857,
+  "session_evidence_id": "E10",
+  "started_at": "2026-10-13T19:04:08.189+00:00",
+  "status": "ok",
+  "tool": "function_disassembly"
+}

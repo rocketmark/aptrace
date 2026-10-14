@@ -1,0 +1,20 @@
+{
+  "arguments": {
+    "function": "FUN_0000b4b4",
+    "specialize": {}
+  },
+  "case": "performing-rigs",
+  "context_id": "X-bb5103e57baa4458",
+  "evidence_id": "EV-f9a9ae317433aceb",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "symbolic extraction, not solver-confirmed",
+  "invocation_id": "TI-4a863db8ff1a59f6",
+  "limitations": [],
+  "path_status": null,
+  "result_bytes": 16555,
+  "result_sha256": "e81d2a3c4b64a21065940fd80228dbd6f49ce8fdbe76a393f8c175b5aeb887d1",
+  "summary": "FUN_0000b4b4 effects [RAW complete; 14 blocks]: inputs r0; 4 reads, 0 writes at 4 sites, 0 calls\n  other: read @0xb4b4 addr<-r0; read @0xb4b6 0xb500(FLASH) [flash]; read @0xb4c4 0xb504(FLASH) [flash]; read @0xb4d8 0xb508(FLASH) [flash]\n  return r0 depends on r0+memory; [SOLVER] return in {0,1}: refuted\n  [SOLVER] 2 access(es) conditional on input-derived guards",
+  "tool": "function_effects"
+}
