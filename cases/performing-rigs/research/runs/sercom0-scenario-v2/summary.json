@@ -1,0 +1,2248 @@
+{
+ "boot_budget_check": {
+  "basis": "case script budget override, not a ledger operation",
+  "max_instructions": 3000000,
+  "results": {
+   "0xb4b4": {
+    "entries": 278,
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached"
+   },
+   "0xb658": {
+    "entries": 0,
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached"
+   },
+   "0xc7c0": {
+    "entries": 0,
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached"
+   }
+  }
+ },
+ "categories": {
+  "attempted_failed": [],
+  "executed": [
+   "boot",
+   "vl-ampersand",
+   "vl-bang",
+   "vl-g",
+   "vl-i",
+   "vl-i9i1",
+   "vl-manual-f0e0",
+   "vl-pb05",
+   "vl-plus",
+   "vl-plus-interactive",
+   "vl-s"
+  ],
+  "not_attempted": [],
+  "skipped_incompatible": [
+   {
+    "reason": "unsupported: scenario 'vl-t-status' does not execute autopilot868",
+    "scenario": "vl-t-status"
+   }
+  ]
+ },
+ "context_artifacts": {
+  "boot_recipe": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10",
+  "call_observation": "120db1e7c702048e70fdf42f744e8126c57a89a4faf040396ff5a43194c56e9c",
+  "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+  "ghidra_cache_identity": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e",
+  "ghidra_export": "2c80bf9dfade293e86a90f7a56e63792c68b9628dd06fd30c482d5c43fffc1f2",
+  "ghidra_seeds": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def",
+  "macaw_census": "d568cf00249fb3e29e918f9c34b27392ca8a55b0902d28822b1df1f867ad1814",
+  "observation_scenarios": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+  "observation_script": "d023bc37d437ee1d4c2e4bfb67fd9ce353fd2211aa623c4b7f9c42f3e9cf2457",
+  "scenario_corpus": "72ad6a2fd5e05067effc7af66ef3ab3e86715b12364e92399a08424c1da1283f",
+  "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+  "unicorn_harness": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee"
+ },
+ "replays": [
+  {
+   "differences": [],
+   "input_drift": {},
+   "label": "boot b4b4",
+   "matches": true,
+   "original": "TI-a7f810618e037499",
+   "replay": "TI-46718d95c5b0e0ae",
+   "wall_seconds": 0.426
+  },
+  {
+   "differences": [],
+   "input_drift": {},
+   "label": "vl-plus b4b4",
+   "matches": true,
+   "original": "TI-31d201dfb4bb19d3",
+   "replay": "TI-f953d14320e368b9",
+   "wall_seconds": 0.138
+  }
+ ],
+ "run_id": "R-sercom0-scenario-v2",
+ "slot_dispatch_sweep": {
+  "analysis": "slot_dispatch_sweep",
+  "analysis_version": 1,
+  "basis": "static linear Thumb pattern sweep over every halfword offset (pattern-matched)",
+  "direct_calls": [
+   {
+    "site": "0x0000c84a",
+    "target": "0x0000b658"
+   }
+  ],
+  "dispatch_sites": [
+   {
+    "branch": "0x0000c74c",
+    "branch_text": "bx r3",
+    "load": "0x0000c74a",
+    "load_text": "ldr r3, [r3, #0x20]",
+    "offset": 32
+   }
+  ],
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "offsets": [
+   "0x1c",
+   "0x20"
+  ],
+  "targets": [
+   "0x0000b658",
+   "0x0000c744",
+   "0x0000c7c0"
+  ],
+  "thumb_pointer_words": [
+   {
+    "location": "0x0001491c",
+    "value": "0x0000c745"
+   },
+   {
+    "location": "0x00014920",
+    "value": "0x0000c7c1"
+   }
+  ],
+  "tool_sha256": "9258624c6711c41b29dfff1c830abe06164759c13a8f87b4c74d39dae670ac0e",
+  "window": 6
+ },
+ "steps": [
+  {
+   "arguments": {
+    "address": "0x0000c84a",
+    "after": 1,
+    "before": 4,
+    "function": "FUN_0000c7c0"
+   },
+   "error": null,
+   "evidence_id": "EV-9f2e30c2a6cdcba3",
+   "grade": "EXACT",
+   "invocation_id": "TI-accae66c00c9bf86",
+   "label": "static c7c0->b658 call",
+   "limitations": [],
+   "status": "ok",
+   "summary": null,
+   "tool": "callsite_context",
+   "wall_seconds": 0.006
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "boot",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-108f831aec91fdcd",
+   "grade": "STRONG",
+   "invocation_id": "TI-a7f810618e037499",
+   "label": "boot b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "EXECUTION_BUDGET_BOUND",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot (boot-recipe); status ok]: 278 entries in 450000 instructions; 4 call site(s) reached, 0 unreached; r0 0x20004c54(RAM), 0x20004c78(RAM); word at r0 0x41012000(SERCOM2.CTRLA content), 0x43000400(SERCOM5.CTRLA content); MMIO accesses from its code 0\n  0x0000a068 (FUN_0000a064) BL x4: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.CTRLA content); 0x20004c78(RAM)->*=0x43000400(SERCOM5.CTRLA content)\n  0x0000a088 (FUN_0000a084) BL x2: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.CTRLA content); 0x20004c78(RAM)->*=0x43000400(SERCOM5.CTRLA content)\n  0x0000a0ac (FUN_0000a0a8) BL x2: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.CTRLA content); 0x20004c78(RAM)->*=0x43000400(SERCOM5.CTRLA content)\n  0x0000b5c2 (FUN_0000b5bc) BL x270: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.CTRLA content); 0x20004c78(RAM)->*=0x43000400(SERCOM5.CTRLA content)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 2 store(s), initialized to 0x40003000 by FUN_0000b312; no later change observed\n  field 0x20004c48+4: 2 store(s), initialized to 0x40003400 by FUN_0000b312; no later change observed\n  field 0x20004c54+4: 2 store(s), initialized to 0x41012000 by FUN_0000b312; no later change observed\n  field 0x20004c60+4: 2 store(s), initialized to 0x41014000 by FUN_0000b312; no later change observed\n  0x0000a068 r0=0x20004c54(RAM) is field 0x20004c54+4: initialized value unchanged at every call\n  0x0000a068 r0=0x20004c78(RAM) is field 0x20004c78+4: initialized value unchanged at every call\n  0x0000a088 r0=0x20004c54(RAM) is field 0x20004c54+4: initialized value unchanged at every call\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot' (boot-recipe), 450000 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.508
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "boot",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-72389a24daeadfc7",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-49420d197adbd155",
+   "label": "boot c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "EXECUTION_BUDGET_BOUND",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot (boot-recipe); status ok]: 0 entries in 450000 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 2 store(s), initialized to 0x00014900 by FUN_0000c8bc; no later change observed\n  field 0x20004358+4: 2 store(s), initialized to 0x20004c60 by FUN_0000c8bc; no later change observed\n  field 0x20004644+4: 2 store(s), initialized to 0x00014900 by FUN_0000c8bc; no later change observed\n  field 0x20004654+4: 2 store(s), initialized to 0x20004c6c by FUN_0000c8bc; no later change observed\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot' (boot-recipe), 450000 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.42
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "boot"
+   },
+   "error": null,
+   "evidence_id": "EV-330952e01db03175",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-0ef1a5e3831c33bb",
+   "label": "boot b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "EXECUTION_BUDGET_BOUND",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot (boot-recipe); status ok]: 0 entries in 450000 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot' (boot-recipe), 450000 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.415
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "boot"
+   },
+   "error": null,
+   "evidence_id": "EV-4a8c8c0b634976cf",
+   "grade": "STRONG",
+   "invocation_id": "TI-6be83880ad5d640f",
+   "label": "boot b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "EXECUTION_BUDGET_BOUND",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot (boot-recipe); status ok]: 270 entries in 450000 instructions; 1 call site(s) reached, 1 unreached; r0 0x20004c54(RAM), 0x20004c78(RAM); word at r0 0x41012000(SERCOM2.CTRLA content), 0x43000400(SERCOM5.CTRLA content); MMIO accesses from its code 0\n  0x0000b6c2 (FUN_0000b6b4) BL x270: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.CTRLA content); 0x20004c78(RAM)->*=0x43000400(SERCOM5.CTRLA content)\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot' (boot-recipe), 450000 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000b662; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.421
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "boot"
+   },
+   "error": null,
+   "evidence_id": "EV-56f2439f96001860",
+   "grade": "STRONG",
+   "invocation_id": "TI-46c291ca6d23c0b2",
+   "label": "boot c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "EXECUTION_BUDGET_BOUND",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot (boot-recipe); status ok]: 3 entries in 450000 instructions; 3 call site(s) reached, 0 unreached; r0 0x20004348(RAM), 0x20004644(RAM), 0x20004940(RAM); word at r0 0x00000000(? content); MMIO accesses from its code 0\n  0x0000b192 (FUN_0000b144) BL x1: r0 0x20004348(RAM)->*=0x00000000(? content)\n  0x0000b1a2 (FUN_0000b144) BL x1: r0 0x20004644(RAM)->*=0x00000000(? content)\n  0x0000b1b2 (FUN_0000b144) BL x1: r0 0x20004940(RAM)->*=0x00000000(? content)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot' (boot-recipe), 450000 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.408
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-ampersand",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-8dcb461b96c0981c",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-2e66cf10d46317a7",
+   "label": "vl-ampersand b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-ampersand (virtual-link); status ok]: 0 entries in 103 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-ampersand' (virtual-link), 103 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.105
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-ampersand",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-4efe1a954a41449d",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-b0678203b120df16",
+   "label": "vl-ampersand c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-ampersand (virtual-link); status ok]: 0 entries in 103 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-ampersand' (virtual-link), 103 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.093
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-ampersand"
+   },
+   "error": null,
+   "evidence_id": "EV-08a0441d589cf839",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-a01a1cba7714b25a",
+   "label": "vl-ampersand b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-ampersand (virtual-link); status ok]: 0 entries in 103 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-ampersand' (virtual-link), 103 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.092
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-ampersand"
+   },
+   "error": null,
+   "evidence_id": "EV-d3ffe670fa14928e",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-c642e1dfb13e7258",
+   "label": "vl-ampersand b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-ampersand (virtual-link); status ok]: 0 entries in 103 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-ampersand' (virtual-link), 103 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.093
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-ampersand"
+   },
+   "error": null,
+   "evidence_id": "EV-dbcf4afadfba1598",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-33286628ec0445ef",
+   "label": "vl-ampersand c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-ampersand (virtual-link); status ok]: 0 entries in 103 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-ampersand' (virtual-link), 103 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.092
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-bang",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-aa6f39983beae931",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-4f273522a51b6409",
+   "label": "vl-bang b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-bang (virtual-link); status ok]: 0 entries in 1499 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-bang' (virtual-link), 1499 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.142
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-bang",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-707425fa27b4e9d8",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-581fff5caa6a6d96",
+   "label": "vl-bang c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-bang (virtual-link); status ok]: 0 entries in 1499 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-bang' (virtual-link), 1499 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.145
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-bang"
+   },
+   "error": null,
+   "evidence_id": "EV-848ff3934c4ea5df",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-1526d62e0aae3751",
+   "label": "vl-bang b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-bang (virtual-link); status ok]: 0 entries in 1499 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-bang' (virtual-link), 1499 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.141
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-bang"
+   },
+   "error": null,
+   "evidence_id": "EV-db28c137d7884407",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-5e4d897e43a93518",
+   "label": "vl-bang b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-bang (virtual-link); status ok]: 0 entries in 1499 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-bang' (virtual-link), 1499 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.141
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-bang"
+   },
+   "error": null,
+   "evidence_id": "EV-7d77c0a4f7836e15",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-2c4451a25016dbb0",
+   "label": "vl-bang c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-bang (virtual-link); status ok]: 0 entries in 1499 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-bang' (virtual-link), 1499 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.141
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-g",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-7ffa00360b4bb248",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-b1faefe7349ace4d",
+   "label": "vl-g b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-g (virtual-link); status ok]: 0 entries in 101 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-g' (virtual-link), 101 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.093
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-g",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-d553c268e8165e4d",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-ef358da7ed683476",
+   "label": "vl-g c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-g (virtual-link); status ok]: 0 entries in 101 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-g' (virtual-link), 101 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.092
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-g"
+   },
+   "error": null,
+   "evidence_id": "EV-1043a10a9e92ee40",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-26fe96ccc0b82972",
+   "label": "vl-g b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-g (virtual-link); status ok]: 0 entries in 101 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-g' (virtual-link), 101 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.09
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-g"
+   },
+   "error": null,
+   "evidence_id": "EV-2ac2ac88df73efc0",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-5dd335ae36741887",
+   "label": "vl-g b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-g (virtual-link); status ok]: 0 entries in 101 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-g' (virtual-link), 101 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.092
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-g"
+   },
+   "error": null,
+   "evidence_id": "EV-3db7dcd79812d1ad",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-26aadca870ac483c",
+   "label": "vl-g c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-g (virtual-link); status ok]: 0 entries in 101 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 2 disclosed assumption(s); observed contexts only: scenario 'vl-g' (virtual-link), 101 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.093
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-i",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-867dc73a351c4e68",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-2761dbc92100fd4b",
+   "label": "vl-i b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i (virtual-link); status ok]: 0 entries in 583 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-i' (virtual-link), 583 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.103
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-i",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-33094dd391c21647",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-254c2a613a6732a2",
+   "label": "vl-i c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i (virtual-link); status ok]: 0 entries in 583 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-i' (virtual-link), 583 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.12
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-i"
+   },
+   "error": null,
+   "evidence_id": "EV-1dcaa962592772eb",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-cc5209770496e3ed",
+   "label": "vl-i b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i (virtual-link); status ok]: 0 entries in 583 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-i' (virtual-link), 583 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.14
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-i"
+   },
+   "error": null,
+   "evidence_id": "EV-b4e0bf4763067d35",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-1bd43099779efd3c",
+   "label": "vl-i b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i (virtual-link); status ok]: 0 entries in 583 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-i' (virtual-link), 583 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.11
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-i"
+   },
+   "error": null,
+   "evidence_id": "EV-ae2d110907464210",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-42be810ea0f61066",
+   "label": "vl-i c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i (virtual-link); status ok]: 0 entries in 583 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-i' (virtual-link), 583 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.101
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-i9i1",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-1f9b60102ffa364a",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-d912b584e592d384",
+   "label": "vl-i9i1 b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i9i1 (virtual-link); status ok]: 0 entries in 215 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-i9i1' (virtual-link), 215 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.1
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-i9i1",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-92a938b58d41ac06",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-39984a56a2f01dbc",
+   "label": "vl-i9i1 c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i9i1 (virtual-link); status ok]: 0 entries in 215 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-i9i1' (virtual-link), 215 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.097
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-i9i1"
+   },
+   "error": null,
+   "evidence_id": "EV-552ddac87e818a41",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-cd1215852a219ba2",
+   "label": "vl-i9i1 b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i9i1 (virtual-link); status ok]: 0 entries in 215 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-i9i1' (virtual-link), 215 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.104
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-i9i1"
+   },
+   "error": null,
+   "evidence_id": "EV-ffb6506b3528e5bf",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-205aab6e5aae95f6",
+   "label": "vl-i9i1 b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i9i1 (virtual-link); status ok]: 0 entries in 215 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-i9i1' (virtual-link), 215 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.104
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-i9i1"
+   },
+   "error": null,
+   "evidence_id": "EV-6fa82ce971191715",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-20c9d149ed8ad245",
+   "label": "vl-i9i1 c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-i9i1 (virtual-link); status ok]: 0 entries in 215 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-i9i1' (virtual-link), 215 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.094
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-manual-f0e0",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-a6f42d4c6817a383",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-7aeb30e130da29d2",
+   "label": "vl-manual-f0e0 b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.081
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-manual-f0e0",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-41caca78087ef65e",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-6bfe29119e57c871",
+   "label": "vl-manual-f0e0 c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.08
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-manual-f0e0"
+   },
+   "error": null,
+   "evidence_id": "EV-07249c6bb190f3ff",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-1ad5d6ba7c88655a",
+   "label": "vl-manual-f0e0 b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.08
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-manual-f0e0"
+   },
+   "error": null,
+   "evidence_id": "EV-02c69abf6e2864ef",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-9ec03b35aecfce3a",
+   "label": "vl-manual-f0e0 b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.08
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-manual-f0e0"
+   },
+   "error": null,
+   "evidence_id": "EV-22797d11677ebec1",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-da35ed7c57f442a8",
+   "label": "vl-manual-f0e0 c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.082
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-pb05",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-212083a5c78b7318",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-37069143b404f571",
+   "label": "vl-pb05 b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-pb05 (virtual-link); status ok]: 0 entries in 79221 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-pb05' (virtual-link), 79221 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.138
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-pb05",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-6db420d523b4d439",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-48e38ce2d200a7db",
+   "label": "vl-pb05 c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-pb05 (virtual-link); status ok]: 0 entries in 79221 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-pb05' (virtual-link), 79221 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.138
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-pb05"
+   },
+   "error": null,
+   "evidence_id": "EV-dd333565a7a0eafd",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-af674eb11444a850",
+   "label": "vl-pb05 b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-pb05 (virtual-link); status ok]: 0 entries in 79221 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-pb05' (virtual-link), 79221 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.136
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-pb05"
+   },
+   "error": null,
+   "evidence_id": "EV-3d66d3c30625e4ae",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-d3d52c718ad79d70",
+   "label": "vl-pb05 b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-pb05 (virtual-link); status ok]: 0 entries in 79221 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-pb05' (virtual-link), 79221 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.138
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-pb05"
+   },
+   "error": null,
+   "evidence_id": "EV-500c90c1eaf0a9a9",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-d5a7fb174643aba8",
+   "label": "vl-pb05 c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-pb05 (virtual-link); status ok]: 0 entries in 79221 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 6 disclosed assumption(s); observed contexts only: scenario 'vl-pb05' (virtual-link), 79221 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.146
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-plus",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-76ffecdcc65c0d82",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-31d201dfb4bb19d3",
+   "label": "vl-plus b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus (virtual-link); status ok]: 0 entries in 62129 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-plus' (virtual-link), 62129 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.149
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-plus",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-bee8b81903d610df",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-faae313463648fb0",
+   "label": "vl-plus c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus (virtual-link); status ok]: 0 entries in 62129 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-plus' (virtual-link), 62129 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.136
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-plus"
+   },
+   "error": null,
+   "evidence_id": "EV-0eb1df5024e05682",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-2c67819b5c70bac6",
+   "label": "vl-plus b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus (virtual-link); status ok]: 0 entries in 62129 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-plus' (virtual-link), 62129 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.137
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-plus"
+   },
+   "error": null,
+   "evidence_id": "EV-c1025de0410f43a7",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-b07f360174613d99",
+   "label": "vl-plus b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus (virtual-link); status ok]: 0 entries in 62129 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-plus' (virtual-link), 62129 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.135
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-plus"
+   },
+   "error": null,
+   "evidence_id": "EV-227c927caf156aed",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-92516a7674bbc493",
+   "label": "vl-plus c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus (virtual-link); status ok]: 0 entries in 62129 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-plus' (virtual-link), 62129 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.135
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-plus-interactive",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-dfcbc2809f4fa8fd",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-bf8595d7b18bd9d2",
+   "label": "vl-plus-interactive b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus-interactive (virtual-link); status ok]: 0 entries in 2519 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 1 disclosed assumption(s); observed contexts only: scenario 'vl-plus-interactive' (virtual-link), 2519 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.096
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-plus-interactive",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-cca960bff0014446",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-f9529e46a69acd01",
+   "label": "vl-plus-interactive c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus-interactive (virtual-link); status ok]: 0 entries in 2519 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 1 disclosed assumption(s); observed contexts only: scenario 'vl-plus-interactive' (virtual-link), 2519 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.094
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-plus-interactive"
+   },
+   "error": null,
+   "evidence_id": "EV-d9f70702fa0cd7a3",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-da5baa9fc188f07f",
+   "label": "vl-plus-interactive b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus-interactive (virtual-link); status ok]: 0 entries in 2519 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 1 disclosed assumption(s); observed contexts only: scenario 'vl-plus-interactive' (virtual-link), 2519 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.096
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-plus-interactive"
+   },
+   "error": null,
+   "evidence_id": "EV-a39dc582aeb15ec4",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-6f0cfe5013b75d40",
+   "label": "vl-plus-interactive b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus-interactive (virtual-link); status ok]: 0 entries in 2519 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 1 disclosed assumption(s); observed contexts only: scenario 'vl-plus-interactive' (virtual-link), 2519 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.094
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-plus-interactive"
+   },
+   "error": null,
+   "evidence_id": "EV-5badcbb2a09d19a4",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-e3a1dd2aa2651ec4",
+   "label": "vl-plus-interactive c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-plus-interactive (virtual-link); status ok]: 0 entries in 2519 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 1 disclosed assumption(s); observed contexts only: scenario 'vl-plus-interactive' (virtual-link), 2519 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.093
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-s",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-7ca0d40896788de2",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-74ddada6b64c06b7",
+   "label": "vl-s b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-s (virtual-link); status ok]: 0 entries in 456 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  field 0x20004c3c+4: 0 store(s), never set; no later change observed\n  field 0x20004c48+4: 0 store(s), never set; no later change observed\n  field 0x20004c54+4: 0 store(s), never set; no later change observed\n  field 0x20004c60+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-s' (virtual-link), 456 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.094
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-s",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-892bb58aadfd49d8",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-9ed55cdeda649797",
+   "label": "vl-s c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-s (virtual-link); status ok]: 0 entries in 456 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  MMIO accesses from code in 0x0000c7c0..0x0000c8a8: 0\n  field 0x20004348+4: 0 store(s), never set; no later change observed\n  field 0x20004358+4: 0 store(s), never set; no later change observed\n  field 0x20004644+4: 0 store(s), never set; no later change observed\n  field 0x20004654+4: 0 store(s), never set; no later change observed\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-s' (virtual-link), 456 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.095
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-s"
+   },
+   "error": null,
+   "evidence_id": "EV-90b9c39c3d6214aa",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-d6c765b2451c1d65",
+   "label": "vl-s b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-s (virtual-link); status ok]: 0 entries in 456 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-s' (virtual-link), 456 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.093
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-s"
+   },
+   "error": null,
+   "evidence_id": "EV-dddd9cdb50139ebc",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-605e54144c4d7246",
+   "label": "vl-s b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-s (virtual-link); status ok]: 0 entries in 456 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-s' (virtual-link), 456 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.094
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-s"
+   },
+   "error": null,
+   "evidence_id": "EV-fce3ba5b462f1d5c",
+   "grade": "BOUNDED",
+   "invocation_id": "TI-52868cfcd539c5f8",
+   "label": "vl-s c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-s (virtual-link); status ok]: 0 entries in 456 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 4 disclosed assumption(s); observed contexts only: scenario 'vl-s' (virtual-link), 456 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.092
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "scenario": "vl-t-status",
+    "watch": [
+     {
+      "address": "0x20004c3c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c48",
+      "size": 4
+     },
+     {
+      "address": "0x20004c54",
+      "size": 4
+     },
+     {
+      "address": "0x20004c60",
+      "size": 4
+     },
+     {
+      "address": "0x20004c6c",
+      "size": 4
+     },
+     {
+      "address": "0x20004c78",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-9ce4c6c760f84303",
+   "grade": "UNKNOWN",
+   "invocation_id": "TI-b4001b2805700982",
+   "label": "vl-t-status b4b4",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_FAILED",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-t-status (virtual-link); status unsupported: scenario 'vl-t-status' does not execute autopilot868]: 0 entries in 0 instructions; 0 call site(s) reached, 4 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000a068 (FUN_0000a064): UNOBSERVED (not reached; not unreachable)\n  0x0000a088 (FUN_0000a084): UNOBSERVED (not reached; not unreachable)\n  0x0000a0ac (FUN_0000a0a8): UNOBSERVED (not reached; not unreachable)\n  0x0000b5c2 (FUN_0000b5bc): UNOBSERVED (not reached; not unreachable)\n  harness: 0 disclosed assumption(s); observed contexts only: scenario 'vl-t-status' (virtual-link), 0 instructions of autopilot868 code; 4 static call site(s) never reached: 0x0000a068, 0x0000a088, 0x0000a0ac, 0x0000b5c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.053
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c7c0",
+    "scenario": "vl-t-status",
+    "watch": [
+     {
+      "address": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004358",
+      "object_base": "0x20004348",
+      "size": 4
+     },
+     {
+      "address": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004654",
+      "object_base": "0x20004644",
+      "size": 4
+     },
+     {
+      "address": "0x20004940",
+      "size": 4
+     },
+     {
+      "address": "0x20004950",
+      "object_base": "0x20004940",
+      "size": 4
+     }
+    ]
+   },
+   "error": null,
+   "evidence_id": "EV-9b44c39291eccd1b",
+   "grade": "UNKNOWN",
+   "invocation_id": "TI-3477c6baa967ce43",
+   "label": "vl-t-status c7c0",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_FAILED",
+    "SCENARIO_STARTS_MID_FIRMWARE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c7c0 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-t-status (virtual-link); status unsupported: scenario 'vl-t-status' does not execute autopilot868]: 0 entries in 0 instructions; 0 call site(s) reached, 0 unreached; not entered in this scenario: nothing about its accesses was observed\n  harness: 0 disclosed assumption(s); observed contexts only: scenario 'vl-t-status' (virtual-link), 0 instructions of autopilot868 code; no static call site (any caller is indirect); unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.052
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658",
+    "scenario": "vl-t-status"
+   },
+   "error": null,
+   "evidence_id": "EV-205fca2e1ab3f95c",
+   "grade": "UNKNOWN",
+   "invocation_id": "TI-59c6818a16df4f6f",
+   "label": "vl-t-status b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_FAILED",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-t-status (virtual-link); status unsupported: scenario 'vl-t-status' does not execute autopilot868]: 0 entries in 0 instructions; 0 call site(s) reached, 1 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  harness: 0 disclosed assumption(s); observed contexts only: scenario 'vl-t-status' (virtual-link), 0 instructions of autopilot868 code; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.053
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc",
+    "scenario": "vl-t-status"
+   },
+   "error": null,
+   "evidence_id": "EV-abdb1feaa916d83b",
+   "grade": "UNKNOWN",
+   "invocation_id": "TI-2635171a57d8fd73",
+   "label": "vl-t-status b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_FAILED",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-t-status (virtual-link); status unsupported: scenario 'vl-t-status' does not execute autopilot868]: 0 entries in 0 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  0x0000b6c2 (FUN_0000b6b4): UNOBSERVED (not reached; not unreachable)\n  harness: 0 disclosed assumption(s); observed contexts only: scenario 'vl-t-status' (virtual-link), 0 instructions of autopilot868 code; 2 static call site(s) never reached: 0x0000b662, 0x0000b6c2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.054
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc",
+    "scenario": "vl-t-status"
+   },
+   "error": null,
+   "evidence_id": "EV-64b7c79524c60380",
+   "grade": "UNKNOWN",
+   "invocation_id": "TI-1fa4b8bdf67d1a0a",
+   "label": "vl-t-status c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_FAILED",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-t-status (virtual-link); status unsupported: scenario 'vl-t-status' does not execute autopilot868]: 0 entries in 0 instructions; 0 call site(s) reached, 3 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x0000b192 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1a2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  0x0000b1b2 (FUN_0000b144): UNOBSERVED (not reached; not unreachable)\n  harness: 0 disclosed assumption(s); observed contexts only: scenario 'vl-t-status' (virtual-link), 0 instructions of autopilot868 code; 3 static call site(s) never reached: 0x0000b192, 0x0000b1a2, 0x0000b1b2; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.053
+  }
+ ],
+ "watch": {
+  "object_fields": [
+   {
+    "address": "0x20004348",
+    "size": 4
+   },
+   {
+    "address": "0x20004358",
+    "object_base": "0x20004348",
+    "size": 4
+   },
+   {
+    "address": "0x20004644",
+    "size": 4
+   },
+   {
+    "address": "0x20004654",
+    "object_base": "0x20004644",
+    "size": 4
+   },
+   {
+    "address": "0x20004940",
+    "size": 4
+   },
+   {
+    "address": "0x20004950",
+    "object_base": "0x20004940",
+    "size": 4
+   }
+  ],
+  "sercom_words": [
+   {
+    "address": "0x20004c3c",
+    "size": 4
+   },
+   {
+    "address": "0x20004c48",
+    "size": 4
+   },
+   {
+    "address": "0x20004c54",
+    "size": 4
+   },
+   {
+    "address": "0x20004c60",
+    "size": 4
+   },
+   {
+    "address": "0x20004c6c",
+    "size": 4
+   },
+   {
+    "address": "0x20004c78",
+    "size": 4
+   }
+  ]
+ }
+}

@@ -1,0 +1,1171 @@
+{
+ "runtime": "local oMLX at OMLX_BASE_URL, planner APTRACE_MODEL",
+ "trials": [
+  {
+   "claim_admission": [
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE BEHAVIOR E8 FUN_0000b4b4 reads 4 bytes from memory address stored in r0"
+    },
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE STRUCTURE E8 FUN_0000a084 calls FUN_0000b4b4 with r0 loaded from memory"
+    },
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE STRUCTURE E7 FUN_0000a0a8 calls FUN_0000b4b4 with r0 loaded from memory"
+    }
+   ],
+   "claim_versions": [
+    "C10:v1",
+    "C11:v1",
+    "C12:v1"
+   ],
+   "code_state": "before scenario-kind note: bare scenario ids only",
+   "decisions": [
+    {
+     "attempt": 0,
+     "decision": "observe_call_arguments",
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 1,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 1,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "analyze_function_effects",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "finish",
+     "observe_offered": false,
+     "phase": "final-claims"
+    }
+   ],
+   "evidence": [
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E1",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E2",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_disassembly"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "scenario": "vl-ampersand"
+     },
+     "id": "E3",
+     "observed_entries": 0,
+     "status": "ok",
+     "tool": "observed_call_arguments"
+    },
+    {
+     "arguments": {
+      "address": "0x0000b5c2",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000b5bc"
+     },
+     "id": "E4",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a068",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a064"
+     },
+     "id": "E5",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "specialize": {}
+     },
+     "id": "E6",
+     "observed_entries": null,
+     "status": "complete",
+     "tool": "function_effects"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a0ac",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a0a8"
+     },
+     "id": "E7",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a088",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a084"
+     },
+     "id": "E8",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    }
+   ],
+   "max_steps": 6,
+   "model": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+   },
+   "objective": "FUN_0000b4b4 reads 4 bytes at the address in r0. Which r0 values do its callers actually pass at runtime, and do those calls make FUN_0000b4b4 read SERCOM0 registers, or only RAM?",
+   "scratch_ledger": "copy of the canonical ledger under the session scratchpad (not retained)",
+   "seed_function": "FUN_0000b4b4",
+   "state_facts": [
+    "FUN_0000b4b4 (Crucible, all inputs symbolic): inputs used r0; 4 reads, 0 writes, 0 calls; 0 MMIO access site(s); return depends on r0+memory."
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trajectory": [
+    {
+     "action": "observation",
+     "evidence_id": "E3",
+     "lead_id": "L5",
+     "number": 1,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E4",
+     "lead_id": "L4",
+     "number": 2,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E5",
+     "lead_id": "L1",
+     "number": 3,
+     "reason": null
+    },
+    {
+     "action": "effects",
+     "evidence_id": "E6",
+     "lead_id": "L6",
+     "number": 4,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E7",
+     "lead_id": "L3",
+     "number": 5,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E8",
+     "lead_id": "L2",
+     "number": 6,
+     "reason": null
+    }
+   ],
+   "trial": 1
+  },
+  {
+   "claim_admission": [
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE STRUCTURE E8 FUN_0000b4b4 reads 4 bytes from r0"
+    },
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE STRUCTURE E7 FUN_0000a064 passes r0 to FUN_0000b4b4"
+    },
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE STRUCTURE E8 FUN_0000b4b4 reads from FLASH addresses"
+    }
+   ],
+   "claim_versions": [
+    "C10:v1",
+    "C11:v1",
+    "C12:v1"
+   ],
+   "code_state": "after scenario-kind note in the tool description",
+   "decisions": [
+    {
+     "attempt": 0,
+     "decision": "observe_call_arguments",
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "analyze_function_effects",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "finish",
+     "observe_offered": false,
+     "phase": "final-claims"
+    }
+   ],
+   "evidence": [
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E1",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E2",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_disassembly"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "scenario": "boot"
+     },
+     "id": "E3",
+     "observed_entries": 278,
+     "status": "ok",
+     "tool": "observed_call_arguments"
+    },
+    {
+     "arguments": {
+      "address": "0x0000b5c2",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000b5bc"
+     },
+     "id": "E4",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a0ac",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a0a8"
+     },
+     "id": "E5",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a088",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a084"
+     },
+     "id": "E6",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a068",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a064"
+     },
+     "id": "E7",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "specialize": {}
+     },
+     "id": "E8",
+     "observed_entries": null,
+     "status": "complete",
+     "tool": "function_effects"
+    }
+   ],
+   "max_steps": 6,
+   "model": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+   },
+   "objective": "FUN_0000b4b4 reads 4 bytes at the address in r0. Which r0 values do its callers actually pass at runtime, and do those calls make FUN_0000b4b4 read SERCOM0 registers, or only RAM?",
+   "scratch_ledger": "copy of the canonical ledger under the session scratchpad (not retained)",
+   "seed_function": "FUN_0000b4b4",
+   "state_facts": [
+    "FUN_0000b4b4 (Crucible, all inputs symbolic): inputs used r0; 4 reads, 0 writes, 0 calls; 0 MMIO access site(s); return depends on r0+memory."
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trajectory": [
+    {
+     "action": "observation",
+     "evidence_id": "E3",
+     "lead_id": "L5",
+     "number": 1,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E4",
+     "lead_id": "L4",
+     "number": 2,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E5",
+     "lead_id": "L3",
+     "number": 3,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E6",
+     "lead_id": "L2",
+     "number": 4,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E7",
+     "lead_id": "L1",
+     "number": 5,
+     "reason": null
+    },
+    {
+     "action": "effects",
+     "evidence_id": "E8",
+     "lead_id": "L6",
+     "number": 6,
+     "reason": null
+    }
+   ],
+   "trial": 2
+  },
+  {
+   "claim_admission": [
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE BEHAVIOR E7 FUN_0000b4b4 reads 4 bytes from r0, with reads from flash addresses (0xb500, 0xb504, 0xb508)"
+    }
+   ],
+   "claim_versions": [
+    "C10:v1"
+   ],
+   "code_state": "after first-line digest in the observation summary",
+   "decisions": [
+    {
+     "attempt": 0,
+     "decision": "observe_call_arguments",
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "analyze_function_effects",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "finish",
+     "observe_offered": false,
+     "phase": "final-claims"
+    }
+   ],
+   "evidence": [
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E1",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E2",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_disassembly"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "scenario": "boot"
+     },
+     "id": "E3",
+     "observed_entries": 278,
+     "status": "ok",
+     "tool": "observed_call_arguments"
+    },
+    {
+     "arguments": {
+      "address": "0x0000b5c2",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000b5bc"
+     },
+     "id": "E4",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a0ac",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a0a8"
+     },
+     "id": "E5",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a088",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a084"
+     },
+     "id": "E6",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "specialize": {}
+     },
+     "id": "E7",
+     "observed_entries": null,
+     "status": "complete",
+     "tool": "function_effects"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a068",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a064"
+     },
+     "id": "E8",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    }
+   ],
+   "max_steps": 6,
+   "model": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+   },
+   "objective": "FUN_0000b4b4 reads 4 bytes at the address in r0. Which r0 values do its callers actually pass at runtime, and do those calls make FUN_0000b4b4 read SERCOM0 registers, or only RAM?",
+   "scratch_ledger": "copy of the canonical ledger under the session scratchpad (not retained)",
+   "seed_function": "FUN_0000b4b4",
+   "state_facts": [
+    "FUN_0000b4b4 (Crucible, all inputs symbolic): inputs used r0; 4 reads, 0 writes, 0 calls; 0 MMIO access site(s); return depends on r0+memory."
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trajectory": [
+    {
+     "action": "observation",
+     "evidence_id": "E3",
+     "lead_id": "L5",
+     "number": 1,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E4",
+     "lead_id": "L4",
+     "number": 2,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E5",
+     "lead_id": "L3",
+     "number": 3,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E6",
+     "lead_id": "L2",
+     "number": 4,
+     "reason": null
+    },
+    {
+     "action": "effects",
+     "evidence_id": "E7",
+     "lead_id": "L6",
+     "number": 5,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E8",
+     "lead_id": "L1",
+     "number": 6,
+     "reason": null
+    }
+   ],
+   "trial": 3
+  },
+  {
+   "claim_admission": [
+    {
+     "codes": [],
+     "decision": "admitted",
+     "raw": "PROBABLE BEHAVIOR E1,E2 FUN_0000b4b4 reads 4 bytes from RAM addresses"
+    }
+   ],
+   "claim_versions": [
+    "C10:v1"
+   ],
+   "code_state": "after scoped [OBS] session fact derivation",
+   "decisions": [
+    {
+     "attempt": 0,
+     "decision": "observe_call_arguments",
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 1,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "analyze_function_effects",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "finish",
+     "observe_offered": false,
+     "phase": "final-claims"
+    }
+   ],
+   "evidence": [
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E1",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4"
+     },
+     "id": "E2",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_disassembly"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "scenario": "boot"
+     },
+     "id": "E3",
+     "observed_entries": 278,
+     "status": "ok",
+     "tool": "observed_call_arguments"
+    },
+    {
+     "arguments": {
+      "address": "0x0000b5c2",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000b5bc"
+     },
+     "id": "E4",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a0ac",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a0a8"
+     },
+     "id": "E5",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b4b4",
+      "specialize": {}
+     },
+     "id": "E6",
+     "observed_entries": null,
+     "status": "complete",
+     "tool": "function_effects"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a088",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a084"
+     },
+     "id": "E7",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    },
+    {
+     "arguments": {
+      "address": "0x0000a068",
+      "after": 8,
+      "before": 8,
+      "function": "FUN_0000a064"
+     },
+     "id": "E8",
+     "observed_entries": null,
+     "status": null,
+     "tool": "callsite_context"
+    }
+   ],
+   "max_steps": 6,
+   "model": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+   },
+   "objective": "FUN_0000b4b4 reads 4 bytes at the address in r0. Which r0 values do its callers actually pass at runtime, and do those calls make FUN_0000b4b4 read SERCOM0 registers, or only RAM?",
+   "scratch_ledger": "copy of the canonical ledger under the session scratchpad (not retained)",
+   "seed_function": "FUN_0000b4b4",
+   "state_facts": [
+    "FUN_0000b4b4 under scenario boot: 278 observed calls passed r0 0x20004c54(RAM), 0x20004c78(RAM); the word at r0 held 0x41012000(SERCOM2.CTRLA), 0x43000400(SERCOM5.CTRLA) (content, not an access); 0 MMIO accesses from its code; other scenarios and values are not excluded.",
+    "FUN_0000b4b4 (Crucible, all inputs symbolic): inputs used r0; 4 reads, 0 writes, 0 calls; 0 MMIO access site(s); return depends on r0+memory."
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trajectory": [
+    {
+     "action": "observation",
+     "evidence_id": "E3",
+     "lead_id": "L5",
+     "number": 1,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E4",
+     "lead_id": "L4",
+     "number": 2,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E5",
+     "lead_id": "L3",
+     "number": 3,
+     "reason": null
+    },
+    {
+     "action": "effects",
+     "evidence_id": "E6",
+     "lead_id": "L6",
+     "number": 4,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E7",
+     "lead_id": "L2",
+     "number": 5,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E8",
+     "lead_id": "L1",
+     "number": 6,
+     "reason": null
+    }
+   ],
+   "trial": 4
+  },
+  {
+   "claim_admission": [
+    {
+     "codes": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "decision": "rejected",
+     "raw": "PROBABLE STRUCTURE E7,E8,E4 E0,E1,E2,E3,E5,E6,E9 FUN_0000b658 is called by FUN_0000b5bc, which is called by FUN_0000b4b4"
+    },
+    {
+     "codes": [
+      "EVIDENCE_REFERENCE_UNKNOWN"
+     ],
+     "decision": "rejected",
+     "raw": "PROBABLE RESOLUTION E0,E1,E3,E4,E5,E6,E9 FUN_0000b658 is called by FUN_0000b5bc, which is called by FUN_0000b4b4"
+    }
+   ],
+   "claim_versions": [],
+   "code_state": "same code as trial 4; objective about the unexecuted b658 path",
+   "decisions": [
+    {
+     "attempt": 0,
+     "decision": "observe_call_arguments",
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "analyze_function_effects",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 1,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "analyze_peripheral",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": true,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": null,
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "follow_lead",
+     "observe_offered": false,
+     "phase": "decision"
+    },
+    {
+     "attempt": 0,
+     "decision": "finish",
+     "observe_offered": false,
+     "phase": "final-claims"
+    },
+    {
+     "attempt": 0,
+     "decision": "finish",
+     "observe_offered": false,
+     "phase": "claim-correction"
+    },
+    {
+     "attempt": 0,
+     "decision": "select_claims",
+     "observe_offered": false,
+     "phase": "candidate-selection"
+    }
+   ],
+   "evidence": [
+    {
+     "arguments": {
+      "function": "FUN_0000b658"
+     },
+     "id": "E1",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b658"
+     },
+     "id": "E2",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_disassembly"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b658",
+      "scenario": "boot"
+     },
+     "id": "E3",
+     "observed_entries": 0,
+     "status": "ok",
+     "tool": "observed_call_arguments"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b658",
+      "specialize": {}
+     },
+     "id": "E4",
+     "observed_entries": null,
+     "status": "complete",
+     "tool": "function_effects"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000b5bc"
+     },
+     "id": "E5",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "limit": 25,
+      "peripheral": "MCLK"
+     },
+     "id": "E6",
+     "observed_entries": null,
+     "status": "ok",
+     "tool": "census_peripheral_usage"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000bc44"
+     },
+     "id": "E7",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    },
+    {
+     "arguments": {
+      "function": "FUN_0000a51c"
+     },
+     "id": "E8",
+     "observed_entries": null,
+     "status": null,
+     "tool": "function_facts"
+    }
+   ],
+   "max_steps": 6,
+   "model": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+   },
+   "objective": "FUN_0000b658 passes its r0 to FUN_0000b5bc, which passes it to FUN_0000b4b4. Is FUN_0000b658 actually executed at runtime, and if so which r0 values does it pass?",
+   "scratch_ledger": "copy of the canonical ledger under the session scratchpad (not retained)",
+   "seed_function": "FUN_0000b658",
+   "state_facts": [
+    "FUN_0000b658 was not entered under scenario boot (450000 instructions); not thereby unreachable.",
+    "FUN_0000b658 (Crucible, all inputs symbolic): inputs used r0,r1,r2,r3; 21 reads, 10 writes, 2 calls; 0 MMIO access site(s); return depends on no symbolic input.",
+    "FUN_0000b658 calls 0xb5bc at 0xb662.",
+    "FUN_0000b658 calls 0xb376 at 0xb668."
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trajectory": [
+    {
+     "action": "observation",
+     "evidence_id": "E3",
+     "lead_id": "L8",
+     "number": 1,
+     "reason": null
+    },
+    {
+     "action": "effects",
+     "evidence_id": "E4",
+     "lead_id": "L9",
+     "number": 2,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E5",
+     "lead_id": "L3",
+     "number": 3,
+     "reason": null
+    },
+    {
+     "action": "analyze",
+     "evidence_id": "E6",
+     "lead_id": "L18",
+     "number": 4,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E7",
+     "lead_id": "L25",
+     "number": 5,
+     "reason": null
+    },
+    {
+     "action": "follow_lead",
+     "evidence_id": "E8",
+     "lead_id": "L23",
+     "number": 6,
+     "reason": null
+    }
+   ],
+   "trial": 5
+  }
+ ]
+}

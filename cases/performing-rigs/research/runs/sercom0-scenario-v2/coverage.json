@@ -1,0 +1,629 @@
+{
+ "categories": {
+  "attempted_failed": [],
+  "executed": [
+   "boot",
+   "vl-ampersand",
+   "vl-bang",
+   "vl-g",
+   "vl-i",
+   "vl-i9i1",
+   "vl-manual-f0e0",
+   "vl-pb05",
+   "vl-plus",
+   "vl-plus-interactive",
+   "vl-s"
+  ],
+  "not_attempted": [],
+  "skipped_incompatible": [
+   {
+    "reason": "unsupported: scenario 'vl-t-status' does not execute autopilot868",
+    "scenario": "vl-t-status"
+   }
+  ]
+ },
+ "rows": [
+  {
+   "b4b4_entries": 278,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [
+    "RAM"
+   ],
+   "b4b4_r0_values": [
+    "0x20004c54",
+    "0x20004c78"
+   ],
+   "b5bc_entries": 270,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 3,
+   "instructions": 450000,
+   "kind": "boot-recipe",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "EXECUTION_BUDGET_BOUND",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ],
+    "never_written": []
+   },
+   "scenario": "boot",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ],
+    "never_written": []
+   },
+   "status": "ok",
+   "termination": "instruction limit reached"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 103,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-ampersand",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "4 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 1499,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-bang",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "10 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 101,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-g",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "4 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 583,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-i",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "10 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 215,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-i9i1",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "6 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 219,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-manual-f0e0",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "5 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 79221,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-pb05",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "6 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 62129,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-plus",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "6 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 2519,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-plus-interactive",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "2 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": 0,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 456,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "NO_OBSERVED_WRITE_NOT_IMMUTABLE",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004348+4",
+     "0x20004358+4",
+     "0x20004644+4",
+     "0x20004654+4",
+     "0x20004940+4",
+     "0x20004950+4"
+    ]
+   },
+   "scenario": "vl-s",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": true,
+    "initialized": [],
+    "never_written": [
+     "0x20004c3c+4",
+     "0x20004c48+4",
+     "0x20004c54+4",
+     "0x20004c60+4",
+     "0x20004c6c+4",
+     "0x20004c78+4"
+    ]
+   },
+   "status": "ok",
+   "termination": "7 legs, 0 at budget"
+  },
+  {
+   "b4b4_entries": 0,
+   "b4b4_mmio_from_extent": null,
+   "b4b4_r0_regions": [],
+   "b4b4_r0_values": [],
+   "b5bc_entries": 0,
+   "b5bc_from_b658_0xb662": "UNOBSERVED",
+   "b658_entries": 0,
+   "c7c0_entries": 0,
+   "c8bc_entries": 0,
+   "instructions": 0,
+   "kind": "virtual-link",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "OBSERVED_CONTEXTS_ONLY",
+    "OBSERVED_UNDER_ONE_SCENARIO",
+    "SCENARIO_FAILED",
+    "SCENARIO_STARTS_MID_FIRMWARE",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "object_fields": {
+    "changed_after_initialization": [],
+    "complete": null,
+    "initialized": [],
+    "never_written": []
+   },
+   "scenario": "vl-t-status",
+   "sercom_words": {
+    "changed_after_initialization": [],
+    "complete": null,
+    "initialized": [],
+    "never_written": []
+   },
+   "status": "unsupported: scenario 'vl-t-status' does not execute autopilot868",
+   "termination": null
+  }
+ ]
+}

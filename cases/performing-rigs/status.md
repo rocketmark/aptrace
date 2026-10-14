@@ -300,6 +300,14 @@ Headline items still unresolved:
   unknowns."
 - A second, deeper NVM-erase-loop dependency found during hardware
   bring-up, reported but not chased (`boot-and-hardware-bringup.md`).
+- Whether `FUN_0000b4b4` (SERCOM-object → index lookup) is ever reached
+  with a SERCOM0 argument. In boot and 10 virtual-link scenarios every
+  observed call passes a RAM SERCOM object (SERCOM2/5), and the selecting
+  RAM words never change after their constructor stores. The one
+  unexecuted static path (`c7c0 → b658 → b5bc`) needs a vtable-`0x14900`
+  slot 7/8 dispatch for which no static site was found (pattern-matched).
+  Global negative not established. See
+  [`research/sercom0-scenario-observation-v2.md`](research/sercom0-scenario-observation-v2.md).
 
 ## Tooling limitations that still matter
 
