@@ -145,7 +145,9 @@ def record_investigation(
         invocation_ids.append(invocation.invocation_id)
 
     claim_keys: list[str] = []
+    admitted: dict[int, str] = {}
 
+    # Only admitted proposals (research/admission.py) reach the ledger as claims.
     for proposal in getattr(run.result, "proposed_claims", ()):
         refs = [session_to_durable.get(e, e) for e in proposal.get("evidence_ids", [])]
         claim = ledger.propose_claim(
@@ -158,8 +160,22 @@ def record_investigation(
             limitations=proposal.get("limitations", []),
             derivation="planner finish claim proposal",
             run_id=run_id,
+            semantics=proposal.get("semantics"),
         )
         claim_keys.append(claim.key)
+
+        if proposal.get("admission") is not None:
+            admitted[proposal["admission"]] = claim.key
+
+    admission = [
+        record.model_copy(
+            update={
+                "durable_evidence_ids": [session_to_durable.get(e, e) for e in record.evidence_ids],
+                "claim_version": admitted.get(index),
+            }
+        )
+        for index, record in enumerate(getattr(run.result, "claim_admission", ()) or ())
+    ]
 
     return ledger.record_run(
         InvestigationRun(
@@ -191,5 +207,6 @@ def record_investigation(
             work_item_id=work_item_id,
             followup=followup,
             continuity=getattr(run, "continuity", None),
+            claim_admission=admission or None,
         )
     )

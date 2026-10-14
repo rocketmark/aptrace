@@ -42,7 +42,13 @@ class FunctionRole(StrEnum):
     REGISTRATION_CALLER = "REGISTRATION_CALLER"  # contains the call passing the pointer
     INDIRECT_CALLER = "INDIRECT_CALLER"  # contains the indirect transfer consuming the slot
     INTERRUPT_VECTOR_HANDLER = "INTERRUPT_VECTOR_HANDLER"
+    # Accesses a peripheral's registers: a census constant-address MMIO
+    # site, or a function-effects access in the MMIO region.
     MMIO_USER = "MMIO_USER"
+    # Loads a peripheral address constant (literal pool) with no MMIO site.
+    # Loading an address is not an access; the census lists such functions
+    # as peripheral users, so the two are kept apart here.
+    ADDRESS_CONSTANT_LOADER = "ADDRESS_CONSTANT_LOADER"
 
 
 class SetKind(StrEnum):
@@ -432,7 +438,29 @@ def extract_facts(evidence: list[tuple[Any, dict[str, Any]]]) -> EvidenceFacts:
             peripheral = str(artifact.arguments.get("peripheral", "")).upper()
 
             for item in result.get("functions", []):
-                if (entry := _maybe_int(item.get("function"))) is not None:
+                if (entry := _maybe_int(item.get("function"))) is None:
+                    continue
+
+                # Only a constant-address MMIO site is an access. A function
+                # listed for its address constants alone loads the address.
+                if item.get("mmio_site_count", 0) > 0 or item.get("mmio_sites"):
+                    role = FunctionRole.MMIO_USER
+                elif item.get("constant_load_count", 0) > 0 or item.get("constant_loads"):
+                    role = FunctionRole.ADDRESS_CONSTANT_LOADER
+                else:
+                    continue
+
+                facts.roles.append(RoleFact(entry=entry, role=role, evidence_id=artifact.evidence_id, peripheral=peripheral))
+
+        if artifact.tool == "function_effects":
+            entry = _maybe_int(result.get("function") or artifact.arguments.get("function"))
+
+            for access in result.get("accesses", []):
+                region = str(access.get("region") or "")
+                register = str(access.get("register_name") or "")
+
+                if entry is not None and region.startswith("MMIO"):
+                    peripheral = register.split(".", 1)[0].upper() or None
                     facts.roles.append(RoleFact(entry=entry, role=FunctionRole.MMIO_USER, evidence_id=artifact.evidence_id, peripheral=peripheral))
 
         if artifact.tool == "census_common_paths" and result.get("status") in PATH_CLAIM_TYPE:

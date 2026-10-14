@@ -52,6 +52,9 @@ Its `continuity` record lists historical results the run used by reference
 (original invocation and evidence ids; no new invocation or evidence is
 written for them), refused reuse with reasons, seeded-lead outcomes, and
 the step budget ([`research-continuity.md`](research-continuity.md)).
+A run's `claim_admission` lists every planner claim proposal with its
+admission decision and diagnostics; only admitted proposals become claim
+versions ([`claim-admission.md`](claim-admission.md)).
 Current claim and evidence state is folded from `events.jsonl` and never
 stored on a record, so history is never rewritten.
 

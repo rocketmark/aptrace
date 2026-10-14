@@ -46,6 +46,7 @@ from aptrace_agent.investigator import run_autonomous_investigation
 from aptrace_agent.ledger.models import SourceRevision
 from aptrace_agent.ledger.recorder import RecordingExecutor, record_investigation
 from aptrace_agent.ledger.store import ResearchLedger
+from aptrace_agent.ledger.verifier import ClaimVerifier
 from aptrace_agent.ledger_wiring import DEFAULT_LEDGER_DIR, context_provider, lead_deriver_factory
 from aptrace_agent.research import ResearchController
 from aptrace_agent.research.followups import generate_followups
@@ -174,7 +175,27 @@ def measure(ledger: ResearchLedger, run, candidate, recorder: RecordingExecutor)
         "inputs_are_durable": all(e.startswith("EV-") and ledger.has_evidence(e) for i in invocations for e in i.input_evidence_ids),
     }
 
+    admission = run.claim_admission or []
+    prechecks = {}
+
+    for key in run.claim_versions:
+        record = ClaimVerifier(ledger, context=context_provider(EvidenceExecutor())(), replay=False).precheck(key).record
+        prechecks[key] = {"outcome": record.outcome.value, "failed": [c.name for c in record.checks if not c.passed]}
+
+    claim_quality = {
+        "proposals": len(admission),
+        "admitted": sum(r.decision == "admitted" for r in admission),
+        "rejected": sum(r.decision == "rejected" for r in admission),
+        "unparseable": sum(r.decision == "unparseable" for r in admission),
+        "correction_rounds": max((r.round for r in admission), default=0) - (1 if admission else 0),
+        "reject_codes": sorted(d.code for r in admission for d in r.diagnostics if d.severity == "reject"),
+        "note_codes": sorted(d.code for r in admission for d in r.diagnostics if d.severity == "note"),
+        "records": [{"round": r.round, "decision": r.decision, "raw": r.raw, "claim_version": r.claim_version} for r in admission],
+        "prechecks": prechecks,
+    }
+
     return {
+        "claim_quality": claim_quality,
         "run_id": run.run_id,
         "stop": run.termination_reason,
         "steps": len(run.trajectory),
@@ -227,7 +248,9 @@ def main() -> None:
             result["repeat"] = n
             path = out / f"{args.planner}-{mode}-{n}.json"
             path.write_text(json.dumps(result, indent=2) + "\n")
-            summary = {k: result.get(k) for k in ("stop", "steps_charged", "tool_executions", "redundant_executions", "reused_on_request", "seeded_attempted", "direct_callers_inspected", "new_evidence", "rejected_requests", "planner_runtime_errors", "fallbacks")}
+            summary = {k: result.get(k) for k in ("stop", "steps_charged", "tool_executions", "redundant_executions", "seeded_attempted", "direct_callers_inspected", "new_evidence", "fallbacks")}
+            quality = result.get("claim_quality") or {}
+            summary.update({k: quality.get(k) for k in ("proposals", "admitted", "rejected", "unparseable", "correction_rounds", "reject_codes")})
             print(f"{args.planner} {mode} #{n}: {json.dumps(summary)}", flush=True)
 
 

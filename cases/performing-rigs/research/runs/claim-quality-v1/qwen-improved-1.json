@@ -1,0 +1,84 @@
+{
+  "claim_quality": {
+    "proposals": 2,
+    "admitted": 0,
+    "rejected": 2,
+    "unparseable": 0,
+    "correction_rounds": 1,
+    "reject_codes": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+    ],
+    "note_codes": [],
+    "records": [
+      {
+        "round": 1,
+        "decision": "rejected",
+        "raw": "PROBABLE STRUCTURE E12,E11 E10 E10 loads SERCOM0 base address at 0x0000b4b6 and E10 does not show direct access to SERCOM0 registers.",
+        "claim_version": null
+      },
+      {
+        "round": 2,
+        "decision": "rejected",
+        "raw": "PROBABLE STRUCTURE E12,E11 E10 loads SERCOM0 base address at 0x0000b4b6 and E10 does not show direct access to SERCO [omit E10]",
+        "claim_version": null
+      }
+    ],
+    "prechecks": {}
+  },
+  "run_id": "R-20261013T234550-cc42f8",
+  "stop": "planner_contract_exhausted",
+  "steps": 7,
+  "steps_charged": 6,
+  "planner_requests": 12,
+  "max_prompt_chars": 2983,
+  "max_prompt_tokens": 1945,
+  "rejected_requests": 4,
+  "planner_runtime_errors": 0,
+  "tool_executions": 6,
+  "tool_failures": 0,
+  "seeded_leads": 6,
+  "seeded_attempted": 6,
+  "seeded_completed": 6,
+  "redundant_executions": 0,
+  "redundant_operations": [],
+  "reused_preload": 6,
+  "reused_on_request": 0,
+  "reuse_refusals": [
+    "search_case_evidence: search_case_evidence is not a deterministic replay-verifiable operation",
+    "search_case_evidence: search_case_evidence is not a deterministic replay-verifiable operation"
+  ],
+  "new_operations": 6,
+  "new_evidence": 6,
+  "direct_callers_inspected": 4,
+  "claims_proposed": [],
+  "seeded_outcomes": [
+    "executed",
+    "executed",
+    "executed",
+    "executed",
+    "executed",
+    "executed"
+  ],
+  "fallbacks": 0,
+  "trajectory": [
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "follow_lead",
+    "finish"
+  ],
+  "provenance": {
+    "no_reused_operation_reexecuted": true,
+    "reused_evidence_not_run_evidence": true,
+    "reused_originals_exist": true,
+    "inputs_are_durable": true
+  },
+  "mode": "improved",
+  "planner": "qwen",
+  "elapsed_s": 12.5,
+  "error": null,
+  "repeat": 1
+}

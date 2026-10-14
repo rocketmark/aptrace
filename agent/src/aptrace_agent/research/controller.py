@@ -49,6 +49,8 @@ MAX_PROPOSED_CLAIMS = 3
 # tool-call output degenerates on nested array-of-object arguments (and
 # often on additional array arguments). "STRONG RESOLUTION E2,E4 text".
 CLAIM_FORMAT = "GRADE [TYPE] E#,E# assertion"
+# Optional trailing omission note on a claim line: "[omit E7,E8: reason]".
+_OMIT_RE = re.compile(r"\s*\[omit\s+(?P<evidence>E\d+(?:\s*,\s*E\d+)*)\s*:\s*(?P<reason>[^\]]+)\]\s*$", re.IGNORECASE)
 _CLAIM_LINE_RE = re.compile(
     r"\s*(?P<grade>EXACT|STRONG|PROBABLE)\s+(?:(?P<type>" + "|".join(CLAIM_TYPES) + r")\s+)?"
     r"(?P<evidence>E\d+(?:\s*,\s*E\d+)*)\s*[:\-]?\s+(?P<assertion>\S.*)",
@@ -84,9 +86,12 @@ class ResearchRunResult:
     steps: tuple[ResearchStep, ...]
     reconciled: bool
     planner_requests: tuple[dict[str, Any], ...] = ()
-    # Structured claims the planner proposed at finish (claim contract only).
-    # Proposals, never facts: APTrace records them as PROPOSED claim versions.
+    # Structured claims the planner proposed at finish (claim contract only)
+    # that passed admission (research/admission.py). Proposals, never facts:
+    # APTrace records them as PROPOSED claim versions.
     proposed_claims: tuple[dict[str, Any], ...] = ()
+    # Every admission decision (ClaimAdmission), admitted or not.
+    claim_admission: tuple[Any, ...] = ()
 
 
 @dataclass
@@ -222,6 +227,9 @@ class ResearchController:
         self.prefill_retry_delay = prefill_retry_delay
         self.claim_contract = claim_contract
         self.proposed_claims: list[dict[str, Any]] = []
+        self.claim_admission: list[Any] = []
+        # Correction rounds the planner gets after a rejected claim proposal.
+        self.max_claim_corrections = 1
 
         budget = projection_budget or ProjectionBudget(latest_count=recent_evidence_limit)
         self.normal_projection = PlannerProjection(budget)
@@ -451,26 +459,45 @@ class ResearchController:
             ["reason"],
         )
 
-    @staticmethod
-    def _sanitize_claims(items: Any) -> list[dict[str, Any]]:
+    @classmethod
+    def _sanitize_claims(cls, items: Any) -> list[dict[str, Any]]:
         """Well-formed claim proposals only; references are validated later by APTrace."""
+
+        return cls._parse_claims(items)[0]
+
+    @staticmethod
+    def _parse_claims(items: Any) -> tuple[list[dict[str, Any]], list[str]]:
+        """(well-formed proposals, raw text of items that are not claims)."""
 
         if isinstance(items, str):
             items = [line for line in items.splitlines() if line.strip()]
 
         if not isinstance(items, list):
-            return []
+            return [], ([str(items)[:600]] if items not in (None, "", []) else [])
 
         out: list[dict[str, Any]] = []
+        unparseable: list[str] = []
 
         for item in items[: MAX_PROPOSED_CLAIMS * 3]:
             if len(out) == MAX_PROPOSED_CLAIMS:
                 break
 
+            raw = item if isinstance(item, str) else json.dumps(item, default=str)
+            omissions: dict[str, str] = {}
+
             if isinstance(item, str):
-                match = _CLAIM_LINE_RE.fullmatch(item.strip())
+                text = item.strip()
+                omit = _OMIT_RE.search(text)
+
+                if omit:
+                    reason = omit["reason"].strip()
+                    omissions = {e.strip().upper(): reason for e in omit["evidence"].split(",")}
+                    text = text[: omit.start()].rstrip()
+
+                match = _CLAIM_LINE_RE.fullmatch(text)
 
                 if match is None:
+                    unparseable.append(raw[:600])
                     continue
 
                 item = {
@@ -478,15 +505,18 @@ class ResearchController:
                     "grade": match["grade"],
                     "claim_type": match["type"] or "OTHER",
                     "evidence_ids": [e.strip().upper() for e in match["evidence"].split(",")],
+                    "omissions": omissions,
                 }
 
             if not isinstance(item, dict):
+                unparseable.append(raw[:600])
                 continue
 
             assertion = item.get("assertion")
             grade = str(item.get("grade", "")).upper()
 
             if not isinstance(assertion, str) or not assertion.strip() or grade not in CLAIM_GRADES:
+                unparseable.append(raw[:600])
                 continue
 
             claim_type = str(item.get("claim_type", "OTHER")).upper()
@@ -500,10 +530,63 @@ class ResearchController:
                     "grade": grade,
                     "evidence_ids": [str(e).strip() for e in evidence if isinstance(e, (str, int))][:8],
                     "limitations": [clip(str(x), 240) for x in limitations if isinstance(x, str)][:4],
+                    "semantics": item.get("semantics") if isinstance(item.get("semantics"), dict) else None,
+                    "omissions": (
+                        {str(k).upper(): str(v)[:240] for k, v in item["omissions"].items()}
+                        if isinstance(item.get("omissions"), dict)
+                        else {}
+                    ),
+                    "raw": raw[:600],
                 }
             )
 
-        return out
+        return out, unparseable
+
+    def _admit_round(self, session: ResearchSession, items: Any, round: int) -> list[Any]:
+        from aptrace_agent.ledger.claim_checks import CLAIM_UNPARSEABLE, REJECT
+        from aptrace_agent.ledger.models import ClaimAdmission, ClaimDiagnostic
+        from aptrace_agent.research.admission import admit, function_resolver
+
+        proposals, unparseable = self._parse_claims(items)
+        records = [
+            ClaimAdmission(
+                round=round,
+                raw=raw,
+                decision="unparseable",
+                diagnostics=[ClaimDiagnostic(code=CLAIM_UNPARSEABLE, severity=REJECT, detail=f"not a '{CLAIM_FORMAT}' line")],
+            )
+            for raw in unparseable
+        ]
+        resolver = function_resolver(session)
+        peripherals = self.census_peripherals or None
+
+        for proposal in proposals:
+            record = admit(proposal, session, round=round, function_exists=resolver, peripherals=peripherals)
+            records.append(record)
+
+            if record.decision == "admitted":
+                self.proposed_claims.append({**proposal, "admission": len(self.claim_admission) + len(records) - 1})
+
+        return records
+
+    def _accept_claims(self, session: ResearchSession, items: Any) -> None:
+        """
+        Admit the planner's claim proposals (research/admission.py). After a
+        rejection, one bounded correction request shows the diagnostics; its
+        proposals are admitted the same way. Nothing bypasses admission, and
+        a run may end with no admitted claim.
+        """
+
+        self.proposed_claims = []
+        self.claim_admission = []
+        self.claim_admission = self._admit_round(session, items, 1)
+        rejected = [r for r in self.claim_admission if r.decision != "admitted"]
+
+        if rejected and self.max_claim_corrections > 0:
+            action, arguments = self._request_claim_correction(session, rejected)
+
+            if action == "finish":
+                self.claim_admission += self._admit_round(session, arguments.get("claims"), 2)
 
     # -- validation -------------------------------------------------------------
 
@@ -1251,7 +1334,8 @@ SEARCHES TRIED: {attempted}
 TASK: the step budget is exhausted; no further analysis is possible. Call
 finish now with your reason and claims: one line per evidence-backed
 conclusion, formatted '{CLAIM_FORMAT}', for example
-'STRONG RESOLUTION E2 <assertion>'.
+'PROBABLE BEHAVIOR E2 <assertion>'. Name functions exactly as FUN_xxxxxxxx.
+State only what the cited evidence shows; claims are graded PROBABLE.
 """,
                 state_chars,
             )
@@ -1273,6 +1357,55 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
             palette=palette,
             parse=parse,
             contract="final claims",
+            exhausted="planner_contract_exhausted",
+        )
+
+    def _request_claim_correction(self, session: ResearchSession, rejected: list[Any]) -> tuple[str, dict[str, Any]]:
+        """One finish-only request showing why proposals were not admitted."""
+
+        from aptrace_agent.research.admission import feedback
+
+        self._begin_decision()
+        palette = _Palette(tools=[self._finish_tool()])
+        diagnostics = feedback(rejected)
+
+        def prompt_for(palette: _Palette) -> tuple[str, int]:
+            state, state_chars = self._research_state(session)
+            return (
+                f"""OBJECTIVE: {self.projection.objective(session)}
+
+{state}
+
+APTrace did not admit these claims:
+{diagnostics}
+
+TASK: call finish once more with corrected claims, one per line, for
+example 'PROBABLE BEHAVIOR E2,E5 FUN_0000a000 <assertion>', or with no
+claims if the evidence does not support one. Claims without
+typed semantics are PROPOSED hypotheses: grade them PROBABLE and state only
+what the cited evidence shows. To leave out follow-up evidence, append
+'[omit E#: reason]' to the line.
+""",
+                state_chars,
+            )
+
+        def parse(palette: _Palette, name: str, arguments: dict[str, Any]):
+            if name == "finish" and isinstance(arguments.get("reason"), str) and arguments["reason"].strip():
+                return name, arguments
+
+            return "call finish with a non-empty reason"
+
+        return self._ask(
+            session,
+            phase="claim-correction",
+            system=(
+                "You concluded a bounded firmware research investigation. APTrace owns "
+                "evidence and verification. Make exactly one finish tool call."
+            ),
+            prompt_for=prompt_for,
+            palette=palette,
+            parse=parse,
+            contract="claim correction",
             exhausted="planner_contract_exhausted",
         )
 
@@ -1395,6 +1528,7 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
             reconciled=reconciled,
             planner_requests=tuple(self.planner_requests),
             proposed_claims=tuple(self.proposed_claims),
+            claim_admission=tuple(self.claim_admission),
         )
 
     def _fallback_lead(self, session: ResearchSession):
@@ -1496,7 +1630,7 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
 
                     if final == "finish":
                         self._record_conclusions(session, final_arguments)
-                        self.proposed_claims = self._sanitize_claims(final_arguments.get("claims"))
+                        self._accept_claims(session, final_arguments.get("claims"))
 
                 return self._result(action, steps, self._reconcile_terminal(session))
 
@@ -1509,7 +1643,7 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
                 self._record_conclusions(session, arguments)
 
                 if self.claim_contract:
-                    self.proposed_claims = self._sanitize_claims(arguments.get("claims"))
+                    self._accept_claims(session, arguments.get("claims"))
                 return self._result("planner_finished", steps, self._reconcile_terminal(session))
 
             if action == "search_case_evidence":
@@ -1537,6 +1671,6 @@ conclusion, formatted '{CLAIM_FORMAT}', for example
 
             if action == "finish":
                 self._record_conclusions(session, arguments)
-                self.proposed_claims = self._sanitize_claims(arguments.get("claims"))
+                self._accept_claims(session, arguments.get("claims"))
 
         return self._result("step_budget_exhausted", steps, self._reconcile_terminal(session))

@@ -229,6 +229,8 @@ class ContinuityTracker:
     refused: list[ReuseRefusal] = field(default_factory=list)
     # lead id -> (tool, arguments, description) for seeded leads
     seeded: dict[str, tuple[str, dict[str, Any], str]] = field(default_factory=dict)
+    # lead id -> anchor (function or query the seeded lead extends from)
+    anchors: dict[str, str] = field(default_factory=dict)
     # lead id -> (session evidence id, reused?, step)
     followed: dict[str, tuple[str, bool, int | None]] = field(default_factory=dict)
     failed: set[str] = field(default_factory=set)

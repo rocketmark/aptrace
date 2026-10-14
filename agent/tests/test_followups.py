@@ -10,6 +10,7 @@ bd 1.3.1 (work_support). Scenario letters follow the continuity spike.
 
 from __future__ import annotations
 
+import dataclasses
 import json
 import re
 from types import SimpleNamespace
@@ -169,8 +170,14 @@ class ScriptedPlanner:
         return ["\n".join(str(m.get("content") or "") for m in request["messages"]) for request in self.requests]
 
 
-def run_research(ledger, context, objective, work_item_id, *, planner, seeds=(), followup=None, executor=None, max_steps=4):
-    """The `research --ledger` path: controller run, then record_investigation."""
+def run_research(ledger, context, objective, work_item_id, *, planner, seeds=(), followup=None, executor=None, max_steps=4, pre_admission=False):
+    """
+    The `research --ledger` path: controller run, then record_investigation.
+
+    pre_admission records the planner's parsed claims as proposed, the way
+    runs were recorded before claim admission existed (the canonical
+    SERCOM0 run and its C9:v1 are such a run).
+    """
 
     registry = LeadRegistry()
     recorder = RecordingExecutor(executor or SerialExecutor())
@@ -184,6 +191,10 @@ def run_research(ledger, context, objective, work_item_id, *, planner, seeds=(),
 
     started = now()
     result = ResearchController(planner_client=planner, planner_model="scripted", reconciler=object(), max_steps=max_steps, claim_contract=True).run(session)
+
+    if pre_admission:
+        result = dataclasses.replace(result, proposed_claims=tuple(ResearchController._sanitize_claims(planner.claims)), claim_admission=())
+
     run = AutonomousInvestigationRun(objective=objective, seed_function=None, result=result, state=session.state.model_copy(deep=True), evidence=tuple(session.ledger.all()))
     return record_investigation(
         ledger, run, context=context(), recorder=recorder, model="scripted", execution_config={}, planner_version="test",
@@ -212,7 +223,7 @@ def world(tmp_path):
     planner = ScriptedPlanner(["L2", "L1", "L3", "L4"], ACCESS_CLAIM + "\n" + DEVICE_CLAIM)
     outcome = handoff.run_investigation(
         store, ledger, item.id, actor="tester", context=context(), lock_dir=locks,
-        investigate=lambda objective, work_item_id: run_research(ledger, context, objective, work_item_id, planner=planner, seeds=SEEDS),
+        investigate=lambda objective, work_item_id: run_research(ledger, context, objective, work_item_id, planner=planner, seeds=SEEDS, pre_admission=True),
     )
     run_a = ledger.run(outcome.run_id)
     claim, device = run_a.claim_versions
@@ -301,7 +312,7 @@ def test_scenario_b_no_gap_when_effects_show_an_mmio_access(tmp_path):
     ledger = ResearchLedger(tmp_path / "ledger")
     context = MutableContext()
     planner = ScriptedPlanner(["L2", "L1", "L3", "L4"], ACCESS_CLAIM)
-    run_id = run_research(ledger, context, "objective", None, planner=planner, seeds=SEEDS, executor=SerialExecutor(mmio=True))
+    run_id = run_research(ledger, context, "objective", None, planner=planner, seeds=SEEDS, executor=SerialExecutor(mmio=True), pre_admission=True)
     report = generate_followups(ledger, run_id, context=context(), deriver_for=deriver_for)
 
     assert not by_category(report, CLAIM_FOLLOWUP)

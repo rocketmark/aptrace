@@ -75,6 +75,15 @@ belong in each case's status document.
   evidence for a reuse, ranks its seeded leads first, withholds broad
   peripheral rediscovery while they are open, and bounds reuse and planner
   fallback in its step budget (`InvestigationRun.continuity`).
+- Admit planner claim proposals deterministically
+  ([`claim-admission.md`](claim-admission.md)): canonical, known entities
+  (no `E0000b4b4`, no session ids as subjects), typed semantics checked
+  against cited evidence, peripheral access/absence supported by
+  structured evidence, untyped claims at most PROBABLE, follow-up evidence
+  cited or its omission explained; one bounded correction round; rejected
+  proposals are recorded on the run with diagnostics and never become
+  claims. Typed `MMIO_USER` now requires an actual access; a constant-only
+  census entry is `ADDRESS_CONSTANT_LOADER`.
 
 ## Current limitations
 

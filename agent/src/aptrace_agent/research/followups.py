@@ -1070,6 +1070,7 @@ def seed_session(session: ResearchSession, candidate: FollowUpCandidate, *, hist
     for lead_id, lead in seeded:
         session.state.lead(lead_id).origin = source
         tracker.seeded[lead_id] = (lead.tool, dict(lead.arguments), lead.description)
+        tracker.anchors[lead_id] = lead.anchor
 
     for evidence_id in candidate.evidence_ids:
         artifact = _evidence(history.ledger, evidence_id)

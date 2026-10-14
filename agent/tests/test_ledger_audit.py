@@ -518,16 +518,25 @@ def test_claim_contract_records_sanitized_proposals():
         ],
     })
     controller = ResearchController(planner_client=planner, planner_model="m", reconciler=object(), claim_contract=True)
+    keys = ("subject", "assertion", "claim_type", "grade", "evidence_ids", "limitations")
 
-    result = controller.run(_session_with_lead())
-
-    assert result.proposed_claims == ({
+    assert [{k: c[k] for k in keys} for c in ResearchController._sanitize_claims(planner.finish_arguments["claims"])] == [{
         "subject": "cb", "assertion": "Callback resolves to 0x0000c724.", "claim_type": "RESOLUTION",
         "grade": "STRONG", "evidence_ids": ["E1", "7"], "limitations": [],
     }, {
         "subject": "", "assertion": "No census path connects A and B.", "claim_type": "NO_KNOWN_PATH",
         "grade": "PROBABLE", "evidence_ids": ["E2", "E3"], "limitations": [],
-    })
+    }]
+
+    result = controller.run(_session_with_lead())
+    first = [r for r in result.claim_admission if r.round == 1]
+
+    # Admission (research/admission.py): nothing malformed, untyped-STRONG, or
+    # referencing unknown evidence reaches the ledger; every item is recorded.
+    assert result.proposed_claims == ()
+    assert [r.decision for r in first] == ["unparseable"] * 3 + ["rejected"] * 2
+    assert {d.code for d in first[3].diagnostics} >= {"UNTYPED_GRADE", "EVIDENCE_REFERENCE_UNKNOWN"}
+    assert {d.code for d in first[4].diagnostics} == {"EVIDENCE_REFERENCE_UNKNOWN"}
 
 
 def test_recorder_maps_session_evidence_and_keeps_unknown_references(tmp_path):
@@ -599,8 +608,12 @@ def test_claim_contract_requests_final_claims_after_step_budget():
 
     assert result.stop_reason == "step_budget_exhausted"
     assert planner.tools[-1] == ["finish"]  # finish-only: no analysis offered
-    assert [c["assertion"] for c in result.proposed_claims] == ["a"]
-    assert [r["phase"] for r in result.planner_requests][-1] == "final-claims"
+    # The untyped STRONG proposal is recorded, not admitted (UNTYPED_GRADE).
+    assert result.proposed_claims == ()
+    assert result.claim_admission[0].assertion == "a" and result.claim_admission[0].decision == "rejected"
+    assert "UNTYPED_GRADE" in {d.code for d in result.claim_admission[0].diagnostics}
+    # One final-claims request, then exactly one bounded correction request.
+    assert [r["phase"] for r in result.planner_requests][-2:] == ["final-claims", "claim-correction"]
 
 
 def test_challenged_version_cannot_be_reaudited_into_verification(tmp_path):

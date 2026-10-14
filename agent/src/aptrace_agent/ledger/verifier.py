@@ -17,6 +17,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from aptrace_agent.ledger.claim_checks import entity_diagnostics
 from aptrace_agent.ledger.claim_semantics import SemanticCheck, verify_semantics
 from aptrace_agent.ledger.gate import (
     AGREEMENT_TOOL,
@@ -173,6 +174,14 @@ class ClaimVerifier:
         if not structural_ok:
             skip("B", "C", "P", "D")
             return self._finish(claim.key, previous, checks, replays, None, context, mode=mode, phases=phases, semantic=semantic, audit_skipped=True)
+
+        malformed = entity_diagnostics(f"{claim.subject} {claim.assertion}")
+        check(
+            "entity_identity",
+            not malformed,
+            BLOCK,
+            "; ".join(d.detail for d in malformed) if malformed else "identifiers are canonical",
+        )
 
         if claim.semantics is None:
             check("claim_semantics", True, HOLD, "no structured semantics; typed role/relation/scope checks not applicable")

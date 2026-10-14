@@ -125,6 +125,21 @@ def follow_up(world, planner, *, history=True, context=None, candidate=None, see
     return recorded, executor, session, controller
 
 
+def first_new_evidence(world, candidate=None) -> int:
+    """Session number of the first evidence a follow-up executes (after its preloads)."""
+
+    candidate = candidate or generate(world).shortlist[0]
+    history = HistoricalOperations.for_followup(world.ledger, world.context(), candidate)
+    preloads = 0
+
+    for evidence_id in candidate.evidence_ids:
+        artifact = world.ledger.evidence(evidence_id)
+        decision = history.lookup(artifact.tool, artifact.arguments)
+        preloads += bool(decision and decision.reusable)
+
+    return preloads + 1
+
+
 def executed(executor, tool):
     return [arguments for name, arguments in executor.calls if name == tool]
 
@@ -303,8 +318,9 @@ def test_f_free_reuses_are_capped_then_charged(world):
 
 def test_g_reuse_creates_no_new_observation_and_keeps_original_provenance(world):
     before = {p: h for p, h in snapshot(world.root).items() if p.startswith(("invocations/", "evidence/", "blobs/"))}
-    # Claim cites E1, the preloaded census alias, and E-new from a seeded call site.
-    planner = Planner([("follow", CALLERS[0][0])], claims=f"PROBABLE STRUCTURE E1 {GAP} loads the {PERIPHERAL} base address.")
+    # Claim cites E1, the preloaded census alias, and the seeded call site it followed.
+    new = first_new_evidence(world)
+    planner = Planner([("follow", CALLERS[0][0])], claims=f"PROBABLE STRUCTURE E1,E{new} {GAP} loads the {PERIPHERAL} base address.")
     run, _executor, _session, _ = follow_up(world, planner, max_steps=1)
     reused = {r.evidence_id for r in run.continuity.reused}
     census = next(r for r in run.continuity.reused if r.tool == "census_peripheral_usage")
@@ -318,7 +334,7 @@ def test_g_reuse_creates_no_new_observation_and_keeps_original_provenance(world)
     assert all(after[p] == h for p, h in before.items())
     # A claim citing the session alias cites the original evidence.
     claim = world.ledger.claim(run.claim_versions[0])
-    assert claim.supporting_evidence_ids == [census.evidence_id]
+    assert claim.supporting_evidence_ids == [census.evidence_id, run.evidence_ids[0]]
     assert world.ledger.evidence(census.evidence_id).invocation_id == census.invocation_id
 
 
@@ -369,7 +385,8 @@ def test_planner_failure_after_followup_work_still_requests_final_claims(world):
     # Two valid follows, then the planner only emits invalid calls; once no
     # follow-up lead is left to fall back on, the run ends but is asked for claims.
     invalid = [("call", "no_such_tool", {})] * 20
-    planner = Planner([("follow", CALLERS[0][0]), ("follow", CALLERS[1][0]), *invalid], claims=f"PROBABLE STRUCTURE E9 {GAP} is called by {CALLERS[0][0]}.")
+    new = first_new_evidence(world)
+    planner = Planner([("follow", CALLERS[0][0]), ("follow", CALLERS[1][0]), *invalid], claims=f"PROBABLE STRUCTURE E{new},E{new + 1} {GAP} is called by {CALLERS[0][0]} and {CALLERS[1][0]}.")
 
     def no_fallback(session):
         session.continuity.max_fallbacks = 0

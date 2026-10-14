@@ -196,6 +196,42 @@ class ContinuityRecord(_Record):
     budget: dict[str, int] = Field(default_factory=dict)
 
 
+class ClaimDiagnostic(_Record):
+    """One finding of claim admission (or a phase-B identity check)."""
+
+    # Stable identifier, e.g. ENTITY_MALFORMED (see ledger/claim_checks.py).
+    code: str
+    # reject: the proposal is not admitted; note: recorded, not blocking.
+    severity: str
+    detail: str
+    value: str | None = None
+    evidence_ids: list[str] = Field(default_factory=list)
+    # structured (evidence fields) | pattern-matched (assertion wording)
+    basis: str = "structured"
+
+
+class ClaimAdmission(_Record):
+    """
+    The admission decision for one model claim proposal. Rejected proposals
+    never become claim versions; their original text and diagnostics stay
+    here. Admission is not verification: an admitted claim is PROPOSED.
+    """
+
+    round: int
+    raw: str
+    # admitted | rejected | unparseable
+    decision: str
+    assertion: str = ""
+    grade: str | None = None
+    claim_type: str | None = None
+    # Session references as proposed, and their durable evidence ids.
+    evidence_ids: list[str] = Field(default_factory=list)
+    durable_evidence_ids: list[str] = Field(default_factory=list)
+    omissions: dict[str, str] = Field(default_factory=dict)
+    diagnostics: list[ClaimDiagnostic] = Field(default_factory=list)
+    claim_version: str | None = None
+
+
 class InvestigationRun(_Record):
     schema_version: int = LEDGER_SCHEMA_VERSION
     run_id: str
@@ -234,12 +270,15 @@ class InvestigationRun(_Record):
     # Historical reuse, refusals, seeded-lead outcomes and budget of a
     # follow-up run. Absent on standalone and older runs.
     continuity: ContinuityRecord | None = None
+    # Admission decisions for the planner's claim proposals, admitted or
+    # not. Absent on runs recorded before claim admission existed.
+    claim_admission: list[ClaimAdmission] | None = None
 
     @model_serializer(mode="wrap")
     def _omit_unset_work_item(self, handler: SerializerFunctionWrapHandler) -> dict[str, Any]:
         data = handler(self)
 
-        for name in ("work_item_id", "followup", "continuity"):
+        for name in ("work_item_id", "followup", "continuity", "claim_admission"):
             if data.get(name) is None:
                 data.pop(name, None)
 
