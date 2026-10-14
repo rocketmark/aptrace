@@ -1,0 +1,248 @@
+{
+ "context_artifacts": {
+  "boot_recipe": "65ba68aee045bf11e1e011f6944d7ae9bf61dab044dc6d5d88ab1dbc67e9664b",
+  "call_observation": "5e96c502250637c8b1de5b597ca159047efb391e03e27445d8ccad82e35c85f1",
+  "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+  "ghidra_cache_identity": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e",
+  "ghidra_export": "2c80bf9dfade293e86a90f7a56e63792c68b9628dd06fd30c482d5c43fffc1f2",
+  "ghidra_seeds": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def",
+  "macaw_census": "d568cf00249fb3e29e918f9c34b27392ca8a55b0902d28822b1df1f867ad1814",
+  "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+  "unicorn_harness": "9bc5a364bcfd79b6c83601f2ae4cccf95f790fb7bb0eed89657461f0baefa69d"
+ },
+ "function": "FUN_0000b4b4",
+ "replay": {
+  "differences": [],
+  "input_drift": {},
+  "matches": true,
+  "original": "TI-9157504061097b61",
+  "replay": "TI-40eab59faec888dc",
+  "wall_seconds": 0.4
+ },
+ "run_id": "R-sercom0-semantic-v1",
+ "steps": [
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4"
+   },
+   "basis": "STATIC_DECODE",
+   "error": null,
+   "evidence_id": "EV-29fef5d8723a352a",
+   "grade": "EXACT",
+   "grade_basis": "decoded from the hash-verified firmware image",
+   "invocation_id": "TI-4b8b7cd48245d027",
+   "label": "callee-disassembly",
+   "limitations": [],
+   "status": "ok",
+   "summary": null,
+   "tool": "function_disassembly",
+   "wall_seconds": 0.004
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "specialize": {}
+   },
+   "basis": "SYMBOLIC_ALL_INPUTS",
+   "error": null,
+   "evidence_id": "EV-f9a9ae317433aceb",
+   "grade": "STRONG",
+   "grade_basis": "symbolic extraction, not solver-confirmed",
+   "invocation_id": "TI-c725c636844b8949",
+   "label": "callee-effects",
+   "limitations": [],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 effects [RAW complete; 14 blocks]: inputs r0; 4 reads, 0 writes at 4 sites, 0 calls\n  other: read @0xb4b4 addr<-r0; read @0xb4b6 0xb500(FLASH) [flash]; read @0xb4c4 0xb504(FLASH) [flash]; read @0xb4d8 0xb508(FLASH) [flash]\n  return r0 depends on r0+memory; [SOLVER] return in {0,1}: refuted\n  [SOLVER] 2 access(es) conditional on input-derived guards",
+   "tool": "function_effects",
+   "wall_seconds": 0.029
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4",
+    "specialize": {
+     "r0": 1073754112
+    }
+   },
+   "basis": "HYPOTHETICAL_SOLVER_SPECIALIZATION",
+   "error": null,
+   "evidence_id": "EV-d54391e40b4a6658",
+   "grade": "STRONG",
+   "grade_basis": "symbolic extraction, not solver-confirmed",
+   "invocation_id": "TI-7ea74a3b0694b86e",
+   "label": "callee-effects-hypothetical-sercom0",
+   "limitations": [
+    "HYPOTHETICAL_ARGUMENT_SPECIALIZATION"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 effects [RAW complete; 14 blocks]: inputs r0; 4 reads, 0 writes at 4 sites, 0 calls\n  other: read @0xb4b4 addr<-r0; read @0xb4b6 0xb500(FLASH) [flash]; read @0xb4c4 0xb504(FLASH) [flash]; read @0xb4d8 0xb508(FLASH) [flash]\n  return r0 depends on r0+memory; [SOLVER] return in {0,1}: refuted\n  [SOLVER] 2 access(es) conditional on input-derived guards\n  [SOLVER arg_r0 == 0x40003000] read @0xb4b4 -> 0x40003000 SERCOM0.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA guard=always-true",
+   "tool": "function_effects",
+   "wall_seconds": 0.004
+  },
+  {
+   "arguments": {
+    "address": "0x0000a068",
+    "after": 2,
+    "before": 6,
+    "function": "FUN_0000a064"
+   },
+   "basis": "STATIC_DECODE",
+   "error": null,
+   "evidence_id": "EV-63ef35a3f6cc05e4",
+   "grade": "EXACT",
+   "grade_basis": "decoded from the hash-verified firmware image",
+   "invocation_id": "TI-746fadeffaa11db1",
+   "label": "callsite 0x0000a068",
+   "limitations": [],
+   "status": "ok",
+   "summary": null,
+   "tool": "callsite_context",
+   "wall_seconds": 0.003
+  },
+  {
+   "arguments": {
+    "address": "0x0000a088",
+    "after": 2,
+    "before": 6,
+    "function": "FUN_0000a084"
+   },
+   "basis": "STATIC_DECODE",
+   "error": null,
+   "evidence_id": "EV-bb6e8e92df01c3b8",
+   "grade": "EXACT",
+   "grade_basis": "decoded from the hash-verified firmware image",
+   "invocation_id": "TI-21f04804e4e7e2ec",
+   "label": "callsite 0x0000a088",
+   "limitations": [],
+   "status": "ok",
+   "summary": null,
+   "tool": "callsite_context",
+   "wall_seconds": 0.003
+  },
+  {
+   "arguments": {
+    "address": "0x0000a0ac",
+    "after": 2,
+    "before": 6,
+    "function": "FUN_0000a0a8"
+   },
+   "basis": "STATIC_DECODE",
+   "error": null,
+   "evidence_id": "EV-12d72c59aeae1fd9",
+   "grade": "EXACT",
+   "grade_basis": "decoded from the hash-verified firmware image",
+   "invocation_id": "TI-18a59a30c3df56d0",
+   "label": "callsite 0x0000a0ac",
+   "limitations": [],
+   "status": "ok",
+   "summary": null,
+   "tool": "callsite_context",
+   "wall_seconds": 0.003
+  },
+  {
+   "arguments": {
+    "address": "0x0000b5c2",
+    "after": 2,
+    "before": 6,
+    "function": "FUN_0000b5bc"
+   },
+   "basis": "STATIC_DECODE",
+   "error": null,
+   "evidence_id": "EV-dc93502090c05def",
+   "grade": "EXACT",
+   "grade_basis": "decoded from the hash-verified firmware image",
+   "invocation_id": "TI-d30903cad1b1294c",
+   "label": "callsite 0x0000b5c2",
+   "limitations": [],
+   "status": "ok",
+   "summary": null,
+   "tool": "callsite_context",
+   "wall_seconds": 0.003
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b4b4"
+   },
+   "basis": "CALLER_GROUNDED_CONCRETE",
+   "error": null,
+   "evidence_id": "EV-a4451ac21f0b2d73",
+   "grade": "STRONG",
+   "grade_basis": "concrete execution under disclosed harness assumptions; observed contexts only",
+   "invocation_id": "TI-9157504061097b61",
+   "label": "caller-arguments",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b4b4 observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot; status ok]: 278 entries\n  0x0000a068 (FUN_0000a064) BL x4: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA); 0x20004c78(RAM)->*=0x43000400(SERCOM5.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA)\n  0x0000a088 (FUN_0000a084) BL x2: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA); 0x20004c78(RAM)->*=0x43000400(SERCOM5.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA)\n  0x0000a0ac (FUN_0000a0a8) BL x2: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA); 0x20004c78(RAM)->*=0x43000400(SERCOM5.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA)\n  0x0000b5c2 (FUN_0000b5bc) BL x270: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA); 0x20004c78(RAM)->*=0x43000400(SERCOM5.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA)\n  MMIO accesses from code in 0x0000b4b4..0x0000b4fe: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot', 450000 instructions; every static call site reached; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.401
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b5bc"
+   },
+   "basis": "CALLER_GROUNDED_CONCRETE",
+   "error": null,
+   "evidence_id": "EV-c6b9066ed03758d5",
+   "grade": "STRONG",
+   "grade_basis": "concrete execution under disclosed harness assumptions; observed contexts only",
+   "invocation_id": "TI-fdaeef2fbf5611c3",
+   "label": "caller-arguments FUN_0000b5bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b5bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot; status ok]: 270 entries\n  0x0000b6c2 (FUN_0000b6b4) BL x270: r0 0x20004c54(RAM)->*=0x41012000(SERCOM2.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA); 0x20004c78(RAM)->*=0x43000400(SERCOM5.I2CM.CTRLA/I2CS.CTRLA/SPIM.CTRLA/SPIS.CTRLA/USART_EXT.CTRLA/USART_INT.CTRLA)\n  0x0000b662 (FUN_0000b658): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b5bc..0x0000b64c: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot', 450000 instructions; 1 static call site(s) never reached: 0x0000b662; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.399
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000b658"
+   },
+   "basis": "CALLER_GROUNDED_CONCRETE",
+   "error": null,
+   "evidence_id": "EV-c704505bba5d6aa4",
+   "grade": "BOUNDED",
+   "grade_basis": "function not entered within the scenario bound",
+   "invocation_id": "TI-592e960160ead7b6",
+   "label": "caller-arguments FUN_0000b658",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY",
+    "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot; status ok]: 0 entries\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot', 450000 instructions; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.388
+  },
+  {
+   "arguments": {
+    "function": "FUN_0000c8bc"
+   },
+   "basis": "CALLER_GROUNDED_CONCRETE",
+   "error": null,
+   "evidence_id": "EV-ba8dbfddfb1e44cf",
+   "grade": "STRONG",
+   "grade_basis": "concrete execution under disclosed harness assumptions; observed contexts only",
+   "invocation_id": "TI-6be253d873d1f612",
+   "label": "caller-arguments FUN_0000c8bc",
+   "limitations": [
+    "CONCRETE_HARNESS_ASSUMPTIONS",
+    "FUNCTION_BOUNDARIES_HEURISTIC",
+    "OBSERVED_CONTEXTS_ONLY"
+   ],
+   "status": "ok",
+   "summary": "FUN_0000c8bc observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot; status ok]: 3 entries\n  0x0000b192 (FUN_0000b144) BL x1: r0 0x20004348(RAM)->*=0x00000000(?)\n  0x0000b1a2 (FUN_0000b144) BL x1: r0 0x20004644(RAM)->*=0x00000000(?)\n  0x0000b1b2 (FUN_0000b144) BL x1: r0 0x20004940(RAM)->*=0x00000000(?)\n  MMIO accesses from code in 0x0000c8bc..0x0000c90a: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot', 450000 instructions; every static call site reached; unobserved values or call sites are not thereby impossible",
+   "tool": "observed_call_arguments",
+   "wall_seconds": 0.395
+  }
+ ]
+}

@@ -1,0 +1,132 @@
+{
+ "basis": "CALLER_GROUNDED_CONCRETE",
+ "call_sites": [
+  {
+   "arguments": {},
+   "call_kind": null,
+   "call_site": "0x0000c84a",
+   "caller": "FUN_0000c7c0",
+   "hits": 0,
+   "static_target_match": null,
+   "status": "UNOBSERVED"
+  }
+ ],
+ "coverage": "observed contexts only: scenario 'boot', 450000 instructions; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+ "entry": "0x0000b658",
+ "function": "FUN_0000b658",
+ "harness_assumptions": [
+  {
+   "addr": "0x200052ec",
+   "detail": "RAM-resident millis/tick counter, advanced on an instruction-count cadence (not a real SysTick MMIO model) -- diagnosed by disassembling the real tick-reading functions.",
+   "kind": "fake_tick"
+  },
+  {
+   "addr": "0x4000140c",
+   "detail": "OSC32KCTRL.STATUS.XOSC32KRDY -- real hardware self-sets after its own preceding configuration write.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x40001010",
+   "detail": "OSCCTRL.STATUS.DFLLRDY -- same category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x40001040",
+   "detail": "OSCCTRL.DPLL0.DPLLSTATUS.{LOCK,CLKRDY} -- same category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x40001054",
+   "detail": "OSCCTRL.DPLL1.DPLLSTATUS.{LOCK,CLKRDY} -- same category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x43000400",
+   "detail": "SERCOM5.CTRLA/SYNCBUSY bit0 (SWRST) -- real hardware self-clears.",
+   "kind": "mmio_clear_bits"
+  },
+  {
+   "addr": "0x41012000",
+   "detail": "SERCOM2.CTRLA/SYNCBUSY bit0 (SWRST) -- same.",
+   "kind": "mmio_clear_bits"
+  },
+  {
+   "addr": "0x43000418",
+   "detail": "SERCOM5.INTFLAG.DRE -- set the moment the peripheral is enabled with nothing queued.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x41012018",
+   "detail": "SERCOM2.INTFLAG.DRE -- same.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x41004010",
+   "detail": "NVMCTRL.INTFLAG.DONE -- same completion-bit category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x00009dd4",
+   "detail": "Radio chip-ID probe stand-in: r0=0x12 at the post-SPI-read comparison, standing in for 'a radio module is present and answers with the value real firmware requires' -- a real external-device dependency, not internal chip state; scoped to exactly this one instruction.",
+   "kind": "force_reg"
+  },
+  {
+   "addr": "0x41008020",
+   "detail": "PORT.GROUP0.IN bit22 (PA22) held high -- disclosed GPIO-input boundary assumption for the startup reference/input routine's wait loop; no physical function claimed.",
+   "kind": "seed_mem"
+  },
+  {
+   "addr": "0x0000cd34",
+   "detail": "DWT->CYCCNT-based microsecond busy-wait helper -- Unicorn's zero-behavior MMIO model never advances DWT->CYCCNT, so this call would spin forever; stubbed to return immediately (structurally unrelated to the fake-tick mechanism).",
+   "kind": "stub_call"
+  },
+  {
+   "addr": "0x00800080",
+   "detail": "NVM Software Calibration Row -- a real, factory-programmed per-die area; mapped as a disclosed zero-filled placeholder, not a claim about true calibration values.",
+   "kind": "map_page"
+  }
+ ],
+ "mmio_in_function": {
+  "access_count": 0,
+  "accesses": [],
+  "extent": [
+   "0x0000b658",
+   "0x0000b6b0"
+  ],
+  "extent_source": "Ghidra function size (heuristic boundary)",
+  "log_truncated": false
+ },
+ "observed_entries": 0,
+ "planner_summary": "FUN_0000b658 observed arguments [CALLER_GROUNDED_CONCRETE; scenario boot; status ok]: 0 entries\n  0x0000c84a (FUN_0000c7c0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x0000b658..0x0000b6b0: 0\n  harness: 14 disclosed assumption(s); observed contexts only: scenario 'boot', 450000 instructions; 1 static call site(s) never reached: 0x0000c84a; unobserved values or call sites are not thereby impossible",
+ "provenance": {
+  "analysis": "observed_call_arguments",
+  "analysis_version": 1,
+  "engine": "Unicorn concrete execution of the case boot recipe (tools/unicorn/concrete.py)",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "static_call_sites": "Ghidra export call references (heuristic function boundaries)",
+  "summarizer": {
+   "analysis": "call_observation",
+   "analysis_version": 1
+  }
+ },
+ "run": {
+  "init_status": "complete",
+  "instructions_executed": 450000,
+  "milestones_reached": [
+   "0x00004328",
+   "0x00004c20",
+   "0x00005d44",
+   "0x00006190",
+   "0x000069d8",
+   "0x00007770",
+   "0x00008960",
+   "0x00009464",
+   "0x00009dd4"
+  ],
+  "recipe_gaps": [],
+  "recipe_reference": "autopilot868",
+  "stop_reason": "instruction limit reached"
+ },
+ "scenario": "boot",
+ "status": "ok"
+}
