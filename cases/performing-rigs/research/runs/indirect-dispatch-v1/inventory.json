@@ -1,0 +1,6368 @@
+{
+ "sites": [
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00005570",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000557c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_000056e8",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x000056fc",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_000056e8",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "ldr.w",
+   "instruction_shape": "mem-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x00005774",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00005810",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x00005814",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00005858",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "block": "0x0000585c",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000585c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00005c00",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x00005c2c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00006260",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "block": "0x00006266",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": false,
+    "unresolved_terminator": true
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x00006266",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "lcd_status_refresh__THIRD_PARTY",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "block": "0x0000751c",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": false,
+    "unresolved_terminator": true
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000751c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00007b8c",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x00007b9c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "ascii_dispatcher__CUSTOM",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x000087de",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "channel_event_monitor__CUSTOM",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "block": "0x00008a98",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": false,
+    "unresolved_terminator": true
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x00008a98",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_00009268",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "block": "0x000092da",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": false,
+    "unresolved_terminator": true
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x000092da",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000991a",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000991a",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x4"
+    ],
+    "function": "0x0000991a",
+    "resolver_vtable_offsets": [
+     "0x4"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x00009922",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000991a",
+      "kind": "argument"
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000991c",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000992a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_000099dc",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x000099dc",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x000099dc",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x000099e0",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x000099dc",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x000099dc",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x000099e4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x00009ade",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x00009ada",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x00009ae2",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000a314",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a314",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000a314",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "field_offset": 8,
+     "load_addr": "0x0000a32a",
+     "load_instruction": "ldr r3, [r0, #8]",
+     "pattern": "object-field",
+     "pointer": {
+      "arg": 0,
+      "function_entry": "0x0000a314",
+      "kind": "argument"
+     }
+    },
+    {
+     "field_offset": 12,
+     "load_addr": "0x0000a34a",
+     "load_instruction": "ldr r3, [r0, #0xc]",
+     "pattern": "object-field",
+     "pointer": {
+      "arg": 0,
+      "function_entry": "0x0000a314",
+      "kind": "argument"
+     }
+    },
+    {
+     "field_offset": 16,
+     "load_addr": "0x0000a360",
+     "load_instruction": "ldr r3, [r0, #0x10]",
+     "pattern": "object-field",
+     "pointer": {
+      "arg": 0,
+      "function_entry": "0x0000a314",
+      "kind": "argument"
+     }
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a340",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x8]: no materialized table base b has b + 0x8 at a slot-7/8 entry",
+     "[base + 0xc]: no materialized table base b has b + 0xc at a slot-7/8 entry",
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [],
+   "target_register": "r3",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a720",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a71c",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a72e",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a75a",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a754",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a768",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a794",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a78e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a7a2",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a7b4",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a7b0",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a7c2",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a7d4",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a7d0",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a7e2",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000a7e4",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a7e4",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x4"
+    ],
+    "function": "0x0000a7e4",
+    "resolver_vtable_offsets": [
+     "0x4"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a7e8",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a7e4",
+      "kind": "argument"
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a7e4",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a7ea",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a83c",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a83c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a83c",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a844",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a83c",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a83c",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a848",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 12,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a84a",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a84a",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a84a",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a85a",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a84a",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a856",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a868",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a86a",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a86a",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a86a",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a87a",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a86a",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a876",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a888",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a88a",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a88a",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a88a",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a89a",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a88a",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a896",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a8a8",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a8aa",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a8aa",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a8aa",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a8ba",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a8aa",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000a8b6",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a8c8",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a8ca",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a8ca",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a8ca",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a8da",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a8ca",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a8ce",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a8f6",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a8f8",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a8f8",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a8f8",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a90c",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a8f8",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a8fc",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a91a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": null,
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x00007514",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x00007514",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a932",
+     "load_instruction": "ldr r4, [r1]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 4,
+      "kind": "multiple",
+      "kinds": [
+       "constant"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r1, [r0]",
+     "table_pointer_load": "0x0000a926",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a942",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 8,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000ac29"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a948",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a944",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a94a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000a94c",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a94c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x0000a94c",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a950",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a94c",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a94c",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a952",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000a95e",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a95e",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x0000a95e",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a962",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a95e",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a95e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a964",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000a945"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a970",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a970",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x0000a970",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000a970",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a974",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a970",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a970",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a976",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000a945"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a982",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a982",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x0000a982",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000a982",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a986",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a982",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a982",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a988",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000a994",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a994",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x0000a994",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a998",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a994",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a994",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a99a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c93e"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000a9a6",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a9a6",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x10"
+    ],
+    "function": "0x0000a9a6",
+    "resolver_vtable_offsets": [
+     "0x10"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a9aa",
+     "load_instruction": "ldr r3, [r3, #0x10]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a9a6",
+      "kind": "argument"
+     },
+     "slot_index": 4,
+     "slot_offset": 16,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a9a6",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a9ac",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x10]: no materialized table base b has b + 0x10 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    16
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a9b8",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a9b8",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a9b8",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a9c2",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a9b8",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a9ba",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a9ca",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 12,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a9cc",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a9cc",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a9cc",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000a9cc",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a9d8",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a9cc",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a9ce",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a9e0",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000a9e2",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000a9e2",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000a9e2",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000a9ec",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000a9e2",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000a9e4",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000a9f4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": null,
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ae60",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000ae60",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000aa04",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000ae60",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldrd r3, r2, [r0]",
+     "table_pointer_load": "0x0000a9fe",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000aa0a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000aa0c",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000aa0c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000aa0c",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000aa1a",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000aa0c",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldrd r3, r2, [r0]",
+     "table_pointer_load": "0x0000aa14",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000aa20",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000aa22",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000aa22",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000aa22",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000aa30",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000aa22",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldrd r3, r2, [r0]",
+     "table_pointer_load": "0x0000aa2a",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000aa36",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000aa38",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000aa38",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000aa38",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000aa3e",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000aa38",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000aa38",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000aa42",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 12,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000aa44",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000aa44",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000aa44",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000aa44",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000aa54",
+     "load_instruction": "ldr r4, [r2]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000aa44",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000aa50",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000aa60",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000a76b"
+    ]
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000ad44",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ad44",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x2c"
+    ],
+    "function": "0x0000ad44",
+    "resolver_vtable_offsets": [
+     "0x2c"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000adac",
+     "load_instruction": "ldr r3, [r3, #0x2c]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000ad44",
+      "kind": "argument"
+     },
+     "slot_index": 11,
+     "slot_offset": 44,
+     "table_pointer_instruction": "ldr r3, [r4]",
+     "table_pointer_load": "0x0000ada8",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000adb4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x2c]: no materialized table base b has b + 0x2c at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    44
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000ae50",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ae50",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000ae50",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000ae58",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000ae50",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000ae50",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000ae5c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": null,
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000af9c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000af9c",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000af8c",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000af9c",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000af88",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000af90",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000af92",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000af92",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000af92",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000af96",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000af92",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000af92",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000af9a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_0000b070",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000b080",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000a7c5"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c768"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000b070",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b070",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x24"
+    ],
+    "function": "0x0000b070",
+    "resolver_vtable_offsets": [
+     "0x24"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "load_addr": "0x0000b0a6",
+     "load_instruction": "ldr r3, [r3, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b070",
+      "kind": "argument"
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b0a4",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0b0",
+     "load_instruction": "ldr r3, [r3, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b070",
+      "kind": "argument"
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b0ac",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0b8",
+     "load_instruction": "ldr r3, [r3, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b070",
+      "kind": "argument"
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b0b4",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0c0",
+     "load_instruction": "ldr r3, [r3, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b070",
+      "kind": "argument"
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b0bc",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0c8",
+     "load_instruction": "ldr r3, [r3, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b070",
+      "kind": "argument"
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b0c4",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b0aa",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    36
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c768"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000b070",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000b070",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x24"
+    ],
+    "function": "0x0000b070",
+    "resolver_vtable_offsets": [
+     "0x24"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r2",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "load_addr": "0x0000b0ce",
+     "load_instruction": "ldr r2, [r2, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000b0cc",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0da",
+     "load_instruction": "ldr r2, [r2, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000b0d6",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0e2",
+     "load_instruction": "ldr r2, [r2, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000b0de",
+     "table_pointer_offset": 0
+    },
+    {
+     "load_addr": "0x0000b0ea",
+     "load_instruction": "ldr r2, [r2, #0x24]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 9,
+     "slot_offset": 36,
+     "table_pointer_instruction": "ldr r2, [r0]",
+     "table_pointer_load": "0x0000b0e6",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b0d4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry",
+     "[base + 0x24]: no materialized table base b has b + 0x24 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    36
+   ],
+   "target_register": "r2",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 4,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x200020a0",
+     "0x2000213c",
+     "0x200021d8",
+     "0x20002274"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x0000acd9"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000b0f0",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b0f0",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000b0f0",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b0f6",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b0f0",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b0f0",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b0fa",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x00008c10",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x00008c10",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b206",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "constant",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r5]",
+     "table_pointer_load": "0x0000b202",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b20a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 2,
+    "r0_is_a_0x14900_object": false,
+    "r0_values": [
+     "0x20004160"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x00009a97"
+    ]
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000b216",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b216",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x4"
+    ],
+    "function": "0x0000b216",
+    "resolver_vtable_offsets": [
+     "0x4"
+    ]
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b228",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b216",
+      "kind": "argument"
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r4]",
+     "table_pointer_load": "0x0000b224",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b234",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000b242",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b242",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000b242",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000b242",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b244",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b242",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b242",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b246",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000b2a8",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b2a8",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000b2a8",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000b2b4",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b2ba",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b2a8",
+      "kind": "argument"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b2b4",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b2be",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000b702",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b702",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x4"
+    ],
+    "function": "0x0000b702",
+    "resolver_vtable_offsets": [
+     "0x4"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b70a",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b702",
+      "kind": "argument"
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b704",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b712",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000cb18"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000b754",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b754",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x14"
+    ],
+    "function": "0x0000b754",
+    "resolver_vtable_offsets": [
+     "0x14"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b760",
+     "load_instruction": "ldr r3, [r3, #0x14]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "arg": 0,
+      "function_entry": "0x0000b754",
+      "kind": "argument"
+     },
+     "slot_index": 5,
+     "slot_offset": 20,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b75e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b762",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x14]: no materialized table base b has b + 0x14 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    20
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c922"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000b890",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000b890",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0xc"
+    ],
+    "function": "0x0000b890",
+    "resolver_vtable_offsets": [
+     "0xc"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000b8a2",
+     "load_instruction": "ldr r3, [r3, #0xc]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "base": {
+       "def_addr": "0x0000b896",
+       "instruction": "ldr r3, [pc, #0xb0]",
+       "kind": "constant",
+       "value": "0x20004ca4"
+      },
+      "base_reg": "r3",
+      "def_addr": "0x0000b898",
+      "disp": 0,
+      "instruction": "ldr.w r0, [r3, r0, lsl #2]",
+      "kind": "load",
+      "mode": "indexed"
+     },
+     "slot_index": 3,
+     "slot_offset": 12,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000b89e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000b8a4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0xc]: no materialized table base b has b + 0xc at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    12
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000cb18"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000be18",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000be18",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x14"
+    ],
+    "function": "0x0000be18",
+    "resolver_vtable_offsets": [
+     "0x14"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000be60",
+     "load_instruction": "ldr r3, [r3, #0x14]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "base": {
+       "def_addr": "0x0000be56",
+       "instruction": "ldr r6, [pc, #0x94]",
+       "kind": "constant",
+       "value": "0x20004ca4"
+      },
+      "base_reg": "r6",
+      "def_addr": "0x0000be58",
+      "disp": 0,
+      "instruction": "ldr.w r0, [r6, r5, lsl #2]",
+      "kind": "load",
+      "mode": "indexed"
+     },
+     "slot_index": 5,
+     "slot_offset": 20,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000be5e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000be62",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x14]: no materialized table base b has b + 0x14 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    20
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c974"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000bf14",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000bf14",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x8"
+    ],
+    "function": "0x0000bf14",
+    "resolver_vtable_offsets": [
+     "0x8"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000bf1e",
+     "load_instruction": "ldr r3, [r3, #8]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "base": {
+       "def_addr": "0x0000bf14",
+       "instruction": "ldr r3, [pc, #0x1c]",
+       "kind": "constant",
+       "value": "0x20004ca4"
+      },
+      "base_reg": "r3",
+      "def_addr": "0x0000bf16",
+      "disp": 0,
+      "instruction": "ldr.w r0, [r3, r1, lsl #2]",
+      "kind": "load",
+      "mode": "indexed"
+     },
+     "slot_index": 2,
+     "slot_offset": 8,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000bf1c",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000bf20",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x8]: no materialized table base b has b + 0x8 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    8
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000c034",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000c034",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x4"
+    ],
+    "function": "0x0000c034",
+    "resolver_vtable_offsets": [
+     "0x4"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000c06a",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "base": {
+       "def_addr": "0x0000c05c",
+       "instruction": "ldr r3, [pc, #0xa0]",
+       "kind": "constant",
+       "value": "0x20004ca4"
+      },
+      "base_reg": "r3",
+      "def_addr": "0x0000c05e",
+      "disp": 0,
+      "instruction": "ldr.w r0, [r3, r6, lsl #2]",
+      "kind": "load",
+      "mode": "indexed"
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000c064",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000c070",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_0000c4b8",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000c4c2",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000c5cc",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000c5cc",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000c5cc",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000c6d6",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "base": {
+       "def_addr": "0x0000c69c",
+       "instruction": "ldr.w sb, [pc, #0x80]",
+       "kind": "constant",
+       "value": "0x20004ca4"
+      },
+      "base_reg": "sb",
+      "def_addr": "0x0000c6ce",
+      "disp": 0,
+      "instruction": "ldr.w r0, [sb, r5, lsl #2]",
+      "kind": "load",
+      "mode": "indexed"
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000c6d4",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000c6d8",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c7c0"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": null,
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": true,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000c74a",
+     "load_instruction": "ldr r3, [r3, #0x20]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "block-live-in",
+       "indirect-entry"
+      ]
+     },
+     "slot_index": 8,
+     "slot_offset": 32,
+     "table_pointer_instruction": "ldr r3, [r0]",
+     "table_pointer_load": "0x0000c744",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000c74c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x20] reaches slot 8 iff base = 0x00014900"
+    ],
+    "slots": [
+     "slot 8"
+    ],
+    "status": "CONDITIONALLY_POSSIBLE"
+   },
+   "slot_offsets": [
+    32
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000cbb0",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000cbb0",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000cb8e",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "indexed-table",
+   "patterns": [
+    {
+     "index_reg": "r4",
+     "load_addr": "0x0000cb8e",
+     "load_instruction": "ldr.w r3, [r8, r4, lsl #2]",
+     "pattern": "indexed-table",
+     "shift": 2,
+     "table_base": {
+      "def_addr": "0x0000cb76",
+      "instruction": "ldr.w r8, [pc, #0x34]",
+      "kind": "constant",
+      "value": "0x2000525c"
+     }
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000cb92",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "indexed load from a runtime table: entry content not derived"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r3",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "RESOLVED_RAM_FUNCTION_POINTER",
+   "census_function": "FUN_0000cc14",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000cc14",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000cc14",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": false,
+   "instruction": "bx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "constant-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000cc16",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "constant-slot",
+     "slot_addr": "0x200052e8",
+     "slot_region": "ram",
+     "slot_writers": 1,
+     "slot_writers_unresolved": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000cc1a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "RAM slot 0x200052e8: every census writer stores a constant that is not a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_0000d0ec",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000d106",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_0000d300",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "block": "0x0000d31e",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": false,
+    "unresolved_terminator": true
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000d31e",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000b1f4"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000d524",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000d524",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x4"
+    ],
+    "function": "0x0000d524",
+    "resolver_vtable_offsets": [
+     "0x4"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000d532",
+     "load_instruction": "ldr r3, [r3, #4]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "load"
+      ]
+     },
+     "slot_index": 1,
+     "slot_offset": 4,
+     "table_pointer_instruction": "ldr r3, [r4]",
+     "table_pointer_load": "0x0000d52e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000d536",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x4]: no materialized table base b has b + 0x4 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    4
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000c974"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000d54a",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000d54a",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x8"
+    ],
+    "function": "0x0000d54a",
+    "resolver_vtable_offsets": [
+     "0x8"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000d556",
+     "load_instruction": "ldr r3, [r3, #8]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "load"
+      ]
+     },
+     "slot_index": 2,
+     "slot_offset": 8,
+     "table_pointer_instruction": "ldr r3, [r4]",
+     "table_pointer_load": "0x0000d552",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000d55a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x8]: no materialized table base b has b + 0x8 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    8
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [
+    "0x0000ca58"
+   ],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000d566",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000d566",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [
+     "0x0"
+    ],
+    "function": "0x0000d566",
+    "resolver_vtable_offsets": [
+     "0x0"
+    ]
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "vtable-slot",
+   "patterns": [
+    {
+     "load_addr": "0x0000d572",
+     "load_instruction": "ldr r3, [r3]",
+     "pattern": "vtable-slot",
+     "receiver": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "load"
+      ]
+     },
+     "slot_index": 0,
+     "slot_offset": 0,
+     "table_pointer_instruction": "ldr r3, [r4]",
+     "table_pointer_load": "0x0000d56e",
+     "table_pointer_offset": 0
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000d576",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x0]: no materialized table base b has b + 0x0 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [
+    0
+   ],
+   "target_register": "r3",
+   "target_resolution_status": "CONDITIONALLY_POSSIBLE",
+   "vtable_like": true
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000e29c",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "udf",
+   "instruction_shape": "unknown",
+   "macaw": {
+    "block": "0x0000e344",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": false,
+    "unresolved_terminator": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000e344",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000e5d0",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "STATICALLY_ESTABLISHED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000e5d0",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000e5d0",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000e5f4",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "pointer-iteration",
+   "patterns": [
+    {
+     "cursor": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "constant",
+       "unknown"
+      ]
+     },
+     "load_addr": "0x0000e5f4",
+     "load_instruction": "ldr r3, [r5], #4",
+     "pattern": "pointer-iteration",
+     "stride": 4
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000e5f8",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "walks a pointer array: entry content not derived"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r3",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 9,
+    "r0_is_a_0x14900_object": true,
+    "r0_values": [
+     "0x20002274",
+     "0x20004148",
+     "0x20004160",
+     "0x200041e4",
+     "0x20004940",
+     "0x88000000"
+    ],
+    "receiver_is_a_0x14900_object": false,
+    "targets": [
+     "0x00004289",
+     "0x00007e41",
+     "0x0000950d",
+     "0x000097f5",
+     "0x00009f3d",
+     "0x0000a259",
+     "0x0000b145",
+     "0x0000b821",
+     "0x0000c731"
+    ]
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "census_function": "FUN_0000e5d0",
+   "containing_function_census_reachability": "DEFINITELY_REACHABLE",
+   "containing_reachability": "OBSERVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000e5d0",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000e5d0",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": false,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "block": "0x0000e5fe",
+    "callees": [],
+    "discovered": true,
+    "indirect_call": true,
+    "unresolved_terminator": false
+   },
+   "pattern": "pointer-iteration",
+   "patterns": [
+    {
+     "cursor": {
+      "count": 2,
+      "kind": "multiple",
+      "kinds": [
+       "constant",
+       "unknown"
+      ]
+     },
+     "load_addr": "0x0000e5fe",
+     "load_instruction": "ldr r3, [r5], #4",
+     "pattern": "pointer-iteration",
+     "stride": 4
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0000e602",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "walks a pointer array: entry content not derived"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r3",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block limit 64"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000ee38",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)",
+     "target derivation unknown (block limit 64)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000ee60",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000ee80",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000eeb4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000eed0",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000eef0",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000ef14",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000efae",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000efc4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000efd4",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000efee",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f000",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f01a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f02c",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f04e",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f05e",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000ec48",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000ec48",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000ec48",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r7",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000ec48",
+     "pattern": "argument"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block limit 64"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f092",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)",
+     "target derivation unknown (block limit 64)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r7",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000f0b4",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "UNKNOWN",
+   "ghidra_block_function": "0x0000f0b4",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000f0b4",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r8",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "unresolved",
+   "patterns": [
+    {
+     "pattern": "unresolved",
+     "reason": "stack slot (spilled or restored value)"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f114",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "target derivation unknown (stack slot (spilled or restored value))"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r8",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000f0b4",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "UNKNOWN",
+   "ghidra_block_function": "0x0000f0b4",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000f0b4",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r8",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "unresolved",
+   "patterns": [
+    {
+     "pattern": "unresolved",
+     "reason": "stack slot (spilled or restored value)"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f152",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "target derivation unknown (stack slot (spilled or restored value))"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r8",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0000f0b4",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "UNKNOWN",
+   "ghidra_block_function": "0x0000f0b4",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000f0b4",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r8",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "unresolved",
+   "patterns": [
+    {
+     "pattern": "unresolved",
+     "reason": "stack slot (spilled or restored value)"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f184",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "target derivation unknown (stack slot (spilled or restored value))"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r8",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_0000f190",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "ldr.w",
+   "instruction_shape": "mem-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f1cc",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000f190",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000f190",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r10",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000f190",
+     "pattern": "argument"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f396",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r10",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "PARTIAL",
+   "ghidra_block_function": "0x0000f190",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0000f190",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r10",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "multiple",
+   "patterns": [
+    {
+     "arg": 3,
+     "function_entry": "0x0000f190",
+     "pattern": "argument"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "no recorded predecessor and not a known function entry"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    },
+    {
+     "pattern": "unresolved",
+     "reason": "block is the target of a code pointer; entries through it are not followed"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f3b6",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r3: its value is supplied by callers (not followed)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (no recorded predecessor and not a known function entry)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)",
+     "target derivation unknown (block is the target of a code pointer; entries through it are not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r10",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "STATICALLY_RESOLVED",
+   "census_function": "FUN_0000f6b0",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "NOT_APPLICABLE",
+   "ghidra_block_function": null,
+   "ghidra_decompiler": null,
+   "in_reported_56": false,
+   "instruction": "tbb",
+   "instruction_shape": "table-branch",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": null,
+   "patterns": [],
+   "register_loaded_from_memory": false,
+   "site": "0x0000f89a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "not a register-indirect transfer"
+    ],
+    "slots": [],
+    "status": "NOT_APPLICABLE"
+   },
+   "slot_offsets": [],
+   "target_register": null,
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0001026c",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0001026c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0001026c",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r6",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "object-field",
+   "patterns": [
+    {
+     "field_offset": 44,
+     "load_addr": "0x000102b6",
+     "load_instruction": "ldr r6, [r4, #0x2c]",
+     "pattern": "object-field",
+     "pointer": {
+      "arg": 1,
+      "function_entry": "0x0001026c",
+      "kind": "argument"
+     }
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x000102bc",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x2c]: no materialized table base b has b + 0x2c at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [],
+   "target_register": "r6",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0001026c",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0001026c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0001026c",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r6",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "object-field",
+   "patterns": [
+    {
+     "field_offset": 44,
+     "load_addr": "0x0001028c",
+     "load_instruction": "ldr r6, [r4, #0x2c]",
+     "pattern": "object-field",
+     "pointer": {
+      "arg": 1,
+      "function_entry": "0x0001026c",
+      "kind": "argument"
+     }
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x0001030a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x2c]: no materialized table base b has b + 0x2c at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [],
+   "target_register": "r6",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0001026c",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0001026c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0001026c",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r6",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "object-field",
+   "patterns": [
+    {
+     "field_offset": 40,
+     "load_addr": "0x0001034e",
+     "load_instruction": "ldr r6, [r4, #0x28]",
+     "pattern": "object-field",
+     "pointer": {
+      "arg": 1,
+      "function_entry": "0x0001026c",
+      "kind": "argument"
+     }
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x00010356",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "[base + 0x28]: no materialized table base b has b + 0x28 at a slot-7/8 entry"
+    ],
+    "slots": [],
+    "status": "EXCLUDED_WITHIN_ANALYSIS_SCOPE"
+   },
+   "slot_offsets": [],
+   "target_register": "r6",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": false,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": "FUN_0001059c",
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x0001059c",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x0001059c",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r8",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "argument",
+   "patterns": [
+    {
+     "arg": 1,
+     "function_entry": "0x0001059c",
+     "pattern": "argument"
+    }
+   ],
+   "register_loaded_from_memory": false,
+   "site": "0x000105d2",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "callback passed in r1: its value is supplied by callers (not followed)"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r8",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  },
+  {
+   "attribution_disagrees": true,
+   "boot": {
+    "executions": 0
+   },
+   "candidate_targets_0x14900": [],
+   "census_classification": "UNRESOLVED",
+   "census_function": null,
+   "containing_function_census_reachability": "NO_KNOWN_PATH",
+   "containing_reachability": "UNRESOLVED",
+   "derivation_status": "ESTABLISHED",
+   "ghidra_block_function": "0x00010e20",
+   "ghidra_decompiler": {
+    "agree": true,
+    "decompiler_vtable_offsets": [],
+    "function": "0x00010e20",
+    "resolver_vtable_offsets": []
+   },
+   "in_reported_56": true,
+   "instruction": "blx r3",
+   "instruction_shape": "reg-indirect",
+   "macaw": {
+    "discovered": false
+   },
+   "pattern": "indexed-table",
+   "patterns": [
+    {
+     "index_reg": "r1",
+     "load_addr": "0x00010de8",
+     "load_instruction": "ldr.w r3, [r2, r1, lsl #2]",
+     "pattern": "indexed-table",
+     "shift": 2,
+     "table_base": {
+      "base": {
+       "base": {
+        "def_addr": "0x00010e20",
+        "instruction": "ldr r3, [pc, #8]",
+        "kind": "constant",
+        "value": "0x2000022c"
+       },
+       "base_reg": "r3",
+       "def_addr": "0x00010e24",
+       "disp": 0,
+       "instruction": "ldr r0, [r3]",
+       "kind": "load",
+       "mode": "offset"
+      },
+      "base_reg": "r0",
+      "def_addr": "0x00010de4",
+      "disp": 68,
+      "instruction": "ldr r2, [r0, #0x44]",
+      "kind": "load",
+      "mode": "offset"
+     }
+    }
+   ],
+   "register_loaded_from_memory": true,
+   "site": "0x00010e1a",
+   "slot_7_8_relevance": {
+    "reasons": [
+     "indexed load from a runtime table: entry content not derived"
+    ],
+    "slots": [],
+    "status": "UNRESOLVED"
+   },
+   "slot_offsets": [],
+   "target_register": "r3",
+   "target_resolution_status": "UNRESOLVED",
+   "vtable_like": false
+  }
+ ]
+}

@@ -1,0 +1,231 @@
+{
+ "attribution_disagreements": [
+  "0x0000a942",
+  "0x0000aa0a",
+  "0x0000af90",
+  "0x0000b20a",
+  "0x0000cb92",
+  "0x0000f396",
+  "0x0000f3b6",
+  "0x00010e1a"
+ ],
+ "census_counts": [
+  {
+   "classification": "DYNAMICALLY_OBSERVED",
+   "count": 29,
+   "shape": "reg-indirect"
+  },
+  {
+   "classification": "RESOLVED_RAM_FUNCTION_POINTER",
+   "count": 1,
+   "shape": "reg-indirect"
+  },
+  {
+   "classification": "STATICALLY_RESOLVED",
+   "count": 2,
+   "shape": "mem-indirect"
+  },
+  {
+   "classification": "STATICALLY_RESOLVED",
+   "count": 16,
+   "shape": "table-branch"
+  },
+  {
+   "classification": "UNRESOLVED",
+   "count": 56,
+   "shape": "reg-indirect"
+  },
+  {
+   "classification": "UNRESOLVED",
+   "count": 1,
+   "shape": "unknown"
+  }
+ ],
+ "decompiler_disagreements": [],
+ "firmware": {
+  "flash_base": "0x00004000",
+  "key": "autopilot868",
+  "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+ },
+ "groups": [
+  {
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "count": 1,
+   "pattern": "multiple"
+  },
+  {
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "count": 1,
+   "pattern": "pointer-iteration"
+  },
+  {
+   "census_classification": "DYNAMICALLY_OBSERVED",
+   "count": 27,
+   "pattern": "vtable-slot"
+  },
+  {
+   "census_classification": "RESOLVED_RAM_FUNCTION_POINTER",
+   "count": 1,
+   "pattern": "constant-slot"
+  },
+  {
+   "census_classification": "STATICALLY_RESOLVED",
+   "count": 18,
+   "pattern": "NOT_APPLICABLE"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 1,
+   "pattern": "NOT_APPLICABLE"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 16,
+   "pattern": "argument"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 2,
+   "pattern": "indexed-table"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 6,
+   "pattern": "multiple"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 3,
+   "pattern": "object-field"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 1,
+   "pattern": "pointer-iteration"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 3,
+   "pattern": "unresolved"
+  },
+  {
+   "census_classification": "UNRESOLVED",
+   "count": 25,
+   "pattern": "vtable-slot"
+  }
+ ],
+ "inputs": {
+  "census_db_sha256": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+  "ghidra_decompile": {
+   "returncode": 0,
+   "stdout_sha256": "0757d6fc4993c028f4ae9da302808e3cbe37bd3674658f6066f261b91526a8bd"
+  },
+  "indirect_target_analysis": [
+   "indirect_target",
+   1
+  ],
+  "macaw_census_sha256": "d568cf00249fb3e29e918f9c34b27392ca8a55b0902d28822b1df1f867ad1814",
+  "slot_dispatch_version": 2,
+  "tool_sources": {
+   "boot_recipe": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10",
+   "fnptr_resolve": "801d4d028987a44dc29ef0c927a9e9ba7ce4110662a3ab944cce069b6ecbdb15",
+   "indexed_writes": "a18d1de509ba4e8d28c32e8a76dda87439b73e508623dfd619231afcad0c226c",
+   "indirect_resolve": "c63c11322beb3d77d1d83925286d9accd2d10b5a077db1fcefa6e9954726ee8c",
+   "indirect_target": "721702253788dd771e9294f1fac9ba2a10362ed213ab6ed19c674279acf852ae",
+   "investigation_script": "e4bb113c52e6fa45269b29a8c8b196263c703b67aa50dcbe56e3e5e303823613",
+   "slot_dispatch": "b5a14beb9fa51210e96c1a6435f26e35be3ddb5dea59886b2823b3710fe8d2f9",
+   "unicorn_harness": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee"
+  }
+ },
+ "question": "Can any register-indirect call dispatch through vtable 0x14900 slot 7 (+0x1c) or slot 8 (+0x20)?",
+ "reported_56": {
+  "also_unresolved_not_register_indirect": [
+   "0x0000e344"
+  ],
+  "count": 56,
+  "definition": "indirect_edge_resolutions with classification UNRESOLVED and instr_shape reg-indirect"
+ },
+ "resolver_limitations": [
+  "intraprocedural: argument and call-result values are not followed into callers or callees",
+  "predecessors are the census's resolved fallthrough/branch/cbranch edges; entries through an unresolved computed jump are invisible, and a block that is a code-pointer target is reported as an indirect entry",
+  "the containing function is Ghidra's body attribution, which can include tail-branched code of another function",
+  "a load's memory content is only read for immutable flash; RAM/MMIO words are runtime state",
+  "vtable candidates are computed only against the vtables supplied by the caller",
+  "a derivation is a possible target relationship, not an observed or reachable dispatch"
+ ],
+ "slot_7_8": {
+  "assumptions": [
+   "A1: a load reaches a table entry only through a base value that the image materializes as a constant (aligned word, movw/movt, adr); no pointer arithmetic forms a table pointer and no copy of the table or of its slot-7/8 words exists elsewhere",
+   "A2: the census inventory of indirect sites plus the halfword sweep cover the code that can transfer control (code decodable only from another alignment is not covered)",
+   "A3: each site's reaching definitions are the census blocks and resolved edges (bounded; incomplete results stay UNRESOLVED)"
+  ],
+  "conditionally_possible": [
+   "0x0000c74c"
+  ],
+  "excluded_within_analysis_scope": 58,
+  "unresolved": [
+   "0x0000cb92",
+   "0x0000e5f8",
+   "0x0000e602",
+   "0x0000ee38",
+   "0x0000ee60",
+   "0x0000ee80",
+   "0x0000eeb4",
+   "0x0000eed0",
+   "0x0000eef0",
+   "0x0000ef14",
+   "0x0000efae",
+   "0x0000efc4",
+   "0x0000efd4",
+   "0x0000efee",
+   "0x0000f000",
+   "0x0000f01a",
+   "0x0000f02c",
+   "0x0000f04e",
+   "0x0000f05e",
+   "0x0000f092",
+   "0x0000f114",
+   "0x0000f152",
+   "0x0000f184",
+   "0x0000f396",
+   "0x0000f3b6",
+   "0x000105d2",
+   "0x00010e1a"
+  ]
+ },
+ "slot_sweep": {
+  "analysis": "slot_dispatch_sweep",
+  "analysis_version": 2,
+  "basis": "static linear Thumb pattern sweep over every halfword offset (pattern-matched)",
+  "direct_branches": [],
+  "direct_calls": [],
+  "dispatch_sites": [
+   {
+    "branch": "0x0000c74c",
+    "branch_text": "bx r3",
+    "load": "0x0000c74a",
+    "load_text": "ldr r3, [r3, #0x20]",
+    "offset": 32
+   }
+  ],
+  "offsets": [
+   "0x1c",
+   "0x20"
+  ],
+  "targets": [
+   "0x0000c744",
+   "0x0000c7c0"
+  ],
+  "thumb_pointer_words": [
+   {
+    "location": "0x0001491c",
+    "value": "0x0000c745"
+   },
+   {
+    "location": "0x00014920",
+    "value": "0x0000c7c1"
+   }
+  ],
+  "window": 6
+ }
+}

@@ -305,9 +305,21 @@ Headline items still unresolved:
   observed call passes a RAM SERCOM object (SERCOM2/5), and the selecting
   RAM words never change after their constructor stores. The one
   unexecuted static path (`c7c0 → b658 → b5bc`) needs a vtable-`0x14900`
-  slot 7/8 dispatch for which no static site was found (pattern-matched).
-  Global negative not established. See
-  [`research/sercom0-scenario-observation-v2.md`](research/sercom0-scenario-observation-v2.md).
+  slot 7 (`0xc744`) or slot 8 (`0xc7c0`) dispatch.
+  - All 86 register-indirect sites were classified, including the census's
+    56 unresolved ones.
+  - Only the slot-7 thunk's own `bx r3` (`0xc74c`) can load slot 8.
+  - 58 sites are excluded within a stated scope; 27 are unresolved
+    (callbacks, stack spills, runtime tables).
+  - No direct transfer and no analyzed site enters `0xc744`.
+  - The three `0x14900` objects bind SERCOM3/4/1 objects, never SERCOM0's.
+    If the path ran, `b4b4` would read RAM.
+
+  The path is unestablished, not unreachable. Global negative not
+  established. See
+  [`research/sercom0-scenario-observation-v2.md`](research/sercom0-scenario-observation-v2.md)
+  and
+  [`research/indirect-dispatch-resolution-v1.md`](research/indirect-dispatch-resolution-v1.md).
 
 ## Tooling limitations that still matter
 

@@ -1,0 +1,539 @@
+{
+ "assumptions": [
+  {
+   "addr": "0x200052ec",
+   "detail": "RAM-resident millis/tick counter, advanced on an instruction-count cadence (not a real SysTick MMIO model) -- diagnosed by disassembling the real tick-reading functions.",
+   "kind": "fake_tick"
+  },
+  {
+   "addr": "0x4000140c",
+   "detail": "OSC32KCTRL.STATUS.XOSC32KRDY -- real hardware self-sets after its own preceding configuration write.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x40001010",
+   "detail": "OSCCTRL.STATUS.DFLLRDY -- same category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x40001040",
+   "detail": "OSCCTRL.DPLL0.DPLLSTATUS.{LOCK,CLKRDY} -- same category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x40001054",
+   "detail": "OSCCTRL.DPLL1.DPLLSTATUS.{LOCK,CLKRDY} -- same category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x43000400",
+   "detail": "SERCOM5.CTRLA/SYNCBUSY bit0 (SWRST) -- real hardware self-clears.",
+   "kind": "mmio_clear_bits"
+  },
+  {
+   "addr": "0x41012000",
+   "detail": "SERCOM2.CTRLA/SYNCBUSY bit0 (SWRST) -- same.",
+   "kind": "mmio_clear_bits"
+  },
+  {
+   "addr": "0x43000418",
+   "detail": "SERCOM5.INTFLAG.DRE -- set the moment the peripheral is enabled with nothing queued.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x41012018",
+   "detail": "SERCOM2.INTFLAG.DRE -- same.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x41004010",
+   "detail": "NVMCTRL.INTFLAG.DONE -- same completion-bit category.",
+   "kind": "mmio_force_bits"
+  },
+  {
+   "addr": "0x00009dd4",
+   "detail": "Radio chip-ID probe stand-in: r0=0x12 at the post-SPI-read comparison, standing in for 'a radio module is present and answers with the value real firmware requires' -- a real external-device dependency, not internal chip state; scoped to exactly this one instruction.",
+   "kind": "force_reg"
+  },
+  {
+   "addr": "0x41008020",
+   "detail": "PORT.GROUP0.IN bit22 (PA22) held high -- disclosed GPIO-input boundary assumption for the startup reference/input routine's wait loop; no physical function claimed.",
+   "kind": "seed_mem"
+  },
+  {
+   "addr": "0x0000cd34",
+   "detail": "DWT->CYCCNT-based microsecond busy-wait helper -- Unicorn's zero-behavior MMIO model never advances DWT->CYCCNT, so this call would spin forever; stubbed to return immediately (structurally unrelated to the fake-tick mechanism).",
+   "kind": "stub_call"
+  },
+  {
+   "addr": "0x00800080",
+   "detail": "NVM Software Calibration Row -- a real, factory-programmed per-die area; mapped as a disclosed zero-filled placeholder, not a claim about true calibration values.",
+   "kind": "map_page"
+  }
+ ],
+ "end_of_boot_ram_bases_reaching_slot_7_8_at_a_site_offset": [
+  {
+   "addr": "0x20004348",
+   "word": "0x00014900"
+  },
+  {
+   "addr": "0x20004644",
+   "word": "0x00014900"
+  },
+  {
+   "addr": "0x20004940",
+   "word": "0x00014900"
+  }
+ ],
+ "end_of_boot_ram_table_pointers_or_slot_7_8_copies": [
+  {
+   "addr": "0x20004348",
+   "word": "0x00014900"
+  },
+  {
+   "addr": "0x20004644",
+   "word": "0x00014900"
+  },
+  {
+   "addr": "0x20004940",
+   "word": "0x00014900"
+  }
+ ],
+ "instructions_executed": 450000,
+ "limits": [
+  "one scenario (boot), budget-bound",
+  "end-of-boot RAM only; a transient copy is not excluded",
+  "harness assumptions are listed; values are firmware-produced only within that harness"
+ ],
+ "object_fields_end_of_boot": [
+  {
+   "object": "0x20004348",
+   "this_0x10_at_end": "0x20004c60",
+   "vptr_at_end": "0x00014900",
+   "word_at_this_0x10_at_end": "0x41014000"
+  },
+  {
+   "object": "0x20004644",
+   "this_0x10_at_end": "0x20004c6c",
+   "vptr_at_end": "0x00014900",
+   "word_at_this_0x10_at_end": "0x43000000"
+  },
+  {
+   "object": "0x20004940",
+   "this_0x10_at_end": "0x20004c48",
+   "vptr_at_end": "0x00014900",
+   "word_at_this_0x10_at_end": "0x40003400"
+  }
+ ],
+ "per_site": [
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a7a2",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a7e2",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a848",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 12,
+   "r0_values": {
+    "0x200020a0": 3,
+    "0x2000213c": 3,
+    "0x200021d8": 3,
+    "0x20002274": 3
+   },
+   "site": "0x0000a868",
+   "targets": {
+    "0x0000acd9": 12
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a888",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a8a8",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a8c8",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a8f6",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a91a",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a942",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 8,
+   "r0_values": {
+    "0x200020a0": 2,
+    "0x2000213c": 2,
+    "0x200021d8": 2,
+    "0x20002274": 2
+   },
+   "site": "0x0000a94a",
+   "targets": {
+    "0x0000ac29": 8
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a976",
+   "targets": {
+    "0x0000a945": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a988",
+   "targets": {
+    "0x0000a945": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a9ca",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 12,
+   "r0_values": {
+    "0x200020a0": 3,
+    "0x2000213c": 3,
+    "0x200021d8": 3,
+    "0x20002274": 3
+   },
+   "site": "0x0000a9e0",
+   "targets": {
+    "0x0000acd9": 12
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000a9f4",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000aa0a",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000aa20",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000aa36",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000aa42",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 12,
+   "r0_values": {
+    "0x200020a0": 3,
+    "0x2000213c": 3,
+    "0x200021d8": 3,
+    "0x20002274": 3
+   },
+   "site": "0x0000aa60",
+   "targets": {
+    "0x0000acd9": 12
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000adb4",
+   "targets": {
+    "0x0000a76b": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000ae5c",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000af90",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000af9a",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000b0aa",
+   "targets": {
+    "0x0000a7c5": 4
+   }
+  },
+  {
+   "executions": 4,
+   "r0_values": {
+    "0x200020a0": 1,
+    "0x2000213c": 1,
+    "0x200021d8": 1,
+    "0x20002274": 1
+   },
+   "site": "0x0000b0fa",
+   "targets": {
+    "0x0000acd9": 4
+   }
+  },
+  {
+   "executions": 2,
+   "r0_values": {
+    "0x20004160": 2
+   },
+   "site": "0x0000b234",
+   "targets": {
+    "0x00009a97": 2
+   }
+  },
+  {
+   "executions": 9,
+   "r0_values": {
+    "0x20002274": 2,
+    "0x20004148": 1,
+    "0x20004160": 1,
+    "0x200041e4": 1,
+    "0x20004940": 2,
+    "0x88000000": 2
+   },
+   "site": "0x0000e602",
+   "targets": {
+    "0x00004289": 1,
+    "0x00007e41": 1,
+    "0x0000950d": 1,
+    "0x000097f5": 1,
+    "0x00009f3d": 1,
+    "0x0000a259": 1,
+    "0x0000b145": 1,
+    "0x0000b821": 1,
+    "0x0000c731": 1
+   }
+  }
+ ],
+ "recipe_gaps": [],
+ "recipe_reference": "autopilot868",
+ "scenario": "boot",
+ "site_offsets_checked": [
+  "0x0",
+  "0x4",
+  "0x8",
+  "0xc",
+  "0x10",
+  "0x14",
+  "0x20",
+  "0x24",
+  "0x28",
+  "0x2c"
+ ],
+ "sites_executed": 29,
+ "sites_executed_in_reported_56": 0,
+ "sites_watched": 86,
+ "sites_whose_r0_was_a_0x14900_object": [
+  "0x0000e602"
+ ],
+ "stop_reason": "instruction limit reached",
+ "vtable_sites_with_a_0x14900_receiver": 0,
+ "watch_hit_cap": 400000,
+ "watch_hits": 166
+}
