@@ -507,7 +507,8 @@ def build_machine(recipe, firmware_path, flash_base, ram_base, ram_size, mmio_ba
 
 
 def apply_recipe(machine, recipe, extra_watch=(), collect_coverage=True, log_ram=False, log_mmio=True,
-                   max_watch_hits=None, watch_reg_pointee=(), max_mmio_log=5000):
+                   max_watch_hits=None, watch_reg_pointee=(), max_mmio_log=5000, watch_mem_write=(),
+                   max_mem_write_log=2000, dump_mem=(), max_instructions=None):
     """Run `recipe` on `machine` (a fresh or reset ConcreteMachine),
     returning the RunResult. `extra_watch` is merged into the recipe's
     own milestone/steady-state watch list (e.g. currently-unresolved
@@ -529,7 +530,11 @@ def apply_recipe(machine, recipe, extra_watch=(), collect_coverage=True, log_ram
     milestone reproduction of the cited investigation) and remain
     default-on. Pass log_ram=True explicitly only for a short, already-
     validated run -- never for a boot capture without re-verifying
-    milestones match first."""
+    milestones match first.
+
+    `watch_mem_write`/`dump_mem` pass through to ConcreteMachine.run for
+    targeted field observation; `max_instructions` overrides the recipe's
+    own budget (None keeps it)."""
     watch = set(recipe.get("milestones", {}))
     if recipe.get("steady_state_addr") is not None:
         watch.add(recipe["steady_state_addr"])
@@ -550,9 +555,10 @@ def apply_recipe(machine, recipe, extra_watch=(), collect_coverage=True, log_ram
         seed_mem=[(a, b, "boot-recipe-seed") for a, b in recipe.get("seed_mem", ())],
         stub_calls=recipe.get("stub_calls", ()),
         watch=sorted(watch), max_watch_hits=max_watch_hits,
-        max_instructions=recipe.get("max_instructions", 300_000),
+        max_instructions=max_instructions or recipe.get("max_instructions", 300_000),
         collect_coverage=collect_coverage, log_ram=log_ram, log_mmio=log_mmio,
         watch_reg_pointee=watch_reg_pointee, max_mmio_log=max_mmio_log,
+        watch_mem_write=watch_mem_write, max_mem_write_log=max_mem_write_log, dump_mem=dump_mem,
         label="boot", fresh=True,
     )
 

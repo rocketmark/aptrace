@@ -640,11 +640,20 @@ class FollowUpGenerator:
     # (evidence id, run id). This is the ledger's own operation identity.
     def performed(self) -> dict[str, tuple[str, str]]:
         if self._performed is None:
-            self._performed = {
-                inv.operation_key: (inv.evidence_id, inv.run_id)
-                for inv in sorted(self.ledger.invocations(), key=lambda i: (i.started_at, i.invocation_id))
-                if inv.status == "ok" and inv.evidence_id
-            }
+            self._performed = {}
+            fw = self.context.firmware_sha256
+
+            for inv in sorted(self.ledger.invocations(), key=lambda i: (i.started_at, i.invocation_id)):
+                if inv.status != "ok" or not inv.evidence_id:
+                    continue
+
+                self._performed[inv.operation_key] = (inv.evidence_id, inv.run_id)
+                # A record keyed before argument defaults were canonicalized is
+                # also found under its canonical key, when its recorded key
+                # proves it was made for this firmware and these inputs.
+                if ResearchLedger._key(inv.tool, inv.arguments, inv.input_artifacts, fw) == inv.operation_key:
+                    canonical = ResearchLedger.operation_key(inv.tool, inv.arguments, inv.input_artifacts, fw)
+                    self._performed.setdefault(canonical, (inv.evidence_id, inv.run_id))
 
         return self._performed
 

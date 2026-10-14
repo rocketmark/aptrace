@@ -48,6 +48,7 @@ from aptrace_agent.ledger.models import (
 )
 from aptrace_agent.ledger.policy import current_policy
 from aptrace_agent.ledger.semantics import (
+    canonical_arguments,
     canonical_result,
     evidence_grade,
     evidence_limitations,
@@ -181,6 +182,25 @@ class ResearchLedger:
 
     @staticmethod
     def operation_key(tool: str, arguments: dict[str, Any], input_artifacts: dict[str, str], firmware_sha256: str) -> str:
+        """Identity of an operation; equivalent argument defaults are filled in first."""
+
+        return ResearchLedger._key(tool, canonical_arguments(tool, arguments), input_artifacts, firmware_sha256)
+
+    @staticmethod
+    def operation_keys(tool: str, arguments: dict[str, Any], input_artifacts: dict[str, str], firmware_sha256: str) -> set[str]:
+        """
+        Every key an equivalent historical record may carry: the canonical key
+        and the key of the arguments as recorded (records written before
+        defaults were canonicalized). Recorded keys are never rewritten.
+        """
+
+        return {
+            ResearchLedger.operation_key(tool, arguments, input_artifacts, firmware_sha256),
+            ResearchLedger._key(tool, arguments, input_artifacts, firmware_sha256),
+        }
+
+    @staticmethod
+    def _key(tool: str, arguments: dict[str, Any], input_artifacts: dict[str, str], firmware_sha256: str) -> str:
         return digest(
             {
                 "tool": tool,

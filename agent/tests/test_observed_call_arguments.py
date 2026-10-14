@@ -13,6 +13,7 @@ import subprocess
 import pytest
 
 from aptrace_agent.call_observation import (
+    ANALYSIS_VERSION,
     CALLER_GROUNDED,
     ObservationInputError,
     ObservedCallArgumentsRunner,
@@ -35,6 +36,11 @@ from aptrace_agent.research.history import HistoricalOperations
 
 from ledger_support import FIRMWARE, stack
 
+
+OBSERVATION_ARTIFACTS = {
+    "boot_recipe": "d" * 64, "unicorn_harness": "e" * 64, "call_observation": "f" * 64,
+    "observation_scenarios": "a" * 64, "observation_script": "b" * 64, "scenario_corpus": "c" * 64,
+}
 
 IMAGE = b"firmware-bytes"
 IMAGE_SHA = hashlib.sha256(IMAGE).hexdigest()
@@ -124,8 +130,8 @@ def test_observed_unobserved_and_dynamic_only_sites_are_distinguished(tmp_path):
     assert result.mmio_in_function["access_count"] == 0
     assert "heuristic" in result.mmio_in_function["extent_source"]
     assert [a["kind"] for a in result.harness_assumptions] == ["force_reg", "fake_tick"]
-    # The request carried only the entry and APTrace-derived extent.
-    assert harness.argv[0][-4:] == ["--entry", "0xb4b4", "--extent", "0xb4b4:0xb500"]
+    # The request carried only the entry, the (default) scenario and APTrace-derived extent.
+    assert harness.argv[0][-6:] == ["--entry", "0xb4b4", "--scenario", "boot", "--extent", "0xb4b4:0xb500"]
     text = planner_summary(result)
     assert "UNOBSERVED (not reached; not unreachable)" in text and "0x20004c54(RAM)->*=0x41012000" in text
 
@@ -197,7 +203,7 @@ def test_request_validation(tmp_path):
 
 def test_ledger_records_replays_and_keys_on_harness_inputs(tmp_path):
     ledger, executor, context, ops = stack(tmp_path)
-    context.artifacts.update({"boot_recipe": "d" * 64, "unicorn_harness": "e" * 64, "call_observation": "f" * 64})
+    context.artifacts.update(OBSERVATION_ARTIFACTS)
     doc = runner(tmp_path, FakeHarness(harness_doc())).observe("FUN_0000b4b4").model_dump(mode="json")
     executor.drift["observed_call_arguments"] = doc
 
@@ -222,7 +228,7 @@ def test_ledger_records_replays_and_keys_on_harness_inputs(tmp_path):
 
 def test_historical_reuse_requires_the_current_analysis_version(tmp_path):
     ledger, executor, context, ops = stack(tmp_path)
-    context.artifacts.update({"boot_recipe": "d" * 64, "unicorn_harness": "e" * 64, "call_observation": "f" * 64})
+    context.artifacts.update(OBSERVATION_ARTIFACTS)
     doc = runner(tmp_path, FakeHarness(harness_doc())).observe("FUN_0000b4b4").model_dump(mode="json")
     executor.drift["observed_call_arguments"] = doc
     _, artifact = ops.run("R-test", "observed_call_arguments", {"function": "FUN_0000b4b4"})
@@ -232,7 +238,7 @@ def test_historical_reuse_requires_the_current_analysis_version(tmp_path):
     assert decision is not None and decision.reusable
 
     newer = HistoricalOperations(ledger, context(), run_ids=[], evidence_ids=[artifact.evidence_id],
-                                 analysis_versions={"observed_call_arguments": 2})
+                                 analysis_versions={"observed_call_arguments": ANALYSIS_VERSION + 1})
     refused = newer.lookup("observed_call_arguments", {"function": "FUN_0000b4b4"})
     assert refused is not None and not refused.reusable and "analysis version" in refused.reason
 

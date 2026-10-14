@@ -1,0 +1,100 @@
+{
+ "description": "Scenarios observed_call_arguments may replay. Each id names an existing, documented concrete scenario; nothing here adds hardware behavior. 'firmware_keys' lists the images whose code the scenario executes; a scenario can only observe a function of an image it executes. Harness assumptions are recorded per run (the boot recipe's disclosed list, or each virtual-link leg's seeds, register seeds, stubs and forced state).",
+ "scenarios": {
+  "boot": {
+   "kind": "boot-recipe",
+   "firmware_keys": ["autopilot868"],
+   "source": "cases/performing-rigs/config/boot_recipes.py::AUTOPILOT_RECIPE (cites docs/investigations/boot-and-hardware-bringup.md)",
+   "entry_conditions": "Reset_Handler on a pristine machine; recipe assumptions applied for the whole run",
+   "termination": "recipe instruction budget (450,000) or the entry-watch cap"
+  },
+  "vl-ampersand": {
+   "kind": "virtual-link",
+   "runner": "run_ampersand_roundtrip",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_ampersand_roundtrip",
+   "entry_conditions": "mid-firmware leg entries (RX dispatcher, TX event dispatcher) on non-booted RAM with seeded packet state",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-g": {
+   "kind": "virtual-link",
+   "runner": "run_g_ack_roundtrip",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_g_ack_roundtrip",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded packet state and stubbed driver helpers",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-s": {
+   "kind": "virtual-link",
+   "runner": "run_s_roundtrip",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_s_roundtrip",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM; device-state bytes seeded to two values",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-bang": {
+   "kind": "virtual-link",
+   "runner": "run_bang_bulk_csv_roundtrip",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_bang_bulk_csv_roundtrip",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM, including fresh=False continuations",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-i": {
+   "kind": "virtual-link",
+   "runner": "run_i_channel_mode_roundtrip",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_i_channel_mode_roundtrip",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded channel/mode state",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-i9i1": {
+   "kind": "virtual-link",
+   "runner": "run_i9_i1_short_form_check",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_i9_i1_short_form_check",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded packet state",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-plus": {
+   "kind": "virtual-link",
+   "runner": "run_plus_target_distance_roundtrip",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_plus_target_distance_roundtrip",
+   "entry_conditions": "direct AAPCS calls and leg entries on non-booted RAM with carried and seeded state",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-plus-interactive": {
+   "kind": "virtual-link",
+   "runner": "run_plus_interactive_no_commit_check",
+   "firmware_keys": ["autopilot868", "mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_plus_interactive_no_commit_check",
+   "entry_conditions": "direct AAPCS calls on non-booted RAM with seeded state",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-manual-f0e0": {
+   "kind": "virtual-link",
+   "runner": "run_manual_mode_f0_e0_check",
+   "firmware_keys": ["autopilot868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_manual_mode_f0_e0_check",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded manual-mode records",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-pb05": {
+   "kind": "virtual-link",
+   "runner": "run_pb05_reload_motion_check",
+   "firmware_keys": ["autopilot868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_pb05_reload_motion_check",
+   "entry_conditions": "mid-firmware leg entries on non-booted RAM with a seeded persisted-record buffer",
+   "termination": "each leg's own stop address or instruction bound"
+  },
+  "vl-t-status": {
+   "kind": "virtual-link",
+   "runner": "run_t_status_feedback_check",
+   "firmware_keys": ["mando868"],
+   "source": "cases/performing-rigs/scripts/virtual_link.py::run_t_status_feedback_check",
+   "entry_conditions": "Remote-only legs; executes no AutoPilot code",
+   "termination": "each leg's own stop address or instruction bound"
+  }
+ }
+}

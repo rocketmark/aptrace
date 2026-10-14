@@ -290,6 +290,7 @@ class RunResult:
             "mmio_log": self.mmio_log,
             "stub_hits": self.stub_hits,
             "mem_write_hits": self.mem_write_hits,
+            "mem_write_dropped": self.mem_write_dropped,
             "fake_ticks_applied": self.fake_ticks_applied,
             "mmio_force_bits_applied": self.mmio_force_bits_applied,
             "mmio_clear_bits_applied": self.mmio_clear_bits_applied,
@@ -618,7 +619,7 @@ class ConcreteMachine:
 
         state = {
             "instructions": 0, "stop_reason": None, "watch_hits": [], "mmio_log": [], "stub_hits": [],
-            "mem_write_hits": [], "fake_tick_count": [0] * len(fake_tick),
+            "mem_write_hits": [], "mem_write_dropped": 0, "fake_tick_count": [0] * len(fake_tick),
             "mmio_force_count": [0] * len(mmio_force_bits),
             "mmio_clear_count": [0] * len(mmio_clear_bits),
             "force_reg_hits": [], "force_mem_hits": [],
@@ -759,7 +760,14 @@ class ConcreteMachine:
         def make_mem_write_hook(range_addr, range_len):
             def hook(uc_, access, address, size, value, _user_data):
                 if len(state["mem_write_hits"]) >= max_mem_write_log:
+                    state["mem_write_dropped"] += 1
                     return
+                # The hook fires before the store commits, so this reads the
+                # bytes being overwritten. mem_read fires no hooks.
+                try:
+                    previous = uc_.mem_read(address, size).hex()
+                except UcError:
+                    previous = None
                 state["mem_write_hits"].append({
                     "range": f"0x{range_addr:08x}:{range_len}",
                     "instruction": state["instructions"],
@@ -768,6 +776,7 @@ class ConcreteMachine:
                     "address": f"0x{address:08x}",
                     "size": size,
                     "value": f"0x{value:x}",
+                    "previous": previous,
                 })
             return hook
 
@@ -860,6 +869,7 @@ class ConcreteMachine:
             mmio_log=state["mmio_log"],
             stub_hits=state["stub_hits"],
             mem_write_hits=state["mem_write_hits"],
+            mem_write_dropped=state["mem_write_dropped"],
             fake_ticks_applied=[
                 {"addr": f"0x{addr:08x}", "period": period, "count": state["fake_tick_count"][i]}
                 for i, (addr, period) in enumerate(fake_tick)

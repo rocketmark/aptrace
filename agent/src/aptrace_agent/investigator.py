@@ -224,6 +224,17 @@ def run_autonomous_investigation(
                 "usb_inventory",
                 "common_paths",
                 "function_effects",
+                "observed_call_arguments",
+            ),
+            observation_scenarios=(
+                executor.observed_calls.supported_scenarios()
+                if hasattr(executor, "observed_calls")
+                else ()
+            ),
+            observation_note=(
+                executor.observed_calls.scenario_note()
+                if hasattr(executor, "observed_calls")
+                else ""
             ),
             claim_contract=claim_contract,
             max_claim_candidates=claim_candidates,

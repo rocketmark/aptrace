@@ -18,6 +18,7 @@ SUBSYSTEM_TOOLS = (
     "census_usb_inventory",
     "census_common_paths",
     "function_effects",
+    "observed_call_arguments",
 )
 
 # Per-function inspection tools, summarized as "already inspected".
@@ -38,6 +39,7 @@ _BASIS_TAGS = {
     "case-document": "case",
     "disassembly": "dis",
     "static-table": "table",
+    "concrete-observed": "OBS",
 }
 
 
@@ -268,6 +270,9 @@ def analysis_label(observation: EvidenceObservation) -> str | None:
         specs = args.get("specialize") or {}
         suffix = "".join(f",{k}={v}" for k, v in sorted(specs.items()))
         return f"effects {args.get('function')}{suffix}"
+
+    if observation.tool == "observed_call_arguments":
+        return f"observed {args.get('function')}@{args.get('scenario') or 'boot'}"
 
     if (
         observation.tool == "search_case_evidence"

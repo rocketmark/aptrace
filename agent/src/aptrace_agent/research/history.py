@@ -25,7 +25,10 @@ Reuse requires, in order (the first failure is the recorded reason):
 2. a successful historical invocation with stored evidence;
 3. the same firmware (sha256 and key) as the current context;
 4. identical input-artifact hashes for that tool, so the ledger's own
-   operation_key recomputed under the current context is equal;
+   operation_key recomputed under the current context is equal (arguments
+   are compared with equivalent defaults filled in, so an omitted default
+   and its explicit value are one operation; a record keyed before that
+   canonicalization still matches its recorded key);
 5. evidence still VALID (not invalidated by `ledger check`);
 6. the stored result present and passing its content-hash integrity check;
 7. for tools that declare an analysis version in their result, the same
@@ -51,6 +54,7 @@ from aptrace_agent.ledger.models import (
     ToolInvocation,
 )
 from aptrace_agent.ledger.operations import DETERMINISTIC_TOOLS, input_artifacts
+from aptrace_agent.ledger.semantics import canonical_arguments
 from aptrace_agent.ledger.store import EVIDENCE_VALID, ResearchLedger
 
 
@@ -72,7 +76,7 @@ def current_analysis_versions() -> dict[str, int]:
 
 
 def _operation(tool: str, arguments: dict[str, Any]) -> str:
-    return canonical_json({"tool": tool, "arguments": arguments})
+    return canonical_json({"tool": tool, "arguments": canonical_arguments(tool, arguments)})
 
 
 @dataclass(frozen=True)
@@ -177,9 +181,9 @@ class HistoricalOperations:
         if drift:
             return refuse(f"input artifacts differ: {', '.join(drift)}")
 
-        expected = ResearchLedger.operation_key(tool, invocation.arguments, current, self.context.firmware_sha256)
+        expected = ResearchLedger.operation_keys(tool, invocation.arguments, current, self.context.firmware_sha256)
 
-        if expected != invocation.operation_key:
+        if invocation.operation_key not in expected:
             return refuse("operation identity differs under the current context")
         if self.ledger.evidence_state(evidence.evidence_id) != EVIDENCE_VALID:
             return refuse(f"evidence {evidence.evidence_id} is {self.ledger.evidence_state(evidence.evidence_id)}")

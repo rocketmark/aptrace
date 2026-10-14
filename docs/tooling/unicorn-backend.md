@@ -23,6 +23,18 @@ caller-supplied regions. Pointee capture uses `mem_read`, which fires no
 memory hooks, so it never perturbs the MMIO model or logs. The agent exposes
 this as the `observed_call_arguments` ledger operation over a case scenario.
 
+The same module summarizes watched fields: `run(watch_mem_write=...)` records
+every CPU store to a small named range, with the bytes it overwrote (read in
+the write hook, before the store commits) and a count of stores the log
+could not hold (`mem_write_dropped`). `summarize_watched_writes` reports each
+store in run order with width, previous and new value, and the addressing
+form of the store instruction (`base+imm`, with the base compared to a
+declared object base when the field is not at offset 0; `base+reg`;
+`multiple`). `correlate_calls_with_fields` joins entry observations to those
+fields: which field an argument points into and whether it held its
+initialized value at each call. A field with no observed store was not
+written in that run; that is not evidence it cannot change.
+
 Concrete execution is authoritative for what a chosen input does in the modeled
 environment. It is not proof over all inputs, and a peripheral stand-in remains
 a harness assumption that must be disclosed.

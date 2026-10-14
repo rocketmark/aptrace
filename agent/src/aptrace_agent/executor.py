@@ -176,7 +176,11 @@ class EvidenceExecutor:
             result = effects.model_dump(mode="json")
 
         elif tool == "observed_call_arguments":
-            observed = self.observed_calls.observe(arguments["function"])
+            observed = self.observed_calls.observe(
+                arguments["function"],
+                arguments.get("scenario"),
+                arguments.get("watch"),
+            )
             observed.planner_summary = observation_summary(observed)
             result = observed.model_dump(mode="json")
 

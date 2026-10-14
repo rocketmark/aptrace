@@ -10,6 +10,7 @@ and bounded argument specializations.
 from __future__ import annotations
 
 import importlib.util
+import json
 import os
 from pathlib import Path
 
@@ -27,9 +28,7 @@ from aptrace_agent.interface_inventory import UsbInventoryReader
 _REPO_ROOT = PERFORMING_RIGS_CASE.parents[1]
 
 
-def _case_mmio_window() -> tuple[int, int]:
-    """The case's census MMIO window (performing_rigs.py CENSUS_MMIO_*)."""
-
+def _case_geometry():
     spec = importlib.util.spec_from_file_location(
         "aptrace_case_performing_rigs",
         PERFORMING_RIGS_CASE / "config" / "performing_rigs.py",
@@ -40,7 +39,21 @@ def _case_mmio_window() -> tuple[int, int]:
 
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
+    return module
+
+
+def _case_mmio_window() -> tuple[int, int]:
+    """The case's census MMIO window (performing_rigs.py CENSUS_MMIO_*)."""
+
+    module = _case_geometry()
     return int(module.CENSUS_MMIO_BASE, 0), int(module.CENSUS_MMIO_SIZE, 0)
+
+
+def _case_ram_window() -> tuple[int, int]:
+    """The case's census RAM window (performing_rigs.py CENSUS_RAM_*)."""
+
+    module = _case_geometry()
+    return int(module.CENSUS_RAM_BASE, 0), int(module.CENSUS_RAM_SIZE, 0)
 
 
 def _analysis_binary() -> Path:
@@ -102,13 +115,25 @@ def performing_rigs_function_effects(
 REPO_ROOT = PERFORMING_RIGS_CASE.parents[1]
 UNICORN_PYTHON = REPO_ROOT / "tools" / "unicorn" / ".venv" / "bin" / "python3"
 OBSERVE_CALLS_SCRIPT = PERFORMING_RIGS_CASE / "scripts" / "observe_call_arguments.py"
+OBSERVATION_SCENARIOS = PERFORMING_RIGS_CASE / "config" / "observation_scenarios.json"
 # Files whose content defines an observed_call_arguments result beyond the
-# firmware and census: the boot recipe and the concrete harness.
+# firmware and census: the scenario registry and the scenarios it names (boot
+# recipe, virtual-link corpus), the case observation script, and the concrete
+# harness and summarizer.
 OBSERVATION_INPUTS = {
     "boot_recipe": PERFORMING_RIGS_CASE / "config" / "boot_recipes.py",
     "unicorn_harness": REPO_ROOT / "tools" / "unicorn" / "concrete.py",
     "call_observation": REPO_ROOT / "tools" / "unicorn" / "call_observation.py",
+    "observation_scenarios": OBSERVATION_SCENARIOS,
+    "observation_script": OBSERVE_CALLS_SCRIPT,
+    "scenario_corpus": PERFORMING_RIGS_CASE / "scripts" / "virtual_link.py",
 }
+
+
+def performing_rigs_observation_scenarios() -> dict[str, dict]:
+    """The case's registered observation scenarios (id -> registry entry)."""
+
+    return json.loads(OBSERVATION_SCENARIOS.read_text())["scenarios"]
 
 
 def performing_rigs_observed_calls(
@@ -154,6 +179,8 @@ def performing_rigs_observed_calls(
         static_call_sites=static_call_sites,
         function_extent=function_extent,
         resolve_register=svd.resolve,
+        scenarios=performing_rigs_observation_scenarios(),
+        ram=_case_ram_window(),
     )
 
 MACAW_CENSUS_DIR = PERFORMING_RIGS_CASE / "research" / "runs" / "macaw"

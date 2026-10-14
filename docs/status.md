@@ -33,7 +33,29 @@ belong in each case's status document.
   reached are reported `UNOBSERVED`, not unreachable; evidence is labeled
   `CALLER_GROUNDED_CONCRETE` and carries the scenario's harness
   assumptions. Chosen-input `function_effects` specializations are labeled
-  `HYPOTHETICAL_ARGUMENT_SPECIALIZATION`.
+  `HYPOTHETICAL_ARGUMENT_SPECIALIZATION`. A request names one scenario from
+  the case's registry (unknown ids are rejected; the registry, the case
+  script and the scenario corpus are recorded inputs, so different scenarios
+  are different operations) and optionally at most 8 RAM fields of at most
+  16 bytes to watch: every store to them is reported with previous/new value
+  and addressing form, and argument values pointing into them are correlated
+  with that history. Limitations name the scenario, mid-firmware entry on
+  non-booted state, budget exhaustion, truncated stores, and that an
+  unobserved change is not immutability. The ResearchController offers it as
+  `observe_call_arguments(function, scenario)`: a known function and a
+  registered scenario only, at most two per session.
+- Equivalent argument defaults share an operation identity
+  (`ledger/semantics.py` `ARGUMENT_DEFAULTS`): `function_effects` with
+  `specialize` omitted, null or `{}` is one operation (the analysis maps all
+  three to no specialization); `observed_call_arguments` defaults to the
+  boot scenario and no watched fields. Recorded keys are never rewritten;
+  historical lookup also accepts a record's key as recorded.
+- Sweep an image for function-pointer table slot dispatch
+  (`tools/census/slot_dispatch.py`): every `ldr rX,[rY,#off]` feeding a
+  `blx`/`bx rX` for the requested slot offsets, every `BL` to the requested
+  targets, and every Thumb pointer word to them, over every halfword offset
+  regardless of function boundaries. Pattern-matched static evidence: a
+  slot with no site found is not thereby unreachable.
 - Resolve statically initialized RAM function pointers
   (`tools/census/fnptr_resolve.py`): an unresolved `bx`/`blx` whose target
   is loaded from one constant RAM slot, every known store to that slot a
@@ -112,9 +134,11 @@ belong in each case's status document.
   boundary is material to a conclusion.
 - Symbolic execution works best for targeted, already-understood regions; whole
   firmware replay is neither its purpose nor a supported workflow.
-- Caller-grounded observation covers only the contexts one scenario reaches
-  (currently the case boot recipe); it is not exposed to the planner, and it
-  reports immediate call sites only, not full calling contexts.
+- Caller-grounded observation covers only the contexts one registered
+  scenario reaches, and immediate call sites only, not full calling
+  contexts. Watched fields are explicit, bounded RAM ranges; there is no
+  general memory tracing, and stores starting before a watched range are not
+  captured. The planner cannot name watched fields.
 - Function effects do not resolve Thumb `tbb`/`tbh` jump tables or other
   computed transfers; these are modeled as opaque calls and the summary is
   marked `bounded`. Callee effects, write values, and loops are not

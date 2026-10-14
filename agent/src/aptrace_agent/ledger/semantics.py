@@ -39,6 +39,12 @@ OBSERVED_CONTEXTS_ONLY = "OBSERVED_CONTEXTS_ONLY"
 UNOBSERVED_CALL_SITES = "UNOBSERVED_CALL_SITES_NOT_UNREACHABLE"
 OBSERVATION_TRUNCATED = "OBSERVATION_TRUNCATED"
 HYPOTHETICAL_SPECIALIZATION = "HYPOTHETICAL_ARGUMENT_SPECIALIZATION"
+SCENARIO_SPECIFIC = "OBSERVED_UNDER_ONE_SCENARIO"
+NON_BOOTED_STATE = "SCENARIO_STARTS_MID_FIRMWARE"
+EXECUTION_BUDGET = "EXECUTION_BUDGET_BOUND"
+WATCH_ABSENCE = "NO_OBSERVED_WRITE_NOT_IMMUTABLE"
+WRITE_LOG_TRUNCATED = "WATCHED_WRITES_TRUNCATED"
+SCENARIO_FAILED = "SCENARIO_FAILED"
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 
@@ -99,6 +105,30 @@ def canonical_result(tool: str, result: dict[str, Any]) -> dict[str, Any]:
         result = _without(result, path)
 
     return result
+
+
+# Argument defaults whose omission is proven equivalent for that tool; an
+# operation's identity is computed over the defaulted form, so the omitted
+# and explicit spellings are one operation. Only listed tools are affected.
+#   function_effects.specialize: function_effects.validate_request maps None
+#     to {} and the executor passes `arguments.get("specialize") or {}`.
+#   observed_call_arguments.scenario/watch: call_observation.validate_request
+#     defaults them to the boot scenario and no watched fields.
+ARGUMENT_DEFAULTS: dict[str, dict[str, Any]] = {
+    "function_effects": {"specialize": {}},
+    "observed_call_arguments": {"scenario": "boot", "watch": []},
+}
+
+
+def canonical_arguments(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    """Arguments with the tool's equivalent defaults filled in (see ARGUMENT_DEFAULTS)."""
+
+    defaults = ARGUMENT_DEFAULTS.get(tool)
+
+    if not defaults:
+        return arguments
+
+    return {**arguments, **{k: v for k, v in defaults.items() if arguments.get(k) is None}}
 
 
 def _min_grade(*grades: EvidenceGrade) -> EvidenceGrade:
@@ -166,6 +196,9 @@ def evidence_grade(tool: str, result: dict[str, Any]) -> tuple[EvidenceGrade, st
 
     if tool == "observed_call_arguments":
         status = str(result.get("status", ""))
+
+        if status.startswith(("unsupported", "scenario_failed")):
+            return EvidenceGrade.UNKNOWN, f"observed call arguments {status}"
 
         if (status == "ok" or status.startswith("bounded")) and result.get("observed_entries"):
             return EvidenceGrade.STRONG, "concrete execution under disclosed harness assumptions; observed contexts only"
@@ -271,6 +304,44 @@ def evidence_limitations(tool: str, arguments: dict[str, Any], result: dict[str,
 
         if result.get("mmio_in_function") is not None:
             out[FUNCTION_BOUNDARIES] = "The MMIO cross-check extent is a Ghidra function boundary (heuristic)."
+
+        scenario = result.get("scenario") or arguments.get("scenario") or "boot"
+        config = result.get("scenario_config") or {}
+        run = result.get("run") or {}
+        out[SCENARIO_SPECIFIC] = (
+            f"Observed under scenario {scenario!r} only; other scenarios, longer executions and real hardware "
+            "may supply other values. A repeated run of the same scenario is not independent corroboration."
+        )
+
+        if config.get("kind") == "virtual-link":
+            out[NON_BOOTED_STATE] = (
+                f"Scenario {scenario!r} enters the firmware mid-execution on non-booted RAM with scenario-seeded "
+                "state; state that boot would produce is absent unless seeded."
+            )
+
+        if run.get("budget_exhausted") or run.get("budget_exhausted_legs"):
+            out[EXECUTION_BUDGET] = (
+                "Execution ended at its instruction budget; behavior after the budget was not observed."
+            )
+
+        watched = result.get("watched_fields") or {}
+        quiet = [f["name"] for f in watched.get("fields", []) if not f.get("changed_after_initialization")]
+
+        if quiet:
+            out[WATCH_ABSENCE] = (
+                f"No value change after initialization was observed for {', '.join(quiet)} during scenario "
+                f"{scenario!r} under its assumptions; this does not show the field cannot change."
+            )
+
+        if watched and not watched.get("complete", True):
+            out[WRITE_LOG_TRUNCATED] = f"Watched stores are incomplete: {watched.get('dropped_writes')} dropped."
+
+        if str(result.get("status", "")).startswith(("unsupported", "scenario_failed")):
+            out[SCENARIO_FAILED] = (
+                f"The scenario did not execute as registered ({result.get('status')}"
+                + (f": {result.get('scenario_failure')}" if result.get("scenario_failure") else "")
+                + "); nothing about the function is concluded."
+            )
 
     if tool == "search_case_evidence":
         out[DOCUMENTARY] = "Case documents are prior human findings, not firmware-derived evidence."

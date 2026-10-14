@@ -36,6 +36,7 @@ STRUCTURAL_TOOLS = (
     "usb_inventory",
     "common_paths",
     "function_effects",
+    "observed_call_arguments",
 )
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
@@ -64,6 +65,7 @@ _STRUCTURAL_SOURCES = {
     "census_usb_inventory",
     "census_common_paths",
     "function_effects",
+    "observed_call_arguments",
     "search_case_evidence",
 }
 
@@ -177,6 +179,9 @@ class ResearchController:
         structural_tools: Sequence[str] = (),
         max_effects_analyses: int = 3,
         max_path_analyses: int = 3,
+        observation_scenarios: Sequence[str] = (),
+        observation_note: str = "",
+        max_observations: int = 2,
         max_visible_leads: int = 6,
         prefill_retry_delay: float = 3.0,
         projection_budget: ProjectionBudget | None = None,
@@ -227,6 +232,11 @@ class ResearchController:
         self.structural_tools = tuple(structural_tools)
         self.max_effects_analyses = max_effects_analyses
         self.max_path_analyses = max_path_analyses
+        # APTrace-registered scenarios the planner may name for a concrete
+        # caller-argument observation; APTrace binds everything else.
+        self.observation_scenarios = tuple(dict.fromkeys(observation_scenarios))
+        self.observation_note = observation_note
+        self.max_observations = max_observations
         self.max_visible_leads = max_visible_leads
         self.prefill_retry_delay = prefill_retry_delay
         self.claim_contract = claim_contract
@@ -387,6 +397,24 @@ class ResearchController:
                     "Only when one function's dataflow is the open question: symbolic MMIO/RAM/return effects of a known FUN_; r0/r1 optionally fix arguments.",
                     {"function": {"type": "string"}, "r0": value, "r1": value},
                     ["function"],
+                )
+            )
+
+        if (
+            "observed_call_arguments" in self.structural_tools
+            and self.observation_scenarios
+            and len(self._executed(session, "observed_call_arguments")) < self.max_observations
+            and palette.known
+        ):
+            palette.tools.append(
+                _function_tool(
+                    "observe_call_arguments",
+                    "Only when the runtime argument values reaching a known FUN_ matter: concrete replay of one "
+                    "registered scenario, reporting the values each call site actually passed. Scenario-specific: "
+                    "values not observed are not excluded. For chosen (hypothetical) inputs use analyze_function_effects."
+                    + (f" Scenarios: {self.observation_note}." if self.observation_note else ""),
+                    {"function": {"type": "string"}, "scenario": {"type": "string", "enum": list(self.observation_scenarios)}},
+                    ["function", "scenario"],
                 )
             )
 
@@ -812,6 +840,32 @@ class ResearchController:
 
             return name, {"function": function, "specialize": specialize}
 
+        if name == "observe_call_arguments" and name in offered:
+            extra = sorted(set(arguments) - {"function", "scenario"})
+
+            if extra:
+                return f"observe_call_arguments accepts only function and scenario; rejected {', '.join(extra)}"
+
+            function = str(arguments.get("function", "")).strip()
+
+            if not _FUNCTION_RE.fullmatch(function) or function not in palette.known:
+                return "observe_call_arguments requires a FUN_ name already present in evidence"
+
+            scenario = arguments.get("scenario")
+
+            if scenario not in self.observation_scenarios:
+                return f"observe_call_arguments scenario must be one of {', '.join(self.observation_scenarios)}"
+
+            for observation in self._observations(session, "observed_call_arguments"):
+                if (
+                    observation.arguments.get("function") == function
+                    and (observation.arguments.get("scenario") or "boot") == scenario
+                ):
+                    palette.duplicate = name
+                    return f"{function} arguments under {scenario} were already observed in {observation.id}"
+
+            return name, {"function": function, "scenario": scenario}
+
         return None
 
     # -- planner I/O ------------------------------------------------------------
@@ -1102,7 +1156,8 @@ class ResearchController:
 
         structural = [
             name
-            for name in ("analyze_peripheral", "analyze_usb_interface", "find_common_paths", "analyze_function_effects")
+            for name in ("analyze_peripheral", "analyze_usb_interface", "find_common_paths", "analyze_function_effects",
+                         "observe_call_arguments")
             if name in names
         ]
 
@@ -1132,7 +1187,10 @@ class ResearchController:
             )
 
         if "analyze_function_effects" in structural:
-            order.append("analyze_function_effects if dataflow matters")
+            order.append("analyze_function_effects if dataflow matters (r0/r1 values are hypothetical)")
+
+        if "observe_call_arguments" in structural:
+            order.append("observe_call_arguments if the values callers actually pass matter (one scenario, observed only)")
 
         order += ["leads", "caller/callee expansion only for a specific question"]
 
@@ -1640,6 +1698,17 @@ answer any other question.
                 arguments=arguments,
             )
             return "effects", lead, observation
+
+        if action == "observe_call_arguments":
+            lead, observation = self._follow_new_lead(
+                session,
+                step=step,
+                kind="observation",
+                description=f"Observed call arguments of {arguments['function']} under scenario {arguments['scenario']}",
+                tool="observed_call_arguments",
+                arguments=arguments,
+            )
+            return "observation", lead, observation
 
         raise ValueError(f"not a structural action: {action}")
 

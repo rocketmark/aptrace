@@ -444,6 +444,44 @@ def _usb_inventory_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]
     return statements, questions
 
 
+def _observation_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    """Scoped facts of one caller-grounded observation: what one scenario showed, nothing more."""
+
+    status = str(result.get("status", ""))
+
+    if not (status == "ok" or status.startswith("bounded")):
+        return [], []
+
+    function = result.get("function")
+    scenario = result.get("scenario") or "boot"
+    sites = result.get("call_sites", [])
+    unreached = [f"{s.get('call_site')} ({s.get('caller')})" for s in sites if s.get("status") == "UNOBSERVED"]
+
+    if not result.get("observed_entries"):
+        return [(
+            "concrete-observed",
+            f"{function} was not entered under scenario {scenario} "
+            f"({(result.get('run') or {}).get('instructions_executed')} instructions); not thereby unreachable.",
+        )], []
+
+    values = sorted({(v["value"], v.get("register_name") or v.get("region") or "?") for s in sites
+                     for v in (s.get("arguments") or {}).get("r0", [])})
+    words = sorted({(v["pointee_word"], v.get("pointee_register_name") or v.get("pointee_word_region") or "?")
+                    for s in sites for v in (s.get("arguments") or {}).get("r0", []) if v.get("pointee_word")})
+    mmio = result.get("mmio_in_function")
+    statement = (
+        f"{function} under scenario {scenario}: {result.get('observed_entries')} observed calls passed r0 "
+        + ", ".join(f"{v}({r})" for v, r in values[:3])
+        + (f"; the word at r0 held {', '.join(f'{w}({r})' for w, r in words[:3])} (content, not an access)" if words else "")
+        + (f"; {mmio.get('access_count')} MMIO accesses from its code" if mmio else "")
+        + "; other scenarios and values are not excluded."
+    )
+    questions = [
+        f"Unobserved call site {site} of {function}: argument values unknown, not excluded." for site in unreached[:2]
+    ]
+    return [("concrete-observed", statement)], questions
+
+
 def _effects_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
     statements: list[tuple[str, str]] = []
 
@@ -620,6 +658,7 @@ class StateFactDeriver:
             "census_common_paths": _common_path_facts,
             "census_usb_inventory": _usb_inventory_facts,
             "function_effects": _effects_facts,
+            "observed_call_arguments": _observation_facts,
         }.get(observation.tool)
 
         if derived is not None:

@@ -29,6 +29,7 @@ class Claim(BaseModel):
     evidence_ids: list[str] = Field(default_factory=list)
     # Evidence level of the derivation, e.g. "census" (static structure),
     # "raw-symbolic" (Crucible extraction), "solver" (What4/Z3-proved),
+    # "concrete-observed" (one concrete scenario's observation, scoped to it),
     # "case-document". None for claims predating the field.
     basis: str | None = None
 

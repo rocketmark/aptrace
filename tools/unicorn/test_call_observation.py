@@ -31,6 +31,13 @@ SERCOM0 = 0x40003000
 
 CALLEE, CONST_ONLY, CALLER_RAM, CALLER_MMIO, TAIL, CALLER_TAIL = (
     FB, FB + 0x10, FB + 0x20, FB + 0x40, FB + 0x60, FB + 0x70)
+# WRITER initializes a RAM field (object base OBJ, field at +4) through the
+# object pointer, calls CALLEE with r0 at the field, rewrites the field with
+# an indexed store, calls again, then stores one byte into it.
+WRITER = FB + 0x90
+OBJ = RAM + 0x300
+FIELD = OBJ + 4
+UNWRITTEN = RAM + 0x310
 
 
 def check(name, condition, detail=""):
@@ -104,6 +111,22 @@ def image():
     put(CALLER_TAIL + 2, bl(CALLER_TAIL + 2, TAIL))
     put(CALLER_TAIL + 6, struct.pack("<H", NOP))
     put(CALLER_TAIL + 8, struct.pack("<I", RAM + 0x200))
+
+    w = WRITER
+    put(w, ldr_lit(w, 0, w + 0x20))                                          # r0 = OBJ
+    put(w + 0x02, ldr_lit(w + 0x02, 1, w + 0x24))                            # r1 = 0x40003000 (peripheral-like value)
+    put(w + 0x04, h(w + 0x04, 0x6041, "str r1, [r0, #4]"))                   # init through the object pointer
+    put(w + 0x06, h(w + 0x06, 0x3004, "adds r0, #4"))
+    put(w + 0x08, bl(w + 0x08, CALLEE))                                      # call 1: r0 = FIELD
+    put(w + 0x0C, ldr_lit(w + 0x0C, 0, w + 0x20))
+    put(w + 0x0E, h(w + 0x0E, 0x2204, "movs r2, #4"))
+    put(w + 0x10, ldr_lit(w + 0x10, 1, w + 0x28))                            # r1 = 0x41012000
+    put(w + 0x12, h(w + 0x12, 0x5081, "str r1, [r0, r2]"))                   # computed (indexed) store
+    put(w + 0x14, h(w + 0x14, 0x3004, "adds r0, #4"))
+    put(w + 0x16, bl(w + 0x16, CALLEE))                                      # call 2: after the change
+    put(w + 0x1A, h(w + 0x1A, 0x7042, "strb r2, [r0, #1]"))                  # 1-byte store into the field
+    put(w + 0x1C, struct.pack("<HH", NOP, NOP))
+    put(w + 0x20, struct.pack("<III", OBJ, SERCOM0, 0x41012000))
 
     buf = bytearray(0x100)
     for addr, data in code.items():
@@ -201,10 +224,101 @@ def test_unmapped_pointee_and_ordering():
     check("summary independent of unrelated hit order", again == summary)
 
 
+FIELDS = [{"name": "obj.f4", "address": FIELD, "size": 4, "object_base": OBJ},
+          {"name": "unwritten", "address": UNWRITTEN, "size": 4}]
+
+
+def read_code(addr):
+    off = addr - FB
+    return IMAGE[off:off + 4] if 0 <= off < len(IMAGE) else None
+
+
+def run_writer(machine, max_mem_write_log=2000):
+    res = machine.run(WRITER, stop_at=[WRITER + 0x1C], watch=[CALLEE], watch_reg_pointee=[("r0", 4)],
+                      watch_mem_write=[(f["address"], f["size"]) for f in FIELDS],
+                      max_mem_write_log=max_mem_write_log, dump_mem=[(f["address"], f["size"]) for f in FIELDS],
+                      log_mmio=True, max_instructions=200)
+    final = {f["name"]: res.mem(f["address"], f["size"]).hex() for f in FIELDS}
+    watched = CO.summarize_watched_writes(res.mem_write_hits, fields=FIELDS, read_code=read_code,
+                                          function_of=lambda pc: "WRITER" if pc >= WRITER else None,
+                                          final_bytes=final, dropped=res.mem_write_dropped)
+    return res, watched
+
+
+def test_watched_writes():
+    with tempfile.TemporaryDirectory() as d:
+        fw = Path(d) / "fw.bin"
+        fw.write_bytes(IMAGE)
+        m = ConcreteMachine(fw, flash_base=FB, ram_base=RAM, ram_size=0x30000, mmio_base=MMIO, mmio_size=0x100000)
+
+        print("test_watched_writes (address, width, previous/new, addressing form)")
+        res, watched = run_writer(m)
+        check("writer reached its end", res.stopped_at(WRITER + 0x1C), res.stop_reason)
+        field, unwritten = watched["fields"]
+        events = field["events"]
+        check("three stores to the field observed", len(events) == 3, events)
+        init, indexed, byte = events + [{}] * (3 - len(events))
+        check("init store: previous 0, new 0x40003000, first write",
+              (init.get("previous"), init.get("new"), init.get("changed"), init.get("first_write"))
+              == ("0x00000000", "0x40003000", True, True), init)
+        check("init store is base+imm through the object pointer",
+              init.get("addressing", {}).get("form") == "base+imm"
+              and init["addressing"].get("base_value") == f"0x{OBJ:08x}" and init["addressing"].get("object_relative") is True,
+              init.get("addressing"))
+        check("init store attributed to its pc and function",
+              init.get("pc") == f"0x{WRITER + 4:08x}" and init.get("function") == "WRITER", init)
+        check("indexed store observed as a computed (base+reg) address",
+              indexed.get("addressing", {}).get("form") == "base+reg"
+              and (indexed.get("previous"), indexed.get("new")) == ("0x40003000", "0x41012000"), indexed)
+        check("byte store: width 1 at field+1 with the byte it overwrote",
+              (byte.get("address"), byte.get("width"), byte.get("previous"), byte.get("new"))
+              == (f"0x{FIELD + 1:08x}", 1, "0x20", "0x04"), byte)
+        check("byte store base is not the object base", byte.get("addressing", {}).get("object_relative") is False,
+              byte.get("addressing"))
+        check("initialization is the first value-changing store",
+              field["initialization"] == {"leg": 0, "instruction": init.get("instruction"), "pc": f"0x{WRITER + 4:08x}",
+                                          "function": "WRITER", "new": "0x40003000"}, field["initialization"])
+        check("change after initialization reported", field["changed_after_initialization"] is True)
+        check("final bytes recorded", field["final_bytes"] == "00040141", field["final_bytes"])
+        check("unwritten field: no events, no initialization (absence only for this run)",
+              unwritten["writes"] == 0 and unwritten["initialization"] is None and unwritten["final_bytes"] == "00000000",
+              unwritten)
+        check("complete when no store was dropped", watched["complete"] is True and watched["dropped_writes"] == 0)
+
+        print("test_call_field_correlation (RAM read of a peripheral-looking word is not MMIO)")
+        groups = CO.correlate_calls_with_fields(res.watch_hits, entry=CALLEE, register="r0", watched=watched,
+                                                regions=REGIONS, read_halfword=read_halfword)
+        first = next((g for g in groups if g["call_site"] == f"0x{WRITER + 8:08x}"), {})
+        second = next((g for g in groups if g["call_site"] == f"0x{WRITER + 0x16:08x}"), {})
+        check("argument value lies in RAM, in the watched field",
+              first.get("value_region") == "RAM" and first.get("field") == "obj.f4", first)
+        check("the loaded word looks like SERCOM0 but is content, not an access",
+              first.get("pointee_words") == [{"word": f"0x{SERCOM0:08x}", "region": "MMIO"}], first)
+        check("no MMIO access although the RAM word holds a peripheral address", res.mmio_log == [], res.mmio_log)
+        check("first call saw the initialized value", first.get("field_state") == "initialized value unchanged at every call",
+              first)
+        check("second call saw a value changed after initialization",
+              second.get("field_state") == "changed after initialization before some calls", second)
+
+        print("test_write_log_truncation")
+        res, watched = run_writer(m, max_mem_write_log=1)
+        check("dropped stores counted", res.mem_write_dropped == 2, res.mem_write_dropped)
+        check("watch reported incomplete", watched["complete"] is False and watched["dropped_writes"] == 2, watched)
+
+        print("test_write_watch_is_passive")
+        plain = m.run(WRITER, stop_at=[WRITER + 0x1C], watch=[CALLEE], max_instructions=200, dump_mem=[(OBJ, 0x20)])
+        watched_run = m.run(WRITER, stop_at=[WRITER + 0x1C], watch=[CALLEE], max_instructions=200,
+                            dump_mem=[(OBJ, 0x20)], watch_mem_write=[(FIELD, 4)])
+        check("same instructions, registers and memory with and without the write watch",
+              (plain.instructions_executed, plain.registers, plain.mem(OBJ, 0x20))
+              == (watched_run.instructions_executed, watched_run.registers, watched_run.mem(OBJ, 0x20)))
+
+
 def main():
     test_decoder()
     test_concrete_runs()
     test_unmapped_pointee_and_ordering()
+    test_watched_writes()
     if FAILURES:
         print(f"\n{len(FAILURES)} FAILURE(S): {FAILURES}")
         sys.exit(1)
