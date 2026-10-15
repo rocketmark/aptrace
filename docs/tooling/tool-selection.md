@@ -11,6 +11,38 @@ answers the question and disclose the resulting evidence level.
 | What control flow does an independent lifter recover? | Macaw | static/discovery |
 | What input satisfies this bounded property? | Crucible + What4 + Z3 | solver-confirmed |
 
+## Engine ownership
+
+The ownership below was chosen in the
+[architecture evaluation](../spikes/architecture-evaluation.md) (decision B).
+These are defaults, not mandates. Choose by demonstrated capability,
+supported architecture, completeness and the question being asked.
+
+| Engine | Role | Current state |
+|---|---|---|
+| Ghidra | Primary structural discovery. Instruction semantics and intraprocedural dataflow over raw p-code, with the calling convention from the compiler spec. | Census structure: implemented. P-code dataflow: one operation, `value_forward_use`. Backward reaching definitions are still in Capstone-based census modules. |
+| Ghidra decompiler | A cross-check and a stack-resolution aid. It is not primary evidence: its output depends on heuristics and on configuration such as memory permissions. | Used to show C text only. |
+| Macaw | Independent discovery and lifting, and alternative semantic evidence. Its value is independence, so it is not the primary dataflow engine. | Upstream AArch32 discovery needs APTrace's `MacawExpand` repair. |
+| Crucible/What4/Z3 | Bounded input and reachability questions over Macaw. | `function_effects` still uses unrepaired Macaw discovery, so it fails early on functions it cannot classify (for example, an early `cbz`). |
+| Unicorn | Concrete observation under a stated harness state. It cannot establish an absence. | ARM Thumb/M-class mode is hard-coded; the architecture should become a parameter. |
+| APTrace | Orchestration, policy (shape and closing rules, verdicts, completeness), evidence normalization, provenance, comparison, admission and verification. | Engine-neutral ledger envelope. |
+
+### Custom instruction analysis
+
+About 2,800 lines in `tools/census/` interpret ARM instructions over Capstone
+operands, with hard-coded AAPCS sets. That is a second, ISA-specific semantics
+engine. Its retirement plan is [`pcode-migration.md`](pcode-migration.md).
+
+- New static analyses use engine semantics, p-code first.
+- Existing Python resolvers stay in service until a side-by-side comparison
+  establishes parity, or classifies every difference. A replacement is a new
+  analysis version; historical evidence keeps its identity.
+- Custom instruction interpretation is justified for a demonstrated engine
+  gap, or when its purpose is an independent cross-check of Ghidra's decoder
+  (`capstone_sweep.py`). Record which.
+- Agreement between Ghidra-derived paths shares Ghidra's boundaries. It is
+  repeatability, not independent corroboration.
+
 ## Operating rules
 
 - Use Ghidra for decompilation, references, tables, strings, globals, and MMIO
