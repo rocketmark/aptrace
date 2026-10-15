@@ -31,6 +31,30 @@ An application binds the operation to a target. The Performing Rigs wiring
 project's cache identity (`meta.json`: language, compiler spec, load base,
 firmware hash) and refuses a stale project.
 
+## Planner exposure (temporarily restricted)
+
+`value_forward_use` is implemented and usable: through the executor, ledger
+operations and replay, and by scripted controllers. Autonomous selection of
+its planner action, `trace_value_use`, is **off by default**. In live
+trials the local planner chose the tool correctly, but admission accepted
+untyped claims that merged two traces into false value-flow statements.
+Admission does not check value-flow assertions against these results yet
+(see the case's `pcode-forward-use-v1` note, §5).
+
+- It is listed in `EXPERIMENTAL_STRUCTURAL_TOOLS`
+  (`research/controller.py`). A controller offers an experimental tool only
+  when it is named in both `structural_tools` and `experimental_tools`.
+  Naming it in `structural_tools` alone is a `ValueError`.
+- Without opt-in, the action is not offered, a planner call to it is
+  rejected as an unexpected tool, and open leads that would run the
+  operation are not offered for following or fallback.
+- Explicit experimental use: `aptrace-agent research --experimental-tool
+  value_forward_use …`, or `run_autonomous_investigation(...,
+  experimental_tools=("value_forward_use",))`. Use a scratch ledger.
+
+Remove the restriction once deterministic value-flow claim admission is
+implemented and validated against these trials.
+
 ## Target and request
 
 The driver takes the target explicitly:

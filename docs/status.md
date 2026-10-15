@@ -115,9 +115,11 @@ belong in each case's status document.
   language, cspec, walker/driver hashes and the project identity; it grades
   a complete negative BOUNDED and an escape PROBABLE. It runs headless on a
   scratch copy of the project (about 2.5–3.5 s and under 400 MB per
-  invocation, almost all start-up). The ResearchController offers it as
+  invocation, almost all start-up). The ResearchController can offer it as
   `trace_value_use(origin)` for census code-pointer loads grounded in
-  evidence, at most two per session.
+  evidence, at most two per session, but only on explicit experimental
+  opt-in; it is off by default until admission checks value-flow claims
+  ([`tooling/pcode-forward-use.md`](tooling/pcode-forward-use.md#planner-exposure-temporarily-restricted)).
 - Trace a callback target one call boundary up
   (`tools/census/callback_provenance.py`, `trace_callback_argument`). When a
   register-indirect site's target is an incoming argument, the tool takes

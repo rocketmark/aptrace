@@ -42,6 +42,11 @@ STRUCTURAL_TOOLS = (
     "value_forward_use",
 )
 
+# Structural tools the planner is offered only on explicit opt-in
+# (`experimental_tools`). Admission cannot yet check the claims a planner
+# draws from their results; see docs/tooling/pcode-forward-use.md.
+EXPERIMENTAL_STRUCTURAL_TOOLS = ("value_forward_use",)
+
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 _SET_NAME_RE = re.compile(r"[A-Z][A-Z0-9_]{0,23}")
 _ADDRESS_RE = re.compile(r"\b0x([0-9a-fA-F]{1,8})\b")
@@ -192,6 +197,7 @@ class ResearchController:
         census_peripherals: Sequence[str] = (),
         max_structural_analyses: int = 4,
         structural_tools: Sequence[str] = (),
+        experimental_tools: Sequence[str] = (),
         max_effects_analyses: int = 3,
         max_path_analyses: int = 3,
         observation_scenarios: Sequence[str] = (),
@@ -222,6 +228,18 @@ class ResearchController:
         if unknown:
             raise ValueError(f"unknown structural tools: {', '.join(unknown)}")
 
+        not_experimental = sorted(set(experimental_tools) - set(EXPERIMENTAL_STRUCTURAL_TOOLS))
+
+        if not_experimental:
+            raise ValueError(f"not experimental structural tools: {', '.join(not_experimental)}")
+
+        unauthorized = sorted(set(structural_tools) & set(EXPERIMENTAL_STRUCTURAL_TOOLS) - set(experimental_tools))
+
+        if unauthorized:
+            raise ValueError(
+                f"experimental structural tools need explicit opt-in (experimental_tools): {', '.join(unauthorized)}"
+            )
+
         self.planner_client = planner_client or OpenAI(
             base_url=os.environ["OMLX_BASE_URL"],
             api_key=os.environ["OMLX_API_KEY"],
@@ -250,6 +268,9 @@ class ResearchController:
         self.census_peripherals = tuple(sorted(set(census_peripherals)))
         self.max_structural_analyses = max_structural_analyses
         self.structural_tools = tuple(structural_tools)
+        # Experimental tools not opted into: never offered, and leads that
+        # would run them are not offered for following either.
+        self.withheld_tools = frozenset(EXPERIMENTAL_STRUCTURAL_TOOLS) - set(self.structural_tools)
         self.max_effects_analyses = max_effects_analyses
         self.max_path_analyses = max_path_analyses
         # APTrace-registered scenarios the planner may name for a concrete
@@ -1428,7 +1449,14 @@ class ResearchController:
             return base, -number
 
         # Follow-up leads first: they are why this run exists.
-        ranked = sorted(session.state.open_leads(), key=lambda lead: (lead.origin is None, *rank(lead)))
+        def withheld(lead) -> bool:
+            try:
+                return session.registry.resolve(lead.id).tool in self.withheld_tools
+            except (KeyError, ValueError):
+                return False
+
+        open_leads = [lead for lead in session.state.open_leads() if not withheld(lead)]
+        ranked = sorted(open_leads, key=lambda lead: (lead.origin is None, *rank(lead)))
         limit = 4 if self.projection is self.compact_projection else self.max_visible_leads
         return ranked[:limit]
 

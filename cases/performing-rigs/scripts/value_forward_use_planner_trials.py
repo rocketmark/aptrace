@@ -71,6 +71,7 @@ def _controller(inner, planner_client=None, planner_model=None):
         census_peripherals=inner.census.available_peripherals(),
         structural_tools=("usb_inventory", "common_paths", "function_effects", "observed_call_arguments",
                           "indirect_call_target", "callback_argument_provenance", "value_forward_use"),
+        experimental_tools=("value_forward_use",),
         indirect_sites=inner.indirect_targets.sites(),
         value_origins=census_code_pointer_loads(inner.census.db_path, inner.census.firmware_key),
         observation_scenarios=inner.observed_calls.supported_scenarios(),
