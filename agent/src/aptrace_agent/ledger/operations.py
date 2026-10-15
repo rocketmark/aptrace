@@ -44,6 +44,10 @@ TOOL_INPUTS: dict[str, tuple[str, ...]] = {
     "indirect_call_target": (
         "census_db", "indirect_target_tool", "census_fnptr_resolve", "census_indexed_writes", "census_indirect_resolve",
     ),
+    "callback_argument_provenance": (
+        "census_db", "callback_provenance_tool", "indirect_target_tool", "census_fnptr_resolve", "census_indexed_writes",
+        "census_indirect_resolve", "census_slot_dispatch",
+    ),
     "pin_table_entry": (),
     "search_case_evidence": (),
 }

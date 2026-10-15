@@ -311,6 +311,28 @@ Headline items still unresolved:
   - Only the slot-7 thunk's own `bx r3` (`0xc74c`) can load slot 8.
   - 58 sites are excluded within a stated scope; 27 are unresolved
     (callbacks, stack spills, runtime tables).
+  - One-hop caller-argument provenance (static) covers 23 of the 27
+    unresolved sites:
+    - All 23 targets are incoming arguments. The three `f0b4` "spills" are
+      really stack argument 4.
+    - 20 sites have one CONCRETE caller value:
+      - 19 (in `ec48`/`f190`) get `0xe883` (→ `0xe882`) from `e8a8`
+        (`0xeaac`/`0xeae0`);
+      - `0x105d2` gets `0x10379` (→ `0x10378`) from the stub `0x10438`.
+    - The three `f0b4` sites are FORWARDED: their callers forward their
+      own `r3`.
+    - `0xc744` is a candidate nowhere. It is excluded within scope at the
+      three CLOSED sites (`f396`, `f3b6`, `105d2`).
+    - At the 17 `ec48` sites the target set is still OPEN only because
+      `ec48`'s address is a flash literal (`0xeafc`, loaded at `0xea54`,
+      next used by `cbnz`). At the 3 `f0b4` sites it is OPEN because of
+      the forwarding.
+    - Four runtime-table/walk sites are unchanged.
+    - No existing scenario (boot plus 10 virtual-link) enters any of the
+      six functions involved.
+
+    See
+    [`research/callback-argument-provenance-v1.md`](research/callback-argument-provenance-v1.md).
   - No direct transfer and no analyzed site enters `0xc744`.
   - The three `0x14900` objects bind SERCOM3/4/1 objects, never SERCOM0's.
     If the path ran, `b4b4` would read RAM.

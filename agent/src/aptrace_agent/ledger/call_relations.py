@@ -9,14 +9,19 @@ Edges are read from structured result fields only:
   DIRECT_CALL           function_facts callers/callees (Ghidra call
                         references); decoded BL/BLX immediates
                         (function_disassembly, callsite_context); the static
-                        call sites observed_call_arguments lists
+                        call sites observed_call_arguments lists; the decoded
+                        BL callers callback_argument_provenance lists
   TAIL_TRANSFER         decoded B/B.W/B<c>(.W) immediates leaving the decoded
-                        function (function_disassembly)
+                        function (function_disassembly); decoded tail callers
+                        callback_argument_provenance lists
   ESTABLISHED_INDIRECT  indirect_call_target STATICALLY_ESTABLISHED with an
                         ESTABLISHED derivation; census resolved_indirect
                         edges of EXACT/STRONG confidence
   POTENTIAL_INDIRECT    any other indirect_call_target candidate (or weaker
-                        resolved edge), with the condition its result states
+                        resolved edge), with the condition its result states;
+                        a callback_argument_provenance target, conditional on
+                        the caller site that passes it (never categorical, even
+                        for a closed caller set)
   OBSERVED_DISPATCH     observed_call_arguments call sites reached (hits > 0)
                         in the result's scenario
 
@@ -211,6 +216,43 @@ def _indirect(facts: CallFacts, evidence_id: str, result: dict[str, Any]) -> Non
         )
 
 
+def _callback(facts: CallFacts, evidence_id: str, result: dict[str, Any]) -> None:
+    source, site = _int(result.get("containing_function")), _int(result.get("site"))
+
+    if site is not None and source is not None:
+        facts.site_owner.setdefault(site, source)
+
+    for origin in result.get("argument_origins") or []:
+        entry = _int(origin.get("function_entry"))
+
+        for caller in origin.get("callers") or []:
+            frm, at = _int(caller.get("caller_function")), _int(caller.get("site"))
+
+            if entry is not None and frm is not None:
+                kind = K.DIRECT_CALL if caller.get("transfer_kind") == "call" else K.TAIL_TRANSFER
+                facts.edges.append(CallEdge(frm, entry, kind, evidence_id, at))
+
+    targets = result.get("candidate_targets") or []
+
+    if site is not None and not targets:
+        facts.unresolved.append(UnresolvedSite(source, site, evidence_id))
+
+    for candidate in targets:
+        target = _int(candidate.get("target"))
+
+        if target is None:
+            continue
+
+        for via in candidate.get("via") or []:
+            caller_site, caller_fn = _int(via.get("caller_site")), _int(via.get("caller_function"))
+            condition = (f"IF entered from caller site {via.get('caller_site')} "
+                         f"({via.get('caller_function') or 'unattributed'}) passing {', '.join(candidate.get('raw_values') or [])} "
+                         f"in {via.get('argument')}")
+            named = {v for v in (caller_site, caller_fn, _int(via.get("def_addr"))) if v is not None}
+            facts.edges.append(CallEdge(source, target, K.POTENTIAL_INDIRECT, evidence_id, site,
+                                        (condition, *(via.get("conditions") or [])[:2]), frozenset(named)))
+
+
 def _observed(facts: CallFacts, evidence_id: str, arguments: dict[str, Any], result: dict[str, Any]) -> None:
     if str(result.get("status", "")).startswith(("unsupported", "scenario_failed")):
         return
@@ -280,6 +322,9 @@ def extract_call_facts(evidence: list[tuple[Any, dict[str, Any]]]) -> CallFacts:
 
         elif tool == "indirect_call_target" and result.get("status") == "ok":
             _indirect(facts, evidence_id, result)
+
+        elif tool == "callback_argument_provenance" and result.get("status") == "ok":
+            _callback(facts, evidence_id, result)
 
         elif tool == "observed_call_arguments":
             _observed(facts, evidence_id, arguments, result)

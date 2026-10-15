@@ -1,0 +1,572 @@
+{
+ "live": [
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E5",
+      "E4",
+      "E3"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E5,E4,E3 E5's indirect call targets are not fully enumerated; E4's indirect call is not fully resolved; E3's indirect call is not fully resolved."
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E5",
+      "E4",
+      "E3"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E5,E4,E3 The indirect call target in E5 is not fully enumerated; E4's indirect call is not fully resolved; E3's indirect call site is not fully resolved."
+    }
+   ],
+   "decision_requests": 12,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "indirect_call_target",
+    "E4": "callback_argument_provenance",
+    "E5": "function_effects",
+    "E6": "census_peripheral_usage",
+    "E7": "function_facts",
+    "E8": "function_disassembly"
+   },
+   "first_trace_step": 2,
+   "ledger_run_id": "R-20261015T173727-2296dc",
+   "resolve_offered_in": 4,
+   "resolved_sites": [
+    "0x0000ee38"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48) branches to the callback passed in r3 or unresolved (derivation PARTIAL); potential table targets are not observed dispatches or reachable paths.",
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48): its target is incoming r3 of 0x0000ec48; 0x0000eaac (0x0000e8a8) passes 0x0000e883 [CONCRETE]; caller-supplied possible targets 0x0000e882 (set OPEN); possible targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "callback_provenance",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "analyze",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 6,
+   "traced_sites": [
+    "0x0000ee38"
+   ],
+   "trial": 1
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 E8 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect target register."
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 FUN_0000d388 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect call target [omit E8]"
+    }
+   ],
+   "decision_requests": 12,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "indirect_call_target",
+    "E4": "callback_argument_provenance",
+    "E5": "function_effects",
+    "E6": "census_peripheral_usage",
+    "E7": "function_facts",
+    "E8": "function_disassembly"
+   },
+   "first_trace_step": 2,
+   "ledger_run_id": "R-20261015T173746-267f26",
+   "resolve_offered_in": 4,
+   "resolved_sites": [
+    "0x0000ee38"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48) branches to the callback passed in r3 or unresolved (derivation PARTIAL); potential table targets are not observed dispatches or reachable paths.",
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48): its target is incoming r3 of 0x0000ec48; 0x0000eaac (0x0000e8a8) passes 0x0000e883 [CONCRETE]; caller-supplied possible targets 0x0000e882 (set OPEN); possible targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "callback_provenance",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "analyze",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 6,
+   "traced_sites": [
+    "0x0000ee38"
+   ],
+   "trial": 2
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 E8 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect target register."
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 FUN_0000d388 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect call target [omit E8]"
+    }
+   ],
+   "decision_requests": 12,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "indirect_call_target",
+    "E4": "callback_argument_provenance",
+    "E5": "function_effects",
+    "E6": "census_peripheral_usage",
+    "E7": "function_facts",
+    "E8": "function_disassembly"
+   },
+   "first_trace_step": 2,
+   "ledger_run_id": "R-20261015T173806-51951e",
+   "resolve_offered_in": 4,
+   "resolved_sites": [
+    "0x0000ee38"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48) branches to the callback passed in r3 or unresolved (derivation PARTIAL); potential table targets are not observed dispatches or reachable paths.",
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48): its target is incoming r3 of 0x0000ec48; 0x0000eaac (0x0000e8a8) passes 0x0000e883 [CONCRETE]; caller-supplied possible targets 0x0000e882 (set OPEN); possible targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "callback_provenance",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "analyze",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 6,
+   "traced_sites": [
+    "0x0000ee38"
+   ],
+   "trial": 3
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 E8 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect target register."
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 FUN_0000d388 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect call target [omit E8]"
+    }
+   ],
+   "decision_requests": 12,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "indirect_call_target",
+    "E4": "callback_argument_provenance",
+    "E5": "function_effects",
+    "E6": "census_peripheral_usage",
+    "E7": "function_facts",
+    "E8": "function_disassembly"
+   },
+   "first_trace_step": 2,
+   "ledger_run_id": "R-20261015T173825-03530a",
+   "resolve_offered_in": 4,
+   "resolved_sites": [
+    "0x0000ee38"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48) branches to the callback passed in r3 or unresolved (derivation PARTIAL); potential table targets are not observed dispatches or reachable paths.",
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48): its target is incoming r3 of 0x0000ec48; 0x0000eaac (0x0000e8a8) passes 0x0000e883 [CONCRETE]; caller-supplied possible targets 0x0000e882 (set OPEN); possible targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "callback_provenance",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "analyze",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 6,
+   "traced_sites": [
+    "0x0000ee38"
+   ],
+   "trial": 4
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 E8 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect target register."
+    },
+    {
+     "claim_type": "STRUCTURE",
+     "decision": "rejected",
+     "diagnostics": [
+      "ENTITY_SESSION_REFERENCE",
+      "ENTITY_SESSION_REFERENCE"
+     ],
+     "evidence_ids": [
+      "E8",
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE STRUCTURE E8,E7 FUN_0000d388 loads PORT base address 0x41008000 at 0x0000d3c6; E7 shows FUN_0000d388 is the source of the indirect call target [omit E8]"
+    }
+   ],
+   "decision_requests": 12,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "indirect_call_target",
+    "E4": "callback_argument_provenance",
+    "E5": "function_effects",
+    "E6": "census_peripheral_usage",
+    "E7": "function_facts",
+    "E8": "function_disassembly"
+   },
+   "first_trace_step": 2,
+   "ledger_run_id": "R-20261015T173845-0f0721",
+   "resolve_offered_in": 4,
+   "resolved_sites": [
+    "0x0000ee38"
+   ],
+   "session_facts": [
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48) branches to the callback passed in r3 or unresolved (derivation PARTIAL); potential table targets are not observed dispatches or reachable paths.",
+    "Indirect site 0x0000ee38 (blx r7, 0x0000ec48): its target is incoming r3 of 0x0000ec48; 0x0000eaac (0x0000e8a8) passes 0x0000e883 [CONCRETE]; caller-supplied possible targets 0x0000e882 (set OPEN); possible targets are not observed dispatches or reachable paths."
+   ],
+   "steps": [
+    {
+     "action": "indirect_target",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "callback_provenance",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "effects",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "analyze",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E7",
+     "n": 5
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E8",
+     "n": 6
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 6,
+   "traced_sites": [
+    "0x0000ee38"
+   ],
+   "trial": 5
+  }
+ ],
+ "max_steps": 6,
+ "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+ "objective": "Determine where the target of the register-indirect callback calls in FUN_0000ec48 comes from, and whether any of them could transfer control to the code at 0xc744.",
+ "scratch_ledger": "copy of the canonical ledger",
+ "scripted": {
+  "claim_admission": [],
+  "decision_requests": 3,
+  "evidence_tools": {
+   "E1": "function_facts",
+   "E2": "function_disassembly",
+   "E3": "indirect_call_target",
+   "E4": "callback_argument_provenance"
+  },
+  "first_trace_step": 2,
+  "historical_reuse": {
+   "other_site": null,
+   "same_site": {
+    "invocation": "TI-eb12d351f0e7098f",
+    "reason": "identical operation e1088f129c30 under current inputs",
+    "reusable": true
+   }
+  },
+  "ledger_run_id": "R-20261015T173544-b4db4f",
+  "mode": "scripted (not autonomous selection)",
+  "recorded": [
+   {
+    "arguments": {
+     "site": "0x0000ee60"
+    },
+    "evidence_id": "EV-5d0f86543fd3ff83",
+    "grade": "PROBABLE",
+    "input_artifacts": [
+     "census_db",
+     "census_fnptr_resolve",
+     "census_indexed_writes",
+     "census_indirect_resolve",
+     "indirect_target_tool"
+    ],
+    "invocation": "TI-433964cd6e0c8651",
+    "limitation_codes": [
+     "DISPATCH_IS_NOT_REACHABILITY",
+     "FUNCTION_BOUNDARIES_HEURISTIC",
+     "INTRAPROCEDURAL_DERIVATION_ONLY",
+     "POTENTIAL_TARGET_NOT_DISPATCH"
+    ],
+    "operation_key": "783d90f44cb60b29fc95ae025d13b1f225fb9753bcdc8e5cfdae8bc7d19c25d9",
+    "replay_matches": true,
+    "tool": "indirect_call_target"
+   },
+   {
+    "arguments": {
+     "site": "0x0000ee60"
+    },
+    "evidence_id": "EV-d0e06d1aad820faf",
+    "grade": "PROBABLE",
+    "input_artifacts": [
+     "callback_provenance_tool",
+     "census_db",
+     "census_fnptr_resolve",
+     "census_indexed_writes",
+     "census_indirect_resolve",
+     "census_slot_dispatch",
+     "indirect_target_tool"
+    ],
+    "invocation": "TI-eb12d351f0e7098f",
+    "limitation_codes": [
+     "CALLER_SET_OPEN",
+     "DISPATCH_IS_NOT_REACHABILITY",
+     "FUNCTION_BOUNDARIES_HEURISTIC",
+     "ONE_HOP_CALLER_PROVENANCE",
+     "POTENTIAL_TARGET_NOT_DISPATCH"
+    ],
+    "operation_key": "e1088f129c307134674ac0b8b6e17a74ef5d20212d1500cdb4654b291df4e287",
+    "replay_matches": true,
+    "tool": "callback_argument_provenance"
+   }
+  ],
+  "resolve_offered_in": 3,
+  "resolved_sites": [
+   "0x0000ee60"
+  ],
+  "session_facts": [
+   "Indirect site 0x0000ee60 (blx r7, 0x0000ec48) branches to the callback passed in r3 (derivation ESTABLISHED); potential table targets are not observed dispatches or reachable paths.",
+   "Indirect site 0x0000ee60 (blx r7, 0x0000ec48): its target is incoming r3 of 0x0000ec48; 0x0000eaac (0x0000e8a8) passes 0x0000e883 [CONCRETE]; caller-supplied possible targets 0x0000e882 (set OPEN); possible targets are not observed dispatches or reachable paths."
+  ],
+  "steps": [
+   {
+    "action": "indirect_target",
+    "evidence": "E3",
+    "n": 1
+   },
+   {
+    "action": "callback_provenance",
+    "evidence": "E4",
+    "n": 2
+   },
+   {
+    "action": "finish",
+    "evidence": null,
+    "n": 3
+   }
+  ],
+  "stop_reason": "planner_finished",
+  "trace_offered_in": 3,
+  "traced_sites": [
+   "0x0000ee60"
+  ]
+ },
+ "seed": "FUN_0000ec48"
+}

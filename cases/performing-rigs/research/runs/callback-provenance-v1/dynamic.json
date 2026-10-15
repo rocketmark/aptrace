@@ -1,0 +1,1266 @@
+{
+ "functions": [
+  "FUN_0000e882",
+  "FUN_0000ec48",
+  "FUN_0000f0b4",
+  "FUN_0000f190",
+  "FUN_00010378",
+  "FUN_0001059c"
+ ],
+ "observations": [
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 14,
+   "instructions_executed": 450000,
+   "observed_entries": 0,
+   "scenario": "boot",
+   "status": "ok",
+   "stop_reason": "instruction limit reached"
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 2,
+   "instructions_executed": 103,
+   "observed_entries": 0,
+   "scenario": "vl-ampersand",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 4,
+   "instructions_executed": 1499,
+   "observed_entries": 0,
+   "scenario": "vl-bang",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 2,
+   "instructions_executed": 101,
+   "observed_entries": 0,
+   "scenario": "vl-g",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 6,
+   "instructions_executed": 583,
+   "observed_entries": 0,
+   "scenario": "vl-i",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 4,
+   "instructions_executed": 215,
+   "observed_entries": 0,
+   "scenario": "vl-i9i1",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 5,
+   "instructions_executed": 219,
+   "observed_entries": 0,
+   "scenario": "vl-manual-f0e0",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 6,
+   "instructions_executed": 79221,
+   "observed_entries": 0,
+   "scenario": "vl-pb05",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 4,
+   "instructions_executed": 62129,
+   "observed_entries": 0,
+   "scenario": "vl-plus",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 1,
+   "instructions_executed": 2519,
+   "observed_entries": 0,
+   "scenario": "vl-plus-interactive",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000e958",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000e882",
+   "harness_assumptions": 4,
+   "instructions_executed": 456,
+   "observed_entries": 0,
+   "scenario": "vl-s",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 14,
+   "instructions_executed": 450000,
+   "observed_entries": 0,
+   "scenario": "boot",
+   "status": "ok",
+   "stop_reason": "instruction limit reached"
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 2,
+   "instructions_executed": 103,
+   "observed_entries": 0,
+   "scenario": "vl-ampersand",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 4,
+   "instructions_executed": 1499,
+   "observed_entries": 0,
+   "scenario": "vl-bang",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 2,
+   "instructions_executed": 101,
+   "observed_entries": 0,
+   "scenario": "vl-g",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 6,
+   "instructions_executed": 583,
+   "observed_entries": 0,
+   "scenario": "vl-i",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 4,
+   "instructions_executed": 215,
+   "observed_entries": 0,
+   "scenario": "vl-i9i1",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 5,
+   "instructions_executed": 219,
+   "observed_entries": 0,
+   "scenario": "vl-manual-f0e0",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 6,
+   "instructions_executed": 79221,
+   "observed_entries": 0,
+   "scenario": "vl-pb05",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 4,
+   "instructions_executed": 62129,
+   "observed_entries": 0,
+   "scenario": "vl-plus",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 1,
+   "instructions_executed": 2519,
+   "observed_entries": 0,
+   "scenario": "vl-plus-interactive",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eaac",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000ec48",
+   "harness_assumptions": 4,
+   "instructions_executed": 456,
+   "observed_entries": 0,
+   "scenario": "vl-s",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 14,
+   "instructions_executed": 450000,
+   "observed_entries": 0,
+   "scenario": "boot",
+   "status": "ok",
+   "stop_reason": "instruction limit reached"
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 2,
+   "instructions_executed": 103,
+   "observed_entries": 0,
+   "scenario": "vl-ampersand",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 4,
+   "instructions_executed": 1499,
+   "observed_entries": 0,
+   "scenario": "vl-bang",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 2,
+   "instructions_executed": 101,
+   "observed_entries": 0,
+   "scenario": "vl-g",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 6,
+   "instructions_executed": 583,
+   "observed_entries": 0,
+   "scenario": "vl-i",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 4,
+   "instructions_executed": 215,
+   "observed_entries": 0,
+   "scenario": "vl-i9i1",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 5,
+   "instructions_executed": 219,
+   "observed_entries": 0,
+   "scenario": "vl-manual-f0e0",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 6,
+   "instructions_executed": 79221,
+   "observed_entries": 0,
+   "scenario": "vl-pb05",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 4,
+   "instructions_executed": 62129,
+   "observed_entries": 0,
+   "scenario": "vl-plus",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 1,
+   "instructions_executed": 2519,
+   "observed_entries": 0,
+   "scenario": "vl-plus-interactive",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000ed00",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f2ec",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f0b4",
+   "harness_assumptions": 4,
+   "instructions_executed": 456,
+   "observed_entries": 0,
+   "scenario": "vl-s",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 14,
+   "instructions_executed": 450000,
+   "observed_entries": 0,
+   "scenario": "boot",
+   "status": "ok",
+   "stop_reason": "instruction limit reached"
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 2,
+   "instructions_executed": 103,
+   "observed_entries": 0,
+   "scenario": "vl-ampersand",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 4,
+   "instructions_executed": 1499,
+   "observed_entries": 0,
+   "scenario": "vl-bang",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 2,
+   "instructions_executed": 101,
+   "observed_entries": 0,
+   "scenario": "vl-g",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 6,
+   "instructions_executed": 583,
+   "observed_entries": 0,
+   "scenario": "vl-i",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 4,
+   "instructions_executed": 215,
+   "observed_entries": 0,
+   "scenario": "vl-i9i1",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 5,
+   "instructions_executed": 219,
+   "observed_entries": 0,
+   "scenario": "vl-manual-f0e0",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 6,
+   "instructions_executed": 79221,
+   "observed_entries": 0,
+   "scenario": "vl-pb05",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 4,
+   "instructions_executed": 62129,
+   "observed_entries": 0,
+   "scenario": "vl-plus",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 1,
+   "instructions_executed": 2519,
+   "observed_entries": 0,
+   "scenario": "vl-plus-interactive",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000eae0",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_0000f190",
+   "harness_assumptions": 4,
+   "instructions_executed": 456,
+   "observed_entries": 0,
+   "scenario": "vl-s",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 14,
+   "instructions_executed": 450000,
+   "observed_entries": 0,
+   "scenario": "boot",
+   "status": "ok",
+   "stop_reason": "instruction limit reached"
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 2,
+   "instructions_executed": 103,
+   "observed_entries": 0,
+   "scenario": "vl-ampersand",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 4,
+   "instructions_executed": 1499,
+   "observed_entries": 0,
+   "scenario": "vl-bang",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 2,
+   "instructions_executed": 101,
+   "observed_entries": 0,
+   "scenario": "vl-g",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 6,
+   "instructions_executed": 583,
+   "observed_entries": 0,
+   "scenario": "vl-i",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 4,
+   "instructions_executed": 215,
+   "observed_entries": 0,
+   "scenario": "vl-i9i1",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 5,
+   "instructions_executed": 219,
+   "observed_entries": 0,
+   "scenario": "vl-manual-f0e0",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 6,
+   "instructions_executed": 79221,
+   "observed_entries": 0,
+   "scenario": "vl-pb05",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 4,
+   "instructions_executed": 62129,
+   "observed_entries": 0,
+   "scenario": "vl-plus",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 1,
+   "instructions_executed": 2519,
+   "observed_entries": 0,
+   "scenario": "vl-plus-interactive",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [
+    {
+     "call_site": "0x0000f448",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    },
+    {
+     "call_site": "0x0000f472",
+     "hits": 0,
+     "r1": null,
+     "r3": null,
+     "status": "UNOBSERVED"
+    }
+   ],
+   "function": "FUN_00010378",
+   "harness_assumptions": 4,
+   "instructions_executed": 456,
+   "observed_entries": 0,
+   "scenario": "vl-s",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 14,
+   "instructions_executed": 450000,
+   "observed_entries": 0,
+   "scenario": "boot",
+   "status": "ok",
+   "stop_reason": "instruction limit reached"
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 2,
+   "instructions_executed": 103,
+   "observed_entries": 0,
+   "scenario": "vl-ampersand",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 4,
+   "instructions_executed": 1499,
+   "observed_entries": 0,
+   "scenario": "vl-bang",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 2,
+   "instructions_executed": 101,
+   "observed_entries": 0,
+   "scenario": "vl-g",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 6,
+   "instructions_executed": 583,
+   "observed_entries": 0,
+   "scenario": "vl-i",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 4,
+   "instructions_executed": 215,
+   "observed_entries": 0,
+   "scenario": "vl-i9i1",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 5,
+   "instructions_executed": 219,
+   "observed_entries": 0,
+   "scenario": "vl-manual-f0e0",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 6,
+   "instructions_executed": 79221,
+   "observed_entries": 0,
+   "scenario": "vl-pb05",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 4,
+   "instructions_executed": 62129,
+   "observed_entries": 0,
+   "scenario": "vl-plus",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 1,
+   "instructions_executed": 2519,
+   "observed_entries": 0,
+   "scenario": "vl-plus-interactive",
+   "status": "ok",
+   "stop_reason": null
+  },
+  {
+   "call_sites": [],
+   "function": "FUN_0001059c",
+   "harness_assumptions": 4,
+   "instructions_executed": 456,
+   "observed_entries": 0,
+   "scenario": "vl-s",
+   "status": "ok",
+   "stop_reason": null
+  }
+ ]
+}

@@ -23,6 +23,7 @@ from aptrace_agent.census import (
 from aptrace_agent.census_graph import CensusGraph
 from aptrace_agent.call_observation import ObservedCallArgumentsRunner
 from aptrace_agent.function_effects import FunctionEffectsRunner
+from aptrace_agent.callback_provenance import CallbackProvenanceRunner
 from aptrace_agent.indirect_target import IndirectTargetRunner
 from aptrace_agent.interface_inventory import UsbInventoryReader
 
@@ -194,6 +195,28 @@ INDIRECT_TARGET_INPUTS = {
     "census_indexed_writes": CENSUS_TOOLS / "indexed_writes.py",
     "census_indirect_resolve": CENSUS_TOOLS / "indirect_resolve.py",
 }
+
+
+# A callback_argument_provenance result additionally depends on its own tool
+# and on slot_dispatch's direct-transfer decoders.
+CALLBACK_PROVENANCE_INPUTS = {
+    **INDIRECT_TARGET_INPUTS,
+    "callback_provenance_tool": CENSUS_TOOLS / "callback_provenance.py",
+    "census_slot_dispatch": CENSUS_TOOLS / "slot_dispatch.py",
+}
+
+
+def performing_rigs_callback_provenance(census: CensusReader) -> CallbackProvenanceRunner:
+    """One-hop caller-argument provenance for one census register-indirect site."""
+
+    return CallbackProvenanceRunner(
+        python=Path(sys.executable),
+        script=CALLBACK_PROVENANCE_INPUTS["callback_provenance_tool"],
+        firmware_key=census.firmware_key,
+        firmware_image=census.firmware_image,
+        expected_sha256=census.expected_sha256,
+        db_path=census.db_path,
+    )
 
 
 def performing_rigs_indirect_targets(census: CensusReader) -> IndirectTargetRunner:

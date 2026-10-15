@@ -258,8 +258,8 @@ def main():
           f'"0x{OBJ_B:08x}"' in json.dumps(r["reaching_definitions"]), r["reaching_definitions"])
 
     r = resolve(conn, image, s["stack"])
-    check("unknown target register stays unresolved with its reason",
-          r["pattern"] == "unresolved" and "stack slot" in r["patterns"][0]["reason"]
+    check("entry-block stack load with no prologue is incoming stack argument 5 (v2; spills: test_callback_provenance)",
+          r["pattern"] == "argument" and r["patterns"][0]["arg"] == 5 and r["patterns"][0]["location"] == "stack"
           and r["resolution_status"] == "UNRESOLVED", r["patterns"])
 
     r = resolve(conn, image, s["field"], vtables=[VT])

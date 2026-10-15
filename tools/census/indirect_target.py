@@ -9,12 +9,13 @@ dataflow shape those definitions form. It answers a narrow question:
 
 Reaching definitions are computed backward over the census's own basic
 blocks and resolved intraprocedural edges (Ghidra's block model plus the
-Capstone sweep). Unlike `fnptr_resolve.trace_reg`, a join is not a stopping
+Capstone sweep, and the case edges of statically resolved jump tables). Unlike `fnptr_resolve.trace_reg`, a join is not a stopping
 point: every predecessor is followed, and the result is the UNION of the
 definitions reaching the site, so two paths that disagree stay visible as
 two definitions. A conditional (IT-block) definition reaches together with
 whatever reached before it. A `bl`/`blx` kills r0-r3/r12. Register moves
-are followed. Everything is bounded (`max_blocks`, `max_depth`); a bound
+and add/sub-immediate arithmetic are followed; `movw`/`movt` and `adr`
+are constants. Everything is bounded (`max_blocks`, `max_depth`); a bound
 that is hit is reported as an `incomplete` definition, never dropped.
 
 Shapes (`pattern`), from the definitions alone:
@@ -32,7 +33,9 @@ Shapes (`pattern`), from the definitions alone:
                        table load (a function pointer kept in a structure)
   indexed-table        one load [b + i << s] (a function-pointer array)
   pointer-iteration    one post-indexed load (walking a pointer array)
-  argument             the incoming AAPCS argument rK at function entry
+  argument             the incoming AAPCS argument at function entry: rK
+                       (K < 4), or stack argument K >= 4 read in the
+                       entry block at a statically known SP offset
   call-result          r0 as returned by a call
   multiple             several reaching definitions (each one classified)
   unresolved           no shape above (the reason is kept)
@@ -58,15 +61,19 @@ import struct
 import sys
 from pathlib import Path
 
-from capstone.arm_const import (ARM_CC_AL, ARM_CC_INVALID, ARM_INS_LDM, ARM_INS_LDMDB, ARM_INS_LDR, ARM_INS_LDRD, ARM_INS_MOV,
-                                ARM_INS_POP, ARM_INS_STR, ARM_OP_IMM, ARM_OP_MEM, ARM_OP_REG, ARM_REG_PC)
+from capstone.arm_const import (ARM_CC_AL, ARM_CC_INVALID, ARM_INS_ADD, ARM_INS_ADR, ARM_INS_LDM, ARM_INS_LDMDB, ARM_INS_LDR,
+                                ARM_INS_LDRD, ARM_INS_MOV, ARM_INS_MOVT, ARM_INS_POP, ARM_INS_STR, ARM_INS_SUB,
+                                ARM_OP_IMM, ARM_OP_MEM, ARM_OP_REG, ARM_REG_PC)
 
 import fnptr_resolve as fr
 import indexed_writes as iw
 from indirect_resolve import decode_instruction, scan_pointer_table
 
 ANALYSIS = "indirect_target"
-ANALYSIS_VERSION = 1
+# v2: resolved jump-table case edges are predecessors (and their table words
+# are not code-pointer entries); entry-block stack arguments; movw/movt, adr
+# and cross-block add/sub-immediate constants; optional global work budget.
+ANALYSIS_VERSION = 2
 
 MAX_BLOCKS = 64       # predecessor blocks visited per register query
 MAX_DEPTH = 3         # nested base-register queries (vptr -> object -> ...)
@@ -75,12 +82,15 @@ MAX_TABLE_ENTRIES = 64
 ARG_REGS = ("r0", "r1", "r2", "r3")
 CALL_CLOBBERED = {"r0", "r1", "r2", "r3", "r12", "ip"}
 INTRA_KINDS = ("fallthrough", "branch", "cbranch")
+# Indirect sites whose case edges are intraprocedural predecessors.
+TABLE_SHAPES = ("table-branch", "mem-indirect")
 _CAPSTONE_NAMES = {"r9": "sb", "r10": "sl", "r11": "fp", "r12": "ip"}
 
 LIMITATIONS = (
     "intraprocedural: argument and call-result values are not followed into callers or callees",
-    "predecessors are the census's resolved fallthrough/branch/cbranch edges; entries through an unresolved "
-    "computed jump are invisible, and a block that is a code-pointer target is reported as an indirect entry",
+    "predecessors are the census's resolved fallthrough/branch/cbranch edges plus the case edges of statically "
+    "resolved jump tables; entries through an unresolved computed jump are invisible, and a block that is a "
+    "code-pointer target is reported as an indirect entry",
     "the containing function is Ghidra's body attribution, which can include tail-branched code of another "
     "function",
     "a load's memory content is only read for immutable flash; RAM/MMIO words are runtime state",
@@ -119,28 +129,61 @@ def _region(row, addr):
     return "unmapped"
 
 
-def _pointer_targets(conn, firmware_id, image, flash_base):
+def _table_sites(conn, firmware_id):
+    """Statically resolved jump-table sites: their case edges are ordinary
+    intraprocedural control flow, not code-pointer entries."""
+    return {r[0] for r in conn.execute(
+        "SELECT from_addr FROM indirect_edge_resolutions WHERE firmware_id=? AND classification='STATICALLY_RESOLVED' "
+        f"AND instr_shape IN ({','.join('?' * len(TABLE_SHAPES))})", (firmware_id, *TABLE_SHAPES))}
+
+
+def _jump_table_words(conn, firmware_id, image, flash_base, table_sites):
+    """Locations of the words of statically resolved `ldr pc` jump tables:
+    the run of Thumb pointers starting at the first aligned word after the
+    site, while each word targets one of that site's resolved cases. A table
+    placed anywhere else is not recognized (its words stay pointer entries)."""
+    out = set()
+    for site in table_sites:
+        cases = {r[0] for r in conn.execute(
+            "SELECT to_addr FROM edges WHERE firmware_id=? AND from_addr=? AND kind='computed-jump' AND resolved=1",
+            (firmware_id, site))}
+        if not cases:
+            continue
+        loc = (site + 4 + 3) & ~3
+        while (w := iw._read_flash_word(image, flash_base, loc)) is not None and w & 1 and (w & ~1) in cases:
+            out.add(loc)
+            loc += 4
+    return out
+
+
+def _pointer_targets(conn, firmware_id, image, flash_base, table_sites=frozenset()):
     """Code addresses something enters indirectly: every aligned flash word
     that is a Thumb pointer into the image, plus every recorded indirect
-    edge candidate."""
+    edge candidate -- except the words and cases of statically resolved jump
+    tables, which are intraprocedural predecessors."""
     out = set()
     end = flash_base + len(image)
+    skip = _jump_table_words(conn, firmware_id, image, flash_base, table_sites)
     for off in range(0, len(image) - 3, 4):
         (w,) = struct.unpack_from("<I", image, off)
-        if w & 1 and flash_base <= (w & ~1) < end:
+        if w & 1 and flash_base <= (w & ~1) < end and flash_base + off not in skip:
             out.add(w & ~1)
     out.update(r[0] for r in conn.execute(
-        "SELECT DISTINCT candidate_addr FROM indirect_edge_candidates WHERE firmware_id=?", (firmware_id,)))
+        "SELECT DISTINCT candidate_addr, from_addr FROM indirect_edge_candidates WHERE firmware_id=?", (firmware_id,))
+        if r[1] not in table_sites)
     return out
 
 
 class _Ctx:
-    def __init__(self, conn, fw_row, image, max_blocks, max_depth):
+    def __init__(self, conn, fw_row, image, max_blocks, max_depth, max_work=None):
         self.conn, self.row, self.image = conn, fw_row, image
         self.fw, self.base = fw_row["id"], fw_row["flash_base"]
         self.max_blocks, self.max_depth = max_blocks, max_depth
+        # Blocks visited across every query on this context (None: unbounded).
+        self.max_work, self.work = max_work, 0
         self._blocks = {}
-        self.pointer_targets = _pointer_targets(conn, self.fw, image, self.base)
+        self.table_sites = _table_sites(conn, self.fw)
+        self.pointer_targets = _pointer_targets(conn, self.fw, image, self.base, self.table_sites)
 
     def block_at(self, addr):
         r = self.conn.execute(
@@ -162,11 +205,13 @@ class _Ctx:
 
     def predecessors(self, block):
         rows = self.conn.execute(
-            "SELECT DISTINCT from_addr FROM edges WHERE firmware_id=? AND to_addr=? AND resolved=1 "
-            f"AND kind IN ({','.join('?' * len(INTRA_KINDS))})",
-            (self.fw, block["start_addr"], *INTRA_KINDS)).fetchall()
+            "SELECT DISTINCT from_addr, kind FROM edges WHERE firmware_id=? AND to_addr=? AND resolved=1 "
+            f"AND kind IN ({','.join('?' * (len(INTRA_KINDS) + 1))})",
+            (self.fw, block["start_addr"], *INTRA_KINDS, "computed-jump")).fetchall()
         out = {}
         for r in rows:
+            if r["kind"] == "computed-jump" and r["from_addr"] not in self.table_sites:
+                continue
             b = self.block_at(r["from_addr"])
             if b is not None and b["function_id"] == block["function_id"]:
                 out[b["start_addr"]] = b
@@ -197,6 +242,23 @@ def _definition(ctx, block, insns, i, reg, depth):
         src = insn.reg_name(ops[1].reg)
         alias = _reaching(ctx, block, insns, i, src, depth)
         return {**base, "kind": "move", "from_reg": src, "source": alias}
+    if insn.mnemonic.lower() == "movw" and len(ops) == 2 and ops[1].type == ARM_OP_IMM:  # some Capstones: id MOV
+        return {**base, "kind": "constant", "via": "movw", "value": ops[1].imm & 0xFFFF}
+    if insn.id == ARM_INS_ADR and len(ops) == 2 and ops[1].type == ARM_OP_IMM:
+        return {**base, "kind": "constant", "via": "adr", "value": (((insn.address + 4) & ~3) + ops[1].imm) & 0xFFFFFFFF}
+    if insn.id == ARM_INS_MOVT and len(ops) == 2 and ops[1].type == ARM_OP_IMM:
+        return {**base, "kind": "arith", "op": "movt", "imm": ops[1].imm & 0xFFFF,
+                "source": _reaching(ctx, block, insns, i, reg, depth)}
+    if insn.id in (ARM_INS_ADD, ARM_INS_SUB) and ops and ops[-1].type == ARM_OP_IMM and len(ops) in (2, 3) \
+            and all(o.type == ARM_OP_REG for o in ops[:-1]):
+        src = insn.reg_name(ops[-2].reg)
+        if src == "pc":
+            return {**base, "kind": "constant", "via": "adr",
+                    "value": (((insn.address + 4) & ~3) + ops[-1].imm) & 0xFFFFFFFF}
+        if src != "sp":
+            delta = ops[-1].imm if insn.id == ARM_INS_ADD else -ops[-1].imm
+            return {**base, "kind": "arith", "op": "add", "imm": delta,
+                    "source": _reaching(ctx, block, insns, i, src, depth)}
     res = iw._resolve_reg_value(insns, block["start_addr"], reg, i + 1, ctx.image, ctx.base)
     if res["kind"] in ("imm", "literal"):
         lo = min(res["trace"]) if res["trace"] else insn.address
@@ -221,6 +283,10 @@ def _load(ctx, block, insns, i, reg, base, mem, rest, word_offset, depth):
         return {**base, "kind": "constant", "via": "literal", "literal_addr": lit, "value": value}
     base_reg = insn.reg_name(mem.mem.base)
     if base_reg == "sp":
+        if mem.mem.index in (0, iw.ARM_REG_INVALID) and not rest and not insn.writeback:
+            arg = _stack_argument(ctx, block, insns, i, mem.mem.disp + word_offset)
+            if arg is not None:
+                return {**base, **arg}
         return {**base, "kind": "unknown", "reason": "stack slot (spilled or restored value)"}
     if mem.mem.index not in (0, iw.ARM_REG_INVALID):
         d = {**base, "kind": "load", "mode": "indexed", "base_reg": base_reg,
@@ -236,6 +302,48 @@ def _load(ctx, block, insns, i, reg, base, mem, rest, word_offset, depth):
     else:
         d["base"] = {"defs": [{"kind": "incomplete", "reason": "depth limit"}], "complete": False}
     return d
+
+
+def _sp_delta(insn):
+    """Bytes `insn` moves SP down (negative: up); None if it writes SP some
+    other way. Only the prologue shapes are modeled."""
+    m = insn.mnemonic.lower().split(".")[0]
+    ops = insn.operands
+    if m in ("push", "vpush"):
+        return sum(8 if insn.reg_name(o.reg).startswith("d") else 4 for o in ops)
+    if m in ("sub", "add") and ops and ops[0].type == ARM_OP_REG and insn.reg_name(ops[0].reg) == "sp":
+        if ops[-1].type == ARM_OP_IMM and all(insn.reg_name(o.reg) == "sp" for o in ops[:-1]):
+            return ops[-1].imm if m == "sub" else -ops[-1].imm
+        return None
+    if "sp" in _written(insn) or (m in ("stmdb", "ldm", "pop", "vpop") and insn.writeback):
+        return None
+    return 0
+
+
+def _stack_argument(ctx, block, insns, i, disp):
+    """AAPCS stack argument read by `insns[i]` (`ldr rT, [sp, #disp]`), or
+    None. Only in the function's entry block, where SP's offset from its
+    entry value is the sum of the prologue's pushes and immediate SP
+    adjustments, and only if nothing before the load stores to that slot."""
+    entry = ctx.entry_of(block)
+    if entry is None or block["start_addr"] != entry:
+        return None
+    delta = 0
+    for x in insns[:i]:
+        d = _sp_delta(x)
+        if d is None:
+            return None
+        delta += d
+        m = x.mnemonic.lower()
+        if m.startswith(("str", "stm", "vst")):
+            mem = next((o for o in x.operands if o.type == ARM_OP_MEM), None)
+            if mem is None or x.reg_name(mem.mem.base) == "sp":
+                return None  # a store into the frame before the load: the slot may be overwritten
+    offset = disp - delta
+    if offset < 0 or offset % 4:
+        return None
+    return {"kind": "argument", "arg": 4 + offset // 4, "location": "stack", "entry_sp_offset": offset,
+            "function_entry": entry}
 
 
 def _reaching(ctx, block, insns, before, reg, depth):
@@ -291,8 +399,12 @@ def _reaching(ctx, block, insns, before, reg, depth):
                 continue
             seen.add(p["start_addr"])
             visited += 1
+            ctx.work += 1
             if visited > ctx.max_blocks:
                 defs.append({"kind": "incomplete", "reason": f"block limit {ctx.max_blocks}"})
+                return {"defs": _dedupe(defs), "complete": False}
+            if ctx.max_work is not None and ctx.work > ctx.max_work:
+                defs.append({"kind": "incomplete", "reason": f"work budget {ctx.max_work} blocks"})
                 return {"defs": _dedupe(defs), "complete": False}
             pins = ctx.decode(p)
             work.append((p, pins, len(pins)))
@@ -304,7 +416,7 @@ def _reaching(ctx, block, insns, before, reg, depth):
 def _def_complete(d):
     if d["kind"] in ("unknown", "incomplete", "block-live-in", "indirect-entry"):
         return False
-    if d["kind"] == "move":
+    if d["kind"] in ("move", "arith"):
         return d["source"]["complete"]
     if d["kind"] == "load":
         return d["base"]["complete"]
@@ -322,11 +434,24 @@ def _dedupe(defs):
 
 
 def _flatten(defset):
-    """Follow register moves: the underlying definitions."""
+    """Follow register moves and constant arithmetic: the underlying
+    definitions. Arithmetic on a constant is that constant adjusted;
+    arithmetic on anything else is an unknown value."""
     out = []
     for d in defset["defs"]:
         if d["kind"] == "move":
             out.extend(_flatten(d["source"]))
+        elif d["kind"] == "arith":
+            for s in _flatten(d["source"]):
+                if s["kind"] != "constant":
+                    out.append({"def_addr": d["def_addr"], "instruction": d["instruction"], "kind": "unknown",
+                                "reason": f"{d['op']} on a non-constant value ({s['kind']})"})
+                elif d["op"] == "movt":
+                    out.append({**s, "value": (s["value"] & 0xFFFF) | (d["imm"] << 16), "via": f"{s['via']}+movt",
+                                "def_addr": d["def_addr"], "instruction": d["instruction"]})
+                else:
+                    out.append({**s, "value": (s["value"] + d["imm"]) & 0xFFFFFFFF, "via": f"{s['via']}+add",
+                                "def_addr": d["def_addr"], "instruction": d["instruction"]})
         else:
             out.append(d)
     return out
@@ -356,7 +481,11 @@ def _shape(ctx, d):
     if d["kind"] == "constant":
         return {"pattern": "constant-target", "value": d["value"]}
     if d["kind"] == "argument":
-        return {"pattern": "argument", "arg": d["arg"], "function_entry": d["function_entry"]}
+        out = {"pattern": "argument", "arg": d["arg"], "function_entry": d["function_entry"]}
+        if d.get("location") == "stack":
+            out.update({"location": "stack", "entry_sp_offset": d["entry_sp_offset"], "load_addr": d["def_addr"],
+                        "load_instruction": d["instruction"]})
+        return out
     if d["kind"] == "call-result":
         return {"pattern": "call-result", "call_addr": d["def_addr"], "callee": d.get("callee")}
     if d["kind"] != "load":

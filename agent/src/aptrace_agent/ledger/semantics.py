@@ -49,6 +49,9 @@ POTENTIAL_TARGET = "POTENTIAL_TARGET_NOT_DISPATCH"
 DISPATCH_NOT_REACHABILITY = "DISPATCH_IS_NOT_REACHABILITY"
 INTRAPROCEDURAL = "INTRAPROCEDURAL_DERIVATION_ONLY"
 DERIVATION_PARTIAL = "TARGET_DERIVATION_PARTIAL"
+ONE_HOP = "ONE_HOP_CALLER_PROVENANCE"
+CALLER_SET_OPEN = "CALLER_SET_OPEN"
+PROVENANCE_BOUNDED = "PROVENANCE_ANALYSIS_BOUNDED"
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 
@@ -227,6 +230,18 @@ def evidence_grade(tool: str, result: dict[str, Any]) -> tuple[EvidenceGrade, st
 
         return EvidenceGrade.UNKNOWN, f"indirect target derivation {result.get('derivation_status')}"
 
+    if tool == "callback_argument_provenance":
+        if result.get("status") != "ok":
+            return EvidenceGrade.UNKNOWN, f"callback provenance status {result.get('status')}"
+
+        if result.get("target_set") == "CLOSED" and result.get("provenance_status") in ("CONCRETE", "FINITE_TARGET_SET"):
+            return EvidenceGrade.STRONG, "static one-hop caller-argument provenance, closed caller set (heuristic block boundaries)"
+
+        if set(result.get("caller_value_statuses") or {}) & {"CONCRETE", "FINITE_TARGET_SET", "FORWARDED_ARGUMENT"}:
+            return EvidenceGrade.PROBABLE, "static caller-supplied values; caller set open or some values unconstrained"
+
+        return EvidenceGrade.UNKNOWN, f"callback provenance {result.get('provenance_status')}"
+
     if tool == "structural_source_agreement":
         if result.get("status") != "ok" or "CONFLICT" in (result.get("status_counts") or {}):
             return EvidenceGrade.UNKNOWN, "source agreement contains a structural CONFLICT or failed"
@@ -382,6 +397,30 @@ def evidence_limitations(tool: str, arguments: dict[str, Any], result: dict[str,
                 f"The derivation is {result.get('derivation_status')}: some reaching definitions are unknown, "
                 "bounded or entered indirectly."
             )
+
+    if tool == "callback_argument_provenance":
+        out[FUNCTION_BOUNDARIES] = _STRUCTURAL_TEXT
+        out[ONE_HOP] = (
+            "Values are followed across one call boundary only: a caller forwarding its own argument is reported as "
+            "FORWARDED_ARGUMENT with the next hop named, not followed."
+        )
+        out[POTENTIAL_TARGET] = (
+            "A caller-supplied value is a possible target of the site; whether the callee reaches the site with it "
+            "is not established, and it is not an observed dispatch."
+        )
+        out[DISPATCH_NOT_REACHABILITY] = (
+            "A possible dispatch is not a reachable path: whether the caller runs at all is a separate, usually "
+            "unresolved, question."
+        )
+
+        if result.get("target_set") != "CLOSED":
+            out[CALLER_SET_OPEN] = (
+                "The candidate set is open (address-taken entry, unconstrained caller value or bound): an address "
+                "absent from it is not excluded."
+            )
+
+        if result.get("incomplete_reasons"):
+            out[PROVENANCE_BOUNDED] = "An analysis bound was hit: " + "; ".join(result["incomplete_reasons"][:3]) + "."
 
     return sorted(out.items())
 

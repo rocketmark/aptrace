@@ -1,0 +1,657 @@
+{
+ "sites": [
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "completeness": "unchanged: target is not an incoming argument",
+    "provenance_status": "NOT_APPLICABLE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "indexed-table"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "indexed-table",
+    "reason": [
+     "indexed load from a runtime table: entry content not derived"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r3",
+   "site": "0x0000cb92"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "completeness": "unchanged: target is not an incoming argument",
+    "provenance_status": "NOT_APPLICABLE",
+    "site_derivation_status": "PARTIAL",
+    "site_pattern": "pointer-iteration"
+   },
+   "before": {
+    "derivation_status": "PARTIAL",
+    "pattern": "pointer-iteration",
+    "reason": [
+     "walks a pointer array: entry content not derived"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r3",
+   "site": "0x0000e5f8"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "completeness": "unchanged: target is not an incoming argument",
+    "provenance_status": "NOT_APPLICABLE",
+    "site_derivation_status": "PARTIAL",
+    "site_pattern": "pointer-iteration"
+   },
+   "before": {
+    "derivation_status": "PARTIAL",
+    "pattern": "pointer-iteration",
+    "reason": [
+     "walks a pointer array: entry content not derived"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r3",
+   "site": "0x0000e602"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "PARTIAL",
+    "pattern": "multiple",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000ee38"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000ee60"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000ee80"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000eeb4"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000eed0"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000eef0"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000ef14"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000efae"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000efc4"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000efd4"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000efee"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000f000"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000f01a"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000f02c"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000f04e"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000f05e"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "partial: target set open",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "PARTIAL",
+    "pattern": "multiple",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r7",
+   "site": "0x0000f092"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [],
+    "completeness": "partial: target set open",
+    "provenance_status": "FORWARDED_ARGUMENT",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "UNKNOWN",
+    "pattern": "unresolved",
+    "reason": [
+     "target derivation unknown (stack slot (spilled or restored value))"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r8",
+   "site": "0x0000f114"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [],
+    "completeness": "partial: target set open",
+    "provenance_status": "FORWARDED_ARGUMENT",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "UNKNOWN",
+    "pattern": "unresolved",
+    "reason": [
+     "target derivation unknown (stack slot (spilled or restored value))"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r8",
+   "site": "0x0000f152"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "candidate_targets": [],
+    "completeness": "partial: target set open",
+    "provenance_status": "FORWARDED_ARGUMENT",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "OPEN"
+   },
+   "before": {
+    "derivation_status": "UNKNOWN",
+    "pattern": "unresolved",
+    "reason": [
+     "target derivation unknown (stack slot (spilled or restored value))"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r8",
+   "site": "0x0000f184"
+  },
+  {
+   "after": {
+    "c744": "EXCLUDED_WITHIN_SCOPE",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "full within scope",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "CLOSED"
+   },
+   "before": {
+    "derivation_status": "PARTIAL",
+    "pattern": "multiple",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r10",
+   "site": "0x0000f396"
+  },
+  {
+   "after": {
+    "c744": "EXCLUDED_WITHIN_SCOPE",
+    "candidate_targets": [
+     "0x0000e882"
+    ],
+    "completeness": "full within scope",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "CLOSED"
+   },
+   "before": {
+    "derivation_status": "PARTIAL",
+    "pattern": "multiple",
+    "reason": [
+     "callback passed in r3: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r10",
+   "site": "0x0000f3b6"
+  },
+  {
+   "after": {
+    "c744": "EXCLUDED_WITHIN_SCOPE",
+    "candidate_targets": [
+     "0x00010378"
+    ],
+    "completeness": "full within scope",
+    "provenance_status": "CONCRETE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "argument",
+    "target_set": "CLOSED"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "argument",
+    "reason": [
+     "callback passed in r1: its value is supplied by callers (not followed)"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": true,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r8",
+   "site": "0x000105d2"
+  },
+  {
+   "after": {
+    "c744": "NOT_EXCLUDED",
+    "completeness": "unchanged: target is not an incoming argument",
+    "provenance_status": "NOT_APPLICABLE",
+    "site_derivation_status": "ESTABLISHED",
+    "site_pattern": "indexed-table"
+   },
+   "before": {
+    "derivation_status": "ESTABLISHED",
+    "pattern": "indexed-table",
+    "reason": [
+     "indexed load from a runtime table: entry content not derived"
+    ],
+    "slot_7_8_relevance": "UNRESOLVED"
+   },
+   "in_v1_callback_16": false,
+   "in_v1_unresolved_27": true,
+   "instruction": "blx r3",
+   "site": "0x00010e1a"
+  }
+ ]
+}

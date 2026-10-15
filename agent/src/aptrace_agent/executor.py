@@ -8,9 +8,11 @@ from aptrace_agent.census import performing_rigs_census
 from aptrace_agent.disassembly import autopilot_disassembler
 from aptrace_agent.call_observation import planner_summary as observation_summary
 from aptrace_agent.function_effects import planner_summary as effects_summary
+from aptrace_agent.callback_provenance import planner_summary as callback_provenance_summary
 from aptrace_agent.indirect_target import planner_summary as indirect_target_summary
 from aptrace_agent.structural_wiring import (
     performing_rigs_function_effects,
+    performing_rigs_callback_provenance,
     performing_rigs_indirect_targets,
     performing_rigs_observed_calls,
     performing_rigs_graph,
@@ -51,6 +53,14 @@ class EvidenceExecutor:
         self._effects = None
         self._observed_calls = None
         self._indirect_targets = None
+        self._callback_provenance = None
+
+    @property
+    def callback_provenance(self):
+        if self._callback_provenance is None:
+            self._callback_provenance = performing_rigs_callback_provenance(self.census)
+
+        return self._callback_provenance
 
     @property
     def indirect_targets(self):
@@ -198,6 +208,11 @@ class EvidenceExecutor:
             target = self.indirect_targets.resolve(arguments["site"])
             target.planner_summary = indirect_target_summary(target)
             result = target.model_dump(mode="json")
+
+        elif tool == "callback_argument_provenance":
+            provenance = self.callback_provenance.trace(arguments["site"])
+            provenance.planner_summary = callback_provenance_summary(provenance)
+            result = provenance.model_dump(mode="json")
 
         else:
             raise ValueError(

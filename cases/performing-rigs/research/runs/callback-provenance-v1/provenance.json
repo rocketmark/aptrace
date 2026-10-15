@@ -1,0 +1,4527 @@
+{
+ "sites": [
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ee38 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ee38 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ee38": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000ee38",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ee60 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ee60 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ee60": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000ee60",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ee80 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ee80 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ee80": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000ee80",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000eeb4 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000eeb4 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000eeb4": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000eeb4",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000eed0 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000eed0 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000eed0": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000eed0",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000eef0 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000eef0 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000eef0": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000eef0",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ef14 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000ef14 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ef14": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000ef14",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efae with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efae with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000efae": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000efae",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efc4 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efc4 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000efc4": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000efc4",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efd4 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efd4 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000efd4": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000efd4",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efee with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000efee with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000efee": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000efee",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f000 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f000 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f000": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f000",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f01a with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f01a with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f01a": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f01a",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f02c with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f02c with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f02c": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f02c",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f04e with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f04e with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f04e": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f04e",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f05e with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f05e with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f05e": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f05e",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [
+      {
+       "kind": "flash-word",
+       "loaded_by": [
+        {
+         "addr": "0x0000ea54",
+         "next_use": {
+          "addr": "0x0000ea56",
+          "instruction": "cbnz r3, #0xeaa0"
+         }
+        }
+       ],
+       "location": "0x0000eafc",
+       "value": "0x0000ec49"
+      }
+     ],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": false,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000eaa0",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eaa6",
+         "instruction": "ldr r3, [pc, #0x58]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f092 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xec48",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eaa6",
+          "instruction": "ldr r3, [pc, #0x58]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eaac",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000ec48",
+     "function_name": "FUN_0000ec48",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [
+      "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000ec48",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eaac",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000ec48 reaches 0x0000f092 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eaa6"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000ec48",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eaac": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000ec48": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f092": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f092",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r7",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [],
+     "arg": 4,
+     "argument": "stack argument 4",
+     "callee_load": "0x0000f0c0",
+     "caller_set_complete": true,
+     "callers": [
+      {
+       "argument": "stack argument 4 ([sp, #0x0] at the transfer)",
+       "block": "0x0000ecf6",
+       "blocks_visited": 40,
+       "caller_function": "0x0000ec48",
+       "caller_function_name": "FUN_0000ec48",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "arg": 3,
+         "argument": "r3",
+         "function_entry": "0x0000ec48",
+         "kind": "forwarded"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f0b4 reaches 0x0000f114 with the value unchanged: CFG path only, branch feasibility not established",
+        "the outgoing stack slot is not overwritten between the store and the callee's load"
+       ],
+       "instruction": "bl #0xf0b4",
+       "next_hop": [
+        {
+         "argument": "r3",
+         "function_entry": "0x0000ec48"
+        }
+       ],
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000ec5a",
+          "from_reg": "r3",
+          "instruction": "mov r7, r3",
+          "kind": "move",
+          "source": {
+           "complete": true,
+           "defs": [
+            {
+             "arg": 3,
+             "function_entry": "0x0000ec48",
+             "kind": "argument"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "site": "0x0000ed00",
+       "stack_store": {
+        "instruction": "str r7, [sp]",
+        "store_addr": "0x0000ecf6",
+        "stored_register": "r7"
+       },
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "FORWARDED_ARGUMENT"
+      },
+      {
+       "argument": "stack argument 4 ([sp, #0x0] at the transfer)",
+       "block": "0x0000f2e0",
+       "blocks_visited": 48,
+       "caller_function": "0x0000f190",
+       "caller_function_name": "FUN_0000f190",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "arg": 3,
+         "argument": "r3",
+         "function_entry": "0x0000f190",
+         "kind": "forwarded"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f0b4 reaches 0x0000f114 with the value unchanged: CFG path only, branch feasibility not established",
+        "the outgoing stack slot is not overwritten between the store and the callee's load"
+       ],
+       "instruction": "bl #0xf0b4",
+       "next_hop": [
+        {
+         "argument": "r3",
+         "function_entry": "0x0000f190"
+        }
+       ],
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000f1a0",
+          "from_reg": "r3",
+          "instruction": "mov sl, r3",
+          "kind": "move",
+          "source": {
+           "complete": true,
+           "defs": [
+            {
+             "arg": 3,
+             "function_entry": "0x0000f190",
+             "kind": "argument"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "site": "0x0000f2ec",
+       "stack_store": {
+        "instruction": "str.w sl, [sp]",
+        "store_addr": "0x0000f2e0",
+        "stored_register": "sl"
+       },
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "FORWARDED_ARGUMENT"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "entry_sp_offset": 0,
+     "function_entry": "0x0000f0b4",
+     "function_name": "FUN_0000f0b4",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "stack",
+     "open_reasons": [
+      "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+      "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "FORWARDED_ARGUMENT": 2
+   },
+   "candidate_targets": [],
+   "containing_function": "0x0000f0b4",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [
+    {
+     "argument": "r3",
+     "function_entry": "0x0000ec48"
+    },
+    {
+     "argument": "r3",
+     "function_entry": "0x0000f190"
+    }
+   ],
+   "non_callable_values": [],
+   "open_reasons": [
+    "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+    "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+   ],
+   "other_site_components": [],
+   "provenance_status": "FORWARDED_ARGUMENT",
+   "recorded_coverage": {
+    "0x0000ed00": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f0b4": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f114": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f2ec": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f114",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r8",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 88
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [],
+     "arg": 4,
+     "argument": "stack argument 4",
+     "callee_load": "0x0000f0c0",
+     "caller_set_complete": true,
+     "callers": [
+      {
+       "argument": "stack argument 4 ([sp, #0x0] at the transfer)",
+       "block": "0x0000ecf6",
+       "blocks_visited": 40,
+       "caller_function": "0x0000ec48",
+       "caller_function_name": "FUN_0000ec48",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "arg": 3,
+         "argument": "r3",
+         "function_entry": "0x0000ec48",
+         "kind": "forwarded"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f0b4 reaches 0x0000f152 with the value unchanged: CFG path only, branch feasibility not established",
+        "the outgoing stack slot is not overwritten between the store and the callee's load"
+       ],
+       "instruction": "bl #0xf0b4",
+       "next_hop": [
+        {
+         "argument": "r3",
+         "function_entry": "0x0000ec48"
+        }
+       ],
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000ec5a",
+          "from_reg": "r3",
+          "instruction": "mov r7, r3",
+          "kind": "move",
+          "source": {
+           "complete": true,
+           "defs": [
+            {
+             "arg": 3,
+             "function_entry": "0x0000ec48",
+             "kind": "argument"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "site": "0x0000ed00",
+       "stack_store": {
+        "instruction": "str r7, [sp]",
+        "store_addr": "0x0000ecf6",
+        "stored_register": "r7"
+       },
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "FORWARDED_ARGUMENT"
+      },
+      {
+       "argument": "stack argument 4 ([sp, #0x0] at the transfer)",
+       "block": "0x0000f2e0",
+       "blocks_visited": 48,
+       "caller_function": "0x0000f190",
+       "caller_function_name": "FUN_0000f190",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "arg": 3,
+         "argument": "r3",
+         "function_entry": "0x0000f190",
+         "kind": "forwarded"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f0b4 reaches 0x0000f152 with the value unchanged: CFG path only, branch feasibility not established",
+        "the outgoing stack slot is not overwritten between the store and the callee's load"
+       ],
+       "instruction": "bl #0xf0b4",
+       "next_hop": [
+        {
+         "argument": "r3",
+         "function_entry": "0x0000f190"
+        }
+       ],
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000f1a0",
+          "from_reg": "r3",
+          "instruction": "mov sl, r3",
+          "kind": "move",
+          "source": {
+           "complete": true,
+           "defs": [
+            {
+             "arg": 3,
+             "function_entry": "0x0000f190",
+             "kind": "argument"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "site": "0x0000f2ec",
+       "stack_store": {
+        "instruction": "str.w sl, [sp]",
+        "store_addr": "0x0000f2e0",
+        "stored_register": "sl"
+       },
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "FORWARDED_ARGUMENT"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "entry_sp_offset": 0,
+     "function_entry": "0x0000f0b4",
+     "function_name": "FUN_0000f0b4",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "stack",
+     "open_reasons": [
+      "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+      "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "FORWARDED_ARGUMENT": 2
+   },
+   "candidate_targets": [],
+   "containing_function": "0x0000f0b4",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [
+    {
+     "argument": "r3",
+     "function_entry": "0x0000ec48"
+    },
+    {
+     "argument": "r3",
+     "function_entry": "0x0000f190"
+    }
+   ],
+   "non_callable_values": [],
+   "open_reasons": [
+    "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+    "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+   ],
+   "other_site_components": [],
+   "provenance_status": "FORWARDED_ARGUMENT",
+   "recorded_coverage": {
+    "0x0000ed00": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f0b4": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f152": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f2ec": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f152",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r8",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 88
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [],
+     "arg": 4,
+     "argument": "stack argument 4",
+     "callee_load": "0x0000f0c0",
+     "caller_set_complete": true,
+     "callers": [
+      {
+       "argument": "stack argument 4 ([sp, #0x0] at the transfer)",
+       "block": "0x0000ecf6",
+       "blocks_visited": 40,
+       "caller_function": "0x0000ec48",
+       "caller_function_name": "FUN_0000ec48",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "arg": 3,
+         "argument": "r3",
+         "function_entry": "0x0000ec48",
+         "kind": "forwarded"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f0b4 reaches 0x0000f184 with the value unchanged: CFG path only, branch feasibility not established",
+        "the outgoing stack slot is not overwritten between the store and the callee's load"
+       ],
+       "instruction": "bl #0xf0b4",
+       "next_hop": [
+        {
+         "argument": "r3",
+         "function_entry": "0x0000ec48"
+        }
+       ],
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000ec5a",
+          "from_reg": "r3",
+          "instruction": "mov r7, r3",
+          "kind": "move",
+          "source": {
+           "complete": true,
+           "defs": [
+            {
+             "arg": 3,
+             "function_entry": "0x0000ec48",
+             "kind": "argument"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "site": "0x0000ed00",
+       "stack_store": {
+        "instruction": "str r7, [sp]",
+        "store_addr": "0x0000ecf6",
+        "stored_register": "r7"
+       },
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "FORWARDED_ARGUMENT"
+      },
+      {
+       "argument": "stack argument 4 ([sp, #0x0] at the transfer)",
+       "block": "0x0000f2e0",
+       "blocks_visited": 48,
+       "caller_function": "0x0000f190",
+       "caller_function_name": "FUN_0000f190",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "arg": 3,
+         "argument": "r3",
+         "function_entry": "0x0000f190",
+         "kind": "forwarded"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f0b4 reaches 0x0000f184 with the value unchanged: CFG path only, branch feasibility not established",
+        "the outgoing stack slot is not overwritten between the store and the callee's load"
+       ],
+       "instruction": "bl #0xf0b4",
+       "next_hop": [
+        {
+         "argument": "r3",
+         "function_entry": "0x0000f190"
+        }
+       ],
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000f1a0",
+          "from_reg": "r3",
+          "instruction": "mov sl, r3",
+          "kind": "move",
+          "source": {
+           "complete": true,
+           "defs": [
+            {
+             "arg": 3,
+             "function_entry": "0x0000f190",
+             "kind": "argument"
+            }
+           ]
+          }
+         }
+        ]
+       },
+       "site": "0x0000f2ec",
+       "stack_store": {
+        "instruction": "str.w sl, [sp]",
+        "store_addr": "0x0000f2e0",
+        "stored_register": "sl"
+       },
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "FORWARDED_ARGUMENT"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "entry_sp_offset": 0,
+     "function_entry": "0x0000f0b4",
+     "function_name": "FUN_0000f0b4",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "stack",
+     "open_reasons": [
+      "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+      "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+     ],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "FORWARDED_ARGUMENT": 2
+   },
+   "candidate_targets": [],
+   "containing_function": "0x0000f0b4",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [
+    {
+     "argument": "r3",
+     "function_entry": "0x0000ec48"
+    },
+    {
+     "argument": "r3",
+     "function_entry": "0x0000f190"
+    }
+   ],
+   "non_callable_values": [],
+   "open_reasons": [
+    "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+    "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+   ],
+   "other_site_components": [],
+   "provenance_status": "FORWARDED_ARGUMENT",
+   "recorded_coverage": {
+    "0x0000ed00": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f0b4": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f184": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f2ec": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f184",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r8",
+   "target_set": "OPEN",
+   "work": {
+    "blocks_visited": 88
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": true,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000ead4",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eada",
+         "instruction": "ldr r3, [pc, #0x24]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f190 reaches 0x0000f396 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xf190",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eada",
+          "instruction": "ldr r3, [pc, #0x24]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eae0",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000f190",
+     "function_name": "FUN_0000f190",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000f190",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eae0",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000f190 reaches 0x0000f396 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eada"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000f190",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r10",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eae0": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f190": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f396": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f396",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r10",
+   "target_set": "CLOSED",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [],
+     "arg": 3,
+     "argument": "r3",
+     "caller_set_complete": true,
+     "callers": [
+      {
+       "argument": "r3",
+       "block": "0x0000ead4",
+       "blocks_visited": 0,
+       "caller_function": "0x0000e8a8",
+       "caller_function_name": "FUN_0000e8a8",
+       "caller_reachability": {
+        "census": "NO_KNOWN_PATH",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": true,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x0000eb00",
+         "callable": true,
+         "def_addr": "0x0000eada",
+         "instruction": "ldr r3, [pc, #0x24]",
+         "kind": "constant",
+         "raw_value": "0x0000e883",
+         "region": "flash",
+         "target": "0x0000e882",
+         "target_function": "FUN_0000e882",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0000f190 reaches 0x0000f3b6 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "bl #0xf190",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x0000eada",
+          "instruction": "ldr r3, [pc, #0x24]",
+          "kind": "constant",
+          "literal_addr": "0x0000eb00",
+          "value": "0x0000e883",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0000eae0",
+       "transfer": "bl",
+       "transfer_kind": "call",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0000f190",
+     "function_name": "FUN_0000f190",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "target_function": "FUN_0000e882",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r3",
+       "argument_function": "0x0000f190",
+       "basis": "literal at 0x0000eb00",
+       "caller_function": "0x0000e8a8",
+       "caller_site": "0x0000eae0",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0000f190 reaches 0x0000f3b6 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x0000eada"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0000f190",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r10",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0000eae0": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f190": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0000f3b6": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x0000f3b6",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r10",
+   "target_set": "CLOSED",
+   "work": {
+    "blocks_visited": 0
+   }
+  },
+  {
+   "analysis": "callback_provenance",
+   "analysis_version": 1,
+   "argument_origins": [
+    {
+     "address_taken": [],
+     "arg": 1,
+     "argument": "r1",
+     "caller_set_complete": true,
+     "callers": [
+      {
+       "argument": "r1",
+       "block": "0x00010438",
+       "blocks_visited": 0,
+       "caller_block_address_taken": [
+        {
+         "kind": "flash-word",
+         "loaded_by": [
+          {
+           "addr": "0x000104bc",
+           "next_use": {
+            "addr": "0x000104c0",
+            "instruction": "str r2, [r4, #0x28]"
+           }
+          }
+         ],
+         "location": "0x0001050c",
+         "value": "0x00010439"
+        },
+        {
+         "kind": "flash-word",
+         "loaded_by": [
+          {
+           "addr": "0x00010678",
+           "next_use": {
+            "addr": "0x0001067a",
+            "instruction": "str r3, [r6, #0x28]"
+           }
+          }
+         ],
+         "location": "0x000106b0",
+         "value": "0x00010439"
+        }
+       ],
+       "caller_function": null,
+       "caller_function_name": null,
+       "caller_reachability": {
+        "census": null,
+        "reason": "unattributed code",
+        "status": "UNRESOLVED"
+       },
+       "caller_static_path_to_transfer": null,
+       "census_edge": true,
+       "complete": true,
+       "components": [
+        {
+         "basis": "literal at 0x00010440",
+         "callable": true,
+         "def_addr": "0x00010438",
+         "instruction": "ldr r1, [pc, #4]",
+         "kind": "constant",
+         "raw_value": "0x00010379",
+         "region": "flash",
+         "target": "0x00010378",
+         "target_function": "FUN_00010378",
+         "target_reachability": {
+          "census": "NO_KNOWN_PATH",
+          "status": "UNRESOLVED"
+         },
+         "thumb_bit": 1,
+         "validity": "VALID_THUMB_CODE_POINTER"
+        }
+       ],
+       "condition_code": null,
+       "conditional": false,
+       "conditions": [
+        "0x0001059c reaches 0x000105d2 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "instruction": "b.w #0x1059c",
+       "reaching_definitions": {
+        "complete": true,
+        "defs": [
+         {
+          "def_addr": "0x00010438",
+          "instruction": "ldr r1, [pc, #4]",
+          "kind": "constant",
+          "literal_addr": "0x00010440",
+          "value": "0x00010379",
+          "via": "literal"
+         }
+        ]
+       },
+       "site": "0x0001043a",
+       "transfer": "b.w",
+       "transfer_kind": "tail",
+       "value_status": "CONCRETE"
+      }
+     ],
+     "census_only_edges": [],
+     "entry_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "function_entry": "0x0001059c",
+     "function_name": "FUN_0001059c",
+     "intraprocedural_entry_branches": [],
+     "invalid_transfers": [],
+     "location": "register",
+     "open_reasons": [],
+     "site_static_path_from_entry": true,
+     "unverified_pattern_hits": []
+    }
+   ],
+   "bounds": {
+    "max_blocks": 128,
+    "max_callers": 16,
+    "max_defs": 16,
+    "max_path_blocks": 512,
+    "max_targets": 16,
+    "max_work": 4096
+   },
+   "caller_value_statuses": {
+    "CONCRETE": 1
+   },
+   "candidate_targets": [
+    {
+     "raw_values": [
+      "0x00010379"
+     ],
+     "target": "0x00010378",
+     "target_function": "FUN_00010378",
+     "target_reachability": {
+      "census": "NO_KNOWN_PATH",
+      "status": "UNRESOLVED"
+     },
+     "via": [
+      {
+       "argument": "r1",
+       "argument_function": "0x0001059c",
+       "basis": "literal at 0x00010440",
+       "caller_function": null,
+       "caller_site": "0x0001043a",
+       "caller_value_status": "CONCRETE",
+       "conditions": [
+        "0x0001059c reaches 0x000105d2 with the value unchanged: CFG path only, branch feasibility not established"
+       ],
+       "def_addr": "0x00010438"
+      }
+     ]
+    }
+   ],
+   "containing_function": "0x0001059c",
+   "firmware_key": "autopilot868",
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "limitations": [
+    "one hop: a caller's own incoming argument is reported as FORWARDED_ARGUMENT, never followed",
+    "callers are direct transfers (BL, B.W, B<c>.W, 16-bit B/B<c>) at instructions the census decodes; an entry whose address is materialized as a code pointer has indirect callers this does not enumerate",
+    "a caller's value is its intraprocedural reaching definitions over census blocks and edges; RAM, MMIO and object contents are runtime state",
+    "address-taken entries are found as aligned flash words, MOVW/MOVT in census code and recorded indirect candidates; ADR or computed materializations are not swept",
+    "a stack argument is the word the caller stores at the outgoing slot in the transfer's own block; stores through another register aliasing the stack are not modeled",
+    "a candidate target is a value some caller passes, not a dispatch: whether the callee reaches the site with it, and whether the caller runs at all, are not established",
+    "function and block boundaries are Ghidra's and the Capstone sweep's (heuristic)"
+   ],
+   "next_hops": [],
+   "non_callable_values": [],
+   "open_reasons": [],
+   "other_site_components": [],
+   "provenance_status": "CONCRETE",
+   "recorded_coverage": {
+    "0x0001043a": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x0001059c": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    },
+    "0x000105d2": {
+     "executed_in": [],
+     "not_executed_in": [
+      "boot"
+     ]
+    }
+   },
+   "site": "0x000105d2",
+   "site_analysis": {
+    "analysis": "indirect_target",
+    "analysis_version": 2
+   },
+   "site_derivation_status": "ESTABLISHED",
+   "site_pattern": "argument",
+   "target_register": "r8",
+   "target_set": "CLOSED",
+   "work": {
+    "blocks_visited": 0
+   }
+  }
+ ]
+}

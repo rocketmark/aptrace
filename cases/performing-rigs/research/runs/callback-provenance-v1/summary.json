@@ -1,0 +1,100 @@
+{
+ "analyses": {
+  "callback_provenance": 1,
+  "indirect_target": 2
+ },
+ "argument_sites": 23,
+ "bounds": {
+  "max_blocks": 128,
+  "max_callers": 16,
+  "max_defs": 16,
+  "max_path_blocks": 512,
+  "max_targets": 16,
+  "max_work": 4096
+ },
+ "c744": {
+  "candidate_at": [],
+  "excluded_within_scope_at": [
+   "0x0000f396",
+   "0x0000f3b6",
+   "0x000105d2"
+  ],
+  "not_excluded_at": [
+   "0x0000ee38",
+   "0x0000ee60",
+   "0x0000ee80",
+   "0x0000eeb4",
+   "0x0000eed0",
+   "0x0000eef0",
+   "0x0000ef14",
+   "0x0000efae",
+   "0x0000efc4",
+   "0x0000efd4",
+   "0x0000efee",
+   "0x0000f000",
+   "0x0000f01a",
+   "0x0000f02c",
+   "0x0000f04e",
+   "0x0000f05e",
+   "0x0000f092",
+   "0x0000f114",
+   "0x0000f152",
+   "0x0000f184"
+  ]
+ },
+ "candidate_targets": [
+  "0x0000e882",
+  "0x00010378"
+ ],
+ "census_db_sha256": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+ "dynamic": {
+  "entries_observed": [],
+  "runs": 66
+ },
+ "firmware": {
+  "key": "autopilot868",
+  "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+ },
+ "next_hops": [
+  "{\"argument\": \"r3\", \"function_entry\": \"0x0000ec48\"}",
+  "{\"argument\": \"r3\", \"function_entry\": \"0x0000f190\"}"
+ ],
+ "non_callable_values": [],
+ "provenance_status": {
+  "CONCRETE": 20,
+  "FORWARDED_ARGUMENT": 3
+ },
+ "target_set": {
+  "CLOSED": 3,
+  "OPEN": 20
+ },
+ "tools": {
+  "callback_provenance.py": "ebcfc1e7232f9bac96565daf79e182409442924ca644efb837374da48d529f17",
+  "fnptr_resolve.py": "801d4d028987a44dc29ef0c927a9e9ba7ce4110662a3ab944cce069b6ecbdb15",
+  "indexed_writes.py": "a18d1de509ba4e8d28c32e8a76dda87439b73e508623dfd619231afcad0c226c",
+  "indirect_resolve.py": "c63c11322beb3d77d1d83925286d9accd2d10b5a077db1fcefa6e9954726ee8c",
+  "indirect_target.py": "2320d83a6062fa91c4c7c7f6e9cba62612b7e5badd150f9b80948ad47040af95",
+  "slot_dispatch.py": "b5a14beb9fa51210e96c1a6435f26e35be3ddb5dea59886b2823b3710fe8d2f9"
+ },
+ "v1_callback_16": {
+  "closed": 1,
+  "count": 16,
+  "gained_caller_constraint": 16
+ },
+ "v1_unresolved_27": {
+  "after": {
+   "CANDIDATE": 0,
+   "EXCLUDED_WITHIN_SCOPE": 3,
+   "NOT_EXCLUDED": 24
+  },
+  "count": 27
+ },
+ "v1_v2_derivation_changes": [
+  "0x0000b0d4",
+  "0x0000f114",
+  "0x0000f152",
+  "0x0000f184",
+  "0x0000f396",
+  "0x0000f3b6"
+ ]
+}

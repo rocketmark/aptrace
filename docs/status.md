@@ -88,6 +88,59 @@ belong in each case's status document.
 
   The ResearchController offers it as `resolve_indirect_call(site)` only for
   sites already named in session evidence, at most two per session.
+
+  Version 2 adds:
+  - case edges of statically resolved jump tables as predecessors (their
+    table words are no longer treated as code-pointer entries);
+  - AAPCS stack arguments read in the entry block at a known SP offset;
+  - `movw`/`movt`, `adr` and cross-block add/sub-immediate constants;
+  - an optional global work budget.
+- Trace a callback target one call boundary up
+  (`tools/census/callback_provenance.py`, `trace_callback_argument`). When a
+  register-indirect site's target is an incoming argument, the tool takes
+  these steps:
+  - It enumerates the direct transfers into that entry with a halfword
+    sweep (`BL`, `B.W`, `B<c>.W`, 16-bit `B`/`B<c>`). A hit counts only
+    where the census decodes an instruction, and each hit is cross-checked
+    against census edges. A `BLX` immediate is reported as invalid on
+    M-profile.
+  - At each caller it derives the same argument: the register, or the
+    outgoing stack slot stored in the transfer's block. The derivation uses
+    the same reaching-definition machinery.
+  - It classifies each caller's value as `CONCRETE`, `FINITE_TARGET_SET`,
+    `FORWARDED_ARGUMENT` (next hop named, never taken), `MEMORY_DEPENDENT`
+    or `UNKNOWN`.
+  - It checks every constant as a Cortex-M code pointer. An even, null,
+    out-of-image or undecodable value is kept and labeled; it never becomes
+    a target.
+
+  The candidate set is CLOSED only when all of the following hold:
+  - the site's derivation is complete;
+  - no other entry into the function is known (no flash-word or
+    `MOVW`/`MOVT` materialization, no census-only edge, no undecoded hit);
+  - every caller's value is constant.
+
+  Otherwise the set is OPEN, with reasons. Callee-to-site feasibility,
+  caller reachability and recorded coverage are separate fields. All
+  bounds (callers, blocks, definitions, targets, work) are reported when
+  hit.
+
+  The agent operation `callback_argument_provenance(site)` accepts only a
+  census register-indirect site:
+  - its inputs are the census DB plus six census modules;
+  - it grades STRONG only for a CLOSED constant set, otherwise PROBABLE or
+    UNKNOWN;
+  - its limitations are one-hop, potential-target, not-reachability,
+    open-set and bounded.
+
+  The ResearchController offers it as `trace_callback_argument(site)` for
+  grounded sites, at most two per session, putting first the sites whose
+  `indirect_call_target` result names an argument.
+
+  Call-relation admission reads its results only as these edges:
+  - direct or tail edges for the decoded caller transfers;
+  - `POTENTIAL_INDIRECT` edges conditional on the caller site. These are
+    never categorical, even when the set is CLOSED.
 - Resolve statically initialized RAM function pointers
   (`tools/census/fnptr_resolve.py`): an unresolved `bx`/`blx` whose target
   is loaded from one constant RAM slot, every known store to that slot a

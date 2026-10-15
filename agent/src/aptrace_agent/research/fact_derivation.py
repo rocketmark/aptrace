@@ -482,6 +482,47 @@ def _observation_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
     return [("concrete-observed", statement)], questions
 
 
+def _argument(p: dict) -> str:
+    arg = p.get("arg")
+    return f"r{arg}" if isinstance(arg, int) and arg < 4 else f"stack argument {arg}"
+
+
+def _callback_provenance_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    """Scoped facts of one one-hop caller-argument provenance: who passes what, nothing more."""
+
+    if result.get("status") != "ok" or not result.get("argument_origins"):
+        return [], []
+
+    site = result.get("site")
+    parts = []
+
+    for origin in result["argument_origins"][:2]:
+        callers = []
+
+        for caller in (origin.get("callers") or [])[:3]:
+            values = [c.get("raw_value") if c.get("kind") == "constant" else c.get("kind") for c in caller.get("components") or []]
+            callers.append(f"{caller.get('site')} ({caller.get('caller_function') or 'unattributed'}) passes "
+                           f"{'/'.join(str(v) for v in values[:3])} [{caller.get('value_status')}]")
+
+        parts.append(f"its target is incoming {origin.get('argument')} of {origin.get('function_entry')}; "
+                     + ("; ".join(callers) if callers else "no direct caller found"))
+
+    targets = [t["target"] for t in result.get("candidate_targets") or []]
+    statement = (
+        f"Indirect site {site} ({result.get('instruction')}, {result.get('containing_function') or 'unattributed code'}): "
+        + " | ".join(parts)
+        + (f"; caller-supplied possible targets {', '.join(targets[:4])}" if targets else "")
+        + f" (set {result.get('target_set')}); possible targets are not observed dispatches or reachable paths."
+    )
+    questions = [f"What do callers of {h['function_entry']} pass in {h['argument']}? (next hop for {site})"
+                 for h in (result.get("next_hops") or [])[:2]]
+
+    if result.get("target_set") != "CLOSED":
+        questions += [f"Indirect site {site}: {r}." for r in (result.get("open_reasons") or [])[:1]]
+
+    return [("static-dataflow", statement)], questions
+
+
 def _indirect_target_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
     """Scoped facts of one static target derivation: its shape and potential targets, nothing more."""
 
@@ -496,7 +537,7 @@ def _indirect_target_facts(result: dict) -> tuple[list[tuple[str, str]], list[st
         if p.get("pattern") in ("vtable-slot", "object-table-slot"):
             shapes.append(f"the word at slot +0x{p['slot_offset']:x} of the table its receiver points to")
         elif p.get("pattern") == "argument":
-            shapes.append(f"the callback passed in r{p.get('arg')}")
+            shapes.append(f"the callback passed in {_argument(p)}")
         else:
             shapes.append(str(p.get("pattern")))
 
@@ -696,6 +737,7 @@ class StateFactDeriver:
             "function_effects": _effects_facts,
             "observed_call_arguments": _observation_facts,
             "indirect_call_target": _indirect_target_facts,
+            "callback_argument_provenance": _callback_provenance_facts,
         }.get(observation.tool)
 
         if derived is not None:

@@ -1,0 +1,1487 @@
+{
+ "sites": [
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000ee38 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000ee38": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000ee38",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000ee60 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000ee60": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000ee60",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000ee80 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000ee80": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000ee80",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000eeb4 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000eeb4": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000eeb4",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000eed0 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000eed0": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000eed0",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000eef0 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000eef0": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000eef0",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000ef14 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000ef14": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000ef14",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000efae with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000efae": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000efae",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000efc4 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000efc4": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000efc4",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000efd4 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000efd4": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000efd4",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000efee with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000efee": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000efee",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000f000 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000f000": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f000",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000f01a with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000f01a": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f01a",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000f02c with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000f02c": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f02c",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000f04e with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000f04e": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f04e",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000f05e with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000f05e": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f05e",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000ec48"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000ec48 reaches 0x0000f092 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eaac"
+     ]
+    }
+   ],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000ec48",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eaac",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r7",
+   "missing_upstream": [
+    "indirect entries into 0x0000ec48: its address 0x0000ec49 is the flash word 0x0000eafc (loaded at 0x0000ea54, next use cbnz r3, #0xeaa0)"
+   ],
+   "open_reasons": [
+    "the entry 0x0000ec48 is address-taken; indirect callers are not enumerated"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eaac": [],
+    "0x0000ec48": [],
+    "0x0000f092": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f092",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming stack argument 4 of 0x0000f0b4"
+   ],
+   "candidate_targets": [],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000f0b4",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000ec48",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000ed00",
+     "transfer": "bl",
+     "value_status": "FORWARDED_ARGUMENT",
+     "values": [
+      "r3"
+     ]
+    },
+    {
+     "caller_function": "0x0000f190",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000f2ec",
+     "transfer": "bl",
+     "value_status": "FORWARDED_ARGUMENT",
+     "values": [
+      "r3"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "missing_upstream": [
+    "what callers of 0x0000ec48 pass in r3 (forwarded at 0x0000ed00)",
+    "what callers of 0x0000f190 pass in r3 (forwarded at 0x0000f2ec)"
+   ],
+   "open_reasons": [
+    "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+    "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "FORWARDED_ARGUMENT",
+   "recorded_census_coverage": {
+    "0x0000ed00": [],
+    "0x0000f0b4": [],
+    "0x0000f114": [],
+    "0x0000f2ec": []
+   },
+   "recovered_values": {
+    "FORWARDED_ARGUMENT": 2
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f114",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming stack argument 4 of 0x0000f0b4"
+   ],
+   "candidate_targets": [],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000f0b4",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000ec48",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000ed00",
+     "transfer": "bl",
+     "value_status": "FORWARDED_ARGUMENT",
+     "values": [
+      "r3"
+     ]
+    },
+    {
+     "caller_function": "0x0000f190",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000f2ec",
+     "transfer": "bl",
+     "value_status": "FORWARDED_ARGUMENT",
+     "values": [
+      "r3"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "missing_upstream": [
+    "what callers of 0x0000ec48 pass in r3 (forwarded at 0x0000ed00)",
+    "what callers of 0x0000f190 pass in r3 (forwarded at 0x0000f2ec)"
+   ],
+   "open_reasons": [
+    "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+    "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "FORWARDED_ARGUMENT",
+   "recorded_census_coverage": {
+    "0x0000ed00": [],
+    "0x0000f0b4": [],
+    "0x0000f152": [],
+    "0x0000f2ec": []
+   },
+   "recovered_values": {
+    "FORWARDED_ARGUMENT": 2
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f152",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming stack argument 4 of 0x0000f0b4"
+   ],
+   "candidate_targets": [],
+   "completeness": "partial: target set open",
+   "containing_function": "0x0000f0b4",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000ec48",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000ed00",
+     "transfer": "bl",
+     "value_status": "FORWARDED_ARGUMENT",
+     "values": [
+      "r3"
+     ]
+    },
+    {
+     "caller_function": "0x0000f190",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000f2ec",
+     "transfer": "bl",
+     "value_status": "FORWARDED_ARGUMENT",
+     "values": [
+      "r3"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "missing_upstream": [
+    "what callers of 0x0000ec48 pass in r3 (forwarded at 0x0000ed00)",
+    "what callers of 0x0000f190 pass in r3 (forwarded at 0x0000f2ec)"
+   ],
+   "open_reasons": [
+    "caller 0x0000ed00 value is FORWARDED_ARGUMENT",
+    "caller 0x0000f2ec value is FORWARDED_ARGUMENT"
+   ],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "NOT_EXCLUDED"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "NOT_EXCLUDED"
+    }
+   },
+   "provenance_status": "FORWARDED_ARGUMENT",
+   "recorded_census_coverage": {
+    "0x0000ed00": [],
+    "0x0000f0b4": [],
+    "0x0000f184": [],
+    "0x0000f2ec": []
+   },
+   "recovered_values": {
+    "FORWARDED_ARGUMENT": 2
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f184",
+   "target_set": "OPEN"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000f190"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000f190 reaches 0x0000f396 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eae0"
+     ]
+    }
+   ],
+   "completeness": "full within scope",
+   "containing_function": "0x0000f190",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eae0",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r10",
+   "missing_upstream": [],
+   "open_reasons": [],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "EXCLUDED_WITHIN_SCOPE"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "EXCLUDED_WITHIN_SCOPE"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eae0": [],
+    "0x0000f190": [],
+    "0x0000f396": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f396",
+   "target_set": "CLOSED"
+  },
+  {
+   "argument_source": [
+    "incoming r3 of 0x0000f190"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0000f190 reaches 0x0000f3b6 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x0000e883"
+     ],
+     "target": "0x0000e882",
+     "via": [
+      "0x0000eae0"
+     ]
+    }
+   ],
+   "completeness": "full within scope",
+   "containing_function": "0x0000f190",
+   "direct_callers": [
+    {
+     "caller_function": "0x0000e8a8",
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0000eae0",
+     "transfer": "bl",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x0000e883"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r10",
+   "missing_upstream": [],
+   "open_reasons": [],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "EXCLUDED_WITHIN_SCOPE"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "EXCLUDED_WITHIN_SCOPE"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0000eae0": [],
+    "0x0000f190": [],
+    "0x0000f3b6": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x0000f3b6",
+   "target_set": "CLOSED"
+  },
+  {
+   "argument_source": [
+    "incoming r1 of 0x0001059c"
+   ],
+   "candidate_targets": [
+    {
+     "conditions": [
+      "0x0001059c reaches 0x000105d2 with the value unchanged: CFG path only, branch feasibility not established"
+     ],
+     "raw_values": [
+      "0x00010379"
+     ],
+     "target": "0x00010378",
+     "via": [
+      "0x0001043a"
+     ]
+    }
+   ],
+   "completeness": "full within scope",
+   "containing_function": "0x0001059c",
+   "direct_callers": [
+    {
+     "caller_function": null,
+     "caller_reachability": "UNRESOLVED",
+     "site": "0x0001043a",
+     "transfer": "b.w",
+     "value_status": "CONCRETE",
+     "values": [
+      "0x00010379"
+     ]
+    }
+   ],
+   "incomplete_reasons": [],
+   "instruction": "blx r8",
+   "missing_upstream": [],
+   "open_reasons": [],
+   "probes": {
+    "0x0000c744": {
+     "label": "slot-7 thunk",
+     "status": "EXCLUDED_WITHIN_SCOPE"
+    },
+    "0x0000c7c0": {
+     "label": "slot-8 begin-like",
+     "status": "EXCLUDED_WITHIN_SCOPE"
+    }
+   },
+   "provenance_status": "CONCRETE",
+   "recorded_census_coverage": {
+    "0x0001043a": [],
+    "0x0001059c": [],
+    "0x000105d2": []
+   },
+   "recovered_values": {
+    "CONCRETE": 1
+   },
+   "root_reachability": [
+    "UNRESOLVED"
+   ],
+   "site": "0x000105d2",
+   "target_set": "CLOSED"
+  }
+ ]
+}

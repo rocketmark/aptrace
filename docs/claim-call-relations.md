@@ -31,10 +31,10 @@ Edges come only from structured result fields:
 
 | Kind | Meaning | Evidence |
 |---|---|---|
-| `DIRECT_CALL` | a call instruction to a specific function | `function_facts` callers/callees (Ghidra call references); decoded `BL`/`BLX` immediates in `function_disassembly` or `callsite_context`; static call sites listed by `observed_call_arguments` |
-| `TAIL_TRANSFER` | a branch that leaves the source function | decoded `B`, `B.W`, `B<c>`(`.W`) immediates outside the decoded function's extent (`function_disassembly`) |
+| `DIRECT_CALL` | a call instruction to a specific function | `function_facts` callers/callees (Ghidra call references); decoded `BL`/`BLX` immediates in `function_disassembly` or `callsite_context`; static call sites listed by `observed_call_arguments`; decoded `BL` callers listed by `callback_argument_provenance` |
+| `TAIL_TRANSFER` | a branch that leaves the source function | decoded `B`, `B.W`, `B<c>`(`.W`) immediates outside the decoded function's extent (`function_disassembly`); decoded tail callers listed by `callback_argument_provenance` |
 | `ESTABLISHED_INDIRECT` | an indirect transfer with a statically established target | `indirect_call_target` with `STATICALLY_ESTABLISHED` and an `ESTABLISHED` derivation; census `resolved_indirect` edges of `EXACT`/`STRONG` confidence |
-| `POTENTIAL_INDIRECT` | a target an indirect transfer can take under a stated condition | every other `indirect_call_target` candidate, with its basis (for example "IF the receiver's vptr is V") and the addresses that condition names: vtable, table entry, slot |
+| `POTENTIAL_INDIRECT` | a target an indirect transfer can take under a stated condition | every other `indirect_call_target` candidate, with its basis (for example "IF the receiver's vptr is V") and the addresses that condition names: vtable, table entry, slot. Also each `callback_argument_provenance` caller-supplied target, conditional on its caller ("IF entered from caller site S"), naming the caller site, the caller function and the defining instruction. Never categorical, even for a closed caller set |
 | `OBSERVED_DISPATCH` | a transfer concretely taken in one scenario | `observed_call_arguments` call sites with hits, labeled with the result's scenario |
 
 Not edges:

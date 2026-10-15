@@ -38,6 +38,7 @@ STRUCTURAL_TOOLS = (
     "function_effects",
     "observed_call_arguments",
     "indirect_call_target",
+    "callback_argument_provenance",
 )
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
@@ -71,6 +72,7 @@ _STRUCTURAL_SOURCES = {
     "function_effects",
     "observed_call_arguments",
     "indirect_call_target",
+    "callback_argument_provenance",
     "search_case_evidence",
 }
 
@@ -115,6 +117,8 @@ class _Palette:
     known: set[str] = field(default_factory=set)
     # Census register-indirect sites already present in evidence.
     indirect_sites: list[str] = field(default_factory=list)
+    # Of those, sites offered for one-hop callback provenance.
+    callback_sites: list[str] = field(default_factory=list)
     # Tool whose request repeated an analysis already in evidence.
     duplicate: str | None = None
 
@@ -191,6 +195,7 @@ class ResearchController:
         max_observations: int = 2,
         indirect_sites: Sequence[int] = (),
         max_indirect_targets: int = 2,
+        max_callback_traces: int = 2,
         max_visible_leads: int = 6,
         prefill_retry_delay: float = 3.0,
         projection_budget: ProjectionBudget | None = None,
@@ -250,6 +255,7 @@ class ResearchController:
         # name one only once it appears in evidence.
         self.indirect_sites = frozenset(int(site) for site in indirect_sites)
         self.max_indirect_targets = max_indirect_targets
+        self.max_callback_traces = max_callback_traces
         self.max_visible_leads = max_visible_leads
         self.prefill_retry_delay = prefill_retry_delay
         self.claim_contract = claim_contract
@@ -450,14 +456,45 @@ class ResearchController:
                     )
                 )
 
-    def _grounded_sites(self, session: ResearchSession) -> list[str]:
-        """Census indirect sites named in evidence, most recent evidence first."""
+        if (
+            "callback_argument_provenance" in self.structural_tools
+            and self.indirect_sites
+            and len(self._executed(session, "callback_argument_provenance")) < self.max_callback_traces
+        ):
+            palette.callback_sites = self._grounded_sites(session, "callback_argument_provenance")
+
+            if palette.callback_sites:
+                palette.tools.append(
+                    _function_tool(
+                        "trace_callback_argument",
+                        "Only when an indirect call's target is a callback ARGUMENT (e.g. resolve_indirect_call "
+                        "reported 'callback passed in rN'): one-hop static provenance of the value each direct caller "
+                        "passes (concrete, finite set, forwarded from the caller's own argument, memory, unknown). "
+                        "A caller-supplied value is a possible target, not a dispatch or a reachable path.",
+                        {"site": {"type": "string", "enum": palette.callback_sites}},
+                        ["site"],
+                    )
+                )
+
+    def _grounded_sites(self, session: ResearchSession, tool: str = "indirect_call_target") -> list[str]:
+        """
+        Census indirect sites named in evidence, most recent evidence first,
+        not yet analyzed by `tool`. For callback provenance, sites whose
+        indirect_call_target result names an argument origin come first.
+        """
 
         found: dict[int, None] = {}
-        done = {str(o.arguments.get("site")) for o in self._observations(session, "indirect_call_target")}
+        done = {str(o.arguments.get("site")) for o in self._observations(session, tool)}
+
+        if tool == "callback_argument_provenance":
+            for observation in reversed(self._observations(session, "indirect_call_target")):
+                site = str(observation.arguments.get("site"))
+
+                if site not in done and any(p.get("pattern") == "argument" for p in observation.result.get("patterns") or []):
+                    found.setdefault(int(site, 16))
 
         for observation in reversed(session.ledger.all()):
-            if observation.tool == "indirect_call_target":
+            if observation.tool == tool:
                 continue
 
             for match in _ADDRESS_RE.finditer(json.dumps(observation.result, default=str)):
@@ -934,6 +971,24 @@ class ResearchController:
 
             return name, {"site": site}
 
+        if name == "trace_callback_argument" and name in offered:
+            extra = sorted(set(arguments) - {"site"})
+
+            if extra:
+                return f"trace_callback_argument accepts only site; rejected {', '.join(extra)}"
+
+            site = str(arguments.get("site", "")).strip().lower()
+
+            for observation in self._observations(session, "callback_argument_provenance"):
+                if observation.arguments.get("site") == site:
+                    palette.duplicate = name
+                    return f"{site} was already traced in {observation.id}"
+
+            if site not in palette.callback_sites:
+                return "trace_callback_argument site must be one of the listed indirect sites"
+
+            return name, {"site": site}
+
         return None
 
     # -- planner I/O ------------------------------------------------------------
@@ -1225,7 +1280,7 @@ class ResearchController:
         structural = [
             name
             for name in ("analyze_peripheral", "analyze_usb_interface", "find_common_paths", "analyze_function_effects",
-                         "observe_call_arguments", "resolve_indirect_call")
+                         "observe_call_arguments", "resolve_indirect_call", "trace_callback_argument")
             if name in names
         ]
 
@@ -1262,6 +1317,9 @@ class ResearchController:
 
         if "resolve_indirect_call" in structural:
             order.append("resolve_indirect_call if an indirect call's possible targets matter (static; potential, not dispatched)")
+
+        if "trace_callback_argument" in structural:
+            order.append("trace_callback_argument if an indirect target is a callback argument (one hop; what callers pass)")
 
         order += ["leads", "caller/callee expansion only for a specific question"]
 
@@ -1791,6 +1849,17 @@ answer any other question.
                 arguments=arguments,
             )
             return "indirect_target", lead, observation
+
+        if action == "trace_callback_argument":
+            lead, observation = self._follow_new_lead(
+                session,
+                step=step,
+                kind="callback-provenance",
+                description=f"One-hop caller-argument provenance of indirect site {arguments['site']}",
+                tool="callback_argument_provenance",
+                arguments=arguments,
+            )
+            return "callback_provenance", lead, observation
 
         raise ValueError(f"not a structural action: {action}")
 

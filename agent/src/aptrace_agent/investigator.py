@@ -226,6 +226,7 @@ def run_autonomous_investigation(
                 "function_effects",
                 "observed_call_arguments",
                 "indirect_call_target",
+                "callback_argument_provenance",
             ),
             observation_scenarios=(
                 executor.observed_calls.supported_scenarios()

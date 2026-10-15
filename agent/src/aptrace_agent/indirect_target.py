@@ -235,7 +235,9 @@ def planner_summary(result: IndirectCallTarget) -> str:
         elif kind == "object-field":
             lines.append(f"  function pointer at [{_origin(p.get('pointer'))} + 0x{p['field_offset']:x}]")
         elif kind == "argument":
-            lines.append(f"  callback passed in r{p.get('arg')} (callers not followed)")
+            arg = p.get("arg")
+            where = f"r{arg}" if isinstance(arg, int) and arg < 4 else f"stack argument {arg}"
+            lines.append(f"  callback passed in {where} (callers not followed)")
         elif kind == "constant-slot":
             lines.append(f"  fixed {p.get('slot_region')} word {p.get('slot_addr')}")
         elif kind == "indexed-table":

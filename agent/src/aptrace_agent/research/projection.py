@@ -20,6 +20,7 @@ SUBSYSTEM_TOOLS = (
     "function_effects",
     "observed_call_arguments",
     "indirect_call_target",
+    "callback_argument_provenance",
 )
 
 # Per-function inspection tools, summarized as "already inspected".
@@ -278,6 +279,9 @@ def analysis_label(observation: EvidenceObservation) -> str | None:
 
     if observation.tool == "indirect_call_target":
         return f"indirect {args.get('site')}"
+
+    if observation.tool == "callback_argument_provenance":
+        return f"callback {args.get('site')}"
 
     if (
         observation.tool == "search_case_evidence"
