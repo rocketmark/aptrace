@@ -1,0 +1,272 @@
+{
+ "live": [
+  {
+   "claim_admission": [
+    {
+     "claim_type": "RESOLUTION",
+     "decision": "admitted",
+     "diagnostics": [],
+     "evidence_ids": [
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE RESOLUTION E7 FUN_0000e8a8 loads pointer 0x0000ec48 and passes it as an argument to FUN_0000ccc4"
+    }
+   ],
+   "decision_requests": 8,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "value_forward_use",
+    "E4": "function_effects",
+    "E5": "census_peripheral_usage",
+    "E6": "function_disassembly",
+    "E7": "value_forward_use"
+   },
+   "first_trace_step": 1,
+   "ledger_run_id": "R-20261015T185607-c6d8c8",
+   "session_facts": [
+    "The value 0x0000ec49 (code pointer to FUN_0000ec48) defined at 0x0000ea54 (ldr r3,[0x0000eafc]) in FUN_0000e8a8 does not escape FUN_0000e8a8 (complete static p-code analysis): compare at 0x0000ea56, dead at 0x0000ea58, dead at 0x0000eaa0. This covers this one load only.",
+    "The value 0x0000c725 (code pointer to FUN_0000c724) defined at 0x0000bc76 (ldr r0,[0x0000bd54]) in FUN_0000bc44 may escape: argument at 0x0000bcda (bl 0x0000ccc4)."
+   ],
+   "steps": [
+    {
+     "action": "value_forward_use",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "effects",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "analyze",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "value_forward_use",
+     "evidence": "E7",
+     "n": 5
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 3,
+   "traced_origins": [
+    "0x0000ea54",
+    "0x0000bc76"
+   ],
+   "trial": 1,
+   "verdicts": {
+    "0x0000bc76": "ESCAPE",
+    "0x0000ea54": "NO_ESCAPE_WITHIN_SCOPE"
+   }
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "RESOLUTION",
+     "decision": "admitted",
+     "diagnostics": [],
+     "evidence_ids": [
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE RESOLUTION E7 FUN_0000e8a8 loads pointer 0x0000ec48 and passes it as an argument to FUN_0000ccc4"
+    }
+   ],
+   "decision_requests": 8,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "value_forward_use",
+    "E4": "function_effects",
+    "E5": "census_peripheral_usage",
+    "E6": "function_disassembly",
+    "E7": "value_forward_use"
+   },
+   "first_trace_step": 1,
+   "ledger_run_id": "R-20261015T185621-06cfe8",
+   "session_facts": [
+    "The value 0x0000ec49 (code pointer to FUN_0000ec48) defined at 0x0000ea54 (ldr r3,[0x0000eafc]) in FUN_0000e8a8 does not escape FUN_0000e8a8 (complete static p-code analysis): compare at 0x0000ea56, dead at 0x0000ea58, dead at 0x0000eaa0. This covers this one load only.",
+    "The value 0x0000c725 (code pointer to FUN_0000c724) defined at 0x0000bc76 (ldr r0,[0x0000bd54]) in FUN_0000bc44 may escape: argument at 0x0000bcda (bl 0x0000ccc4)."
+   ],
+   "steps": [
+    {
+     "action": "value_forward_use",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "effects",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "analyze",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "value_forward_use",
+     "evidence": "E7",
+     "n": 5
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 3,
+   "traced_origins": [
+    "0x0000ea54",
+    "0x0000bc76"
+   ],
+   "trial": 2,
+   "verdicts": {
+    "0x0000bc76": "ESCAPE",
+    "0x0000ea54": "NO_ESCAPE_WITHIN_SCOPE"
+   }
+  },
+  {
+   "claim_admission": [
+    {
+     "claim_type": "RESOLUTION",
+     "decision": "admitted",
+     "diagnostics": [],
+     "evidence_ids": [
+      "E7"
+     ],
+     "grade": "PROBABLE",
+     "raw": "PROBABLE RESOLUTION E7 FUN_0000e8a8 loads pointer 0x0000ec48 and passes it as an argument to FUN_0000ccc4"
+    }
+   ],
+   "decision_requests": 8,
+   "evidence_tools": {
+    "E1": "function_facts",
+    "E2": "function_disassembly",
+    "E3": "value_forward_use",
+    "E4": "function_effects",
+    "E5": "census_peripheral_usage",
+    "E6": "function_disassembly",
+    "E7": "value_forward_use"
+   },
+   "first_trace_step": 1,
+   "ledger_run_id": "R-20261015T185635-d01e17",
+   "session_facts": [
+    "The value 0x0000ec49 (code pointer to FUN_0000ec48) defined at 0x0000ea54 (ldr r3,[0x0000eafc]) in FUN_0000e8a8 does not escape FUN_0000e8a8 (complete static p-code analysis): compare at 0x0000ea56, dead at 0x0000ea58, dead at 0x0000eaa0. This covers this one load only.",
+    "The value 0x0000c725 (code pointer to FUN_0000c724) defined at 0x0000bc76 (ldr r0,[0x0000bd54]) in FUN_0000bc44 may escape: argument at 0x0000bcda (bl 0x0000ccc4)."
+   ],
+   "steps": [
+    {
+     "action": "value_forward_use",
+     "evidence": "E3",
+     "n": 1
+    },
+    {
+     "action": "effects",
+     "evidence": "E4",
+     "n": 2
+    },
+    {
+     "action": "analyze",
+     "evidence": "E5",
+     "n": 3
+    },
+    {
+     "action": "follow_lead",
+     "evidence": "E6",
+     "n": 4
+    },
+    {
+     "action": "value_forward_use",
+     "evidence": "E7",
+     "n": 5
+    }
+   ],
+   "stop_reason": "step_budget_exhausted",
+   "trace_offered_in": 3,
+   "traced_origins": [
+    "0x0000ea54",
+    "0x0000bc76"
+   ],
+   "trial": 3,
+   "verdicts": {
+    "0x0000bc76": "ESCAPE",
+    "0x0000ea54": "NO_ESCAPE_WITHIN_SCOPE"
+   }
+  }
+ ],
+ "max_steps": 5,
+ "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+ "objective": "FUN_0000e8a8 loads a pointer to FUN_0000ec48 from a flash literal. Determine where that loaded pointer value goes inside FUN_0000e8a8: is it called, passed, stored or returned, or only tested?",
+ "scratch_ledger": "copy of the canonical ledger",
+ "scripted": {
+  "claim_admission": [],
+  "decision_requests": 2,
+  "evidence_tools": {
+   "E1": "function_facts",
+   "E2": "function_disassembly",
+   "E3": "value_forward_use"
+  },
+  "first_trace_step": 1,
+  "ledger_run_id": "R-20261015T185550-fcd19a",
+  "mode": "scripted (not autonomous selection)",
+  "recorded": [
+   {
+    "arguments": {
+     "origin": "0x0000ea54"
+    },
+    "evidence_id": "EV-712998836c269120",
+    "grade": "BOUNDED",
+    "input_artifacts": [
+     "ghidra_cache_identity",
+     "ghidra_headless_locator",
+     "pcode_forward_use_driver",
+     "pcode_forward_use_walker"
+    ],
+    "invocation": "TI-9aab942abde33967",
+    "limitation_codes": [
+     "CALLING_CONVENTION_MODEL",
+     "FUNCTION_BOUNDARIES_HEURISTIC",
+     "INTRAPROCEDURAL_DERIVATION_ONLY",
+     "NO_ESCAPE_IS_WITHIN_FUNCTION_SCOPE"
+    ],
+    "operation_key": "d51982cd7976f12eb5ff1dfc60aa44e74a6f76bb4a72f20527cc1e418b3ca5e3",
+    "replay_matches": true
+   }
+  ],
+  "session_facts": [
+   "The value 0x0000ec49 (code pointer to FUN_0000ec48) defined at 0x0000ea54 (ldr r3,[0x0000eafc]) in FUN_0000e8a8 does not escape FUN_0000e8a8 (complete static p-code analysis): compare at 0x0000ea56, dead at 0x0000ea58, dead at 0x0000eaa0. This covers this one load only."
+  ],
+  "steps": [
+   {
+    "action": "value_forward_use",
+    "evidence": "E3",
+    "n": 1
+   },
+   {
+    "action": "finish",
+    "evidence": null,
+    "n": 2
+   }
+  ],
+  "stop_reason": "planner_finished",
+  "trace_offered_in": 2,
+  "traced_origins": [
+   "0x0000ea54"
+  ],
+  "verdicts": {
+   "0x0000ea54": "NO_ESCAPE_WITHIN_SCOPE"
+  }
+ },
+ "seed": "FUN_0000e8a8"
+}

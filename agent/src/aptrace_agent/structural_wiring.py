@@ -26,6 +26,7 @@ from aptrace_agent.function_effects import FunctionEffectsRunner
 from aptrace_agent.callback_provenance import CallbackProvenanceRunner
 from aptrace_agent.indirect_target import IndirectTargetRunner
 from aptrace_agent.interface_inventory import UsbInventoryReader
+from aptrace_agent.value_forward_use import VALUE_FORWARD_USE_INPUTS, ValueForwardUseRunner
 
 
 _REPO_ROOT = PERFORMING_RIGS_CASE.parents[1]
@@ -229,6 +230,26 @@ def performing_rigs_indirect_targets(census: CensusReader) -> IndirectTargetRunn
         firmware_image=census.firmware_image,
         expected_sha256=census.expected_sha256,
         db_path=census.db_path,
+    )
+
+
+def performing_rigs_value_forward_use(census: CensusReader) -> ValueForwardUseRunner:
+    """P-code forward use over the case's seeded Ghidra project (refused if stale)."""
+
+    from aptrace_agent.ghidra_index import ghidra_cache_identity, ghidra_cache_paths
+
+    ghidra_cache_identity(census.firmware_key)
+    meta = ghidra_cache_paths(census.firmware_key)["meta"]
+
+    return ValueForwardUseRunner(
+        python=Path(sys.executable),
+        driver=VALUE_FORWARD_USE_INPUTS["pcode_forward_use_driver"],
+        firmware_image=census.firmware_image,
+        expected_sha256=census.expected_sha256,
+        project_dir=meta.parent,
+        project_name="aptrace",
+        program=census.firmware_image.name,
+        project_identity=meta,
     )
 
 

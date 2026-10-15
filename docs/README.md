@@ -33,6 +33,10 @@ development. Concrete target findings and evidence belong to a case under
   Unicorn, Macaw, or symbolic execution for a question.
 - [`tooling/ghidra-backend.md`](tooling/ghidra-backend.md) — persistent Ghidra
   project integration.
+- [`tooling/pcode-forward-use.md`](tooling/pcode-forward-use.md) — forward use
+  of a value over Ghidra p-code (`value_forward_use`).
+- [`tooling/pcode-migration.md`](tooling/pcode-migration.md) — plan for
+  retiring the Capstone-based census dataflow in favor of p-code.
 - [`tooling/unicorn-backend.md`](tooling/unicorn-backend.md) — reusable concrete
   execution backend.
 - [`tooling/macaw-analysis.md`](tooling/macaw-analysis.md) — Macaw discovery,

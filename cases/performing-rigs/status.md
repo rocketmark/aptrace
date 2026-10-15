@@ -327,6 +327,13 @@ Headline items still unresolved:
       `ec48`'s address is a flash literal (`0xeafc`, loaded at `0xea54`,
       next used by `cbnz`). At the 3 `f0b4` sites it is OPEN because of
       the forwarding.
+    - That `0xea54` use is now a recorded operation result
+      (`value_forward_use`, Ghidra p-code, static, complete, BOUNDED): the
+      value is only compared and is overwritten on both successors; nothing
+      escapes `FUN_0000e8a8`. The 17 sets stay OPEN until a callback-
+      provenance version applies a closing rule with its assumptions; see
+      [`research/pcode-forward-use-v1.md`](research/pcode-forward-use-v1.md)
+      §4.
     - Four runtime-table/walk sites are unchanged.
     - No existing scenario (boot plus 10 virtual-link) enters any of the
       six functions involved.

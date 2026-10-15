@@ -18,6 +18,7 @@ from aptrace_agent.structural_wiring import (
     performing_rigs_graph,
     performing_rigs_source_agreement,
     performing_rigs_usb_inventory,
+    performing_rigs_value_forward_use,
 )
 from aptrace_agent.ghidra_index import autopilot_ghidra_index
 from aptrace_agent.investigation_tools import (
@@ -54,6 +55,14 @@ class EvidenceExecutor:
         self._observed_calls = None
         self._indirect_targets = None
         self._callback_provenance = None
+        self._value_forward_use = None
+
+    @property
+    def value_forward_use(self):
+        if self._value_forward_use is None:
+            self._value_forward_use = performing_rigs_value_forward_use(self.census)
+
+        return self._value_forward_use
 
     @property
     def callback_provenance(self):
@@ -213,6 +222,13 @@ class EvidenceExecutor:
             provenance = self.callback_provenance.trace(arguments["site"])
             provenance.planner_summary = callback_provenance_summary(provenance)
             result = provenance.model_dump(mode="json")
+
+        elif tool == "value_forward_use":
+            result = (
+                self.value_forward_use
+                .trace(arguments["origin"], arguments.get("register"))
+                .model_dump(mode="json")
+            )
 
         else:
             raise ValueError(

@@ -1,0 +1,281 @@
+{
+ "evidence": {
+  "arguments": {
+   "origin": "0x0000ea54"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a7082bca223d3723",
+  "evidence_id": "EV-712998836c269120",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "BOUNDED",
+  "grade_basis": "complete static p-code forward use: no escape within the containing function",
+  "invocation_id": "TI-8b21673eff15cbf9",
+  "limitations": [
+   {
+    "code": "CALLING_CONVENTION_MODEL",
+    "source_evidence_ids": [],
+    "text": "Calls, tail calls and returns follow the program's default calling convention: ARGUMENT means the value may be in argument storage, and a call clobbers the convention's non-preserved registers."
+   },
+   {
+    "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+    "source_evidence_ids": [],
+    "text": "The containing function's body and computed-jump targets are Ghidra's analysis results; function boundaries are heuristic."
+   },
+   {
+    "code": "INTRAPROCEDURAL_DERIVATION_ONLY",
+    "source_evidence_ids": [],
+    "text": "Forward use within the containing Ghidra function only; what a callee or caller does with the value is not analyzed."
+   },
+   {
+    "code": "NO_ESCAPE_IS_WITHIN_FUNCTION_SCOPE",
+    "source_evidence_ids": [],
+    "text": "No escape of this one value within its containing function: other loads or materializations of the same constant, and other functions, are not covered."
+   }
+  ],
+  "path_status": null,
+  "result_bytes": 4136,
+  "result_sha256": "6462256f3bbc03a60bccfff583ad2af2f6c7342915755d5d218156da69819f9d",
+  "summary": "0x0000ea54 ldr r3,[0x0000eafc] defines r3 = 0x0000ec49 (code 0x0000ec48, FUN_0000ec48) in FUN_0000e8a8 [STATIC_PCODE_FORWARD_USE]: NO_ESCAPE_WITHIN_SCOPE\n  COMPARE at 0x0000ea56 (cbnz r3,0x0000eaa0, via r3)\n  DEAD at 0x0000ea58 (ldr r3,[sp,#0xc])\n  DEAD at 0x0000eaa0 (add r3,sp,#0xc)\n  scope: this one value inside its containing function; other loads of the same constant are separate questions",
+  "tool": "value_forward_use"
+ },
+ "invocation": {
+  "arguments": {
+   "origin": "0x0000ea54"
+  },
+  "context_id": "X-a7082bca223d3723",
+  "ended_at": "2026-10-15T18:55:31.247+00:00",
+  "error": null,
+  "evidence_id": "EV-712998836c269120",
+  "input_artifacts": {
+   "ghidra_cache_identity": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e",
+   "ghidra_headless_locator": "45202dffd612b3d473fe36081d131ddf91e9b32b85722bb16f2b9f412a44f0a3",
+   "pcode_forward_use_driver": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+   "pcode_forward_use_walker": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-8b21673eff15cbf9",
+  "operation_key": "d51982cd7976f12eb5ff1dfc60aa44e74a6f76bb4a72f20527cc1e418b3ca5e3",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "6462256f3bbc03a60bccfff583ad2af2f6c7342915755d5d218156da69819f9d",
+  "run_id": "R-pcode-ea54",
+  "runtime_ms": 2726.084,
+  "session_evidence_id": null,
+  "started_at": "2026-10-15T18:55:28.521+00:00",
+  "status": "ok",
+  "tool": "value_forward_use"
+ },
+ "note": "scratch-ledger record of the production value_forward_use operation; canonical ledger untouched",
+ "replays": [
+  {
+   "differences": [],
+   "input_drift": {},
+   "matches": true,
+   "replay_sha256": "6462256f3bbc03a60bccfff583ad2af2f6c7342915755d5d218156da69819f9d",
+   "runtime_ms": 2461.676
+  },
+  {
+   "differences": [],
+   "input_drift": {},
+   "matches": true,
+   "replay_sha256": "6462256f3bbc03a60bccfff583ad2af2f6c7342915755d5d218156da69819f9d",
+   "runtime_ms": 2649.422
+  }
+ ],
+ "result": {
+  "assumptions": [],
+  "basis": "STATIC_PCODE_FORWARD_USE",
+  "complete": true,
+  "derivation": [],
+  "escape_kinds": [],
+  "incomplete": [],
+  "kills": [
+   {
+    "address": "0x0000ea58",
+    "by": "LOAD",
+    "instruction": "ldr r3,[sp,#0xc]",
+    "storage": "r3"
+   },
+   {
+    "address": "0x0000eaa0",
+    "by": "COPY",
+    "instruction": "add r3,sp,#0xc",
+    "storage": "r3"
+   }
+  ],
+  "limitations": [
+   "intraprocedural: the containing Ghidra function bounds the analysis; a transfer to another function's entry is a tail call",
+   "calls, tail calls and returns follow the program's default calling convention (cspec); ARGUMENT means the value may be in argument storage, not that the callee reads it",
+   "values stored to memory are not followed: MEMORY_ESCAPE includes stack spills that are reloaded locally",
+   "a value consumed only by a comparison is a local use (one bit of information flows)",
+   "function bodies and computed-jump targets are Ghidra's analysis results (heuristic boundaries)"
+  ],
+  "origin": "0x0000ea54",
+  "origin_instruction": "ldr r3,[0x0000eafc]",
+  "origin_value": {
+   "code_address": "0x0000ec48",
+   "function_at_code_address": "FUN_0000ec48",
+   "kind": "load",
+   "size": 4,
+   "source_address": "0x0000eafc",
+   "source_block": "ram",
+   "source_block_writable": true,
+   "source_initialized": true,
+   "value": "0x0000ec49"
+  },
+  "planner_summary": "0x0000ea54 ldr r3,[0x0000eafc] defines r3 = 0x0000ec49 (code 0x0000ec48, FUN_0000ec48) in FUN_0000e8a8 [STATIC_PCODE_FORWARD_USE]: NO_ESCAPE_WITHIN_SCOPE\n  COMPARE at 0x0000ea56 (cbnz r3,0x0000eaa0, via r3)\n  DEAD at 0x0000ea58 (ldr r3,[sp,#0xc])\n  DEAD at 0x0000eaa0 (add r3,sp,#0xc)\n  scope: this one value inside its containing function; other loads of the same constant are separate questions",
+  "precision": [],
+  "provenance": {
+   "analysis": "value_forward_use",
+   "analysis_version": 1,
+   "bounds": {
+    "max_steps": 20000
+   },
+   "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+   "engine": {
+    "argument_storage": [
+     "s0",
+     "s1",
+     "s2",
+     "s3",
+     "s4",
+     "s5",
+     "s6",
+     "s7",
+     "s8",
+     "s9",
+     "s10",
+     "s11",
+     "s12",
+     "s13",
+     "s14",
+     "s15",
+     "r0",
+     "r1",
+     "r2",
+     "r3"
+    ],
+    "calling_convention": "__stdcall",
+    "compiler_spec_id": "default",
+    "language_id": "ARM:LE:32:Cortex",
+    "language_version": "1.108",
+    "low_bit_code_mode": true,
+    "name": "ghidra",
+    "pointer_size": 4,
+    "program_counter": "pc",
+    "return_storage": "r0",
+    "stack_pointer": "sp",
+    "unaffected_storage": [
+     "r4",
+     "r5",
+     "r6",
+     "r7",
+     "r8",
+     "r9",
+     "r10",
+     "r11",
+     "d8",
+     "d9",
+     "d10",
+     "d11",
+     "d12",
+     "d13",
+     "d14",
+     "d15",
+     "sp",
+     "lr",
+     "pc"
+    ],
+    "version": "12.1.3"
+   },
+   "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+   "pcode_analysis": "pcode_forward_use",
+   "pcode_analysis_version": 1,
+   "program": {
+    "executable_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "function_count": 438,
+    "image_base": "0x00000000",
+    "memory_blocks": [
+     {
+      "end": "0x0001546f",
+      "initialized": true,
+      "name": "ram",
+      "permissions": "rwx",
+      "start": "0x00004000"
+     }
+    ]
+   },
+   "project": "analyzed Ghidra project, copied to a scratch workspace and opened read-only",
+   "target": {
+    "base": "0x4000",
+    "compiler_spec_id": "default",
+    "image_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "language_id": "ARM:LE:32:Cortex",
+    "mode": "project",
+    "program": "firmware_autopilot868.bin",
+    "project_identity": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e"
+   },
+   "walker": {
+    "name": "aptrace-pcode-forward-use",
+    "version": 1
+   },
+   "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+  },
+  "requested_register": null,
+  "scope": {
+   "body": [
+    [
+     "0x0000e8a8",
+     "0x0000eae5"
+    ]
+   ],
+   "body_bytes": 574,
+   "function_entry": "0x0000e8a8",
+   "function_name": "FUN_0000e8a8",
+   "kind": "function"
+  },
+  "status": "ok",
+  "tracked": {
+   "storage": "r3",
+   "varnode": "(register, 0x2c, 4)"
+  },
+  "unsupported": {},
+  "uses": [
+   {
+    "address": "0x0000ea56",
+    "detail": "INT_NOTEQUAL",
+    "instruction": "cbnz r3,0x0000eaa0",
+    "kind": "COMPARE",
+    "pcode_op": "INT_NOTEQUAL",
+    "via": [
+     "r3"
+    ]
+   },
+   {
+    "address": "0x0000ea58",
+    "detail": "no copy of the value survives this edge to 0x0000ea5a",
+    "instruction": "ldr r3,[sp,#0xc]",
+    "kind": "DEAD",
+    "pcode_op": null,
+    "via": []
+   },
+   {
+    "address": "0x0000eaa0",
+    "detail": "no copy of the value survives this edge to 0x0000eaa2",
+    "instruction": "add r3,sp,#0xc",
+    "kind": "DEAD",
+    "pcode_op": null,
+    "via": []
+   }
+  ],
+  "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+  "work": {
+   "budget_exhausted": false,
+   "instructions": 3,
+   "max_steps": 20000,
+   "steps": 3
+  }
+ },
+ "result_intact": true
+}

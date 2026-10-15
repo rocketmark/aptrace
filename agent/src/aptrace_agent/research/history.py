@@ -73,9 +73,11 @@ def current_analysis_versions() -> dict[str, int]:
     from aptrace_agent.callback_provenance import ANALYSIS_VERSION as CALLBACK_PROVENANCE_VERSION
     from aptrace_agent.function_effects import ANALYSIS_VERSION
     from aptrace_agent.indirect_target import ANALYSIS_VERSION as INDIRECT_TARGET_VERSION
+    from aptrace_agent.value_forward_use import ANALYSIS_VERSION as VALUE_FORWARD_USE_VERSION
 
     return {"function_effects": ANALYSIS_VERSION, "observed_call_arguments": OBSERVATION_VERSION,
-            "indirect_call_target": INDIRECT_TARGET_VERSION, "callback_argument_provenance": CALLBACK_PROVENANCE_VERSION}
+            "indirect_call_target": INDIRECT_TARGET_VERSION, "callback_argument_provenance": CALLBACK_PROVENANCE_VERSION,
+            "value_forward_use": VALUE_FORWARD_USE_VERSION}
 
 
 def _operation(tool: str, arguments: dict[str, Any]) -> str:

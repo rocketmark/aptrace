@@ -1,0 +1,149 @@
+[
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [],
+  "case": "C1_compare_only",
+  "pcode": [],
+  "spike_ground_truth": []
+ },
+ {
+  "assessment": "sound over-approximation: r3 is argument storage under the cspec at the blx, so ARGUMENT_ESCAPE is added (as in the spike)",
+  "capstone_v1": [
+   "ARGUMENT_ESCAPE",
+   "CONTROL_FLOW_ESCAPE"
+  ],
+  "capstone_v2": [
+   "ARGUMENT_ESCAPE",
+   "CONTROL_FLOW_ESCAPE"
+  ],
+  "case": "C2_call_through",
+  "pcode": [
+   "ARGUMENT_ESCAPE",
+   "CONTROL_FLOW_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "CONTROL_TRANSFER"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [
+   "MEMORY_ESCAPE"
+  ],
+  "capstone_v2": [
+   "MEMORY_ESCAPE"
+  ],
+  "case": "C3_store",
+  "pcode": [
+   "MEMORY_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "STORE"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [
+   "ARGUMENT_ESCAPE"
+  ],
+  "case": "C4_argument_via_move",
+  "pcode": [
+   "ARGUMENT_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "ARGUMENT"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [
+   "RETURN_ESCAPE"
+  ],
+  "case": "C5_return",
+  "pcode": [
+   "RETURN_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "RETURN_VALUE"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [
+   "MEMORY_ESCAPE"
+  ],
+  "case": "C6_join_one_path_store",
+  "pcode": [
+   "MEMORY_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "STORE"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [],
+  "case": "C7_join_both_killed",
+  "pcode": [],
+  "spike_ground_truth": []
+ },
+ {
+  "assessment": "sound but imprecise: the spill to [sp,#4] is reported as MEMORY_ESCAPE with MEMORY_FLOW_NOT_FOLLOWED; the reload and blx are not tracked (no memory model). The decompiler resolves this case; raw p-code does not.",
+  "capstone_v1": [
+   "MEMORY_ESCAPE"
+  ],
+  "capstone_v2": [
+   "MEMORY_ESCAPE"
+  ],
+  "case": "C8_spill_reload_call",
+  "pcode": [
+   "MEMORY_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "CONTROL_TRANSFER"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [
+   "MEMORY_ESCAPE"
+  ],
+  "case": "C9_it_conditional_kill",
+  "pcode": [
+   "MEMORY_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "STORE"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [
+   "ARGUMENT_ESCAPE"
+  ],
+  "capstone_v2": [
+   "ARGUMENT_ESCAPE"
+  ],
+  "case": "C10_tail_call_argument",
+  "pcode": [
+   "ARGUMENT_ESCAPE"
+  ],
+  "spike_ground_truth": [
+   "ARGUMENT"
+  ]
+ },
+ {
+  "assessment": "exact",
+  "capstone_v1": [],
+  "capstone_v2": [],
+  "case": "C11_compare_then_loop",
+  "pcode": [],
+  "spike_ground_truth": []
+ }
+]

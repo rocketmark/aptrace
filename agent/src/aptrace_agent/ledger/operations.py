@@ -48,6 +48,9 @@ TOOL_INPUTS: dict[str, tuple[str, ...]] = {
         "census_db", "callback_provenance_tool", "indirect_target_tool", "census_fnptr_resolve", "census_indexed_writes",
         "census_indirect_resolve", "census_slot_dispatch",
     ),
+    "value_forward_use": (
+        "ghidra_cache_identity", "pcode_forward_use_walker", "pcode_forward_use_driver", "ghidra_headless_locator",
+    ),
     "pin_table_entry": (),
     "search_case_evidence": (),
 }

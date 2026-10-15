@@ -1,0 +1,754 @@
+{
+ "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+ "engine": {
+  "argument_storage": [
+   "s0",
+   "s1",
+   "s2",
+   "s3",
+   "s4",
+   "s5",
+   "s6",
+   "s7",
+   "s8",
+   "s9",
+   "s10",
+   "s11",
+   "s12",
+   "s13",
+   "s14",
+   "s15",
+   "r0",
+   "r1",
+   "r2",
+   "r3"
+  ],
+  "calling_convention": "__stdcall",
+  "compiler_spec_id": "default",
+  "language_id": "ARM:LE:32:Cortex",
+  "language_version": "1.108",
+  "low_bit_code_mode": true,
+  "name": "ghidra",
+  "pointer_size": 4,
+  "program_counter": "pc",
+  "return_storage": "r0",
+  "stack_pointer": "sp",
+  "unaffected_storage": [
+   "r4",
+   "r5",
+   "r6",
+   "r7",
+   "r8",
+   "r9",
+   "r10",
+   "r11",
+   "d8",
+   "d9",
+   "d10",
+   "d11",
+   "d12",
+   "d13",
+   "d14",
+   "d15",
+   "sp",
+   "lr",
+   "pc"
+  ],
+  "version": "12.1.3"
+ },
+ "measurement": {
+  "extra": {
+   "ghidra_install_version": "12.1.3"
+  },
+  "peak_rss_bytes": 352272384,
+  "walker_seconds": 0.0247,
+  "wall_seconds": 3.064
+ },
+ "program": {
+  "executable_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "function_count": 438,
+  "image_base": "0x00000000",
+  "memory_blocks": [
+   {
+    "end": "0x0001546f",
+    "initialized": true,
+    "name": "ram",
+    "permissions": "rwx",
+    "start": "0x00004000"
+   }
+  ]
+ },
+ "references": [
+  {
+   "census_ref_type": "DATA",
+   "census_target": "0x0000991a",
+   "census_value": "0x0000991b",
+   "instruction": "str r3,[r0,#0x0]",
+   "origin": "0x00009942",
+   "pcode": {
+    "complete": false,
+    "escape_kinds": [],
+    "function": null,
+    "incomplete": [],
+    "tracked": null,
+    "unsupported": "NO_VALUE_OUTPUT",
+    "uses": [],
+    "verdict": "UNSUPPORTED"
+   },
+   "pcode_code_address": null,
+   "pcode_origin_value": null,
+   "pointer_word": "0x00014050"
+  },
+  {
+   "census_ref_type": "DATA",
+   "census_target": "0x0000acd8",
+   "census_value": "0x0000acd9",
+   "instruction": "str.w r5,[r4],#0x15",
+   "origin": "0x0000ab2a",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [],
+    "function": "FUN_0000ab08",
+    "incomplete": [],
+    "tracked": "r4",
+    "unsupported": null,
+    "uses": [
+     [
+      "DEREFERENCE_STORE",
+      "0x0000ab32",
+      "strb r3,[r4,#0x2]"
+     ],
+     [
+      "DEAD",
+      "0x0000ab34",
+      "ldrb r4,[r0,#0x1a]"
+     ]
+    ],
+    "verdict": "NO_ESCAPE_WITHIN_SCOPE"
+   },
+   "pcode_code_address": null,
+   "pcode_origin_value": null,
+   "pointer_word": "0x0001419c"
+  },
+  {
+   "census_ref_type": "DATA",
+   "census_target": "0x0000acd8",
+   "census_value": "0x0000acd9",
+   "instruction": "str.w r3,[r2],#0x3d",
+   "origin": "0x0000ae28",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "ARGUMENT_ESCAPE"
+    ],
+    "function": "FUN_0000ae1c",
+    "incomplete": [],
+    "tracked": "r2",
+    "unsupported": null,
+    "uses": [
+     [
+      "DEREFERENCE_STORE",
+      "0x0000ae34",
+      "strb r3,[r2,#0x2]"
+     ],
+     [
+      "ARGUMENT",
+      "0x0000ae44",
+      "bl 0x0000adb8"
+     ],
+     [
+      "DEAD",
+      "0x0000ae44",
+      "bl 0x0000adb8"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": null,
+   "pcode_origin_value": null,
+   "pointer_word": "0x000141d8"
+  },
+  {
+   "census_ref_type": "DATA",
+   "census_target": "0x0000acd8",
+   "census_value": "0x0000acd9",
+   "instruction": "str.w r3,[r2],#0x96",
+   "origin": "0x0000aefc",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [],
+    "function": "FUN_0000aef0",
+    "incomplete": [],
+    "tracked": "r2",
+    "unsupported": null,
+    "uses": [
+     [
+      "DEREFERENCE_STORE",
+      "0x0000af06",
+      "strb r3,[r2,#0x2]"
+     ],
+     [
+      "DEAD",
+      "0x0000af08",
+      "ldr r2,[0x0000af84]"
+     ]
+    ],
+    "verdict": "NO_ESCAPE_WITHIN_SCOPE"
+   },
+   "pcode_code_address": null,
+   "pcode_origin_value": null,
+   "pointer_word": "0x00014214"
+  },
+  {
+   "census_ref_type": "DATA",
+   "census_target": "0x0000acd8",
+   "census_value": "0x0000acd9",
+   "instruction": "str r3,[r4,#0x0]",
+   "origin": "0x0000b04a",
+   "pcode": {
+    "complete": false,
+    "escape_kinds": [],
+    "function": null,
+    "incomplete": [],
+    "tracked": null,
+    "unsupported": "NO_VALUE_OUTPUT",
+    "uses": [],
+    "verdict": "UNSUPPORTED"
+   },
+   "pcode_code_address": null,
+   "pcode_origin_value": null,
+   "pointer_word": "0x00014250"
+  },
+  {
+   "census_ref_type": "DATA",
+   "census_target": "0x0000b702",
+   "census_value": "0x0000b703",
+   "instruction": "str r1,[r3,#0x0]",
+   "origin": "0x0000b82e",
+   "pcode": {
+    "complete": false,
+    "escape_kinds": [],
+    "function": null,
+    "incomplete": [],
+    "tracked": null,
+    "unsupported": "NO_VALUE_OUTPUT",
+    "uses": [],
+    "verdict": "UNSUPPORTED"
+   },
+   "pcode_code_address": null,
+   "pcode_origin_value": null,
+   "pointer_word": "0x00014890"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "ARGUMENT",
+     "DEAD"
+    ],
+    "uses": [
+     [
+      "ARGUMENT",
+      "0xbcda",
+      "bl #0xccc4 (live in r0-r3 at call)"
+     ],
+     [
+      "DEAD",
+      "0xbcda",
+      "bl #0xccc4"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x0000c724",
+   "census_value": "0x0000c725",
+   "instruction": "ldr r0,[0x0000bd54]",
+   "origin": "0x0000bc76",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "ARGUMENT_ESCAPE"
+    ],
+    "function": "FUN_0000bc44",
+    "incomplete": [],
+    "tracked": "r0",
+    "unsupported": null,
+    "uses": [
+     [
+      "ARGUMENT",
+      "0x0000bcda",
+      "bl 0x0000ccc4"
+     ],
+     [
+      "DEAD",
+      "0x0000bcda",
+      "bl 0x0000ccc4"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x0000c724",
+   "pcode_origin_value": "0x0000c725",
+   "pointer_word": "0x0000bd54",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "ARGUMENT",
+     "DEAD"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "COMPARE",
+     "DEAD"
+    ],
+    "uses": [
+     [
+      "COMPARE",
+      "0xea56",
+      "cbnz r3, #0xeaa0 (cbnz)"
+     ],
+     [
+      "DEAD",
+      "0xea58",
+      "ldr r3, [sp, #0xc]"
+     ],
+     [
+      "DEAD",
+      "0xeaa0",
+      "add r3, sp, #0xc"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x0000ec48",
+   "census_value": "0x0000ec49",
+   "instruction": "ldr r3,[0x0000eafc]",
+   "origin": "0x0000ea54",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [],
+    "function": "FUN_0000e8a8",
+    "incomplete": [],
+    "tracked": "r3",
+    "unsupported": null,
+    "uses": [
+     [
+      "COMPARE",
+      "0x0000ea56",
+      "cbnz r3,0x0000eaa0"
+     ],
+     [
+      "DEAD",
+      "0x0000ea58",
+      "ldr r3,[sp,#0xc]"
+     ],
+     [
+      "DEAD",
+      "0x0000eaa0",
+      "add r3,sp,#0xc"
+     ]
+    ],
+    "verdict": "NO_ESCAPE_WITHIN_SCOPE"
+   },
+   "pcode_code_address": "0x0000ec48",
+   "pcode_origin_value": "0x0000ec49",
+   "pointer_word": "0x0000eafc",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "COMPARE",
+     "DEAD"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "ARGUMENT",
+     "DEAD"
+    ],
+    "uses": [
+     [
+      "ARGUMENT",
+      "0xeaac",
+      "bl #0xec48 (live in r0-r3 at call)"
+     ],
+     [
+      "DEAD",
+      "0xeaac",
+      "bl #0xec48"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x0000e882",
+   "census_value": "0x0000e883",
+   "instruction": "ldr r3,[0x0000eb00]",
+   "origin": "0x0000eaa6",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "ARGUMENT_ESCAPE"
+    ],
+    "function": "FUN_0000e8a8",
+    "incomplete": [],
+    "tracked": "r3",
+    "unsupported": null,
+    "uses": [
+     [
+      "ARGUMENT",
+      "0x0000eaac",
+      "bl 0x0000ec48"
+     ],
+     [
+      "DEAD",
+      "0x0000eaac",
+      "bl 0x0000ec48"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x0000e882",
+   "pcode_origin_value": "0x0000e883",
+   "pointer_word": "0x0000eb00",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "ARGUMENT",
+     "DEAD"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "ARGUMENT",
+     "DEAD"
+    ],
+    "uses": [
+     [
+      "ARGUMENT",
+      "0xeae0",
+      "bl #0xf190 (live in r0-r3 at call)"
+     ],
+     [
+      "DEAD",
+      "0xeae0",
+      "bl #0xf190"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x0000e882",
+   "census_value": "0x0000e883",
+   "instruction": "ldr r3,[0x0000eb00]",
+   "origin": "0x0000eada",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "ARGUMENT_ESCAPE"
+    ],
+    "function": "FUN_0000e8a8",
+    "incomplete": [],
+    "tracked": "r3",
+    "unsupported": null,
+    "uses": [
+     [
+      "ARGUMENT",
+      "0x0000eae0",
+      "bl 0x0000f190"
+     ],
+     [
+      "DEAD",
+      "0x0000eae0",
+      "bl 0x0000f190"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x0000e882",
+   "pcode_origin_value": "0x0000e883",
+   "pointer_word": "0x0000eb00",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "ARGUMENT",
+     "DEAD"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "DEAD",
+     "STORE"
+    ],
+    "uses": [
+     [
+      "DEAD",
+      "0x10416",
+      "ldr r3, [pc, #0x14]"
+     ],
+     [
+      "STORE",
+      "0x10414",
+      "str r3, [r4, #0x24] (r3, [r4, #0x24])"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x00010e58",
+   "census_value": "0x00010e59",
+   "instruction": "ldr r3,[0x00010428]",
+   "origin": "0x00010412",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "MEMORY_ESCAPE"
+    ],
+    "function": "FUN_000103f0",
+    "incomplete": [],
+    "tracked": "r3",
+    "unsupported": null,
+    "uses": [
+     [
+      "STORE",
+      "0x00010414",
+      "str r3,[r4,#0x24]"
+     ],
+     [
+      "DEAD",
+      "0x00010416",
+      "ldr r3,[0x0001042c]"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x00010e58",
+   "pcode_origin_value": "0x00010e59",
+   "pointer_word": "0x00010428",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "DEAD",
+     "STORE"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "DEAD",
+     "STORE"
+    ],
+    "uses": [
+     [
+      "DEAD",
+      "0x1041a",
+      "ldr r3, [pc, #0x14]"
+     ],
+     [
+      "STORE",
+      "0x10418",
+      "str r3, [r4, #0x28] (r3, [r4, #0x28])"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x00010e7a",
+   "census_value": "0x00010e7b",
+   "instruction": "ldr r3,[0x0001042c]",
+   "origin": "0x00010416",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "MEMORY_ESCAPE"
+    ],
+    "function": "FUN_000103f0",
+    "incomplete": [],
+    "tracked": "r3",
+    "unsupported": null,
+    "uses": [
+     [
+      "STORE",
+      "0x00010418",
+      "str r3,[r4,#0x28]"
+     ],
+     [
+      "DEAD",
+      "0x0001041a",
+      "ldr r3,[0x00010430]"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x00010e7a",
+   "pcode_origin_value": "0x00010e7b",
+   "pointer_word": "0x0001042c",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "DEAD",
+     "STORE"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "DEAD",
+     "STORE"
+    ],
+    "uses": [
+     [
+      "DEAD",
+      "0x1041e",
+      "ldr r3, [pc, #0x14]"
+     ],
+     [
+      "STORE",
+      "0x1041c",
+      "str r3, [r4, #0x2c] (r3, [r4, #0x2c])"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x00010eb2",
+   "census_value": "0x00010eb3",
+   "instruction": "ldr r3,[0x00010430]",
+   "origin": "0x0001041a",
+   "pcode": {
+    "complete": true,
+    "escape_kinds": [
+     "MEMORY_ESCAPE"
+    ],
+    "function": "FUN_000103f0",
+    "incomplete": [],
+    "tracked": "r3",
+    "unsupported": null,
+    "uses": [
+     [
+      "STORE",
+      "0x0001041c",
+      "str r3,[r4,#0x2c]"
+     ],
+     [
+      "DEAD",
+      "0x0001041e",
+      "ldr r3,[0x00010434]"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x00010eb2",
+   "pcode_origin_value": "0x00010eb3",
+   "pointer_word": "0x00010430",
+   "spike_raw_pcode": {
+    "complete": true,
+    "incomplete": [],
+    "use_kinds": [
+     "DEAD",
+     "STORE"
+    ]
+   },
+   "vs_capstone_v2": "AGREE",
+   "vs_spike_raw_pcode": "AGREE"
+  },
+  {
+   "capstone_v2": {
+    "complete": true,
+    "incomplete": [],
+    "status": "ok",
+    "use_kinds": [
+     "ARGUMENT"
+    ],
+    "uses": [
+     [
+      "ARGUMENT",
+      "0x1059c",
+      "tail transfer"
+     ]
+    ]
+   },
+   "census_ref_type": "READ",
+   "census_target": "0x00010378",
+   "census_value": "0x00010379",
+   "instruction": "ldr r1,[0x00010440]",
+   "origin": "0x00010438",
+   "pcode": {
+    "complete": false,
+    "escape_kinds": [
+     "ARGUMENT_ESCAPE"
+    ],
+    "function": null,
+    "incomplete": [
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "tracked": "r1",
+    "unsupported": null,
+    "uses": [
+     [
+      "ARGUMENT",
+      "0x0001043a",
+      "b.w 0x0001059c"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "pcode_code_address": "0x00010378",
+   "pcode_origin_value": "0x00010379",
+   "pointer_word": "0x00010440",
+   "spike_raw_pcode": {
+    "complete": false,
+    "incomplete": [
+     "definition is not inside a known function; tail transfers cannot be recognized"
+    ],
+    "use_kinds": []
+   },
+   "vs_capstone_v2": "AGREE ON ESCAPES; COMPLETENESS DIFFERS",
+   "vs_spike_raw_pcode": "BOTH INCOMPLETE; P-CODE ALSO FINDS ARGUMENT_ESCAPE"
+  }
+ ],
+ "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+}

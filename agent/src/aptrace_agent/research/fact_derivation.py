@@ -523,6 +523,41 @@ def _callback_provenance_facts(result: dict) -> tuple[list[tuple[str, str]], lis
     return [("static-dataflow", statement)], questions
 
 
+def _value_forward_use_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
+    """Scoped facts of one forward-use analysis: this value, this function, nothing more."""
+
+    if result.get("status") != "ok":
+        return [], []
+
+    origin = result.get("origin")
+    value = result.get("origin_value") or {}
+    shown = f" {value['value']}" if value.get("value") else ""
+
+    if value.get("function_at_code_address"):
+        shown += f" (code pointer to {value['function_at_code_address']})"
+
+    where = (result.get("scope") or {}).get("function_name") or "no containing function"
+    head = f"The value{shown} defined at {origin} ({result.get('origin_instruction')}) in {where}"
+    questions = [f"Forward use of {origin} is incomplete: {i.get('code')} at {i.get('address')}."
+                 for i in (result.get("incomplete") or [])[:2]]
+
+    if result.get("verdict") == "NO_ESCAPE_WITHIN_SCOPE":
+        local = [f"{u['kind'].lower()} at {u['address']}" for u in result.get("uses") or []
+                 if u.get("kind") in ("COMPARE", "DEAD", "DEREFERENCE_LOAD", "DEREFERENCE_STORE")]
+        statement = (f"{head} does not escape {where} (complete static p-code analysis): "
+                     + ", ".join(local[:4]) + ". This covers this one load only.")
+        return [("static-dataflow", statement)], questions
+
+    if result.get("verdict") == "ESCAPE":
+        escaping = [f"{u['kind'].lower()} at {u['address']} ({u['instruction']})" for u in result.get("uses") or []
+                    if u.get("kind") in ("CONTROL_TRANSFER", "ARGUMENT", "STORE", "RETURN_VALUE")]
+        statement = (f"{head} may escape: " + "; ".join(escaping[:3])
+                     + ("" if result.get("complete") else " (other paths not analyzed)") + ".")
+        return [("static-dataflow", statement)], questions
+
+    return [], questions
+
+
 def _indirect_target_facts(result: dict) -> tuple[list[tuple[str, str]], list[str]]:
     """Scoped facts of one static target derivation: its shape and potential targets, nothing more."""
 
@@ -738,6 +773,7 @@ class StateFactDeriver:
             "observed_call_arguments": _observation_facts,
             "indirect_call_target": _indirect_target_facts,
             "callback_argument_provenance": _callback_provenance_facts,
+            "value_forward_use": _value_forward_use_facts,
         }.get(observation.tool)
 
         if derived is not None:

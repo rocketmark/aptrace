@@ -95,6 +95,29 @@ belong in each case's status document.
   - AAPCS stack arguments read in the entry block at a known SP offset;
   - `movw`/`movt`, `adr` and cross-block add/sub-immediate constants;
   - an optional global work budget.
+- Follow one value forward over Ghidra p-code
+  (`tools/ghidra/pcode_forward_use.py`, `value_forward_use`,
+  [`tooling/pcode-forward-use.md`](tooling/pcode-forward-use.md)). Given an
+  instruction, it reports where the value it defines flows inside the
+  containing function:
+  - control transfer, call argument (by cspec argument storage), memory store
+    or return value (escapes);
+  - compare, dereference or overwrite (local).
+
+  Semantics and calling convention come only from the program's SLEIGH
+  language and compiler spec; the walker names no ISA. The same
+  implementation passes the 11 Thumb and 7 RV32 spike controls plus added
+  negative controls. `NO_ESCAPE_WITHIN_SCOPE` is reported only for a
+  complete analysis; a missing function, a flow leaving the body, an
+  unresolved computed jump, an unmodeled `CALLOTHER`, undecoded bytes or an
+  exhausted budget is `INCOMPLETE` with a code. Stores are not followed
+  through memory (labeled). The ledger operation records Ghidra version,
+  language, cspec, walker/driver hashes and the project identity; it grades
+  a complete negative BOUNDED and an escape PROBABLE. It runs headless on a
+  scratch copy of the project (about 2.5–3.5 s and under 400 MB per
+  invocation, almost all start-up). The ResearchController offers it as
+  `trace_value_use(origin)` for census code-pointer loads grounded in
+  evidence, at most two per session.
 - Trace a callback target one call boundary up
   (`tools/census/callback_provenance.py`, `trace_callback_argument`). When a
   register-indirect site's target is an incoming argument, the tool takes
@@ -225,6 +248,18 @@ belong in each case's status document.
   explicit harness mechanisms; APTrace is not a general MCU simulator.
 - Function and CFG discovery remain heuristic and require cross-checking when a
   boundary is material to a conclusion.
+- Instruction-level dataflow is split between one p-code operation
+  (`value_forward_use`) and the older Capstone/ARM census modules
+  (`indirect_target`, `callback_provenance`, `fnptr_resolve`, ...), which
+  remain the only backward reaching-definitions implementation and are
+  ARM-only. P-code forward use does not follow values through memory, is
+  intraprocedural, and does not support delay-slot ISAs; its RISC-V coverage
+  is synthetic fixtures only. Migration plan:
+  [`tooling/pcode-migration.md`](tooling/pcode-migration.md).
+- Claim admission does not yet check value-flow assertions against
+  `value_forward_use` results (which value reaches which call), and the
+  call-relation prose classifier does not treat "passes X to FUN_Y" as a call
+  relation.
 - Symbolic execution works best for targeted, already-understood regions; whole
   firmware replay is neither its purpose nor a supported workflow.
 - Caller-grounded observation covers only the contexts one registered

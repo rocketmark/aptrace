@@ -1,0 +1,971 @@
+{
+ "C1_compare_only": {
+  "doc": {
+   "result": {
+    "analysis": "pcode_forward_use",
+    "analysis_version": 1,
+    "bounds": {
+     "max_steps": 20000
+    },
+    "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+    "engine": {
+     "argument_storage": [
+      "s0",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6",
+      "s7",
+      "s8",
+      "s9",
+      "s10",
+      "s11",
+      "s12",
+      "s13",
+      "s14",
+      "s15",
+      "r0",
+      "r1",
+      "r2",
+      "r3"
+     ],
+     "calling_convention": "__stdcall",
+     "compiler_spec_id": "default",
+     "language_id": "ARM:LE:32:Cortex",
+     "language_version": "1.108",
+     "low_bit_code_mode": true,
+     "name": "ghidra",
+     "pointer_size": 4,
+     "program_counter": "pc",
+     "return_storage": "r0",
+     "stack_pointer": "sp",
+     "unaffected_storage": [
+      "r4",
+      "r5",
+      "r6",
+      "r7",
+      "r8",
+      "r9",
+      "r10",
+      "r11",
+      "d8",
+      "d9",
+      "d10",
+      "d11",
+      "d12",
+      "d13",
+      "d14",
+      "d15",
+      "sp",
+      "lr",
+      "pc"
+     ],
+     "version": "12.1.3"
+    },
+    "functions_created": [
+     {
+      "body": [
+       [
+        "0x00000800",
+        "0x00000801"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00000800"
+     },
+     {
+      "body": [
+       [
+        "0x00001000",
+        "0x00001001"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00001000"
+     },
+     {
+      "body": [
+       [
+        "0x00000000",
+        "0x0000000d"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00000000"
+     }
+    ],
+    "program": {
+     "executable_sha256": "192ac8a63ef0306be39039a8fa47a221a11d7571f4ccd9c01d1e77015e1e5c82",
+     "function_count": 0,
+     "image_base": "0x00000000",
+     "memory_blocks": [
+      {
+       "end": "0x00001001",
+       "initialized": true,
+       "name": "ram",
+       "permissions": "rwx",
+       "start": "0x00000000"
+      }
+     ]
+    },
+    "results": [
+     {
+      "assumptions": [],
+      "complete": true,
+      "derivation": [],
+      "escape_kinds": [],
+      "incomplete": [],
+      "kills": [
+       {
+        "address": "0x00000008",
+        "by": "COPY",
+        "instruction": "add r3,sp,#0x4",
+        "storage": "r3"
+       }
+      ],
+      "origin_address": "0x00000000",
+      "origin_instruction": "ldr r3,[0x00000010]",
+      "origin_value": {
+       "code_address": "0x00001000",
+       "function_at_code_address": "FUN_00001000",
+       "kind": "load",
+       "size": 4,
+       "source_address": "0x00000010",
+       "source_block": "ram",
+       "source_block_writable": true,
+       "source_initialized": true,
+       "value": "0x00001001"
+      },
+      "precision": [],
+      "scope": {
+       "body": [
+        [
+         "0x00000000",
+         "0x0000000d"
+        ]
+       ],
+       "body_bytes": 14,
+       "function_entry": "0x00000000",
+       "function_name": "MasterStackPointer",
+       "kind": "function"
+      },
+      "status": "analyzed",
+      "tracked": {
+       "storage": "r3",
+       "varnode": "(register, 0x2c, 4)"
+      },
+      "uses": [
+       {
+        "address": "0x00000002",
+        "detail": "INT_NOTEQUAL",
+        "instruction": "cbnz r3,0x00000008",
+        "kind": "COMPARE",
+        "pcode_op": "INT_NOTEQUAL",
+        "via": [
+         "r3"
+        ]
+       },
+       {
+        "address": "0x00000006",
+        "detail": "live outside return storage at return",
+        "instruction": "bx lr",
+        "kind": "ENDS_AT_RETURN",
+        "pcode_op": "RETURN",
+        "via": [
+         "r3"
+        ]
+       },
+       {
+        "address": "0x00000008",
+        "detail": "no copy of the value survives this edge to 0x0000000a",
+        "instruction": "add r3,sp,#0x4",
+        "kind": "DEAD",
+        "pcode_op": null,
+        "via": []
+       }
+      ],
+      "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+      "work": {
+       "budget_exhausted": false,
+       "instructions": 4,
+       "max_steps": 20000,
+       "steps": 4
+      }
+     }
+    ],
+    "status": "ok",
+    "target": {
+     "auto_analysis": false,
+     "base": "0x0",
+     "compiler_spec_id": "default",
+     "disassemble": [],
+     "functions": [
+      {
+       "entry": "0x800"
+      },
+      {
+       "entry": "0x1000"
+      },
+      {
+       "entry": "0x0"
+      }
+     ],
+     "image_sha256": "192ac8a63ef0306be39039a8fa47a221a11d7571f4ccd9c01d1e77015e1e5c82",
+     "language_id": "ARM:LE:32:Cortex",
+     "mode": "import"
+    },
+    "walker": {
+     "name": "aptrace-pcode-forward-use",
+     "version": 1
+    },
+    "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+   }
+  },
+  "image": "thumb_controls.bin"
+ },
+ "C4_argument_via_move": {
+  "doc": {
+   "result": {
+    "analysis": "pcode_forward_use",
+    "analysis_version": 1,
+    "bounds": {
+     "max_steps": 20000
+    },
+    "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+    "engine": {
+     "argument_storage": [
+      "s0",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6",
+      "s7",
+      "s8",
+      "s9",
+      "s10",
+      "s11",
+      "s12",
+      "s13",
+      "s14",
+      "s15",
+      "r0",
+      "r1",
+      "r2",
+      "r3"
+     ],
+     "calling_convention": "__stdcall",
+     "compiler_spec_id": "default",
+     "language_id": "ARM:LE:32:Cortex",
+     "language_version": "1.108",
+     "low_bit_code_mode": true,
+     "name": "ghidra",
+     "pointer_size": 4,
+     "program_counter": "pc",
+     "return_storage": "r0",
+     "stack_pointer": "sp",
+     "unaffected_storage": [
+      "r4",
+      "r5",
+      "r6",
+      "r7",
+      "r8",
+      "r9",
+      "r10",
+      "r11",
+      "d8",
+      "d9",
+      "d10",
+      "d11",
+      "d12",
+      "d13",
+      "d14",
+      "d15",
+      "sp",
+      "lr",
+      "pc"
+     ],
+     "version": "12.1.3"
+    },
+    "functions_created": [
+     {
+      "body": [
+       [
+        "0x00000800",
+        "0x00000801"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00000800"
+     },
+     {
+      "body": [
+       [
+        "0x00001000",
+        "0x00001001"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00001000"
+     },
+     {
+      "body": [
+       [
+        "0x000000c0",
+        "0x000000cd"
+       ]
+      ],
+      "created": true,
+      "entry": "0x000000c0"
+     }
+    ],
+    "program": {
+     "executable_sha256": "192ac8a63ef0306be39039a8fa47a221a11d7571f4ccd9c01d1e77015e1e5c82",
+     "function_count": 0,
+     "image_base": "0x00000000",
+     "memory_blocks": [
+      {
+       "end": "0x00001001",
+       "initialized": true,
+       "name": "ram",
+       "permissions": "rwx",
+       "start": "0x00000000"
+      }
+     ]
+    },
+    "results": [
+     {
+      "assumptions": [],
+      "complete": true,
+      "derivation": [
+       {
+        "address": "0x000000c4",
+        "from": [
+         "r3"
+        ],
+        "instruction": "mov r1,r3",
+        "pcode_index": 0,
+        "pcode_op": "COPY",
+        "to": "r1"
+       }
+      ],
+      "escape_kinds": [
+       "ARGUMENT_ESCAPE"
+      ],
+      "incomplete": [],
+      "kills": [
+       {
+        "address": "0x000000c6",
+        "by": "COPY",
+        "instruction": "movs r3,#0x0",
+        "storage": "r3"
+       },
+       {
+        "address": "0x000000c8",
+        "by": "call clobber (cspec)",
+        "instruction": "bl 0x00000800",
+        "storage": "r1"
+       }
+      ],
+      "origin_address": "0x000000c0",
+      "origin_instruction": "ldr r3,[0x000000d0]",
+      "origin_value": {
+       "code_address": "0x00001000",
+       "function_at_code_address": "FUN_00001000",
+       "kind": "load",
+       "size": 4,
+       "source_address": "0x000000d0",
+       "source_block": "ram",
+       "source_block_writable": true,
+       "source_initialized": true,
+       "value": "0x00001001"
+      },
+      "precision": [
+       {
+        "code": "ARGUMENT_BY_STORAGE",
+        "detail": "ARGUMENT means the value may be in argument storage of the default calling convention at a call or tail transfer; whether the callee reads it is not analyzed"
+       }
+      ],
+      "scope": {
+       "body": [
+        [
+         "0x000000c0",
+         "0x000000cd"
+        ]
+       ],
+       "body_bytes": 14,
+       "function_entry": "0x000000c0",
+       "function_name": "FUN_000000c0",
+       "kind": "function"
+      },
+      "status": "analyzed",
+      "tracked": {
+       "storage": "r3",
+       "varnode": "(register, 0x2c, 4)"
+      },
+      "uses": [
+       {
+        "address": "0x000000c8",
+        "callee": "FUN_00000800",
+        "detail": "may be live in argument storage at call to 0x00000800 (FUN_00000800)",
+        "instruction": "bl 0x00000800",
+        "kind": "ARGUMENT",
+        "pcode_op": "CALL",
+        "via": [
+         "r1"
+        ]
+       },
+       {
+        "address": "0x000000c8",
+        "detail": "no copy of the value survives this edge to 0x000000cc",
+        "instruction": "bl 0x00000800",
+        "kind": "DEAD",
+        "pcode_op": null,
+        "via": []
+       }
+      ],
+      "verdict": "ESCAPE",
+      "work": {
+       "budget_exhausted": false,
+       "instructions": 4,
+       "max_steps": 20000,
+       "steps": 4
+      }
+     }
+    ],
+    "status": "ok",
+    "target": {
+     "auto_analysis": false,
+     "base": "0x0",
+     "compiler_spec_id": "default",
+     "disassemble": [],
+     "functions": [
+      {
+       "entry": "0x800"
+      },
+      {
+       "entry": "0x1000"
+      },
+      {
+       "entry": "0xc0"
+      }
+     ],
+     "image_sha256": "192ac8a63ef0306be39039a8fa47a221a11d7571f4ccd9c01d1e77015e1e5c82",
+     "language_id": "ARM:LE:32:Cortex",
+     "mode": "import"
+    },
+    "walker": {
+     "name": "aptrace-pcode-forward-use",
+     "version": 1
+    },
+    "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+   }
+  },
+  "image": "thumb_controls.bin"
+ },
+ "N1_computed_jump": {
+  "doc": {
+   "result": {
+    "analysis": "pcode_forward_use",
+    "analysis_version": 1,
+    "bounds": {
+     "max_steps": 20000
+    },
+    "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+    "engine": {
+     "argument_storage": [
+      "s0",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6",
+      "s7",
+      "s8",
+      "s9",
+      "s10",
+      "s11",
+      "s12",
+      "s13",
+      "s14",
+      "s15",
+      "r0",
+      "r1",
+      "r2",
+      "r3"
+     ],
+     "calling_convention": "__stdcall",
+     "compiler_spec_id": "default",
+     "language_id": "ARM:LE:32:Cortex",
+     "language_version": "1.108",
+     "low_bit_code_mode": true,
+     "name": "ghidra",
+     "pointer_size": 4,
+     "program_counter": "pc",
+     "return_storage": "r0",
+     "stack_pointer": "sp",
+     "unaffected_storage": [
+      "r4",
+      "r5",
+      "r6",
+      "r7",
+      "r8",
+      "r9",
+      "r10",
+      "r11",
+      "d8",
+      "d9",
+      "d10",
+      "d11",
+      "d12",
+      "d13",
+      "d14",
+      "d15",
+      "sp",
+      "lr",
+      "pc"
+     ],
+     "version": "12.1.3"
+    },
+    "functions_created": [
+     {
+      "body": [
+       [
+        "0x00000000",
+        "0x00000003"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00000000"
+     }
+    ],
+    "program": {
+     "executable_sha256": "d736e1cc4d5fb50c60dda5aa950368d4c7a6374fd96f011ad7a1db76d3a2082c",
+     "function_count": 0,
+     "image_base": "0x00000000",
+     "memory_blocks": [
+      {
+       "end": "0x00001001",
+       "initialized": true,
+       "name": "ram",
+       "permissions": "rwx",
+       "start": "0x00000000"
+      }
+     ]
+    },
+    "results": [
+     {
+      "assumptions": [],
+      "complete": false,
+      "derivation": [],
+      "escape_kinds": [],
+      "incomplete": [
+       {
+        "address": "0x00000002",
+        "code": "COMPUTED_FLOW_UNRESOLVED",
+        "detail": "computed jump with no known targets while the value may be live"
+       }
+      ],
+      "kills": [],
+      "origin_address": "0x00000000",
+      "origin_instruction": "ldr r3,[0x00000004]",
+      "origin_value": {
+       "code_address": "0x00001000",
+       "function_at_code_address": null,
+       "kind": "load",
+       "size": 4,
+       "source_address": "0x00000004",
+       "source_block": "ram",
+       "source_block_writable": true,
+       "source_initialized": true,
+       "value": "0x00001001"
+      },
+      "precision": [],
+      "scope": {
+       "body": [
+        [
+         "0x00000000",
+         "0x00000003"
+        ]
+       ],
+       "body_bytes": 4,
+       "function_entry": "0x00000000",
+       "function_name": "MasterStackPointer",
+       "kind": "function"
+      },
+      "status": "analyzed",
+      "tracked": {
+       "storage": "r3",
+       "varnode": "(register, 0x2c, 4)"
+      },
+      "uses": [],
+      "verdict": "INCOMPLETE",
+      "work": {
+       "budget_exhausted": false,
+       "instructions": 1,
+       "max_steps": 20000,
+       "steps": 1
+      }
+     }
+    ],
+    "status": "ok",
+    "target": {
+     "auto_analysis": false,
+     "base": "0x0",
+     "compiler_spec_id": "default",
+     "disassemble": [],
+     "functions": [
+      {
+       "entry": "0x0"
+      }
+     ],
+     "image_sha256": "d736e1cc4d5fb50c60dda5aa950368d4c7a6374fd96f011ad7a1db76d3a2082c",
+     "language_id": "ARM:LE:32:Cortex",
+     "mode": "import"
+    },
+    "walker": {
+     "name": "aptrace-pcode-forward-use",
+     "version": 1
+    },
+    "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+   }
+  },
+  "image": "thumb_negative.bin"
+ },
+ "N6_ambiguous_origin": {
+  "doc": {
+   "result": {
+    "analysis": "pcode_forward_use",
+    "analysis_version": 1,
+    "bounds": {
+     "max_steps": 20000
+    },
+    "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+    "engine": {
+     "argument_storage": [
+      "s0",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6",
+      "s7",
+      "s8",
+      "s9",
+      "s10",
+      "s11",
+      "s12",
+      "s13",
+      "s14",
+      "s15",
+      "r0",
+      "r1",
+      "r2",
+      "r3"
+     ],
+     "calling_convention": "__stdcall",
+     "compiler_spec_id": "default",
+     "language_id": "ARM:LE:32:Cortex",
+     "language_version": "1.108",
+     "low_bit_code_mode": true,
+     "name": "ghidra",
+     "pointer_size": 4,
+     "program_counter": "pc",
+     "return_storage": "r0",
+     "stack_pointer": "sp",
+     "unaffected_storage": [
+      "r4",
+      "r5",
+      "r6",
+      "r7",
+      "r8",
+      "r9",
+      "r10",
+      "r11",
+      "d8",
+      "d9",
+      "d10",
+      "d11",
+      "d12",
+      "d13",
+      "d14",
+      "d15",
+      "sp",
+      "lr",
+      "pc"
+     ],
+     "version": "12.1.3"
+    },
+    "functions_created": [
+     {
+      "body": [
+       [
+        "0x00000140",
+        "0x00000147"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00000140"
+     }
+    ],
+    "program": {
+     "executable_sha256": "d736e1cc4d5fb50c60dda5aa950368d4c7a6374fd96f011ad7a1db76d3a2082c",
+     "function_count": 0,
+     "image_base": "0x00000000",
+     "memory_blocks": [
+      {
+       "end": "0x00001001",
+       "initialized": true,
+       "name": "ram",
+       "permissions": "rwx",
+       "start": "0x00000000"
+      }
+     ]
+    },
+    "results": [
+     {
+      "complete": false,
+      "escape_kinds": [],
+      "origin_address": "0x00000140",
+      "origin_instruction": "ldrd r2,r3,[r0,#0x0]",
+      "status": "unsupported",
+      "unsupported": {
+       "code": "AMBIGUOUS_VALUE_OUTPUT",
+       "detail": "the origin instruction writes 2 pointer-sized registers [\"r2\",\"r3\"]; name the register to track"
+      },
+      "verdict": "UNSUPPORTED"
+     }
+    ],
+    "status": "ok",
+    "target": {
+     "auto_analysis": false,
+     "base": "0x0",
+     "compiler_spec_id": "default",
+     "disassemble": [],
+     "functions": [
+      {
+       "entry": "0x140"
+      }
+     ],
+     "image_sha256": "d736e1cc4d5fb50c60dda5aa950368d4c7a6374fd96f011ad7a1db76d3a2082c",
+     "language_id": "ARM:LE:32:Cortex",
+     "mode": "import"
+    },
+    "walker": {
+     "name": "aptrace-pcode-forward-use",
+     "version": 1
+    },
+    "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+   }
+  },
+  "image": "thumb_negative.bin"
+ },
+ "R1_compare_only": {
+  "doc": {
+   "result": {
+    "analysis": "pcode_forward_use",
+    "analysis_version": 1,
+    "bounds": {
+     "max_steps": 20000
+    },
+    "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+    "engine": {
+     "argument_storage": [
+      "fa0",
+      "fa1",
+      "fa2",
+      "fa3",
+      "fa4",
+      "fa5",
+      "fa6",
+      "fa7",
+      "a0",
+      "a1",
+      "a2",
+      "a3",
+      "a4",
+      "a5",
+      "a6",
+      "a7"
+     ],
+     "calling_convention": "__stdcall",
+     "compiler_spec_id": "gcc",
+     "language_id": "RISCV:LE:32:default",
+     "language_version": "1.4",
+     "low_bit_code_mode": false,
+     "name": "ghidra",
+     "pointer_size": 4,
+     "program_counter": "pc",
+     "return_storage": "a0",
+     "stack_pointer": "sp",
+     "unaffected_storage": [
+      "sp",
+      "gp",
+      "tp",
+      "s0",
+      "s1",
+      "s2",
+      "s3",
+      "s4",
+      "s5",
+      "s6",
+      "s7",
+      "s8",
+      "s9",
+      "s10",
+      "s11",
+      "fs0",
+      "fs1",
+      "fs2",
+      "fs3",
+      "fs4",
+      "fs5",
+      "fs6",
+      "fs7",
+      "fs8",
+      "fs9",
+      "fs10",
+      "fs11"
+     ],
+     "version": "12.1.3"
+    },
+    "functions_created": [
+     {
+      "body": [
+       [
+        "0x00000000",
+        "0x0000001f"
+       ]
+      ],
+      "created": true,
+      "entry": "0x00000000"
+     }
+    ],
+    "program": {
+     "executable_sha256": "1163a47de5a920af6102efc7f0a2a26d6f8dc998168f7f78340d4f822d657531",
+     "function_count": 0,
+     "image_base": "0x00000000",
+     "memory_blocks": [
+      {
+       "end": "0x00001003",
+       "initialized": true,
+       "name": "ram",
+       "permissions": "rwx",
+       "start": "0x00000000"
+      },
+      {
+       "end": "0x00003fff",
+       "initialized": false,
+       "name": "csr",
+       "permissions": "rw-",
+       "start": "0x00000000"
+      }
+     ]
+    },
+    "results": [
+     {
+      "assumptions": [],
+      "complete": true,
+      "derivation": [],
+      "escape_kinds": [],
+      "incomplete": [],
+      "kills": [
+       {
+        "address": "0x00000014",
+        "by": "INT_ADD",
+        "instruction": "addi a5,sp,0x4",
+        "storage": "a5"
+       }
+      ],
+      "origin_address": "0x00000004",
+      "origin_instruction": "lw a5,0x30(a5)",
+      "origin_value": {
+       "kind": "computed"
+      },
+      "precision": [],
+      "scope": {
+       "body": [
+        [
+         "0x00000000",
+         "0x0000001f"
+        ]
+       ],
+       "body_bytes": 32,
+       "function_entry": "0x00000000",
+       "function_name": "FUN_ram_00000000",
+       "kind": "function"
+      },
+      "status": "analyzed",
+      "tracked": {
+       "storage": "a5",
+       "varnode": "(register, 0x203c, 4)"
+      },
+      "uses": [
+       {
+        "address": "0x00000008",
+        "detail": "INT_NOTEQUAL",
+        "instruction": "bne a5,zero,0x00000014",
+        "kind": "COMPARE",
+        "pcode_op": "INT_NOTEQUAL",
+        "via": [
+         "a5"
+        ]
+       },
+       {
+        "address": "0x00000010",
+        "detail": "live outside return storage at return",
+        "instruction": "ret",
+        "kind": "ENDS_AT_RETURN",
+        "pcode_op": "RETURN",
+        "via": [
+         "a5"
+        ]
+       },
+       {
+        "address": "0x00000014",
+        "detail": "no copy of the value survives this edge to 0x00000018",
+        "instruction": "addi a5,sp,0x4",
+        "kind": "DEAD",
+        "pcode_op": null,
+        "via": []
+       }
+      ],
+      "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+      "work": {
+       "budget_exhausted": false,
+       "instructions": 4,
+       "max_steps": 20000,
+       "steps": 4
+      }
+     }
+    ],
+    "status": "ok",
+    "target": {
+     "auto_analysis": false,
+     "base": "0x0",
+     "compiler_spec_id": "gcc",
+     "disassemble": [],
+     "functions": [
+      {
+       "entry": "0x0"
+      }
+     ],
+     "image_sha256": "1163a47de5a920af6102efc7f0a2a26d6f8dc998168f7f78340d4f822d657531",
+     "language_id": "RISCV:LE:32:default",
+     "mode": "import"
+    },
+    "walker": {
+     "name": "aptrace-pcode-forward-use",
+     "version": 1
+    },
+    "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+   }
+  },
+  "image": "rv32_controls.bin"
+ }
+}

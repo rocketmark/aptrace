@@ -25,6 +25,7 @@ from aptrace_agent.schemas import (
     InvestigationPlan,
 )
 from aptrace_agent.synthesizer import synthesize
+from aptrace_agent.value_forward_use import census_code_pointer_loads
 
 
 @dataclass
@@ -227,6 +228,7 @@ def run_autonomous_investigation(
                 "observed_call_arguments",
                 "indirect_call_target",
                 "callback_argument_provenance",
+                "value_forward_use",
             ),
             observation_scenarios=(
                 executor.observed_calls.supported_scenarios()
@@ -241,6 +243,11 @@ def run_autonomous_investigation(
             indirect_sites=(
                 executor.indirect_targets.sites()
                 if hasattr(executor, "indirect_targets")
+                else ()
+            ),
+            value_origins=(
+                census_code_pointer_loads(executor.census.db_path, executor.census.firmware_key)
+                if hasattr(executor, "census")
                 else ()
             ),
             claim_contract=claim_contract,

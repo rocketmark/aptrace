@@ -39,6 +39,7 @@ STRUCTURAL_TOOLS = (
     "observed_call_arguments",
     "indirect_call_target",
     "callback_argument_provenance",
+    "value_forward_use",
 )
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
@@ -73,6 +74,7 @@ _STRUCTURAL_SOURCES = {
     "observed_call_arguments",
     "indirect_call_target",
     "callback_argument_provenance",
+    "value_forward_use",
     "search_case_evidence",
 }
 
@@ -119,6 +121,8 @@ class _Palette:
     indirect_sites: list[str] = field(default_factory=list)
     # Of those, sites offered for one-hop callback provenance.
     callback_sites: list[str] = field(default_factory=list)
+    # Census code-pointer loads already present in evidence.
+    value_origins: list[str] = field(default_factory=list)
     # Tool whose request repeated an analysis already in evidence.
     duplicate: str | None = None
 
@@ -196,6 +200,8 @@ class ResearchController:
         indirect_sites: Sequence[int] = (),
         max_indirect_targets: int = 2,
         max_callback_traces: int = 2,
+        value_origins: Sequence[int] = (),
+        max_value_traces: int = 2,
         max_visible_leads: int = 6,
         prefill_retry_delay: float = 3.0,
         projection_budget: ProjectionBudget | None = None,
@@ -256,6 +262,10 @@ class ResearchController:
         self.indirect_sites = frozenset(int(site) for site in indirect_sites)
         self.max_indirect_targets = max_indirect_targets
         self.max_callback_traces = max_callback_traces
+        # APTrace-validated value origins (census code-pointer loads); the
+        # planner may name one only once it appears in evidence.
+        self.value_origins = frozenset(int(origin) for origin in value_origins)
+        self.max_value_traces = max_value_traces
         self.max_visible_leads = max_visible_leads
         self.prefill_retry_delay = prefill_retry_delay
         self.claim_contract = claim_contract
@@ -476,15 +486,40 @@ class ResearchController:
                     )
                 )
 
-    def _grounded_sites(self, session: ResearchSession, tool: str = "indirect_call_target") -> list[str]:
+        if (
+            "value_forward_use" in self.structural_tools
+            and self.value_origins
+            and len(self._executed(session, "value_forward_use")) < self.max_value_traces
+        ):
+            palette.value_origins = self._grounded_sites(session, "value_forward_use", self.value_origins, "origin")
+
+            if palette.value_origins:
+                palette.tools.append(
+                    _function_tool(
+                        "trace_value_use",
+                        "Only when it matters where a loaded function pointer goes: static forward use of the value one "
+                        "listed load defines, inside its containing function. Reports whether it escapes (control "
+                        "transfer, call argument, memory store, return) or stays local (compare, overwrite), or that "
+                        "the analysis was INCOMPLETE. No escape covers this one load only, not other uses of the function.",
+                        {"origin": {"type": "string", "enum": palette.value_origins}},
+                        ["origin"],
+                    )
+                )
+
+    def _grounded_sites(
+        self, session: ResearchSession, tool: str = "indirect_call_target", sites: frozenset[int] | None = None,
+        argument: str = "site",
+    ) -> list[str]:
         """
-        Census indirect sites named in evidence, most recent evidence first,
-        not yet analyzed by `tool`. For callback provenance, sites whose
-        indirect_call_target result names an argument origin come first.
+        Allowed addresses (default: census indirect sites) named in evidence,
+        most recent evidence first, not yet analyzed by `tool`. For callback
+        provenance, sites whose indirect_call_target result names an argument
+        origin come first.
         """
 
+        allowed = self.indirect_sites if sites is None else sites
         found: dict[int, None] = {}
-        done = {str(o.arguments.get("site")) for o in self._observations(session, tool)}
+        done = {str(o.arguments.get(argument)) for o in self._observations(session, tool)}
 
         if tool == "callback_argument_provenance":
             for observation in reversed(self._observations(session, "indirect_call_target")):
@@ -500,7 +535,7 @@ class ResearchController:
             for match in _ADDRESS_RE.finditer(json.dumps(observation.result, default=str)):
                 address = int(match.group(1), 16)
 
-                if address in self.indirect_sites and f"0x{address:08x}" not in done:
+                if address in allowed and f"0x{address:08x}" not in done:
                     found.setdefault(address)
 
         return [f"0x{address:08x}" for address in list(found)[:MAX_OFFERED_SITES]]
@@ -989,6 +1024,24 @@ class ResearchController:
 
             return name, {"site": site}
 
+        if name == "trace_value_use" and name in offered:
+            extra = sorted(set(arguments) - {"origin"})
+
+            if extra:
+                return f"trace_value_use accepts only origin; rejected {', '.join(extra)}"
+
+            origin = str(arguments.get("origin", "")).strip().lower()
+
+            for observation in self._observations(session, "value_forward_use"):
+                if observation.arguments.get("origin") == origin:
+                    palette.duplicate = name
+                    return f"{origin} was already traced in {observation.id}"
+
+            if origin not in palette.value_origins:
+                return "trace_value_use origin must be one of the listed loads"
+
+            return name, {"origin": origin}
+
         return None
 
     # -- planner I/O ------------------------------------------------------------
@@ -1280,7 +1333,7 @@ class ResearchController:
         structural = [
             name
             for name in ("analyze_peripheral", "analyze_usb_interface", "find_common_paths", "analyze_function_effects",
-                         "observe_call_arguments", "resolve_indirect_call", "trace_callback_argument")
+                         "observe_call_arguments", "resolve_indirect_call", "trace_callback_argument", "trace_value_use")
             if name in names
         ]
 
@@ -1320,6 +1373,9 @@ class ResearchController:
 
         if "trace_callback_argument" in structural:
             order.append("trace_callback_argument if an indirect target is a callback argument (one hop; what callers pass)")
+
+        if "trace_value_use" in structural:
+            order.append("trace_value_use if where a loaded function pointer goes matters (one load; escapes or stays local)")
 
         order += ["leads", "caller/callee expansion only for a specific question"]
 
@@ -1860,6 +1916,17 @@ answer any other question.
                 arguments=arguments,
             )
             return "callback_provenance", lead, observation
+
+        if action == "trace_value_use":
+            lead, observation = self._follow_new_lead(
+                session,
+                step=step,
+                kind="value-forward-use",
+                description=f"Static forward use of the value defined at {arguments['origin']}",
+                tool="value_forward_use",
+                arguments=arguments,
+            )
+            return "value_forward_use", lead, observation
 
         raise ValueError(f"not a structural action: {action}")
 

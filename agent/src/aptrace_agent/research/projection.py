@@ -21,6 +21,7 @@ SUBSYSTEM_TOOLS = (
     "observed_call_arguments",
     "indirect_call_target",
     "callback_argument_provenance",
+    "value_forward_use",
 )
 
 # Per-function inspection tools, summarized as "already inspected".
@@ -282,6 +283,9 @@ def analysis_label(observation: EvidenceObservation) -> str | None:
 
     if observation.tool == "callback_argument_provenance":
         return f"callback {args.get('site')}"
+
+    if observation.tool == "value_forward_use":
+        return f"value use {args.get('origin')}"
 
     if (
         observation.tool == "search_case_evidence"

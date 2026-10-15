@@ -52,6 +52,10 @@ DERIVATION_PARTIAL = "TARGET_DERIVATION_PARTIAL"
 ONE_HOP = "ONE_HOP_CALLER_PROVENANCE"
 CALLER_SET_OPEN = "CALLER_SET_OPEN"
 PROVENANCE_BOUNDED = "PROVENANCE_ANALYSIS_BOUNDED"
+NO_ESCAPE_BOUNDED = "NO_ESCAPE_IS_WITHIN_FUNCTION_SCOPE"
+FORWARD_USE_INCOMPLETE = "FORWARD_USE_INCOMPLETE"
+MEMORY_NOT_FOLLOWED = "MEMORY_FLOW_NOT_FOLLOWED"
+ABI_MODEL = "CALLING_CONVENTION_MODEL"
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 
@@ -242,6 +246,18 @@ def evidence_grade(tool: str, result: dict[str, Any]) -> tuple[EvidenceGrade, st
 
         return EvidenceGrade.UNKNOWN, f"callback provenance {result.get('provenance_status')}"
 
+    if tool == "value_forward_use":
+        if result.get("status") != "ok":
+            return EvidenceGrade.UNKNOWN, f"value forward use status {result.get('status')}"
+
+        if result.get("verdict") == "NO_ESCAPE_WITHIN_SCOPE" and result.get("complete"):
+            return EvidenceGrade.BOUNDED, "complete static p-code forward use: no escape within the containing function"
+
+        if result.get("verdict") == "ESCAPE":
+            return EvidenceGrade.PROBABLE, "static p-code may-flow to an escaping use (sound over-approximation)"
+
+        return EvidenceGrade.UNKNOWN, f"value forward use {result.get('verdict')}"
+
     if tool == "structural_source_agreement":
         if result.get("status") != "ok" or "CONFLICT" in (result.get("status_counts") or {}):
             return EvidenceGrade.UNKNOWN, "source agreement contains a structural CONFLICT or failed"
@@ -421,6 +437,33 @@ def evidence_limitations(tool: str, arguments: dict[str, Any], result: dict[str,
 
         if result.get("incomplete_reasons"):
             out[PROVENANCE_BOUNDED] = "An analysis bound was hit: " + "; ".join(result["incomplete_reasons"][:3]) + "."
+
+    if tool == "value_forward_use":
+        out[FUNCTION_BOUNDARIES] = (
+            "The containing function's body and computed-jump targets are Ghidra's analysis results; function "
+            "boundaries are heuristic."
+        )
+        out[INTRAPROCEDURAL] = (
+            "Forward use within the containing Ghidra function only; what a callee or caller does with the value is "
+            "not analyzed."
+        )
+        out[ABI_MODEL] = (
+            "Calls, tail calls and returns follow the program's default calling convention: ARGUMENT means the value "
+            "may be in argument storage, and a call clobbers the convention's non-preserved registers."
+        )
+
+        if result.get("verdict") == "NO_ESCAPE_WITHIN_SCOPE":
+            out[NO_ESCAPE_BOUNDED] = (
+                "No escape of this one value within its containing function: other loads or materializations of the "
+                "same constant, and other functions, are not covered."
+            )
+
+        if any(u.get("kind") == "STORE" for u in result.get("uses") or []):
+            out[MEMORY_NOT_FOLLOWED] = "Values stored to memory are not followed; reloads and later uses are unknown."
+
+        if result.get("incomplete"):
+            out[FORWARD_USE_INCOMPLETE] = "The analysis did not cover every path: " + "; ".join(
+                f"{i.get('code')} {i.get('address') or ''}".strip() for i in result["incomplete"][:3]) + "."
 
     return sorted(out.items())
 

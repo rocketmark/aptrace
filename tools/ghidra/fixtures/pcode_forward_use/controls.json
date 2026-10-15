@@ -1,0 +1,472 @@
+{
+  "description": "Acceptance controls for tools/ghidra/pcode_forward_use.py. thumb_controls and rv32_controls are the architecture spike's 11 Thumb and 7 RV32 fixtures (docs/spikes/architecture-evaluation/experiments/fixtures, byte-identical copies); spike_escapes is the spike's expected.json ground truth. thumb_negative and rv32_negative are added controls whose correct answer is INCOMPLETE, UNSUPPORTED, or an ABI-dependent result. Each expectation is exact: verdict, escape_kinds, incomplete codes and unsupported code must match. assessment records how the production answer relates to the ground truth.",
+  "suites": [
+    {
+      "name": "thumb_controls",
+      "image": "thumb_controls.bin",
+      "sha256": "192ac8a63ef0306be39039a8fa47a221a11d7571f4ccd9c01d1e77015e1e5c82",
+      "language": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "base": "0x0",
+      "functions": [
+        "0x800",
+        "0x1000",
+        "0x0",
+        "0x40",
+        "0x80",
+        "0xc0",
+        "0x100",
+        "0x140",
+        "0x180",
+        "0x1c0",
+        "0x200",
+        "0x240",
+        "0x280"
+      ],
+      "origins": [
+        {
+          "case": "C1_compare_only",
+          "origin": "0x0",
+          "spike_escapes": [],
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": [],
+          "assessment": "exact"
+        },
+        {
+          "case": "C2_call_through",
+          "origin": "0x40",
+          "spike_escapes": [
+            "CONTROL_TRANSFER"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "ARGUMENT_ESCAPE",
+            "CONTROL_FLOW_ESCAPE"
+          ],
+          "assessment": "sound over-approximation: r3 is argument storage under the cspec at the blx, so ARGUMENT_ESCAPE is added (as in the spike)"
+        },
+        {
+          "case": "C3_store",
+          "origin": "0x80",
+          "spike_escapes": [
+            "STORE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "C4_argument_via_move",
+          "origin": "0xc0",
+          "spike_escapes": [
+            "ARGUMENT"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "ARGUMENT_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "C5_return",
+          "origin": "0x100",
+          "spike_escapes": [
+            "RETURN_VALUE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "RETURN_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "C6_join_one_path_store",
+          "origin": "0x140",
+          "spike_escapes": [
+            "STORE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "C7_join_both_killed",
+          "origin": "0x180",
+          "spike_escapes": [],
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": [],
+          "assessment": "exact"
+        },
+        {
+          "case": "C8_spill_reload_call",
+          "origin": "0x1c4",
+          "spike_escapes": [
+            "CONTROL_TRANSFER"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "precision": [
+            "MEMORY_FLOW_NOT_FOLLOWED"
+          ],
+          "assessment": "sound but imprecise: the spill to [sp,#4] is reported as MEMORY_ESCAPE with MEMORY_FLOW_NOT_FOLLOWED; the reload and blx are not tracked (no memory model). The decompiler resolves this case; raw p-code does not."
+        },
+        {
+          "case": "C9_it_conditional_kill",
+          "origin": "0x200",
+          "spike_escapes": [
+            "STORE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "C10_tail_call_argument",
+          "origin": "0x240",
+          "spike_escapes": [
+            "ARGUMENT"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "ARGUMENT_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "C11_compare_then_loop",
+          "origin": "0x280",
+          "spike_escapes": [],
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": [],
+          "assessment": "exact"
+        }
+      ]
+    },
+    {
+      "name": "rv32_controls",
+      "image": "rv32_controls.bin",
+      "sha256": "1163a47de5a920af6102efc7f0a2a26d6f8dc998168f7f78340d4f822d657531",
+      "language": "RISCV:LE:32:default",
+      "cspec": "gcc",
+      "base": "0x0",
+      "functions": [
+        "0x800",
+        "0x1000",
+        "0x0",
+        "0x40",
+        "0x80",
+        "0xc0",
+        "0x100",
+        "0x140",
+        "0x180"
+      ],
+      "origins": [
+        {
+          "case": "R1_compare_only",
+          "origin": "0x4",
+          "spike_escapes": [],
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": [],
+          "assessment": "exact"
+        },
+        {
+          "case": "R2_call_through",
+          "origin": "0x44",
+          "spike_escapes": [
+            "CONTROL_TRANSFER"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "ARGUMENT_ESCAPE",
+            "CONTROL_FLOW_ESCAPE"
+          ],
+          "assessment": "sound over-approximation: a5 is argument storage under the RISC-V cspec at the jalr"
+        },
+        {
+          "case": "R3_store",
+          "origin": "0x84",
+          "spike_escapes": [
+            "STORE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "R4_argument_via_move",
+          "origin": "0xc4",
+          "spike_escapes": [
+            "ARGUMENT"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "ARGUMENT_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "R5_return",
+          "origin": "0x104",
+          "spike_escapes": [
+            "RETURN_VALUE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "RETURN_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "R6_join_one_path_store",
+          "origin": "0x144",
+          "spike_escapes": [
+            "STORE"
+          ],
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "assessment": "exact"
+        },
+        {
+          "case": "R7_join_both_killed",
+          "origin": "0x184",
+          "spike_escapes": [],
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": [],
+          "assessment": "exact"
+        }
+      ]
+    },
+    {
+      "name": "thumb_negative",
+      "image": "thumb_negative.bin",
+      "sha256": "d736e1cc4d5fb50c60dda5aa950368d4c7a6374fd96f011ad7a1db76d3a2082c",
+      "language": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "base": "0x0",
+      "functions": [
+        "0x800",
+        "0x1000",
+        "0x0",
+        "0x80",
+        "0xc0:0xc0-0xc7",
+        "0x100",
+        "0x140",
+        "0x180",
+        "0x1c0"
+      ],
+      "disassemble": [
+        "0x40"
+      ],
+      "origins": [
+        {
+          "case": "N1_computed_jump",
+          "origin": "0x0",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "COMPUTED_FLOW_UNRESOLVED"
+          ]
+        },
+        {
+          "case": "N1_literal_word_origin",
+          "origin": "0x4",
+          "verdict": "UNSUPPORTED",
+          "unsupported": "NO_INSTRUCTION"
+        },
+        {
+          "case": "N1_unknown_register",
+          "origin": "0x0:bogus",
+          "verdict": "UNSUPPORTED",
+          "unsupported": "UNKNOWN_REGISTER"
+        },
+        {
+          "case": "N1_register_not_written",
+          "origin": "0x0:r5",
+          "verdict": "UNSUPPORTED",
+          "unsupported": "REGISTER_NOT_WRITTEN"
+        },
+        {
+          "case": "N2_no_containing_function",
+          "origin": "0x40",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "NO_CONTAINING_FUNCTION"
+          ]
+        },
+        {
+          "case": "N3_loop_full_budget",
+          "origin": "0x80",
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": []
+        },
+        {
+          "case": "N4_truncated_body",
+          "origin": "0xc0",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "FLOW_LEAVES_FUNCTION"
+          ],
+          "assessment": "the same shape with a full body (C6) is MEMORY_ESCAPE; a truncated boundary must not turn it into NO_ESCAPE"
+        },
+        {
+          "case": "N5_unmodeled_operation",
+          "origin": "0x100",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "UNMODELED_OPERATION"
+          ]
+        },
+        {
+          "case": "N6_ambiguous_origin",
+          "origin": "0x140",
+          "verdict": "UNSUPPORTED",
+          "unsupported": "AMBIGUOUS_VALUE_OUTPUT"
+        },
+        {
+          "case": "N6_named_r3",
+          "origin": "0x140:r3",
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ]
+        },
+        {
+          "case": "N6_named_r2",
+          "origin": "0x140:r2",
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": []
+        },
+        {
+          "case": "N7_callee_saved_survives_call",
+          "origin": "0x182",
+          "verdict": "ESCAPE",
+          "escape_kinds": [
+            "MEMORY_ESCAPE"
+          ],
+          "assessment": "r4 is unaffected under the cspec, so the copy survives bl and reaches the store"
+        },
+        {
+          "case": "N8_scratch_dies_at_call",
+          "origin": "0x1c2",
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": [],
+          "assessment": "ABI-dependent: ip is killed by the call under the cspec (assumption: the callee follows the calling convention)"
+        }
+      ]
+    },
+    {
+      "name": "thumb_negative_budget",
+      "image": "thumb_negative.bin",
+      "sha256": "d736e1cc4d5fb50c60dda5aa950368d4c7a6374fd96f011ad7a1db76d3a2082c",
+      "language": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "base": "0x0",
+      "functions": [
+        "0x80"
+      ],
+      "max_steps": 2,
+      "origins": [
+        {
+          "case": "N3_loop_budget",
+          "origin": "0x80",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "BUDGET_EXHAUSTED"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rv32_negative",
+      "image": "rv32_negative.bin",
+      "sha256": "3e98133592634ce8729245c1f213735457d51f394760d81a4d4116f97c1ca219",
+      "language": "RISCV:LE:32:default",
+      "cspec": "gcc",
+      "base": "0x0",
+      "functions": [
+        "0x800",
+        "0x1000",
+        "0x0",
+        "0x80",
+        "0xc0:0xc0-0xcf"
+      ],
+      "disassemble": [
+        "0x40"
+      ],
+      "origins": [
+        {
+          "case": "Q1_computed_jump",
+          "origin": "0x4",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "COMPUTED_FLOW_UNRESOLVED"
+          ]
+        },
+        {
+          "case": "Q2_no_containing_function",
+          "origin": "0x44",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "NO_CONTAINING_FUNCTION"
+          ]
+        },
+        {
+          "case": "Q3_loop_full_budget",
+          "origin": "0x84",
+          "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+          "escape_kinds": []
+        },
+        {
+          "case": "Q4_truncated_body",
+          "origin": "0xc4",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "FLOW_LEAVES_FUNCTION"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "rv32_negative_budget",
+      "image": "rv32_negative.bin",
+      "sha256": "3e98133592634ce8729245c1f213735457d51f394760d81a4d4116f97c1ca219",
+      "language": "RISCV:LE:32:default",
+      "cspec": "gcc",
+      "base": "0x0",
+      "functions": [
+        "0x80"
+      ],
+      "max_steps": 2,
+      "origins": [
+        {
+          "case": "Q3_loop_budget",
+          "origin": "0x84",
+          "verdict": "INCOMPLETE",
+          "escape_kinds": [],
+          "incomplete": [
+            "BUDGET_EXHAUSTED"
+          ]
+        }
+      ]
+    }
+  ]
+}

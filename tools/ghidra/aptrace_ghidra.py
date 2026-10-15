@@ -90,37 +90,16 @@ from performing_rigs import (  # noqa: E402
 # external IRQs (supplied by the case, not assumed here).
 SEED_VECTOR_WORDS = 15 + NUM_EXTERNAL_IRQ
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from headless import find_headless, ghidra_version  # noqa: E402,F401  (ghidra_version re-exported)
+
 
 def resolve_headless():
-    import os
-    import shutil as _shutil
-    found = _shutil.which("analyzeHeadless")
-    if found:
-        return found
-    env_home = os.environ.get("GHIDRA_HOME")
-    if env_home and (Path(env_home) / "support" / "analyzeHeadless").exists():
-        return str(Path(env_home) / "support" / "analyzeHeadless")
-    try:
-        prefix = subprocess.run(["brew", "--prefix", "ghidra"], capture_output=True, text=True, check=True).stdout.strip()
-        candidate = Path(prefix) / "libexec" / "support" / "analyzeHeadless"
-        if candidate.exists():
-            return str(candidate)
-    except Exception:
-        pass
-    sys.exit("error: could not find Ghidra's analyzeHeadless (install with `brew install ghidra`"
-              " or set GHIDRA_HOME).")
-
-
-def ghidra_version(headless_path):
-    """Best-effort version extraction from the resolved analyzeHeadless path
-    (e.g. .../Cellar/ghidra/12.1.3/libexec/support/analyzeHeadless). Homebrew
-    exposes this via a version-less symlink (`opt/ghidra` -> `Cellar/ghidra/
-    X.Y.Z`), so the real path must be resolved first. Falls back to
-    'unknown' -- staleness detection still works via the other identity
-    fields, just without a Ghidra-version-bump trigger."""
-    real = str(Path(headless_path).resolve())
-    m = re.search(r"ghidra/([0-9][0-9A-Za-z.\-_]*)/", real)
-    return m.group(1) if m else "unknown"
+    found = find_headless()
+    if found is None:
+        sys.exit("error: could not find Ghidra's analyzeHeadless (install with `brew install ghidra`"
+                  " or set GHIDRA_HOME).")
+    return str(found)
 
 
 def sha256_of(path):

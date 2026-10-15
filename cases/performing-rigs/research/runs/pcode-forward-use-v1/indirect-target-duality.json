@@ -1,0 +1,3998 @@
+{
+ "definition_pairs": 95,
+ "distinct_origins": 76,
+ "indirect_target_sites": 86,
+ "measurement": {
+  "extra": {
+   "ghidra_install_version": "12.1.3"
+  },
+  "peak_rss_bytes": 332709888,
+  "walker_seconds": 0.0871,
+  "wall_seconds": 2.655
+ },
+ "outcomes": {
+  "AGREE": 95
+ },
+ "pairs": [
+  {
+   "definition": {
+    "def_addr": "0x00009922",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000991a",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000992a",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000992a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x000099e0",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_000099dc",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x000099e4",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x000099e4",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x00009ade",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x00009ae2",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x00009ae2",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a32a",
+    "instruction": "ldr r3, [r0, #8]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a314",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a340",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a340",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a34a",
+    "instruction": "ldr r3, [r0, #0xc]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a314",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a340",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a340",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a360",
+    "instruction": "ldr r3, [r0, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a314",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a340",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a340",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a726",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000a72e",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a72e",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a760",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000a768",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a768",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a79a",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000a7a2",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a7a2",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a7ba",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000a7c2",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a7c2",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a7da",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000a7e2",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a7e2",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a7e8",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a7e4",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a7ea",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a7ea",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a844",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a83c",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a848",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a848",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a860",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a84a",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a868",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a868",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a880",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a86a",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a888",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a888",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a8a0",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a88a",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a8a8",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a8a8",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a8c0",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a8aa",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a8c8",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a8c8",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a8da",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a8ca",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a8f6",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a8f6",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a90c",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a8f8",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a91a",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a91a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a93c",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "lcd_status_refresh__THIRD_PARTY",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a942",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a942",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a948",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000a94a",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a94a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a950",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000a94c",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000a952",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a952",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a962",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000a95e",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000a964",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a964",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a974",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000a970",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000a976",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a976",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a986",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000a982",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000a988",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a988",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a998",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000a994",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000a99a",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a99a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a9aa",
+    "instruction": "ldr r3, [r3, #0x10]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000a9a6",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000a9ac",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a9ac",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a9c2",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a9b8",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a9ca",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a9ca",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a9d8",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a9cc",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a9e0",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a9e0",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000a9ec",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000a9e2",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000a9f4",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000a9f4",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000aa04",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000ae60",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000aa0a",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000aa0a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000aa1a",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000aa0c",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000aa20",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000aa20",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000aa30",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000aa22",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000aa36",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000aa36",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000aa3e",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000aa38",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000aa42",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000aa42",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000aa58",
+    "instruction": "mov r3, r4",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000aa44",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000aa60",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000aa60",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000adac",
+    "instruction": "ldr r3, [r3, #0x2c]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000ad44",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000adb4",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000adb4",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ae58",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000ae50",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000ae5c",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000ae5c",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000af8c",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000af9c",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000af90",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000af90",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000af96",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000af92",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000af9a",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000af9a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0a6",
+    "instruction": "ldr r3, [r3, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0aa",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0aa",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0b0",
+    "instruction": "ldr r3, [r3, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0aa",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0aa",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0b8",
+    "instruction": "ldr r3, [r3, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0aa",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0aa",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0c0",
+    "instruction": "ldr r3, [r3, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0aa",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0aa",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0c8",
+    "instruction": "ldr r3, [r3, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0aa",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0aa",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0ce",
+    "instruction": "ldr r2, [r2, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0d4",
+      "bx r2"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0d4",
+   "target_reg": "r2"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0da",
+    "instruction": "ldr r2, [r2, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0d4",
+      "bx r2"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0d4",
+   "target_reg": "r2"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0e2",
+    "instruction": "ldr r2, [r2, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0d4",
+      "bx r2"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0d4",
+   "target_reg": "r2"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0ea",
+    "instruction": "ldr r2, [r2, #0x24]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b070",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0d4",
+      "bx r2"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0d4",
+   "target_reg": "r2"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b0f6",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b0f0",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b0fa",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b0fa",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b206",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_00008c10",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000b20a",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b20a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b228",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b216",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b234",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b234",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b244",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b242",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b246",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b246",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b2ba",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b2a8",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b2be",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b2be",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b70a",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000b702",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000b712",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b712",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b760",
+    "instruction": "ldr r3, [r3, #0x14]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000b754",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000b762",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b762",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000b8a2",
+    "instruction": "ldr r3, [r3, #0xc]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000b890",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000b8a4",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000b8a4",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000be60",
+    "instruction": "ldr r3, [r3, #0x14]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000be18",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000be62",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000be62",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000bf1e",
+    "instruction": "ldr r3, [r3, #8]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000bf14",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000bf20",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000bf20",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000c06a",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000c034",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000c070",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000c070",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000c6d6",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000c5cc",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000c6d8",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000c6d8",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000c74a",
+    "instruction": "ldr r3, [r3, #0x20]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": false,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": null,
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED",
+     "NO_CONTAINING_FUNCTION"
+    ],
+    "transfers": [
+     [
+      "0x0000c74c",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000c74c",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000cb8e",
+    "instruction": "ldr.w r3, [r8, r4, lsl #2]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "indexed-table",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000cbb0",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000cb92",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000cb92",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000cc16",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "constant-slot",
+    "reaching_complete": true
+   },
+   "mnemonic": "bx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": false,
+    "function": "FUN_0000cc14",
+    "incomplete": [
+     "COMPUTED_FLOW_UNRESOLVED"
+    ],
+    "transfers": [
+     [
+      "0x0000cc1a",
+      "bx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000cc1a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000d532",
+    "instruction": "ldr r3, [r3, #4]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000d524",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000d536",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000d536",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000d556",
+    "instruction": "ldr r3, [r3, #8]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000d54a",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000d55a",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000d55a",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000d572",
+    "instruction": "ldr r3, [r3]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "vtable-slot",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000d566",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000d576",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000d576",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000e5f4",
+    "instruction": "ldr r3, [r5], #4",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "pointer-iteration",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000e5d0",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000e5f8",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000e5f8",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000e5fe",
+    "instruction": "ldr r3, [r5], #4",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "pointer-iteration",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000e5d0",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000e602",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000e602",
+   "target_reg": "r3"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000ee38",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000ee60",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000ee80",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000eeb4",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000eed0",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000eef0",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000ef14",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000efae",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000efc4",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000efd4",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000efee",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f000",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f01a",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f02c",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f04e",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f05e",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000ec5a",
+    "instruction": "mov r7, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "PARTIAL",
+    "function_attributed": true,
+    "pattern": "multiple",
+    "reaching_complete": false
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000ec48",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000ee38",
+      "blx r7"
+     ],
+     [
+      "0x0000ee60",
+      "blx r7"
+     ],
+     [
+      "0x0000ee80",
+      "blx r7"
+     ],
+     [
+      "0x0000eeb4",
+      "blx r7"
+     ],
+     [
+      "0x0000eed0",
+      "blx r7"
+     ],
+     [
+      "0x0000eef0",
+      "blx r7"
+     ],
+     [
+      "0x0000ef14",
+      "blx r7"
+     ],
+     [
+      "0x0000efae",
+      "blx r7"
+     ],
+     [
+      "0x0000efc4",
+      "blx r7"
+     ],
+     [
+      "0x0000efd4",
+      "blx r7"
+     ],
+     [
+      "0x0000efee",
+      "blx r7"
+     ],
+     [
+      "0x0000f000",
+      "blx r7"
+     ],
+     [
+      "0x0000f01a",
+      "blx r7"
+     ],
+     [
+      "0x0000f02c",
+      "blx r7"
+     ],
+     [
+      "0x0000f04e",
+      "blx r7"
+     ],
+     [
+      "0x0000f05e",
+      "blx r7"
+     ],
+     [
+      "0x0000f092",
+      "blx r7"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f092",
+   "target_reg": "r7"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000f0c0",
+    "instruction": "ldr.w r8, [sp, #0x20]",
+    "kind": "argument"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000f0b4",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000f114",
+      "blx r8"
+     ],
+     [
+      "0x0000f152",
+      "blx r8"
+     ],
+     [
+      "0x0000f184",
+      "blx r8"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f114",
+   "target_reg": "r8"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000f0c0",
+    "instruction": "ldr.w r8, [sp, #0x20]",
+    "kind": "argument"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000f0b4",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000f114",
+      "blx r8"
+     ],
+     [
+      "0x0000f152",
+      "blx r8"
+     ],
+     [
+      "0x0000f184",
+      "blx r8"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f152",
+   "target_reg": "r8"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000f0c0",
+    "instruction": "ldr.w r8, [sp, #0x20]",
+    "kind": "argument"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000f0b4",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000f114",
+      "blx r8"
+     ],
+     [
+      "0x0000f152",
+      "blx r8"
+     ],
+     [
+      "0x0000f184",
+      "blx r8"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f184",
+   "target_reg": "r8"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000f1a0",
+    "instruction": "mov sl, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000f190",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000f396",
+      "blx r10"
+     ],
+     [
+      "0x0000f3b6",
+      "blx r10"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f396",
+   "target_reg": "r10"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0000f1a0",
+    "instruction": "mov sl, r3",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0000f190",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0000f396",
+      "blx r10"
+     ],
+     [
+      "0x0000f3b6",
+      "blx r10"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0000f3b6",
+   "target_reg": "r10"
+  },
+  {
+   "definition": {
+    "def_addr": "0x000102b6",
+    "instruction": "ldr r6, [r4, #0x2c]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "object-field",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0001026c",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x000102bc",
+      "blx r6"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x000102bc",
+   "target_reg": "r6"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0001028c",
+    "instruction": "ldr r6, [r4, #0x2c]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "object-field",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0001026c",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x0001030a",
+      "blx r6"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x0001030a",
+   "target_reg": "r6"
+  },
+  {
+   "definition": {
+    "def_addr": "0x0001034e",
+    "instruction": "ldr r6, [r4, #0x28]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "object-field",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0001026c",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x00010356",
+      "blx r6"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x00010356",
+   "target_reg": "r6"
+  },
+  {
+   "definition": {
+    "def_addr": "0x000105a2",
+    "instruction": "mov r8, r1",
+    "kind": "move"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "argument",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_0001059c",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x000105d2",
+      "blx r8"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x000105d2",
+   "target_reg": "r8"
+  },
+  {
+   "definition": {
+    "def_addr": "0x00010de8",
+    "instruction": "ldr.w r3, [r2, r1, lsl #2]",
+    "kind": "load"
+   },
+   "indirect_target": {
+    "derivation_status": "ESTABLISHED",
+    "function_attributed": true,
+    "pattern": "indexed-table",
+    "reaching_complete": true
+   },
+   "mnemonic": "blx",
+   "outcome": "AGREE",
+   "pcode": {
+    "complete": true,
+    "function": "FUN_00010e20",
+    "incomplete": [],
+    "transfers": [
+     [
+      "0x00010e1a",
+      "blx r3"
+     ]
+    ],
+    "verdict": "ESCAPE"
+   },
+   "site": "0x00010e1a",
+   "target_reg": "r3"
+  }
+ ]
+}

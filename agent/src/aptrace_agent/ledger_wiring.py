@@ -22,6 +22,7 @@ from aptrace_agent.structural_wiring import (
     CALLBACK_PROVENANCE_INPUTS,
     INDIRECT_TARGET_INPUTS,
     OBSERVATION_INPUTS,
+    VALUE_FORWARD_USE_INPUTS,
     ghidra_seeds_path,
     macaw_census_path,
 )
@@ -59,6 +60,7 @@ def context_artifacts(executor) -> dict[str, str]:
         **OBSERVATION_INPUTS,
         **INDIRECT_TARGET_INPUTS,
         **CALLBACK_PROVENANCE_INPUTS,
+        **VALUE_FORWARD_USE_INPUTS,
     }
     meta = Path(executor.ghidra.artifact).parent / "meta.json"
 
