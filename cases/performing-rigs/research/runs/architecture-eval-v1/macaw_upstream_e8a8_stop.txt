@@ -1,0 +1,29 @@
+95:  classify failure
+96-    { PSTATE_IT = 0x0 :: [8]
+97-    , PSTATE_T = 0x1 :: [1]
+98-    , PSTATE_nRW = 0x1 :: [1]
+99-    , _PC = r399
+100-    , _R13 = r291
+101-    , _R4 = _R2_0
+102-    , _R5 = _R1_0
+103-    , _R6 = _R0_0
+104-    , _R8 = _R3_0
+105-    , __AssertionFailure = false
+106-    , __BranchTaken = r396
+107-    , __PendingInterrupt = false
+108-    , __PendingPhysicalSError = false
+109-    , __Sleeping = false
+110-    , __UndefinedBehavior = false
+111-    , __UnpredictableBehavior = false
+112-    }
+113-    IP is not a mux
+114-    Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15
+115-    Branch: True branch value r398 is not a valid address.
+116-    No return call: Noreturn target r399 is not a valid address.
+117-    Call: Call classifier failed.
+118-    Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18
+119-    Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48
+120-    Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18
+121-    PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24
+122-    Jump: Jump value r399 is not a valid address.
+123-    Tail call: Expected stack height of 0

@@ -1,0 +1,47 @@
+0xea54:
+  ;  PSTATE_nRW = PSTATE_T
+  ;  _R13 = stack_frame - 152
+  ;  __PendingInterrupt = __AssertionFailure
+  ;  __PendingPhysicalSError = __AssertionFailure
+  ;  __Sleeping = __AssertionFailure
+  ;  __UndefinedBehavior = __AssertionFailure
+  ;  __UnpredictableBehavior = __AssertionFailure
+  ;  PSTATE_IT in (8 0 0)
+  ;  PSTATE_T in (1 1 1)
+  ;  PSTATE_Z in (1 0 0)
+  # 0xea54 0xea54: LDR_l_T1(xxxxxxxx.01001xxx) Rt 3, imm8 41
+  # 0xea54: LDR_l_T1(xxxxxxxx.01001xxx) Rt 3, imm8 41
+  r15991 := read_mem (0xeafc :: [32]) (bvle4)
+  # 0xea54: {PSTATE_IT => 0x0 :: [8]
+            ;_PC => 0xea56
+            ;_R3 => r15991
+            ;__AssertionFailure => false
+            ;__UndefinedBehavior => false
+            ;__UnpredictableBehavior => false
+            ;() => ()_0}
+  # 0xea56 0xea56: CBNZ_T1(xxxxxxxx.101110x1) Rn 3, i 1, imm5 3, op 1
+  # 0xea56: CBNZ_T1(xxxxxxxx.101110x1) Rn 3, i 1, imm5 3, op 1
+  r15992 := (eq r15991 (0x0 :: [32]))
+  r15995 := (mux r15992 (0xea58) (0xeaa0))
+  r15996 := (not r15992)
+  # 0xea56: {PSTATE_IT => 0x0 :: [8]
+            ;_PC => r15995
+            ;__AssertionFailure => false
+            ;__BranchTaken => r15996
+            ;__UndefinedBehavior => false
+            ;__UnpredictableBehavior => false}
+  branch r15992 0xea58 0xeaa0
+    { PSTATE_IT = 0x0 :: [8]
+    , PSTATE_T = 0x1 :: [1]
+    , PSTATE_nRW = 0x1 :: [1]
+    , _PC = r15995
+    , _R3 = r15991
+    , __AssertionFailure = false
+    , __BranchTaken = r15996
+    , __PendingInterrupt = false
+    , __PendingPhysicalSError = false
+    , __Sleeping = false
+    , __UndefinedBehavior = false
+    , __UnpredictableBehavior = false
+    }
+0xea58:

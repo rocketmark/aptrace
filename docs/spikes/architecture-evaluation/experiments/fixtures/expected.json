@@ -1,0 +1,18 @@
+{
+  "fixture": "thumb_controls.bin",
+  "base": "0x0",
+  "pointer": "0x1001 (Thumb function at 0x1000)",
+  "cases": {
+    "C1_compare_only":        {"def": "0x0",   "entry": "0x0",   "escapes": [],                   "note": "cbnz presence test, redefined on the taken path (AutoPilot 0xea54 shape)"},
+    "C2_call_through":        {"def": "0x40",  "entry": "0x40",  "escapes": ["CONTROL_TRANSFER"], "note": "cbz guard then blx"},
+    "C3_store":               {"def": "0x80",  "entry": "0x80",  "escapes": ["STORE"]},
+    "C4_argument_via_move":   {"def": "0xc0",  "entry": "0xc0",  "escapes": ["ARGUMENT"],         "note": "copied to r1, original register redefined"},
+    "C5_return":              {"def": "0x100", "entry": "0x100", "escapes": ["RETURN_VALUE"]},
+    "C6_join_one_path_store": {"def": "0x140", "entry": "0x140", "escapes": ["STORE"],            "note": "redefined on one path only; join hides the escape"},
+    "C7_join_both_killed":    {"def": "0x180", "entry": "0x180", "escapes": [],                   "note": "redefined on both paths before the join"},
+    "C8_spill_reload_call":   {"def": "0x1c4", "entry": "0x1c0", "escapes": ["CONTROL_TRANSFER"], "note": "through a stack slot; a stack STORE is a sound but imprecise answer"},
+    "C9_it_conditional_kill": {"def": "0x200", "entry": "0x200", "escapes": ["STORE"],            "note": "IT-conditional redefinition does not kill on the not-taken path"},
+    "C10_tail_call_argument": {"def": "0x240", "entry": "0x240", "escapes": ["ARGUMENT"],         "note": "b.w to another function with the pointer in r0"},
+    "C11_compare_then_loop":  {"def": "0x280", "entry": "0x280", "escapes": [],                   "note": "compare, then loop on a redefined register"}
+  }
+}

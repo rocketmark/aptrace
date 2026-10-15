@@ -1,0 +1,275 @@
+[
+ {
+  "def_addr": "0x0",
+  "def_instruction": "ldr r3, [pc, #0xc]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "COMPARE",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 4,
+  "uses": [
+   [
+    "COMPARE",
+    "0x2",
+    "cbnz r3, #8 (cbnz)"
+   ],
+   [
+    "DEAD",
+    "0x8",
+    "add r3, sp, #4"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x40",
+  "def_instruction": "ldr r3, [pc, #8]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "ARGUMENT",
+   "COMPARE",
+   "CONTROL_TRANSFER",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 4,
+  "uses": [
+   [
+    "ARGUMENT",
+    "0x46",
+    "blx r3 (live in r0-r3 at call)"
+   ],
+   [
+    "COMPARE",
+    "0x44",
+    "cbz r3, #0x48 (cbz)"
+   ],
+   [
+    "CONTROL_TRANSFER",
+    "0x46",
+    "blx r3 (blx)"
+   ],
+   [
+    "DEAD",
+    "0x46",
+    "blx r3"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x80",
+  "def_instruction": "ldr r3, [pc, #4]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "STORE"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 2,
+  "uses": [
+   [
+    "STORE",
+    "0x82",
+    "str r3, [r0, #8] (r3, [r0, #8])"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0xc0",
+  "def_instruction": "ldr r3, [pc, #0xc]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "ARGUMENT",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 4,
+  "uses": [
+   [
+    "ARGUMENT",
+    "0xc8",
+    "bl #0x800 (live in r0-r3 at call)"
+   ],
+   [
+    "DEAD",
+    "0xc8",
+    "bl #0x800"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x100",
+  "def_instruction": "ldr r3, [pc, #4]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "RETURN_VALUE"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 2,
+  "uses": [
+   [
+    "RETURN_VALUE",
+    "0x104",
+    "bx lr (r0 live at return)"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x140",
+  "def_instruction": "ldr r3, [pc, #8]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "DEAD",
+   "STORE"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 5,
+  "uses": [
+   [
+    "DEAD",
+    "0x146",
+    "movs r3, #0"
+   ],
+   [
+    "STORE",
+    "0x148",
+    "str r3, [r1] (r3, [r1])"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x180",
+  "def_instruction": "ldr r3, [pc, #0xc]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 4,
+  "uses": [
+   [
+    "DEAD",
+    "0x186",
+    "movs r3, #0"
+   ],
+   [
+    "DEAD",
+    "0x18a",
+    "movs r3, #1"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x1c4",
+  "def_instruction": "ldr r3, [pc, #0xc]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "DEAD",
+   "STORE"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 2,
+  "uses": [
+   [
+    "DEAD",
+    "0x1c8",
+    "movs r3, #0"
+   ],
+   [
+    "STORE",
+    "0x1c6",
+    "str r3, [sp, #4] (r3, [sp, #4])"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x200",
+  "def_instruction": "ldr r3, [pc, #8]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "STORE"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 5,
+  "uses": [
+   [
+    "STORE",
+    "0x208",
+    "str r3, [r1] (r3, [r1])"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x240",
+  "def_instruction": "ldr r0, [pc, #4]",
+  "tracked": [
+   "r0"
+  ],
+  "use_kinds": [
+   "ARGUMENT"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 2,
+  "uses": [
+   [
+    "ARGUMENT",
+    "0x800",
+    "tail transfer"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0x280",
+  "def_instruction": "ldr r2, [pc, #0xc]",
+  "tracked": [
+   "r2"
+  ],
+  "use_kinds": [
+   "COMPARE",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 4,
+  "uses": [
+   [
+    "COMPARE",
+    "0x282",
+    "cmp r2, #0 (cmp)"
+   ],
+   [
+    "DEAD",
+    "0x286",
+    "movs r2, #0"
+   ]
+  ]
+ }
+]

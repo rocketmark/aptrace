@@ -1,0 +1,85 @@
+[
+ {
+  "def_addr": "0xea54",
+  "def_instruction": "ldr r3, [pc, #0xa4]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "COMPARE",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 3,
+  "uses": [
+   [
+    "COMPARE",
+    "0xea56",
+    "cbnz r3, #0xeaa0 (cbnz)"
+   ],
+   [
+    "DEAD",
+    "0xea58",
+    "ldr r3, [sp, #0xc]"
+   ],
+   [
+    "DEAD",
+    "0xeaa0",
+    "add r3, sp, #0xc"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0xeaa6",
+  "def_instruction": "ldr r3, [pc, #0x58]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "ARGUMENT",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 3,
+  "uses": [
+   [
+    "ARGUMENT",
+    "0xeaac",
+    "bl #0xec48 (live in r0-r3 at call)"
+   ],
+   [
+    "DEAD",
+    "0xeaac",
+    "bl #0xec48"
+   ]
+  ]
+ },
+ {
+  "def_addr": "0xeada",
+  "def_instruction": "ldr r3, [pc, #0x24]",
+  "tracked": [
+   "r3"
+  ],
+  "use_kinds": [
+   "ARGUMENT",
+   "DEAD"
+  ],
+  "complete": true,
+  "incomplete": [],
+  "states": 3,
+  "uses": [
+   [
+    "ARGUMENT",
+    "0xeae0",
+    "bl #0xf190 (live in r0-r3 at call)"
+   ],
+   [
+    "DEAD",
+    "0xeae0",
+    "bl #0xf190"
+   ]
+  ]
+ }
+]

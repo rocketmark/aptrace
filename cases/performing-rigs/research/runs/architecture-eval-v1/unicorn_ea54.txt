@@ -1,0 +1,10 @@
+0xea54 value held in: -
+0xea56 value held in: ['r3']
+0xeaa0 value held in: ['r3']
+0xeaa2 value held in: -
+0xeaa4 value held in: -
+0xeaa6 value held in: -
+0xeaa8 value held in: -
+0xeaaa value held in: -
+0xeaac value held in: -
+stores of the value: none
