@@ -1,0 +1,74 @@
+{
+ "companions": {
+  "migration-interruption.md": "why the v2->p-code migration halted (external tooling blocker, not a technical result)",
+  "protected-before.sha256": "repo-relative SHA-256 fingerprints of canonical ledger, census, Ghidra cache and Macaw state taken before the halted attempt; re-verified unchanged 2026-10-15 (no machine-specific paths)"
+ },
+ "inputs": {
+  "census_db": "cases/performing-rigs/research/runs/census/census.sqlite3",
+  "census_db_sha256": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+  "firmware_key": "autopilot868",
+  "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "ghidra_cache_meta_sha256": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e",
+  "ghidra_cspec": "default",
+  "ghidra_language": "ARM:LE:32:Cortex",
+  "ghidra_version": "12.1.3"
+ },
+ "outputs": {
+  "v2-all.json": "ee189e3cc8de050ddd3ce0d3bf05d13d426d66e9561982b5d1140f7543c2e241"
+ },
+ "producer": {
+  "analysis": "indirect_target",
+  "analysis_version": 2,
+  "bounds": {
+   "max_blocks": 64,
+   "max_depth": 3
+  },
+  "capstone_version": "5.0.7",
+  "command": "python3 tools/census/indirect_target.py autopilot868 --all-register-indirect --vtables-from-installations",
+  "cwd": "tools/census",
+  "repo_commit": "1bdeaef699bbfa84b9665d315c5dc04fc51a597f",
+  "source_sha256": {
+   "tools/census/db.py": "83c777b5062fd66c2b4bf272264611b9d0700145e68882d3cfee47ff5544b124",
+   "tools/census/fnptr_resolve.py": "801d4d028987a44dc29ef0c927a9e9ba7ce4110662a3ab944cce069b6ecbdb15",
+   "tools/census/indexed_writes.py": "a18d1de509ba4e8d28c32e8a76dda87439b73e508623dfd619231afcad0c226c",
+   "tools/census/indirect_resolve.py": "c63c11322beb3d77d1d83925286d9accd2d10b5a077db1fcefa6e9954726ee8c",
+   "tools/census/indirect_target.py": "2320d83a6062fa91c4c7c7f6e9cba62612b7e5badd150f9b80948ad47040af95"
+  }
+ },
+ "purpose": "Frozen indirect_target v2 output over every census reg-indirect site; the comparison baseline for any replacement analysis version.",
+ "record": "pcode-migration-baseline",
+ "reproduction": {
+  "verified": "2026-10-15: re-run byte-identical to v2-all.json; census DB opened read-only"
+ },
+ "status": "uncommitted working record (2026-10-15)",
+ "summary": {
+  "derivation_status": {
+   "ESTABLISHED": 70,
+   "PARTIAL": 16
+  },
+  "function_attributed": {
+   "False": 8,
+   "True": 78
+  },
+  "mnemonic": {
+   "blx": 47,
+   "bx": 39
+  },
+  "pattern": {
+   "argument": 21,
+   "constant-slot": 1,
+   "indexed-table": 2,
+   "multiple": 5,
+   "object-field": 3,
+   "pointer-iteration": 2,
+   "vtable-slot": 52
+  },
+  "resolution_status": {
+   "CONDITIONALLY_POSSIBLE": 55,
+   "UNRESOLVED": 31
+  },
+  "sites": 86,
+  "vptr_installations": 8
+ }
+}
