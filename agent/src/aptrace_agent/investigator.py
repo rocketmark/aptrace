@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Sequence
 
 from aptrace_agent.executor import EvidenceExecutor
 from aptrace_agent.investigation_tools import (
@@ -133,6 +133,7 @@ def run_autonomous_investigation(
     claim_candidates: int = 0,
     followup: FollowUpCandidate | None = None,
     history: HistoricalOperations | None = None,
+    experimental_tools: Sequence[str] = (),
 ) -> AutonomousInvestigationRun:
     """
     Run one bounded autonomous firmware investigation.
@@ -144,6 +145,9 @@ def run_autonomous_investigation(
     A follow-up candidate seeds the session with its bounded prior context
     (leads, open questions, the prior claim as a hypothesis); see
     research/followups.py.
+
+    Experimental structural tools (EXPERIMENTAL_STRUCTURAL_TOOLS) are
+    offered to the planner only when named in `experimental_tools`.
     """
 
     objective = objective.strip()
@@ -228,8 +232,9 @@ def run_autonomous_investigation(
                 "observed_call_arguments",
                 "indirect_call_target",
                 "callback_argument_provenance",
-                "value_forward_use",
+                *experimental_tools,
             ),
+            experimental_tools=experimental_tools,
             observation_scenarios=(
                 executor.observed_calls.supported_scenarios()
                 if hasattr(executor, "observed_calls")

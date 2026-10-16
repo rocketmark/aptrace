@@ -20,6 +20,7 @@ from aptrace_agent.work_cli import (
     handle_work_command,
 )
 from aptrace_agent.research.candidates import DEFAULT_LIMIT as DEFAULT_CANDIDATE_LIMIT
+from aptrace_agent.research.controller import EXPERIMENTAL_STRUCTURAL_TOOLS
 from aptrace_agent.research.projection import conclusion
 from aptrace_agent.investigator import (
     AutonomousInvestigationRun,
@@ -241,6 +242,19 @@ def main() -> None:
     )
 
     research.add_argument(
+        "--experimental-tool",
+        dest="experimental_tools",
+        action="append",
+        default=[],
+        choices=EXPERIMENTAL_STRUCTURAL_TOOLS,
+        help=(
+            "Offer this experimental structural tool to the planner "
+            "(repeatable; default: none). Admission cannot yet check the "
+            "claims drawn from its results"
+        ),
+    )
+
+    research.add_argument(
         "--claim-candidates",
         type=int,
         default=DEFAULT_CANDIDATE_LIMIT,
@@ -327,6 +341,7 @@ def main() -> None:
                         args.seed_function
                     ),
                     max_steps=args.max_steps,
+                    **({"experimental_tools": tuple(args.experimental_tools)} if args.experimental_tools else {}),
                     **(
                         {"executor": recorder, "claim_contract": True, "claim_candidates": args.claim_candidates}
                         if recorder is not None

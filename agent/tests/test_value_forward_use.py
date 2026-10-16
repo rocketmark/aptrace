@@ -248,7 +248,18 @@ class RecordingExecutor:
 def controller(**kwargs):
     return ResearchController(
         planner_client=FakePlannerClient(kwargs.pop("decisions", [])), planner_model="test", reconciler=FakeReconciler(),
-        structural_tools=("value_forward_use",), value_origins=kwargs.pop("origins", LOADS), **kwargs)
+        structural_tools=("value_forward_use",), experimental_tools=("value_forward_use",),
+        value_origins=kwargs.pop("origins", LOADS), **kwargs)
+
+
+def default_controller(**kwargs):
+    """The ordinary autonomous configuration: every non-experimental structural tool, no opt-in."""
+    from aptrace_agent.research.controller import EXPERIMENTAL_STRUCTURAL_TOOLS, STRUCTURAL_TOOLS
+
+    return ResearchController(
+        planner_client=FakePlannerClient(kwargs.pop("decisions", [])), planner_model="test", reconciler=FakeReconciler(),
+        structural_tools=tuple(t for t in STRUCTURAL_TOOLS if t not in EXPERIMENTAL_STRUCTURAL_TOOLS),
+        value_origins=LOADS, indirect_sites=[0x10], **kwargs)
 
 
 def session_with(tool="function_disassembly"):
@@ -279,6 +290,119 @@ def test_action_is_offered_only_for_grounded_loads():
     without = ResearchController(planner_client=FakePlannerClient([]), planner_model="test", reconciler=FakeReconciler(),
                                  structural_tools=("indirect_call_target",), indirect_sites=[0x10])
     assert "trace_value_use" not in without._decision_palette(session).names()
+
+
+# -- autonomous-selection gate ----------------------------------------------------
+#
+# value_forward_use is experimental for the planner: admission cannot yet
+# check value-flow claims drawn from it. It is offered only on explicit
+# opt-in; the operation itself is unchanged.
+
+
+def test_value_trace_requires_explicit_opt_in():
+    with pytest.raises(ValueError, match="explicit opt-in"):
+        ResearchController(planner_client=FakePlannerClient([]), planner_model="test", reconciler=FakeReconciler(),
+                           structural_tools=("value_forward_use",), value_origins=LOADS)
+    with pytest.raises(ValueError, match="not experimental"):
+        ResearchController(planner_client=FakePlannerClient([]), planner_model="test", reconciler=FakeReconciler(),
+                           structural_tools=("indirect_call_target",), experimental_tools=("indirect_call_target",))
+
+
+def test_default_session_does_not_offer_value_trace():
+    c = default_controller()
+    session, _ = session_with()
+    palette = c._decision_palette(session)
+    assert "trace_value_use" not in palette.names()
+    assert "trace_value_use" not in c._analysis_guidance(session, palette)
+    assert "trace_value_use" not in c._discovery_palette(session).names()
+    # Other structural tools stay available.
+    assert "analyze_function_effects" in palette.names()
+
+
+def test_default_session_rejects_an_unadvertised_value_trace():
+    c = default_controller(decisions=[("trace_value_use", {"origin": "0x00000000"}), ("finish", {"reason": "done"})],
+                           max_steps=3)
+    session, executor = session_with()
+    palette = c._decision_palette(session)
+    assert c._parse_structural(session, palette, "trace_value_use", {"origin": "0x00000000"}) is None
+    result = c.run(session)
+    assert not [call for call in executor.calls if call[0] == "value_forward_use"]
+    assert not any(step.action == "value_forward_use" for step in result.steps)
+    assert not any(o.tool == "value_forward_use" for o in session.ledger.all())
+
+
+def test_default_session_does_not_offer_value_trace_leads():
+    session, _ = session_with()
+    lead = session.registry.register(kind="value-forward-use", description="seeded", tool="value_forward_use",
+                                     arguments={"origin": "0x00000000"}, source_evidence_ids=[])
+    session.state.add_lead(lead)
+    assert lead.id not in [open_lead.id for open_lead in default_controller()._planner_open_leads(session)]
+    assert lead.id not in default_controller()._decision_palette(session).lead_ids
+    assert lead.id in [open_lead.id for open_lead in controller()._planner_open_leads(session)]
+
+
+def test_opted_in_session_offers_value_trace():
+    c = controller(decisions=[("trace_value_use", {"origin": "0x00000000"}), ("finish", {"reason": "done"})],
+                   max_steps=3)
+    session, executor = session_with()
+    assert "trace_value_use" in c._decision_palette(session).names()
+    c.run(session)
+    assert ("value_forward_use", {"origin": "0x00000000"}) in executor.calls
+
+
+def test_investigator_default_withholds_value_trace(monkeypatch):
+    import aptrace_agent.investigator as investigator
+    from types import SimpleNamespace
+
+    captured = []
+
+    class Captured(Exception):
+        pass
+
+    def capture(**kwargs):
+        captured.append(kwargs)
+        ResearchController(planner_client=FakePlannerClient([]), reconciler=FakeReconciler(),
+                           **{k: v for k, v in kwargs.items() if k not in ("review_model",)})
+        raise Captured
+
+    monkeypatch.setattr(investigator, "ResearchController", capture)
+    monkeypatch.setattr(investigator, "performing_rigs_callsite_context", lambda: None)
+    monkeypatch.setattr(investigator, "census_code_pointer_loads", lambda *a: LOADS)
+    executor = SimpleNamespace(ghidra=None, census=SimpleNamespace(available_peripherals=lambda: (), db_path=None,
+                                                                   firmware_key=None))
+    for opt_in in ((), ("value_forward_use",)):
+        with pytest.raises(Captured):
+            investigator.run_autonomous_investigation("objective", executor=executor, planner_model="test",
+                                                      experimental_tools=opt_in)
+    default, opted = captured
+    assert "value_forward_use" not in default["structural_tools"] and tuple(default["experimental_tools"]) == ()
+    assert {"indirect_call_target", "callback_argument_provenance"} <= set(default["structural_tools"])
+    assert "value_forward_use" in opted["structural_tools"]
+
+
+def test_cli_opt_in_is_explicit(monkeypatch):
+    import sys
+
+    import aptrace_agent.cli as cli
+
+    seen = []
+
+    class Captured(Exception):
+        pass
+
+    def capture(objective, **kwargs):
+        seen.append(kwargs.get("experimental_tools", ()))
+        raise Captured
+
+    monkeypatch.setattr(cli, "run_autonomous_investigation", capture)
+    for argv in (["research", "objective"], ["research", "--experimental-tool", "value_forward_use", "objective"]):
+        monkeypatch.setattr(sys, "argv", ["aptrace-agent", *argv])
+        with pytest.raises(Captured):
+            cli.main()
+    assert seen == [(), ("value_forward_use",)]
+    monkeypatch.setattr(sys, "argv", ["aptrace-agent", "research", "--experimental-tool", "indirect_call_target", "x"])
+    with pytest.raises(SystemExit):
+        cli.main()
 
 
 @pytest.mark.parametrize(
