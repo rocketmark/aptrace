@@ -1,0 +1,241 @@
+schema_version: 2
+last_updated: 2026-10-16
+
+# Brownfield bootstrap by /map-codebase (lens: evidence pipeline; fine
+# slicing). All 14 leaves are MAPPED (arrow doc, LLD, specs). Grouping nodes
+# have no `detail`: their sub-HLDs (docs/intent/<group>/<group>-design.md)
+# and docs/high-level-design.md are skeletons pending review of
+# docs/arrows/mapping-report.md and docs/arrows/cross-segment-findings.md.
+
+taxonomy:
+  evidence-record: null
+  production:
+    - target-loading
+    - structural-discovery
+    - census
+    - static-dataflow
+    - symbolic-execution
+    - concrete-execution
+  claims:
+    - claim-semantics
+    - admission
+    - verification
+    - audit
+  investigation:
+    - controller
+    - continuity
+    - work
+
+arrows:
+  production:
+    status: MAPPED
+    parent: null
+    children: [target-loading, structural-discovery, census, static-dataflow, symbolic-execution, concrete-execution]
+    sampled: 2026-10-15
+    audited: null
+    audited_sha: null
+    next: "All six leaves MAPPED. Sub-HLD docs/intent/production/production-design.md is a skeleton pending review of docs/arrows/mapping-report.md."
+    drift: null
+
+  target-loading:
+    status: MAPPED
+    parent: production
+    sampled: 2026-10-15
+    audited: null
+    audited_sha: null
+    blocks: [structural-discovery, census, static-dataflow, symbolic-execution, concrete-execution, evidence-record]
+    blockedBy: []
+    detail: production/target-loading.md
+    next: "Must Fix: make tools/ghidra/test_aptrace_ghidra.py leave the canonical case cache unchanged on failure (PROD-TGT-TEST-001)."
+    drift: "docs/tooling/ghidra-backend.md says the case supplies the Ghidra cache root; aptrace_ghidra.py:63 hardcodes it. Build incompleteness is not recorded (PROD-TGT-GH-018)."
+
+  structural-discovery:
+    status: MAPPED
+    parent: production
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [census, symbolic-execution, concrete-execution, evidence-record, verification]
+    blockedBy: [target-loading]
+    detail: production/structural-discovery.md
+    next: "Decide the evidence roles of capstone_sweep and macaw_compare (LLD OQ4-5) and the binding of structural observations to firmware/engine identity (OQ1)."
+    drift: "capstone_sweep docstring says 'completely independent' but it is seeded with Ghidra entries (build.py:225). macaw_compare docstring says it never writes the database; its connection path may run DDL (OQ16)."
+
+  census:
+    status: MAPPED
+    parent: production
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [static-dataflow, concrete-execution, evidence-record, claim-semantics, verification]
+    blockedBy: [target-loading, structural-discovery]
+    detail: production/census.md
+    next: "Decide the strong-graph promotion rule and the meaning of EXACT (LLD OQ1-2); assess the unverified rebuild and hardware-snapshot failure paths (OQ10-11)."
+    drift: "reachability.py docstring defines the strong graph by site classification; code admits all EXACT/STRONG candidates (contradicted REACH-001/003/005; CP-002). Nearest-root comment vs code (REACH-006). state_map probe docstring 0xFF vs code 0x01."
+
+  static-dataflow:
+    status: MAPPED
+    parent: production
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [evidence-record]
+    blockedBy: [target-loading, census]
+    detail: production/static-dataflow.md
+    next: "Must Fix: regression tests must not expose the canonical census to schema changes or mutations (PROD-DFLOW-TEST-001; test_indexed_writes.py:377-381)."
+    drift: "_reg_written_by docstring vs code (RES-001); walker labels DERIVATION_RECORD_TRUNCATED 'analysis unaffected' while the driver treats it as incompleteness and the doc omits it (PCW-005, PCD-007); fnptr_resolve vs macaw_compare on call-edge addressing."
+
+  symbolic-execution:
+    status: MAPPED
+    parent: production
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [evidence-record]
+    blockedBy: [target-loading, structural-discovery]
+    detail: production/symbolic-execution.md
+    next: "Decide the function_effects identity and invalidation contract and engine/toolchain provenance (LLD OQ1-2; PROD-SYM-ID-006); add harness-executing tests (OQ16)."
+    drift: "Production function_effects runs EffectsSpike (documented as an experimental spike) with spike output identifiers; status.md lists symbolic reachability as a framework capability though only case commands reach it; ledger grade keys on raw status while adapter coverage can be bounded (GRD-001)."
+
+  concrete-execution:
+    status: MAPPED
+    parent: production
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [evidence-record]
+    blockedBy: [target-loading, structural-discovery, census]
+    detail: production/concrete-execution.md
+    next: "Decide what raw run results and the observed_call_arguments identity must record (LLD OQ1-2; PROD-CONC-ADP-006) and declare the role of the custom Thumb decoding (OQ9; PROD-CONC-OBS-005)."
+    drift: "unicorn-backend.md says the engine assigns no target-specific meaning; concrete.py and run_concrete.py default to SAMD51 geometry, recorded as a seam in case-boundary.md (MAP-002). --sp help and per-range write-cap help are stale (CLI-004, REC-004). Census tools (dynamic_ingest, indirect_resolve, reduce) also use ConcreteMachine; that reverse use is not modeled as a blocks edge, to avoid a cycle."
+
+  evidence-record:
+    status: MAPPED
+    parent: null
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [claim-semantics, admission, verification, audit, controller, continuity, work]
+    blockedBy: [target-loading, structural-discovery, census, static-dataflow, symbolic-execution, concrete-execution]
+    detail: evidence-record.md
+    next: "Decide what each operation's identity must bind (LLD OQ1; EVREC-ID-009), grading-semantics versioning (OQ2), the grade-ceiling rule (OQ6) and missing-blob semantics in `check` (OQ10)."
+    drift: "ledger_cli --precheck help says A-C, verifier runs P (CLI-004); check treats a missing blob as corruption while the store allows blobs-large/ outside VCS (CLI-003); ExecutionContext docstring names 5 artifacts, context carries ~20."
+
+  claims:
+    status: MAPPED
+    parent: null
+    children: [claim-semantics, admission, verification, audit]
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    next: "All four leaves MAPPED. Sub-HLD docs/intent/claims/claims-design.md is a skeleton pending review of docs/arrows/mapping-report.md."
+    drift: null
+
+  claim-semantics:
+    status: MAPPED
+    parent: claims
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [admission, verification, audit, controller]
+    blockedBy: [evidence-record, census]
+    detail: claims/claim-semantics.md
+    next: "Decide whether census EXACT/STRONG confidence suffices for categorical ESTABLISHED_INDIRECT edges and census-scoped reachability (LLD OQ1-2), and which effects accesses establish MMIO_USER (OQ4)."
+    drift: "Pointer facts ignore edge confidence while call edges map it (FACT-001 vs EDGE-003); INTERRUPT_DISPATCH_SET and UNREACHABLE declared with no producer; ARM mnemonics and Thumb bit-0 in framework claim code."
+
+  admission:
+    status: MAPPED
+    parent: claims
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [controller]
+    blockedBy: [claim-semantics, evidence-record]
+    detail: claims/admission.md
+    next: "Decide which grade admission uses (current rules vs stored artifact grade) and whether typed claims need per-predicate caps beyond the strongest-artifact ceiling (LLD OQ1-2); guard/coverage checks for effects MMIO_USER candidates (OQ3)."
+    drift: "admission.py and candidates.py live in research/ but make ledger-semantic decisions; candidate rendering carries a model-runtime-specific workaround (candidates.py:671-673)."
+
+  verification:
+    status: MAPPED
+    parent: claims
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [audit, continuity]
+    blockedBy: [claim-semantics, evidence-record, structural-discovery, census]
+    detail: claims/verification.md
+    next: "Decide how real structural sources declare the independence envelope (LLD OQ1; CLAIMS-VERIFY-SRC-007), which class gets the next evidence contract (OQ2), and the HOLD-demotion and automatic-invalidation rules (OQ4-5)."
+    drift: "ledger_cli --precheck help says A-C, precheck runs P (PH-007); gate.py:340 asserts only CODE_EXISTENCE reaches corroboration; source agreement has no ANALYSIS_VERSION and ignores per-observation `seeded`."
+
+  audit:
+    status: MAPPED
+    parent: claims
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [continuity]
+    blockedBy: [verification, evidence-record, claim-semantics]
+    detail: claims/audit.md
+    next: "Decide whether a coverage gap or a zero tool budget may satisfy falsification (LLD OQ1-2) and where audit tool runs are recorded (OQ3); relocate AutoPilot trigger-role content (CLAIMS-AUDIT-MEAS-005)."
+    drift: "auditor.py v0.4 docstring says failing requests do not satisfy falsification; code counts coverage gaps (AUD-004). v0.5 comment says phases A-C; pipeline requires C and P. auditor imports private research.controller._prefill_rejected."
+
+  investigation:
+    status: MAPPED
+    parent: null
+    children: [controller, continuity, work]
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    next: "All three leaves MAPPED. Sub-HLD docs/intent/investigation/investigation-design.md is a skeleton pending review of docs/arrows/mapping-report.md."
+    drift: null
+
+  controller:
+    status: MAPPED
+    parent: investigation
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [continuity, work]
+    blockedBy: [evidence-record, admission, claim-semantics]
+    detail: investigation/controller.md
+    next: "Decide how session facts carry evidence level (LLD OQ1; all derived facts are PROVEN), whether returned failures leave leads open (OQ3), and remove the AutoPilot address from the framework reconciliation prompt (INV-CTRL-CASE-001)."
+    drift: "state.py Claim.basis comment omits static-table/disassembly/census-graph; two diverging r0-literal parsers (lead_generation vs fact_derivation); investigator.py duplicates controller.STRUCTURAL_TOOLS; research.session imports research.history (continuity) while continuity imports session (mutual)."
+
+  continuity:
+    status: MAPPED
+    parent: investigation
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: [work]
+    blockedBy: [evidence-record, controller, verification, audit]
+    detail: investigation/continuity.md
+    next: "Decide what implementation identity reuse requires for unversioned tools (LLD OQ1) and whether reuse considers stored grade and claim state (OQ2); record history truncation (OQ3)."
+    drift: "history.py documents that code changes without an analysis-version bump are not detected; current_analysis_versions hardcodes five tools; ContinuityRecord omits the truncation flag."
+
+  work:
+    status: MAPPED
+    parent: investigation
+    sampled: 2026-10-16
+    audited: null
+    audited_sha: null
+    blocks: []
+    blockedBy: [evidence-record, continuity, controller]
+    detail: investigation/work.md
+    next: "Decide whether a non-apply reconcile may create lock files (LLD OQ1) and whether work commands should require an explicit ledger instead of defaulting to the canonical case ledger (OQ2)."
+    drift: "Adapter default actor aptrace vs CLI aptrace-agent; bd 1.3.1 pinned but any 1.3.x accepted; heartbeat/reclaim/history/export and followup_for_audit unused by production code; NEXT_STEP strings embed CLI command text."
+
+unmapped:
+  code:
+    - agent/pyproject.toml
+    - agent/uv.lock
+    - agent/.vscode/settings.json
+  docs:
+    intent: []
+    overview:
+      - README.md
+      - docs/architecture.md
+      - docs/status.md
+      - docs/toolchain.md
+      - docs/aptrace-agent-framework.md
+      - docs/spikes/
