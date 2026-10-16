@@ -1,0 +1,349 @@
+{
+ "census_reachability": {
+  "DEFINITELY_REACHABLE": 335,
+  "NO_KNOWN_PATH": 103,
+  "functions": 438,
+  "nearest_root_addr_null": 391
+ },
+ "engines": {
+  "aptrace_binary": "external/macaw/dist-newstyle/.../aptrace (cabal: up to date)",
+  "capstone": "5.0.9",
+  "crucible": "a98310893",
+  "ghidra": "12.1.3",
+  "macaw": "593a918d",
+  "unicorn": "2.1.4",
+  "what4": "4ce24dc4",
+  "z3": "5.1.0"
+ },
+ "expanded_coverage_of_path": {
+  "0xa064": [
+   "0xa064"
+  ],
+  "0xb4b4": [
+   "0xb4b4"
+  ],
+  "0xb5bc": [
+   "0xb5bc"
+  ],
+  "0xb658": [],
+  "0xb6b4": [
+   "0xb6b4"
+  ],
+  "0xc744": [],
+  "0xc7c0": [],
+  "0xe8a8": [],
+  "0xec48": [],
+  "0xf0b4": []
+ },
+ "firmware": {
+  "flash_base": "0x4000",
+  "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+ },
+ "function_effects": {
+  "0xb4b4": {
+   "accesses": 4,
+   "assumptions": [
+    "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+    "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+    "non-GPR (ASL bookkeeping) registers concrete zero",
+    "generic step bound 3000"
+   ],
+   "calls": [],
+   "crucible_steps": 92,
+   "macaw_blocks": 14,
+   "status": "complete"
+  },
+  "0xb5bc": {
+   "note": "raw summary in 1.4 s; solver enrichment query #41 ran >13 min (Z3 1.4 GB) and was killed; no per-query timeout",
+   "status": "partial (some paths aborted)"
+  },
+  "0xb658": {
+   "accesses": 31,
+   "assumptions": [
+    "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+    "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+    "non-GPR (ASL bookkeeping) registers concrete zero",
+    "generic step bound 3000"
+   ],
+   "calls": [
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xb662",
+     "target": "0xb5bc"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xb668",
+     "target": "0xb376"
+    }
+   ],
+   "crucible_steps": 40,
+   "macaw_blocks": 5,
+   "status": "complete"
+  },
+  "0xc744": {
+   "accesses": 2,
+   "assumptions": [
+    "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+    "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+    "non-GPR (ASL bookkeeping) registers concrete zero",
+    "generic step bound 3000"
+   ],
+   "calls": [
+    {
+     "args_concrete": [
+      null,
+      null,
+      "0x413",
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc74c",
+     "target": null
+    }
+   ],
+   "crucible_steps": 17,
+   "macaw_blocks": 1,
+   "status": "complete"
+  },
+  "0xc7c0": {
+   "accesses": 764,
+   "assumptions": [
+    "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+    "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+    "non-GPR (ASL bookkeeping) registers concrete zero",
+    "generic step bound 3000"
+   ],
+   "calls": [
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc7da",
+     "target": "0xd40c"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc7ea",
+     "target": "0xd40c"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "oryBytes@2:a (bvSum carg_r0@141547:bv 0x2e7:[32]) -- aptrace:0xc7f6 v141884 = select cglobalMemoryBytes@2:a (bvSum carg_r0@141547:bv 0x2f8:[32]) in and (eq 0x2:[8] v141782) (not (eq 0xff:[8] v141884))",
+     "pc": "0xc806",
+     "target": "0xd40c"
+    },
+    {
+     "args_concrete": [
+      null,
+      "0x1",
+      "0x1",
+      null
+     ],
+     "guard": "let -- aptrace:0xc80a v142061 = select cglobalMemoryBytes@2:a (bvSum carg_r0@141547:bv 0x2e8:[32]) in eq 0xff:[8] v142061",
+     "pc": "0xc84a",
+     "target": "0xb658"
+    },
+    {
+     "args_concrete": [
+      null,
+      "0x1",
+      null,
+      null
+     ],
+     "guard": "let -- aptrace:0xc80a v142061 = select cglobalMemoryBytes@2:a (bvSum carg_r0@141547:bv 0x2e8:[32]) in not (eq 0xff:[8] v142061)",
+     "pc": "0xc814",
+     "target": "0xd300"
+    },
+    {
+     "args_concrete": [
+      null,
+      "0x1",
+      "0x1",
+      null
+     ],
+     "guard": "let -- aptrace:0xc80a v142061 = select cglobalMemoryBytes@2:a (bvSum carg_r0@141547:bv 0x2e8:[32]) in not (eq 0xff:[8] v142061)",
+     "pc": "0xc84a",
+     "target": "0xb658"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc852",
+     "target": "0xc786"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc860",
+     "target": "0xc7aa"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      "0x1",
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc876",
+     "target": "0xb31a"
+    },
+    {
+     "args_concrete": [
+      null,
+      null,
+      null,
+      null
+     ],
+     "guard": "true",
+     "pc": "0xc884",
+     "target": "0xb352"
+    }
+   ],
+   "crucible_steps": 3001,
+   "macaw_blocks": 17,
+   "status": "bounded: step limit 3000"
+  }
+ },
+ "haskell_tests": {
+  "cause": "local macaw-refinement compatibility patch absent from gitignored external/macaw (clean upstream 593a918d)",
+  "failed": [
+   "16. AArch32 refinement initializes the empty-struct register without throwing"
+  ],
+  "passed": 42
+ },
+ "macaw_census_base_stored": {
+  "basic_blocks": 1712,
+  "call_classifications": 577,
+  "calls": 577,
+  "edges": 2011,
+  "functions": 193,
+  "incomplete_or_unresolved_terminators": 75,
+  "normalized_terminators": 52,
+  "normalized_transfers": 10,
+  "roots": 42
+ },
+ "macaw_census_expand_fresh": {
+  "basic_blocks": 3521,
+  "call_classifications": 1272,
+  "calls": 1272,
+  "coverage": {
+   "base": {
+    "blocks": 1712,
+    "byte_coverage": 14846,
+    "functions": 193
+   },
+   "expanded": {
+    "blocks": 3521,
+    "byte_coverage": 26658,
+    "functions": 263
+   }
+  },
+  "edges": 4108,
+  "functions": 263,
+  "incomplete_or_unresolved_terminators": 199,
+  "normalization_rounds": 5,
+  "normalized_terminators": 151,
+  "normalized_transfers": 13,
+  "residual_classify_failures": 48,
+  "roots": 42,
+  "rounds": 5
+ },
+ "macaw_compare_same_root": {
+  "ghidra_only": 40,
+  "ghidra_same_root_reachable": 296,
+  "macaw_functions": 263,
+  "macaw_only": 7,
+  "note": "tools/census/macaw_compare.py over a scratch copy of the census DB",
+  "shared": 256
+ },
+ "macaw_explore_rooted": {
+  "0xb658": {
+   "classify_failures": 2,
+   "functions": [
+    "0xb376",
+    "0xb4b4",
+    "0xb50c",
+    "0xb5bc",
+    "0xb659"
+   ]
+  },
+  "0xc744": {
+   "classify_failures": 0,
+   "functions": [
+    "0xc745"
+   ]
+  },
+  "0xc7c0": {
+   "classify_failures": 3,
+   "functions": [
+    "0xb31a",
+    "0xb352",
+    "0xb376",
+    "0xb4b4",
+    "0xb50c",
+    "0xb5bc",
+    "0xb658",
+    "0xc786",
+    "0xc7aa",
+    "0xc7c1",
+    "0xd300",
+    "0xd40c"
+   ]
+  }
+ },
+ "macaw_isa_classification_counts": {
+  "BLX_r_T1:true_indirect_call": 23,
+  "BL_i_T1:true_indirect_call": 1206,
+  "BX_T1:tail_call": 8,
+  "B_T2:ambiguous": 1,
+  "B_T4:ambiguous": 12,
+  "CBZ_T1:conditional_branch": 13,
+  "LDR_r_T2:computed_jump": 1,
+  "TBB_T1:table_branch": 8
+ },
+ "purpose": "architecture-reconciliation-v1 read-only capability checks (scratch outputs summarized)",
+ "python_tests": {
+  "agent": "575 passed, 1 skipped",
+  "tools": "11/11 unittest modules OK"
+ }
+}
