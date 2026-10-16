@@ -141,6 +141,26 @@ contract:
 D1, D2, D6 and D12 and the acceptance tests were updated to match. The
 source-level findings (§2–§3) are unchanged.
 
+**Revision note (review round 2).** Two semantic clarifications, made before
+Phase 2:
+- **Access propositions are scope-specific** (§4.9.1, R4, D6, T2, T15).
+  - A static access site, a possible runtime access, an observed runtime
+    access and a universal runtime access are different propositions.
+  - They are expressed with the existing `scope` and `polarity` facets. The
+    `scope` facet now distinguishes *code-text* scopes from *execution*
+    scopes.
+  - Moving between them needs a J5 rule or additional evidence, never a
+    stronger grade.
+  - A census constant-address site supports the static-site proposition
+    only.
+- **Unknown legacy census edge basis is unknown, not heuristic** (R8, §5,
+  T13).
+  - It is never defaulted to `heuristic`, PROBABLE or any other
+    confidence.
+  - It can be recovered only by a documented, version-specific
+    reconstruction rule grounded in actual producer behavior. Never from a
+    stored grade or a confidence string.
+
 **Recommended approach** (PROPOSED, §5): a **hybrid**.
 - Producer-native results stay as they are, preserved and
   content-addressed.
@@ -180,12 +200,13 @@ source-level findings (§2–§3) are unchanged.
   - completeness;
   - unknown-facet fail-closed.
 
-**Acceptance criteria** (§7): fourteen synthetic, fixture-based tests, each
+**Acceptance criteria** (§7): fifteen synthetic, fixture-based tests, each
 with pass and fail cases. They cover:
 - the six requested scenarios;
 - ceiling binding and representation invariance;
 - fnptr closed-world handling and session-fact levels;
-- condition compatibility, unknown facets and inference-rule records.
+- condition compatibility, unknown facets and inference-rule records;
+- access-proposition scope.
 
 ---
 
@@ -404,8 +425,8 @@ Classification key:
 | B5 | Census `STRONG` → ledger `STRONG` (T2-b) | A heuristic candidate is graded like an established derivation | **AP** (`EvidenceGrade` docstring) + **MP** (EV OQ8, CEN OQ2) | An explicit, versioned per-basis mapping (§4.5) |
 | B6 | fnptr STRONG → `ESTABLISHED_INDIRECT` (T2-c) | Closed-world-over-known-writers → categorical edge | **MP** (SEM OQ1) | Discharging the closed-world condition (for example, evidence that no computed-pointer store can reach the slot), or concrete observation, scoped to its scenario |
 | B7 | Effects raw `complete` → STRONG with no bounded disclosure (T3-c) | Partially simulated body graded as if fully simulated | **IC** with the adapter's own `coverage` contract (`A/function_effects.py:62-66`) + **MP** (EV OQ7) | For existential direct facts: already justified. For universal or negative statements: complete coverage over the claimed scope |
-| B8 | Effects access → `MMIO_USER` whatever the guard (T4-d) | Infeasible-under-model or unqueried access → positive role | **MP** (SEM OQ4, ADM OQ3) + **TT** (raw-false vs unqueried) | Guard `always`/`always-true`, *and* the claim carries `HARNESS_MODEL` (D6); a conditional predicate that states the guard; or a model-independent support fact for an unconditional claim |
-| B9 | Solver-only region `"MMIO (solver)"` → role (T4-c/d) | Model-relative region proof → unconditional role | **MP** (SYM OQ3) | A claim that carries the harness-model condition; or a concrete-address corroboration |
+| B8 | Effects access → `MMIO_USER` whatever the guard (T4-d) | Infeasible-under-model or unqueried access → positive role | **MP** (SEM OQ4, ADM OQ3) + **TT** (raw-false vs unqueried) | Guard `always`/`always-true`, *and* the claim carries `HARNESS_MODEL` (D6); a conditional predicate that states the guard; or, for an unconditional claim, a support fact without a harness model of the **same proposition kind** (§4.9.1; a census site supports P1 only) |
+| B9 | Solver-only region `"MMIO (solver)"` → role (T4-c/d) | Model-relative region proof → unconditional role | **MP** (SYM OQ3) | A claim that carries the harness-model condition; or (for P1 only, §4.9.1) a concrete-address corroboration |
 | B10 | Vacuous region proof (T4-b) | "proven" region under an unsatisfiable guard | **TT** | The region query is evaluated only when the guard is satisfiable |
 | B11 | Typed claim ceiling over all cited artifacts (T5-b) | Grade borrowed from an unrelated artifact | **AP** (EVREC-CEIL-001, code-documented) — potentially inadequate | The ceiling taken from the artifacts the semantic check matched |
 | B12 | Path ceiling `max` (T5-c) | A chain as strong as its strongest edge | **MP** (implicit; not documented as intended) | Weakest link (`min`) |
@@ -510,7 +531,7 @@ Why the original wording is not sufficient:
 | **mode** (how observed) | `static-structural`, `static-dataflow`, `concrete-harness`, `symbolic-raw`, `solver`, `documentary` | **Yes** (per fact) | per-tool reader (from tool identity; mostly constant per tool) | candidates, admission, phase B, session projection, gate (phase 2) |
 | **interpretation** (how the meaning was derived) | `direct` (engine-reported or decoded from verified bytes), `derived-complete` (deterministic rule over a complete input set within scope), `heuristic` (pattern, scan, boundary, or closed-world over *known* items) | **Yes** (per fact) | reader. Producer additions where native output lacks it (§4.3) | ceiling (§4.5) |
 | **polarity** | `exists`, `forall` (universal or negative within a scope) | **Yes**, on facts *and* claims | reader (fact); claim predicate or type (claim) | admission, phase B |
-| **scope** | structured scope id: `function-body`, `function-body+callees(opaque)`, `census-graph(hops=N)`, `scenario(S)`, `image`, … | **Yes** (id + parameters) | reader | admission, phase B (claim scope ⊆ fact scope) |
+| **scope** | structured scope id of one of two **kinds**. **Code-text** scopes are propositions about what the image *contains*: `code-text(image)`, `code-text(function-extent F)`. **Execution** scopes are propositions about what *runs*: `executions(model M, entry F, simulated paths)`, `executions(scenario S)`, `executions(all, within a defined scope X)`. Plus analysis-bound scopes: `census-graph(hops=N)`, `function-body+callees(opaque)`, … | **Yes** (kind + id + parameters) | reader | admission, phase B (claim scope ⊆ fact scope, and the same scope kind, R4) |
 | **completeness over scope** | `complete`, `bounded(reasons…)`, `failed`, `n/a` (for existential facts) | **Yes** | reader, from native completeness fields. Analysis completeness is kept separate from explanation completeness (DF OQ6) | admission, phase B for `forall` claims |
 | **conditions** | coded set: `HARNESS_MODEL(id)`, `SPECIALIZATION(r=v)`, `GUARD(status)`, `CLOSED_WORLD(kind)`, `SCENARIO(S)`, `RECEIVER(vptr)`, `RULE_ASSUMPTION(rule, code)`, … The **known-empty** set is distinct from **unknown** (R8) | **Yes**: codes and parameters | reader; inference rules add their assumptions | fact extraction, candidates, admission, phase B (claim conditions must imply them, §4.4 R3) |
 | **lineage** | evidence ids + engine lineage + `seeded`/`assisted` flags | **Yes**: evidence ids now. Engine lineage is phase 2 | reader; `derived_from` already exists for source agreement (`A/ledger/gate.py:155-164`) | gate (phase 2); ESC-0 audits |
@@ -618,12 +639,20 @@ session projection.
     be supported only by facts with known-empty `F`. That generalizes
     candidates' `ACCESS_UNDER_ASSUMPTION` to admission and verification,
     pending D10.
-- **R4. Polarity.**
+- **R4. Polarity and scope kind.**
   - A `forall`/negative claim needs a `forall` fact with
     `completeness=complete` over a scope that contains the claim's scope.
     Otherwise it is at most BOUNDED, and must be worded and typed as
     scope-limited.
   - An `exists` claim may rest on a fact from a bounded-completeness run.
+  - **Scope kind must match.** A code-text fact never supports an
+    execution-scope claim, and an execution fact never supports a
+    code-text claim, unless a J5 rule or additional evidence bridges the
+    two (§4.9.1).
+  - Within execution scopes, containment is strict. `scenario(S)` does not
+    contain `all`. `model M` does not contain real-firmware executions.
+  - A claim whose predicate does not state its scope kind takes the kind
+    fixed for that predicate by decision. For `MMIO_USER` that is D6.1.
 - **R5. No aliasing.** Producer labels (`EXACT`, `STRONG`,
   `DEFINITELY_REACHABLE`, `ESTABLISHED`, `proven`, `always-true`) are never
   read as ledger grades or claim kinds. A versioned per-tool reader
@@ -648,18 +677,56 @@ session projection.
     may hide a harness, solver or specialization assumption. An unknown
     `interpretation` may hide a heuristic. Either would let an existential
     claim overstate.
-  - **Unknown is not the same as known-but-weak.** A table-scan candidate
-    with `interpretation=heuristic` is *known* low confidence, and supports
-    an `exists` claim at PROBABLE (§4.5). The same candidate from a legacy
-    blob that lacks the `basis` field has *unknown* interpretation, and
-    supports nothing until a reader can determine it.
+  - **Unknown is not the same as known-but-weak.** For census edges, three
+    states are kept apart:
+
+    | State | Meaning | Claim support |
+    |---|---|---|
+    | **Known heuristic basis** | A versioned reader establishes, from producer identity or recorded fields, that the edge came from a heuristic producer. Example: a candidate record carrying `basis=flash-table-scan` | Yes, within what §4.5 allows for `interpretation=heuristic` (for example, at most PROBABLE for `exists`) |
+    | **Known low-confidence evidence** | The basis is established, whatever it is, but the grade is limited by other known facets: a `CLOSED_WORLD` condition (fnptr), bounded completeness, heuristic function attribution | Yes, at the grade the known facets permit |
+    | **Unknown basis** | The reader cannot determine how the edge was produced | **None**, for any claim whose essential facets depend on the basis (§ next bullet). Never labeled `heuristic`, PROBABLE, or any other confidence category |
+
+  - **Per-fact, not per-artifact.** Withholding applies to facts whose
+    essential facets *depend on* the unknown basis. In a census result,
+    those are edges, paths and reachability statuses computed over edges of
+    unknown basis, including a `NO_KNOWN_PATH` over such a graph. Other
+    facts in the same artifact whose facets are known stay usable, for
+    example a peripheral-set membership read from its own fields.
   - **Historical artifacts** are never rewritten and stay fully available
     for inspection, display, audit, citation in reports, and replay.
     - They are not assigned modern semantics by default. A *versioned
-      legacy reader* may assign a facet only where the stored blob and tool
-      identity determine it mechanically. For example, `function_disassembly`
-      mode and interpretation are constant per tool.
-    - Facets that cannot be determined that way stay unknown.
+      legacy reader* may assign a facet only through a **documented,
+      version-specific reconstruction rule supported by actual producer
+      behavior**. The rule names:
+      - the producer version(s) it covers;
+      - the producer code behavior it relies on;
+      - the recorded fields or producer-identity evidence that place the
+        blob in that version range.
+
+      Examples:
+      - `function_disassembly` mode and interpretation are constant across
+        the tool's versions.
+      - For **`resolved_indirect_edges`**, census-graph versions whose export
+        query selects only `source='ram-fnptr-constant-store' AND
+        confidence='STRONG'` (`A/census_graph.py:412`) emit only
+        `ram-fnptr-closed-world` edges. A blob that is shown to come from
+        such a version has a recoverable basis.
+      - For **census common-path edges and reachability statuses**, legacy
+        blobs record function names, not the edges used. The census DB
+        they were computed from is mutable and not identity-bound. So no
+        reconstruction rule is available, and their basis stays unknown.
+    - **Forbidden reconstruction sources:**
+      - the stored artifact grade;
+      - the census `confidence` string (`STRONG` is shared by table-scan
+        and fnptr candidates, `C/reduce.py:141` and `C/fnptr_resolve.py:372`,
+        so it does not determine basis);
+      - limitation text;
+      - "what the producer usually does".
+    - Which producer-identity evidence is acceptable for placing a blob in a
+      version range (for example a recorded clean commit) is an
+      identity-phase decision. This document does not decide it. Until it
+      is decided, a rule that needs it does not apply.
+    - Facets that cannot be determined this way stay unknown.
     - The stored legacy `grade` is shown as a historical field, labeled with
       the grading rules that produced it. Claim support under this contract
       never uses it.
@@ -781,6 +848,14 @@ Rules:
 - An **unsatisfiable-under-model guard is not negative evidence about
   firmware** (T4 nuance). It is a conditional `forall` under
   `HARNESS_MODEL`.
+- **Scope kind applies to negatives too** (R4).
+  - A bounded static search with no result, such as no constant-address
+    MMIO site found by the census, is at most a code-text, bounded `forall`
+    over what that search can see. Code reached through computed addresses
+    is invisible to it.
+  - It never establishes runtime impossibility.
+  - Likewise, an access not observed in scenario S is not an
+    execution-scope negative beyond S (§4.9.1).
 
 ### 4.9 Conditional and specialized symbolic conclusions
 
@@ -818,23 +893,81 @@ Rules:
   | `unsatisfiable`, `raw-false` | None. Withheld as "infeasible under model". Neither positive nor negative evidence about firmware |
 
   - **Effects facts and unconditional claims.** An unconditional (`C = ∅`)
-    access claim cannot rest on effects facts alone. It needs a
-    model-independent support fact whose own conditions it implies, for
-    example a census constant-address MMIO site (static-structural, no
-    harness model). Alternatively, a J3 discharge of the `HARNESS_MODEL`
-    condition: what evidence could do that is an open question (§9).
+    access claim cannot rest on effects facts alone.
+    - It needs a support fact without a harness model, **of the same
+      proposition kind** (§4.9.1).
+    - A census constant-address MMIO site is such a fact **only for the
+      static-access-site proposition (P1)**. It says nothing about runtime
+      execution.
+    - For an unconditional **runtime** access proposition (P2–P4 without
+      conditions), no current APTrace evidence or rule suffices.
+    - A J3 discharge of `HARNESS_MODEL` might one day suffice. What
+      evidence could do that is an open question (§9 Q14).
   - **Corroboration (phase 2) is not a discharge.** Agreement between an
-    effects access and a census site may raise the claim's corroboration
-    status. It does not remove the effects fact's model condition. The
-    claim is supported unconditionally only *by* the census fact.
+    effects access and a census site may raise the corroboration status of
+    a P1 claim. It does not remove the effects fact's model condition, and
+    it does not turn P1 into a runtime proposition.
   - **Consequence for `FUNCTION_ROLE`** (pending D10). The predicate cannot
     state conditions today, so effects-only `MMIO_USER` roles are withheld
     at candidates **and** rejected at admission and phase B. Today they are
     offered (T4).
 - **Solver-only region membership** (`"<R> (solver)"`) is likewise
-  model-relative. It supports only a claim that carries `HARNESS_MODEL`. An
-  unconditional role needs a model-independent support fact at a concrete
-  address.
+  model-relative. It supports only a claim that carries `HARNESS_MODEL`.
+
+#### 4.9.1 Access propositions: predicate-specific scope (PROPOSED, D6)
+
+Four propositions about a function F and an MMIO address `a` must not be
+confused. **These are semantic distinctions, not new evidence types,
+schema fields or approved predicate names.** Each one is expressed with
+existing facets (§4.2): scope kind, polarity and conditions.
+
+| Proposition | Meaning | Facets |
+|---|---|---|
+| **P1 STATIC_ACCESS_SITE** | F's code contains an instruction or expression that references `a` | `exists`; scope `code-text(function-extent F)`. Attribution to F inherits heuristic function boundaries |
+| **P2 POSSIBLE_RUNTIME_ACCESS** | some execution may reach and perform the access, under stated conditions | `exists`; scope `executions(…)`; conditions **required and non-empty**. For example `HARNESS_MODEL`, `GUARD`, "F is entered", feasibility conditions |
+| **P3 OBSERVED_RUNTIME_ACCESS** | a concrete execution performed the access | `exists`; mode `concrete-harness`; scope `executions(scenario S)`; conditions `SCENARIO(S)` + concrete `HARNESS_MODEL` |
+| **P4 UNIVERSAL_RUNTIME_ACCESS** | every execution within a defined scope X performs the access | `forall`; scope `executions(X)`; `completeness=complete` over X; conditions that define X |
+
+**What each kind of current evidence establishes**
+
+| Evidence | Establishes | Does **not** establish |
+|---|---|---|
+| census constant-address MMIO site (`census_peripheral_usage` `mmio_sites`) | P1, at the grade its known facets permit | P2, P3 or P4. The site may be unreachable, guarded, or dead code |
+| census literal-pool address constant only | Not even P1 for an *access*. It is an address load (`ADDRESS_CONSTANT_LOADER`, already kept apart) | any access proposition |
+| `function_effects` access, guard `always`/`always-true`, complete coverage | P4 **relative to the model**: `forall` over `executions(model effects-v1, entry F, simulated paths)`. That also gives P2 under `HARNESS_MODEL` + "F is entered" | Any real-firmware runtime proposition without `HARNESS_MODEL`. P1 (see below). That F is ever entered |
+| `function_effects` access, guard `conditional` | P2 under `HARNESS_MODEL` + `GUARD` | P4; unconditional P2 |
+| `function_effects` access, guard `unsatisfiable`/`raw-false`/`unknown`/`unqueried` | nothing positive (§4.9 table) | — and not a negative either |
+| concrete observation of the access in scenario S (MMIO log within F's extent) | P3 for S | P4; behavior in other scenarios; P2 without the harness conditions |
+| bounded static search with no site found | a code-text bounded `forall` over the searched extent (§4.8) | runtime impossibility; the absence of computed-address accesses |
+
+**Moving between propositions.** A move is always a J5 rule application or
+additional evidence (ESC-0). It is never a stronger grade, a repeated
+observation, or agreement between the same kinds of evidence.
+
+| Move | What it would require | Current status |
+|---|---|---|
+| P1 → P2 | A rule that composes P1 with a path from a stated root to the site. The result carries "path feasibility not established" as a condition, unless feasibility is shown, which brings that evidence's own conditions (for example `HARNESS_MODEL` for a solver) | No registered rule. Census reachability is not a feasibility result (B1, B2) |
+| P2 → P3 | A concrete observation (additional evidence). The result is scenario-scoped | Available through concrete observation (`observed_call_arguments` reports MMIO accesses within the function's extent) |
+| P3 → P4 | Universal reasoning over a defined execution scope with complete coverage. Repeated observations never suffice | Only model-relative P4, from effects. No real-firmware P4 mechanism |
+| model-relative P2/P4 → real-firmware P2/P4 | A J3 discharge of `HARNESS_MODEL` | Open (§9 Q14) |
+| effects access → P1 | A rule from "the simulated instruction at `pc` accessed concrete `a`" to "the code references `a`". The concrete address relies on the read-only-segments-concrete assumption | Not proposed. Open (§9 Q19) |
+| any negative static result → runtime impossibility | Not available | Never (§4.8) |
+
+**Expressibility.** The existing per-fact facets express all four
+propositions: the scope facet's code-text and execution kinds, polarity,
+completeness, and conditions. No new universal evidence type is needed.
+
+The gap is on the **claim** side. `FUNCTION_ROLE MMIO_USER` states no scope
+kind. Its definition today covers both census sites and effects accesses
+(`A/ledger/claim_semantics.py:48-50`), which conflates P1 with runtime
+propositions. Two things fix that without a new evidence type:
+- **D6.1:** fix `MMIO_USER`'s claim scope kind to P1 (code-text).
+- **D10:** let claims that need runtime propositions state an execution
+  scope and its conditions.
+
+The candidate generator's own access-claim limitation already describes P1
+("a register access site is structural: it does not show which executions
+reach it", `A/research/candidates.py:308-310`).
 
 ### 4.10 Not representing solver assumptions as firmware facts
 
@@ -902,7 +1035,7 @@ This is A, plus:
 
 | Criterion | A: consumer-only | B: shared envelope / IR | C: hybrid (recommended) |
 |---|---|---|---|
-| **Existing ledger records** | Fully compatible. Facets are re-derived from stored blobs by a versioned reader | Historical artifacts lack the envelope, so a legacy reader is needed anyway (it ends up being A) | Compatible. Old blobs lack the census basis, so readers fail closed to `heuristic` (R8) for affected facts |
+| **Existing ledger records** | Fully compatible. Facets are re-derived from stored blobs by a versioned reader | Historical artifacts lack the envelope, so a legacy reader is needed anyway (it ends up being A) | Compatible. Old census blobs are preserved for inspection. Where a documented, version-specific reconstruction rule recovers the edge basis, it is used (R8). Otherwise the basis stays **unknown**, and facts that depend on it are withheld from claim support. They are never defaulted to `heuristic` |
 | **Migration cost** | Low. Concentrated in `A/ledger/semantics.py`, `claim_semantics.py`, `call_relations.py`, `admission.py`, `candidates.py`, `verifier.py`, `fact_derivation.py` | High. It touches census SQL and exports, four Haskell harnesses, Ghidra Java, Unicorn scripts, and every adapter. It conflicts with the Capstone freeze and the p-code migration plan | Low–moderate: A, plus census candidate basis (schema + `census_graph` export), effects adapter labels, one enrichment count |
 | **Auditability** | Medium. Semantics live in readers, so a reader must be read to know what a fact means | High in principle. One schema to inspect | High. Facets are explicit per fact in decision records. Native evidence is still preserved for audit |
 | **Deterministic enforcement** | Good where native output has the information. **Impossible** for the census basis (not in results) | Good | Good |
@@ -929,17 +1062,17 @@ Each item is **DECISION REQUIRED**. The recommendation is a proposal.
 | ID | Decision | Options | Recommendation | Unblocks |
 |---|---|---|---|---|
 | D1 | Adopt ESC-0 (§4.1) as a framework rule: three transformation kinds; representation-only cannot strengthen; strengthening needs additional evidence (J1–J4) or a registered, validated inference rule (J5) with recorded premises, assumptions, rule identity and lineage | adopt / adopt without J5 (evidence-only strengthening) / defer | Adopt with J5. Approve the rule-registration and validation standard (§4.6) with it, and name an owner for the rule registry (§9) | everything below |
-| D2 | What `EvidenceGrade` means: a per-fact derived summary under a versioned mapping (§4.5) vs the current per-artifact producer-status lookup. Includes R8: unknown essential facets support nothing, existential claims included; legacy stored grades are shown for inspection, never used for support | derived per-fact with R8 / derived per-fact with legacy grades as a fallback / keep per-artifact + patches | Derived per-fact with R8. No fallback to legacy grades. Approve the mapping cells and the versioned legacy-reader policy separately | EV OQ2, 6–8; ADM OQ1–2; X13 |
+| D2 | What `EvidenceGrade` means: a per-fact derived summary under a versioned mapping (§4.5) vs the current per-artifact producer-status lookup. Includes R8: unknown essential facets support nothing, existential claims included; legacy stored grades are shown for inspection, never used for support | derived per-fact with R8 / derived per-fact with legacy grades as a fallback / keep per-artifact + patches | Derived per-fact with R8. No fallback to legacy grades. Approve the mapping cells and the versioned legacy-reader policy separately. Each reconstruction rule must be documented, version-specific and grounded in producer behavior, never in stored grades or confidence strings (R8) | EV OQ2, 6–8; ADM OQ1–2; X13 |
 | D3 | Ceiling rule | (a) current max over cited; (b) fact-bound max; (c) fact-bound + weakest link for chains + max over independently sufficient alternatives | (c) | X6, B11, B12; EVREC-CEIL-001 |
 | D4 | Census reachability semantics | (a) restrict the strong graph to `STATICALLY_RESOLVED`/`DYNAMICALLY_OBSERVED` sites (match the docstring); (b) keep the graph, report edge bases + root kind with each status, and let consumers apply R2; (c) rename the statuses | (b), plus fix the docstring and the `census_graph` text. Decide root-rule wording (B2) separately | CEN OQ1, 3, 16; DF OQ4; SEM OQ2 |
 | D5 | Can a census fnptr `STRONG` (closed-world) edge be `ESTABLISHED_INDIRECT`? | yes (status quo) / `POTENTIAL_INDIRECT` with a `CLOSED_WORLD(slot)` condition / a new conditional-established kind | `POTENTIAL_INDIRECT` with the condition, until J3 discharge exists | SEM OQ1, 3; ADM OQ4; X10 |
-| D6 | Effects guard and region policy (§4.9). Every guard status, including RAW `always` and solver `always-true`, is relative to the recorded harness model. `HARNESS_MODEL` is kept through fact extraction, candidates, admission and phase B, and is never silently dropped | (a) model-relative effects claims through conditions on the predicate (needs D10); (b) withhold or reject effects-only claims for predicates that cannot carry conditions; (c) status quo (unconditional roles from effects) | (b) now, and (a) once D10 lands. Reject (c). An unconditional access claim needs a model-independent support fact, or a J3 discharge of `HARNESS_MODEL` (§9 Q14) | SEM OQ4; ADM OQ3; SYM OQ3–6 |
+| D6 | Effects guard and region policy (§4.9). Every guard status, including RAW `always` and solver `always-true`, is relative to the recorded harness model. `HARNESS_MODEL` is kept through fact extraction, candidates, admission and phase B, and is never silently dropped | (a) model-relative effects claims through conditions on the predicate (needs D10); (b) withhold or reject effects-only claims for predicates that cannot carry conditions; (c) status quo (unconditional roles from effects) | (b) now, and (a) once D10 lands. Reject (c). **D6.1 (sub-decision):** `MMIO_USER` denotes P1 (static access site, code-text scope) only. Runtime access propositions (P2–P4, §4.9.1) need an execution-scoped claim with conditions (D10). Moving between propositions needs J5 or additional evidence. An unconditional *runtime* access claim has no current support. A census site supports P1 only | SEM OQ4; ADM OQ3; SYM OQ3–6 |
 | D7 | Effects completeness for grading and absence | key on `coverage`; "does not access" = own-body only unless callee coverage is cited | Key on `coverage` for `forall`; keep STRONG for `exists` direct facts *under `HARNESS_MODEL`* (D6); attach `EFFECTS_COVERAGE_BOUNDED` whenever coverage ≠ complete | X2, X18; EV OQ7; SEM OQ5 |
 | D8 | Concrete observation grading | status quo / polarity-restricted STRONG + scenario as a structured condition | Polarity-restricted, with the scenario structured | CONC OQ13; EV OQ9 |
 | D9 | Session-fact levels | keep `PROVEN` (redefine as "mechanically restated") / replace with mode-based levels | Replace, with levels that mirror mode and completeness; the conclusion groups by level | CTRL OQ1–2; X21 |
 | D10 | Representing conditions on claims and facts: canonical coded atoms (R3); initial compatibility by set inclusion; any implication table is a later, versioned decision | reuse `ClaimVersion.assumptions` with coded entries / a new structured `conditions` field / typed per-predicate fields | Coded atoms in a new structured field, available to every predicate. `assumptions` stays prose for operators. Prerequisite for D6(a) | EV OQ9; SEM OQ6 |
 | D11 | When a solver result counts as corroboration | as policy text / only under J1 + R3-compatible conditions | J1 + R3-compatible conditions (phase 2 confirms) | VER OQ2 |
-| D12 | **Sequencing gate for verification evidence contracts.** **No new verification-policy evidence contract may be activated** until all of the following are enforced in candidates, admission **and** verification phase B, and their acceptance tests pass. "Activated" means a policy version that adds `evidence_kinds` to any class (`MEMORY_ACCESS`, `RESOLVED_INDIRECT_CALL`, `CONTROL_FLOW`, `BOUNDED_NEGATIVE`, `VECTOR_MAPPING`), or widens `CODE_EXISTENCE`. The rules are: **(1)** fact-bound grading and weakest-link combination (R1, R2, D3); **(2)** condition compatibility, with `HARNESS_MODEL` kept (R3, D6, D10); **(3)** scope containment (claim scope ⊆ fact scope); **(4)** polarity (R4); **(5)** completeness for `forall` claims (R4, D7); **(6)** unknown-facet fail-closed (R8); **(7)** inference records for any strengthened fact (J5). Tests: T1–T5, T7, T8 and T10–T14 | adopt / adopt for a subset of classes / do not | Adopt for all classes. A new contract's policy change should cite the passing test run as its precondition | Keeps the X15 fail-closed property from turning into a promotion path |
+| D12 | **Sequencing gate for verification evidence contracts.** **No new verification-policy evidence contract may be activated** until all of the following are enforced in candidates, admission **and** verification phase B, and their acceptance tests pass. "Activated" means a policy version that adds `evidence_kinds` to any class (`MEMORY_ACCESS`, `RESOLVED_INDIRECT_CALL`, `CONTROL_FLOW`, `BOUNDED_NEGATIVE`, `VECTOR_MAPPING`), or widens `CODE_EXISTENCE`. The rules are: **(1)** fact-bound grading and weakest-link combination (R1, R2, D3); **(2)** condition compatibility, with `HARNESS_MODEL` kept (R3, D6, D10); **(3)** scope containment (claim scope ⊆ fact scope); **(4)** polarity (R4); **(5)** completeness for `forall` claims (R4, D7); **(6)** unknown-facet fail-closed (R8); **(7)** inference records for any strengthened fact (J5). Tests: T1–T5, T7, T8 and T10–T15 | adopt / adopt for a subset of classes / do not | Adopt for all classes. A new contract's policy change should cite the passing test run as its precondition | Keeps the X15 fail-closed property from turning into a promotion path |
 
 ---
 
@@ -986,7 +1119,7 @@ test has a pass control and a fail case.
   - (d) solver `always-true`, and RAW `always`;
   - (e) `conditional`;
   - (f) control: (d) plus a census constant-address MMIO site for the same
-    function and register.
+    function and register (P1 evidence, §4.9.1).
 - **Expected:**
   - (a)–(c): no `MMIO_USER` fact of any kind. The candidate is withheld
     with a coded reason. A typed `FUNCTION_ROLE` claim is rejected at
@@ -1001,9 +1134,14 @@ test has a pass control and a fail case.
       admitted, and the phase-B verification record lists that condition.
   - (e): admitted only with both `HARNESS_MODEL` and the `GUARD` condition
     (after D10). Rejected otherwise.
-  - (f): the unconditional claim is admitted. Its R1 ceiling is computed
-    from the census fact alone. The effects fact keeps its `HARNESS_MODEL`
-    condition, and adds no unconditional support.
+  - (f): an unconditional `MMIO_USER` claim, which is P1 under D6.1, is
+    admitted.
+    - Its R1 ceiling is computed from the census fact alone.
+    - The effects fact keeps its `HARNESS_MODEL` condition, and adds no
+      unconditional support.
+    - An unconditional **runtime** access claim (execution scope, no
+      conditions) citing the same two facts is **rejected** (R4 scope
+      kind).
   - In every variant, `HARNESS_MODEL` is present on the fact after
     extraction, in the admission diagnostics, and in the verification
     record. A fixture that strips it at any one stage fails.
@@ -1168,7 +1306,12 @@ test has a pass control and a fail case.
   - (b) the same path with `basis=flash-table-scan` present;
   - (c) a result from a tool with no registered reader;
   - (d) a legacy `function_disassembly` blob, whose mode and interpretation
-    a versioned legacy reader determines from tool identity.
+    a versioned legacy reader determines from tool identity;
+  - (e) a legacy census blob with `resolved_indirect_edges` and
+    `confidence: STRONG`, **with** producer-identity evidence that places it
+    in a census-graph version covered by the documented fnptr-only
+    reconstruction rule (R8);
+  - (f) the same blob **without** such evidence.
 - **Expected:**
   - (a): no claim support for **either polarity**, including an `exists`
     claim at PROBABLE (`FACET_UNKNOWN:interpretation`). The artifact stays
@@ -1180,8 +1323,19 @@ test has a pass control and a fail case.
   - (c): no claim support. The result can still open a question or lead.
   - (d): supports claims at its mapped grade. The facets it lacks stay
     unknown, and the reader version is recorded.
-- **Fail case:** any path that uses a stored legacy grade as claim support,
-  or that defaults an unknown facet to a value.
+  - (a) and (f): the basis stays **unknown**. Facts that depend on it are
+    withheld (`FACET_UNKNOWN:interpretation`, because the basis is unknown). They are not labeled `heuristic` or
+    PROBABLE. Other known-facet facts in the same artifact remain usable.
+  - (e): the basis is recovered as `ram-fnptr-closed-world`. The record
+    shows the rule id and version and the identity evidence. The fact
+    carries the `CLOSED_WORLD(slot)` condition (known low-confidence
+    evidence, D5).
+- **Fail case:** any path that does one of these:
+  - uses a stored legacy grade as claim support;
+  - defaults an unknown facet to a value (including `heuristic`);
+  - derives basis from the stored grade or from the `confidence` string;
+  - applies a reconstruction rule without the identity evidence it
+    requires.
 
 ### T14. Strengthening by inference requires a registered rule and a record
 
@@ -1203,7 +1357,34 @@ test has a pass control and a fail case.
     premise (b, c), or rejected (d, e).
   - In no variant does the lineage gain an engine or an independence mark.
 
-**Stopping condition for the contract milestone** (PROPOSED). T1–T14 pass on
+### T15. Access propositions keep their scope kind
+
+- **Fixtures** for one function F and MMIO address `a`:
+  - (a) a census `mmio_sites` entry (P1);
+  - (b) an effects access, `always-true`, complete coverage;
+  - (c) a concrete observation of the access in scenario S;
+  - (d) a census search over F that finds no constant-address site for a
+    second address `b`;
+  - (e) control: (a) + (c) together.
+- **Expected:**
+
+  | Claim | (a) | (b) | (c) | (d) | (e) |
+  |---|---|---|---|---|---|
+  | P1 "F's code references `a`", unconditional | admitted | rejected (no rule, Q19) | rejected | — | admitted (from (a)) |
+  | P2 "F may access `a` at runtime", unconditional | rejected | rejected | rejected | — | rejected |
+  | P2 with `HARNESS_MODEL(effects-v1)` + "F entered" | rejected | admitted (D10) | rejected | — | rejected |
+  | P3 "F accessed `a` in S" with `SCENARIO(S)` + harness | rejected | rejected | admitted | — | admitted (from (c)) |
+  | P4 "every execution of F accesses `a`", unconditional | rejected | rejected | rejected | — | rejected |
+  | P4 relative to `executions(model effects-v1, entry F, simulated paths)` | rejected | admitted (D10) | rejected | — | rejected |
+  | "F never accesses `b` at runtime" | — | — | — | rejected | — |
+  | "the census found no constant-address site for `b` in F's extent" (bounded, code-text) | — | — | — | admitted at ≤ BOUNDED | — |
+
+- **Also checks:**
+  - no row is admitted by raising a grade;
+  - in (e), P3 does not become P4, and P1 + P3 together do not give
+    unconditional P2 or P4 without a registered rule (T14 discipline).
+
+**Stopping condition for the contract milestone** (PROPOSED). T1–T15 pass on
 synthetic fixtures. At least the census-basis and effects-guard tests also
 pass on a second-ISA synthetic fixture where the producer supports one (p-code
 `value_forward_use` already does). And no existing ledger record is
@@ -1290,8 +1471,9 @@ These are not answered here. Several overlap the later phases.
       `HARNESS_MODEL` condition for some fact family? One candidate is an
       access on a path whose guard is concretely true in the raw term and
       reads no memory after an opaque call.
-    - Or must unconditional access claims always rest on a model-independent
-      support fact?
+    - Or must unconditional *runtime* access claims (P2–P4, §4.9.1) remain
+      unsupported? Today a model-independent fact (a census site) supports
+      only P1.
 15. **Inference-rule registry (D1, J5).**
     - Who owns the registry: the framework, or the producing segment?
     - Where does it live? (The operation-descriptor milestone is a natural
@@ -1309,6 +1491,17 @@ These are not answered here. Several overlap the later phases.
     R8 right for every typed predicate? For example, does `CODE_PRESENCE`
     need `conditions` known, given that structural sources carry
     configuration, not harness models?
-18. **Legacy reader policy (R8, D2).** Which historical tools have facets
-    that tool identity alone determines (and so can be read without
-    re-execution), and who approves each legacy reader version?
+18. **Legacy reader policy (R8, D2).**
+    - Which historical tools have facets that a documented, version-specific
+      reconstruction rule can recover?
+    - Who approves each legacy reader version and rule?
+    - Which producer-identity evidence places a legacy blob in a version
+      range? (This depends on the identity phase.)
+19. **Access-proposition bridges (§4.9.1).**
+    - Should a registered J5 rule derive P1 from an effects access at a
+      concrete address? It would rest on the read-only-segments-concrete
+      assumption.
+    - Should a rule derive conditional P2 from P1 + a static path, and with
+      which feasibility condition?
+    - Are P1–P4 eventually named as typed predicates or scope values, or do
+      they stay a documented convention over scope kinds?
