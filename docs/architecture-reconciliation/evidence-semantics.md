@@ -104,7 +104,9 @@ the claim's polarity is known (§3.3):
 - A truncated concrete observation can still establish that a value *was*
   observed.
 - A complete raw simulation with opaque computed calls can still establish a
-  direct access by an always-true path.
+  direct access on an always-true path, *under its recorded harness model*.
+  That is a model-relative fact (§4.9), not an unconditional claim about
+  firmware.
 - `NO_KNOWN_PATH` may support a `NO_KNOWN_PATH` claim at the strength of its
   graph.
 
@@ -112,13 +114,32 @@ These are wrong only when the same grade is reused for universal or negative
 statements.
 
 **The proposed invariant needs one refinement** (PROPOSED, §4.1). As
-written, it would also forbid legitimate strengthening (new independent
-evidence, a discharged condition). The refined form:
+written, it would also forbid legitimate strengthening:
+- new independent evidence;
+- a discharged condition;
+- a validated inference over complete premises, such as
+  `indirect_call_target`'s rule over a complete definition set.
 
-> **No transformation may strengthen any evidence facet unless it cites the
-> additional evidence that justifies the strengthening.
-> Representation-only transformations are facet-monotone: they may preserve
-> or weaken, never strengthen.**
+The refined form:
+
+> **No transformation may strengthen any evidence facet unless it cites
+> either additional evidence or a registered, validated inference rule
+> applied to recorded premises, with its assumptions, rule identity and
+> lineage recorded. Representation-only transformations are facet-monotone:
+> they may preserve or weaken, never strengthen.**
+
+**Revision note (review round 1).** Four clarifications to the normative
+contract:
+- **ESC-0 inference rules** (§4.1, §4.6 J5).
+- **Semantic condition compatibility (R3).** A claim's conditions must
+  imply the fact's conditions. The initial implementation is exact coded
+  matching under set inclusion.
+- **Fail-closed unknown facets (R8).** This now applies to existential
+  claims too, and historical artifacts stay inspectable.
+- **Solver `always-true` is model-relative** (§4.9, D6).
+
+D1, D2, D6 and D12 and the acceptance tests were updated to match. The
+source-level findings (§2–§3) are unchanged.
 
 **Recommended approach** (PROPOSED, §5): a **hybrid**.
 - Producer-native results stay as they are, preserved and
@@ -146,14 +167,25 @@ evidence, a discharged condition). The refined form:
 - **D3:** the ceiling rule.
 - **D4, D5:** whether census heuristic confidence can ever yield a
   categorical or "definite" downstream statement.
-- **D6:** effects guard and region policy.
+- **D6:** effects guard and region policy. A solver `always-true` holds
+  only under the recorded harness model. It never establishes an
+  unconditional claim about real firmware by itself.
 - **D12:** a sequencing rule. No new verification-policy evidence contract
-  until the claim ceiling and condition rules are enforced.
+  may be activated until these rules are enforced in candidates, admission
+  and verification phase B:
+  - fact-bound grading;
+  - condition compatibility;
+  - scope containment;
+  - polarity;
+  - completeness;
+  - unknown-facet fail-closed.
 
-**Acceptance criteria** (§7): eleven synthetic, fixture-based tests, each
-with pass and fail cases. They cover the six requested scenarios, plus
-ceiling binding, representation invariance, fnptr closed-world handling and
-session-fact levels.
+**Acceptance criteria** (§7): fourteen synthetic, fixture-based tests, each
+with pass and fail cases. They cover:
+- the six requested scenarios;
+- ceiling binding and representation invariance;
+- fnptr closed-world handling and session-fact levels;
+- condition compatibility, unknown facets and inference-rule records.
 
 ---
 
@@ -225,7 +257,8 @@ restate. That is the pattern the fnptr path lacks.
 - *OBSERVED:* one result carries two completeness notions, and grading uses
   the weaker one.
 - *INFERRED and justified:* an existential statement about the function's
-  *own* direct access on an always-true path is not weakened by unsimulated
+  *own* direct access on an always-true path (a model-relative fact, §4.9)
+  is not weakened by unsimulated
   code behind a computed transfer.
 - *INFERRED as a defect:* the claim carries no disclosure that part of the
   function body was not simulated. And no mechanism stops a universal
@@ -371,7 +404,7 @@ Classification key:
 | B5 | Census `STRONG` → ledger `STRONG` (T2-b) | A heuristic candidate is graded like an established derivation | **AP** (`EvidenceGrade` docstring) + **MP** (EV OQ8, CEN OQ2) | An explicit, versioned per-basis mapping (§4.5) |
 | B6 | fnptr STRONG → `ESTABLISHED_INDIRECT` (T2-c) | Closed-world-over-known-writers → categorical edge | **MP** (SEM OQ1) | Discharging the closed-world condition (for example, evidence that no computed-pointer store can reach the slot), or concrete observation, scoped to its scenario |
 | B7 | Effects raw `complete` → STRONG with no bounded disclosure (T3-c) | Partially simulated body graded as if fully simulated | **IC** with the adapter's own `coverage` contract (`A/function_effects.py:62-66`) + **MP** (EV OQ7) | For existential direct facts: already justified. For universal or negative statements: complete coverage over the claimed scope |
-| B8 | Effects access → `MMIO_USER` whatever the guard (T4-d) | Infeasible-under-model or unqueried access → positive role | **MP** (SEM OQ4, ADM OQ3) + **TT** (raw-false vs unqueried) | Guard `always`/`always-true`; or a conditional predicate that states the guard |
+| B8 | Effects access → `MMIO_USER` whatever the guard (T4-d) | Infeasible-under-model or unqueried access → positive role | **MP** (SEM OQ4, ADM OQ3) + **TT** (raw-false vs unqueried) | Guard `always`/`always-true`, *and* the claim carries `HARNESS_MODEL` (D6); a conditional predicate that states the guard; or a model-independent support fact for an unconditional claim |
 | B9 | Solver-only region `"MMIO (solver)"` → role (T4-c/d) | Model-relative region proof → unconditional role | **MP** (SYM OQ3) | A claim that carries the harness-model condition; or a concrete-address corroboration |
 | B10 | Vacuous region proof (T4-b) | "proven" region under an unsatisfiable guard | **TT** | The region query is evaluated only when the guard is satisfiable |
 | B11 | Typed claim ceiling over all cited artifacts (T5-b) | Grade borrowed from an unrelated artifact | **AP** (EVREC-CEIL-001, code-documented) — potentially inadequate | The ceiling taken from the artifacts the semantic check matched |
@@ -403,11 +436,18 @@ recorded:
   caller set and constrained values. Otherwise PROBABLE, with
   `CALLER_SET_OPEN`.
 - **Concrete existential observations** (B14), and **effects direct
-  accesses on always-true paths** (B7, existential half).
+  accesses on always-true paths** (B7, existential half), as
+  model-relative facts carrying `HARNESS_MODEL` (§4.9).
 - **Candidate generation's `ACCESS_UNDER_ASSUMPTION` and
   `POINTER_CONFLICT` withholding.** This is a precedent for enforcing rules
   at the consumer boundary. The gap is that admission and verification do
   not apply the same rules to model-proposed typed claims.
+
+Under the contract, the first three of these become **registered inference
+rules** (§4.1, §4.6 J5). Each needs a recorded rule identity, premises,
+preconditions and lineage, and none may drop a premise's conditions. Their
+present behavior is justified. The proposal makes the justification
+explicit and checkable; it does not change it.
 
 ---
 
@@ -415,23 +455,51 @@ recorded:
 
 ### 4.1 Invariant, refined
 
-> **ESC-0.** A transformation of evidence is either *representation-only*
-> or *evidential*.
-> - A **representation-only** transformation (renaming, re-encoding,
->   extraction, caching, replay, historical reuse, summarization, session
->   projection) must be **facet-monotone**. Each facet in §4.2 of its output
->   is equal to, or weaker than, that facet of its inputs.
+> **ESC-0.** Every transformation of evidence is one of three kinds:
+> *representation-only*, *evidential* or *inferential*.
+>
+> - **Representation-only** transformations must be **facet-monotone**.
+>   These are renaming, re-encoding, extraction, caching, replay, historical
+>   reuse, summarization and session projection. Each facet in §4.2 of the
+>   output is equal to, or weaker than, that facet of its inputs. **A
+>   representation-only transformation can never strengthen evidentiary
+>   meaning, whatever reasoning is offered for it.**
 > - An **evidential** transformation may strengthen a facet only by
 >   **citing additional evidence**, recorded in its lineage, of a kind
->   listed in §4.6.
+>   listed in §4.6 (J1–J4).
+> - An **inferential** transformation may strengthen a facet only by
+>   applying a **registered, validated inference rule** (§4.6 J5) to
+>   recorded premises. Every application records:
+>   - **rule identity:** rule id and version;
+>   - **premises:** the fact ids and evidence ids it consumed;
+>   - **precondition check:** the rule's mechanically checked
+>     preconditions, and the result of checking them;
+>   - **assumptions:** the rule's own assumptions, added as coded
+>     conditions on the output;
+>   - **lineage:** the union of the premises' lineage. Inference never adds
+>     lineage or independence.
 >
-> Passing through a stage, agreement between derived sources, re-execution,
-> cache hits, model confidence and wording are never additional evidence.
+>   The output's conditions include every premise condition that the rule
+>   does not discharge under J3. Its scope is contained in the intersection
+>   of the premises' scopes. Its mode is the weakest premise mode.
+>
+> These are never additional evidence or a valid inference:
+> - passing through a stage;
+> - agreement between derived sources;
+> - re-execution;
+> - cache hits;
+> - model confidence;
+> - wording;
+> - an unregistered rule, or a rule applied outside its preconditions.
 
 Why the original wording is not sufficient:
-- *Too strict:* it would forbid strengthening a conditional fact when a
-  grounding observation discharges the condition (§4.6, J3).
-- *Too loose:* it does not name **polarity**. A transformation that keeps
+- *Too strict.* It would forbid two legitimate kinds of strengthening:
+  - a grounding observation discharging a condition (§4.6, J3);
+  - a validated deterministic rule over complete premises (J5). Examples
+    are `indirect_call_target` STATICALLY_ESTABLISHED, and a target set that
+    is closed because the caller set is closed. Today these rules exist only
+    implicitly inside producers.
+- *Too loose.* It does not name **polarity**. A transformation that keeps
   the grade but changes "∃ an access" into "these are all the accesses"
   gains nothing nominal and still overstates.
 
@@ -444,12 +512,20 @@ Why the original wording is not sufficient:
 | **polarity** | `exists`, `forall` (universal or negative within a scope) | **Yes**, on facts *and* claims | reader (fact); claim predicate or type (claim) | admission, phase B |
 | **scope** | structured scope id: `function-body`, `function-body+callees(opaque)`, `census-graph(hops=N)`, `scenario(S)`, `image`, … | **Yes** (id + parameters) | reader | admission, phase B (claim scope ⊆ fact scope) |
 | **completeness over scope** | `complete`, `bounded(reasons…)`, `failed`, `n/a` (for existential facts) | **Yes** | reader, from native completeness fields. Analysis completeness is kept separate from explanation completeness (DF OQ6) | admission, phase B for `forall` claims |
-| **conditions** | coded set: `HARNESS_MODEL(id)`, `SPECIALIZATION(r=v)`, `GUARD(status)`, `CLOSED_WORLD(kind)`, `SCENARIO(S)`, `RECEIVER(vptr)`, … | **Yes**: codes and parameters | reader | admission, phase B (claim must carry them, §4.4 R3) |
+| **conditions** | coded set: `HARNESS_MODEL(id)`, `SPECIALIZATION(r=v)`, `GUARD(status)`, `CLOSED_WORLD(kind)`, `SCENARIO(S)`, `RECEIVER(vptr)`, `RULE_ASSUMPTION(rule, code)`, … The **known-empty** set is distinct from **unknown** (R8) | **Yes**: codes and parameters | reader; inference rules add their assumptions | fact extraction, candidates, admission, phase B (claim conditions must imply them, §4.4 R3) |
 | **lineage** | evidence ids + engine lineage + `seeded`/`assisted` flags | **Yes**: evidence ids now. Engine lineage is phase 2 | reader; `derived_from` already exists for source agreement (`A/ledger/gate.py:155-164`) | gate (phase 2); ESC-0 audits |
 | **implementation identity** | analysis, version, engine, configuration | Hook only here (phase 3) | operation / identity layer | replay, continuity |
 | **confidence in interpretation** | — | **No separate field.** It is the output of the mapping in §4.5 (`EvidenceGrade`) | computed | — |
 | **detailed reasons, bounds, frontiers, query logs, guard methods** | native | **No.** Kept producer-specific in the content-addressed result | producer | humans, auditors |
 | **heuristic function boundaries and similar universal caveats** | limitation codes | Disclosure only, as today | reader | `limitations_preserved` (existing) |
+
+**Facet status.** Each mechanically represented facet is either **known** or
+**unknown**:
+- A *known* facet has a value, which may be weak (`heuristic`, `bounded`,
+  `conditional`). A weak known value is a low-confidence fact, and it can
+  still support a claim at the grade §4.5 allows.
+- An *unknown* facet is one the reader could not determine. It is never
+  defaulted to a value. It is handled by R8 (§4.4).
 
 The six distinctions the review asked to keep apart, and how the facets keep
 them apart:
@@ -509,13 +585,39 @@ session projection.
   - `max` is allowed only across *alternatives that each independently
     support the entire assertion*. This is the legitimate reading of today's
     "strongest supporting derivation".
-- **R3. Conditions are constraints.**
-  - A fact with conditions supports a claim only if the claim carries the
-    same coded conditions: typed `conditions`/`scenario`/`assumptions`.
-  - A predicate that cannot state a condition (today: `FUNCTION_ROLE`,
-    `RESOLVED_FUNCTION_POINTER`) cannot be supported by a conditional fact.
-    That generalizes candidates' `ACCESS_UNDER_ASSUMPTION` to admission and
-    verification.
+- **R3. Conditions are constraints: semantic compatibility.**
+  - **Normative rule.** A fact with condition set `F` supports a claim with
+    condition set `C` only if `C` **implies** every condition in `F`. The
+    one exception is a condition validly discharged under J3, where the
+    discharge record replaces it with the discharging evidence's own
+    conditions. A claim may be *more* specific than its support, for example
+    by adding a condition. It may never be less specific.
+  - **Initial implementation subset** (acceptable, PROPOSED).
+    - *Representation:* conditions are conjunctive sets of canonicalized
+      coded atoms (`CODE(parameters)`).
+    - *Implication:* decided by **set inclusion**, `F ⊆ C`, with exact atom
+      equality after canonicalization. Examples of canonicalization: hex
+      normalization, register aliases, Thumb-bit policy.
+    - *Why it is sound:* inclusion is a sound conjunctive under-approximation
+      of implication. It can reject a compatible claim, but it cannot accept
+      an incompatible one.
+  - **Permitted extension, later and only by decision.** A finite,
+    versioned table of declared implications between atom families, decided
+    by lookup. For example, `SPECIALIZATION(r0=v)` implies
+    `SPECIALIZATION(r0∈{v,…})`. **No general-purpose theorem prover is
+    proposed.**
+  - **Fail closed.** Anything the subset cannot decide is *not compatible*:
+    disjunctive conditions, parametric ranges, or an atom family with no
+    declared table entry.
+  - **Where it applies.** R3 is enforced at fact extraction (facts keep `F`),
+    candidates, admission and verification phase B. Phase B re-derives `F`
+    from the stored result and records both `F` and `C` in the verification
+    record.
+  - **Predicates that cannot state conditions** (today: `FUNCTION_ROLE`,
+    `RESOLVED_FUNCTION_POINTER`) are treated as `C = ∅`. They can therefore
+    be supported only by facts with known-empty `F`. That generalizes
+    candidates' `ACCESS_UNDER_ASSUMPTION` to admission and verification,
+    pending D10.
 - **R4. Polarity.**
   - A `forall`/negative claim needs a `forall` fact with
     `completeness=complete` over a scope that contains the claim's scope.
@@ -533,9 +635,41 @@ session projection.
 - **R7. Session levels.** Planner-visible facts carry their mode,
   conditions and completeness. A single uniform `PROVEN` is retired or
   redefined (D9).
-- **R8. Fail closed on unknown facets.** If a reader cannot determine a
-  facet (an unknown tool, an old result shape), the fact supports nothing
-  stronger than PROBABLE `exists`, and never a `forall` claim.
+- **R8. Unknown essential facets fail closed, for every polarity.**
+  - **Essential facets for claim support:**
+    - `exists` claims: mode, interpretation, polarity, scope, conditions
+      (whether known-empty or a known set), and lineage evidence ids;
+    - `forall` claims: all of those, plus completeness.
+  - **If any essential facet is unknown, the fact supports no claim.** That
+    includes existential claims, at any grade. Admission and phase B reject
+    with a coded reason (for example `FACET_UNKNOWN:<facet>`), and
+    candidates withhold.
+  - **Why existential claims are included.** An unknown `conditions` facet
+    may hide a harness, solver or specialization assumption. An unknown
+    `interpretation` may hide a heuristic. Either would let an existential
+    claim overstate.
+  - **Unknown is not the same as known-but-weak.** A table-scan candidate
+    with `interpretation=heuristic` is *known* low confidence, and supports
+    an `exists` claim at PROBABLE (§4.5). The same candidate from a legacy
+    blob that lacks the `basis` field has *unknown* interpretation, and
+    supports nothing until a reader can determine it.
+  - **Historical artifacts** are never rewritten and stay fully available
+    for inspection, display, audit, citation in reports, and replay.
+    - They are not assigned modern semantics by default. A *versioned
+      legacy reader* may assign a facet only where the stored blob and tool
+      identity determine it mechanically. For example, `function_disassembly`
+      mode and interpretation are constant per tool.
+    - Facets that cannot be determined that way stay unknown.
+    - The stored legacy `grade` is shown as a historical field, labeled with
+      the grading rules that produced it. Claim support under this contract
+      never uses it.
+    - New semantics for old work come from re-executing under a current
+      operation identity, which produces new evidence. They never come from
+      reinterpreting the old record.
+  - **What remains possible with unknown facets.** A fact with unknown
+    facets may still be shown to the planner or a human as uninterpreted
+    output, and may still open a question or lead. It contributes to no
+    claim, candidate or verification decision.
 
 ### 4.5 Grade as a derived summary (keeps the existing vocabulary)
 
@@ -546,11 +680,16 @@ docs stay compatible. It becomes the output of one versioned mapping, applied
 | Fact facets (after R2 combination) | Max grade for an `exists` claim | Max grade for a `forall` claim |
 |---|---|---|
 | `direct`, `static-structural` decoded from hash-verified bytes, no conditions | EXACT | BOUNDED unless `complete` over scope, then STRONG |
-| `direct` or `derived-complete`, conditions all stated in the claim | STRONG | STRONG if `complete` over the claim scope, else BOUNDED |
-| any `heuristic` interpretation, or `CLOSED_WORLD` not discharged | PROBABLE | BOUNDED at most |
-| conditions present but not stated in the claim | rejected (R3) | rejected |
-| `failed`, unknown facets | UNKNOWN (supports nothing) | UNKNOWN |
+| `direct`, or `derived-complete` via a registered rule (J5), with fact conditions implied by the claim's conditions (R3) | STRONG | STRONG if `complete` over the claim scope, else BOUNDED |
+| any `heuristic` interpretation (known), or `CLOSED_WORLD` not discharged | PROBABLE | BOUNDED at most |
+| fact conditions not implied by the claim's conditions | rejected (R3) | rejected |
+| any essential facet **unknown** (R8) | rejected (`FACET_UNKNOWN`), supports nothing | rejected |
+| `failed` completeness | `exists` facts it actually reports keep their own row; the failure supports nothing by itself | UNKNOWN (supports nothing) |
 | `documentary` | PROBABLE (as today) | not supporting |
+
+A STRONG fact carrying `HARNESS_MODEL(…)` supports a STRONG claim **about
+behavior under that model**, because the claim must carry the condition
+(R3). It never supports an unconditional claim about firmware behavior.
 
 The table is illustrative. **The exact cells are a decision (D2).** What
 matters structurally:
@@ -571,6 +710,30 @@ Only these strengthen a facet, and each must appear in lineage:
 | J2 | A completeness result over a declared scope | `forall` within that scope (bounded negative → scoped negative) | Scope beyond the analyzed one |
 | J3 | Discharging a condition with evidence. Examples: an observed caller value grounds a specialization; a concrete dispatch grounds a receiver condition; an analysis excludes computed-pointer stores to a slot | Removes that condition, **replacing it with the discharging evidence's own conditions**. For example, a scenario-observed grounding yields a `SCENARIO(S)` condition, not an unconditional fact | Conditions it does not address |
 | J4 | Deterministic re-derivation from exact inputs (decode from verified bytes) | `interpretation=direct` for the decoded fact | The meaning attributed to it (for example "is a dispatch table") |
+| J5 | **A registered, validated inference rule** applied to recorded premises (ESC-0 inferential). Examples: `indirect_call_target` STATICALLY_ESTABLISHED from an all-constant, *complete* definition set; a closed callback target set from a closed caller set; composing established edges into a path from a stated root; J2's scoped negative, when computed from premises | `interpretation` to `derived-complete`; `polarity` to `forall` within the premises' scope, when the rule's completeness preconditions hold | Lineage or independence; any premise condition it does not discharge under J3; a model-relative premise into a model-free conclusion; scope beyond the premises; mode above the weakest premise |
+
+**What makes a rule "registered and validated"** (PROPOSED):
+- **Registered.** A rule id and version. A declared input fact shape. A
+  declared output fact shape. Mechanically checkable preconditions (for
+  example "definition set `complete`", "caller set has no address-taken
+  entry"). Declared rule assumptions, emitted as `RULE_ASSUMPTION`
+  conditions. Its owning module.
+- **Validated.** Synthetic fixture tests covering:
+  - positive cases;
+  - negative controls, where a precondition fails and the rule must not
+    fire;
+  - at least one case where the premises carry conditions that must survive
+    into the output;
+  - where the rule claims ISA independence, a second-ISA control.
+
+  A rule version without passing validation is not registered.
+- **Recorded per application.** Rule id and version, premise ids,
+  precondition results, emitted assumptions, and lineage (ESC-0). A
+  strengthened fact with no such record is treated as representation-only,
+  so its strengthening is void (T14).
+- **Not a reasoning engine.** Rules are small, deterministic and specific to
+  a fact family. Most already exist implicitly inside producers (§3.3). The
+  proposal records and checks them; it does not generalize them.
 
 Never a justification:
 - re-running the same operation;
@@ -635,18 +798,43 @@ Rules:
     phase B accept an unconditional `FUNCTION_ROLE` (INFERRED from
     T4-d + T5-b).
   - Proposed: admission and phase B reject it (R3).
-- **Guard policy (PROPOSED, D6):**
+- **Guard policy (PROPOSED, D6).** Every guard status is relative to the
+  recorded harness model. That includes RAW `always` (a concretely true raw
+  guard) and solver `always-true`.
+  - The model is effects-v1: opaque calls without memory effects, RAM and
+    MMIO unconstrained, a step bound, and the other entries of `E:414-418`.
+    Such a model can be wrong in either direction for real firmware. For
+    example, a callee's memory effect can change a guard's value.
+  - So **no guard status by itself establishes an unconditional claim about
+    real firmware.** Every effects access fact carries
+    `HARNESS_MODEL(effects-v1, …)` through fact extraction, candidates,
+    admission and phase B.
 
-  | Guard | Supports an unconditional `exists` access? |
+  | Guard | Supports an `exists` access claim … |
   |---|---|
-  | `always` / `always-true` | Yes |
-  | `conditional` | Only a conditional claim |
-  | `unknown`, `unqueried` | No; withheld as "not established" |
-  | `unsatisfiable`, `raw-false` | No; withheld as "infeasible under model". Neither positive nor negative |
+  | `always` / `always-true` | … that carries `HARNESS_MODEL(effects-v1)` (R3). **Not** an unconditional claim |
+  | `conditional` | … that carries `HARNESS_MODEL` **and** the `GUARD` condition |
+  | `unknown`, `unqueried` | None. Withheld as "not established" |
+  | `unsatisfiable`, `raw-false` | None. Withheld as "infeasible under model". Neither positive nor negative evidence about firmware |
 
-- **Solver-only region membership** is a conditional fact. It supports an
-  unconditional role only together with corroborating evidence of a
-  concrete address.
+  - **Effects facts and unconditional claims.** An unconditional (`C = ∅`)
+    access claim cannot rest on effects facts alone. It needs a
+    model-independent support fact whose own conditions it implies, for
+    example a census constant-address MMIO site (static-structural, no
+    harness model). Alternatively, a J3 discharge of the `HARNESS_MODEL`
+    condition: what evidence could do that is an open question (§9).
+  - **Corroboration (phase 2) is not a discharge.** Agreement between an
+    effects access and a census site may raise the claim's corroboration
+    status. It does not remove the effects fact's model condition. The
+    claim is supported unconditionally only *by* the census fact.
+  - **Consequence for `FUNCTION_ROLE`** (pending D10). The predicate cannot
+    state conditions today, so effects-only `MMIO_USER` roles are withheld
+    at candidates **and** rejected at admission and phase B. Today they are
+    offered (T4).
+- **Solver-only region membership** (`"<R> (solver)"`) is likewise
+  model-relative. It supports only a claim that carries `HARNESS_MODEL`. An
+  unconditional role needs a model-independent support fact at a concrete
+  address.
 
 ### 4.10 Not representing solver assumptions as firmware facts
 
@@ -665,7 +853,7 @@ Rules:
 - The policy text "a solver result under recorded assumptions" as
   corroboration for `RESOLVED_INDIRECT_CALL` (`A/ledger/policy.py:57-60`)
   should be read under J1 and §4.9. The solver result corroborates only:
-  - when its conditions are compatible with the claim's scope; and
+  - when its conditions are implied by the claim's conditions (R3); and
   - when its lineage is disjoint from the claim's supporting lineage.
 
   **DECISION REQUIRED (D11).**
@@ -679,6 +867,10 @@ Rules:
   (§4.3).
 - Session facts keep their evidence ids (they already do) and add mode and
   conditions (R7).
+- An inferred fact keeps its inference record (§4.6 J5): rule id and
+  version, premise fact ids and evidence ids, precondition results, and
+  emitted assumptions. Its lineage is the union of the premises' lineage.
+  An inference never adds lineage.
 - Phase 2 builds engine-level lineage and the `seeded`/`assisted` handling
   on these ids.
 
@@ -736,18 +928,18 @@ Each item is **DECISION REQUIRED**. The recommendation is a proposal.
 
 | ID | Decision | Options | Recommendation | Unblocks |
 |---|---|---|---|---|
-| D1 | Adopt ESC-0 (refined invariant, §4.1) as a framework rule | adopt / adopt original wording / defer | Adopt the refined form | everything below |
-| D2 | What `EvidenceGrade` means: a per-fact derived summary under a versioned mapping (§4.5) vs the current per-artifact producer-status lookup | derived per-fact / keep per-artifact + patches | Derived per-fact. Approve the mapping cells separately | EV OQ6–8; ADM OQ2 |
+| D1 | Adopt ESC-0 (§4.1) as a framework rule: three transformation kinds; representation-only cannot strengthen; strengthening needs additional evidence (J1–J4) or a registered, validated inference rule (J5) with recorded premises, assumptions, rule identity and lineage | adopt / adopt without J5 (evidence-only strengthening) / defer | Adopt with J5. Approve the rule-registration and validation standard (§4.6) with it, and name an owner for the rule registry (§9) | everything below |
+| D2 | What `EvidenceGrade` means: a per-fact derived summary under a versioned mapping (§4.5) vs the current per-artifact producer-status lookup. Includes R8: unknown essential facets support nothing, existential claims included; legacy stored grades are shown for inspection, never used for support | derived per-fact with R8 / derived per-fact with legacy grades as a fallback / keep per-artifact + patches | Derived per-fact with R8. No fallback to legacy grades. Approve the mapping cells and the versioned legacy-reader policy separately | EV OQ2, 6–8; ADM OQ1–2; X13 |
 | D3 | Ceiling rule | (a) current max over cited; (b) fact-bound max; (c) fact-bound + weakest link for chains + max over independently sufficient alternatives | (c) | X6, B11, B12; EVREC-CEIL-001 |
 | D4 | Census reachability semantics | (a) restrict the strong graph to `STATICALLY_RESOLVED`/`DYNAMICALLY_OBSERVED` sites (match the docstring); (b) keep the graph, report edge bases + root kind with each status, and let consumers apply R2; (c) rename the statuses | (b), plus fix the docstring and the `census_graph` text. Decide root-rule wording (B2) separately | CEN OQ1, 3, 16; DF OQ4; SEM OQ2 |
 | D5 | Can a census fnptr `STRONG` (closed-world) edge be `ESTABLISHED_INDIRECT`? | yes (status quo) / `POTENTIAL_INDIRECT` with a `CLOSED_WORLD(slot)` condition / a new conditional-established kind | `POTENTIAL_INDIRECT` with the condition, until J3 discharge exists | SEM OQ1, 3; ADM OQ4; X10 |
-| D6 | Effects guard and region policy (§4.9 table) | as proposed / stricter (always-true only) / status quo | As proposed | SEM OQ4; ADM OQ3; SYM OQ3–4 |
-| D7 | Effects completeness for grading and absence | key on `coverage`; "does not access" = own-body only unless callee coverage is cited | Key on `coverage` for `forall`; keep STRONG for `exists` direct facts; attach `EFFECTS_COVERAGE_BOUNDED` whenever coverage ≠ complete | X2, X18; EV OQ7; SEM OQ5 |
+| D6 | Effects guard and region policy (§4.9). Every guard status, including RAW `always` and solver `always-true`, is relative to the recorded harness model. `HARNESS_MODEL` is kept through fact extraction, candidates, admission and phase B, and is never silently dropped | (a) model-relative effects claims through conditions on the predicate (needs D10); (b) withhold or reject effects-only claims for predicates that cannot carry conditions; (c) status quo (unconditional roles from effects) | (b) now, and (a) once D10 lands. Reject (c). An unconditional access claim needs a model-independent support fact, or a J3 discharge of `HARNESS_MODEL` (§9 Q14) | SEM OQ4; ADM OQ3; SYM OQ3–6 |
+| D7 | Effects completeness for grading and absence | key on `coverage`; "does not access" = own-body only unless callee coverage is cited | Key on `coverage` for `forall`; keep STRONG for `exists` direct facts *under `HARNESS_MODEL`* (D6); attach `EFFECTS_COVERAGE_BOUNDED` whenever coverage ≠ complete | X2, X18; EV OQ7; SEM OQ5 |
 | D8 | Concrete observation grading | status quo / polarity-restricted STRONG + scenario as a structured condition | Polarity-restricted, with the scenario structured | CONC OQ13; EV OQ9 |
 | D9 | Session-fact levels | keep `PROVEN` (redefine as "mechanically restated") / replace with mode-based levels | Replace, with levels that mirror mode and completeness; the conclusion groups by level | CTRL OQ1–2; X21 |
-| D10 | Representing conditions on claims | reuse `ClaimVersion.assumptions` with coded entries / a new `conditions` field / typed per-predicate fields | Coded entries in a new structured field. `assumptions` stays prose for operators | EV OQ9; SEM OQ6 |
-| D11 | When a solver result counts as corroboration | as policy text / only under J1 + compatible conditions | J1 + compatible conditions (phase 2 confirms) | VER OQ2 |
-| D12 | **Sequencing:** no new verification-policy evidence contract (`MEMORY_ACCESS`, `RESOLVED_INDIRECT_CALL`, `CONTROL_FLOW`) until D3, D5 and D6 are enforced in admission and phase B | adopt / do not | Adopt | Keeps the X15 fail-closed property from turning into a promotion path |
+| D10 | Representing conditions on claims and facts: canonical coded atoms (R3); initial compatibility by set inclusion; any implication table is a later, versioned decision | reuse `ClaimVersion.assumptions` with coded entries / a new structured `conditions` field / typed per-predicate fields | Coded atoms in a new structured field, available to every predicate. `assumptions` stays prose for operators. Prerequisite for D6(a) | EV OQ9; SEM OQ6 |
+| D11 | When a solver result counts as corroboration | as policy text / only under J1 + R3-compatible conditions | J1 + R3-compatible conditions (phase 2 confirms) | VER OQ2 |
+| D12 | **Sequencing gate for verification evidence contracts.** **No new verification-policy evidence contract may be activated** until all of the following are enforced in candidates, admission **and** verification phase B, and their acceptance tests pass. "Activated" means a policy version that adds `evidence_kinds` to any class (`MEMORY_ACCESS`, `RESOLVED_INDIRECT_CALL`, `CONTROL_FLOW`, `BOUNDED_NEGATIVE`, `VECTOR_MAPPING`), or widens `CODE_EXISTENCE`. The rules are: **(1)** fact-bound grading and weakest-link combination (R1, R2, D3); **(2)** condition compatibility, with `HARNESS_MODEL` kept (R3, D6, D10); **(3)** scope containment (claim scope ⊆ fact scope); **(4)** polarity (R4); **(5)** completeness for `forall` claims (R4, D7); **(6)** unknown-facet fail-closed (R8); **(7)** inference records for any strengthened fact (J5). Tests: T1–T5, T7, T8 and T10–T14 | adopt / adopt for a subset of classes / do not | Adopt for all classes. A new contract's policy change should cite the passing test run as its precondition | Keeps the X15 fail-closed property from turning into a promotion path |
 
 ---
 
@@ -791,17 +983,31 @@ test has a pass control and a fail case.
   - (b) RAW guard concretely false, beyond the enrichment cap (`raw-false`
     after §4.3; `unqueried` today);
   - (c) `unknown`;
-  - (d) control: `always-true`;
-  - (e) control: `conditional` with a conditional claim.
+  - (d) solver `always-true`, and RAW `always`;
+  - (e) `conditional`;
+  - (f) control: (d) plus a census constant-address MMIO site for the same
+    function and register.
 - **Expected:**
-  - (a)–(c): no unconditional `MMIO_USER` fact. The candidate is withheld
+  - (a)–(c): no `MMIO_USER` fact of any kind. The candidate is withheld
     with a coded reason. A typed `FUNCTION_ROLE` claim is rejected at
     admission and at phase B.
   - A claim "F does not access PERIPH" citing (a) is also **not** supported
     by it. It is not negative evidence.
-  - (d): admitted.
-  - (e): admitted only with the guard condition.
-- **Current behavior:** (a)–(c) yield `MMIO_USER`.
+  - (d): the extracted fact carries `HARNESS_MODEL(effects-v1)`.
+    - An **unconditional** `FUNCTION_ROLE MMIO_USER` claim supported only by
+      (d) is **rejected** at admission and at phase B, and the candidate is
+      withheld. Solver `always-true` is model-relative (D6).
+    - Once D10 exists, a claim carrying `HARNESS_MODEL(effects-v1)` is
+      admitted, and the phase-B verification record lists that condition.
+  - (e): admitted only with both `HARNESS_MODEL` and the `GUARD` condition
+    (after D10). Rejected otherwise.
+  - (f): the unconditional claim is admitted. Its R1 ceiling is computed
+    from the census fact alone. The effects fact keeps its `HARNESS_MODEL`
+    condition, and adds no unconditional support.
+  - In every variant, `HARNESS_MODEL` is present on the fact after
+    extraction, in the admission diagnostics, and in the verification
+    record. A fixture that strips it at any one stage fails.
+- **Current behavior:** (a)–(e) all yield an unconditional `MMIO_USER`.
 
 ### T3. Complete raw simulation with opaque computed calls and bounded coverage
 
@@ -810,8 +1016,9 @@ test has a pass control and a fail case.
 - **Expected:**
   - the artifact carries `EFFECTS_COVERAGE_BOUNDED` (or the completeness
     facet);
-  - an `exists` role claim is admitted at STRONG, with the limitation
-    inherited;
+  - an `exists` access claim carrying `HARNESS_MODEL(effects-v1)` is
+    admitted at STRONG, with the limitation inherited. The same claim
+    without the condition is rejected (D6, R3);
   - a `forall` claim ("F's only MMIO accesses are …", or "F does not access
     PERIPH2") is rejected unless scope-worded, and then ≤ BOUNDED.
 - **Second fixture.** `coverage=complete` with opaque **direct** calls. "F
@@ -843,12 +1050,15 @@ test has a pass control and a fail case.
 - **Expected:**
   - an unconditional `FUNCTION_ROLE MMIO_USER` is rejected at **admission
     and phase B**, not only in candidates;
-  - a claim carrying `SPECIALIZATION(r0=0x20001000)` is admitted as
-    hypothetical (grade per D2).
+  - a claim carrying `SPECIALIZATION(r0=0x20001000)` and
+    `HARNESS_MODEL(effects-v1)` is admitted as hypothetical (grade per D2;
+    needs D10). A claim carrying only one of the two is rejected (R3).
 - **Grounding variant.** Add an `observed_call_arguments` fixture showing
   `r0=0x20001000` at a call site in scenario S.
-  - The claim may drop `SPECIALIZATION`, but must then carry `SCENARIO(S)`
-    (J3).
+  - The claim may drop `SPECIALIZATION`, through a recorded J3 discharge,
+    but must then carry `SCENARIO(S)` and the concrete harness condition.
+    `HARNESS_MODEL(effects-v1)` remains, because the grounding does not
+    discharge it.
   - Lineage lists both evidence ids.
   - An unconditional claim is still rejected.
 
@@ -930,7 +1140,70 @@ test has a pass control and a fail case.
 - **Second fixture.** Ghidra-resolved `EXACT` → `direct` static. Both
   labels are `EXACT`, and the reader output differs.
 
-**Stopping condition for the contract milestone** (PROPOSED). T1–T11 pass on
+### T12. Semantic condition compatibility (R3)
+
+- **Fixture.** A fact with known conditions
+  `F = {SPECIALIZATION(r0=0x20001000), HARNESS_MODEL(effects-v1)}`.
+- **Expected under the initial subset (set inclusion, canonical atoms):**
+
+  | Claim condition set | Expected |
+  |---|---|
+  | `{}` | rejected |
+  | `F` itself, with `r0=0x20001000` spelled as `R0 = 0X20001000` | accepted (canonicalization) |
+  | `F ∪ {SPECIALIZATION(r1=0x4)}` | accepted. More specific than its support |
+  | `{SPECIALIZATION(r0=0x20001004), HARNESS_MODEL(effects-v1)}` | rejected |
+  | `{SPECIALIZATION(r0∈{0x20001000,0x20001004}), HARNESS_MODEL(effects-v1)}` | rejected (fail closed: not decidable in the subset) |
+  | `{SCENARIO(S), HARNESS_MODEL(concrete:S), HARNESS_MODEL(effects-v1)}`, **with** a recorded J3 discharge of `SPECIALIZATION(r0=…)` by an observation in S | accepted |
+  | the same, **without** a discharge record | rejected |
+
+- **Negative control.** A fact with *unknown* conditions (R8) and an empty
+  claim set: rejected as `FACET_UNKNOWN:conditions`, not accepted as "no
+  conditions".
+
+### T13. Unknown facets fail closed; known low-confidence facts do not
+
+- **Fixtures:**
+  - (a) a census result from a legacy blob with no candidate `basis` field,
+    containing a table-scan-derived path;
+  - (b) the same path with `basis=flash-table-scan` present;
+  - (c) a result from a tool with no registered reader;
+  - (d) a legacy `function_disassembly` blob, whose mode and interpretation
+    a versioned legacy reader determines from tool identity.
+- **Expected:**
+  - (a): no claim support for **either polarity**, including an `exists`
+    claim at PROBABLE (`FACET_UNKNOWN:interpretation`). The artifact stays
+    readable. Its stored legacy grade is displayed, labeled as historical.
+    It is listed in the ledger report. It is unchanged on disk (digest
+    check).
+  - (b): an `exists` claim is admitted at PROBABLE (known heuristic); a
+    `forall` claim is at most BOUNDED.
+  - (c): no claim support. The result can still open a question or lead.
+  - (d): supports claims at its mapped grade. The facets it lacks stay
+    unknown, and the reader version is recorded.
+- **Fail case:** any path that uses a stored legacy grade as claim support,
+  or that defaults an unknown facet to a value.
+
+### T14. Strengthening by inference requires a registered rule and a record
+
+- **Fixtures.** Premises: one constant reaching definition per path, with
+  definition set `complete`, plus a premise condition
+  `RECEIVER(vptr=0x…)`.
+- **Variants:**
+  - (a) the registered rule `indirect-target/established@vN` applied, with
+    its record;
+  - (b) the same output fact (`derived-complete`) with no inference record;
+  - (c) the rule applied with definition set `bounded` (precondition fails);
+  - (d) the rule output omits the premise's `RECEIVER` condition;
+  - (e) a rule version with no passing validation fixtures.
+- **Expected:**
+  - (a): accepted. The output carries the rule id and version, premise ids,
+    precondition results and the union lineage. It keeps `RECEIVER`, and
+    adds any `RULE_ASSUMPTION` conditions.
+  - (b)–(e): the strengthening is void. The fact is treated as its weakest
+    premise (b, c), or rejected (d, e).
+  - In no variant does the lineage gain an engine or an independence mark.
+
+**Stopping condition for the contract milestone** (PROPOSED). T1–T14 pass on
 synthetic fixtures. At least the census-basis and effects-guard tests also
 pass on a second-ISA synthetic fixture where the producer supports one (p-code
 `value_forward_use` already does). And no existing ledger record is
@@ -1012,3 +1285,30 @@ These are not answered here. Several overlap the later phases.
     runs seeded from census `fnptr-seeds`, need a facet in this phase (for
     example `interpretation` downgraded at seeded addresses)? Or is lineage
     in phase 2 enough? (X11, X24.)
+14. **Discharging `HARNESS_MODEL` (D6).**
+    - Can any evidence or validated rule ever discharge an effects
+      `HARNESS_MODEL` condition for some fact family? One candidate is an
+      access on a path whose guard is concretely true in the raw term and
+      reads no memory after an opaque call.
+    - Or must unconditional access claims always rest on a model-independent
+      support fact?
+15. **Inference-rule registry (D1, J5).**
+    - Who owns the registry: the framework, or the producing segment?
+    - Where does it live? (The operation-descriptor milestone is a natural
+      home.)
+    - Which existing implicit producer rules are registered first? Examples
+      are `indirect_call_target` STATICALLY_ESTABLISHED, closed callback
+      target sets, and the census strong-graph composition, if D4 keeps it.
+    - What validation evidence is the minimum for each?
+16. **Condition atom vocabulary and implication table (R3, D10).**
+    - Who canonicalizes atoms, and are atoms framework-owned or partly
+      case-owned (for example scenario names)?
+    - Is a declared implication table needed at all, or is set inclusion
+      enough for the foreseeable predicates?
+17. **Essential facets per predicate (R8).** Are the essential-facet sets in
+    R8 right for every typed predicate? For example, does `CODE_PRESENCE`
+    need `conditions` known, given that structural sources carry
+    configuration, not harness models?
+18. **Legacy reader policy (R8, D2).** Which historical tools have facets
+    that tool identity alone determines (and so can be read without
+    re-execution), and who approves each legacy reader version?
