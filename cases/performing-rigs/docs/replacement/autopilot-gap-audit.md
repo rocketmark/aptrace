@@ -199,6 +199,16 @@ suggested.
   plausible firmware candidate for each and confirmed neither pans out
   (an unarmed EIC callback table; an LCD-only "status" print), so these
   are now negative findings on record rather than unexplored blanks.
+  **Update (2026-10-17)**: the external evidence this classification
+  called for has partly arrived for the RJ45 path — a physical
+  continuity bench pass (`docs/hardware/AutoPilot_Continuity_Bench_Sheet.md`)
+  proved exactly which RJ45 jack (#1-4) wires, through the `SN74CBTLV3257`
+  mux, to which TMC5160's STEP/DIR input (`docs/hardware/
+  firmware-pin-function-map.md`'s "Continuity bench pass (2026-10-17)").
+  That closes the **PCB-wiring** half of this gap; the **firmware-side**
+  half — still no GPIO/EIC sink for the external pulses — is unchanged
+  and this remains `EXTERNAL_EVIDENCE_REQUIRED` for that half. The
+  status LED gap is untouched by this pass.
 - **The radio-transport gap mostly closes itself**: firmware evidence
   alone only reaches PROBABLE for the external radio chip's identity
   (register-pattern match to an SX127x-family part), but

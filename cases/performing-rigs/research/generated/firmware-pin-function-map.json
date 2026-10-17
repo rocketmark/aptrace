@@ -268,13 +268,15 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
-      "confidence": "Re-verified this session (idx2 = 0x11 -> group1,pin17 -> PB17). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
+      "physical_function_status": "PHYSICAL_FUNCTION_TESTED_NOT_CONFIRMED (name provisional; direct continuity test against mux S/OE-bar came back negative -- see Continuity bench pass 2026-10-17; DRV_ENN ruled out on physical grounds)",
+      "confidence": "Re-verified this session (idx2 = 0x11 -> group1,pin17 -> PB17). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only. UPDATE (2026-10-17, continuity bench pass): direct multimeter continuity measurement between this pin and SN74CBTLV3257 pin 1 (S) or pin 15 (OE-bar), on both muxes, read ~325-335 Kohm -- no near-0 ohm reading on either candidate mux control pin. This is negative evidence against a direct, unbuffered trace; it does NOT rule out an indirect/buffered path, and the firmware-side write sequence documented above is unaffected and remains PROVEN. Separately, the same pass measured TMC5160 DRV_ENN hard-strapped to GNDANA on all four TMC5160s (not MCU-routed) -- physically ruling out DRV_ENN as this pin's identity (see TMC5160_DRV_ENN_STRAP). Status downgraded from HIGH-CONFIDENCE INFERENCE to TESTED_NOT_CONFIRMED.",
       "evidence_refs": [
         "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
-        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x142b4 --length 8 (this session: idx2 = group1,pin17)"
+        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x142b4 --length 8 (this session: idx2 = group1,pin17)",
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 2)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
       ],
-      "remaining_unknown": "Active-high vs. active-low on the real driver IC; which specific driver IC(s) this reaches."
+      "remaining_unknown": "Active-high vs. active-low on the real driver IC; which specific driver IC(s) this reaches. Mux S/OE-bar identity: TESTED, NOT CONFIRMED (2026-10-17) -- an indirect/buffered path is not ruled out; DRV_ENN identity is ruled out (see TMC5160_DRV_ENN_STRAP)."
     },
     {
       "signal_id": "DRIVER_ENABLE_B",
@@ -296,13 +298,15 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
-      "confidence": "Re-verified this session (idx3 = 0x10 -> group1,pin16 -> PB16). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
+      "physical_function_status": "PHYSICAL_FUNCTION_TESTED_NOT_CONFIRMED (name provisional; direct continuity test against mux S/OE-bar came back negative -- see Continuity bench pass 2026-10-17; DRV_ENN ruled out on physical grounds)",
+      "confidence": "Re-verified this session (idx3 = 0x10 -> group1,pin16 -> PB16). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only. UPDATE (2026-10-17, continuity bench pass): direct multimeter continuity measurement between this pin and SN74CBTLV3257 pin 1 (S) or pin 15 (OE-bar), on both muxes, read ~325-335 Kohm -- no near-0 ohm reading on either candidate mux control pin. This is negative evidence against a direct, unbuffered trace; it does NOT rule out an indirect/buffered path, and the firmware-side write sequence documented above is unaffected and remains PROVEN. Separately, the same pass measured TMC5160 DRV_ENN hard-strapped to GNDANA on all four TMC5160s (not MCU-routed) -- physically ruling out DRV_ENN as this pin's identity (see TMC5160_DRV_ENN_STRAP). Status downgraded from HIGH-CONFIDENCE INFERENCE to TESTED_NOT_CONFIRMED.",
       "evidence_refs": [
         "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
-        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x142cc --length 8 (this session: idx3 = group1,pin16)"
+        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x142cc --length 8 (this session: idx3 = group1,pin16)",
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 2)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
       ],
-      "remaining_unknown": "Active-high vs. active-low on the real driver IC; which specific driver IC(s) this reaches."
+      "remaining_unknown": "Active-high vs. active-low on the real driver IC; which specific driver IC(s) this reaches. Mux S/OE-bar identity: TESTED, NOT CONFIRMED (2026-10-17) -- an indirect/buffered path is not ruled out; DRV_ENN identity is ruled out (see TMC5160_DRV_ENN_STRAP)."
     },
     {
       "signal_id": "DRIVER_RESET_STROBE_A",
@@ -324,13 +328,15 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
-      "confidence": "GPIO identity CONFIRMED (re-verified this session, idx27 = 0x06 -> group1,pin6 -> PB06); the 'reset strobe' functional label is explicitly PROBABLE only, per the source doc's own hedge. REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
+      "physical_function_status": "PHYSICAL_FUNCTION_TESTED_NOT_CONFIRMED (name provisional; direct continuity test against mux S/OE-bar came back negative -- see Continuity bench pass 2026-10-17; DRV_ENN ruled out on physical grounds)",
+      "confidence": "GPIO identity CONFIRMED (re-verified this session, idx27 = 0x06 -> group1,pin6 -> PB06); the 'reset strobe' functional label is explicitly PROBABLE only, per the source doc's own hedge. REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only. UPDATE (2026-10-17, continuity bench pass): direct multimeter continuity measurement between this pin and SN74CBTLV3257 pin 1 (S) or pin 15 (OE-bar), on both muxes, read ~325-335 Kohm -- no near-0 ohm reading on either candidate mux control pin. This is negative evidence against a direct, unbuffered trace; it does NOT rule out an indirect/buffered path, and the firmware-side write sequence documented above is unaffected and remains PROVEN. Separately, the same pass measured TMC5160 DRV_ENN hard-strapped to GNDANA on all four TMC5160s (not MCU-routed) -- physically ruling out DRV_ENN as this pin's identity (see TMC5160_DRV_ENN_STRAP). Status downgraded from HIGH-CONFIDENCE INFERENCE to TESTED_NOT_CONFIRMED.",
       "evidence_refs": [
         "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
-        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1450c --length 8 (this session: idx27 = group1,pin6)"
+        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1450c --length 8 (this session: idx27 = group1,pin6)",
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 2)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
       ],
-      "remaining_unknown": "Whether this is really a reset line; why two byte-identical disable functions (0x77f8/0x7868) exist."
+      "remaining_unknown": "Whether this is really a reset line; why two byte-identical disable functions (0x77f8/0x7868) exist. Mux S/OE-bar identity: TESTED, NOT CONFIRMED (2026-10-17) -- an indirect/buffered path is not ruled out; DRV_ENN identity is ruled out (see TMC5160_DRV_ENN_STRAP)."
     },
     {
       "signal_id": "DRIVER_RESET_STROBE_B",
@@ -352,13 +358,15 @@
       "firmware_status": "FIRMWARE_PROVEN",
       "package_status": "PACKAGE_PIN_PROVEN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNCONFIRMED (name provisional -- see mux hypothesis)",
-      "confidence": "Re-verified this session (idx29 = 0x07 -> group1,pin7 -> PB07). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only.",
+      "physical_function_status": "PHYSICAL_FUNCTION_TESTED_NOT_CONFIRMED (name provisional; direct continuity test against mux S/OE-bar came back negative -- see Continuity bench pass 2026-10-17; DRV_ENN ruled out on physical grounds)",
+      "confidence": "Re-verified this session (idx29 = 0x07 -> group1,pin7 -> PB07). REVISED HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): more likely the select (S, for PB16/PB17) or active-low output-enable (/OE, for PB06/PB07) line of one of two candidate SN74CBTLV3257 STEP/DIR source-select muxes -- see MOTOR_MUX_IC_IDENTITY and firmware-pin-function-map.md/hardware-reference.md. Do not treat as a proven electrical identity; the prior enable/reset-strobe label is now provisional only. UPDATE (2026-10-17, continuity bench pass): direct multimeter continuity measurement between this pin and SN74CBTLV3257 pin 1 (S) or pin 15 (OE-bar), on both muxes, read ~325-335 Kohm -- no near-0 ohm reading on either candidate mux control pin. This is negative evidence against a direct, unbuffered trace; it does NOT rule out an indirect/buffered path, and the firmware-side write sequence documented above is unaffected and remains PROVEN. Separately, the same pass measured TMC5160 DRV_ENN hard-strapped to GNDANA on all four TMC5160s (not MCU-routed) -- physically ruling out DRV_ENN as this pin's identity (see TMC5160_DRV_ENN_STRAP). Status downgraded from HIGH-CONFIDENCE INFERENCE to TESTED_NOT_CONFIRMED.",
       "evidence_refs": [
         "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json (subsystem: motor enable/disable GPIO handling)",
-        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1453c --length 8 (this session: idx29 = group1,pin7)"
+        "tools/ghidra/aptrace_ghidra.py dump autopilot868 0x1453c --length 8 (this session: idx29 = group1,pin7)",
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 2)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
       ],
-      "remaining_unknown": "Whether this is really a reset line."
+      "remaining_unknown": "Whether this is really a reset line. Mux S/OE-bar identity: TESTED, NOT CONFIRMED (2026-10-17) -- an indirect/buffered path is not ruled out; DRV_ENN identity is ruled out (see TMC5160_DRV_ENN_STRAP)."
     },
     {
       "signal_id": "TRIGGER_DIGITAL",
@@ -712,18 +720,20 @@
       "nearby_components": [
         "2 RJ45 jacks (confirmed visible); 2 more per hardware-reference.md, not located in this photo set"
       ],
-      "physical_destination": "RJ45 jack(s), STEP/DIR pins per the documented pinout (cases/performing-rigs/docs/hardware/hardware-reference.md) -- but with NO firmware-side GPIO identified to connect to them.",
+      "physical_destination": "RJ45 jack(s), STEP/DIR pins per the documented pinout (cases/performing-rigs/docs/hardware/hardware-reference.md) -- but with NO firmware-side GPIO identified to connect to them. UPDATE (2026-10-17): which specific RJ45 jack (#1-4) feeds which TMC5160's STEP/DIR input, via which SN74CBTLV3257 mux channel, is now PROVEN by continuity -- see MUX_TMC5160_RJ45_ROUTING. This is the PCB-wiring half of this gap only; the firmware-side GPIO/EIC sink for these external pulses is still not found.",
       "firmware_status": "FIRMWARE_UNKNOWN",
       "package_status": "PACKAGE_PIN_UNKNOWN",
       "pcb_status": "PCB_NEIGHBORHOOD_ONLY",
       "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN",
-      "confidence": "Physical connector existence and pinout CONFIRMED (manual + hardware-reference.md + this session's photo). Firmware-side GPIO mapping explicitly UNKNOWN -- this is a genuine, previously-documented gap (EXTERNAL_EVIDENCE_REQUIRED), not silently forced into a mapping.",
+      "confidence": "Physical connector existence and pinout CONFIRMED (manual + hardware-reference.md + this session's photo). Firmware-side GPIO mapping explicitly UNKNOWN -- this is a genuine, previously-documented gap (EXTERNAL_EVIDENCE_REQUIRED), not silently forced into a mapping. UPDATE (2026-10-17, continuity bench pass): the RJ45-jack <-> TMC5160 PCB wiring is now PROVEN (see MUX_TMC5160_RJ45_ROUTING), strengthening (not proving) the standing hypothesis that external RJ45 STEP/DIR bypasses the ATSAMD51 electrically via the mux rather than being consumed by firmware. Firmware-side GPIO mapping remains FIRMWARE_UNKNOWN, unchanged -- no new GPIO candidate was found or tested this pass.",
       "evidence_refs": [
         "cases/performing-rigs/docs/hardware/hardware-reference.md (RJ45 motor signal input pinout)",
         "cases/performing-rigs/docs/replacement/autopilot-gap-audit.md (gap 8 / 'external STEP/DIR input behavior', gap 5 in Gap Resolution B)",
-        "cases/performing-rigs/research/AutoPilot Board Photos/REV 2/IMG_3091.JPG"
+        "cases/performing-rigs/research/AutoPilot Board Photos/REV 2/IMG_3091.JPG",
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (sections 3, 4)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
       ],
-      "remaining_unknown": "Entire firmware-side mechanism (presence detection, Auto-Mode lockout trigger, pulse passthrough path) and which 2 (or 4) physical jacks exist beyond the 2 visually located this pass."
+      "remaining_unknown": "Entire firmware-side mechanism (presence detection, Auto-Mode lockout trigger, pulse passthrough path) and which 2 (or 4) physical jacks exist beyond the 2 visually located this pass. (RJ45-jack <-> TMC5160 PCB wiring is no longer unknown for 4 of the jacks -- see MUX_TMC5160_RJ45_ROUTING; the firmware-side mechanism remains entirely unknown.)"
     },
     {
       "signal_id": "MOTOR_DRIVER_IC_IDENTITY",
@@ -776,22 +786,138 @@
       "physical_destination": "Not established. No board signal (STEP/DIR/enable/reset-strobe/radio-SPI or any other named signal in this map) has been traced to this chip's A/B1/B2/S/OE-bar pins.",
       "firmware_status": "NOT_APPLICABLE",
       "package_status": "NOT_APPLICABLE",
-      "pcb_status": "PROVEN_PCB_PHOTO_PLUS_MARKING_MATCH (chip identity only)",
-      "physical_function_status": "PHYSICAL_FUNCTION_UNKNOWN (bus/signal role not established)",
-      "confidence": "Chip identity is PROVEN by direct PCB photo plus an independently fetched, verified TI datasheet marking match (SCDS040N) -- same evidentiary tier as the TMC5160A-TA and CSD88537ND findings. NOT established: which board signals (if any) connect to this chip's pins. Architectural candidate only: a shared-select 4-channel 2:1 mux is the kind of part used to time-share one physical bus (e.g. SPI/UART) across two destinations with a single control bit, which would be directly relevant to the open 'is a config bus shared across all four TMC5160s' question -- but this role is NOT proven, only plausible by part function and TI's own 'Motor drives' application note. A PCB continuity check is required to confirm or rule this out. REVISED LEADING HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): rather than a generic SPI/UART config-bus share, the leading theory is now that two of these devices select, per motor pair, between MCU-generated STEP/DIR and externally-supplied (RJ45) STEP/DIR, feeding the four TMC5160 STEP/DIR inputs -- PB16/PB17 as the two S lines, PB06/PB07 as the two OE-bar lines (see DRIVER_ENABLE_A/B, DRIVER_RESET_STROBE_A/B). Still not established: no board signal traced to this chip's A/B1/B2/S/OE-bar pins.",
+      "pcb_status": "PROVEN_PCB_PHOTO_PLUS_MARKING_MATCH (chip identity); device count = 2 additionally PROVEN_CONTINUITY 2026-10-17 (two electrically distinct 0-ohm continuity patterns, 'Mux 1' -> TMC1+TMC3, 'Mux 2' -> TMC2+TMC4 -- see MUX_TMC5160_RJ45_ROUTING)",
+      "physical_function_status": "PHYSICAL_FUNCTION_PROVEN (routing only, 2026-10-17: mux A pin -> TMC5160 STEP/DIR, mux B1+B2 -> RJ45 jack, both muxes, all 8 switched signals -- see MUX_TMC5160_RJ45_ROUTING; S/OE-bar -> ATSAMD51 GPIO identity remains PHYSICAL_FUNCTION_TESTED_NOT_CONFIRMED, see DRIVER_ENABLE_A/B and DRIVER_RESET_STROBE_A/B)",
+      "confidence": "Chip identity is PROVEN by direct PCB photo plus an independently fetched, verified TI datasheet marking match (SCDS040N) -- same evidentiary tier as the TMC5160A-TA and CSD88537ND findings. NOT established: which board signals (if any) connect to this chip's pins. Architectural candidate only: a shared-select 4-channel 2:1 mux is the kind of part used to time-share one physical bus (e.g. SPI/UART) across two destinations with a single control bit, which would be directly relevant to the open 'is a config bus shared across all four TMC5160s' question -- but this role is NOT proven, only plausible by part function and TI's own 'Motor drives' application note. A PCB continuity check is required to confirm or rule this out. REVISED LEADING HYPOTHESIS (this pass, HIGH-CONFIDENCE INFERENCE not PROVEN): rather than a generic SPI/UART config-bus share, the leading theory is now that two of these devices select, per motor pair, between MCU-generated STEP/DIR and externally-supplied (RJ45) STEP/DIR, feeding the four TMC5160 STEP/DIR inputs -- PB16/PB17 as the two S lines, PB06/PB07 as the two OE-bar lines (see DRIVER_ENABLE_A/B, DRIVER_RESET_STROBE_A/B). Still not established: no board signal traced to this chip's A/B1/B2/S/OE-bar pins. UPDATE (2026-10-17, continuity bench pass): device count upgraded PROBABLE -> PROVEN (two electrically distinct devices measured, not merely inferred from a second photo). Mux-channel -> TMC5160 -> RJ45-jack routing is now PROVEN for all 8 switched channels (section 3 + section 4 of the bench sheet). The S/OE-bar -> PB16/17/06/07 half of the 'REVISED LEADING HYPOTHESIS' above was separately tested and came back TESTED_NOT_CONFIRMED, not proven -- see DRIVER_ENABLE_A/B, DRIVER_RESET_STROBE_A/B. Neither B1 nor B2 was found connected to any ATSAMD51 pin this pass (the RJ45-side connection was what was found/recorded) -- the 'MCU STEP/DIR source' leg of the architecture diagram remains neither confirmed nor refuted.",
       "evidence_refs": [
         "cases/performing-rigs/research/AutoPilot Board Photos/REV 1/20260530_PerformingRigs_DatabaseImages_AutoPilot0103.jpg",
         "TI datasheet SCDS040N (SN74CBTLV3257), fetched from ti.com/lit/gpn/SN74CBTLV3257",
-        "cases/performing-rigs/docs/hardware/hardware-reference.md (Adjacent 16-pin SSOP mux/demux)"
+        "cases/performing-rigs/docs/hardware/hardware-reference.md (Adjacent 16-pin SSOP mux/demux)",
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (sections 2, 3, 4)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
       ],
-      "remaining_unknown": "Whether this chip carries any motor-driver-relevant signal at all; if so, which signals (S/OE-bar/A/B1/B2 per channel) map to which board nets; whether it is the mechanism sharing an SPI/UART config bus across TMC5160 pairs. Which two motors belong to each mux; B1/B2 source polarity; whether a second device exists as reported (PROBABLE, not independently photo-confirmed this pass)."
+      "remaining_unknown": "Whether this chip (or either of the two, now PROVEN-count devices) carries the MCU STEP/DIR source leg on B1 or B2 -- not probed this pass. S/OE-bar -> ATSAMD51 GPIO identity -- TESTED_NOT_CONFIRMED (2026-10-17), not proven, not refuted (indirect/buffered path not ruled out). Logical firmware channel (STEP0-3/DIR0-3) <-> physical TMC1-4 identity, and TMC1-4 <-> physical XLR-jack identity -- the bench sheet's TMC1-4 labels are probe-location labels, not yet tied to either numbering scheme."
+    },
+    {
+      "signal_id": "MUX_TMC5160_RJ45_ROUTING",
+      "logical_function": "Per-channel routing of each SN74CBTLV3257 mux: A/common pin to one TMC5160's STEP or DIR input, and both B1/B2 switch-input pins to one external RJ45 jack",
+      "user_or_protocol_origin": "n/a -- PCB wiring fact, not a wire/UI-triggered signal",
+      "firmware_function": "n/a -- no firmware-side evidence claimed by this entry",
+      "firmware_state_or_trigger": "n/a",
+      "mcu_peripheral": "n/a (not an MCU GPIO/peripheral signal; documents mux-to-TMC5160-to-RJ45 PCB wiring)",
+      "gpio": null,
+      "gpio_direction": null,
+      "active_level_or_encoding": null,
+      "chip_part": "SN74CBTLV3257 (x2) + TMC5160A-TA (x4)",
+      "package_pin": null,
+      "pcb_observation": "Continuity/resistance bench pass, 2026-10-17 (AutoPilot_Continuity_Bench_Sheet.md, section 3 'Mux outputs to TMC5160 STEP/DIR' and section 4 'Trace both sides of each used mux channel'). Section 3: 0 ohm (clean continuity) measured between each mux channel's A pin and exactly one TMC5160's pin 17 (REF_STEP) or pin 18 (REF_DIR); every other TMC5160 on that channel read ~480-570 Kohm (not connected). Section 4: for the same channels, both B1 and B2 measured continuity (through on-board ESD diodes to VCC I/O, plus a ~468-490 ohm series resistor) to one specific RJ45 jack -- not two different sources.",
+      "nearby_components": [
+        "TMC5160A-TA (x4, motor-driver region)",
+        "SN74CBTLV3257 (x2, same region)",
+        "4x RJ45 motor-signal-input jacks (panel-mounted)"
+      ],
+      "physical_destination": "Mux 1: channels 1A/2A (pins 4/7) -> TMC1 pin17(STEP)/pin18(DIR) -> RJ45 #2. Mux 1: channels 3A/4A (pins 9/12) -> TMC3 pin18(DIR)/pin17(STEP) -> RJ45 #4. Mux 2: channels 1A/2A (pins 4/7) -> TMC2 pin17(STEP)/pin18(DIR) -> RJ45 #1. Mux 2: channels 3A/4A (pins 9/12) -> TMC4 pin18(DIR)/pin17(STEP) -> RJ45 #3.",
+      "firmware_status": "NOT_APPLICABLE",
+      "package_status": "NOT_APPLICABLE",
+      "pcb_status": "PROVEN_CONTINUITY",
+      "physical_function_status": "PHYSICAL_FUNCTION_PROVEN",
+      "confidence": "PROVEN by direct multimeter continuity/resistance measurement on a powered-off board (not a photo inference). Resolves 'which two motors belong to each SN74CBTLV3257' and gives a proven mux-channel <-> RJ45-jack mapping. Does NOT establish: which ATSAMD51 pin (if any) connects to either B1 or B2 -- the ATSAMD51-side probe point was not the connection found/recorded in this pass, so the mux's MCU-side source leg remains neither confirmed nor refuted. Also does NOT establish logical firmware channel (STEP0-3/DIR0-3) <-> TMC1-4 identity, or TMC1-4 <-> physical XLR-jack identity -- the bench sheet's TMC1-4 labels are the technician's own probe-location labels, not yet tied to firmware channel numbering or XLR connector numbering.",
+      "evidence_refs": [
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (sections 3 and 4)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
+      ],
+      "remaining_unknown": "Which ATSAMD51 pin (if any) feeds B1 or B2; logical firmware channel <-> physical TMC1-4 identity; TMC1-4 <-> physical XLR-jack identity; DIR polarity <-> actual rotation direction."
+    },
+    {
+      "signal_id": "TMC5160_MODE_SELECT_STRAP",
+      "logical_function": "TMC5160A-TA interface-mode select straps (SD_MODE, SPI_MODE)",
+      "user_or_protocol_origin": "n/a -- hardware strap, not a wire/UI-triggered signal",
+      "firmware_function": "n/a",
+      "firmware_state_or_trigger": "n/a. Separately and previously established at the firmware layer: the MC command's CURRENT and MICROSTEPPING fields have no traced hardware effect in the original firmware -- consistent with, not derived from, this strap finding.",
+      "mcu_peripheral": "n/a (TMC5160-side pins, hard-strapped, not MCU GPIOs)",
+      "gpio": null,
+      "gpio_direction": null,
+      "active_level_or_encoding": "Both pins strapped HIGH (tied to VCC I/O, 0 ohm)",
+      "chip_part": "TMC5160A-TA (TMC1, measured; TMC2-4 assumed identical by board repetition, not individually measured)",
+      "package_pin": "21 (SD_MODE), 22 (SPI_MODE)",
+      "pcb_observation": "Continuity bench pass, 2026-10-17 (AutoPilot_Continuity_Bench_Sheet.md, section 5 'TMC5160 mode pins'). TMC1 pin 21 (SD_MODE): 0 ohm to TMC VCC I/O (pin 20); also measured 0 ohm to ATSAMD51 pins 8, 21, 34, 48, 56 (MCU supply/ground pins per the bench sheet's own listing, not GPIOs -- consistent with a shared VCC I/O rail, not a GPIO control line). TMC1 pin 22 (SPI_MODE): identical result.",
+      "nearby_components": [
+        "TMC5160A-TA VCC I/O rail"
+      ],
+      "physical_destination": "Hard-wired to the TMC5160's own VCC I/O rail -- not routed to any ATSAMD51 GPIO.",
+      "firmware_status": "NOT_APPLICABLE",
+      "package_status": "NOT_APPLICABLE",
+      "pcb_status": "PROVEN_CONTINUITY",
+      "physical_function_status": "PHYSICAL_FUNCTION_PROVEN (strap identity only)",
+      "confidence": "PROVEN by direct continuity measurement (TMC1 only; TMC2-4 assumed identical by board repetition, not individually measured). Both mode-select pins strapped HIGH is the TMC5160A's documented standalone Step/Dir interface-mode strap pattern. Scope strictly bounded: this establishes WHICH digital configuration interface is selected (standalone, not SPI/UART) -- it does NOT establish motor current magnitude, current-sense/IRUN-IHOLD scaling, or any safe current/operating limit. Do not read this finding as a safety or current-configuration claim.",
+      "evidence_refs": [
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 5)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
+      ],
+      "remaining_unknown": "Whether TMC2-4 are strapped identically (not individually measured); motor current magnitude and safe current limits (not addressed by this finding); CSN/SCK/SDI/SDO (pins 13-16) and DIAG0/DIAG1 wiring (blank in bench sheet, still unmeasured)."
+    },
+    {
+      "signal_id": "TMC5160_CFG_STRAP",
+      "logical_function": "TMC5160A-TA CFG4/CFG5/CFG6 configuration straps (ENCB_DCN_CFG4, ENCA_DCN_CFG5, ENCN_DCO_CFG6)",
+      "user_or_protocol_origin": "n/a -- hardware strap, not a wire/UI-triggered signal",
+      "firmware_function": "n/a",
+      "firmware_state_or_trigger": "n/a",
+      "mcu_peripheral": "n/a (TMC5160-side pins, hard-strapped, not MCU GPIOs)",
+      "gpio": null,
+      "gpio_direction": null,
+      "active_level_or_encoding": "All three pins strapped LOW (tied to GNDANA, 0 ohm)",
+      "chip_part": "TMC5160A-TA (TMC1, measured; TMC2-4 assumed identical by board repetition, not individually measured)",
+      "package_pin": "23 (CFG4), 24 (CFG5), 25 (CFG6)",
+      "pcb_observation": "Continuity bench pass, 2026-10-17 (AutoPilot_Continuity_Bench_Sheet.md, section 7 'Remaining TMC5160 configuration pins'). TMC1 pins 23, 24, 25: each 0 ohm to GNDANA (ATSAMD51 pin 7).",
+      "nearby_components": [
+        "TMC5160A-TA GNDANA rail"
+      ],
+      "physical_destination": "Hard-wired to GNDANA -- not routed to any ATSAMD51 GPIO.",
+      "firmware_status": "NOT_APPLICABLE",
+      "package_status": "NOT_APPLICABLE",
+      "pcb_status": "PROVEN_CONTINUITY",
+      "physical_function_status": "PHYSICAL_FUNCTION_PROVEN (strap identity only)",
+      "confidence": "PROVEN by direct continuity measurement (TMC1 only; TMC2-4 assumed identical by board repetition, not individually measured). Strapped LOW on all three CFG pins is consistent with, and physically supports, the standalone Step/Dir mode indicated by TMC5160_MODE_SELECT_STRAP. Scope strictly bounded: this is a strap-identity fact only -- it does NOT establish motor current magnitude, current scaling, or any safe current/operating limit.",
+      "evidence_refs": [
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 7)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
+      ],
+      "remaining_unknown": "Whether TMC2-4 are strapped identically (not individually measured); the exact current-scaling/sense-resistor network these straps interact with; motor current magnitude and safe current limits (not addressed by this finding)."
+    },
+    {
+      "signal_id": "TMC5160_DRV_ENN_STRAP",
+      "logical_function": "TMC5160A-TA driver-enable strap (DRV_ENN)",
+      "user_or_protocol_origin": "n/a -- hardware strap, not a wire/UI-triggered signal",
+      "firmware_function": "n/a",
+      "firmware_state_or_trigger": "n/a",
+      "mcu_peripheral": "n/a (TMC5160-side pin, hard-strapped, not an MCU GPIO)",
+      "gpio": null,
+      "gpio_direction": null,
+      "active_level_or_encoding": "Strapped LOW (tied to GNDANA, 0 ohm) -- DRV_ENN is active-low on this part",
+      "chip_part": "TMC5160A-TA (TMC1, measured; TMC2-4 assumed identical by board repetition, not individually measured)",
+      "package_pin": "28 (DRV_ENN)",
+      "pcb_observation": "Continuity bench pass, 2026-10-17 (AutoPilot_Continuity_Bench_Sheet.md, section 8 'Lower-priority TMC5160 pins'). TMC1 pin 28: 0 ohm to GNDANA (ATSAMD51 pin 7) -- hard-strapped, not routed to any ATSAMD51 pin.",
+      "nearby_components": [
+        "TMC5160A-TA GNDANA rail"
+      ],
+      "physical_destination": "Hard-wired to GNDANA -- not MCU-controlled.",
+      "firmware_status": "NOT_APPLICABLE",
+      "package_status": "NOT_APPLICABLE",
+      "pcb_status": "PROVEN_CONTINUITY",
+      "physical_function_status": "PHYSICAL_FUNCTION_PROVEN (strap identity only)",
+      "confidence": "PROVEN by direct continuity measurement (TMC1 only; TMC2-4 assumed identical by board repetition, not individually measured). This is a strap fact only -- it does NOT establish whether the driver stage is actually safely de-energized, actively driven, or current-limited under any condition; that remains unestablished and is a separate question from this strap. It DOES rule out one previously-open candidate interpretation: PB16/PB17/PB06/PB07 (see DRIVER_ENABLE_A, DRIVER_ENABLE_B, DRIVER_RESET_STROBE_A, DRIVER_RESET_STROBE_B) cannot be wired to DRV_ENN on any TMC5160, since DRV_ENN has no MCU-side connection at all. This does NOT thereby confirm the competing S/OE-bar hypothesis for those same four pins -- see those entries' own TESTED_NOT_CONFIRMED grade.",
+      "evidence_refs": [
+        "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md (section 8)",
+        "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md (Continuity bench pass (2026-10-17))"
+      ],
+      "remaining_unknown": "Whether TMC2-4 are strapped identically (not individually measured); actual driver energization/safety under real operating conditions (not addressed by this finding); DIAG0/DIAG1 wiring (blank in bench sheet, still unmeasured)."
     }
   ],
   "summary_counts": {
-    "total_signals": 27,
+    "total_signals": 31,
     "firmware_status": {
-      "FIRMWARE_PROVEN": 20,
       "FIRMWARE_PROBABLE": 4,
+      "FIRMWARE_PROVEN": 20,
       "FIRMWARE_UNKNOWN": 1
     },
     "package_status": {
@@ -800,11 +926,16 @@
     },
     "pcb_status": {
       "PCB_NEIGHBORHOOD_ONLY": 18,
-      "PCB_TRACE_UNKNOWN": 7
+      "PCB_TRACE_UNKNOWN": 7,
+      "PROVEN_CONTINUITY": 4,
+      "PROVEN_PCB_PHOTO": 1,
+      "PROVEN_PCB_PHOTO_PLUS_MARKING_MATCH": 1
     },
     "physical_function_status": {
-      "PHYSICAL_FUNCTION_PROBABLE": 14,
-      "PHYSICAL_FUNCTION_UNKNOWN": 11
+      "PHYSICAL_FUNCTION_PROBABLE": 13,
+      "PHYSICAL_FUNCTION_PROVEN": 5,
+      "PHYSICAL_FUNCTION_TESTED_NOT_CONFIRMED": 4,
+      "PHYSICAL_FUNCTION_UNKNOWN": 9
     }
   },
   "validation_checklist": {

@@ -97,11 +97,24 @@ addresses: `firmware-pin-function-map.md`'s boot-time paragraph.
   inbound `F0`/`E0` manual-jog frames can trigger **re-enable** when a
   "was disabled" flag is set.
 
-**Physical meaning**: still not confirmed — this pass (and the later
-one) establishes *exactly what* the firmware writes and *when*, not
-what it does electrically. The mux-hypothesis pass
-(`firmware-pin-function-map.md`) now has a specific candidate (`SN74CBTLV3257`
-`/OE`/`S` lines), `HIGH-CONFIDENCE INFERENCE`, not proven.
+**Physical meaning**: still not confirmed. This pass (and the later one)
+establishes *exactly what* the firmware writes and *when*, not what it
+does electrically — that remains true. The mux-hypothesis pass
+(`firmware-pin-function-map.md`) proposed a specific candidate
+(`SN74CBTLV3257` `/OE`/`S` lines), graded `HIGH-CONFIDENCE INFERENCE`.
+**Update (2026-10-17)**: a physical continuity bench pass
+(`docs/hardware/AutoPilot_Continuity_Bench_Sheet.md`) measured PB16/
+PB17/PB06/PB07 directly against the mux's `S`(1) and `OE‾`(15) pins on
+both muxes and found **no near-0 Ω reading on any of them** (~325–335
+KΩ throughout) — downgraded to `TESTED — DIRECT CONNECTION NOT
+CONFIRMED` (see `docs/hardware/firmware-pin-function-map.md`'s
+"Continuity bench pass (2026-10-17)" for the readings). This is negative
+evidence against a direct, unbuffered trace, not proof an indirect
+control path doesn't exist — and it does not touch this section's own
+firmware-side finding, which remains `CAUSAL_PATH_PROVEN` below. The
+same pass separately proved `DRV_ENN` on all four TMC5160s is strapped
+to `GNDANA` with no MCU connection — ruling out `DRV_ENN` as the
+physical identity of these four pins, on any TMC5160.
 
 **Gap classification**: `CAUSAL_PATH_PROVEN` for the firmware
 write-site/value/ordering question (strengthened, not just re-affirmed,
@@ -162,7 +175,16 @@ unresolved gap (EIC callback table confirmed dormant) before this pass,
 not newly found here.
 
 **Gap classification**: `INSUFFICIENT_SINK`. Per instruction, not
-globally searched for — no pin to start from, none invented.
+globally searched for — no pin to start from, none invented. **Still
+`INSUFFICIENT_SINK` after the 2026-10-17 continuity bench pass** — that
+pass proved, at the PCB level, exactly which RJ45 jack feeds each
+TMC5160's STEP/DIR input through the mux (`docs/hardware/
+firmware-pin-function-map.md`'s "Continuity bench pass (2026-10-17)"),
+strengthening the standing hypothesis that external RJ45 STEP/DIR
+bypasses the ATSAMD51 entirely rather than being consumed by firmware.
+It did **not** find or test any new GPIO candidate, so the firmware-side
+sink question this classification is about is unchanged: still no pin
+to start from.
 
 ## Report
 
@@ -189,8 +211,13 @@ globally searched for — no pin to start from, none invented.
     PB30/PB31 pulse (joining G-commit and Trigger-reload).
 - **Remaining high-value unknowns**: PB30/PB31 and TCC1/PB22 physical
   destinations; whether TCC1 fires on real silicon (`MODEL_GAP`); full
-  semantics of ASCII `'J'`; PB06/PB07's electrical identity; the
-  external RJ45 STEP/DIR mechanism in its entirety.
+  semantics of ASCII `'J'`; PB06/PB07's electrical identity (as of
+  2026-10-17, `TESTED — DIRECT CONNECTION NOT CONFIRMED` against the
+  mux `S`/`OE‾` hypothesis — `DRV_ENN` is ruled out by the same pass,
+  see `docs/hardware/firmware-pin-function-map.md`); the external RJ45
+  STEP/DIR mechanism's firmware-side consumption (still none found; the
+  2026-10-17 continuity pass proved the RJ45-jack ↔ TMC5160 wiring at
+  the PCB level but found no ATSAMD51-side sink).
 
 **Recommended next causal query before LID**: none. Every candidate in
 this audit's set now has either a proven firmware causal path, an
