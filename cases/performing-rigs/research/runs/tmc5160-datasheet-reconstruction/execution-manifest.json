@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-17",
+  "role": "APTrace operator",
+  "baseline": {
+    "branch": "main",
+    "HEAD": "6b331521d2c20e24fdf16cfd9f975fa67dd3d607",
+    "local_origin_comparison": "0 0",
+    "initial_tracked_tree": "clean"
+  },
+  "firmware": {
+    "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000"
+  },
+  "source_hashes": {
+    "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json": "28787e650a986c0238afaa441e327a1e8a6f14f10fe1f822993f140c0ba4bd9d",
+    "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-configuration-calls.json": "c06f9928474597af0354b313925fb38ad8ae2600e4f8793546bcfab952c71c83",
+    "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json": "547d32e008e209e0be5329be065b6b451d015ba4c2d974e80622e5ca48c8872f"
+  },
+  "datasheets": {
+    "cases/performing-rigs/research/SAM-D5x-E5x-Family-Data-Sheet-DS60001507.pdf": "9a911a0ec57f0a0db0f2056eefcfb47ffa6703e9de2e6b78f66cb24152a8a5ae",
+    "cases/performing-rigs/research/tmc5160a_datasheet_rev1.18.pdf": "3c3edc4fbd694f3afd95ff8f5922a777fdc56d91660c3c0fbdccc016f1bd0be1"
+  },
+  "operations": [
+    "Read AGENTS.md,docs/codex-operator.md,.codex/config.toml and pasted task; inspect git state and existing reports/native/Ghidra artifacts",
+    "PDFKit extraction and selected page rendering with saved extract-pdf.swift; no external research",
+    "python3 tools/ghidra/aptrace_ghidra.py dump autopilot868 0xaee8 --length 8",
+    "python3 cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/interpret-recorded-transactions.py",
+    "python3 cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/build-documentary-vectors.py",
+    "JSON/source-hash/frame/caller/vector/link/historical-integrity checks"
+  ],
+  "pdf_reproduction": "swift -module-cache-path /private/tmp/aptrace-tmc-pdf-cache cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/extract-pdf.swift INPUT.pdf OUTPUT.txt [one_based_page_for_PNG]",
+  "execution_reuse": "Three existing native records only; exact original commands/assumptions in prior execution-manifest.json. No new concrete/symbolic run.",
+  "failures": [
+    "No installed pdftotext/pdfinfo/mutool/Python PDF modules; used available system PDFKit for document handling. PDFKit/Swift emitted sandbox diagnostic warnings on initial extraction; output succeeded."
+  ],
+  "permission_blockers": [],
+  "tests_run": [],
+  "validation": "Artifact consistency/integrity checks only; no framework/apfw2 implementation changed, no framework suites run.",
+  "required_artifacts": {
+    "cases/performing-rigs/docs/replacement/tmc5160-datasheet-reconciliation.md": "e130e65c23a110da2ea1c3bfda02997b9d2eec30ca0d15c4e2c3272778b8b8f0",
+    "cases/performing-rigs/research/generated/tmc5160-startup-transactions.json": "b14ff6fb45fa49d55265c24dbf0e397693c1ef9e9782b418828f3c91bed0daf6",
+    "cases/performing-rigs/research/generated/tmc5160-configuration-vectors.json": "08f2dcbd03f51d2c5e37592d075b084e464c62f33d1757a6671dad5491349fcd",
+    "cases/performing-rigs/docs/replacement/tmc5160-apfw2-contract.md": "9775d369f0f44a29baacae44b271f6d04a7f984bbac23de8dd4b927e830c2406",
+    "cases/performing-rigs/docs/replacement/tmc5160-bench-delta.md": "11aaa139d274a6e5fa21787a231368e3144ab447a30c1e6e2eed744f189b151d"
+  },
+  "modifications": "New case artifacts only; no historical evidence/ledger/framework/apfw2 edit; no commit/push",
+  "supporting_artifact_hashes": {
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/samd-pinout-p22.png": "82703339fe6317eab791df9330468e27f70c4e48be8975531c803699d14a3b00",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/samd5x-extracted.txt": "a1c0874d1a8bad338c55b8ee449363e471ae07c141760fd3cf7c645b0cb363a8",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/tmc5160a-extracted.txt": "a3cfaec91da3b03772bc4d9bdf93487aae869c291cbd3600f2b47e63049f23ab",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/tmc-electrical-p123.png": "8580ee36e79e49831e51a15490a493e493b7f2201b1ddf1f67039669c5990981",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/extract-pdf.swift": "a9a2653bbfd8d21ae80d5be811cd86e20cdc3f5d235db0f79a35801e664b15b9",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/samd-mux-p33.png": "7fcfbec0c02d7475f2c1013d02c26a64ca00f5ea550680a1aceb83bf190c7e34",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/interpretation-summary.txt": "7ddb9aa5e3be17b738a44c78615c9e5e87747fa2e4d0e065d5c53a47301ed796",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/startup-transaction-table.md": "fc373ee6ebdbdd8f58ded912699d392ce766713c17f0754dc0b89d39f90d4c23",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/samd-mux-p34.png": "1dfe7c55c7b7b462ecb56a6953d3f5ea262d4245beebbea97a3eaa1eca28afbe",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/current-constants.txt": "44613544d4e54b0f271fe2d4628d71dd68cd315549337b2bca52214a594d9abb",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/build-documentary-vectors.py": "0eea59a8379aef6a06ec6f9154951a8f3d8cf26a187455304548f9a4d59e5006",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/tmc-current-p74.png": "dbdca73f3866c1c8eb3152de9ee2088b261c499cb569ecb85a0ed241aaeac946",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/interpret-recorded-transactions.py": "bb8e40ae93ec6cdb6c3b6e48e5505b07db252bc35ea9c26d67f33bc09ade6e2a",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/tmc-chopconf-p51.png": "021539227e576eb404668aae3d9c6bb1e8ebfc238b87359dd306f6a8a3920246",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/artifact-validation.txt": "7964f2c153b72024301faa061748e6a9b08987160f81b3556f3d24b295d3869b"
+  }
+}

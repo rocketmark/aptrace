@@ -1,0 +1,5 @@
+PASS: JSON syntax and structure;124 complete datagrams,620 bytes,108 writes,16 read datagrams in8 paired methods,8 vectors.
+PASS: no orphan bytes/incomplete frames/CS overlaps; object/selector/payload joins agree.
+PASS: referenced source SHA-256 digests match; relative Markdown links resolve.
+PASS: no hardware_response or VERIFIED status invented; tracked files unchanged.
+No framework, apfw2, physical or symbolic tests run.

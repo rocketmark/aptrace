@@ -1,0 +1,6293 @@
+{
+  "schema": "case reference vectors v1",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "transaction_artifact": "tmc5160-startup-transactions.json",
+  "datasheets": [
+    "SAM D5x/E5x DS60001507N, \u00a76.1 Table6-1 pp30\u201334; Table6-15 p37; \u00a735.5.3 p905; \u00a735.8 pp919\u2013925",
+    "TMC5160/TMC5160A rev1.18 \u00a74 pp23\u201325; \u00a76 pp31\u201356; \u00a79 p74"
+  ],
+  "vectors": [
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "SPI5-INIT",
+      "purpose": "SERCOM5 initialization",
+      "entry_or_checkpoint": "0x9f60 / 0xa28c; 0xb6e2",
+      "inputs_and_initial_conditions": {
+        "object": "0x200041e4",
+        "peripheral": "0x43000400",
+        "MISO": 52,
+        "MOSI": 22,
+        "SCK": 23,
+        "DOPO": 0,
+        "DIPO": 3
+      },
+      "transaction_ids": [],
+      "raw_mosi_sequences": [],
+      "register_interpretations": [],
+      "expected_logical_protocol_behavior": {
+        "PMUX": "D on PB01/02/03",
+        "CTRLA_initial": "0x0030000c",
+        "CTRLB": "0x00020000",
+        "BAUD_initial": "0x05",
+        "CTRLA_enabled": "0x0030000e",
+        "CTRLA_transaction": "0x3030000e",
+        "BAUD_transaction": "0x0b",
+        "requested_transaction_hz": 2000000,
+        "actual_hz": null,
+        "clock_dependencies": "MCLK.APBDMASK.SERCOM5; GCLK.PCHCTRL35=0x41 selects GEN1 and CHEN; PCHCTRL3=0x41 shared slow"
+      },
+      "raw_mmio_writes": [
+        {
+          "mmio_index": 63,
+          "instruction": 16505,
+          "pc": "0x0000d024",
+          "address": "0x40000820",
+          "size": 4,
+          "direction": "write",
+          "value": "0x3ff"
+        },
+        {
+          "mmio_index": 1693,
+          "instruction": 70647,
+          "pc": "0x0000d484",
+          "address": "0x410080b0",
+          "size": 1,
+          "direction": "write",
+          "value": "0x30"
+        },
+        {
+          "mmio_index": 1695,
+          "instruction": 70650,
+          "pc": "0x0000d490",
+          "address": "0x410080c1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x41"
+        },
+        {
+          "mmio_index": 1697,
+          "instruction": 70686,
+          "pc": "0x0000d484",
+          "address": "0x410080b1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x30"
+        },
+        {
+          "mmio_index": 1699,
+          "instruction": 70689,
+          "pc": "0x0000d490",
+          "address": "0x410080c3",
+          "size": 1,
+          "direction": "write",
+          "value": "0x41"
+        },
+        {
+          "mmio_index": 1701,
+          "instruction": 70724,
+          "pc": "0x0000d4a2",
+          "address": "0x410080b1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x33"
+        },
+        {
+          "mmio_index": 1703,
+          "instruction": 70727,
+          "pc": "0x0000d4ae",
+          "address": "0x410080c2",
+          "size": 1,
+          "direction": "write",
+          "value": "0x41"
+        },
+        {
+          "mmio_index": 1706,
+          "instruction": 70748,
+          "pc": "0x0000b464",
+          "address": "0x43000400",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "mmio_index": 1708,
+          "instruction": 70766,
+          "pc": "0x0000b42c",
+          "address": "0x43000400",
+          "size": 4,
+          "direction": "write",
+          "value": "0x1"
+        },
+        {
+          "mmio_index": 1712,
+          "instruction": 70897,
+          "pc": "0x0000b528",
+          "address": "0x40001d0c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "mmio_index": 1714,
+          "instruction": 70908,
+          "pc": "0x0000b55e",
+          "address": "0x40001d0c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x41"
+        },
+        {
+          "mmio_index": 1717,
+          "instruction": 70938,
+          "pc": "0x0000b528",
+          "address": "0x40001c8c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "mmio_index": 1719,
+          "instruction": 70948,
+          "pc": "0x0000b55e",
+          "address": "0x40001c8c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x41"
+        },
+        {
+          "mmio_index": 1721,
+          "instruction": 70965,
+          "pc": "0x0000b6e2",
+          "address": "0x43000400",
+          "size": 4,
+          "direction": "write",
+          "value": "0x30000c"
+        },
+        {
+          "mmio_index": 1722,
+          "instruction": 70969,
+          "pc": "0x0000b6ee",
+          "address": "0x43000404",
+          "size": 4,
+          "direction": "write",
+          "value": "0x20000"
+        },
+        {
+          "mmio_index": 1725,
+          "instruction": 70988,
+          "pc": "0x0000b4a6",
+          "address": "0x43000400",
+          "size": 4,
+          "direction": "write",
+          "value": "0x30000c"
+        },
+        {
+          "mmio_index": 1726,
+          "instruction": 71001,
+          "pc": "0x0000b4b0",
+          "address": "0x4300040c",
+          "size": 1,
+          "direction": "write",
+          "value": "0x5"
+        },
+        {
+          "mmio_index": 1728,
+          "instruction": 71010,
+          "pc": "0x0000b446",
+          "address": "0x43000400",
+          "size": 4,
+          "direction": "write",
+          "value": "0x30000e"
+        }
+      ]
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "CS-WRITE",
+      "purpose": "One write and CS interval",
+      "entry_or_checkpoint": "0xacd8",
+      "inputs_and_initial_conditions": {
+        "object": "0x200020a0",
+        "register": "0x00",
+        "payload": "0x00000000"
+      },
+      "transaction_ids": [
+        "T001"
+      ],
+      "raw_mosi_sequences": [
+        "80 00 00 00 00"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T001",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        }
+      ],
+      "expected_logical_protocol_behavior": "PB08 OUTCLR 0x100, five bytes MSB first, PB08 OUTSET 0x100; address bit7=1",
+      "raw_cs_and_data": {
+        "driver": "TMC1",
+        "channel": 0,
+        "object": "0x200020a0",
+        "cs_pad": "PB08",
+        "assertion": {
+          "mmio_index": 3289,
+          "instruction": 272271,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100"
+        },
+        "data": [
+          {
+            "mmio_index": 3290,
+            "instruction": 272283,
+            "pc": "0x0000b46a",
+            "address": "0x43000428",
+            "size": 4,
+            "direction": "write",
+            "value": "0x80"
+          },
+          {
+            "mmio_index": 3293,
+            "instruction": 272302,
+            "pc": "0x0000b46a",
+            "address": "0x43000428",
+            "size": 4,
+            "direction": "write",
+            "value": "0x0"
+          },
+          {
+            "mmio_index": 3296,
+            "instruction": 272320,
+            "pc": "0x0000b46a",
+            "address": "0x43000428",
+            "size": 4,
+            "direction": "write",
+            "value": "0x0"
+          },
+          {
+            "mmio_index": 3299,
+            "instruction": 272338,
+            "pc": "0x0000b46a",
+            "address": "0x43000428",
+            "size": 4,
+            "direction": "write",
+            "value": "0x0"
+          },
+          {
+            "mmio_index": 3302,
+            "instruction": 272356,
+            "pc": "0x0000b46a",
+            "address": "0x43000428",
+            "size": 4,
+            "direction": "write",
+            "value": "0x0"
+          }
+        ],
+        "release": {
+          "mmio_index": 3306,
+          "instruction": 272405,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100"
+        },
+        "id": "T001",
+        "raw_mosi_hex": "80 00 00 00 00",
+        "raw_bytes": [
+          128,
+          0,
+          0,
+          0,
+          0
+        ],
+        "classification": "complete_recorded_logical_datagram",
+        "direction": "write",
+        "register": {
+          "address": "0x00",
+          "name": "GCONF",
+          "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+        },
+        "payload_hex": "0x00000000",
+        "hardware_response": null,
+        "confidence": "high for recorded software request",
+        "verification_status": null,
+        "aptrace_grade": "UNKNOWN",
+        "validation_note": "documentary export; not a VERIFIED ledger claim",
+        "method_call": {
+          "hit": 2,
+          "instruction": 271937,
+          "entry": "0x0000acd8",
+          "caller_return_address": "0x0000ad6d",
+          "object": "0x200020a0",
+          "register_argument": "0x00000000",
+          "payload_argument": "0x00000000",
+          "source": "boot-configuration-calls.json; matched repeated deterministic execution by instruction ordinal"
+        },
+        "fields": {
+          "en_pwm_mode": 0,
+          "shaft": 0,
+          "direct_mode": 0
+        }
+      }
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "REGISTER-WRITE",
+      "purpose": "CHOPCONF raw word",
+      "entry_or_checkpoint": "0xacd8",
+      "inputs_and_initial_conditions": {
+        "object": "0x200020a0",
+        "register": "0x6c",
+        "payload": "0x10410150"
+      },
+      "transaction_ids": [
+        "T002"
+      ],
+      "raw_mosi_sequences": [
+        "ec 10 41 01 50"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T002",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 0,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": true,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        }
+      ],
+      "expected_logical_protocol_behavior": "ec 10 41 01 50; TOFF=0 requests bridges disabled, not proof of board isolation"
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "REGISTER-READ",
+      "purpose": "Two pipelined DRV_STATUS read requests",
+      "entry_or_checkpoint": "0xa944 \u2192 0xac28",
+      "inputs_and_initial_conditions": {
+        "object": "0x200020a0",
+        "register": "0x6f",
+        "CS_initial": "high",
+        "RX": "unmodeled; excluded"
+      },
+      "transaction_ids": [
+        "T101",
+        "T102"
+      ],
+      "raw_mosi_sequences": [
+        "6f 00 00 00 00",
+        "6f 00 00 00 00"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T101",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T102",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        }
+      ],
+      "expected_logical_protocol_behavior": "CS low,6f 00 00 00 00,CS high; CS low,same five bytes,CS high; second MISO payload would answer first request on real hardware"
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "CURRENT-400",
+      "purpose": "Bounded startup current conversion",
+      "entry_or_checkpoint": "0x7514 \u2192 0xae60",
+      "inputs_and_initial_conditions": {
+        "request": 400,
+        "request_RAM": "0x2000006c channel halfword",
+        "object": "0x200020a0",
+        "object_float_at_0c": "0.0560000017285347",
+        "object_hold_ratio": "0.8999999761581421",
+        "constant_float_at_aee8": 65535,
+        "constant_int_at_aeec": 83198,
+        "board_Rsense_ohms": null
+      },
+      "transaction_ids": [
+        "T011",
+        "T012",
+        "T013",
+        "T014",
+        "T015"
+      ],
+      "raw_mosi_sequences": [
+        "8b 00 00 00 85",
+        "90 00 00 05 00",
+        "90 00 00 05 04",
+        "90 00 0f 05 04",
+        "91 00 00 00 40"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T011",
+          "register": {
+            "address": "0x0b",
+            "name": "GLOBALSCALER",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 p36"
+          },
+          "fields": {
+            "GLOBALSCALER": 133
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T012",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T013",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T014",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 15
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T015",
+          "register": {
+            "address": "0x11",
+            "name": "TPOWERDOWN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38"
+          },
+          "fields": {
+            "TPOWERDOWN": 64
+          },
+          "meaning": null
+        }
+      ],
+      "expected_logical_protocol_behavior": {
+        "GLOBALSCALER": 133,
+        "IRUN": 5,
+        "IHOLD": 4,
+        "IHOLDDELAY": 15,
+        "TPOWERDOWN": 64,
+        "physical_current_amps": null
+      }
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "MICROSTEP-16",
+      "purpose": "Resolution path",
+      "entry_or_checkpoint": "0x7514 \u2192 0xb070",
+      "inputs_and_initial_conditions": {
+        "request": 16,
+        "request_RAM": "0x200000f0 channel halfword",
+        "object": "0x200020a0",
+        "prior_CHOPCONF": "0x10408155"
+      },
+      "transaction_ids": [
+        "T019"
+      ],
+      "raw_mosi_sequences": [
+        "ec 14 40 81 55"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T019",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 4,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 16,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        }
+      ],
+      "expected_logical_protocol_behavior": {
+        "CHOPCONF": "0x14408155",
+        "MRES": 4,
+        "external_microsteps_per_fullstep": 16,
+        "INTPOL": 1,
+        "DEDGE": 0,
+        "effective_physical_resolution": null
+      }
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "MULTI-CS",
+      "purpose": "Four select identities and observed isolation",
+      "entry_or_checkpoint": "first CS assertions in constructors / startup",
+      "inputs_and_initial_conditions": {
+        "drivers": [
+          {
+            "driver": "TMC1",
+            "channel": 0,
+            "object": "0x200020a0",
+            "pad": "PB08",
+            "port": 1,
+            "mask": 256
+          },
+          {
+            "driver": "TMC2",
+            "channel": 1,
+            "object": "0x200021d8",
+            "pad": "PA18",
+            "port": 0,
+            "mask": 262144
+          },
+          {
+            "driver": "TMC3",
+            "channel": 2,
+            "object": "0x2000213c",
+            "pad": "PB09",
+            "port": 1,
+            "mask": 512
+          },
+          {
+            "driver": "TMC4",
+            "channel": 3,
+            "object": "0x20002274",
+            "pad": "PA19",
+            "port": 0,
+            "mask": 524288
+          }
+        ],
+        "recorded_initial_high": "all four before first DATA"
+      },
+      "transaction_ids": [
+        "T001",
+        "T024",
+        "T047",
+        "T070"
+      ],
+      "raw_mosi_sequences": [
+        "80 00 00 00 00",
+        "80 00 00 00 00",
+        "80 00 00 00 00",
+        "80 00 00 00 00"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T001",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T024",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T047",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T070",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        }
+      ],
+      "expected_logical_protocol_behavior": {
+        "selected_device_per_datagram": 1,
+        "overlap_requests": 0,
+        "physical_MISO_isolation": null
+      },
+      "raw_cs_events": [
+        {
+          "mmio_index": 1638,
+          "instruction": 65212,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 1640,
+          "instruction": 65239,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 1644,
+          "instruction": 65274,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 1646,
+          "instruction": 65302,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3261,
+          "instruction": 271920,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3289,
+          "instruction": 272271,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3306,
+          "instruction": 272405,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3334,
+          "instruction": 272752,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3351,
+          "instruction": 272886,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3379,
+          "instruction": 273246,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3396,
+          "instruction": 273380,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3424,
+          "instruction": 273727,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3441,
+          "instruction": 273861,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3469,
+          "instruction": 274211,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3486,
+          "instruction": 274345,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3514,
+          "instruction": 274697,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3531,
+          "instruction": 274831,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3559,
+          "instruction": 275193,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3576,
+          "instruction": 275327,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3604,
+          "instruction": 275673,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3621,
+          "instruction": 275807,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3649,
+          "instruction": 276154,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3666,
+          "instruction": 276288,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3694,
+          "instruction": 276640,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3711,
+          "instruction": 276774,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3739,
+          "instruction": 277440,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3756,
+          "instruction": 277574,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3784,
+          "instruction": 277923,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3801,
+          "instruction": 278057,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3829,
+          "instruction": 278414,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3846,
+          "instruction": 278548,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3874,
+          "instruction": 278897,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3891,
+          "instruction": 279031,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3919,
+          "instruction": 279378,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3936,
+          "instruction": 279512,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 3964,
+          "instruction": 279864,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 3981,
+          "instruction": 279998,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4009,
+          "instruction": 280350,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4026,
+          "instruction": 280484,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4054,
+          "instruction": 280836,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4071,
+          "instruction": 280970,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4099,
+          "instruction": 281768,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4116,
+          "instruction": 281902,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4144,
+          "instruction": 282255,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4161,
+          "instruction": 282389,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4189,
+          "instruction": 282742,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4206,
+          "instruction": 282876,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4234,
+          "instruction": 283229,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4251,
+          "instruction": 283363,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4279,
+          "instruction": 283720,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4296,
+          "instruction": 283854,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4300,
+          "instruction": 283932,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4328,
+          "instruction": 284283,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4345,
+          "instruction": 284417,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4373,
+          "instruction": 284764,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4390,
+          "instruction": 284898,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4418,
+          "instruction": 285258,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4435,
+          "instruction": 285392,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4463,
+          "instruction": 285739,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4480,
+          "instruction": 285873,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4508,
+          "instruction": 286223,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4525,
+          "instruction": 286357,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4553,
+          "instruction": 286709,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4570,
+          "instruction": 286843,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4598,
+          "instruction": 287205,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4615,
+          "instruction": 287339,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4643,
+          "instruction": 287685,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4660,
+          "instruction": 287819,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4688,
+          "instruction": 288166,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4705,
+          "instruction": 288300,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4733,
+          "instruction": 288652,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4750,
+          "instruction": 288786,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4778,
+          "instruction": 289452,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4795,
+          "instruction": 289586,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4823,
+          "instruction": 289935,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4840,
+          "instruction": 290069,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4868,
+          "instruction": 290426,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4885,
+          "instruction": 290560,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4913,
+          "instruction": 290909,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4930,
+          "instruction": 291043,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 4958,
+          "instruction": 291390,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 4975,
+          "instruction": 291524,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5003,
+          "instruction": 291876,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5020,
+          "instruction": 292010,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5048,
+          "instruction": 292362,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5065,
+          "instruction": 292496,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5093,
+          "instruction": 292848,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5110,
+          "instruction": 292982,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5138,
+          "instruction": 293768,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5155,
+          "instruction": 293902,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5183,
+          "instruction": 294255,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5200,
+          "instruction": 294389,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5228,
+          "instruction": 294742,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5245,
+          "instruction": 294876,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5273,
+          "instruction": 295229,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5290,
+          "instruction": 295363,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5318,
+          "instruction": 295721,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5335,
+          "instruction": 295855,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5339,
+          "instruction": 295933,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5367,
+          "instruction": 296284,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5384,
+          "instruction": 296418,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5412,
+          "instruction": 296765,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5429,
+          "instruction": 296899,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5457,
+          "instruction": 297259,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5474,
+          "instruction": 297393,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5502,
+          "instruction": 297740,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5519,
+          "instruction": 297874,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5547,
+          "instruction": 298224,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5564,
+          "instruction": 298358,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5592,
+          "instruction": 298710,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5609,
+          "instruction": 298844,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5637,
+          "instruction": 299206,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5654,
+          "instruction": 299340,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5682,
+          "instruction": 299686,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5699,
+          "instruction": 299820,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5727,
+          "instruction": 300167,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5744,
+          "instruction": 300301,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5772,
+          "instruction": 300653,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5789,
+          "instruction": 300787,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5817,
+          "instruction": 301453,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5834,
+          "instruction": 301587,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5862,
+          "instruction": 301936,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5879,
+          "instruction": 302070,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5907,
+          "instruction": 302427,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5924,
+          "instruction": 302561,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5952,
+          "instruction": 302910,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 5969,
+          "instruction": 303044,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 5997,
+          "instruction": 303391,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6014,
+          "instruction": 303525,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6042,
+          "instruction": 303877,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6059,
+          "instruction": 304011,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6087,
+          "instruction": 304363,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6104,
+          "instruction": 304497,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6132,
+          "instruction": 304849,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6149,
+          "instruction": 304983,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6177,
+          "instruction": 305793,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6194,
+          "instruction": 305927,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6222,
+          "instruction": 306280,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6239,
+          "instruction": 306414,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6267,
+          "instruction": 306766,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6284,
+          "instruction": 306900,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6312,
+          "instruction": 307253,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6329,
+          "instruction": 307387,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6357,
+          "instruction": 307745,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6374,
+          "instruction": 307879,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6378,
+          "instruction": 307957,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6406,
+          "instruction": 308308,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6423,
+          "instruction": 308442,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6451,
+          "instruction": 308789,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6468,
+          "instruction": 308923,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6496,
+          "instruction": 309283,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6513,
+          "instruction": 309417,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6541,
+          "instruction": 309764,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6558,
+          "instruction": 309898,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6586,
+          "instruction": 310248,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6603,
+          "instruction": 310382,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6631,
+          "instruction": 310734,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6648,
+          "instruction": 310868,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6676,
+          "instruction": 311230,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6693,
+          "instruction": 311364,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6721,
+          "instruction": 311710,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6738,
+          "instruction": 311844,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6766,
+          "instruction": 312191,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6783,
+          "instruction": 312325,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6811,
+          "instruction": 312677,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6828,
+          "instruction": 312811,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6856,
+          "instruction": 313477,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6873,
+          "instruction": 313611,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6901,
+          "instruction": 313960,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6918,
+          "instruction": 314094,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6946,
+          "instruction": 314451,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 6963,
+          "instruction": 314585,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 6991,
+          "instruction": 314934,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7008,
+          "instruction": 315068,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7036,
+          "instruction": 315415,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7053,
+          "instruction": 315549,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7081,
+          "instruction": 315901,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7098,
+          "instruction": 316035,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7126,
+          "instruction": 316387,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7143,
+          "instruction": 316521,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7171,
+          "instruction": 316873,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7188,
+          "instruction": 317007,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7216,
+          "instruction": 317368,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7233,
+          "instruction": 317502,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7261,
+          "instruction": 318280,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7278,
+          "instruction": 318414,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7306,
+          "instruction": 318766,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7323,
+          "instruction": 318900,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7351,
+          "instruction": 319253,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7368,
+          "instruction": 319387,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7396,
+          "instruction": 319745,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7413,
+          "instruction": 319879,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7443,
+          "instruction": 320242,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7462,
+          "instruction": 320383,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7492,
+          "instruction": 320741,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7511,
+          "instruction": 320882,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7539,
+          "instruction": 321232,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7556,
+          "instruction": 321366,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7584,
+          "instruction": 321718,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7601,
+          "instruction": 321852,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7631,
+          "instruction": 322208,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7650,
+          "instruction": 322349,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7680,
+          "instruction": 322707,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7699,
+          "instruction": 322848,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7727,
+          "instruction": 323198,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7744,
+          "instruction": 323332,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 7772,
+          "instruction": 323684,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 7789,
+          "instruction": 323818,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 10923,
+          "instruction": 369326,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 10942,
+          "instruction": 369481,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 10946,
+          "instruction": 369516,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 10965,
+          "instruction": 369661,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 10995,
+          "instruction": 370019,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11014,
+          "instruction": 370174,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11018,
+          "instruction": 370209,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11037,
+          "instruction": 370354,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11067,
+          "instruction": 370715,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11086,
+          "instruction": 370870,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11090,
+          "instruction": 370905,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11109,
+          "instruction": 371050,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11139,
+          "instruction": 371409,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11158,
+          "instruction": 371564,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11162,
+          "instruction": 371599,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11181,
+          "instruction": 371744,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11209,
+          "instruction": 372098,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11226,
+          "instruction": 372246,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11228,
+          "instruction": 372275,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11245,
+          "instruction": 372413,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11273,
+          "instruction": 372766,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11290,
+          "instruction": 372914,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11292,
+          "instruction": 372943,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11309,
+          "instruction": 373081,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11337,
+          "instruction": 373435,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11354,
+          "instruction": 373583,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11356,
+          "instruction": 373612,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11373,
+          "instruction": 373750,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11401,
+          "instruction": 374103,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11418,
+          "instruction": 374251,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11420,
+          "instruction": 374280,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11437,
+          "instruction": 374418,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11467,
+          "instruction": 374781,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11486,
+          "instruction": 374922,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11516,
+          "instruction": 375280,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11535,
+          "instruction": 375421,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100",
+          "driver": "TMC1",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11563,
+          "instruction": 375771,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11580,
+          "instruction": 375905,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11608,
+          "instruction": 376257,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11625,
+          "instruction": 376391,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200",
+          "driver": "TMC3",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11655,
+          "instruction": 376747,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11674,
+          "instruction": 376888,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11704,
+          "instruction": 377246,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11723,
+          "instruction": 377387,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40000",
+          "driver": "TMC2",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11751,
+          "instruction": 377737,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11768,
+          "instruction": 377871,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        },
+        {
+          "mmio_index": 11796,
+          "instruction": 378223,
+          "pc": "0x0000d3cc",
+          "address": "0x41008014",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 0
+        },
+        {
+          "mmio_index": 11813,
+          "instruction": 378357,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80000",
+          "driver": "TMC4",
+          "requested_level": 1
+        }
+      ]
+    },
+    {
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "original_run": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "execution_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+      "confidence": "high for the scoped software observations",
+      "verification_status": null,
+      "aptrace_grade": "UNKNOWN",
+      "hardware_verified": false,
+      "limitations": [
+        "No physical timing, voltages or receive oracle. No authorization to energize.",
+        "Cross-run caller attribution uses matching deterministic instruction ordinals."
+      ],
+      "id": "STARTUP-BOUNDED",
+      "purpose": "Complete observed startup ordering",
+      "entry_or_checkpoint": "0xcc24 \u2192 0x8960",
+      "inputs_and_initial_conditions": {
+        "startup": "0x9464 \u2192 0x7770",
+        "channel_order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "temporary_current": 400,
+        "microsteps": 16,
+        "stop_instructions": 378402
+      },
+      "transaction_ids": [
+        "T001",
+        "T002",
+        "T003",
+        "T004",
+        "T005",
+        "T006",
+        "T007",
+        "T008",
+        "T009",
+        "T010",
+        "T011",
+        "T012",
+        "T013",
+        "T014",
+        "T015",
+        "T016",
+        "T017",
+        "T018",
+        "T019",
+        "T020",
+        "T021",
+        "T022",
+        "T023",
+        "T024",
+        "T025",
+        "T026",
+        "T027",
+        "T028",
+        "T029",
+        "T030",
+        "T031",
+        "T032",
+        "T033",
+        "T034",
+        "T035",
+        "T036",
+        "T037",
+        "T038",
+        "T039",
+        "T040",
+        "T041",
+        "T042",
+        "T043",
+        "T044",
+        "T045",
+        "T046",
+        "T047",
+        "T048",
+        "T049",
+        "T050",
+        "T051",
+        "T052",
+        "T053",
+        "T054",
+        "T055",
+        "T056",
+        "T057",
+        "T058",
+        "T059",
+        "T060",
+        "T061",
+        "T062",
+        "T063",
+        "T064",
+        "T065",
+        "T066",
+        "T067",
+        "T068",
+        "T069",
+        "T070",
+        "T071",
+        "T072",
+        "T073",
+        "T074",
+        "T075",
+        "T076",
+        "T077",
+        "T078",
+        "T079",
+        "T080",
+        "T081",
+        "T082",
+        "T083",
+        "T084",
+        "T085",
+        "T086",
+        "T087",
+        "T088",
+        "T089",
+        "T090",
+        "T091",
+        "T092",
+        "T093",
+        "T094",
+        "T095",
+        "T096",
+        "T097",
+        "T098",
+        "T099",
+        "T100",
+        "T101",
+        "T102",
+        "T103",
+        "T104",
+        "T105",
+        "T106",
+        "T107",
+        "T108",
+        "T109",
+        "T110",
+        "T111",
+        "T112",
+        "T113",
+        "T114",
+        "T115",
+        "T116",
+        "T117",
+        "T118",
+        "T119",
+        "T120",
+        "T121",
+        "T122",
+        "T123",
+        "T124"
+      ],
+      "raw_mosi_sequences": [
+        "80 00 00 00 00",
+        "ec 10 41 01 50",
+        "ed 00 00 00 00",
+        "f0 c4 0c 00 1e",
+        "90 00 00 00 00",
+        "ec 10 41 01 58",
+        "ec 10 40 81 58",
+        "ad 00 00 00 00",
+        "a1 00 00 00 00",
+        "ec 10 40 81 55",
+        "8b 00 00 00 85",
+        "90 00 00 05 00",
+        "90 00 00 05 04",
+        "90 00 0f 05 04",
+        "91 00 00 00 40",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 14 40 81 55",
+        "80 00 00 00 00",
+        "f0 c4 08 00 1e",
+        "ed 00 05 00 00",
+        "ed 01 05 00 00",
+        "80 00 00 00 00",
+        "ec 10 41 01 50",
+        "ed 00 00 00 00",
+        "f0 c4 0c 00 1e",
+        "90 00 00 00 00",
+        "ec 10 41 01 58",
+        "ec 10 40 81 58",
+        "ad 00 00 00 00",
+        "a1 00 00 00 00",
+        "ec 10 40 81 55",
+        "8b 00 00 00 85",
+        "90 00 00 05 00",
+        "90 00 00 05 04",
+        "90 00 0f 05 04",
+        "91 00 00 00 40",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 14 40 81 55",
+        "80 00 00 00 00",
+        "f0 c4 08 00 1e",
+        "ed 00 05 00 00",
+        "ed 01 05 00 00",
+        "80 00 00 00 00",
+        "ec 10 41 01 50",
+        "ed 00 00 00 00",
+        "f0 c4 0c 00 1e",
+        "90 00 00 00 00",
+        "ec 10 41 01 58",
+        "ec 10 40 81 58",
+        "ad 00 00 00 00",
+        "a1 00 00 00 00",
+        "ec 10 40 81 55",
+        "8b 00 00 00 85",
+        "90 00 00 05 00",
+        "90 00 00 05 04",
+        "90 00 0f 05 04",
+        "91 00 00 00 40",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 14 40 81 55",
+        "80 00 00 00 04",
+        "f0 c4 0c 00 1e",
+        "ed 00 05 00 00",
+        "ed 01 05 00 00",
+        "80 00 00 00 00",
+        "ec 10 41 01 50",
+        "ed 00 00 00 00",
+        "f0 c4 0c 00 1e",
+        "90 00 00 00 00",
+        "ec 10 41 01 58",
+        "ec 10 40 81 58",
+        "ad 00 00 00 00",
+        "a1 00 00 00 00",
+        "ec 10 40 81 55",
+        "8b 00 00 00 85",
+        "90 00 00 05 00",
+        "90 00 00 05 04",
+        "90 00 0f 05 04",
+        "91 00 00 00 40",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 10 40 81 55",
+        "ec 14 40 81 55",
+        "80 00 00 00 04",
+        "f0 c4 0c 00 1e",
+        "ed 00 05 00 00",
+        "ed 01 05 00 00",
+        "80 00 00 00 00",
+        "f0 c4 08 00 1e",
+        "80 00 00 00 00",
+        "f0 c4 08 00 1e",
+        "80 00 00 00 00",
+        "f0 c4 08 00 1e",
+        "80 00 00 00 00",
+        "f0 c4 08 00 1e",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "6f 00 00 00 00",
+        "80 00 00 00 04",
+        "f0 c4 0c 00 1e",
+        "80 00 00 00 04",
+        "f0 c4 0c 00 1e",
+        "80 00 00 00 04",
+        "f0 c4 0c 00 1e",
+        "80 00 00 00 04",
+        "f0 c4 0c 00 1e"
+      ],
+      "register_interpretations": [
+        {
+          "transaction": "T001",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T002",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 0,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": true,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T003",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 0,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T004",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T005",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 0,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T006",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T007",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T008",
+          "register": {
+            "address": "0x2d",
+            "name": "XTARGET",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p41"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T009",
+          "register": {
+            "address": "0x21",
+            "name": "XACTUAL",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p40"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T010",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T011",
+          "register": {
+            "address": "0x0b",
+            "name": "GLOBALSCALER",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 p36"
+          },
+          "fields": {
+            "GLOBALSCALER": 133
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T012",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T013",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T014",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 15
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T015",
+          "register": {
+            "address": "0x11",
+            "name": "TPOWERDOWN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38"
+          },
+          "fields": {
+            "TPOWERDOWN": 64
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T016",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T017",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T018",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T019",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 4,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 16,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T020",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T021",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 0,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T022",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T023",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 1
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T024",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T025",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 0,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": true,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T026",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 0,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T027",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T028",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 0,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T029",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T030",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T031",
+          "register": {
+            "address": "0x2d",
+            "name": "XTARGET",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p41"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T032",
+          "register": {
+            "address": "0x21",
+            "name": "XACTUAL",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p40"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T033",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T034",
+          "register": {
+            "address": "0x0b",
+            "name": "GLOBALSCALER",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 p36"
+          },
+          "fields": {
+            "GLOBALSCALER": 133
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T035",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T036",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T037",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 15
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T038",
+          "register": {
+            "address": "0x11",
+            "name": "TPOWERDOWN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38"
+          },
+          "fields": {
+            "TPOWERDOWN": 64
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T039",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T040",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T041",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T042",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 4,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 16,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T043",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T044",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 0,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T045",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T046",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 1
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T047",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T048",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 0,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": true,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T049",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 0,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T050",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T051",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 0,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T052",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T053",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T054",
+          "register": {
+            "address": "0x2d",
+            "name": "XTARGET",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p41"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T055",
+          "register": {
+            "address": "0x21",
+            "name": "XACTUAL",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p40"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T056",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T057",
+          "register": {
+            "address": "0x0b",
+            "name": "GLOBALSCALER",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 p36"
+          },
+          "fields": {
+            "GLOBALSCALER": 133
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T058",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T059",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T060",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 15
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T061",
+          "register": {
+            "address": "0x11",
+            "name": "TPOWERDOWN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38"
+          },
+          "fields": {
+            "TPOWERDOWN": 64
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T062",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T063",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T064",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T065",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 4,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 16,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T066",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 1,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T067",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T068",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T069",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 1
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T070",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T071",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 0,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": true,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T072",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 0,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T073",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T074",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 0,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T075",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 2,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 36,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T076",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 8,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T077",
+          "register": {
+            "address": "0x2d",
+            "name": "XTARGET",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p41"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T078",
+          "register": {
+            "address": "0x21",
+            "name": "XACTUAL",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.3.1 p40"
+          },
+          "fields": {},
+          "meaning": null
+        },
+        {
+          "transaction": "T079",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T080",
+          "register": {
+            "address": "0x0b",
+            "name": "GLOBALSCALER",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 p36"
+          },
+          "fields": {
+            "GLOBALSCALER": 133
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T081",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 0,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T082",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T083",
+          "register": {
+            "address": "0x10",
+            "name": "IHOLD_IRUN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38; \u00a79 p74"
+          },
+          "fields": {
+            "IHOLD": 4,
+            "IRUN": 5,
+            "IHOLDDELAY": 15
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T084",
+          "register": {
+            "address": "0x11",
+            "name": "TPOWERDOWN",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.2 p38"
+          },
+          "fields": {
+            "TPOWERDOWN": 64
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T085",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T086",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T087",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 0,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 256,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T088",
+          "register": {
+            "address": "0x6c",
+            "name": "CHOPCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.2 pp51\u201352"
+          },
+          "fields": {
+            "TOFF": 5,
+            "HSTRT": 5,
+            "HEND": 2,
+            "FD3": 0,
+            "DISFDCC": 0,
+            "CHM": 0,
+            "TBL": 1,
+            "vhighfs": 0,
+            "vhighchm": 0,
+            "TPFD": 4,
+            "MRES": 4,
+            "INTPOL": 1,
+            "DEDGE": 0,
+            "DISS2G": 0,
+            "DISS2VS": 0
+          },
+          "meaning": {
+            "microsteps_per_fullstep": 16,
+            "interpolation_to_256": true,
+            "bridges_disabled_by_toff": false,
+            "hysteresis_start": 6,
+            "hysteresis_end": -1,
+            "blank_time_clocks": 24,
+            "chopper": "SpreadCycle"
+          }
+        },
+        {
+          "transaction": "T089",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 1,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T090",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T091",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T092",
+          "register": {
+            "address": "0x6d",
+            "name": "COOLCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.3 p53"
+          },
+          "fields": {
+            "SEMIN": 0,
+            "SEUP": 0,
+            "SEMAX": 0,
+            "SEDN": 0,
+            "SEIMIN": 0,
+            "SGT_raw": 5,
+            "SFILT": 1
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T093",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T094",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 0,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T095",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T096",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 0,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T097",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T098",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 0,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T099",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 0,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T100",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 0,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T101",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T102",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T103",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T104",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T105",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T106",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T107",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T108",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T109",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T110",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T111",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T112",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T113",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T114",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T115",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T116",
+          "register": {
+            "address": "0x6f",
+            "name": "DRV_STATUS",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.5 p56"
+          },
+          "fields": null,
+          "meaning": "Read request; four dummy MOSI bytes are not register contents. Pipeline response is synthetic/unmodeled in this trace."
+        },
+        {
+          "transaction": "T117",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 1,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T118",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T119",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 1,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T120",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T121",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 1,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T122",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T123",
+          "register": {
+            "address": "0x00",
+            "name": "GCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.1 pp32\u201333"
+          },
+          "fields": {
+            "en_pwm_mode": 1,
+            "shaft": 0,
+            "direct_mode": 0
+          },
+          "meaning": null
+        },
+        {
+          "transaction": "T124",
+          "register": {
+            "address": "0x70",
+            "name": "PWMCONF",
+            "datasheet": "TMC5160/TMC5160A rev1.18 \u00a76.5.4 pp54\u201355"
+          },
+          "fields": {
+            "PWM_OFS": 30,
+            "PWM_GRAD": 0,
+            "pwm_freq": 0,
+            "pwm_autoscale": 1,
+            "pwm_autograd": 1,
+            "freewheel": 0,
+            "PWM_REG": 4,
+            "PWM_LIM": 12
+          },
+          "meaning": null
+        }
+      ],
+      "expected_logical_protocol_behavior": "T001\u2013T092:23 writes/channel; T093\u2013T100:disable StealthChop/autoscale in channel order0,2,1,3; T101\u2013T116:two read methods/channel, two datagrams/method; T117\u2013T124:enable StealthChop/autoscale in order0,2,1,3. No reset/reconnect coverage."
+    }
+  ]
+}
