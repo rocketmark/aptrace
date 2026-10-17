@@ -1,0 +1,1476 @@
+{
+  "format_version": 1,
+  "artifact_kind": "case documentary interface contract, not ledger schema",
+  "date": "2026-10-17",
+  "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301",
+  "source_firmware": {
+    "firmware_key": "autopilot868",
+    "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "size_bytes": 70768,
+    "load_base": "0x4000",
+    "bootloader_included": false
+  },
+  "board": {
+    "measured_board_revision": null,
+    "photo_dossier_board_revision": "52_PO_V01R04",
+    "photo_revision_is_measurement_revision": null,
+    "bench_device_labels": [
+      "TMC1",
+      "TMC2",
+      "TMC3",
+      "TMC4"
+    ],
+    "legible_part_identification": "TMC5160A-TA on one photographed device; exact bench-label association unestablished",
+    "record_attribution": "Mark Stalzer, Google Doc Pin Testing, screenshots2026-09-21",
+    "actual_measurement_date": null,
+    "instrument_and_uncertainty": null,
+    "original_annotated_measurement_images_located": false
+  },
+  "sources": {
+    "firmware": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "bench": {
+      "path": "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md",
+      "sha256": "85433a4043dd2fda52a371cf4e34c745dee5da30dc66eeb4b0cb55921b77df11",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "hardware": {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "491a544dfb6c7b07337e6c7d5574c983c184e684b0f4af4c9c731cd29d78d59e",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin_map_json": {
+      "path": "cases/performing-rigs/research/generated/firmware-pin-function-map.json",
+      "sha256": "5559acc8ff0abac00254169f9225690a9dc6c59edae41e99e6d396422c11845b",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_readiness": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-readiness.md",
+      "sha256": "4f3639137678c31d95723f487155ba8535f2d8aa5510e99cfeda6305ed45af3c",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_contract": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-hardware-contract.md",
+      "sha256": "49a069d51b6df813ebd158c552078730a1ed515e4901d53a09fdfbe59ef86102",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_contract_json": {
+      "path": "cases/performing-rigs/research/generated/replacement-firmware-hardware-contract.json",
+      "sha256": "7e10fe045ee4e9b10620eef378fc2f52f55c33ebd1aba3326fe09b0fa5986dfd",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_vectors": {
+      "path": "cases/performing-rigs/research/generated/replacement-firmware-test-vectors.json",
+      "sha256": "79de881b224e232205d4881a4b3dd271d9c96a283ec902e7dd2a2e2c045c93cf",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_checklist": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-bench-checklist.md",
+      "sha256": "76d3ff0efc421d955c7577519449123a0ff18ca0a983857112dd7dfd79518cdd",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_boot": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json",
+      "sha256": "27e7afd6c1a0c0604def47a96509a3bec99f8ea9bbe8cd70287760141254d8ce",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot_recipe": {
+      "path": "cases/performing-rigs/config/boot_recipes.py",
+      "sha256": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "svd": {
+      "path": "cases/performing-rigs/config/svd/ATSAMD51J19A.svd",
+      "sha256": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pins_capability": {
+      "path": "cases/performing-rigs/config/pins.py",
+      "sha256": "c6f9575c8399f1691401598e8dbe1db39c1a25def395ca4a353bf9cda906dcc8",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "reference_corpus_interface": {
+      "path": "cases/performing-rigs/scripts/reference_corpus.py",
+      "sha256": "359f5fe730ff717ab37ef3b4bd1c964ffebbb61298b3356fd898736381062e0d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "claim_semantics_proposal": {
+      "path": "docs/architecture-reconciliation/evidence-semantics.md",
+      "sha256": "9079ad4f54f7098a3279d9369043da8de8ddf1fb68e76add84dbbb0ebd9e30e5",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "tool_selection": {
+      "path": "docs/tooling/tool-selection.md",
+      "sha256": "eb80021833be866c60c690ec74d36005836937764f7d964c1e68bec8fb21e9e7",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "concrete": {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "concrete_cli": {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "ghidra_cli": {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "1e6c115c57257bc265e5bb70c197a097c169c41613345d4e6d5dfbde26cb2fd6",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "ghidra_meta": {
+      "path": "cases/performing-rigs/research/runs/ghidra_cache/autopilot868/meta.json",
+      "sha256": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "operator": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "workspace_config": {
+      "path": ".codex/config.toml",
+      "sha256": "33cbfb90d6373548b3ccccec0d7a0c2504f427814d1a123e65720572d11bbb17",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-512-debug": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-512-debug.json",
+      "sha256": "ef799f1ec6c1a0e9053cc0d7e7704689ab14df6ffa568a84399b6071afde948f",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r2": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r2.json",
+      "sha256": "598b5d15226a1274305b3ac178d86ff9c58e534ec2ace07669c256899f400a78",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r3": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r3.json",
+      "sha256": "9b5f5c4720706ef8dc9c7a580101ba8a19fab41a801b3f2c64250102069cd19a",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r4": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r4.json",
+      "sha256": "df17a7b1bf73073c0f3cb710bd0781807f4bc1a87ba2dd93013777a14ed4e6c4",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r5": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r5.json",
+      "sha256": "7d346f3fc59165eddbd0f13b55564cda9cd465c620f1a65f80cf84741c8e514f",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r6": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r6.json",
+      "sha256": "af8fbaac7b6a84b7117e6643dfdbe2df8f8edc634315bb99391a7da81cb4ea4d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r7": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r7.json",
+      "sha256": "3756592d5d65a99dab2cc8e585c9f7ce2ec24924794002a6ccd00e4fc4ddb236",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26.json",
+      "sha256": "0c929d2382fb5c9109788cbcd3da7319230d674a2f1e3dd4f0268f9471ba56af",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-18-r2": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-18-r2.json",
+      "sha256": "1481a8ff60d069eee143f12a9bf5a27ee2696ecb60e86163a27489cf161281df",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-18-r3": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-18-r3.json",
+      "sha256": "65e450bad2266d7bd69dea284d182d35324ff7c0d7d1d52043f972e7d02ca168",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-18": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-18.json",
+      "sha256": "9de6f1e967aef42814d0280b43be944afe6ec46a1832c9aad5eb5f12e97d8934",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-20-r5": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-20-r5.json",
+      "sha256": "c2bcd9eaf92eefb9e843740e632c1db0355bee3dd8a9a1beebe77a74f6f7b08d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-20-r6": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-20-r6.json",
+      "sha256": "f3baef6f0648eff515d46a3fcd1fb2c9932e1f13370d5d0553261d8393de8415",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-max-token-debug": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-max-token-debug.json",
+      "sha256": "d81f227ffd12b82d7e98b1de9ba73e21efddabf5c55c480ad9a18d294c1236df",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-planner-size-debug": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-planner-size-debug.json",
+      "sha256": "cf5330e8e4e9933ae17a5f9b04dfe89fcaa542355f9da709addef0c170149c7f",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "serial-write-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/serial-write-disasm.txt",
+      "sha256": "f9a1a8e34463895d11d1c58fffb3ea3e09643b4bbc6ee6511f23b8abbcb3ca79",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "access-helper-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/access-helper-review.txt",
+      "sha256": "edb670618b9fbfddd9084a5136b7f613533d1b1cab0602f318b85ab4003ac718",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot-configuration-calls": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-configuration-calls.json",
+      "sha256": "c06f9928474597af0354b313925fb38ad8ae2600e4f8793546bcfab952c71c83",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "config-pointers": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/config-pointers.txt",
+      "sha256": "7f761c7851dfb3181cc9b2a51ce113adf90f21e25ef367a2cc88aab9a623e54c",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pins-cs-pb": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pins-cs-pb.txt",
+      "sha256": "40d5732601024a1ec7a9cdcb90416dde11d22529b3a4b964512ff94d763a6c23",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pins-cs-pa": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pins-cs-pa.txt",
+      "sha256": "b3d20277b6a2d2f016b920e87b8866ffee2673b57b38874b92c47d161989ab53",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "named-init-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/named-init-review.txt",
+      "sha256": "a1588cd31e5ca20fbd5d3459d7ab34c1526d4eec52483b31479f4ede6f17ea8c",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "serial-method-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/serial-method-review.txt",
+      "sha256": "95cecfe117aff4a806a84756808dd029ca4191fe794e820f6ee310cc46c32161",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot-sercom5-observation": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "sha256": "28787e650a986c0238afaa441e327a1e8a6f14f10fe1f822993f140c0ba4bd9d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "channel-config-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/channel-config-disasm.txt",
+      "sha256": "fea5ef15c4476ed2639b0a5fb23f8f49f3365dd24aa82947cf6e5fed410b9d4d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "current-microstep-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/current-microstep-review.txt",
+      "sha256": "423dbe37ed5d2d7a825ec8424ed0f8b1ab34cb30921ad479a308169dc4989d47",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "sercom-transfer-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/sercom-transfer-disasm.txt",
+      "sha256": "ac7c83671b7fb8ef21a71cf46e7ac0291abc76e2a78d729e3f5c63e510b12c03",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "device-vtable": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/device-vtable.txt",
+      "sha256": "9ba18e252b1c577956acf3e9233c0022b68e3124083891f2c2ba2dbb0bedd239",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin-mosi": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pin-mosi.txt",
+      "sha256": "38a438d7dcc609b48ba59b9185c265086d5467a5659c2648329b81a7fd43ee41",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot-driver-state": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-driver-state.json",
+      "sha256": "6f2229084eb5cfedade881ba7f699d2100f75145627d4ad9bf78a23208f11410",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin-miso": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pin-miso.txt",
+      "sha256": "597d8b92ad3a3963020b28683ab348784585cf637070f9157ed55a7df68bb028",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "status-selector-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/status-selector-disasm.txt",
+      "sha256": "747b0c9d40fafce84be8d252a26054215ccb7e626adfe767efa10ca308e4cc79",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "startup-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/startup-review.txt",
+      "sha256": "d8675b9e038bf5350256b77d553dc043db117bdcc313c319ab8a6ce8eea0166b",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "channel-config-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/channel-config-review.txt",
+      "sha256": "403b30dcd75c9b72331201b8e71102095d34edcd2f708c006a98f80053147ce5",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin-sck": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pin-sck.txt",
+      "sha256": "61fbf294befd3813b4f3761db6bfa90bbeb6537be78806ea2b39a6e981caea40",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "spi-constructors-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/spi-constructors-disasm.txt",
+      "sha256": "45c0883c9f6329bf9c19bfa3fbf1a79263d342285a5ea082557915075ed373c7",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "selected-observations": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/selected-observations.json",
+      "sha256": "e1e188be526b970ca8e140ceb00b8ce0d9f740951ab7df72a50f9efbb673c9db",
+      "basis": "selected native entries, copied without a protocol decoder"
+    }
+  },
+  "findings": [
+    {
+      "finding_id": "TMC-PHYS-SERIAL",
+      "proposition": "Reported separate CS routes to package11/37/12/38 and shared SCK64/SDI63/SDO62",
+      "source_firmware": null,
+      "source_address": null,
+      "board": {
+        "measured_board_revision": null,
+        "photo_dossier_board_revision": "52_PO_V01R04",
+        "photo_revision_is_measurement_revision": null,
+        "bench_device_labels": [
+          "TMC1",
+          "TMC2",
+          "TMC3",
+          "TMC4"
+        ],
+        "legible_part_identification": "TMC5160A-TA on one photographed device; exact bench-label association unestablished",
+        "record_attribution": "Mark Stalzer, Google Doc Pin Testing, screenshots2026-09-21",
+        "actual_measurement_date": null,
+        "instrument_and_uncertainty": null,
+        "original_annotated_measurement_images_located": false
+      },
+      "evidence_refs": [
+        "bench"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "reported physical continuity record",
+      "scope": "Raw section6 upper table; lower zeros not paired to every endpoint",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [
+        "Hardware-reference/pin-map summary calls section6 blank despite populated upper table"
+      ],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G0",
+        "TMC-G3"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "bench"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-LEGACY-PINS",
+      "proposition": "Firmware SPIClass uses indices52/22/23, selecting PB01/PB02/PB03; four software selects use PB08/PA18/PB09/PA19 in logical channel order",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x9f60",
+        "0xa28c",
+        "0x14284",
+        "0x200041e4"
+      ],
+      "board": null,
+      "evidence_refs": [
+        "boot-sercom5-observation",
+        "boot-driver-state",
+        "spi-constructors-disasm",
+        "pin-miso",
+        "pin-mosi",
+        "pin-sck",
+        "pins-cs-pb",
+        "pins-cs-pa"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "concrete-harness observation plus static firmware table",
+      "scope": "Observed legacy configuration; package-pin and manufacturer mux bridge not established",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G0",
+        "TMC-G3",
+        "TMC-G8"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "boot-sercom5-observation",
+          "boot-driver-state",
+          "spi-constructors-disasm",
+          "pin-miso",
+          "pin-mosi",
+          "pin-sck",
+          "pins-cs-pb",
+          "pins-cs-pa"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-SPI5-CONFIG",
+      "proposition": "SERCOM5 requests SPI master, DOPO0/DIPO3, functionD pinmux and CPOL/CPHA; separate from SERCOM2 radio",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x43000400",
+        "0x20004c78",
+        "0x200041e4"
+      ],
+      "board": null,
+      "evidence_refs": [
+        "boot-sercom5-observation",
+        "boot-driver-state",
+        "svd",
+        "named-init-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "concrete-harness observation and vendor SVD definitions",
+      "scope": "One boot to first0x8960 checkpoint; internal configuration request, not peripheral electrical validation",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G0",
+        "TMC-G1",
+        "TMC-G2",
+        "TMC-G3"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "boot-sercom5-observation",
+          "boot-driver-state",
+          "svd",
+          "named-init-review"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-SERIAL-WRITE",
+      "proposition": "620 SERCOM5 DATA writes observed before first RX; five-byte write method uses selector|0x80 and32-bit MSB-first payload bracketed by logical select requests",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0xacd8",
+        "0xb468",
+        "0xb46a"
+      ],
+      "board": null,
+      "evidence_refs": [
+        "boot-sercom5-observation",
+        "boot-configuration-calls",
+        "serial-write-disasm",
+        "serial-method-review",
+        "sercom-transfer-disasm"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "concrete-harness execution plus instruction inspection",
+      "scope": "Fresh boot checkpoint378402 instructions, not physical bus capture",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [
+        "Older SERCOM5-init-only and display-only summaries contradicted within this observed startup scope"
+      ],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G4"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "boot-sercom5-observation",
+          "boot-configuration-calls",
+          "serial-write-disasm",
+          "serial-method-review",
+          "sercom-transfer-disasm"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-SERIAL-READ",
+      "proposition": "Eight0xac28 read-method entries use selector0x6f for four objects; request/re-read code exists; no physical response established",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0xac28",
+        "0xa944",
+        "0xa970",
+        "0xa982"
+      ],
+      "board": null,
+      "evidence_refs": [
+        "boot-configuration-calls",
+        "serial-method-review",
+        "status-selector-disasm"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "caller-grounded concrete observation and static method inspection",
+      "scope": "Two calls per object in startup; raw selector semantics not named without device reference",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G1",
+        "TMC-G4",
+        "TMC-G9"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "boot-configuration-calls",
+          "serial-method-review",
+          "status-selector-disasm"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-CONFIG-CURRENT",
+      "proposition": "Startup field0x2000006c reaches0xae60 with temporary argument400 and serial write selector0x10; current in amperes remains unknown",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x7514",
+        "0x753e",
+        "0x7540",
+        "0xae60",
+        "0x2000006c"
+      ],
+      "board": null,
+      "evidence_refs": [
+        "boot-configuration-calls",
+        "channel-config-disasm",
+        "config-pointers",
+        "current-microstep-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "caller-grounded concrete observation plus static data/consumer relationship",
+      "scope": "Startup only; no complete runtime MC-command causal proof or effective current conversion",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [
+        "Older SERCOM5-init-only and display-only summaries contradicted within this observed startup scope"
+      ],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G5",
+        "TMC-G6"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "boot-configuration-calls",
+          "channel-config-disasm",
+          "config-pointers",
+          "current-microstep-review"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-CONFIG-MICROSTEP",
+      "proposition": "Startup field0x200000f0 reaches per-device setter0xb070 with argument16; actual device microstep setting not verified",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x7514",
+        "0xb070",
+        "0x200000f0"
+      ],
+      "board": null,
+      "evidence_refs": [
+        "boot-configuration-calls",
+        "channel-config-review",
+        "config-pointers",
+        "current-microstep-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "caller-grounded concrete observation and static consumer interpretation",
+      "scope": "Actual device readback/default/mode not established;16 is a software argument",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [
+        "Older SERCOM5-init-only and display-only summaries contradicted within this observed startup scope"
+      ],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G1",
+        "TMC-G6"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "boot-configuration-calls",
+          "channel-config-review",
+          "config-pointers",
+          "current-microstep-review"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-MODE-STRAPS",
+      "proposition": "TMC1 SD_MODE/SPI_MODE toVCC_IO and CFG4/5/6 toGNDANA at0ohm; fixed reported wiring, mode consequence not certified",
+      "source_firmware": null,
+      "source_address": null,
+      "board": {
+        "measured_board_revision": null,
+        "photo_dossier_board_revision": "52_PO_V01R04",
+        "photo_revision_is_measurement_revision": null,
+        "bench_device_labels": [
+          "TMC1",
+          "TMC2",
+          "TMC3",
+          "TMC4"
+        ],
+        "legible_part_identification": "TMC5160A-TA on one photographed device; exact bench-label association unestablished",
+        "record_attribution": "Mark Stalzer, Google Doc Pin Testing, screenshots2026-09-21",
+        "actual_measurement_date": null,
+        "instrument_and_uncertainty": null,
+        "original_annotated_measurement_images_located": false
+      },
+      "evidence_refs": [
+        "bench",
+        "hardware",
+        "pin_map"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "physical record; separate narrative interpretation",
+      "scope": "Raw sections5/7 only TMC1; actual powered sampling/thresholds and mode truth table unavailable",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [
+        "Summary standalone/no-SPI interpretation lacks local authoritative truth table; no replacement truth table asserted",
+        "TMC1-only rows do not establish all four modes"
+      ],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G1"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "bench",
+          "hardware",
+          "pin_map"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-ENABLE-STRAP",
+      "proposition": "TMC1 DRV_ENN connection toGNDANA is reported; no non-energizing state follows",
+      "source_firmware": null,
+      "source_address": null,
+      "board": {
+        "measured_board_revision": null,
+        "photo_dossier_board_revision": "52_PO_V01R04",
+        "photo_revision_is_measurement_revision": null,
+        "bench_device_labels": [
+          "TMC1",
+          "TMC2",
+          "TMC3",
+          "TMC4"
+        ],
+        "legible_part_identification": "TMC5160A-TA on one photographed device; exact bench-label association unestablished",
+        "record_attribution": "Mark Stalzer, Google Doc Pin Testing, screenshots2026-09-21",
+        "actual_measurement_date": null,
+        "instrument_and_uncertainty": null,
+        "original_annotated_measurement_images_located": false
+      },
+      "evidence_refs": [
+        "bench",
+        "prior_contract"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "physical record",
+      "scope": "Raw section8 TMC1 only, no separate resistance column; other drivers unknown",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G2",
+        "TMC-G7"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "bench",
+          "prior_contract"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-CENSUS-BOUND",
+      "proposition": "Prior TMC r7 peripheral query concernsSERCOM4 with computed-address exclusion; it cannot prove noSERCOM5/TMC traffic",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": null,
+      "board": null,
+      "evidence_refs": [
+        "history_tmc5160-census-2026-09-26-r7",
+        "boot-sercom5-observation"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "historical APTrace result scope versus fresh concrete observation",
+      "scope": "r7 unreconciled, planner_prefill_exhausted; no general negative",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "history_tmc5160-census-2026-09-26-r7",
+          "boot-sercom5-observation"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    },
+    {
+      "finding_id": "TMC-REFERENCE-GAP",
+      "proposition": "Authoritative local MCU package/mux tables and TMC5160A mode/SPI/register reference not located; do not invent contents",
+      "source_firmware": {
+        "firmware_key": "autopilot868",
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "size_bytes": 70768,
+        "load_base": "0x4000",
+        "bootloader_included": false
+      },
+      "source_address": null,
+      "board": null,
+      "evidence_refs": [
+        "svd",
+        "pin_map",
+        "reference_corpus_interface",
+        "prior_contract"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "verification_note": "Unadmitted documentary export; not a PROPOSED/VERIFIED ledger claim",
+      "basis": "local reference availability inspection",
+      "scope": "Repository, expected reference corpus, conventional local reference locations checked; not a universal filesystem absence claim",
+      "assumptions": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests."
+      ],
+      "known_conflicts": [],
+      "limitations": [
+        "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+        "No TMC peripheral model: MMIO readback is memory, not an external response.",
+        "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+        "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+        "No current, voltage, motor safety or hardware timing default is prescribed."
+      ],
+      "unresolved_requirements": [
+        "TMC-G0",
+        "TMC-G1",
+        "TMC-G4"
+      ],
+      "apfw2_relevance": "POC0.1 candidate configuration/diagnostic contract, subject to explicit reference and electrical gates",
+      "reproducibility": {
+        "source_refs": [
+          "svd",
+          "pin_map",
+          "reference_corpus_interface",
+          "prior_contract"
+        ],
+        "commands_manifest": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/execution-manifest.json"
+      }
+    }
+  ],
+  "measured_serial_routing": {
+    "drivers": [
+      {
+        "driver_id": "TMC1",
+        "cs_terminal": 13,
+        "cs_signal": "CSN_CFG3",
+        "reported_mcu_package_pin": 11,
+        "confirmed_mcu_gpio": null,
+        "confirmed_firmware_logical_channel": null,
+        "cs_independence_electrically_verified": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "bench"
+        ],
+        "limitations": [
+          "No physical package-to-GPIO join certified; board/device orientation metadata incomplete"
+        ]
+      },
+      {
+        "driver_id": "TMC2",
+        "cs_terminal": 13,
+        "cs_signal": "CSN_CFG3",
+        "reported_mcu_package_pin": 37,
+        "confirmed_mcu_gpio": null,
+        "confirmed_firmware_logical_channel": null,
+        "cs_independence_electrically_verified": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "bench"
+        ],
+        "limitations": [
+          "No physical package-to-GPIO join certified; board/device orientation metadata incomplete"
+        ]
+      },
+      {
+        "driver_id": "TMC3",
+        "cs_terminal": 13,
+        "cs_signal": "CSN_CFG3",
+        "reported_mcu_package_pin": 12,
+        "confirmed_mcu_gpio": null,
+        "confirmed_firmware_logical_channel": null,
+        "cs_independence_electrically_verified": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "bench"
+        ],
+        "limitations": [
+          "No physical package-to-GPIO join certified; board/device orientation metadata incomplete"
+        ]
+      },
+      {
+        "driver_id": "TMC4",
+        "cs_terminal": 13,
+        "cs_signal": "CSN_CFG3",
+        "reported_mcu_package_pin": 38,
+        "confirmed_mcu_gpio": null,
+        "confirmed_firmware_logical_channel": null,
+        "cs_independence_electrically_verified": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "bench"
+        ],
+        "limitations": [
+          "No physical package-to-GPIO join certified; board/device orientation metadata incomplete"
+        ]
+      }
+    ],
+    "shared_signals": [
+      {
+        "signal": "SCK_CFG2",
+        "driver_terminal": 14,
+        "reported_mcu_package_pin": 64,
+        "confirmed_mcu_gpio": null,
+        "supported_peripheral_function": null,
+        "functionality_demonstrated": false,
+        "evidence_refs": [
+          "bench"
+        ]
+      },
+      {
+        "signal": "SDI_CFG1",
+        "driver_terminal": 15,
+        "reported_mcu_package_pin": 63,
+        "confirmed_mcu_gpio": null,
+        "supported_peripheral_function": null,
+        "functionality_demonstrated": false,
+        "evidence_refs": [
+          "bench"
+        ]
+      },
+      {
+        "signal": "SDO_CFG0",
+        "driver_terminal": 16,
+        "reported_mcu_package_pin": 62,
+        "confirmed_mcu_gpio": null,
+        "supported_peripheral_function": null,
+        "functionality_demonstrated": false,
+        "evidence_refs": [
+          "bench"
+        ]
+      }
+    ],
+    "basis": "reported physical continuity; no functional proof"
+  },
+  "legacy_requested_configuration": {
+    "bus": {
+      "peripheral": "SERCOM5",
+      "base": "0x43000400",
+      "spi_object": "0x200041e4",
+      "sercom_object": "0x20004c78",
+      "mode": "SPI_MASTER requested",
+      "dopo": 0,
+      "dipo": 3,
+      "dopo_svd_role": "DO PAD0, SCK PAD1, SS PAD2",
+      "dipo_svd_role": "DI PAD3",
+      "gpio_mux_function_requested": "D",
+      "manufacturer_gpio_mux_support_verified": null,
+      "manufacturer_package_mapping_verified": null,
+      "legacy_signal_roles": [
+        {
+          "role": "SPIClass MISO/input interpretation",
+          "gpio": "PB01",
+          "pin_index": 52,
+          "sercom_pad_expected": 3
+        },
+        {
+          "role": "SPIClass MOSI/output interpretation",
+          "gpio": "PB02",
+          "pin_index": 22,
+          "sercom_pad_expected": 0
+        },
+        {
+          "role": "SPIClass SCK interpretation",
+          "gpio": "PB03",
+          "pin_index": 23,
+          "sercom_pad_expected": 1
+        }
+      ],
+      "transaction_ctrla": "0x3030000e",
+      "transaction_baud": "0x0b",
+      "legacy_begin_requested_rate": 2000000,
+      "requested_rate_unit": "API clock argument; not measured frequency",
+      "legacy_mode_argument": 3,
+      "physical_clock_hz": null,
+      "electrically_validated": false,
+      "competing_named_functions": "No overlap with known motion/control GPIOs,radio PA15/16/17 orUSB PA24/25; not exhaustive ownership proof",
+      "readiness": "CONDITIONAL",
+      "evidence_refs": [
+        "boot-sercom5-observation",
+        "boot-driver-state",
+        "spi-constructors-disasm",
+        "svd",
+        "pin-miso",
+        "pin-mosi",
+        "pin-sck"
+      ]
+    },
+    "chip_selects": [
+      {
+        "logical_channel": 0,
+        "device_object": "0x200020a0",
+        "gpio": "PB08",
+        "firmware_pin_index": 18,
+        "observed_select_low_register": "0x41008094",
+        "mask": "0x100",
+        "bench_driver_id": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "boot-driver-state",
+          "boot-sercom5-observation",
+          "boot-configuration-calls",
+          "pins-cs-pb",
+          "pins-cs-pa"
+        ]
+      },
+      {
+        "logical_channel": 1,
+        "device_object": "0x200021d8",
+        "gpio": "PA18",
+        "firmware_pin_index": 10,
+        "observed_select_low_register": "0x41008014",
+        "mask": "0x40000",
+        "bench_driver_id": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "boot-driver-state",
+          "boot-sercom5-observation",
+          "boot-configuration-calls",
+          "pins-cs-pb",
+          "pins-cs-pa"
+        ]
+      },
+      {
+        "logical_channel": 2,
+        "device_object": "0x2000213c",
+        "gpio": "PB09",
+        "firmware_pin_index": 19,
+        "observed_select_low_register": "0x41008094",
+        "mask": "0x200",
+        "bench_driver_id": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "boot-driver-state",
+          "boot-sercom5-observation",
+          "boot-configuration-calls",
+          "pins-cs-pb",
+          "pins-cs-pa"
+        ]
+      },
+      {
+        "logical_channel": 3,
+        "device_object": "0x20002274",
+        "gpio": "PA19",
+        "firmware_pin_index": 11,
+        "observed_select_low_register": "0x41008014",
+        "mask": "0x80000",
+        "bench_driver_id": null,
+        "readiness": "CONDITIONAL",
+        "evidence_refs": [
+          "boot-driver-state",
+          "boot-sercom5-observation",
+          "boot-configuration-calls",
+          "pins-cs-pb",
+          "pins-cs-pa"
+        ]
+      }
+    ],
+    "measured_package_pin_to_legacy_gpio_join": null,
+    "join_note": "No unsupported package mapping or all-driver mode extrapolation supplied"
+  },
+  "mode_prerequisites": {
+    "straps": [
+      {
+        "driver_id": "TMC1",
+        "terminal": 21,
+        "signal": "SD_MODE",
+        "reported_net": "VCC_IO",
+        "resistance_ohms": 0,
+        "powered_voltage": null
+      },
+      {
+        "driver_id": "TMC1",
+        "terminal": 22,
+        "signal": "SPI_MODE",
+        "reported_net": "VCC_IO",
+        "resistance_ohms": 0,
+        "powered_voltage": null
+      },
+      {
+        "driver_id": "TMC1",
+        "terminal": 23,
+        "signal": "CFG4",
+        "reported_net": "GNDANA",
+        "resistance_ohms": 0,
+        "powered_voltage": null
+      },
+      {
+        "driver_id": "TMC1",
+        "terminal": 24,
+        "signal": "CFG5",
+        "reported_net": "GNDANA",
+        "resistance_ohms": 0,
+        "powered_voltage": null
+      },
+      {
+        "driver_id": "TMC1",
+        "terminal": 25,
+        "signal": "CFG6",
+        "reported_net": "GNDANA",
+        "resistance_ohms": 0,
+        "powered_voltage": null
+      },
+      {
+        "driver_id": "TMC1",
+        "terminal": 28,
+        "signal": "DRV_ENN",
+        "reported_net": "GNDANA",
+        "resistance_ohms": null,
+        "powered_voltage": null
+      }
+    ],
+    "other_driver_mode_straps": null,
+    "decoded_operating_mode": null,
+    "standalone_mode_established": null,
+    "spi_capable_mode_established": null,
+    "external_step_dir_with_spi_supported": null,
+    "power_on_register_defaults": null,
+    "needed_reference": "authoritative local TMC5160A-TA mode,SPI,power-domain and register documentation",
+    "gates": [
+      "TMC-G1",
+      "TMC-G2"
+    ]
+  },
+  "configuration_dependencies": [
+    {
+      "property": "effective motor current",
+      "classification": "Unknown pending electrical verification",
+      "current_value": null,
+      "could_configure": "candidate serial-setting path exists; physical scaling/limits unknown",
+      "must_configure_for_poc": "must establish a permitted current configuration before energization",
+      "evidence_refs": [
+        "boot-configuration-calls",
+        "current-microstep-review"
+      ],
+      "blocking_gaps": [
+        "TMC-G5",
+        "TMC-G6"
+      ]
+    },
+    {
+      "property": "current-sense resistor network",
+      "classification": "Unknown pending electrical verification",
+      "current_value": null,
+      "could_configure": null,
+      "must_configure_for_poc": "characterize before current-limit design",
+      "evidence_refs": [
+        "bench",
+        "prior_checklist"
+      ],
+      "blocking_gaps": [
+        "TMC-G5"
+      ]
+    },
+    {
+      "property": "microstepping resolution",
+      "classification": "Original-firmware setter observed; actual resolution unknown",
+      "current_value": null,
+      "could_configure": "candidate serial-setting path exists",
+      "must_configure_for_poc": "define/verify chosen resolution before motion conversion",
+      "evidence_refs": [
+        "boot-configuration-calls",
+        "current-microstep-review"
+      ],
+      "blocking_gaps": [
+        "TMC-G1",
+        "TMC-G6"
+      ]
+    },
+    {
+      "property": "STEP/DIR and serial mode compatibility",
+      "classification": "Mode straps physically reported; documentation missing",
+      "current_value": null,
+      "could_configure": "not established",
+      "must_configure_for_poc": "determine actual operating mode; retain MCU STEP/DIR architecture",
+      "evidence_refs": [
+        "bench"
+      ],
+      "blocking_gaps": [
+        "TMC-G1"
+      ]
+    },
+    {
+      "property": "driver enable and reset containment",
+      "classification": "TMC1 ground connection reported; electrical state unknown",
+      "current_value": null,
+      "could_configure": "software GPIO roles unresolved",
+      "must_configure_for_poc": "establish non-energizing state before powered tests",
+      "evidence_refs": [
+        "bench",
+        "prior_contract"
+      ],
+      "blocking_gaps": [
+        "TMC-G2",
+        "TMC-G7"
+      ]
+    },
+    {
+      "property": "chopper/current-control/startup defaults",
+      "classification": "Raw writes observed, device meanings unvalidated",
+      "current_value": null,
+      "could_configure": "conditional on register reference and functioning read/write interface",
+      "must_configure_for_poc": "establish required actual configuration; do not assume defaults",
+      "evidence_refs": [
+        "boot-configuration-calls"
+      ],
+      "blocking_gaps": [
+        "TMC-G1",
+        "TMC-G4",
+        "TMC-G6"
+      ]
+    },
+    {
+      "property": "fault/status reporting",
+      "classification": "Original read attempts observed; actual diagnostics unknown",
+      "current_value": null,
+      "could_configure": "candidate hardware-SPI read path",
+      "must_configure_for_poc": "minimum detection/error policy must be defined; comprehensive diagnostics may be deferred",
+      "evidence_refs": [
+        "boot-configuration-calls",
+        "status-selector-disasm"
+      ],
+      "blocking_gaps": [
+        "TMC-G4",
+        "TMC-G9"
+      ]
+    }
+  ],
+  "functional_communication": {
+    "firmware_sercom5_transfers_observed": true,
+    "firmware_read_attempts_observed": true,
+    "electrical_spi_functionality_established": false,
+    "functional_spi_available": null,
+    "status_response_validated": false,
+    "safe_logic_only_power_configuration": null,
+    "effective_current_limit": null,
+    "electrical_safety_approved": false
+  },
+  "implementation_readiness": [
+    {
+      "element": "software bus/select abstraction and explicit transport error results",
+      "classification": "READY",
+      "condition": "pure software boundary; no board behavior asserted"
+    },
+    {
+      "element": "SERCOM5 instance,D/DOPO0/DIPO3 and legacy logical selects",
+      "classification": "CONDITIONAL",
+      "condition": "TMC-G0 manufacturer package/pinmux validation and TMC-G1\u2013G3 electrical/reference gates"
+    },
+    {
+      "element": "deployable TMC register protocol/configuration and actual register names",
+      "classification": "BLOCKED",
+      "condition": "missing authoritative local TMC reference and validated electrical readback"
+    },
+    {
+      "element": "safe motor enable/current/first energized move",
+      "classification": "BLOCKED",
+      "condition": "TMC-G2,G5,G6,G7,G8"
+    },
+    {
+      "element": "all-channel bring-up and exhaustive diagnostic register coverage",
+      "classification": "OPTIONAL",
+      "condition": "after POC single-channel operation; shared-bus containment is still mandatory"
+    }
+  ],
+  "minimum_bench_gates": [
+    "TMC-G0",
+    "TMC-G1",
+    "TMC-G2",
+    "TMC-G3",
+    "TMC-G4",
+    "TMC-G5",
+    "TMC-G6",
+    "TMC-G7",
+    "TMC-G8"
+  ],
+  "assumptions": [
+    "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+    "No TMC peripheral model: MMIO readback is memory, not an external response.",
+    "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+    "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+    "No current, voltage, motor safety or hardware timing default is prescribed."
+  ],
+  "conflicts": [
+    {
+      "id": "TMC-CONFLICT-SERIAL-PHYSICAL",
+      "refs": [
+        "bench",
+        "hardware",
+        "pin_map"
+      ],
+      "resolution": "Populated upper section6 retained despite blank lower endpoint cells/summary"
+    },
+    {
+      "id": "TMC-CONFLICT-SERCOM5",
+      "refs": [
+        "prior_contract",
+        "prior_boot",
+        "boot-sercom5-observation"
+      ],
+      "resolution": "620 fresh DATA writes before firstRX and640 earlier longer-bound writes contradict init-only interpretation; physical target not proven"
+    },
+    {
+      "id": "TMC-CONFLICT-CONFIG-CONSUMERS",
+      "refs": [
+        "prior_contract",
+        "motor_dossier",
+        "channel-config-disasm",
+        "boot-configuration-calls"
+      ],
+      "resolution": "Current/microstep fields feed observed serial-setting paths; display-only inference not carried forward"
+    },
+    {
+      "id": "TMC-CONFLICT-MODE",
+      "refs": [
+        "bench",
+        "hardware",
+        "pin_map"
+      ],
+      "resolution": "Preserve TMC1 strap observations; standalone/noSPI interpretation not justified locally"
+    }
+  ],
+  "evidence_grade": "UNKNOWN",
+  "verification_state": null,
+  "limitations": [
+    "Native execution is under disclosed boot assumptions; it is not physical SPI communication.",
+    "No TMC peripheral model: MMIO readback is memory, not an external response.",
+    "Package-pinout and GPIO mux support must not be inferred from the SVD or firmware requests.",
+    "No new ledger claim admitted; UNKNOWN grade and null verification state are intentional.",
+    "No current, voltage, motor safety or hardware timing default is prescribed."
+  ],
+  "recommended_next_work": {
+    "existing_aptrace": "Inspect a named observed selector/consumer when the authoritative local device reference enables a specific question",
+    "development": "No new APTrace feature shown necessary for this bounded software question",
+    "new_evidence": "Local manufacturer references and engineering-approved physical tests per bench plan"
+  }
+}

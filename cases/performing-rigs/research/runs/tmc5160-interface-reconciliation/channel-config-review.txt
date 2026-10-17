@@ -1,0 +1,214 @@
+==================================================
+Function: lcd_status_refresh__THIRD_PARTY @ 00007514  size=608  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: LIKELY_THIRD_PARTY_LIBRARY -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void lcd_status_refresh__THIRD_PARTY(undefined4 param_1)
+
+{
+  char cVar1;
+  undefined4 *puVar2;
+  undefined4 *puVar3;
+  undefined4 *puVar4;
+  undefined4 *puVar5;
+  
+  puVar4 = DAT_0000776c;
+  puVar3 = DAT_00007768;
+  puVar2 = DAT_00007764;
+  puVar5 = DAT_00007750;
+  switch(param_1) {
+  case 0:
+    FUN_0000af9c(DAT_00007750);
+    FUN_0000a84a(puVar5,5);
+    puVar5[4] = *DAT_00007754;
+    FUN_0000ae60(puVar5,*DAT_00007758);
+    FUN_0000aa22(puVar5,0xf);
+    FUN_0000b0f0(puVar5,0x40);
+    FUN_0000a88a(puVar5,0);
+    FUN_0000a8aa(puVar5,0);
+    FUN_0000a86a(puVar5,1);
+    delay__STANDARD_LIBRARY(10);
+    FUN_0000b070(puVar5,*DAT_0000775c);
+    cVar1 = *DAT_00007760;
+    if (cVar1 == '\0') {
+      FUN_0000a9cc(puVar5);
+    }
+    else {
+      FUN_0000a9cc(puVar5,1);
+    }
+    FUN_0000aa44(puVar5,cVar1 != '\0');
+    FUN_0000a8f8(DAT_00007750,5);
+    puVar5 = DAT_00007750;
+    break;
+  case 1:
+    FUN_0000af9c(DAT_00007764);
+    FUN_0000a84a(puVar2,5);
+    puVar2[4] = DAT_00007754[1];
+    FUN_0000ae60(puVar2,DAT_00007758[2]);
+    FUN_0000aa22(puVar2,0xf);
+    FUN_0000b0f0(puVar2,0x40);
+    FUN_0000a88a(puVar2,0);
+    FUN_0000a8aa(puVar2,0);
+    FUN_0000a86a(puVar2,1);
+    delay__STANDARD_LIBRARY(10);
+    FUN_0000b070(puVar2,DAT_0000775c[2]);
+    cVar1 = DAT_00007760[1];
+    if (cVar1 == '\0') {
+      FUN_0000a9cc(puVar2);
+    }
+    else {
+      FUN_0000a9cc(puVar2,1);
+    }
+    FUN_0000aa44(puVar2,cVar1 != '\0');
+    FUN_0000a8f8(DAT_00007764,5);
+    puVar5 = DAT_00007764;
+    break;
+  case 2:
+    FUN_0000af9c(DAT_00007768);
+    FUN_0000a84a(puVar3,5);
+    puVar3[4] = DAT_00007754[2];
+    FUN_0000ae60(puVar3,DAT_00007758[4]);
+    FUN_0000aa22(puVar3,0xf);
+    FUN_0000b0f0(puVar3,0x40);
+    FUN_0000a88a(puVar3,0);
+    FUN_0000a8aa(puVar3,0);
+    FUN_0000a86a(puVar3,1);
+    delay__STANDARD_LIBRARY(10);
+    FUN_0000b070(puVar3,DAT_0000775c[4]);
+    cVar1 = DAT_00007760[2];
+    if (cVar1 == '\0') {
+      FUN_0000a9cc(puVar3);
+    }
+    else {
+      FUN_0000a9cc(puVar3,1);
+    }
+    FUN_0000aa44(puVar3,cVar1 != '\0');
+    FUN_0000a8f8(DAT_00007768,5);
+    puVar5 = DAT_00007768;
+    break;
+  case 3:
+    FUN_0000af9c(DAT_0000776c);
+    FUN_0000a84a(puVar4,5);
+    puVar4[4] = DAT_00007754[3];
+    FUN_0000ae60(puVar4,DAT_00007758[6]);
+    FUN_0000aa22(puVar4,0xf);
+    FUN_0000b0f0(puVar4,0x40);
+    FUN_0000a88a(puVar4,0);
+    FUN_0000a8aa(puVar4,0);
+    FUN_0000a86a(puVar4,1);
+    FUN_0000b070(puVar4,DAT_0000775c[6]);
+    delay__STANDARD_LIBRARY(10);
+    cVar1 = DAT_00007760[3];
+    if (cVar1 == '\0') {
+      FUN_0000a9cc(puVar4);
+    }
+    else {
+      FUN_0000a9cc(puVar4,1);
+    }
+    FUN_0000aa44(puVar4,cVar1 != '\0');
+    FUN_0000a8f8(DAT_0000776c,5);
+    puVar5 = DAT_0000776c;
+    break;
+  default:
+    return;
+  }
+  *(byte *)(puVar5 + 0xb) = *(byte *)(puVar5 + 0xb) & 0xfe | 1;
+                    /* WARNING: Could not recover jumptable at 0x0000a942. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  (**(code **)*puVar5)(puVar5,0x6d,(uint)puVar5[10] >> 8 | 0x1000000);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000abb4 @ 0000abb4  size=6  params=0  callingConvention=unknown
+
+
+void FUN_0000abb4(int param_1)
+
+{
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*(undefined2 *)(param_1 + 0x34));
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000abbc @ 0000abbc  size=36  params=0  callingConvention=unknown
+
+
+void FUN_0000abbc(int param_1)
+
+{
+  if (*(int *)(param_1 + 0x38) == 0) {
+    FUN_0000a000(DAT_0000abe4,*DAT_0000abe0,3);
+    return;
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000abf8 @ 0000abf8  size=138  params=0  callingConvention=unknown
+
+
+uint FUN_0000abf8(int param_1,int param_2)
+
+{
+  byte bVar1;
+  int iVar2;
+  undefined2 *puVar3;
+  uint uVar4;
+  uint uVar5;
+  uint uVar6;
+  
+  puVar3 = *(undefined2 **)(param_1 + 0x38);
+  if (puVar3 == (undefined2 *)0x0) {
+    uVar5 = FUN_0000a05c(DAT_0000ac08);
+    return uVar5;
+  }
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(puVar3[2],0);
+  uVar5 = 7;
+  uVar6 = 0;
+  do {
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar3,(param_2 >> (uVar5 & 0xff) & 1U) != 0);
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(puVar3[2],1);
+    iVar2 = FUN_0000d3dc(puVar3[1]);
+    uVar4 = (uint)(iVar2 != 0) << (uVar5 & 0xff);
+    bVar1 = (byte)uVar4 | (byte)uVar6;
+    uVar6 = uVar4 & 0xff | uVar6;
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(puVar3[2],0);
+    uVar5 = uVar5 - 1;
+  } while (uVar5 != 0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar3,param_2 << 0x1f < 0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(puVar3[2],1);
+  iVar2 = FUN_0000d3dc(puVar3[1]);
+  if (iVar2 != 0) {
+    bVar1 = bVar1 | 1;
+  }
+  return (uint)bVar1;
+}
+
+
+
+==================================================
+Function: FUN_0000abe8 @ 0000abe8  size=12  params=0  callingConvention=unknown
+
+
+void FUN_0000abe8(int param_1)
+
+{
+  if (*(int *)(param_1 + 0x38) == 0) {
+    FUN_0000a03c(DAT_0000abf4);
+    return;
+  }
+  return;
+}
+
+
+

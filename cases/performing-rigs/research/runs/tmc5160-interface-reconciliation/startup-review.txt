@@ -1,0 +1,223 @@
+==================================================
+Function: FUN_00007770 @ 00007770  size=482  params=0  callingConvention=unknown
+
+
+void FUN_00007770(void)
+
+{
+  undefined1 *puVar1;
+  byte *pbVar2;
+  undefined4 *puVar3;
+  byte bVar4;
+  uint uVar5;
+  int iVar6;
+  uint uVar7;
+  undefined1 *puVar8;
+  undefined4 *puVar9;
+  undefined1 *puVar10;
+  int iVar11;
+  undefined4 uVar12;
+  
+  puVar3 = DAT_0000779c;
+  uVar7 = 0;
+  puVar9 = DAT_00007798;
+  do {
+    uVar12 = *puVar9;
+    *puVar9 = *puVar3;
+    uVar5 = uVar7 & 0xff;
+    uVar7 = uVar7 + 1;
+    lcd_status_refresh__THIRD_PARTY(uVar5);
+    *puVar9 = uVar12;
+    puVar8 = DAT_000074f4;
+    puVar9 = puVar9 + 1;
+  } while (uVar7 != 4);
+  FUN_0000a9cc(DAT_000074f0,0);
+  FUN_0000aa44(DAT_000074f0,0);
+  FUN_0000a9cc(DAT_000074f8,0);
+  FUN_0000aa44(DAT_000074f8,0);
+  FUN_0000a9cc(DAT_000074fc,0);
+  FUN_0000aa44(DAT_000074fc,0);
+  FUN_0000a9cc(DAT_00007500,0);
+  FUN_0000aa44(DAT_00007500,0);
+  delay__STANDARD_LIBRARY(200);
+  iVar6 = 0;
+  puVar10 = puVar8;
+  do {
+    iVar6 = iVar6 + 1;
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar10,1);
+    puVar1 = DAT_00007504;
+    puVar10 = puVar10 + 1;
+  } while (iVar6 != 4);
+  iVar6 = 0x30;
+  do {
+    iVar11 = 4;
+    puVar10 = DAT_00007504;
+    do {
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar10,1);
+      FUN_0000cd34(2);
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar10,0);
+      FUN_0000cd34(300);
+      iVar11 = iVar11 + -1;
+      puVar10 = puVar10 + 1;
+    } while (iVar11 != 0);
+    iVar6 = iVar6 + -1;
+    iVar11 = 0;
+  } while (iVar6 != 0);
+  do {
+    iVar11 = iVar11 + 1;
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar8,0);
+    puVar8 = puVar8 + 1;
+  } while (iVar11 != 4);
+  delay__STANDARD_LIBRARY(200);
+  iVar6 = 0x30;
+  do {
+    iVar11 = 4;
+    puVar8 = puVar1;
+    do {
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar8,1);
+      FUN_0000cd34(2);
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar8,0);
+      FUN_0000cd34(300);
+      iVar11 = iVar11 + -1;
+      puVar8 = puVar8 + 1;
+    } while (iVar11 != 0);
+    iVar6 = iVar6 + -1;
+  } while (iVar6 != 0);
+  iVar6 = FUN_0000a970(DAT_000074f0);
+  bVar4 = 0;
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_000074f0);
+    bVar4 = bVar4 ^ 1;
+  }
+  pbVar2 = DAT_00007508;
+  uVar12 = DAT_000074fc;
+  *DAT_00007508 = bVar4;
+  iVar6 = FUN_0000a970(uVar12);
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_000074fc);
+    bVar4 = bVar4 ^ 1;
+  }
+  else {
+    bVar4 = 0;
+  }
+  pbVar2[1] = bVar4;
+  iVar6 = FUN_0000a970(DAT_000074f8);
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_000074f8);
+    bVar4 = bVar4 ^ 1;
+  }
+  else {
+    bVar4 = 0;
+  }
+  pbVar2[2] = bVar4;
+  iVar6 = FUN_0000a970(DAT_00007500);
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_00007500);
+    bVar4 = bVar4 ^ 1;
+  }
+  else {
+    bVar4 = 0;
+  }
+  pbVar2[3] = bVar4;
+  FUN_0000a9cc(DAT_000074f0,1);
+  FUN_0000aa44(DAT_000074f0,1);
+  FUN_0000a9cc(DAT_000074f8,1);
+  FUN_0000aa44(DAT_000074f8,1);
+  FUN_0000a9cc(DAT_000074fc,1);
+  FUN_0000aa44(DAT_000074fc,1);
+  FUN_0000a9cc(DAT_00007500,1);
+  FUN_0000aa44(DAT_00007500,1);
+  puVar8 = DAT_0000750c;
+  *DAT_0000750c = 0x4d;
+  puVar8[1] = 0x54;
+  puVar8[2] = *pbVar2 + 0x30;
+  puVar8[3] = pbVar2[1] + 0x30;
+  puVar8[4] = pbVar2[2] + 0x30;
+  puVar8[5] = pbVar2[3] + 0x30;
+  puVar8[6] = *DAT_00007510 + '0';
+  puVar8[7] = 0x7c;
+  puVar8[8] = 0;
+  return;
+}
+
+
+
+==================================================
+Function: sketch_setup__CUSTOM @ 00009464  size=130  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void sketch_setup__CUSTOM(void)
+
+{
+  char *pcVar1;
+  undefined4 uVar2;
+  int iVar3;
+  int iVar4;
+  
+  uVar2 = DAT_000094f0;
+  pcVar1 = DAT_000094ec;
+  FUN_0000b81c(DAT_000094e8,0x1c200);
+  FUN_00009980(DAT_000094f8,DAT_000094f4);
+  FUN_00009978(DAT_000094f8,0x30,0x23,0x22);
+  FUN_00006968();
+  radio_bringup__THIRD_PARTY();
+  FUN_00006190();
+  boot_config_reader__CUSTOM();
+  FUN_00004328();
+  FUN_00005d44();
+  *DAT_000094fc = 0;
+  *DAT_00009500 = 0;
+  *DAT_00009504 = 0;
+  *(undefined1 *)(DAT_00009508 + 0xd) = 5;
+  FUN_00007770();
+  iVar3 = millis__ADAFRUIT_CORE();
+  while (*pcVar1 != '\0') {
+    iVar4 = millis__ADAFRUIT_CORE();
+    if (700 < (uint)(iVar4 - iVar3)) {
+      FUN_00008c10(uVar2);
+      iVar3 = millis__ADAFRUIT_CORE();
+    }
+    FUN_00008960();
+    loop_housekeeping_save_trigger__CUSTOM();
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00004440 @ 00004440  size=44  params=0  callingConvention=unknown
+
+
+void FUN_00004440(void)
+
+{
+  undefined1 *puVar1;
+  undefined1 uVar2;
+  
+  puVar1 = DAT_0000446c;
+  *DAT_0000446c = 0x61;
+  if (*DAT_00004470 == '\0') {
+    if (*DAT_0000447c == '\0') {
+      uVar2 = 0x30;
+    }
+    else {
+      uVar2 = 0x32;
+    }
+  }
+  else {
+    uVar2 = 0x31;
+  }
+  puVar1[1] = uVar2;
+  if (*DAT_00004474 == '\0') {
+    *(undefined1 *)(DAT_00004478 + 0xd) = 1;
+  }
+  return;
+}
+
+
+

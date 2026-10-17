@@ -1,0 +1,7 @@
+JSON parsed; all source paths and SHA256 identities match.
+11 unique finding IDs; all evidence references resolve; no new VERIFIED state assigned.
+All3 native boot operations completed at0x8960 after378402 instructions.
+620SERCOM5 write records and selected GPIO/pinmux entries exactly match native log;8read entries and configuration argument entries match native watch records.
+MMIO/watch log counts below configured caps; this does not imply unbounded coverage.
+Measured package-to-GPIO assignments and actual device operating values remain explicitly unknown; no unsupported pinout supplied.
+No new framework or firmware regression tests written or run.

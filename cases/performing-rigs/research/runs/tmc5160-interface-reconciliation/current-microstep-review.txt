@@ -1,0 +1,116 @@
+==================================================
+Function: FUN_0000ae60 @ 0000ae60  size=156  params=0  callingConvention=unknown
+
+
+void FUN_0000ae60(undefined4 *param_1,int param_2,undefined4 param_3)
+
+{
+  uint uVar1;
+  uint uVar2;
+  uint in_fpscr;
+  uint uVar3;
+  float fVar4;
+  undefined4 uVar5;
+  
+  uVar3 = VectorFloatToUnsigned((float)param_1[3] * DAT_0000aee8,3);
+  uVar2 = 0x1f;
+  do {
+    uVar1 = (((uVar3 & 0xffff) * 0x2d41 >> 8) * param_2) / (uVar2 * DAT_0000aeec + DAT_0000aeec);
+    if (uVar1 < 0x100) {
+      if (uVar1 < 0x80) {
+        uVar2 = uVar2 - 1 & 0xff;
+      }
+    }
+    else {
+      uVar1 = 0;
+    }
+  } while (uVar1 - 1 < 0x7f);
+  if (0x1e < uVar2) {
+    uVar2 = 0x1f;
+  }
+  FUN_0000ae50(param_1,uVar1 & 0xff,uVar1,uVar2,param_1,param_2,param_3);
+  FUN_0000aa0c(param_1,uVar2);
+  fVar4 = (float)VectorSignedToFloat(uVar2,(byte)(in_fpscr >> 0x16) & 3);
+  uVar5 = VectorFloatToUnsigned(fVar4 * (float)param_1[4],3);
+  *(byte *)(param_1 + 1) = *(byte *)(param_1 + 1) & 0xe0 | (byte)uVar5 & 0x1f;
+                    /* WARNING: Could not recover jumptable at 0x0000aa0a. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  (**(code **)*param_1)(param_1,0x10,param_1[1] & 0xfffff);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000b070 @ 0000b070  size=118  params=0  callingConvention=unknown
+
+
+void FUN_0000b070(int *param_1,uint param_2)
+
+{
+  undefined4 uVar1;
+  code *UNRECOVERED_JUMPTABLE_00;
+  
+  if (param_2 == 0x10) {
+    uVar1 = 4;
+    UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+  }
+  else {
+    if (param_2 < 0x11) {
+      switch(param_2) {
+      case 0:
+        uVar1 = 8;
+        UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+        break;
+      default:
+        return;
+      case 2:
+        uVar1 = 7;
+        UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+        break;
+      case 4:
+        uVar1 = 6;
+        UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+        break;
+      case 8:
+        UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+        uVar1 = 5;
+      }
+                    /* WARNING: Could not recover jumptable at 0x0000b0d4. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+      (*UNRECOVERED_JUMPTABLE_00)(param_1,uVar1);
+      return;
+    }
+    if (param_2 == 0x80) {
+      uVar1 = 1;
+      UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+    }
+    else if (param_2 < 0x81) {
+      if (param_2 == 0x20) {
+        uVar1 = 3;
+        UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+      }
+      else {
+        if (param_2 != 0x40) {
+          return;
+        }
+        uVar1 = 2;
+        UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+      }
+    }
+    else {
+      if (param_2 != 0x100) {
+        return;
+      }
+      UNRECOVERED_JUMPTABLE_00 = *(code **)(*param_1 + 0x24);
+      uVar1 = 0;
+    }
+  }
+                    /* WARNING: Could not recover jumptable at 0x0000b0aa. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  (*UNRECOVERED_JUMPTABLE_00)(param_1,uVar1);
+  return;
+}
+
+
+

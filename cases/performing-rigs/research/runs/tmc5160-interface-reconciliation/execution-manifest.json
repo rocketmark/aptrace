@@ -1,0 +1,663 @@
+{
+  "date": "2026-10-17",
+  "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301",
+  "firmware": {
+    "firmware_key": "autopilot868",
+    "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "size_bytes": 70768,
+    "load_base": "0x4000",
+    "bootloader_included": false
+  },
+  "native_commands": {
+    "boot-sercom5-observation": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--entry",
+      "0xcc24",
+      "--mmio-size",
+      "0x4000000",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--mmio-force-bits",
+      "0x4000140c:1",
+      "--mmio-force-bits",
+      "0x40001010:100",
+      "--mmio-force-bits",
+      "0x40001040:3",
+      "--mmio-force-bits",
+      "0x40001054:3",
+      "--mmio-force-bits",
+      "0x43000418:4",
+      "--mmio-force-bits",
+      "0x41012018:4",
+      "--mmio-force-bits",
+      "0x41004010:1",
+      "--mmio-clear-bits",
+      "0x43000400:1",
+      "--mmio-clear-bits",
+      "0x41012000:1",
+      "--force-reg",
+      "0x9dd4:r0:12",
+      "--seed-mem",
+      "0x41008020:00004000",
+      "--stub-call",
+      "0xcd34",
+      "--map-page",
+      "0x800080:0x40",
+      "--watch",
+      "0x9f60",
+      "--watch",
+      "0xb468",
+      "--watch",
+      "0xa000",
+      "--watch",
+      "0xa9cc",
+      "--watch",
+      "0xaa44",
+      "--watch-mem",
+      "0x2002ffc0:64",
+      "--dump-reg-pointee",
+      "r0:80",
+      "--stop-at",
+      "0x8960",
+      "--log-mmio",
+      "--max-mmio-log",
+      "200000",
+      "--max-watch-hits",
+      "10000",
+      "--max-instructions",
+      "450000",
+      "--out",
+      "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json"
+    ],
+    "boot-driver-state": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--entry",
+      "0xcc24",
+      "--mmio-size",
+      "0x4000000",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--mmio-force-bits",
+      "0x4000140c:1",
+      "--mmio-force-bits",
+      "0x40001010:100",
+      "--mmio-force-bits",
+      "0x40001040:3",
+      "--mmio-force-bits",
+      "0x40001054:3",
+      "--mmio-force-bits",
+      "0x43000418:4",
+      "--mmio-force-bits",
+      "0x41012018:4",
+      "--mmio-force-bits",
+      "0x41004010:1",
+      "--mmio-clear-bits",
+      "0x43000400:1",
+      "--mmio-clear-bits",
+      "0x41012000:1",
+      "--force-reg",
+      "0x9dd4:r0:12",
+      "--seed-mem",
+      "0x41008020:00004000",
+      "--stub-call",
+      "0xcd34",
+      "--map-page",
+      "0x800080:0x40",
+      "--dump-mem",
+      "0x200020a0:624",
+      "--dump-mem",
+      "0x200041e4:76",
+      "--dump-mem",
+      "0x20004c78:4",
+      "--stop-at",
+      "0x8960",
+      "--max-instructions",
+      "450000",
+      "--out",
+      "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-driver-state.json"
+    ],
+    "boot-configuration-calls": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--entry",
+      "0xcc24",
+      "--mmio-size",
+      "0x4000000",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--mmio-force-bits",
+      "0x4000140c:1",
+      "--mmio-force-bits",
+      "0x40001010:100",
+      "--mmio-force-bits",
+      "0x40001040:3",
+      "--mmio-force-bits",
+      "0x40001054:3",
+      "--mmio-force-bits",
+      "0x43000418:4",
+      "--mmio-force-bits",
+      "0x41012018:4",
+      "--mmio-force-bits",
+      "0x41004010:1",
+      "--mmio-clear-bits",
+      "0x43000400:1",
+      "--mmio-clear-bits",
+      "0x41012000:1",
+      "--force-reg",
+      "0x9dd4:r0:12",
+      "--seed-mem",
+      "0x41008020:00004000",
+      "--stub-call",
+      "0xcd34",
+      "--map-page",
+      "0x800080:0x40",
+      "--watch",
+      "0x7770",
+      "--watch",
+      "0x7514",
+      "--watch",
+      "0xae60",
+      "--watch",
+      "0xb070",
+      "--watch",
+      "0xacd8",
+      "--watch",
+      "0xac28",
+      "--watch-mem",
+      "0x2000006c:16",
+      "--watch-mem",
+      "0x200000f0:16",
+      "--stop-at",
+      "0x8960",
+      "--max-watch-hits",
+      "10000",
+      "--max-instructions",
+      "450000",
+      "--out",
+      "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-configuration-calls.json"
+    ]
+  },
+  "harness_assumptions": "Same AUTOPILOT_RECIPE assumptions as prior report: artificial tick,completion-bit stand-ins,PA22HIGH,radio-ID0x12stand-in,DWT delay stub,zero calibration-row placeholder; no TMC or timer/IRQ model",
+  "source_identities": {
+    "firmware": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "bench": {
+      "path": "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md",
+      "sha256": "85433a4043dd2fda52a371cf4e34c745dee5da30dc66eeb4b0cb55921b77df11",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "hardware": {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "491a544dfb6c7b07337e6c7d5574c983c184e684b0f4af4c9c731cd29d78d59e",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin_map_json": {
+      "path": "cases/performing-rigs/research/generated/firmware-pin-function-map.json",
+      "sha256": "5559acc8ff0abac00254169f9225690a9dc6c59edae41e99e6d396422c11845b",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_readiness": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-readiness.md",
+      "sha256": "4f3639137678c31d95723f487155ba8535f2d8aa5510e99cfeda6305ed45af3c",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_contract": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-hardware-contract.md",
+      "sha256": "49a069d51b6df813ebd158c552078730a1ed515e4901d53a09fdfbe59ef86102",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_contract_json": {
+      "path": "cases/performing-rigs/research/generated/replacement-firmware-hardware-contract.json",
+      "sha256": "7e10fe045ee4e9b10620eef378fc2f52f55c33ebd1aba3326fe09b0fa5986dfd",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_vectors": {
+      "path": "cases/performing-rigs/research/generated/replacement-firmware-test-vectors.json",
+      "sha256": "79de881b224e232205d4881a4b3dd271d9c96a283ec902e7dd2a2e2c045c93cf",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_checklist": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-bench-checklist.md",
+      "sha256": "76d3ff0efc421d955c7577519449123a0ff18ca0a983857112dd7dfd79518cdd",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "prior_boot": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json",
+      "sha256": "27e7afd6c1a0c0604def47a96509a3bec99f8ea9bbe8cd70287760141254d8ce",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot_recipe": {
+      "path": "cases/performing-rigs/config/boot_recipes.py",
+      "sha256": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "svd": {
+      "path": "cases/performing-rigs/config/svd/ATSAMD51J19A.svd",
+      "sha256": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pins_capability": {
+      "path": "cases/performing-rigs/config/pins.py",
+      "sha256": "c6f9575c8399f1691401598e8dbe1db39c1a25def395ca4a353bf9cda906dcc8",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "reference_corpus_interface": {
+      "path": "cases/performing-rigs/scripts/reference_corpus.py",
+      "sha256": "359f5fe730ff717ab37ef3b4bd1c964ffebbb61298b3356fd898736381062e0d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "claim_semantics_proposal": {
+      "path": "docs/architecture-reconciliation/evidence-semantics.md",
+      "sha256": "9079ad4f54f7098a3279d9369043da8de8ddf1fb68e76add84dbbb0ebd9e30e5",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "tool_selection": {
+      "path": "docs/tooling/tool-selection.md",
+      "sha256": "eb80021833be866c60c690ec74d36005836937764f7d964c1e68bec8fb21e9e7",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "concrete": {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "concrete_cli": {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "ghidra_cli": {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "1e6c115c57257bc265e5bb70c197a097c169c41613345d4e6d5dfbde26cb2fd6",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "ghidra_meta": {
+      "path": "cases/performing-rigs/research/runs/ghidra_cache/autopilot868/meta.json",
+      "sha256": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "operator": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "workspace_config": {
+      "path": ".codex/config.toml",
+      "sha256": "33cbfb90d6373548b3ccccec0d7a0c2504f427814d1a123e65720572d11bbb17",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-512-debug": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-512-debug.json",
+      "sha256": "ef799f1ec6c1a0e9053cc0d7e7704689ab14df6ffa568a84399b6071afde948f",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r2": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r2.json",
+      "sha256": "598b5d15226a1274305b3ac178d86ff9c58e534ec2ace07669c256899f400a78",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r3": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r3.json",
+      "sha256": "9b5f5c4720706ef8dc9c7a580101ba8a19fab41a801b3f2c64250102069cd19a",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r4": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r4.json",
+      "sha256": "df17a7b1bf73073c0f3cb710bd0781807f4bc1a87ba2dd93013777a14ed4e6c4",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r5": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r5.json",
+      "sha256": "7d346f3fc59165eddbd0f13b55564cda9cd465c620f1a65f80cf84741c8e514f",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r6": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r6.json",
+      "sha256": "af8fbaac7b6a84b7117e6643dfdbe2df8f8edc634315bb99391a7da81cb4ea4d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26-r7": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r7.json",
+      "sha256": "3756592d5d65a99dab2cc8e585c9f7ce2ec24924794002a6ccd00e4fc4ddb236",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-census-2026-09-26": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26.json",
+      "sha256": "0c929d2382fb5c9109788cbcd3da7319230d674a2f1e3dd4f0268f9471ba56af",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-18-r2": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-18-r2.json",
+      "sha256": "1481a8ff60d069eee143f12a9bf5a27ee2696ecb60e86163a27489cf161281df",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-18-r3": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-18-r3.json",
+      "sha256": "65e450bad2266d7bd69dea284d182d35324ff7c0d7d1d52043f972e7d02ca168",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-18": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-18.json",
+      "sha256": "9de6f1e967aef42814d0280b43be944afe6ec46a1832c9aad5eb5f12e97d8934",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-20-r5": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-20-r5.json",
+      "sha256": "c2bcd9eaf92eefb9e843740e632c1db0355bee3dd8a9a1beebe77a74f6f7b08d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-interface-2026-09-20-r6": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-interface-2026-09-20-r6.json",
+      "sha256": "f3baef6f0648eff515d46a3fcd1fb2c9932e1f13370d5d0553261d8393de8415",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-max-token-debug": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-max-token-debug.json",
+      "sha256": "d81f227ffd12b82d7e98b1de9ba73e21efddabf5c55c480ad9a18d294c1236df",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "history_tmc5160-planner-size-debug": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-planner-size-debug.json",
+      "sha256": "cf5330e8e4e9933ae17a5f9b04dfe89fcaa542355f9da709addef0c170149c7f",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "serial-write-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/serial-write-disasm.txt",
+      "sha256": "f9a1a8e34463895d11d1c58fffb3ea3e09643b4bbc6ee6511f23b8abbcb3ca79",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "access-helper-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/access-helper-review.txt",
+      "sha256": "edb670618b9fbfddd9084a5136b7f613533d1b1cab0602f318b85ab4003ac718",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot-configuration-calls": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-configuration-calls.json",
+      "sha256": "c06f9928474597af0354b313925fb38ad8ae2600e4f8793546bcfab952c71c83",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "config-pointers": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/config-pointers.txt",
+      "sha256": "7f761c7851dfb3181cc9b2a51ce113adf90f21e25ef367a2cc88aab9a623e54c",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pins-cs-pb": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pins-cs-pb.txt",
+      "sha256": "40d5732601024a1ec7a9cdcb90416dde11d22529b3a4b964512ff94d763a6c23",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pins-cs-pa": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pins-cs-pa.txt",
+      "sha256": "b3d20277b6a2d2f016b920e87b8866ffee2673b57b38874b92c47d161989ab53",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "named-init-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/named-init-review.txt",
+      "sha256": "a1588cd31e5ca20fbd5d3459d7ab34c1526d4eec52483b31479f4ede6f17ea8c",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "serial-method-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/serial-method-review.txt",
+      "sha256": "95cecfe117aff4a806a84756808dd029ca4191fe794e820f6ee310cc46c32161",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot-sercom5-observation": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-sercom5-observation.json",
+      "sha256": "28787e650a986c0238afaa441e327a1e8a6f14f10fe1f822993f140c0ba4bd9d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "channel-config-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/channel-config-disasm.txt",
+      "sha256": "fea5ef15c4476ed2639b0a5fb23f8f49f3365dd24aa82947cf6e5fed410b9d4d",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "current-microstep-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/current-microstep-review.txt",
+      "sha256": "423dbe37ed5d2d7a825ec8424ed0f8b1ab34cb30921ad479a308169dc4989d47",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "sercom-transfer-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/sercom-transfer-disasm.txt",
+      "sha256": "ac7c83671b7fb8ef21a71cf46e7ac0291abc76e2a78d729e3f5c63e510b12c03",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "device-vtable": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/device-vtable.txt",
+      "sha256": "9ba18e252b1c577956acf3e9233c0022b68e3124083891f2c2ba2dbb0bedd239",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin-mosi": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pin-mosi.txt",
+      "sha256": "38a438d7dcc609b48ba59b9185c265086d5467a5659c2648329b81a7fd43ee41",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "boot-driver-state": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/boot-driver-state.json",
+      "sha256": "6f2229084eb5cfedade881ba7f699d2100f75145627d4ad9bf78a23208f11410",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin-miso": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pin-miso.txt",
+      "sha256": "597d8b92ad3a3963020b28683ab348784585cf637070f9157ed55a7df68bb028",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "status-selector-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/status-selector-disasm.txt",
+      "sha256": "747b0c9d40fafce84be8d252a26054215ccb7e626adfe767efa10ca308e4cc79",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "startup-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/startup-review.txt",
+      "sha256": "d8675b9e038bf5350256b77d553dc043db117bdcc313c319ab8a6ce8eea0166b",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "channel-config-review": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/channel-config-review.txt",
+      "sha256": "403b30dcd75c9b72331201b8e71102095d34edcd2f708c006a98f80053147ce5",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "pin-sck": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/pin-sck.txt",
+      "sha256": "61fbf294befd3813b4f3761db6bfa90bbeb6537be78806ea2b39a6e981caea40",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "spi-constructors-disasm": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/spi-constructors-disasm.txt",
+      "sha256": "45c0883c9f6329bf9c19bfa3fbf1a79263d342285a5ea082557915075ed373c7",
+      "repository_revision": "66f2cf9f2c6206b20cf8e4b22addbc0bf952f301"
+    },
+    "selected-observations": {
+      "path": "cases/performing-rigs/research/runs/tmc5160-interface-reconciliation/selected-observations.json",
+      "sha256": "e1e188be526b970ca8e140ceb00b8ce0d9f740951ab7df72a50f9efbb673c9db",
+      "basis": "selected native entries, copied without a protocol decoder"
+    }
+  },
+  "ghidra_identity": {
+    "firmware_key": "autopilot868",
+    "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000",
+    "processor": "ARM:LE:32:Cortex",
+    "cspec": "default",
+    "ghidra_version": "12.1.3",
+    "analysis_version": 1,
+    "seed_vector_words": 151,
+    "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+    "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+    "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+    "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+    "provenance_tsv_sha256": "c4b14f4f9f128fcf9461a8c7f3670b1f66221ec6d5240a20bc000fb17dcbdfbd",
+    "derived_seeds_sha256": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def"
+  },
+  "engine_versions": {
+    "unicorn": "2.1.4 (prior installed metadata inspection)",
+    "python_unicorn_venv": "3.9.6",
+    "ghidra": "12.1.3"
+  },
+  "ghidra_commands": {
+    "prefix": [
+      "python3",
+      "tools/ghidra/aptrace_ghidra.py"
+    ],
+    "firmware": "autopilot868",
+    "decompile_groups": [
+      [
+        "0xb468",
+        "0x6190",
+        "0x4c20",
+        "0x4328",
+        "0x9f60"
+      ],
+      [
+        "0x7770",
+        "0x9464",
+        "0x4440"
+      ],
+      [
+        "0xa9cc",
+        "0xaa44",
+        "0xa970",
+        "0xa982",
+        "0xa2fc",
+        "0xa000",
+        "0xa03c"
+      ],
+      [
+        "0xacd8",
+        "0xa944",
+        "0xac28",
+        "0xb6b4"
+      ],
+      [
+        "0x7514",
+        "0xabb4",
+        "0xabbc",
+        "0xabf8",
+        "0xabe8"
+      ],
+      [
+        "0xae60",
+        "0xb070"
+      ]
+    ],
+    "disasm_ranges": [
+      [
+        "0xb468",
+        "0xb478"
+      ],
+      [
+        "0xa250",
+        "0xa298"
+      ],
+      [
+        "0xacd8",
+        "0xad44"
+      ],
+      [
+        "0xa944",
+        "0xa970"
+      ],
+      [
+        "0x7514",
+        "0x7570"
+      ]
+    ],
+    "xrefs": [
+      "0x43000400",
+      "0x43000428"
+    ],
+    "callers": [
+      "0xb468",
+      "0x9f60"
+    ],
+    "containing": [
+      "0xb46a",
+      "0xb6e2"
+    ],
+    "dump_address_lengths": [
+      [
+        "0x74f0",
+        32
+      ],
+      [
+        "0x14764",
+        72
+      ],
+      [
+        "0x144ac",
+        24
+      ],
+      [
+        "0x14494",
+        24
+      ],
+      [
+        "0xa294",
+        24
+      ],
+      [
+        "0x14250",
+        52
+      ],
+      [
+        "0x14434",
+        48
+      ],
+      [
+        "0x14374",
+        48
+      ],
+      [
+        "0x7750",
+        32
+      ]
+    ],
+    "dump_syntax": "dump autopilot868 ADDRESS --length LENGTH"
+  },
+  "other_operations": [
+    "Git status/log/HEAD/localorigin comparison; firmware SHA256",
+    "Read existing reports,prior JSON exports,TMC transcripts,operator/tool-selection instructions",
+    "Existing SVD resolver for SERCOM5 MMIO addresses",
+    "Bounded local filename/reference lookup; expected reference corpus absent"
+  ],
+  "missing_references": [
+    "TMC5160A mode/SPI/register/power-domain datasheet",
+    "ATSAMD51J19A 64pin package and GPIO mux tables/package headers",
+    "Original annotated Pin Testing measurement images/twinPDF"
+  ],
+  "permission_blockers": [],
+  "invocation_limits": [
+    "Ghidra function manager lacks0xb468/0xa944; used existing disasm without seeding",
+    "Empty constant-address xrefs are not absence evidence"
+  ],
+  "tests_run": [],
+  "validation_note": "No source implementation changes; prior suites not rerun. Artifact integrity checks recorded separately.",
+  "changes": "New case reports/export/run artifacts only; no implementation/apfw2/ledger changes, no commit or push"
+}

@@ -1,0 +1,174 @@
+==================================================
+Function: FUN_0000a9cc @ 0000a9cc  size=22  params=0  callingConvention=unknown
+
+
+void FUN_0000a9cc(undefined4 *param_1,byte param_2)
+
+{
+  *(byte *)((int)param_1 + 0x15) = *(byte *)((int)param_1 + 0x15) & 0xfb | (param_2 & 1) << 2;
+                    /* WARNING: Could not recover jumptable at 0x0000a9e0. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  (**(code **)*param_1)(param_1,0,(param_1[5] & 0x3ffffff) >> 8);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000aa44 @ 0000aa44  size=30  params=0  callingConvention=unknown
+
+
+void FUN_0000aa44(undefined4 *param_1,byte param_2)
+
+{
+  *(byte *)((int)param_1 + 0x46) = *(byte *)((int)param_1 + 0x46) & 0xfb | (param_2 & 1) << 2;
+                    /* WARNING: Could not recover jumptable at 0x0000aa60. Too many branches */
+                    /* WARNING: Treating indirect jump as call */
+  (**(code **)*param_1)(param_1,0x70,param_1[0x11]);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000a970 @ 0000a970  size=18  params=0  callingConvention=unknown
+
+
+uint FUN_0000a970(int *param_1)
+
+{
+  uint uVar1;
+  
+  uVar1 = (**(code **)(*param_1 + 0x10))();
+  return (uVar1 & 0x3fffffff) >> 0x1d;
+}
+
+
+
+==================================================
+Function: FUN_0000a982 @ 0000a982  size=18  params=0  callingConvention=unknown
+
+
+uint FUN_0000a982(int *param_1)
+
+{
+  uint uVar1;
+  
+  uVar1 = (**(code **)(*param_1 + 0x10))();
+  return (uVar1 & 0x7fffffff) >> 0x1e;
+}
+
+
+
+==================================================
+Function: FUN_0000a2fc @ 0000a2fc  size=24  params=0  callingConvention=unknown
+
+
+void FUN_0000a2fc(undefined1 *param_1)
+
+{
+  *param_1 = 0xff;
+  param_1[1] = 0;
+  *(undefined2 *)(param_1 + 2) = 0;
+  *(undefined2 *)(param_1 + 4) = 0x300;
+  *(undefined4 *)(param_1 + 8) = 0;
+  *(undefined4 *)(param_1 + 0xc) = 0;
+  *(undefined4 *)(param_1 + 0x10) = 0;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000a000 @ 0000a000  size=114  params=0  callingConvention=unknown
+
+
+void FUN_0000a000(undefined4 *param_1,undefined4 param_2,uint param_3)
+
+{
+  bool bVar1;
+  int *piVar2;
+  uint uVar3;
+  uint *puVar4;
+  uint uVar5;
+  int iVar6;
+  int iVar7;
+  undefined4 uVar8;
+  
+  uVar5 = (uint)*(byte *)((int)param_1 + 10);
+  if (uVar5 != 0) {
+    uVar3 = uVar5 << 0x1e;
+    if ((int)uVar3 < 0) {
+      iVar6 = 0;
+      bVar1 = (bool)isCurrentModePrivileged();
+      if (bVar1) {
+        iVar6 = isIRQinterruptsEnabled();
+      }
+      *(bool *)((int)param_1 + 0xb) = iVar6 == 0;
+      disableIRQinterrupts();
+    }
+    else {
+      iVar7 = uVar5 << 0x1f;
+      iVar6 = iVar7;
+      if (iVar7 < 0) {
+        uVar3 = (uint)*(ushort *)(param_1 + 3);
+        iVar6 = DAT_0000a038;
+      }
+      if (iVar7 < 0) {
+        *(uint *)(iVar6 + 0xc) = uVar3;
+      }
+    }
+  }
+  uVar8 = param_2;
+  FUN_0000b452(*param_1);
+  FUN_0000b6b4(*param_1,*(undefined1 *)((int)param_1 + 7),*(undefined1 *)(param_1 + 2),0,
+               param_3 >> 8 & 0xff,uVar8);
+  FUN_0000b48e(*param_1,param_3 & 0xff,param_2);
+  piVar2 = (int *)*param_1;
+  puVar4 = (uint *)*piVar2;
+  *puVar4 = *puVar4 | 2;
+  do {
+  } while (*(int *)(*piVar2 + 0x1c) << 0x1e < 0);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_0000a03c @ 0000a03c  size=28  params=0  callingConvention=unknown
+
+
+void FUN_0000a03c(int param_1)
+
+{
+  int iVar1;
+  uint uVar2;
+  uint uVar3;
+  int iVar4;
+  
+  uVar3 = (uint)*(byte *)(param_1 + 10);
+  if (uVar3 != 0) {
+    uVar2 = uVar3 << 0x1e;
+    if ((int)uVar2 < 0) {
+      if (*(char *)(param_1 + 0xb) != '\0') {
+        enableIRQinterrupts();
+        return;
+      }
+    }
+    else {
+      iVar4 = uVar3 << 0x1f;
+      iVar1 = iVar4;
+      if (iVar4 < 0) {
+        uVar2 = (uint)*(ushort *)(param_1 + 0xc);
+        iVar1 = DAT_0000a058;
+      }
+      if (iVar4 < 0) {
+        *(uint *)(iVar1 + 0x10) = uVar2;
+      }
+    }
+  }
+  return;
+}
+
+
+

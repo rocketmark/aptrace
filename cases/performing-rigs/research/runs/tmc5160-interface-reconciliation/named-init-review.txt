@@ -1,0 +1,183 @@
+==================================================
+No function at 0000b468 (seed it first via APTraceSeedVectorTable.java)
+
+==================================================
+Function: FUN_00006190 @ 00006190  size=156  params=0  callingConvention=unknown
+
+
+void FUN_00006190(void)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  undefined4 uVar4;
+  int iVar5;
+  undefined1 *puVar6;
+  undefined8 *puVar7;
+  int *piVar8;
+  int iVar9;
+  undefined8 *puVar10;
+  int *piVar11;
+  undefined4 extraout_s1;
+  undefined8 uVar12;
+  int *local_2c;
+  
+  iVar2 = DAT_0000625c;
+  iVar1 = DAT_0000623c;
+  local_2c = DAT_0000622c;
+  iVar9 = 0;
+  puVar6 = DAT_00006238;
+  puVar7 = DAT_00006234;
+  piVar8 = DAT_00006230;
+  puVar10 = DAT_00006254;
+  piVar11 = DAT_00006258;
+  do {
+    iVar3 = *local_2c;
+    *piVar8 = iVar3;
+    uVar12 = aeabi_fixed_math__STANDARD_LIBRARY(iVar2 / iVar3);
+    iVar5 = *piVar11;
+    *puVar10 = uVar12;
+    iVar3 = iVar2 / iVar5;
+    if (iVar3 < 1) {
+      iVar3 = DAT_00006240 / iVar5;
+    }
+    uVar4 = aeabi_fixed_math__STANDARD_LIBRARY(iVar3);
+    uVar4 = aeabi_fixed_math__STANDARD_LIBRARY(uVar4);
+    *(undefined1 *)(iVar1 + iVar9 * 2) = 0;
+    *(undefined1 *)(iVar1 + iVar9 * 2 + 1) = 0x40;
+    iVar3 = DAT_00006248;
+    *(undefined4 *)(DAT_00006244 + iVar9 * 4) = 0;
+    iVar5 = iVar9 * 200;
+    iVar9 = iVar9 + 1;
+    *puVar7 = CONCAT44(extraout_s1,uVar4);
+    puVar7 = puVar7 + 1;
+    *puVar6 = 0;
+    *(undefined4 *)(iVar5 + iVar3) = 0;
+    puVar6 = puVar6 + 1;
+    piVar8 = piVar8 + 1;
+    puVar10 = puVar10 + 1;
+    piVar11 = piVar11 + 1;
+    local_2c = local_2c + 1;
+  } while (iVar9 != 4);
+  FUN_000044ec();
+  *DAT_00006250 = *DAT_0000624c * 0x18;
+  return;
+}
+
+
+
+==================================================
+Function: boot_config_reader__CUSTOM @ 00004c20  size=114  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void boot_config_reader__CUSTOM(void)
+
+{
+  undefined4 *puVar1;
+  char cVar2;
+  int iVar3;
+  undefined4 uVar4;
+  
+  cVar2 = config_read_byte__CUSTOM(DAT_00004c94,0x1a);
+  uVar4 = DAT_00004c94;
+  if ((byte)(cVar2 - 0x14U) < 6) {
+    *DAT_00004c98 = cVar2;
+  }
+  else {
+    *DAT_00004c98 = '\x14';
+    config_write_byte_dirty_setter__CUSTOM(uVar4,0x1a);
+  }
+  puVar1 = DAT_00004c9c;
+  iVar3 = config_read_byte__CUSTOM(DAT_00004c94,0x33);
+  uVar4 = DAT_00004c94;
+  if (iVar3 - 1U < 2) {
+    *DAT_00004ca0 = iVar3;
+    uVar4 = DAT_00004c94;
+  }
+  else {
+    *DAT_00004ca0 = 1;
+  }
+  iVar3 = config_read_byte__CUSTOM(uVar4,0x19);
+  if (iVar3 == 0xde) {
+    uVar4 = config_read_u32__CUSTOM(0x15);
+    *puVar1 = uVar4;
+  }
+  else {
+    *puVar1 = 0;
+  }
+  uVar4 = config_read_byte__CUSTOM(DAT_00004c94,400);
+  *DAT_00004ca4 = uVar4;
+  config_loader__CUSTOM();
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00004328 @ 00004328  size=32  params=0  callingConvention=unknown
+
+
+void FUN_00004328(void)
+
+{
+  undefined1 *puVar1;
+  
+  puVar1 = DAT_00004348;
+  *DAT_00004348 = 0x56;
+  puVar1[1] = 0x30;
+  puVar1[2] = 0x31;
+  puVar1[3] = 0x52;
+  puVar1[4] = 0x33;
+  puVar1[5] = 0x39;
+  puVar1[6] = 0;
+  return;
+}
+
+
+
+==================================================
+Function: spiclass_ctor__ADAFRUIT @ 00009f60  size=86  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CONFIRMED_ADAFRUIT_CORE -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+int * spiclass_ctor__ADAFRUIT
+                (int *param_1,int param_2,undefined1 param_3,undefined4 param_4,undefined1 param_5,
+                undefined1 param_6,undefined1 param_7)
+
+{
+  undefined4 uVar1;
+  
+  uVar1 = param_4;
+  FUN_0000a2fc(param_1 + 4);
+  FUN_0000a2fc(param_1 + 9);
+  param_1[0xe] = 0;
+  param_1[0xf] = 0;
+  param_1[0x10] = 0;
+  param_1[0x11] = 0;
+  *(undefined1 *)(param_1 + 0x12) = 0;
+  *(undefined1 *)((int)param_1 + 0x49) = 0;
+  *(undefined1 *)((int)param_1 + 9) = 0;
+  if (param_2 == 0) {
+    FUN_0000e564(PTR_s_C__Arduinos_Arduino_ATSAMD51___a_00009fc0,0x27,
+                 PTR_s_SPIClass_SPIClass_SERCOM___uint_00009fbc,PTR_s_p_sercom____NULL_00009fb8,
+                 uVar1);
+  }
+  *(undefined1 *)((int)param_1 + 5) = param_5;
+  *(undefined1 *)((int)param_1 + 7) = param_6;
+  *param_1 = param_2;
+  *(undefined1 *)(param_1 + 1) = param_3;
+  *(char *)((int)param_1 + 6) = (char)param_4;
+  *(undefined1 *)(param_1 + 2) = param_7;
+  return param_1;
+}
+
+
+
