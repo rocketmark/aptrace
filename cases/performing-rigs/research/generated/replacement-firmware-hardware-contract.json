@@ -1,0 +1,1993 @@
+{
+  "format_version": 1,
+  "kind": "documentary case export, not an APTrace evidence schema",
+  "date": "2026-10-17",
+  "framework_revision": "fa32c4bf239964ccfd76e48176f78c7676008636",
+  "source_firmware": {
+    "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000",
+    "variant": "autopilot868",
+    "bootloader_included": false
+  },
+  "verification_state": null,
+  "verification_note": "No new claim or verification record; source labels do not confer VERIFIED.",
+  "evidence_grade": "UNKNOWN",
+  "grade_note": "No ledger-assigned grade exists for this documentary export. Individual source labels and observation modes are separate.",
+  "sources": {
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "pin_map_json": {
+      "path": "cases/performing-rigs/research/generated/firmware-pin-function-map.json",
+      "sha256": "5559acc8ff0abac00254169f9225690a9dc6c59edae41e99e6d396422c11845b",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "causal_audit": {
+      "path": "cases/performing-rigs/docs/replacement/mapped-pin-causal-gap-audit.md",
+      "sha256": "307541b4f197a63ceffbc94a8e1ac07cb15bf64b10e385e6514d903986985a24",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "persistence": {
+      "path": "cases/performing-rigs/docs/investigations/motor-config-persistence.md",
+      "sha256": "282b887fbffb6a21b5cd5d61bbf68829f66a0e1e01a733a07850a85f30180e2c"
+    },
+    "manual": {
+      "path": "cases/performing-rigs/docs/investigations/manual-mode-and-limits.md",
+      "sha256": "a0d163e845fb9a69f8322270148c236af5ba46794ab4c130815bb68df9611e29"
+    },
+    "hardware": {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "491a544dfb6c7b07337e6c7d5574c983c184e684b0f4af4c9c731cd29d78d59e"
+    },
+    "gaps": {
+      "path": "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json",
+      "sha256": "62a81edddb4bb4c118d385c1d7450bc6361bc48ce298582d43178df882b883ad",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "tmc_agent": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r7.json",
+      "sha256": "3756592d5d65a99dab2cc8e585c9f7ce2ec24924794002a6ccd00e4fc4ddb236",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "case_status": {
+      "path": "cases/performing-rigs/status.md",
+      "sha256": "938d2c8b76e3e0cb4c56b4c414759e5db14882bc2317a6828a1711aa5d87e423",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "svd": {
+      "path": "cases/performing-rigs/config/svd/ATSAMD51J19A.svd",
+      "sha256": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+    },
+    "boot_recipe": {
+      "path": "cases/performing-rigs/config/boot_recipes.py",
+      "sha256": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10"
+    },
+    "concrete_implementation": {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee"
+    },
+    "concrete_cli": {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735"
+    },
+    "ghidra_cli": {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "1e6c115c57257bc265e5bb70c197a097c169c41613345d4e6d5dfbde26cb2fd6"
+    },
+    "ghidra_meta": {
+      "path": "cases/performing-rigs/research/runs/ghidra_cache/autopilot868/meta.json",
+      "sha256": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e"
+    },
+    "stop-watchdog-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/stop-watchdog-review.txt",
+      "sha256": "b91f41bea8c0ea2b12ea504f49e64869bf0c786fd288e2e826c953647252071d"
+    },
+    "software-reset-call-bounded": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json",
+      "sha256": "2a577ab748c021d0c5a2f58d76250df0b537d8aa9ebb045de28e73d8d9f76ff9"
+    },
+    "control-enable": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json",
+      "sha256": "747008187e98f4fd34bacdd51373246df04203a6028b99bfb827a97ba8e5ca45"
+    },
+    "enable-order-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/enable-order-disasm.txt",
+      "sha256": "a1d2f0d38907f50f1149609802662b4a83bf0c7e4756dc130a64904986f9a718"
+    },
+    "ch0-timer-init": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json",
+      "sha256": "f92c3d2fa6110a20b9d4bac6cdfea4f104132b0dd3e462663659d99c4477b2ec"
+    },
+    "ch0-timer-disable": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json",
+      "sha256": "47ef12c16a8a2f961f52a91560b4efb3c55581e1f47837ee72d1a62b84d588fe"
+    },
+    "ch0-isr-positive": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+      "sha256": "14c73ef37a03dd40a2b09c3cbadcd86ea29b4928084e0ba82bbd5dafbee54449"
+    },
+    "pulse-helper-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/pulse-helper-disasm.txt",
+      "sha256": "4ed504685a8b167768991baf57e1060d1c9256ae1ed601fa3baedee215dcd036"
+    },
+    "application-boot": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json",
+      "sha256": "27e7afd6c1a0c0604def47a96509a3bec99f8ea9bbe8cd70287760141254d8ce"
+    },
+    "function-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/function-review.txt",
+      "sha256": "2b5ea2dc911b6b4367063d806afe13041c3ef00f466c3565af7cce4f9b70d915"
+    },
+    "reset-request-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/reset-request-disasm.txt",
+      "sha256": "d7c32b9b28be0be71d4045b77320f279bfc8d42ff6b900302c11ff562a429447"
+    },
+    "ch0-period-unmodeled": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json",
+      "sha256": "f646e61f7ec100f9eb66ea583835a3fdfc86b08020043f4a1c90c533c7fbca9b"
+    },
+    "control-disable-low": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json",
+      "sha256": "b1c5bbcfddf1603d825988f4dd0bbe52ae27423fdd0c8d58af672a226aba4f57"
+    },
+    "software-reset-request": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json",
+      "sha256": "547c9ce068104a2b671b738de4c57c6a60c2773b8381ec06a5173faf91bcf372"
+    },
+    "control-disable-high": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json",
+      "sha256": "9e68edfe59f774132a39c4166f13f440870a8044f780e57dacb12cedaf204f7a"
+    },
+    "direction-usb-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/direction-usb-review.txt",
+      "sha256": "7c1cabe512950524e188586eb5b2030d62d253a8e2e126ba0b117ee03c4b73ad"
+    },
+    "rate-scaling-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/rate-scaling-disasm.txt",
+      "sha256": "0695fe274c70432be153e1767f2f9ddebed3c76ded719e4421b52a2ab3430326"
+    },
+    "historical_ledger_report": {
+      "path": "cases/performing-rigs/research/generated/research-ledger.md",
+      "sha256": "23d244afdf3dbae33af7d438678dc28c4e2edff11bae582232581ddd37c6581b"
+    },
+    "historical_C2_v2": {
+      "path": "cases/performing-rigs/research/ledger/claims/C2/v2.json",
+      "sha256": "c32a94b163c43203a3d0e3cca7dc7dcb1d5adb82b7271efc85c6bbf61d9edc0f"
+    },
+    "historical_C5_v1": {
+      "path": "cases/performing-rigs/research/ledger/claims/C5/v1.json",
+      "sha256": "4fe4b433d41147919b9a81e21fba008b211b2a5ae8dda33325931a8d8bebdb90"
+    },
+    "ledger_path_EV9bb": {
+      "path": "cases/performing-rigs/research/ledger/evidence/EV-9bb45350b02d18c2.json",
+      "sha256": "62fb9a580bb4aa88163ddd3fdbdc742ccce026b5a260ea4eb30afcb54215cb7e"
+    },
+    "ledger_path_EVaec": {
+      "path": "cases/performing-rigs/research/ledger/evidence/EV-aec58644e0021efd.json",
+      "sha256": "70ac5ea1966be1dfb7a1badc6f471fb2c508a187f67bba29850bde91bd3c92ae"
+    },
+    "bench_sheet": {
+      "path": "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md",
+      "sha256": "85433a4043dd2fda52a371cf4e34c745dee5da30dc66eeb4b0cb55921b77df11",
+      "basis": "User-supplied powered-off continuity/resistance record",
+      "attribution": "Mark Stalzer, Pin Testing screenshots dated2026-09-21; measurement date unknown",
+      "reconciliation_revision": "3750c3522da062ce8c48838f7bc201d9ef025eac"
+    },
+    "operator_instructions": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7"
+    },
+    "workspace_codex_config": {
+      "path": ".codex/config.toml",
+      "sha256": "33cbfb90d6373548b3ccccec0d7a0c2504f427814d1a123e65720572d11bbb17"
+    }
+  },
+  "assumptions": [
+    "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+    "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+    "Instruction counts are ordering coordinates, never physical time.",
+    "Seeds and fake ticks are harness assumptions, not observed hardware.",
+    "No ledger claim admitted or verified by this export."
+  ],
+  "reproducibility": {
+    "working_directory": "repository root",
+    "native_trace_commands": {
+      "ch0-isr-positive": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x607c",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x20000094:01000000",
+        "--seed-mem",
+        "0x20003099:01",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--dump-mem",
+        "0x20002064:4",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json"
+      ],
+      "ch0-timer-init": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5570",
+        "--arg",
+        "0",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json"
+      ],
+      "ch0-timer-disable": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5858",
+        "--arg",
+        "0",
+        "--seed-mem",
+        "0x40003800:02060000",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json"
+      ],
+      "ch0-period-unmodeled": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5c00",
+        "--arg",
+        "0",
+        "--arg",
+        "10000",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json"
+      ],
+      "control-enable": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x77a0",
+        "--seed-mem",
+        "0x2000011e:02031b1d",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x200000a4:2a2c042e",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--watch",
+        "0xcd50",
+        "--watch-mem",
+        "0x200000bc:1",
+        "--dump-mem",
+        "0x200000bc:1",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json"
+      ],
+      "control-disable-high": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x77f8",
+        "--seed-mem",
+        "0x2000011e:02031b1d",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x200000a4:2a2c042e",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--watch",
+        "0xcd50",
+        "--watch-mem",
+        "0x200000bc:1",
+        "--dump-mem",
+        "0x200000bc:1",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json"
+      ],
+      "control-disable-low": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x7868",
+        "--seed-mem",
+        "0x2000011e:02031b1d",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x200000a4:2a2c042e",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--watch",
+        "0xcd50",
+        "--watch-mem",
+        "0x200000bc:1",
+        "--dump-mem",
+        "0x200000bc:1",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json"
+      ],
+      "software-reset-request": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--entry",
+        "0xd4dc",
+        "--seed-mem",
+        "0x20000224:01000000",
+        "--stop-at",
+        "0xd508",
+        "--dump-mem",
+        "0x20000224:4",
+        "--dump-mem",
+        "0x2002fffc:4",
+        "--dump-mem",
+        "0xe000ed0c:4",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json"
+      ],
+      "software-reset-call-bounded": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0xd4dc",
+        "--seed-mem",
+        "0x20000224:01000000",
+        "--stop-at",
+        "0xd508",
+        "--dump-mem",
+        "0x20000224:4",
+        "--dump-mem",
+        "0x2002fffc:4",
+        "--dump-mem",
+        "0xe000ed0c:4",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json"
+      ],
+      "application-boot": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--entry",
+        "0xcc24",
+        "--mmio-size",
+        "0x4000000",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--mmio-force-bits",
+        "0x4000140c:1",
+        "--mmio-force-bits",
+        "0x40001010:100",
+        "--mmio-force-bits",
+        "0x40001040:3",
+        "--mmio-force-bits",
+        "0x40001054:3",
+        "--mmio-force-bits",
+        "0x43000418:4",
+        "--mmio-force-bits",
+        "0x41012018:4",
+        "--mmio-force-bits",
+        "0x41004010:1",
+        "--mmio-clear-bits",
+        "0x43000400:1",
+        "--mmio-clear-bits",
+        "0x41012000:1",
+        "--force-reg",
+        "0x9dd4:r0:12",
+        "--seed-mem",
+        "0x41008020:00004000",
+        "--stub-call",
+        "0xcd34",
+        "--map-page",
+        "0x800080:0x40",
+        "--watch",
+        "0x6968",
+        "--watch",
+        "0x69d8",
+        "--watch",
+        "0x6a44",
+        "--watch",
+        "0x6a68",
+        "--watch",
+        "0x8960",
+        "--watch",
+        "0x607c",
+        "--watch-mem",
+        "0x2000011e:6",
+        "--watch-mem",
+        "0x20000164:4",
+        "--log-mmio",
+        "--max-mmio-log",
+        "200000",
+        "--max-instructions",
+        "450000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json"
+      ]
+    },
+    "engine_identity": {
+      "firmware_key": "autopilot868",
+      "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "load_base": "0x4000",
+      "processor": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "ghidra_version": "12.1.3",
+      "analysis_version": 1,
+      "seed_vector_words": 151,
+      "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+      "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+      "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+      "provenance_tsv_sha256": "c4b14f4f9f128fcf9461a8c7f3670b1f66221ec6d5240a20bc000fb17dcbdfbd",
+      "derived_seeds_sha256": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def"
+    },
+    "unicorn_version": "2.1.4 (installed dist-info METADATA)",
+    "cache_note": "Ghidra opened existing analyzed project with no reanalysis; native concrete traces executed fresh.",
+    "python_version": "3.9.6 (Unicorn venv pyvenv.cfg)",
+    "command_note": "Reproducible equivalent argv order. Failed reset-call output was originally written to software-reset-request.json and renamed before corrected raw-entry execution."
+  },
+  "findings": [
+    {
+      "finding_id": "RF-PINS-CH0",
+      "proposition": "Logical channel 0 STEP=PB10, DIR=PB11; physical connector and rotation polarity unknown",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x20000164",
+        "0x200000a4",
+        "0x14284"
+      ],
+      "evidence_refs": [
+        "pin_map",
+        "boot_dossier",
+        "ch0-isr-positive"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "static initializer/table evidence and seeded concrete STEP access",
+      "source_confidence_labels": [
+        "source firmware/package: PROVEN; not ledger VERIFIED"
+      ],
+      "scope": "AutoPilot868 application only",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "pin_map",
+          "boot_dossier",
+          "ch0-isr-positive"
+        ],
+        "commands_key": null
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "BENCH-01",
+        "BENCH-07",
+        "BENCH-09"
+      ]
+    },
+    {
+      "finding_id": "RF-CTRL-BOOT",
+      "proposition": "Startup timeout exit configures four control outputs HIGH before STEP/DIR output configuration",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x6968",
+        "0x69d8",
+        "0x6a24",
+        "0x6a44",
+        "0x6a68"
+      ],
+      "evidence_refs": [
+        "application-boot",
+        "pin_map",
+        "boot_recipe"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh concrete execution and prior static evidence",
+      "source_confidence_labels": [],
+      "scope": "One 450000-instruction boot with original recipe assumptions",
+      "assumptions": [
+        "Original AUTOPILOT_RECIPE assumptions including fake tick, PA22 HIGH, radio-ID stand-in and DWT delay stub"
+      ],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "application-boot",
+          "pin_map",
+          "boot_recipe"
+        ],
+        "commands_key": "application-boot"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Electrical safety of HIGH",
+        "Power-on/reset/bootloader levels",
+        "Termination for every input history"
+      ]
+    },
+    {
+      "finding_id": "RF-CTRL-DISABLE-H",
+      "proposition": "All STEP/DIR INPUT; PB06/PB07 HIGH; delay(50); PB17/PB16 LOW; software flag 0",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x77f8"
+      ],
+      "evidence_refs": [
+        "control-disable-high",
+        "function-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh complete direct function call",
+      "source_confidence_labels": [],
+      "scope": "Direct call with actual pin-index seeds and fake ticks",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "control-disable-high",
+          "function-review"
+        ],
+        "commands_key": "control-disable-high"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Electrical disable meaning",
+        "Pending timer/IRQ behavior"
+      ]
+    },
+    {
+      "finding_id": "RF-CTRL-DISABLE-L",
+      "proposition": "All STEP/DIR INPUT; PB06/PB07 LOW; delay(50); PB17/PB16 LOW; software flag 0",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x7868"
+      ],
+      "evidence_refs": [
+        "control-disable-low",
+        "function-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh complete direct function call",
+      "source_confidence_labels": [],
+      "scope": "Direct call with actual pin-index seeds and fake ticks",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "control-disable-low",
+          "function-review"
+        ],
+        "commands_key": "control-disable-low"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Electrical disable meaning",
+        "Pending timer/IRQ behavior"
+      ]
+    },
+    {
+      "finding_id": "RF-CTRL-ENABLE",
+      "proposition": "PB17/PB16 HIGH BEFORE delay(50), then all STEP/DIR OUTPUT; PB06/PB07 untouched; software flag 1",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x77ac",
+        "0x77b6",
+        "0x77bc",
+        "0x77c8",
+        "0x77d2"
+      ],
+      "evidence_refs": [
+        "control-enable",
+        "enable-order-disasm",
+        "function-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh complete direct call and instruction disassembly",
+      "source_confidence_labels": [],
+      "scope": "Direct call under seeded pin indices and fake ticks",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "control-enable",
+          "enable-order-disasm",
+          "function-review"
+        ],
+        "commands_key": "control-enable"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Electrical enable meaning",
+        "Prior PB06/PB07 values",
+        "STEP/DIR output-latch levels"
+      ]
+    },
+    {
+      "finding_id": "RF-CTRL-CAUSES",
+      "proposition": "Connector-presence aggregate changes and J reach disable helpers; prior-disabled F0/E0 paths reach enable helper",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x7918",
+        "0x794c",
+        "0x7962",
+        "0x88e2",
+        "0x88d0",
+        "0x8274",
+        "0x82d6"
+      ],
+      "evidence_refs": [
+        "causal_audit",
+        "pin_map"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "historical bounded static caller/control-flow evidence",
+      "source_confidence_labels": [
+        "CAUSAL_PATH_PROVEN: firmware scope only"
+      ],
+      "scope": "Known caller sites only; no complete J predicate truth table",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "causal_audit",
+          "pin_map"
+        ],
+        "commands_key": null
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Full J semantics",
+        "Physical connector-presence circuit"
+      ]
+    },
+    {
+      "finding_id": "RF-TC0-INIT",
+      "proposition": "TC0 init requests clock generator7/channel9, CTRLA=0x600, WAVE=1, MC0 interrupt and zero COUNT",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x5570",
+        "0x40003800"
+      ],
+      "evidence_refs": [
+        "ch0-timer-init",
+        "application-boot",
+        "svd"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh complete helper call, boot observation, local SVD interpretation",
+      "source_confidence_labels": [],
+      "scope": "AutoPilot868 application only",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "ch0-timer-init",
+          "application-boot",
+          "svd"
+        ],
+        "commands_key": "ch0-timer-init"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Actual clock Hz",
+        "Hardware synchronization and interrupt delivery"
+      ]
+    },
+    {
+      "finding_id": "RF-TC0-PERIOD",
+      "proposition": "Period input10000 produces CC0=0x2710 then READSYNC=0x80; call does not complete under plain MMIO",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x5c44",
+        "0x5c4e"
+      ],
+      "evidence_refs": [
+        "ch0-period-unmodeled",
+        "function-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh bounded partial concrete trace",
+      "source_confidence_labels": [],
+      "scope": "20000-instruction direct call, r0=0,r1=10000; cold RAM/MMIO",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "ch0-period-unmodeled",
+          "function-review"
+        ],
+        "commands_key": "ch0-period-unmodeled"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Synchronized COUNT behavior",
+        "Subsequent write sequence",
+        "Effective physical event rate"
+      ]
+    },
+    {
+      "finding_id": "RF-STEP-CH0-POSITIVE",
+      "proposition": "Seeded TC0 handler body increments position0 to1 and writes PB10 OUTSET then OUTCLR mask0x400",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x607c",
+        "0x5898",
+        "0x58c6",
+        "0x58ce"
+      ],
+      "evidence_refs": [
+        "ch0-isr-positive",
+        "pulse-helper-disasm",
+        "boot_dossier"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh complete concrete handler-body call",
+      "source_confidence_labels": [],
+      "scope": "delta=1, divisor=1, actual STEP indices, otherwise zero RAM/MMIO; 108 instructions",
+      "assumptions": [
+        "Direct AAPCS call is not exception delivery",
+        "Not a caller-grounded move"
+      ],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "ch0-isr-positive",
+          "pulse-helper-disasm",
+          "boot_dossier"
+        ],
+        "commands_key": "ch0-isr-positive"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Physical pulse width",
+        "Natural IRQ timing",
+        "DIR setup"
+      ]
+    },
+    {
+      "finding_id": "RF-TC0-STOP",
+      "proposition": "Timer stop helper clears ENABLE: seeded0x602 to0x600",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x5858",
+        "0x5870"
+      ],
+      "evidence_refs": [
+        "ch0-timer-disable",
+        "stop-watchdog-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh complete direct helper call",
+      "source_confidence_labels": [],
+      "scope": "channel0, initial CTRLA=0x602; no pending IRQ modeled",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "ch0-timer-disable",
+          "stop-watchdog-review"
+        ],
+        "commands_key": "ch0-timer-disable"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Physical stop latency",
+        "Pending interrupt effect",
+        "Driver energization state"
+      ]
+    },
+    {
+      "finding_id": "RF-CONTROL-TIMER-SEPARATION",
+      "proposition": "Complete direct control-helper traces change GPIO/control without any TC0-TC3 MMIO write",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x77a0",
+        "0x77f8",
+        "0x7868"
+      ],
+      "evidence_refs": [
+        "control-enable",
+        "control-disable-high",
+        "control-disable-low",
+        "function-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "bounded negative over three complete direct calls",
+      "source_confidence_labels": [],
+      "scope": "Own helper bodies and executed callees in these seeds, no asynchronous IRQs",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "control-enable",
+          "control-disable-high",
+          "control-disable-low",
+          "function-review"
+        ],
+        "commands_key": "control-enable"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Whether timer was stopped by an upstream caller",
+        "Interrupt interleavings"
+      ]
+    },
+    {
+      "finding_id": "RF-RAMP-BOUNDARY",
+      "proposition": "Existing >8-unit commit and phase progression evidence does not establish complete timed motion or exact ramp formula",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": "0x6fd8",
+      "evidence_refs": [
+        "motor_dossier",
+        "gaps",
+        "direction-usb-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "historical static/concrete scoped evidence",
+      "source_confidence_labels": [],
+      "scope": "AutoPilot868 application only",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "motor_dossier",
+          "gaps",
+          "direction-usb-review"
+        ],
+        "commands_key": null
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Nonzero busy-gate writer",
+        "Exact ramp coefficients",
+        "End-to-end movement counts",
+        "DIR GPIO write/setup"
+      ]
+    },
+    {
+      "finding_id": "RF-RESET-REQUEST",
+      "proposition": "Seed countdown1 at0x20000224: reset-request block writes magic0xf01669ef to0x2002fffc and AIRCR0x05fa0004",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0xd4dc",
+        "0xd4ea",
+        "0xd4f0",
+        "0xd502"
+      ],
+      "evidence_refs": [
+        "software-reset-request",
+        "reset-request-disasm"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "fresh bounded block execution and disassembly",
+      "source_confidence_labels": [],
+      "scope": "Direct raw entry stopped at0xd508; no reset modeled",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "software-reset-request",
+          "reset-request-disasm"
+        ],
+        "commands_key": "software-reset-request"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Who arms countdown in relevant USB context",
+        "Motor shutdown before arming",
+        "Reset/bootloader electrical behavior"
+      ]
+    },
+    {
+      "finding_id": "RF-WDT-CODE",
+      "proposition": "WDT clear/configuration/enable code exists and held-input halt path calls0x95c8 then loops",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": [
+        "0x9518",
+        "0x952c",
+        "0x95c8",
+        "0x5dd0"
+      ],
+      "evidence_refs": [
+        "stop-watchdog-review"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "Ghidra decompiler-assisted static code inspection",
+      "source_confidence_labels": [],
+      "scope": "Code presence/relationships only, no expiry/recovery execution",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "stop-watchdog-review"
+        ],
+        "commands_key": null
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "Actual WDT timeout",
+        "Fault-path coverage",
+        "Motor state after WDT reset"
+      ]
+    },
+    {
+      "finding_id": "RF-TMC-UNKNOWN",
+      "proposition": "Raw TMC1 straps and reported serial wiring now available; configuration mode interpretation, effective current, actual microstep state and powered bus behavior remain unestablished",
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "source_address": null,
+      "evidence_refs": [
+        "bench_sheet",
+        "hardware",
+        "pin_map",
+        "tmc_agent",
+        "gaps"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "physical measurement record plus historical bounded firmware evidence; preserve raw/summary conflict",
+      "source_confidence_labels": [],
+      "scope": "TMC1-only strap rows; four-driver serial-routing table; no powered transactions",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export.",
+        "Do not treat populated raw serial table as blank; do not generalize TMC1 strap rows to every driver."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "hardware",
+          "pin_map",
+          "tmc_agent",
+          "gaps"
+        ],
+        "commands_key": null
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "BENCH-02",
+        "BENCH-03",
+        "BENCH-04",
+        "BENCH-05",
+        "BENCH-06",
+        "BENCH-10"
+      ]
+    },
+    {
+      "finding_id": "RF-PHYS-MUX-ROUTING",
+      "proposition": "Two muxes have distinct0-ohm A-side paths to TMC1/3 and TMC2/4; reported RJ45 paths retained",
+      "source_firmware": null,
+      "source_address": null,
+      "evidence_refs": [
+        "bench_sheet"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "user-supplied physical record, not firmware execution",
+      "source_confidence_labels": [
+        "raw measured/reported connectivity; no ledger grade assigned"
+      ],
+      "scope": "Raw bench sections3/4; no MCU-source-leg or XLR mapping",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export.",
+        "Do not treat populated raw serial table as blank; do not generalize TMC1 strap rows to every driver."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "bench_sheet"
+        ],
+        "measurement_reproduction": null,
+        "note": "Board/instrument settings and actual measurement date not independently established"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "BENCH-02",
+        "BENCH-03",
+        "BENCH-04",
+        "BENCH-05",
+        "BENCH-06",
+        "BENCH-10"
+      ]
+    },
+    {
+      "finding_id": "RF-PHYS-CONTROL-NEGATIVE",
+      "proposition": "Tested S->PB16/PB17 and /OE->PB06/PB07 pairs show324.9\u2013334.5kOhm, not direct continuity",
+      "source_firmware": null,
+      "source_address": null,
+      "evidence_refs": [
+        "bench_sheet"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "user-supplied physical record, not firmware execution",
+      "source_confidence_labels": [
+        "raw measured/reported connectivity; no ledger grade assigned"
+      ],
+      "scope": "Only eight recorded resistance measurements, no indirect-path exclusion",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export.",
+        "Do not treat populated raw serial table as blank; do not generalize TMC1 strap rows to every driver."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "bench_sheet"
+        ],
+        "measurement_reproduction": null,
+        "note": "Board/instrument settings and actual measurement date not independently established"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "BENCH-02",
+        "BENCH-03",
+        "BENCH-04",
+        "BENCH-05",
+        "BENCH-06",
+        "BENCH-10"
+      ]
+    },
+    {
+      "finding_id": "RF-PHYS-TMC1-STRAPS",
+      "proposition": "TMC1 SD_MODE/SPI_MODE toVCC_IO, CFG4/5/6 toGNDANA at0ohm; DRV_ENN connection toGNDANA reported",
+      "source_firmware": null,
+      "source_address": null,
+      "evidence_refs": [
+        "bench_sheet"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "user-supplied physical record, not firmware execution",
+      "source_confidence_labels": [
+        "raw measured/reported connectivity; no ledger grade assigned"
+      ],
+      "scope": "TMC1 rows only; no powered-state/current inference",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export.",
+        "Do not treat populated raw serial table as blank; do not generalize TMC1 strap rows to every driver."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "bench_sheet"
+        ],
+        "measurement_reproduction": null,
+        "note": "Board/instrument settings and actual measurement date not independently established"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "BENCH-02",
+        "BENCH-03",
+        "BENCH-04",
+        "BENCH-05",
+        "BENCH-06",
+        "BENCH-10"
+      ]
+    },
+    {
+      "finding_id": "RF-PHYS-SERIAL-ROUTING",
+      "proposition": "Raw section6 records four CSN MCU package connections and shared SCK64/SDI63/SDO62 despite summary saying blank",
+      "source_firmware": null,
+      "source_address": null,
+      "evidence_refs": [
+        "bench_sheet"
+      ],
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "basis": "user-supplied physical record, not firmware execution",
+      "source_confidence_labels": [
+        "raw measured/reported connectivity; no ledger grade assigned"
+      ],
+      "scope": "Reported physical connectivity; no firmware driver transaction proof",
+      "assumptions": [],
+      "limitations": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export.",
+        "Do not treat populated raw serial table as blank; do not generalize TMC1 strap rows to every driver."
+      ],
+      "reproducibility": {
+        "source_refs": [
+          "bench_sheet"
+        ],
+        "measurement_reproduction": null,
+        "note": "Board/instrument settings and actual measurement date not independently established"
+      },
+      "apfw2_relevance": "POC 0.1 logical contract; electrical approval is separate",
+      "unresolved_requirements": [
+        "BENCH-02",
+        "BENCH-03",
+        "BENCH-04",
+        "BENCH-05",
+        "BENCH-06",
+        "BENCH-10"
+      ]
+    }
+  ],
+  "pins": [
+    {
+      "gpio": "PB10",
+      "package_pin": 23,
+      "firmware_index": 41,
+      "ram_index_address": "0x20000164",
+      "role": "STEP ch0",
+      "physical_destination": null,
+      "active_polarity": null,
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "electrical_safety_approved": false
+    },
+    {
+      "gpio": "PB11",
+      "package_pin": 24,
+      "firmware_index": 42,
+      "ram_index_address": "0x200000a4",
+      "role": "DIR ch0",
+      "physical_destination": null,
+      "active_polarity": null,
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "electrical_safety_approved": false
+    },
+    {
+      "gpio": "PB06",
+      "package_pin": 9,
+      "firmware_index": 27,
+      "ram_index_address": "0x20000120",
+      "role": "control, electrical role unknown",
+      "physical_destination": null,
+      "active_polarity": null,
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "electrical_safety_approved": false
+    },
+    {
+      "gpio": "PB07",
+      "package_pin": 10,
+      "firmware_index": 29,
+      "ram_index_address": "0x20000121",
+      "role": "control, electrical role unknown",
+      "physical_destination": null,
+      "active_polarity": null,
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "electrical_safety_approved": false
+    },
+    {
+      "gpio": "PB17",
+      "package_pin": 40,
+      "firmware_index": 2,
+      "ram_index_address": "0x2000011e",
+      "role": "control, electrical role unknown",
+      "physical_destination": null,
+      "active_polarity": null,
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "electrical_safety_approved": false
+    },
+    {
+      "gpio": "PB16",
+      "package_pin": 39,
+      "firmware_index": 3,
+      "ram_index_address": "0x2000011f",
+      "role": "control, electrical role unknown",
+      "physical_destination": null,
+      "active_polarity": null,
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "electrical_safety_approved": false
+    }
+  ],
+  "states": [
+    {
+      "state_id": "RF-POWER-RESET",
+      "control_levels": null,
+      "step_dir_levels": null,
+      "driver_electrical_state": null,
+      "reason": "No physical reset/bootloader evidence"
+    },
+    {
+      "state_id": "RF-CTRL-BOOT-POST",
+      "PB06": 1,
+      "PB07": 1,
+      "PB17": 1,
+      "PB16": 1,
+      "step_dir_mode": "OUTPUT",
+      "step_dir_levels": null,
+      "driver_electrical_state": null
+    },
+    {
+      "state_id": "RF-CTRL-DISABLE-H-POST",
+      "PB06": 1,
+      "PB07": 1,
+      "PB17": 0,
+      "PB16": 0,
+      "step_dir_mode": "INPUT",
+      "driver_electrical_state": null
+    },
+    {
+      "state_id": "RF-CTRL-DISABLE-L-POST",
+      "PB06": 0,
+      "PB07": 0,
+      "PB17": 0,
+      "PB16": 0,
+      "step_dir_mode": "INPUT",
+      "driver_electrical_state": null
+    },
+    {
+      "state_id": "RF-CTRL-ENABLE-POST",
+      "PB06": null,
+      "PB07": null,
+      "PB06_PB07_note": "unchanged from predecessor, not unknown writes",
+      "PB17": 1,
+      "PB16": 1,
+      "step_dir_mode": "OUTPUT",
+      "step_dir_levels": null,
+      "driver_electrical_state": null
+    }
+  ],
+  "state_transitions": [
+    {
+      "finding_id": "RF-CTRL-BOOT",
+      "precondition": "startup timeout exit reached",
+      "ordered_events": [
+        "OUTPUT PB06",
+        "OUTPUT PB07",
+        "OUTPUT PB17",
+        "OUTPUT PB16",
+        "HIGH PB17",
+        "HIGH PB16",
+        "HIGH PB06",
+        "HIGH PB07",
+        "OUTPUT STEP/DIR all4 channels"
+      ],
+      "post_state": {
+        "PB06": 1,
+        "PB07": 1,
+        "PB17": 1,
+        "PB16": 1,
+        "step_dir_mode": "OUTPUT",
+        "step_dir_levels": null
+      }
+    },
+    {
+      "finding_id": "RF-CTRL-DISABLE-H",
+      "precondition": "helper0x77f8 entered",
+      "ordered_events": [
+        "INPUT STEP/DIR all4 channels",
+        "HIGH PB06",
+        "HIGH PB07",
+        "delay(50 millis units)",
+        "LOW PB17",
+        "LOW PB16",
+        "flag0x200000bc=0"
+      ],
+      "post_state": {
+        "PB06": 1,
+        "PB07": 1,
+        "PB17": 0,
+        "PB16": 0,
+        "step_dir_mode": "INPUT"
+      }
+    },
+    {
+      "finding_id": "RF-CTRL-DISABLE-L",
+      "precondition": "helper0x7868 entered",
+      "ordered_events": [
+        "INPUT STEP/DIR all4 channels",
+        "LOW PB06",
+        "LOW PB07",
+        "delay(50 millis units)",
+        "LOW PB17",
+        "LOW PB16",
+        "flag0x200000bc=0"
+      ],
+      "post_state": {
+        "PB06": 0,
+        "PB07": 0,
+        "PB17": 0,
+        "PB16": 0,
+        "step_dir_mode": "INPUT"
+      }
+    },
+    {
+      "finding_id": "RF-CTRL-ENABLE",
+      "precondition": "helper0x77a0 entered",
+      "ordered_events": [
+        "HIGH PB17",
+        "HIGH PB16",
+        "delay(50 millis units)",
+        "OUTPUT STEP/DIR all4 channels",
+        "flag0x200000bc=1"
+      ],
+      "post_state": {
+        "PB06": null,
+        "PB07": null,
+        "PB06_PB07_note": "unchanged from predecessor, not unknown writes",
+        "PB17": 1,
+        "PB16": 1,
+        "step_dir_mode": "OUTPUT",
+        "step_dir_levels": null
+      }
+    }
+  ],
+  "timing_relationships": [
+    {
+      "id": "RF-TIME-DELAY",
+      "value": 50,
+      "unit": "legacy millis delay argument",
+      "physical_elapsed_ms": null,
+      "scope": "all3 runtime control helpers",
+      "enable_order": "PB17/PB16 writes BEFORE delay; STEP/DIR OUTPUT AFTER",
+      "disable_order": "STEP/DIR INPUT and PB06/PB07 writes BEFORE delay; PB17/PB16 LOW AFTER"
+    },
+    {
+      "id": "RF-TIME-STARTUP",
+      "minimum_elapsed_snapshot_ticks": 1800,
+      "power_on_duration_ms": null,
+      "snapshot_refreshable": true
+    },
+    {
+      "id": "RF-TIME-PULSE",
+      "step_high_width_ns": null,
+      "step_low_width_ns": null,
+      "dir_setup_ns": null,
+      "jitter_ns": null,
+      "irq_latency_ns": null
+    }
+  ],
+  "timer": {
+    "base": "0x40003800",
+    "irq": 107,
+    "handler": "0x607c",
+    "init_ctrla": "0x600",
+    "init_prescaler_divisor": 256,
+    "wave_mode": "MFRQ",
+    "clock_generator": 7,
+    "clock_channel": 9,
+    "clock_source": "DFLL",
+    "actual_source_hz": null,
+    "software_24000000_term_is_not_verified_clock_hz": true,
+    "runtime_ctrla_mode1": "0x102",
+    "runtime_prescaler_mode1": 2,
+    "runtime_ctrla_mode64": "0x602",
+    "runtime_prescaler_mode64": 256,
+    "runtime_mode64_note": "software0x40 argument is not SVD DIV64",
+    "ramp_formula": null,
+    "direction_first_step_setup": null,
+    "evidence_refs": [
+      "ch0-timer-init",
+      "svd",
+      "function-review"
+    ]
+  },
+  "conflicts": [
+    {
+      "id": "RF-CONFLICT-ENABLE-ORDER",
+      "historical_refs": [
+        "pin_map",
+        "causal_audit"
+      ],
+      "historical_statement": "PB17/PB16 HIGH after50ms",
+      "direct_refs": [
+        "enable-order-disasm",
+        "control-enable"
+      ],
+      "resolution": "Writes precede delay; pinMode outputs follows delay. Preserve originals."
+    },
+    {
+      "id": "RF-CONFLICT-STARTUP-UNIVERSAL",
+      "historical_statement": "every boot without exception",
+      "resolution": "Observed and static timeout-exit sequence; no proof of loop termination for every input history."
+    },
+    {
+      "id": "RF-CONFLICT-SERIAL-TABLE",
+      "raw_ref": "bench_sheet",
+      "summary_refs": [
+        "hardware",
+        "pin_map"
+      ],
+      "resolution": "Section6 upper table populated; use reported serial connections with limits, not summary assertion of no measurements"
+    },
+    {
+      "id": "RF-CONFLICT-MODE-INTERPRETATION",
+      "raw": "TMC1 SD_MODE/SPI_MODE tied VCC_IO",
+      "summary": "standalone/no SPI",
+      "resolution": "Retain strap facts. Mode truth table unavailable locally; interface interpretation unestablished, no absence claim"
+    },
+    {
+      "id": "RF-CONFLICT-STRAP-SCOPE",
+      "raw": "section5/7/8 TMC1",
+      "summary": "all four DRV_ENN/straps",
+      "resolution": "Export TMC1-only facts; other devices unknown until supported"
+    },
+    {
+      "id": "RF-CONFLICT-CONTROL-NEGATIVE-SCOPE",
+      "raw": "S tested PB16/PB17; /OE tested PB06/PB07, both muxes",
+      "summary": "all four pins against each mux control",
+      "resolution": "Only the eight recorded pairs support bounded negative"
+    }
+  ],
+  "unresolved_requirements": [
+    "BENCH-01",
+    "BENCH-02",
+    "BENCH-03",
+    "BENCH-04",
+    "BENCH-05",
+    "BENCH-06",
+    "BENCH-07",
+    "BENCH-08",
+    "BENCH-09",
+    "BENCH-10",
+    "BENCH-11"
+  ],
+  "electrical_safety_approved": false,
+  "historical_ledger": {
+    "C2:v2": {
+      "historical_state": "VERIFIED",
+      "current_policy_decision_passes": false,
+      "scope": "static USB callback pointer only, not motor safety",
+      "source_ref": "historical_C2_v2"
+    },
+    "C5:v1": {
+      "historical_state": "VERIFIED",
+      "current_policy_decision_passes": false,
+      "scope": "census-bounded EIC/USB NO_KNOWN_PATH, not runtime absence",
+      "source_ref": "historical_C5_v1"
+    },
+    "review_note": "Focused existing test verifies these decisions predate current policy. No new verification or state mutation."
+  },
+  "final_repository_revision": "3750c3522da062ce8c48838f7bc201d9ef025eac",
+  "repository_update_note": "User changed checkout during investigation; analysis implementation unchanged, new hardware documentation incorporated. framework_revision is initial execution baseline.",
+  "physical_observations": {
+    "source_refs": [
+      "bench_sheet"
+    ],
+    "mux_count": 2,
+    "mux_a_to_tmc": [
+      {
+        "mux": 1,
+        "a_pin": 4,
+        "driver": "TMC1",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 2,
+        "b1_to_rj45_reported_resistance_ohms": 471,
+        "b2_to_rj45_reported_resistance_ohms": 468
+      },
+      {
+        "mux": 1,
+        "a_pin": 7,
+        "driver": "TMC1",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 2,
+        "b1_to_rj45_reported_resistance_ohms": 468,
+        "b2_to_rj45_reported_resistance_ohms": 488
+      },
+      {
+        "mux": 1,
+        "a_pin": 9,
+        "driver": "TMC3",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 4,
+        "b1_to_rj45_reported_resistance_ohms": 468,
+        "b2_to_rj45_reported_resistance_ohms": 468
+      },
+      {
+        "mux": 1,
+        "a_pin": 12,
+        "driver": "TMC3",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 4,
+        "b1_to_rj45_reported_resistance_ohms": 468,
+        "b2_to_rj45_reported_resistance_ohms": 468
+      },
+      {
+        "mux": 2,
+        "a_pin": 4,
+        "driver": "TMC2",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 1,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      },
+      {
+        "mux": 2,
+        "a_pin": 7,
+        "driver": "TMC2",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 1,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      },
+      {
+        "mux": 2,
+        "a_pin": 9,
+        "driver": "TMC4",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 3,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      },
+      {
+        "mux": 2,
+        "a_pin": 12,
+        "driver": "TMC4",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 3,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      }
+    ],
+    "rj45_note": "Raw section4 reports both B legs through diode/resistor networks; resistance does not establish copper identity or powered select truth table",
+    "control_candidate_readings": [
+      {
+        "mux": 1,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB16",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 1,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB17",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 1,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB06",
+        "resistance_ohms": 325400
+      },
+      {
+        "mux": 1,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB07",
+        "resistance_ohms": 325600
+      },
+      {
+        "mux": 2,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB16",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 2,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB17",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 2,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB06",
+        "resistance_ohms": 324900
+      },
+      {
+        "mux": 2,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB07",
+        "resistance_ohms": 325200
+      }
+    ],
+    "control_scope": "Only S->PB16/PB17 and /OE->PB06/PB07 on each mux measured; no direct continuity for these pairs, no universal absence or all-cross-pair test",
+    "tmc1_straps": [
+      {
+        "pin": 21,
+        "signal": "SD_MODE",
+        "net": "VCC_IO",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 22,
+        "signal": "SPI_MODE",
+        "net": "VCC_IO",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 23,
+        "signal": "CFG4",
+        "net": "GNDANA",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 24,
+        "signal": "CFG5",
+        "net": "GNDANA",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 25,
+        "signal": "CFG6",
+        "net": "GNDANA",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 28,
+        "signal": "DRV_ENN",
+        "net": "GNDANA",
+        "resistance_ohms": null,
+        "note": "section8 reports connection, no resistance column"
+      }
+    ],
+    "other_driver_straps": null,
+    "mode_interpretation": null,
+    "mode_note": "Preserve physical HIGH/HIGH; summary standalone/no-SPI interpretation not validated by authoritative local mode truth table; serial routes reported",
+    "serial_routing": [
+      {
+        "driver": "TMC1",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 11,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      },
+      {
+        "driver": "TMC2",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 37,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      },
+      {
+        "driver": "TMC3",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 12,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      },
+      {
+        "driver": "TMC4",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 38,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      }
+    ],
+    "effective_current_limit": null,
+    "microstep_setting": null,
+    "diag_routing": null,
+    "logical_channel_to_tmc": null,
+    "logical_channel_to_xlr": null,
+    "driver_energization_state": null,
+    "electrical_safety_approved": false
+  }
+}

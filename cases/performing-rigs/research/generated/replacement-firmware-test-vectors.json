@@ -1,0 +1,3072 @@
+{
+  "format_version": 1,
+  "kind": "documentary case export, not an APTrace evidence schema",
+  "date": "2026-10-17",
+  "framework_revision": "fa32c4bf239964ccfd76e48176f78c7676008636",
+  "source_firmware": {
+    "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000",
+    "variant": "autopilot868",
+    "bootloader_included": false
+  },
+  "verification_state": null,
+  "verification_note": "No new claim or verification record; source labels do not confer VERIFIED.",
+  "evidence_grade": "UNKNOWN",
+  "grade_note": "No ledger-assigned grade exists for this documentary export. Individual source labels and observation modes are separate.",
+  "sources": {
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "pin_map_json": {
+      "path": "cases/performing-rigs/research/generated/firmware-pin-function-map.json",
+      "sha256": "5559acc8ff0abac00254169f9225690a9dc6c59edae41e99e6d396422c11845b",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "causal_audit": {
+      "path": "cases/performing-rigs/docs/replacement/mapped-pin-causal-gap-audit.md",
+      "sha256": "307541b4f197a63ceffbc94a8e1ac07cb15bf64b10e385e6514d903986985a24",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "persistence": {
+      "path": "cases/performing-rigs/docs/investigations/motor-config-persistence.md",
+      "sha256": "282b887fbffb6a21b5cd5d61bbf68829f66a0e1e01a733a07850a85f30180e2c"
+    },
+    "manual": {
+      "path": "cases/performing-rigs/docs/investigations/manual-mode-and-limits.md",
+      "sha256": "a0d163e845fb9a69f8322270148c236af5ba46794ab4c130815bb68df9611e29"
+    },
+    "hardware": {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "491a544dfb6c7b07337e6c7d5574c983c184e684b0f4af4c9c731cd29d78d59e"
+    },
+    "gaps": {
+      "path": "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json",
+      "sha256": "62a81edddb4bb4c118d385c1d7450bc6361bc48ce298582d43178df882b883ad",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "tmc_agent": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r7.json",
+      "sha256": "3756592d5d65a99dab2cc8e585c9f7ce2ec24924794002a6ccd00e4fc4ddb236",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "case_status": {
+      "path": "cases/performing-rigs/status.md",
+      "sha256": "938d2c8b76e3e0cb4c56b4c414759e5db14882bc2317a6828a1711aa5d87e423",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "svd": {
+      "path": "cases/performing-rigs/config/svd/ATSAMD51J19A.svd",
+      "sha256": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+    },
+    "boot_recipe": {
+      "path": "cases/performing-rigs/config/boot_recipes.py",
+      "sha256": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10"
+    },
+    "concrete_implementation": {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee"
+    },
+    "concrete_cli": {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735"
+    },
+    "ghidra_cli": {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "1e6c115c57257bc265e5bb70c197a097c169c41613345d4e6d5dfbde26cb2fd6"
+    },
+    "ghidra_meta": {
+      "path": "cases/performing-rigs/research/runs/ghidra_cache/autopilot868/meta.json",
+      "sha256": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e"
+    },
+    "stop-watchdog-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/stop-watchdog-review.txt",
+      "sha256": "b91f41bea8c0ea2b12ea504f49e64869bf0c786fd288e2e826c953647252071d"
+    },
+    "software-reset-call-bounded": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json",
+      "sha256": "2a577ab748c021d0c5a2f58d76250df0b537d8aa9ebb045de28e73d8d9f76ff9"
+    },
+    "control-enable": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json",
+      "sha256": "747008187e98f4fd34bacdd51373246df04203a6028b99bfb827a97ba8e5ca45"
+    },
+    "enable-order-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/enable-order-disasm.txt",
+      "sha256": "a1d2f0d38907f50f1149609802662b4a83bf0c7e4756dc130a64904986f9a718"
+    },
+    "ch0-timer-init": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json",
+      "sha256": "f92c3d2fa6110a20b9d4bac6cdfea4f104132b0dd3e462663659d99c4477b2ec"
+    },
+    "ch0-timer-disable": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json",
+      "sha256": "47ef12c16a8a2f961f52a91560b4efb3c55581e1f47837ee72d1a62b84d588fe"
+    },
+    "ch0-isr-positive": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+      "sha256": "14c73ef37a03dd40a2b09c3cbadcd86ea29b4928084e0ba82bbd5dafbee54449"
+    },
+    "pulse-helper-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/pulse-helper-disasm.txt",
+      "sha256": "4ed504685a8b167768991baf57e1060d1c9256ae1ed601fa3baedee215dcd036"
+    },
+    "application-boot": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json",
+      "sha256": "27e7afd6c1a0c0604def47a96509a3bec99f8ea9bbe8cd70287760141254d8ce"
+    },
+    "function-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/function-review.txt",
+      "sha256": "2b5ea2dc911b6b4367063d806afe13041c3ef00f466c3565af7cce4f9b70d915"
+    },
+    "reset-request-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/reset-request-disasm.txt",
+      "sha256": "d7c32b9b28be0be71d4045b77320f279bfc8d42ff6b900302c11ff562a429447"
+    },
+    "ch0-period-unmodeled": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json",
+      "sha256": "f646e61f7ec100f9eb66ea583835a3fdfc86b08020043f4a1c90c533c7fbca9b"
+    },
+    "control-disable-low": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json",
+      "sha256": "b1c5bbcfddf1603d825988f4dd0bbe52ae27423fdd0c8d58af672a226aba4f57"
+    },
+    "software-reset-request": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json",
+      "sha256": "547c9ce068104a2b671b738de4c57c6a60c2773b8381ec06a5173faf91bcf372"
+    },
+    "control-disable-high": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json",
+      "sha256": "9e68edfe59f774132a39c4166f13f440870a8044f780e57dacb12cedaf204f7a"
+    },
+    "direction-usb-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/direction-usb-review.txt",
+      "sha256": "7c1cabe512950524e188586eb5b2030d62d253a8e2e126ba0b117ee03c4b73ad"
+    },
+    "rate-scaling-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/rate-scaling-disasm.txt",
+      "sha256": "0695fe274c70432be153e1767f2f9ddebed3c76ded719e4421b52a2ab3430326"
+    },
+    "historical_ledger_report": {
+      "path": "cases/performing-rigs/research/generated/research-ledger.md",
+      "sha256": "23d244afdf3dbae33af7d438678dc28c4e2edff11bae582232581ddd37c6581b"
+    },
+    "historical_C2_v2": {
+      "path": "cases/performing-rigs/research/ledger/claims/C2/v2.json",
+      "sha256": "c32a94b163c43203a3d0e3cca7dc7dcb1d5adb82b7271efc85c6bbf61d9edc0f"
+    },
+    "historical_C5_v1": {
+      "path": "cases/performing-rigs/research/ledger/claims/C5/v1.json",
+      "sha256": "4fe4b433d41147919b9a81e21fba008b211b2a5ae8dda33325931a8d8bebdb90"
+    },
+    "ledger_path_EV9bb": {
+      "path": "cases/performing-rigs/research/ledger/evidence/EV-9bb45350b02d18c2.json",
+      "sha256": "62fb9a580bb4aa88163ddd3fdbdc742ccce026b5a260ea4eb30afcb54215cb7e"
+    },
+    "ledger_path_EVaec": {
+      "path": "cases/performing-rigs/research/ledger/evidence/EV-aec58644e0021efd.json",
+      "sha256": "70ac5ea1966be1dfb7a1badc6f471fb2c508a187f67bba29850bde91bd3c92ae"
+    },
+    "bench_sheet": {
+      "path": "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md",
+      "sha256": "85433a4043dd2fda52a371cf4e34c745dee5da30dc66eeb4b0cb55921b77df11",
+      "basis": "User-supplied powered-off continuity/resistance record",
+      "attribution": "Mark Stalzer, Pin Testing screenshots dated2026-09-21; measurement date unknown",
+      "reconciliation_revision": "3750c3522da062ce8c48838f7bc201d9ef025eac"
+    },
+    "operator_instructions": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7"
+    },
+    "workspace_codex_config": {
+      "path": ".codex/config.toml",
+      "sha256": "33cbfb90d6373548b3ccccec0d7a0c2504f427814d1a123e65720572d11bbb17"
+    }
+  },
+  "assumptions": [
+    "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+    "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+    "Instruction counts are ordering coordinates, never physical time.",
+    "Seeds and fake ticks are harness assumptions, not observed hardware.",
+    "No ledger claim admitted or verified by this export."
+  ],
+  "reproducibility": {
+    "working_directory": "repository root",
+    "native_trace_commands": {
+      "ch0-isr-positive": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x607c",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x20000094:01000000",
+        "--seed-mem",
+        "0x20003099:01",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--dump-mem",
+        "0x20002064:4",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json"
+      ],
+      "ch0-timer-init": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5570",
+        "--arg",
+        "0",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json"
+      ],
+      "ch0-timer-disable": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5858",
+        "--arg",
+        "0",
+        "--seed-mem",
+        "0x40003800:02060000",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json"
+      ],
+      "ch0-period-unmodeled": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5c00",
+        "--arg",
+        "0",
+        "--arg",
+        "10000",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json"
+      ],
+      "control-enable": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x77a0",
+        "--seed-mem",
+        "0x2000011e:02031b1d",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x200000a4:2a2c042e",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--watch",
+        "0xcd50",
+        "--watch-mem",
+        "0x200000bc:1",
+        "--dump-mem",
+        "0x200000bc:1",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json"
+      ],
+      "control-disable-high": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x77f8",
+        "--seed-mem",
+        "0x2000011e:02031b1d",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x200000a4:2a2c042e",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--watch",
+        "0xcd50",
+        "--watch-mem",
+        "0x200000bc:1",
+        "--dump-mem",
+        "0x200000bc:1",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json"
+      ],
+      "control-disable-low": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x7868",
+        "--seed-mem",
+        "0x2000011e:02031b1d",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x200000a4:2a2c042e",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--watch",
+        "0xcd50",
+        "--watch-mem",
+        "0x200000bc:1",
+        "--dump-mem",
+        "0x200000bc:1",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json"
+      ],
+      "software-reset-request": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--entry",
+        "0xd4dc",
+        "--seed-mem",
+        "0x20000224:01000000",
+        "--stop-at",
+        "0xd508",
+        "--dump-mem",
+        "0x20000224:4",
+        "--dump-mem",
+        "0x2002fffc:4",
+        "--dump-mem",
+        "0xe000ed0c:4",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json"
+      ],
+      "software-reset-call-bounded": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0xd4dc",
+        "--seed-mem",
+        "0x20000224:01000000",
+        "--stop-at",
+        "0xd508",
+        "--dump-mem",
+        "0x20000224:4",
+        "--dump-mem",
+        "0x2002fffc:4",
+        "--dump-mem",
+        "0xe000ed0c:4",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json"
+      ],
+      "application-boot": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--entry",
+        "0xcc24",
+        "--mmio-size",
+        "0x4000000",
+        "--fake-tick",
+        "0x200052ec:20",
+        "--mmio-force-bits",
+        "0x4000140c:1",
+        "--mmio-force-bits",
+        "0x40001010:100",
+        "--mmio-force-bits",
+        "0x40001040:3",
+        "--mmio-force-bits",
+        "0x40001054:3",
+        "--mmio-force-bits",
+        "0x43000418:4",
+        "--mmio-force-bits",
+        "0x41012018:4",
+        "--mmio-force-bits",
+        "0x41004010:1",
+        "--mmio-clear-bits",
+        "0x43000400:1",
+        "--mmio-clear-bits",
+        "0x41012000:1",
+        "--force-reg",
+        "0x9dd4:r0:12",
+        "--seed-mem",
+        "0x41008020:00004000",
+        "--stub-call",
+        "0xcd34",
+        "--map-page",
+        "0x800080:0x40",
+        "--watch",
+        "0x6968",
+        "--watch",
+        "0x69d8",
+        "--watch",
+        "0x6a44",
+        "--watch",
+        "0x6a68",
+        "--watch",
+        "0x8960",
+        "--watch",
+        "0x607c",
+        "--watch-mem",
+        "0x2000011e:6",
+        "--watch-mem",
+        "0x20000164:4",
+        "--log-mmio",
+        "--max-mmio-log",
+        "200000",
+        "--max-instructions",
+        "450000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json"
+      ]
+    },
+    "engine_identity": {
+      "firmware_key": "autopilot868",
+      "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "load_base": "0x4000",
+      "processor": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "ghidra_version": "12.1.3",
+      "analysis_version": 1,
+      "seed_vector_words": 151,
+      "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+      "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+      "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+      "provenance_tsv_sha256": "c4b14f4f9f128fcf9461a8c7f3670b1f66221ec6d5240a20bc000fb17dcbdfbd",
+      "derived_seeds_sha256": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def"
+    },
+    "unicorn_version": "2.1.4 (installed dist-info METADATA)",
+    "cache_note": "Ghidra opened existing analyzed project with no reanalysis; native concrete traces executed fresh.",
+    "python_version": "3.9.6 (Unicorn venv pyvenv.cfg)",
+    "command_note": "Reproducible equivalent argv order. Failed reset-call output was originally written to software-reset-request.json and renamed before corrected raw-entry execution."
+  },
+  "test_vectors": [
+    {
+      "vector_id": "RF-VECTOR-CH0-ISR-POSITIVE",
+      "finding_ids": [
+        "RF-STEP-CH0-POSITIVE"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "ch0-isr-positive"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x20000164:292b072d",
+          "0x20000094:01000000",
+          "0x20003099:01"
+        ],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x607c",
+          "--seed-mem",
+          "0x20000164:292b072d",
+          "--seed-mem",
+          "0x20000094:01000000",
+          "--seed-mem",
+          "0x20003099:01",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--dump-mem",
+          "0x20002064:4",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": []
+      },
+      "expected_logical_state_transitions": [
+        "position0:0->1",
+        "PB10 logical HIGH then LOW; direct handler-body invocation"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 4,
+          "pc": "0x00006084",
+          "address": "0x4000380a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 7,
+          "pc": "0x0000608c",
+          "address": "0x4000380a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x11"
+        },
+        {
+          "instruction": 56,
+          "pc": "0x0000d3c2",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x4"
+        },
+        {
+          "instruction": 60,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 89,
+          "pc": "0x0000d3c2",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 93,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [
+        {
+          "instruction": 4,
+          "pc": "0x00006084",
+          "address": "0x4000380a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 7,
+          "pc": "0x0000608c",
+          "address": "0x4000380a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x11"
+        }
+      ],
+      "expected_memory": {
+        "0x20002064": "01000000"
+      },
+      "observed_outcome": {
+        "instructions_executed": 108,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x2fff0010"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 12,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-CH0-TIMER-INIT",
+      "finding_ids": [
+        "RF-TC0-INIT"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "ch0-timer-init"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x5570",
+          "--arg",
+          "0",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [
+          "0"
+        ],
+        "fake_tick": []
+      },
+      "expected_logical_state_transitions": [
+        "TC0 ENABLE cleared; generator/channel configured; COUNT=0; MC0 requested"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 10,
+          "pc": "0x00005590",
+          "address": "0x40000814",
+          "size": 4,
+          "direction": "write",
+          "value": "0x4000"
+        },
+        {
+          "instruction": 14,
+          "pc": "0x0000559a",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 17,
+          "pc": "0x000055a4",
+          "address": "0x40001c3c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x306"
+        },
+        {
+          "instruction": 23,
+          "pc": "0x000055b2",
+          "address": "0x40001ca4",
+          "size": 4,
+          "direction": "write",
+          "value": "0x47"
+        },
+        {
+          "instruction": 26,
+          "pc": "0x000055bc",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        },
+        {
+          "instruction": 28,
+          "pc": "0x000055c0",
+          "address": "0x4000380c",
+          "size": 1,
+          "direction": "write",
+          "value": "0x1"
+        },
+        {
+          "instruction": 34,
+          "pc": "0x000055d0",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 36,
+          "pc": "0x000055d4",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 37,
+          "pc": "0x000055d6",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 38,
+          "pc": "0x000055d8",
+          "address": "0x40003814",
+          "size": 2,
+          "direction": "write",
+          "value": "0x0"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [
+        {
+          "instruction": 14,
+          "pc": "0x0000559a",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 26,
+          "pc": "0x000055bc",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        },
+        {
+          "instruction": 28,
+          "pc": "0x000055c0",
+          "address": "0x4000380c",
+          "size": 1,
+          "direction": "write",
+          "value": "0x1"
+        },
+        {
+          "instruction": 34,
+          "pc": "0x000055d0",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 36,
+          "pc": "0x000055d4",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 37,
+          "pc": "0x000055d6",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 38,
+          "pc": "0x000055d8",
+          "address": "0x40003814",
+          "size": 2,
+          "direction": "write",
+          "value": "0x0"
+        }
+      ],
+      "expected_memory": {},
+      "observed_outcome": {
+        "instructions_executed": 40,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x2fff0010"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 13,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-CH0-TIMER-DISABLE",
+      "finding_ids": [
+        "RF-TC0-STOP"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "ch0-timer-disable"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x40003800:02060000"
+        ],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x5858",
+          "--arg",
+          "0",
+          "--seed-mem",
+          "0x40003800:02060000",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [
+          "0"
+        ],
+        "fake_tick": []
+      },
+      "expected_logical_state_transitions": [
+        "TC0 CTRLA.ENABLE cleared"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 7,
+          "pc": "0x00005870",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [
+        {
+          "instruction": 7,
+          "pc": "0x00005870",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        }
+      ],
+      "expected_memory": {},
+      "observed_outcome": {
+        "instructions_executed": 9,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x2fff0010"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 2,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-CH0-PERIOD-UNMODELED",
+      "finding_ids": [
+        "RF-TC0-PERIOD"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "ch0-period-unmodeled"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x5c00",
+          "--arg",
+          "0",
+          "--arg",
+          "10000",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [
+          "0",
+          "10000"
+        ],
+        "fake_tick": []
+      },
+      "expected_logical_state_transitions": [
+        "CC0=10000",
+        "READSYNC requested",
+        "hardware wait remains unresolved; no completed update expected"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 15,
+          "pc": "0x00005c44",
+          "address": "0x4000381c",
+          "size": 2,
+          "direction": "write",
+          "value": "0x2710"
+        },
+        {
+          "instruction": 20,
+          "pc": "0x00005c4e",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x80"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [
+        {
+          "instruction": 15,
+          "pc": "0x00005c44",
+          "address": "0x4000381c",
+          "size": 2,
+          "direction": "write",
+          "value": "0x2710"
+        },
+        {
+          "instruction": 20,
+          "pc": "0x00005c4e",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x80"
+        }
+      ],
+      "expected_memory": {},
+      "observed_outcome": {
+        "instructions_executed": 20000,
+        "completed": false,
+        "error_free": true,
+        "stop_reason": "instruction limit reached"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 6663,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-CONTROL-ENABLE",
+      "finding_ids": [
+        "RF-CTRL-ENABLE"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "control-enable"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x2000011e:02031b1d",
+          "0x20000164:292b072d",
+          "0x200000a4:2a2c042e"
+        ],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x77a0",
+          "--seed-mem",
+          "0x2000011e:02031b1d",
+          "--seed-mem",
+          "0x20000164:292b072d",
+          "--seed-mem",
+          "0x200000a4:2a2c042e",
+          "--fake-tick",
+          "0x200052ec:20",
+          "--watch",
+          "0xcd50",
+          "--watch-mem",
+          "0x200000bc:1",
+          "--dump-mem",
+          "0x200000bc:1",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": [
+          "0x200052ec:20"
+        ]
+      },
+      "expected_logical_state_transitions": [
+        "HIGH PB17",
+        "HIGH PB16",
+        "delay(50 millis units)",
+        "OUTPUT STEP/DIR all4 channels",
+        "flag0x200000bc=1"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 32,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x4"
+        },
+        {
+          "instruction": 36,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x20000"
+        },
+        {
+          "instruction": 67,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d0",
+          "size": 1,
+          "direction": "write",
+          "value": "0x4"
+        },
+        {
+          "instruction": 71,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x10000"
+        },
+        {
+          "instruction": 2135,
+          "pc": "0x0000d37a",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2136,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 2162,
+          "pc": "0x0000d37a",
+          "address": "0x410080cb",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2163,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 2191,
+          "pc": "0x0000d37a",
+          "address": "0x41008048",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2192,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100"
+        },
+        {
+          "instruction": 2218,
+          "pc": "0x0000d37a",
+          "address": "0x41008049",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2219,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200"
+        },
+        {
+          "instruction": 2247,
+          "pc": "0x0000d37a",
+          "address": "0x410080cc",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2248,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x1000"
+        },
+        {
+          "instruction": 2274,
+          "pc": "0x0000d37a",
+          "address": "0x410080cd",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2275,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x2000"
+        },
+        {
+          "instruction": 2303,
+          "pc": "0x0000d37a",
+          "address": "0x4100804a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2304,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 2330,
+          "pc": "0x0000d37a",
+          "address": "0x4100804b",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 2331,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [],
+      "expected_memory": {
+        "0x200000bc": "01"
+      },
+      "observed_outcome": {
+        "instructions_executed": 2340,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x2fff0010"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 24,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-CONTROL-DISABLE-HIGH",
+      "finding_ids": [
+        "RF-CTRL-DISABLE-H"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "control-disable-high"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x2000011e:02031b1d",
+          "0x20000164:292b072d",
+          "0x200000a4:2a2c042e"
+        ],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x77f8",
+          "--seed-mem",
+          "0x2000011e:02031b1d",
+          "--seed-mem",
+          "0x20000164:292b072d",
+          "--seed-mem",
+          "0x200000a4:2a2c042e",
+          "--fake-tick",
+          "0x200052ec:20",
+          "--watch",
+          "0xcd50",
+          "--watch-mem",
+          "0x200000bc:1",
+          "--dump-mem",
+          "0x200000bc:1",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": [
+          "0x200052ec:20"
+        ]
+      },
+      "expected_logical_state_transitions": [
+        "INPUT STEP/DIR all4 channels",
+        "HIGH PB06",
+        "HIGH PB07",
+        "delay(50 millis units)",
+        "LOW PB17",
+        "LOW PB16",
+        "flag0x200000bc=0"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 28,
+          "pc": "0x0000d334",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 29,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 54,
+          "pc": "0x0000d334",
+          "address": "0x410080cb",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 55,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 82,
+          "pc": "0x0000d334",
+          "address": "0x41008048",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 83,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100"
+        },
+        {
+          "instruction": 108,
+          "pc": "0x0000d334",
+          "address": "0x41008049",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 109,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200"
+        },
+        {
+          "instruction": 136,
+          "pc": "0x0000d334",
+          "address": "0x410080cc",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 137,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x1000"
+        },
+        {
+          "instruction": 162,
+          "pc": "0x0000d334",
+          "address": "0x410080cd",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 163,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x2000"
+        },
+        {
+          "instruction": 190,
+          "pc": "0x0000d334",
+          "address": "0x4100804a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 191,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 216,
+          "pc": "0x0000d334",
+          "address": "0x4100804b",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 217,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 249,
+          "pc": "0x0000d3c2",
+          "address": "0x410080c6",
+          "size": 1,
+          "direction": "write",
+          "value": "0x4"
+        },
+        {
+          "instruction": 253,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40"
+        },
+        {
+          "instruction": 284,
+          "pc": "0x0000d3c2",
+          "address": "0x410080c7",
+          "size": 1,
+          "direction": "write",
+          "value": "0x4"
+        },
+        {
+          "instruction": 288,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80"
+        },
+        {
+          "instruction": 2343,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 2347,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x20000"
+        },
+        {
+          "instruction": 2376,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d0",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 2380,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x10000"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [],
+      "expected_memory": {
+        "0x200000bc": "00"
+      },
+      "observed_outcome": {
+        "instructions_executed": 2385,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x2fff0010"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 32,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-CONTROL-DISABLE-LOW",
+      "finding_ids": [
+        "RF-CTRL-DISABLE-L"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "control-disable-low"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x2000011e:02031b1d",
+          "0x20000164:292b072d",
+          "0x200000a4:2a2c042e"
+        ],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0x7868",
+          "--seed-mem",
+          "0x2000011e:02031b1d",
+          "--seed-mem",
+          "0x20000164:292b072d",
+          "--seed-mem",
+          "0x200000a4:2a2c042e",
+          "--fake-tick",
+          "0x200052ec:20",
+          "--watch",
+          "0xcd50",
+          "--watch-mem",
+          "0x200000bc:1",
+          "--dump-mem",
+          "0x200000bc:1",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": [
+          "0x200052ec:20"
+        ]
+      },
+      "expected_logical_state_transitions": [
+        "INPUT STEP/DIR all4 channels",
+        "LOW PB06",
+        "LOW PB07",
+        "delay(50 millis units)",
+        "LOW PB17",
+        "LOW PB16",
+        "flag0x200000bc=0"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 28,
+          "pc": "0x0000d334",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 29,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 54,
+          "pc": "0x0000d334",
+          "address": "0x410080cb",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 55,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 82,
+          "pc": "0x0000d334",
+          "address": "0x41008048",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 83,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100"
+        },
+        {
+          "instruction": 108,
+          "pc": "0x0000d334",
+          "address": "0x41008049",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 109,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200"
+        },
+        {
+          "instruction": 136,
+          "pc": "0x0000d334",
+          "address": "0x410080cc",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 137,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x1000"
+        },
+        {
+          "instruction": 162,
+          "pc": "0x0000d334",
+          "address": "0x410080cd",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 163,
+          "pc": "0x0000d338",
+          "address": "0x41008084",
+          "size": 4,
+          "direction": "write",
+          "value": "0x2000"
+        },
+        {
+          "instruction": 190,
+          "pc": "0x0000d334",
+          "address": "0x4100804a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 191,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 216,
+          "pc": "0x0000d334",
+          "address": "0x4100804b",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 217,
+          "pc": "0x0000d338",
+          "address": "0x41008004",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 248,
+          "pc": "0x0000d3c2",
+          "address": "0x410080c6",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 252,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40"
+        },
+        {
+          "instruction": 281,
+          "pc": "0x0000d3c2",
+          "address": "0x410080c7",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 285,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80"
+        },
+        {
+          "instruction": 2363,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 2367,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x20000"
+        },
+        {
+          "instruction": 2396,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d0",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 2400,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x10000"
+        }
+      ],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [],
+      "expected_memory": {
+        "0x200000bc": "00"
+      },
+      "observed_outcome": {
+        "instructions_executed": 2405,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x2fff0010"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 32,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-SOFTWARE-RESET-REQUEST",
+      "finding_ids": [
+        "RF-RESET-REQUEST"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "software-reset-request"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x20000224:01000000"
+        ],
+        "application_booted": false,
+        "call_note": null
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--entry",
+          "0xd4dc",
+          "--seed-mem",
+          "0x20000224:01000000",
+          "--stop-at",
+          "0xd508",
+          "--dump-mem",
+          "0x20000224:4",
+          "--dump-mem",
+          "0x2002fffc:4",
+          "--dump-mem",
+          "0xe000ed0c:4",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": []
+      },
+      "expected_logical_state_transitions": [
+        "countdown1->0",
+        "boot magic store",
+        "AIRCR request",
+        "stop checkpoint reached; reset unmodeled"
+      ],
+      "expected_register_write_sequences": [],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [],
+      "expected_memory": {
+        "0x20000224": "00000000",
+        "0x2002fffc": "ef6916f0",
+        "0xe000ed0c": "0400fa05"
+      },
+      "observed_outcome": {
+        "instructions_executed": 20,
+        "completed": true,
+        "error_free": true,
+        "stop_reason": "reached stop address 0x0000d508"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 0,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-SOFTWARE-RESET-CALL-BOUNDED",
+      "finding_ids": [
+        "RF-RESET-REQUEST"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "software-reset-call-bounded"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x20000224:01000000"
+        ],
+        "application_booted": false,
+        "call_note": "Direct helper/handler entry is not caller-grounded natural movement"
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--call",
+          "0xd4dc",
+          "--seed-mem",
+          "0x20000224:01000000",
+          "--stop-at",
+          "0xd508",
+          "--dump-mem",
+          "0x20000224:4",
+          "--dump-mem",
+          "0x2002fffc:4",
+          "--dump-mem",
+          "0xe000ed0c:4",
+          "--mmio-size",
+          "0x4000000",
+          "--log-mmio",
+          "--max-mmio-log",
+          "10000",
+          "--max-instructions",
+          "20000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": []
+      },
+      "expected_logical_state_transitions": [
+        "same stores as raw block; --call silently ignores --stop-at; instruction budget exhausted"
+      ],
+      "expected_register_write_sequences": [],
+      "register_sequence_scope": "All writes captured in native MMIO window; PPB reset writes are excluded by existing logger",
+      "expected_timer_related_events": [],
+      "expected_memory": {
+        "0x20000224": "00000000",
+        "0x2002fffc": "ef6916f0",
+        "0xe000ed0c": "0400fa05"
+      },
+      "observed_outcome": {
+        "instructions_executed": 20000,
+        "completed": false,
+        "error_free": true,
+        "stop_reason": "instruction limit reached"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export."
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 0,
+        "configured_cap": 10000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    },
+    {
+      "vector_id": "RF-VECTOR-APPLICATION-BOOT",
+      "finding_ids": [
+        "RF-CTRL-BOOT"
+      ],
+      "source_firmware": {
+        "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+        "load_base": "0x4000",
+        "variant": "autopilot868",
+        "bootloader_included": false
+      },
+      "evidence_refs": [
+        "application-boot"
+      ],
+      "observation_mode": "fresh concrete execution under disclosed model",
+      "expectation_origin": "copied native trace events; logical labels are human interpretation",
+      "initial_conditions": {
+        "ram_mmio": "zero unless argv seeds or application boot initialization",
+        "argv_seeds": [
+          "0x41008020:00004000"
+        ],
+        "application_booted": true,
+        "call_note": null
+      },
+      "triggering_action": {
+        "argv": [
+          "tools/unicorn/.venv/bin/python3",
+          "tools/unicorn/run_concrete.py",
+          "--firmware",
+          "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+          "--entry",
+          "0xcc24",
+          "--mmio-size",
+          "0x4000000",
+          "--fake-tick",
+          "0x200052ec:20",
+          "--mmio-force-bits",
+          "0x4000140c:1",
+          "--mmio-force-bits",
+          "0x40001010:100",
+          "--mmio-force-bits",
+          "0x40001040:3",
+          "--mmio-force-bits",
+          "0x40001054:3",
+          "--mmio-force-bits",
+          "0x43000418:4",
+          "--mmio-force-bits",
+          "0x41012018:4",
+          "--mmio-force-bits",
+          "0x41004010:1",
+          "--mmio-clear-bits",
+          "0x43000400:1",
+          "--mmio-clear-bits",
+          "0x41012000:1",
+          "--force-reg",
+          "0x9dd4:r0:12",
+          "--seed-mem",
+          "0x41008020:00004000",
+          "--stub-call",
+          "0xcd34",
+          "--map-page",
+          "0x800080:0x40",
+          "--watch",
+          "0x6968",
+          "--watch",
+          "0x69d8",
+          "--watch",
+          "0x6a44",
+          "--watch",
+          "0x6a68",
+          "--watch",
+          "0x8960",
+          "--watch",
+          "0x607c",
+          "--watch-mem",
+          "0x2000011e:6",
+          "--watch-mem",
+          "0x20000164:4",
+          "--log-mmio",
+          "--max-mmio-log",
+          "200000",
+          "--max-instructions",
+          "450000",
+          "--out",
+          "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json"
+        ]
+      },
+      "inputs": {
+        "arguments": [],
+        "fake_tick": [
+          "0x200052ec:20"
+        ]
+      },
+      "expected_logical_state_transitions": [
+        "OUTPUT PB06",
+        "OUTPUT PB07",
+        "OUTPUT PB17",
+        "OUTPUT PB16",
+        "HIGH PB17",
+        "HIGH PB16",
+        "HIGH PB06",
+        "HIGH PB07",
+        "OUTPUT STEP/DIR all4 channels"
+      ],
+      "expected_register_write_sequences": [
+        {
+          "instruction": 64385,
+          "pc": "0x0000d37a",
+          "address": "0x41008055",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64386,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200000"
+        },
+        {
+          "instruction": 64413,
+          "pc": "0x0000d3d0",
+          "address": "0x41008018",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200000"
+        },
+        {
+          "instruction": 64439,
+          "pc": "0x0000d37a",
+          "address": "0x410080c6",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64440,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40"
+        },
+        {
+          "instruction": 64466,
+          "pc": "0x0000d37a",
+          "address": "0x410080c7",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64467,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80"
+        },
+        {
+          "instruction": 64493,
+          "pc": "0x0000d37a",
+          "address": "0x410080d1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64494,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x20000"
+        },
+        {
+          "instruction": 64520,
+          "pc": "0x0000d37a",
+          "address": "0x410080d0",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64521,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x10000"
+        },
+        {
+          "instruction": 64551,
+          "pc": "0x0000d3c2",
+          "address": "0x410080d1",
+          "size": 1,
+          "direction": "write",
+          "value": "0x46"
+        },
+        {
+          "instruction": 64555,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x20000"
+        },
+        {
+          "instruction": 64583,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x10000"
+        },
+        {
+          "instruction": 64614,
+          "pc": "0x0000d3c2",
+          "address": "0x410080c6",
+          "size": 1,
+          "direction": "write",
+          "value": "0x46"
+        },
+        {
+          "instruction": 64618,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x40"
+        },
+        {
+          "instruction": 64648,
+          "pc": "0x0000d3c2",
+          "address": "0x410080c7",
+          "size": 1,
+          "direction": "write",
+          "value": "0x46"
+        },
+        {
+          "instruction": 64652,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x80"
+        },
+        {
+          "instruction": 64679,
+          "pc": "0x0000d37a",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64680,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 64707,
+          "pc": "0x0000d37a",
+          "address": "0x410080cb",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64708,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 64736,
+          "pc": "0x0000d37a",
+          "address": "0x41008048",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64737,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x100"
+        },
+        {
+          "instruction": 64764,
+          "pc": "0x0000d37a",
+          "address": "0x41008049",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64765,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x200"
+        },
+        {
+          "instruction": 64793,
+          "pc": "0x0000d37a",
+          "address": "0x410080cc",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64794,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x1000"
+        },
+        {
+          "instruction": 64821,
+          "pc": "0x0000d37a",
+          "address": "0x410080cd",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64822,
+          "pc": "0x0000d37e",
+          "address": "0x41008088",
+          "size": 4,
+          "direction": "write",
+          "value": "0x2000"
+        },
+        {
+          "instruction": 64850,
+          "pc": "0x0000d37a",
+          "address": "0x4100804a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64851,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 64878,
+          "pc": "0x0000d37a",
+          "address": "0x4100804b",
+          "size": 1,
+          "direction": "write",
+          "value": "0x42"
+        },
+        {
+          "instruction": 64879,
+          "pc": "0x0000d37e",
+          "address": "0x41008008",
+          "size": 4,
+          "direction": "write",
+          "value": "0x800"
+        },
+        {
+          "instruction": 64895,
+          "pc": "0x00005590",
+          "address": "0x40000814",
+          "size": 4,
+          "direction": "write",
+          "value": "0xf000"
+        },
+        {
+          "instruction": 64899,
+          "pc": "0x0000559a",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 64902,
+          "pc": "0x000055a4",
+          "address": "0x40001c3c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x306"
+        },
+        {
+          "instruction": 64908,
+          "pc": "0x000055b2",
+          "address": "0x40001ca4",
+          "size": 4,
+          "direction": "write",
+          "value": "0x47"
+        },
+        {
+          "instruction": 64911,
+          "pc": "0x000055bc",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        },
+        {
+          "instruction": 64913,
+          "pc": "0x000055c0",
+          "address": "0x4000380c",
+          "size": 1,
+          "direction": "write",
+          "value": "0x1"
+        },
+        {
+          "instruction": 64919,
+          "pc": "0x000055d0",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 64921,
+          "pc": "0x000055d4",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 64922,
+          "pc": "0x000055d6",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 64923,
+          "pc": "0x000055d8",
+          "address": "0x40003814",
+          "size": 2,
+          "direction": "write",
+          "value": "0x0"
+        }
+      ],
+      "register_sequence_scope": "Selected boot control/timer initialization window only; see native full log",
+      "expected_timer_related_events": [
+        {
+          "instruction": 64899,
+          "pc": "0x0000559a",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 64911,
+          "pc": "0x000055bc",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        },
+        {
+          "instruction": 64913,
+          "pc": "0x000055c0",
+          "address": "0x4000380c",
+          "size": 1,
+          "direction": "write",
+          "value": "0x1"
+        },
+        {
+          "instruction": 64919,
+          "pc": "0x000055d0",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 64921,
+          "pc": "0x000055d4",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 64922,
+          "pc": "0x000055d6",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 64923,
+          "pc": "0x000055d8",
+          "address": "0x40003814",
+          "size": 2,
+          "direction": "write",
+          "value": "0x0"
+        }
+      ],
+      "expected_memory": {},
+      "observed_outcome": {
+        "instructions_executed": 450000,
+        "completed": false,
+        "error_free": true,
+        "stop_reason": "instruction limit reached"
+      },
+      "known_assumptions": [
+        "Plain memory MMIO: no register alias, W1C, timer, peripheral or external electrical behavior simulated.",
+        "No autonomous IRQ delivery, exception stacking, priority arbitration, nested interrupts or physical waveform.",
+        "Instruction counts are ordering coordinates, never physical time.",
+        "Seeds and fake ticks are harness assumptions, not observed hardware.",
+        "No ledger claim admitted or verified by this export.",
+        "All original AUTOPILOT_RECIPE assumptions; see boot_recipe source"
+      ],
+      "exclusions": [
+        "No physical time or electrical safety inference",
+        "No full move, reverse-move or automatic interrupt test",
+        "Do not compare native instruction counts across replacement implementations"
+      ],
+      "log_capture": {
+        "entries": 17755,
+        "configured_cap": 200000,
+        "cap_reached": false,
+        "read_values": "Native read entries have null values; do not reconstruct electrical reads"
+      },
+      "evidence_grade": "UNKNOWN",
+      "verification_state": null,
+      "apfw2_relevance": "Reference sequence for review; adapt semantic assertions to replacement design, not instruction counts"
+    }
+  ],
+  "reconstructed_expectations": [
+    {
+      "vector_id": "RF-STATIC-COMMIT-THRESHOLD",
+      "finding_ids": [
+        "RF-RAMP-BOUNDARY"
+      ],
+      "origin": "existing dossier static/control-flow reconstruction, not a newly executed case",
+      "initial_conditions": "FUN_00006fd8 entered; caller context and remaining configuration not established",
+      "inputs": {
+        "distance_abs": {
+          "no_op": "<=8",
+          "commit": ">8"
+        }
+      },
+      "expected_logical_state_transitions": [
+        "<=8 clears/no-ops commit state",
+        ">8 resets segment index and arms phase1"
+      ],
+      "expected_register_write_sequences": null,
+      "expected_timer_related_events": null,
+      "evidence_refs": [
+        "motor_dossier"
+      ],
+      "limitations": [
+        "Not a fully reproducible movement vector; no hardware waveform expected"
+      ],
+      "verification_state": null,
+      "evidence_grade": "UNKNOWN"
+    }
+  ],
+  "unsupported_cases": [
+    {
+      "case": "natural bounded representative movement",
+      "reason": "No AutoPilot timer/IRQ bridge/model; busy/rate gate and provisioned move state unresolved"
+    },
+    {
+      "case": "first-step DIR setup and physical timing",
+      "reason": "No measured driver-input waveform"
+    },
+    {
+      "case": "safe current/microstepping initialization",
+      "reason": "No proven hardware configuration path/straps/current limit"
+    },
+    {
+      "case": "watchdog expiry/bootloader recovery",
+      "reason": "Peripheral/reset unmodeled and bootloader image absent"
+    }
+  ],
+  "historical_ledger": {
+    "C2:v2": {
+      "historical_state": "VERIFIED",
+      "current_policy_decision_passes": false,
+      "scope": "static USB callback pointer only, not motor safety",
+      "source_ref": "historical_C2_v2"
+    },
+    "C5:v1": {
+      "historical_state": "VERIFIED",
+      "current_policy_decision_passes": false,
+      "scope": "census-bounded EIC/USB NO_KNOWN_PATH, not runtime absence",
+      "source_ref": "historical_C5_v1"
+    },
+    "review_note": "Focused existing test verifies these decisions predate current policy. No new verification or state mutation."
+  },
+  "final_repository_revision": "3750c3522da062ce8c48838f7bc201d9ef025eac",
+  "repository_update_note": "User changed checkout during investigation; analysis implementation unchanged, new hardware documentation incorporated. framework_revision is initial execution baseline.",
+  "physical_observations": {
+    "source_refs": [
+      "bench_sheet"
+    ],
+    "mux_count": 2,
+    "mux_a_to_tmc": [
+      {
+        "mux": 1,
+        "a_pin": 4,
+        "driver": "TMC1",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 2,
+        "b1_to_rj45_reported_resistance_ohms": 471,
+        "b2_to_rj45_reported_resistance_ohms": 468
+      },
+      {
+        "mux": 1,
+        "a_pin": 7,
+        "driver": "TMC1",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 2,
+        "b1_to_rj45_reported_resistance_ohms": 468,
+        "b2_to_rj45_reported_resistance_ohms": 488
+      },
+      {
+        "mux": 1,
+        "a_pin": 9,
+        "driver": "TMC3",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 4,
+        "b1_to_rj45_reported_resistance_ohms": 468,
+        "b2_to_rj45_reported_resistance_ohms": 468
+      },
+      {
+        "mux": 1,
+        "a_pin": 12,
+        "driver": "TMC3",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 4,
+        "b1_to_rj45_reported_resistance_ohms": 468,
+        "b2_to_rj45_reported_resistance_ohms": 468
+      },
+      {
+        "mux": 2,
+        "a_pin": 4,
+        "driver": "TMC2",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 1,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      },
+      {
+        "mux": 2,
+        "a_pin": 7,
+        "driver": "TMC2",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 1,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      },
+      {
+        "mux": 2,
+        "a_pin": 9,
+        "driver": "TMC4",
+        "driver_pin": 18,
+        "signal": "DIR",
+        "resistance_ohms": 0,
+        "rj45": 3,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      },
+      {
+        "mux": 2,
+        "a_pin": 12,
+        "driver": "TMC4",
+        "driver_pin": 17,
+        "signal": "STEP",
+        "resistance_ohms": 0,
+        "rj45": 3,
+        "b1_to_rj45_reported_resistance_ohms": 470,
+        "b2_to_rj45_reported_resistance_ohms": 470
+      }
+    ],
+    "rj45_note": "Raw section4 reports both B legs through diode/resistor networks; resistance does not establish copper identity or powered select truth table",
+    "control_candidate_readings": [
+      {
+        "mux": 1,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB16",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 1,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB17",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 1,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB06",
+        "resistance_ohms": 325400
+      },
+      {
+        "mux": 1,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB07",
+        "resistance_ohms": 325600
+      },
+      {
+        "mux": 2,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB16",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 2,
+        "mux_signal": "S",
+        "mux_pin": 1,
+        "mcu_gpio": "PB17",
+        "resistance_ohms": 334500
+      },
+      {
+        "mux": 2,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB06",
+        "resistance_ohms": 324900
+      },
+      {
+        "mux": 2,
+        "mux_signal": "/OE",
+        "mux_pin": 15,
+        "mcu_gpio": "PB07",
+        "resistance_ohms": 325200
+      }
+    ],
+    "control_scope": "Only S->PB16/PB17 and /OE->PB06/PB07 on each mux measured; no direct continuity for these pairs, no universal absence or all-cross-pair test",
+    "tmc1_straps": [
+      {
+        "pin": 21,
+        "signal": "SD_MODE",
+        "net": "VCC_IO",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 22,
+        "signal": "SPI_MODE",
+        "net": "VCC_IO",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 23,
+        "signal": "CFG4",
+        "net": "GNDANA",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 24,
+        "signal": "CFG5",
+        "net": "GNDANA",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 25,
+        "signal": "CFG6",
+        "net": "GNDANA",
+        "resistance_ohms": 0
+      },
+      {
+        "pin": 28,
+        "signal": "DRV_ENN",
+        "net": "GNDANA",
+        "resistance_ohms": null,
+        "note": "section8 reports connection, no resistance column"
+      }
+    ],
+    "other_driver_straps": null,
+    "mode_interpretation": null,
+    "mode_note": "Preserve physical HIGH/HIGH; summary standalone/no-SPI interpretation not validated by authoritative local mode truth table; serial routes reported",
+    "serial_routing": [
+      {
+        "driver": "TMC1",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 11,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      },
+      {
+        "driver": "TMC2",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 37,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      },
+      {
+        "driver": "TMC3",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 12,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      },
+      {
+        "driver": "TMC4",
+        "CSN_CFG3_pin13_to_mcu_package_pin": 38,
+        "SCK_CFG2_pin14_to_mcu_package_pin": 64,
+        "SDI_CFG1_pin15_to_mcu_package_pin": 63,
+        "SDO_CFG0_pin16_to_mcu_package_pin": 62,
+        "basis": "reported connections in raw bench sheet section6 upper table",
+        "exact_resistance_ohms": null,
+        "powered_transaction_observed": false
+      }
+    ],
+    "effective_current_limit": null,
+    "microstep_setting": null,
+    "diag_routing": null,
+    "logical_channel_to_tmc": null,
+    "logical_channel_to_xlr": null,
+    "driver_energization_state": null,
+    "electrical_safety_approved": false
+  }
+}

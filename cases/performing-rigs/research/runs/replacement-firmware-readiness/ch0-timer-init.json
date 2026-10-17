@@ -1,0 +1,206 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "entry": "0x00005571",
+  "instructions_executed": 40,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "registers": {
+    "r0": "0x00000800",
+    "r1": "0x00000010",
+    "r2": "0x00000000",
+    "r3": "0x40003800",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x2fff0011",
+    "pc": "0x2fff0010",
+    "cpsr": "0x00100033"
+  },
+  "memory": {},
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00005570",
+    "0x00005572",
+    "0x00005574",
+    "0x00005576",
+    "0x00005578",
+    "0x0000557c",
+    "0x00005588",
+    "0x0000558a",
+    "0x0000558c",
+    "0x00005590",
+    "0x00005592",
+    "0x00005594",
+    "0x00005596",
+    "0x0000559a",
+    "0x0000559c",
+    "0x000055a0",
+    "0x000055a4",
+    "0x000055a6",
+    "0x000055a8",
+    "0x000055ac",
+    "0x000055ae",
+    "0x000055b0",
+    "0x000055b2",
+    "0x000055b6",
+    "0x000055b8",
+    "0x000055bc",
+    "0x000055be",
+    "0x000055c0",
+    "0x000055c2",
+    "0x000055c4",
+    "0x000055c8",
+    "0x000055cc",
+    "0x000055ce",
+    "0x000055d0",
+    "0x000055d2",
+    "0x000055d4",
+    "0x000055d6",
+    "0x000055d8",
+    "0x000055da",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [],
+  "watch_hits": [],
+  "mmio_log": [
+    {
+      "instruction": 8,
+      "pc": "0x0000558a",
+      "address": "0x40000814",
+      "size": 4,
+      "direction": "read",
+      "value": null
+    },
+    {
+      "instruction": 10,
+      "pc": "0x00005590",
+      "address": "0x40000814",
+      "size": 4,
+      "direction": "write",
+      "value": "0x4000"
+    },
+    {
+      "instruction": 12,
+      "pc": "0x00005594",
+      "address": "0x40003800",
+      "size": 4,
+      "direction": "read",
+      "value": null
+    },
+    {
+      "instruction": 14,
+      "pc": "0x0000559a",
+      "address": "0x40003800",
+      "size": 4,
+      "direction": "write",
+      "value": "0x0"
+    },
+    {
+      "instruction": 17,
+      "pc": "0x000055a4",
+      "address": "0x40001c3c",
+      "size": 4,
+      "direction": "write",
+      "value": "0x306"
+    },
+    {
+      "instruction": 18,
+      "pc": "0x000055a6",
+      "address": "0x40001c04",
+      "size": 4,
+      "direction": "read",
+      "value": null
+    },
+    {
+      "instruction": 23,
+      "pc": "0x000055b2",
+      "address": "0x40001ca4",
+      "size": 4,
+      "direction": "write",
+      "value": "0x47"
+    },
+    {
+      "instruction": 26,
+      "pc": "0x000055bc",
+      "address": "0x40003800",
+      "size": 4,
+      "direction": "write",
+      "value": "0x600"
+    },
+    {
+      "instruction": 28,
+      "pc": "0x000055c0",
+      "address": "0x4000380c",
+      "size": 1,
+      "direction": "write",
+      "value": "0x1"
+    },
+    {
+      "instruction": 34,
+      "pc": "0x000055d0",
+      "address": "0x40003805",
+      "size": 1,
+      "direction": "write",
+      "value": "0x2"
+    },
+    {
+      "instruction": 36,
+      "pc": "0x000055d4",
+      "address": "0x40003809",
+      "size": 1,
+      "direction": "write",
+      "value": "0x0"
+    },
+    {
+      "instruction": 37,
+      "pc": "0x000055d6",
+      "address": "0x40003809",
+      "size": 1,
+      "direction": "write",
+      "value": "0x10"
+    },
+    {
+      "instruction": 38,
+      "pc": "0x000055d8",
+      "address": "0x40003814",
+      "size": 2,
+      "direction": "write",
+      "value": "0x0"
+    }
+  ],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x00005570",
+    "args": [
+      "0x00000000"
+    ],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x00000800",
+      "r1": "0x00000010",
+      "r2": "0x00000000",
+      "r3": "0x40003800"
+    }
+  }
+}

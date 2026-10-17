@@ -1,0 +1,5 @@
+replacement-firmware-hardware-contract.json: valid JSON; all current source references and SHA256s match; initial source identities retained where changed
+replacement-firmware-test-vectors.json: valid JSON; all current source references and SHA256s match; initial source identities retained where changed
+19 unique findings; 10 native vectors; all exported MMIO writes and final memory agree with native records; no MMIO log cap reached
+Raw bench sheet incorporated:8 measured control pairs,8 mux A-side routes, TMC1-only strap scope, populated4-driver serial-routing table; summary conflicts explicit
+No physical-time/current/safety defaults inferred; new exports have null verification states; static threshold case labeled reconstructed

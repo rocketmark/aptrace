@@ -1,0 +1,697 @@
+==================================================
+Function: digitalWrite_pulse__STANDARD_LIBRARY @ 00005898  size=130  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: LIKELY_STANDARD_LIBRARY -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void digitalWrite_pulse__STANDARD_LIBRARY
+               (int param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  uint uVar4;
+  
+  iVar1 = DAT_00005920;
+  *(int *)(DAT_00005920 + param_1 * 4) =
+       *(int *)(DAT_00005920 + param_1 * 4) + *(int *)(DAT_0000591c + param_1 * 4);
+  iVar2 = DAT_00005928;
+  iVar3 = *(int *)(iVar1 + param_1 * 4);
+  if (iVar3 == (uint)*(byte *)(DAT_00005924 + param_1) *
+               (iVar3 / (int)(uint)*(byte *)(DAT_00005924 + param_1))) {
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*(undefined1 *)(DAT_00005928 + param_1),1);
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*(undefined1 *)(iVar2 + param_1),0);
+  }
+  uVar4 = (uint)*(byte *)(DAT_0000592c + param_1 * 0x120 + 0x3c);
+  if (((*(int *)(DAT_0000592c + uVar4 * 0x48 + param_1 * 0x120 + 0xc) ==
+        *(int *)(iVar1 + param_1 * 4)) && (*(char *)(DAT_00005930 + param_1) == '\x01')) &&
+     (*(int *)(DAT_00005938 + (param_1 * 0x32 + *(byte *)(DAT_00005934 + param_1) + 1) * 4) == 0)) {
+    FUN_00005858(param_1,uVar4,DAT_00005938,param_4);
+    return;
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00005c00 @ 00005c00  size=256  params=0  callingConvention=unknown
+
+
+void FUN_00005c00(int param_1,int param_2,int param_3)
+
+{
+  undefined2 uVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  undefined4 uVar6;
+  int iVar7;
+  int iVar8;
+  bool bVar9;
+  
+  iVar5 = DAT_00005d1c;
+  iVar4 = DAT_00005d18;
+  iVar3 = DAT_00005d14;
+  iVar8 = DAT_00005d10;
+  iVar2 = DAT_00005d08;
+  if (*(char *)(DAT_00005d08 + param_1 * 2) == '\0') {
+    param_3 = 1;
+    iVar7 = param_3;
+  }
+  else {
+    bVar9 = *(char *)(DAT_00005d0c + param_1) == '\0';
+    if (bVar9) {
+      param_3 = 1;
+    }
+    if (!bVar9) {
+      param_3 = 0x81;
+    }
+    if (*(char *)(DAT_00005d08 + param_1 * 2 + 1) == '@') {
+      iVar7 = 0x7f;
+    }
+    else {
+      iVar7 = 1;
+    }
+  }
+  uVar1 = (undefined2)param_2;
+  switch(param_1) {
+  case 0:
+    *(undefined2 *)(DAT_00005d10 + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar3 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar8 + 5) = 0x80;
+    iVar8 = DAT_00005d10;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d10 + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d10 + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    tc0_isr_completion__CUSTOM();
+    goto LAB_00005c68;
+  case 1:
+    *(undefined2 *)(DAT_00005d14 + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar3 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar3 + 5) = 0x80;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d14 + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d14 + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    uVar6 = 1;
+    iVar8 = DAT_00005d14;
+    break;
+  case 2:
+    *(undefined2 *)(DAT_00005d18 + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar4 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar4 + 5) = 0x80;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d18 + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d18 + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    uVar6 = 2;
+    iVar8 = DAT_00005d18;
+    break;
+  case 3:
+    *(undefined2 *)(DAT_00005d1c + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar5 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar5 + 5) = 0x80;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d1c + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d1c + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    uVar6 = 3;
+    iVar8 = DAT_00005d1c;
+    break;
+  default:
+    goto switchD_00005c2c_caseD_4;
+  case 7:
+    *(int *)(DAT_00005d20 + 0x44) = param_2;
+    goto switchD_00005c2c_caseD_4;
+  }
+  digitalWrite_pulse__STANDARD_LIBRARY(uVar6);
+LAB_00005c68:
+  *(undefined2 *)(iVar8 + 0x14) = 0;
+switchD_00005c2c_caseD_4:
+  if (*(char *)(iVar2 + param_1 * 2) != '\0') {
+    FUN_000056e8(param_1,*(undefined1 *)(iVar2 + param_1 * 2 + 1));
+    *(undefined1 *)(iVar2 + param_1 * 2) = 0;
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00005958 @ 00005958  size=38  params=0  callingConvention=unknown
+
+
+void FUN_00005958(undefined4 param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  int iVar1;
+  int iVar2;
+  undefined8 uVar3;
+  
+  uVar3 = FUN_00005858(param_1,param_1,param_3,param_4,param_4);
+  iVar2 = (int)((ulonglong)uVar3 >> 0x20);
+  iVar1 = (int)uVar3;
+  *(undefined1 *)(DAT_00005980 + iVar1) = 0;
+  *(undefined1 *)(DAT_00005984 + iVar1) = 0;
+  *(undefined4 *)(DAT_0000598c + iVar2 * 4) = *(undefined4 *)(DAT_00005988 + iVar1 * 4);
+  *(undefined4 *)(DAT_00005990 + iVar2 * 4) = 0;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00005570 @ 00005570  size=332  params=0  callingConvention=unknown
+
+
+void FUN_00005570(int param_1)
+
+{
+  undefined4 *puVar1;
+  undefined4 uVar2;
+  int iVar3;
+  ushort uVar4;
+  int iVar5;
+  uint *puVar6;
+  
+  *(undefined1 *)(DAT_000056c4 + param_1) = 1;
+  switch(param_1) {
+  case 0:
+    *(uint *)(DAT_000056c8 + 0x14) = *(uint *)(DAT_000056c8 + 0x14) | 0x4000;
+    puVar6 = DAT_000056cc;
+    *DAT_000056cc = *DAT_000056cc & 0xfffffffd;
+    puVar6[-0x6f1] = 0x306;
+    do {
+      iVar5 = puVar6[-0x6ff] << 0x16;
+      uVar4 = (ushort)((uint)iVar5 >> 0x1f);
+    } while ((int)(puVar6[-0x6ff] << 0x16) < 0);
+    puVar6[-0x6d7] = 0x47;
+    puVar6 = DAT_000056cc;
+    *DAT_000056cc = 0x600;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    iVar3 = DAT_000056d0;
+    uVar2 = 0x800;
+    *(byte *)(DAT_000056d0 + 0x36b) = (byte)((uint)iVar5 >> 0x1f);
+    break;
+  case 1:
+    *(uint *)(DAT_000056c8 + 0x14) = *(uint *)(DAT_000056c8 + 0x14) | 0x8000;
+    puVar6 = DAT_000056d4;
+    *DAT_000056d4 = *DAT_000056d4 & 0xfffffffd;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xa4) = 0x47;
+    *puVar6 = 0x600;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    uVar4 = 0;
+    *(undefined1 *)(iVar3 + 0x36c) = 0;
+    uVar2 = 0x1000;
+    break;
+  case 2:
+    *(uint *)(DAT_000056c8 + 0x18) = *(uint *)(DAT_000056c8 + 0x18) | 0x2000;
+    puVar6 = DAT_000056dc;
+    *DAT_000056dc = *DAT_000056dc & 0xfffffffd;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xe8) = 0x47;
+    *puVar6 = 0x600;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    uVar4 = 0;
+    *(undefined1 *)(iVar3 + 0x36d) = 0;
+    uVar2 = 0x2000;
+    break;
+  case 3:
+    *(uint *)(DAT_000056c8 + 0x18) = *(uint *)(DAT_000056c8 + 0x18) | 0x4000;
+    puVar6 = DAT_000056e0;
+    *DAT_000056e0 = *DAT_000056e0 & 0xfffffffd;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xe8) = 0x47;
+    *puVar6 = 0x600;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    uVar4 = 0;
+    *(undefined1 *)(iVar3 + 0x36e) = 0;
+    uVar2 = 0x4000;
+    break;
+  default:
+    return;
+  case 7:
+    *(uint *)(DAT_000056c8 + 0x18) = *(uint *)(DAT_000056c8 + 0x18) | 0x1000;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xe4) = 0x47;
+    puVar1 = DAT_000056e4;
+    *DAT_000056e4 = 0x100;
+    puVar1[0xf] = 1;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(DAT_000056d0 + 0x35d) = 0x40;
+    *(undefined4 *)(iVar3 + 8) = 0x20000000;
+    puVar1[10] = 0x10000;
+    return;
+  }
+  *(undefined4 *)(iVar3 + 0xc) = uVar2;
+  *(undefined1 *)((int)puVar6 + 5) = 2;
+  *(char *)((int)puVar6 + 9) = (char)uVar4;
+  *(undefined1 *)((int)puVar6 + 9) = 0x10;
+  *(ushort *)(puVar6 + 5) = uVar4;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_000056e8 @ 000056e8  size=230  params=0  callingConvention=unknown
+
+
+void FUN_000056e8(int param_1,int param_2)
+
+{
+  uint *puVar1;
+  uint *puVar2;
+  uint *puVar3;
+  uint *puVar4;
+  uint uVar5;
+  uint *puVar6;
+  
+  if (param_2 == 1) {
+    *(undefined1 *)(DAT_000057f8 + param_1) = 0;
+    puVar4 = DAT_0000580c;
+    puVar3 = DAT_00005808;
+    puVar2 = DAT_00005804;
+    puVar6 = DAT_00005800;
+    puVar1 = DAT_000057fc;
+    switch(param_1) {
+    case 0:
+      *DAT_000057fc = *DAT_000057fc & 0xfffffffd;
+      do {
+        puVar6 = puVar1;
+      } while ((int)(puVar1[4] << 0x1e) < 0);
+      break;
+    case 1:
+      *DAT_00005800 = *DAT_00005800 & 0xfffffffd;
+      do {
+      } while ((int)(puVar6[4] << 0x1e) < 0);
+      break;
+    case 2:
+      *DAT_00005804 = *DAT_00005804 & 0xfffffffd;
+      do {
+        puVar6 = puVar2;
+      } while ((int)(puVar2[4] << 0x1e) < 0);
+      break;
+    case 3:
+      *DAT_00005808 = *DAT_00005808 & 0xfffffffd;
+      do {
+        puVar6 = puVar3;
+      } while ((int)(puVar3[4] << 0x1e) < 0);
+      break;
+    default:
+      goto switchD_00005774_caseD_4;
+    case 7:
+      *DAT_0000580c = *DAT_0000580c & 0xfffffffd;
+      do {
+        puVar6 = puVar4;
+      } while ((int)(puVar4[2] << 0x1e) < 0);
+    }
+    uVar5 = 0x102;
+  }
+  else {
+    if (param_2 != 0x40) {
+      return;
+    }
+    *(undefined1 *)(DAT_000057f8 + param_1) = 1;
+    puVar4 = DAT_0000580c;
+    puVar3 = DAT_00005808;
+    puVar2 = DAT_00005804;
+    puVar6 = DAT_00005800;
+    puVar1 = DAT_000057fc;
+    switch(param_1) {
+    case 0:
+      *DAT_000057fc = *DAT_000057fc & 0xfffffffd;
+      do {
+        puVar6 = puVar1;
+      } while ((int)(puVar1[4] << 0x1e) < 0);
+      break;
+    case 1:
+      *DAT_00005800 = *DAT_00005800 & 0xfffffffd;
+      do {
+      } while ((int)(puVar6[4] << 0x1e) < 0);
+      break;
+    case 2:
+      *DAT_00005804 = *DAT_00005804 & 0xfffffffd;
+      do {
+        puVar6 = puVar2;
+      } while ((int)(puVar2[4] << 0x1e) < 0);
+      break;
+    case 3:
+      *DAT_00005808 = *DAT_00005808 & 0xfffffffd;
+      do {
+        puVar6 = puVar3;
+      } while ((int)(puVar3[4] << 0x1e) < 0);
+      break;
+    default:
+      goto switchD_00005774_caseD_4;
+    case 7:
+      *DAT_0000580c = *DAT_0000580c & 0xfffffffd;
+      do {
+        puVar6 = puVar4;
+      } while ((int)(puVar4[2] << 0x1e) < 0);
+    }
+    uVar5 = 0x602;
+  }
+  *puVar6 = uVar5;
+switchD_00005774_caseD_4:
+  return;
+}
+
+
+
+==================================================
+Function: tc0_isr_completion__CUSTOM @ 00005be8  size=504  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void tc0_isr_completion__CUSTOM(void)
+
+{
+  uint uVar1;
+  byte bVar2;
+  int *piVar3;
+  int *piVar4;
+  undefined4 *puVar5;
+  int *piVar6;
+  char *pcVar7;
+  uint *puVar8;
+  byte *pbVar9;
+  uint *puVar10;
+  uint *puVar11;
+  int iVar12;
+  uint uVar13;
+  byte bVar14;
+  uint in_fpscr;
+  float fVar15;
+  float fVar16;
+  float fVar17;
+  
+  iVar12 = DAT_00005be4;
+  pbVar9 = DAT_00005be0;
+  puVar5 = DAT_00005b84;
+  piVar4 = DAT_00005b80;
+  piVar3 = DAT_00005b7c;
+  if (*DAT_00005bfc == '\0') {
+    digitalWrite_pulse__STANDARD_LIBRARY(0);
+    return;
+  }
+  FUN_0000593c();
+  *piVar3 = *piVar3 + *piVar4;
+  for (bVar14 = 0; puVar8 = DAT_00005b9c, puVar10 = DAT_00005b98, piVar6 = DAT_00005b90,
+      uVar13 = (uint)bVar14, (int)uVar13 < (int)(*pbVar9 - 1); bVar14 = bVar14 + 1) {
+    fVar15 = *(float *)(iVar12 + uVar13 * 4);
+    uVar1 = in_fpscr & 0xfffffff;
+    in_fpscr = uVar1 | (uint)(fVar15 == 0.0) << 0x1e;
+    if ((byte)(in_fpscr >> 0x1e) == 0) {
+      fVar17 = (float)VectorSignedToFloat(puVar5[uVar13],(byte)(in_fpscr >> 0x16) & 3);
+      fVar16 = (float)VectorSignedToFloat(*piVar3,(byte)(in_fpscr >> 0x16) & 3);
+      fVar17 = fVar17 * fVar15;
+      uVar1 = uVar1 | (uint)(fVar17 < fVar16) << 0x1f | (uint)(fVar17 == fVar16) << 0x1e;
+      in_fpscr = uVar1 | (uint)(NAN(fVar17) || NAN(fVar16)) << 0x1c;
+      if (*piVar4 == 1) {
+        if ((int)uVar1 < 0) {
+LAB_000059fe:
+          digitalWrite_pulse__STANDARD_LIBRARY(*(undefined1 *)(DAT_00005b88 + uVar13 * 4));
+          puVar5[uVar13] = puVar5[uVar13] + *(int *)(DAT_00005b8c + uVar13 * 4);
+        }
+      }
+      else {
+        bVar2 = (byte)(uVar1 >> 0x18);
+        if (!(bool)(bVar2 >> 6 & 1) && bVar2 >> 7 == ((byte)(in_fpscr >> 0x1c) & 1))
+        goto LAB_000059fe;
+      }
+    }
+  }
+  if (*piVar3 == *DAT_00005b90) {
+    if (*DAT_00005b94 == '\x02') {
+      *DAT_00005ba0 = 0xffffffff;
+      puVar11 = DAT_00005ba4;
+      *DAT_00005ba4 = *DAT_00005ba4 >> 2;
+      uVar13 = *puVar10;
+LAB_00005a54:
+      fVar15 = (float)VectorUnsignedToFloat(uVar13,(byte)(in_fpscr >> 0x16) & 3);
+      fVar16 = (float)VectorUnsignedToFloat(*puVar11,(byte)(in_fpscr >> 0x16) & 3);
+      *DAT_00005ba8 = fVar15 / fVar16;
+    }
+    else {
+      if (*DAT_00005b9c < *DAT_00005b98) {
+        uVar13 = 1;
+LAB_00005b2a:
+        *DAT_00005ba0 = uVar13;
+        uVar13 = *puVar10;
+        puVar11 = DAT_00005ba4;
+        goto LAB_00005a54;
+      }
+      if (*DAT_00005b98 < *DAT_00005b9c) {
+        uVar13 = 0xffffffff;
+        goto LAB_00005b2a;
+      }
+      *DAT_00005ba0 = 0;
+    }
+    *DAT_00005bb0 = *DAT_00005bac;
+    iVar12 = *DAT_00005bb4;
+    if (*puVar10 < 1000) {
+      iVar12 = iVar12 + -3;
+    }
+    else if (*puVar10 < 2000) {
+      iVar12 = iVar12 + -2;
+    }
+    else if (*puVar10 < 3000) {
+      iVar12 = iVar12 + -1;
+    }
+    *DAT_00005bb8 = iVar12;
+    *DAT_00005bbc = *puVar8;
+    uVar13 = *DAT_00005bc0 + 1;
+    puVar10 = DAT_00005bc4;
+  }
+  else {
+    if ((*piVar3 != *DAT_00005bd8) || (*DAT_00005bdc != '\0')) goto LAB_00005a94;
+    uVar13 = 0;
+    puVar10 = DAT_00005ba0;
+  }
+  *puVar10 = uVar13;
+LAB_00005a94:
+  puVar8 = DAT_00005bcc;
+  puVar10 = DAT_00005bbc;
+  pcVar7 = DAT_00005b94;
+  iVar12 = *piVar3;
+  if (iVar12 == *DAT_00005bc8) {
+    if ((*DAT_00005bcc <= *DAT_00005bbc) ||
+       (((iVar12 - *piVar6) * *piVar4 < 5 && (-1 < (iVar12 - *piVar6) * *piVar4)))) {
+      FUN_00005958(0);
+      puVar11 = DAT_00005b98;
+      uVar13 = *puVar8;
+      *puVar10 = uVar13;
+      *puVar11 = uVar13;
+      puVar10 = DAT_00005bc4;
+      *DAT_00005ba0 = 0;
+      *puVar10 = *DAT_00005bc0 >> 1;
+      puVar5 = DAT_00005b84;
+      *piVar3 = 0;
+      *puVar5 = 0;
+      puVar5[1] = 0;
+      puVar5[2] = 0;
+    }
+    if (*DAT_00005bd0 != '\0') {
+      channel0_move_complete__CUSTOM();
+    }
+    if ((((*pcVar7 == '\x01') || (*pcVar7 == '\x03')) || (*pcVar7 == '\x04')) || (*pcVar7 == '\t'))
+    {
+      *DAT_00005bd4 = 1;
+    }
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00006190 @ 00006190  size=156  params=0  callingConvention=unknown
+
+
+void FUN_00006190(void)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  undefined4 uVar4;
+  int iVar5;
+  undefined1 *puVar6;
+  undefined8 *puVar7;
+  int *piVar8;
+  int iVar9;
+  undefined8 *puVar10;
+  int *piVar11;
+  undefined4 extraout_s1;
+  undefined8 uVar12;
+  int *local_2c;
+  
+  iVar2 = DAT_0000625c;
+  iVar1 = DAT_0000623c;
+  local_2c = DAT_0000622c;
+  iVar9 = 0;
+  puVar6 = DAT_00006238;
+  puVar7 = DAT_00006234;
+  piVar8 = DAT_00006230;
+  puVar10 = DAT_00006254;
+  piVar11 = DAT_00006258;
+  do {
+    iVar3 = *local_2c;
+    *piVar8 = iVar3;
+    uVar12 = aeabi_fixed_math__STANDARD_LIBRARY(iVar2 / iVar3);
+    iVar5 = *piVar11;
+    *puVar10 = uVar12;
+    iVar3 = iVar2 / iVar5;
+    if (iVar3 < 1) {
+      iVar3 = DAT_00006240 / iVar5;
+    }
+    uVar4 = aeabi_fixed_math__STANDARD_LIBRARY(iVar3);
+    uVar4 = aeabi_fixed_math__STANDARD_LIBRARY(uVar4);
+    *(undefined1 *)(iVar1 + iVar9 * 2) = 0;
+    *(undefined1 *)(iVar1 + iVar9 * 2 + 1) = 0x40;
+    iVar3 = DAT_00006248;
+    *(undefined4 *)(DAT_00006244 + iVar9 * 4) = 0;
+    iVar5 = iVar9 * 200;
+    iVar9 = iVar9 + 1;
+    *puVar7 = CONCAT44(extraout_s1,uVar4);
+    puVar7 = puVar7 + 1;
+    *puVar6 = 0;
+    *(undefined4 *)(iVar5 + iVar3) = 0;
+    puVar6 = puVar6 + 1;
+    piVar8 = piVar8 + 1;
+    puVar10 = puVar10 + 1;
+    piVar11 = piVar11 + 1;
+    local_2c = local_2c + 1;
+  } while (iVar9 != 4);
+  FUN_000044ec();
+  *DAT_00006250 = *DAT_0000624c * 0x18;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_000077a0 @ 000077a0  size=66  params=0  callingConvention=unknown
+
+
+void FUN_000077a0(void)
+
+{
+  int iVar1;
+  undefined1 *puVar2;
+  undefined1 *puVar3;
+  
+  puVar2 = DAT_000077ec;
+  puVar3 = DAT_000077e8;
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_000077e4,1);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_000077f0,1);
+  delay__STANDARD_LIBRARY(0x32);
+  iVar1 = 4;
+  do {
+    FUN_0000d300(*puVar3,1);
+    FUN_0000d300(*puVar2,1);
+    iVar1 = iVar1 + -1;
+    puVar2 = puVar2 + 1;
+    puVar3 = puVar3 + 1;
+  } while (iVar1 != 0);
+  *DAT_000077f4 = 1;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_000077f8 @ 000077f8  size=84  params=0  callingConvention=unknown
+
+
+void FUN_000077f8(void)
+
+{
+  int iVar1;
+  undefined1 *puVar2;
+  undefined1 *puVar3;
+  
+  iVar1 = 4;
+  puVar2 = DAT_00007850;
+  puVar3 = DAT_0000784c;
+  do {
+    FUN_0000d300(*puVar3,0);
+    FUN_0000d300(*puVar2,0);
+    iVar1 = iVar1 + -1;
+    puVar2 = puVar2 + 1;
+    puVar3 = puVar3 + 1;
+  } while (iVar1 != 0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_00007854,1);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_00007858,1);
+  delay__STANDARD_LIBRARY(0x32);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_0000785c,0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_00007860,0);
+  *DAT_00007864 = 0;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00007868 @ 00007868  size=84  params=0  callingConvention=unknown
+
+
+void FUN_00007868(void)
+
+{
+  int iVar1;
+  undefined1 *puVar2;
+  undefined1 *puVar3;
+  
+  iVar1 = 4;
+  puVar2 = DAT_000078c0;
+  puVar3 = DAT_000078bc;
+  do {
+    FUN_0000d300(*puVar3,0);
+    FUN_0000d300(*puVar2,0);
+    iVar1 = iVar1 + -1;
+    puVar2 = puVar2 + 1;
+    puVar3 = puVar3 + 1;
+  } while (iVar1 != 0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_000078c4,0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_000078c8,0);
+  delay__STANDARD_LIBRARY(0x32);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_000078cc,0);
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*DAT_000078d0,0);
+  *DAT_000078d4 = 0;
+  return;
+}
+
+
+
+==================================================
+No function at 000078d8 (seed it first via APTraceSeedVectorTable.java)
+
+==================================================
+No function at 00005e48 (seed it first via APTraceSeedVectorTable.java)
+
+==================================================
+No function at 00005e58 (seed it first via APTraceSeedVectorTable.java)
+

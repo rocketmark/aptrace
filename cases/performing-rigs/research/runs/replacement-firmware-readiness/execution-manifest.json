@@ -1,0 +1,652 @@
+{
+  "date": "2026-10-17",
+  "revision": "fa32c4bf239964ccfd76e48176f78c7676008636",
+  "source_firmware": {
+    "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000",
+    "variant": "autopilot868",
+    "bootloader_included": false
+  },
+  "native_commands": {
+    "ch0-isr-positive": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x607c",
+      "--seed-mem",
+      "0x20000164:292b072d",
+      "--seed-mem",
+      "0x20000094:01000000",
+      "--seed-mem",
+      "0x20003099:01",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--dump-mem",
+      "0x20002064:4",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json"
+    ],
+    "ch0-timer-init": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x5570",
+      "--arg",
+      "0",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json"
+    ],
+    "ch0-timer-disable": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x5858",
+      "--arg",
+      "0",
+      "--seed-mem",
+      "0x40003800:02060000",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json"
+    ],
+    "ch0-period-unmodeled": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x5c00",
+      "--arg",
+      "0",
+      "--arg",
+      "10000",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json"
+    ],
+    "control-enable": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x77a0",
+      "--seed-mem",
+      "0x2000011e:02031b1d",
+      "--seed-mem",
+      "0x20000164:292b072d",
+      "--seed-mem",
+      "0x200000a4:2a2c042e",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--watch",
+      "0xcd50",
+      "--watch-mem",
+      "0x200000bc:1",
+      "--dump-mem",
+      "0x200000bc:1",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json"
+    ],
+    "control-disable-high": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x77f8",
+      "--seed-mem",
+      "0x2000011e:02031b1d",
+      "--seed-mem",
+      "0x20000164:292b072d",
+      "--seed-mem",
+      "0x200000a4:2a2c042e",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--watch",
+      "0xcd50",
+      "--watch-mem",
+      "0x200000bc:1",
+      "--dump-mem",
+      "0x200000bc:1",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json"
+    ],
+    "control-disable-low": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0x7868",
+      "--seed-mem",
+      "0x2000011e:02031b1d",
+      "--seed-mem",
+      "0x20000164:292b072d",
+      "--seed-mem",
+      "0x200000a4:2a2c042e",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--watch",
+      "0xcd50",
+      "--watch-mem",
+      "0x200000bc:1",
+      "--dump-mem",
+      "0x200000bc:1",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json"
+    ],
+    "software-reset-request": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--entry",
+      "0xd4dc",
+      "--seed-mem",
+      "0x20000224:01000000",
+      "--stop-at",
+      "0xd508",
+      "--dump-mem",
+      "0x20000224:4",
+      "--dump-mem",
+      "0x2002fffc:4",
+      "--dump-mem",
+      "0xe000ed0c:4",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json"
+    ],
+    "software-reset-call-bounded": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--call",
+      "0xd4dc",
+      "--seed-mem",
+      "0x20000224:01000000",
+      "--stop-at",
+      "0xd508",
+      "--dump-mem",
+      "0x20000224:4",
+      "--dump-mem",
+      "0x2002fffc:4",
+      "--dump-mem",
+      "0xe000ed0c:4",
+      "--mmio-size",
+      "0x4000000",
+      "--log-mmio",
+      "--max-mmio-log",
+      "10000",
+      "--max-instructions",
+      "20000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json"
+    ],
+    "application-boot": [
+      "tools/unicorn/.venv/bin/python3",
+      "tools/unicorn/run_concrete.py",
+      "--firmware",
+      "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "--entry",
+      "0xcc24",
+      "--mmio-size",
+      "0x4000000",
+      "--fake-tick",
+      "0x200052ec:20",
+      "--mmio-force-bits",
+      "0x4000140c:1",
+      "--mmio-force-bits",
+      "0x40001010:100",
+      "--mmio-force-bits",
+      "0x40001040:3",
+      "--mmio-force-bits",
+      "0x40001054:3",
+      "--mmio-force-bits",
+      "0x43000418:4",
+      "--mmio-force-bits",
+      "0x41012018:4",
+      "--mmio-force-bits",
+      "0x41004010:1",
+      "--mmio-clear-bits",
+      "0x43000400:1",
+      "--mmio-clear-bits",
+      "0x41012000:1",
+      "--force-reg",
+      "0x9dd4:r0:12",
+      "--seed-mem",
+      "0x41008020:00004000",
+      "--stub-call",
+      "0xcd34",
+      "--map-page",
+      "0x800080:0x40",
+      "--watch",
+      "0x6968",
+      "--watch",
+      "0x69d8",
+      "--watch",
+      "0x6a44",
+      "--watch",
+      "0x6a68",
+      "--watch",
+      "0x8960",
+      "--watch",
+      "0x607c",
+      "--watch-mem",
+      "0x2000011e:6",
+      "--watch-mem",
+      "0x20000164:4",
+      "--log-mmio",
+      "--max-mmio-log",
+      "200000",
+      "--max-instructions",
+      "450000",
+      "--out",
+      "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json"
+    ]
+  },
+  "artifact_identities": {
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "pin_map_json": {
+      "path": "cases/performing-rigs/research/generated/firmware-pin-function-map.json",
+      "sha256": "5559acc8ff0abac00254169f9225690a9dc6c59edae41e99e6d396422c11845b",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "causal_audit": {
+      "path": "cases/performing-rigs/docs/replacement/mapped-pin-causal-gap-audit.md",
+      "sha256": "307541b4f197a63ceffbc94a8e1ac07cb15bf64b10e385e6514d903986985a24",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "persistence": {
+      "path": "cases/performing-rigs/docs/investigations/motor-config-persistence.md",
+      "sha256": "282b887fbffb6a21b5cd5d61bbf68829f66a0e1e01a733a07850a85f30180e2c"
+    },
+    "manual": {
+      "path": "cases/performing-rigs/docs/investigations/manual-mode-and-limits.md",
+      "sha256": "a0d163e845fb9a69f8322270148c236af5ba46794ab4c130815bb68df9611e29"
+    },
+    "hardware": {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "491a544dfb6c7b07337e6c7d5574c983c184e684b0f4af4c9c731cd29d78d59e"
+    },
+    "gaps": {
+      "path": "cases/performing-rigs/research/generated/autopilot-replacement-gaps.json",
+      "sha256": "62a81edddb4bb4c118d385c1d7450bc6361bc48ce298582d43178df882b883ad",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "tmc_agent": {
+      "path": "cases/performing-rigs/research/runs/agent/tmc5160-census-2026-09-26-r7.json",
+      "sha256": "3756592d5d65a99dab2cc8e585c9f7ce2ec24924794002a6ccd00e4fc4ddb236",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "case_status": {
+      "path": "cases/performing-rigs/status.md",
+      "sha256": "938d2c8b76e3e0cb4c56b4c414759e5db14882bc2317a6828a1711aa5d87e423",
+      "mode": "documentary/historical; consult cited original evidence; not a fresh execution"
+    },
+    "svd": {
+      "path": "cases/performing-rigs/config/svd/ATSAMD51J19A.svd",
+      "sha256": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+    },
+    "boot_recipe": {
+      "path": "cases/performing-rigs/config/boot_recipes.py",
+      "sha256": "585b3faae90dc2a12347a2a86ce7b687a754807a949dff724d513f6d6987eb10"
+    },
+    "concrete_implementation": {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee"
+    },
+    "concrete_cli": {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735"
+    },
+    "ghidra_cli": {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "1e6c115c57257bc265e5bb70c197a097c169c41613345d4e6d5dfbde26cb2fd6"
+    },
+    "ghidra_meta": {
+      "path": "cases/performing-rigs/research/runs/ghidra_cache/autopilot868/meta.json",
+      "sha256": "3bf4c7c0203dc06e5a0c5ea58de799795bf819bf124f271a892a19691f9aa04e"
+    },
+    "stop-watchdog-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/stop-watchdog-review.txt",
+      "sha256": "b91f41bea8c0ea2b12ea504f49e64869bf0c786fd288e2e826c953647252071d"
+    },
+    "software-reset-call-bounded": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-call-bounded.json",
+      "sha256": "2a577ab748c021d0c5a2f58d76250df0b537d8aa9ebb045de28e73d8d9f76ff9"
+    },
+    "control-enable": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-enable.json",
+      "sha256": "747008187e98f4fd34bacdd51373246df04203a6028b99bfb827a97ba8e5ca45"
+    },
+    "enable-order-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/enable-order-disasm.txt",
+      "sha256": "a1d2f0d38907f50f1149609802662b4a83bf0c7e4756dc130a64904986f9a718"
+    },
+    "ch0-timer-init": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json",
+      "sha256": "f92c3d2fa6110a20b9d4bac6cdfea4f104132b0dd3e462663659d99c4477b2ec"
+    },
+    "ch0-timer-disable": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json",
+      "sha256": "47ef12c16a8a2f961f52a91560b4efb3c55581e1f47837ee72d1a62b84d588fe"
+    },
+    "ch0-isr-positive": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+      "sha256": "14c73ef37a03dd40a2b09c3cbadcd86ea29b4928084e0ba82bbd5dafbee54449"
+    },
+    "pulse-helper-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/pulse-helper-disasm.txt",
+      "sha256": "4ed504685a8b167768991baf57e1060d1c9256ae1ed601fa3baedee215dcd036"
+    },
+    "application-boot": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/application-boot.json",
+      "sha256": "27e7afd6c1a0c0604def47a96509a3bec99f8ea9bbe8cd70287760141254d8ce"
+    },
+    "function-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/function-review.txt",
+      "sha256": "2b5ea2dc911b6b4367063d806afe13041c3ef00f466c3565af7cce4f9b70d915"
+    },
+    "reset-request-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/reset-request-disasm.txt",
+      "sha256": "d7c32b9b28be0be71d4045b77320f279bfc8d42ff6b900302c11ff562a429447"
+    },
+    "ch0-period-unmodeled": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json",
+      "sha256": "f646e61f7ec100f9eb66ea583835a3fdfc86b08020043f4a1c90c533c7fbca9b"
+    },
+    "control-disable-low": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-low.json",
+      "sha256": "b1c5bbcfddf1603d825988f4dd0bbe52ae27423fdd0c8d58af672a226aba4f57"
+    },
+    "software-reset-request": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/software-reset-request.json",
+      "sha256": "547c9ce068104a2b671b738de4c57c6a60c2773b8381ec06a5173faf91bcf372"
+    },
+    "control-disable-high": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/control-disable-high.json",
+      "sha256": "9e68edfe59f774132a39c4166f13f440870a8044f780e57dacb12cedaf204f7a"
+    },
+    "direction-usb-review": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/direction-usb-review.txt",
+      "sha256": "7c1cabe512950524e188586eb5b2030d62d253a8e2e126ba0b117ee03c4b73ad"
+    },
+    "rate-scaling-disasm": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/rate-scaling-disasm.txt",
+      "sha256": "0695fe274c70432be153e1767f2f9ddebed3c76ded719e4421b52a2ab3430326"
+    },
+    "historical_ledger_report": {
+      "path": "cases/performing-rigs/research/generated/research-ledger.md",
+      "sha256": "23d244afdf3dbae33af7d438678dc28c4e2edff11bae582232581ddd37c6581b"
+    },
+    "historical_C2_v2": {
+      "path": "cases/performing-rigs/research/ledger/claims/C2/v2.json",
+      "sha256": "c32a94b163c43203a3d0e3cca7dc7dcb1d5adb82b7271efc85c6bbf61d9edc0f"
+    },
+    "historical_C5_v1": {
+      "path": "cases/performing-rigs/research/ledger/claims/C5/v1.json",
+      "sha256": "4fe4b433d41147919b9a81e21fba008b211b2a5ae8dda33325931a8d8bebdb90"
+    },
+    "ledger_path_EV9bb": {
+      "path": "cases/performing-rigs/research/ledger/evidence/EV-9bb45350b02d18c2.json",
+      "sha256": "62fb9a580bb4aa88163ddd3fdbdc742ccce026b5a260ea4eb30afcb54215cb7e"
+    },
+    "ledger_path_EVaec": {
+      "path": "cases/performing-rigs/research/ledger/evidence/EV-aec58644e0021efd.json",
+      "sha256": "70ac5ea1966be1dfb7a1badc6f471fb2c508a187f67bba29850bde91bd3c92ae"
+    },
+    "bench_sheet": {
+      "path": "cases/performing-rigs/docs/hardware/AutoPilot_Continuity_Bench_Sheet.md",
+      "sha256": "85433a4043dd2fda52a371cf4e34c745dee5da30dc66eeb4b0cb55921b77df11",
+      "basis": "User-supplied powered-off continuity/resistance record",
+      "attribution": "Mark Stalzer, Pin Testing screenshots dated2026-09-21; measurement date unknown",
+      "reconciliation_revision": "3750c3522da062ce8c48838f7bc201d9ef025eac"
+    },
+    "operator_instructions": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7"
+    },
+    "workspace_codex_config": {
+      "path": ".codex/config.toml",
+      "sha256": "33cbfb90d6373548b3ccccec0d7a0c2504f427814d1a123e65720572d11bbb17"
+    }
+  },
+  "test_results": {
+    "focused_agent": "148 passed in10.85s",
+    "pcode_forward_use": "all checks passed; actual Ghidra Thumb/RV32 fixtures, determinism and scratch-project controls",
+    "concrete": "all checks passed"
+  },
+  "failures": [
+    "Sandbox Ghidra java_home.save access and Unicorn exit132; reruns outside sandbox passed",
+    "Ghidra dump positional length rejected; corrected --length",
+    "Ghidra no function at0x78d8/0x5e48/0x5e58; not seeded",
+    "Period helper stuck on unmodeled READSYNC; bounded trace retained",
+    "--call ignores --stop-at in CLI; bounded reset call retained, corrected raw-entry run",
+    "PPB AIRCR absent from MMIO logger; final memory and disassembly retained"
+  ],
+  "scope": "Evidence packaging only, no new reversing implementation",
+  "unicorn_version": "2.1.4",
+  "python_version": "3.9.6",
+  "ghidra_queries": [
+    {
+      "operation": "decompile",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x5898",
+        "0x5c00",
+        "0x5958",
+        "0x5570",
+        "0x56e8",
+        "0x5be8",
+        "0x6190",
+        "0x77a0",
+        "0x77f8",
+        "0x7868",
+        "0x78d8",
+        "0x5e48",
+        "0x5e58"
+      ],
+      "output": "function-review"
+    },
+    {
+      "operation": "disasm",
+      "range": [
+        "0x77a0",
+        "0x77f8"
+      ],
+      "output": "enable-order-disasm"
+    },
+    {
+      "operation": "disasm",
+      "range": [
+        "0x607c",
+        "0x6098"
+      ],
+      "output": "tool transcript; handler MMIO retained natively"
+    },
+    {
+      "operation": "disasm",
+      "range": [
+        "0x5898",
+        "0x593c"
+      ],
+      "output": "pulse-helper-disasm"
+    },
+    {
+      "operation": "decompile",
+      "addresses": [
+        "0x5858",
+        "0x5dd0",
+        "0x5ee8",
+        "0x4cdc",
+        "0x9518",
+        "0x952c",
+        "0x954c",
+        "0x95c8"
+      ],
+      "output": "stop-watchdog-review"
+    },
+    {
+      "operation": "decompile",
+      "addresses": [
+        "0xc724",
+        "0x4d18"
+      ],
+      "output": "direction-usb-review"
+    },
+    {
+      "operation": "disasm",
+      "range": [
+        "0xd4c0",
+        "0xd518"
+      ],
+      "output": "reset-request-disasm"
+    },
+    {
+      "operation": "disasm",
+      "range": [
+        "0x5ee8",
+        "0x5f74"
+      ],
+      "output": "rate-scaling-disasm"
+    },
+    {
+      "operation": "xrefs",
+      "addresses": [
+        "0xe000ed0c"
+      ]
+    },
+    {
+      "operation": "callers",
+      "addresses": [
+        "0x77a0",
+        "0x77f8",
+        "0x7868"
+      ]
+    },
+    {
+      "operation": "dump",
+      "address_length_pairs": [
+        [
+          "0x591c",
+          40
+        ],
+        [
+          "0x56c4",
+          36
+        ],
+        [
+          "0x77e4",
+          20
+        ],
+        [
+          "0x5d08",
+          28
+        ],
+        [
+          "0x14c60",
+          272
+        ],
+        [
+          "0x5f74",
+          28
+        ],
+        [
+          "0x9528",
+          4
+        ],
+        [
+          "0x9718",
+          12
+        ],
+        [
+          "0xd510",
+          20
+        ]
+      ],
+      "syntax": "python3 tools/ghidra/aptrace_ghidra.py dump autopilot868 ADDRESS --length LENGTH"
+    }
+  ],
+  "final_repository_revision": "3750c3522da062ce8c48838f7bc201d9ef025eac",
+  "repository_changes_during_run": [
+    "096c58a bench sheet",
+    "68c90cb hardware reconciliation",
+    "9233314 workspace config",
+    "3750c35 operator autonomy"
+  ],
+  "repository_change_actor": "external to this investigator"
+}
