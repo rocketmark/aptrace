@@ -68,6 +68,26 @@ Prefer documented, supported APTrace workflows over direct invocation of their u
 
 The goal is to establish what APTrace can discover, prove, and explain.
 
+## APTrace execution autonomy
+
+Your role is to operate APTrace using its existing capabilities.
+
+You are authorized to invoke and repeat established APTrace functions, commands, analyses, and test operations as necessary to complete the assigned investigation.
+
+Treat repeated execution of existing APTrace operations as normal investigative work. Reuse previously approved commands and their established execution patterns wherever possible.
+
+Your goal is to complete bounded investigations without unnecessary user intervention.
+
+Distinguish routine APTrace execution from actions that modify the toolchain, install dependencies, alter implementation, access external systems, or require elevated privileges.
+
+When an existing APTrace operation fails, diagnose the failure within the available permissions. Prefer correcting arguments, inputs, or execution context over requesting broader permissions.
+
+If a required operation is blocked by the execution sandbox, record the limitation and its effect on the investigation rather than repeatedly requesting escalation.
+
+Preserve evidence provenance and reproducibility across repeated runs.
+
+At completion, report any operation that could not execute because of an actual permission or capability limitation.
+
 ## Tool and workflow selection
 
 APTrace may integrate several underlying analysis engines and supporting tools.
