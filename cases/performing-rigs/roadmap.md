@@ -88,6 +88,26 @@ but nothing has been flashed to real hardware. Before any patch is real:
     calibration doesn't yet budget for. See
     [`cases/performing-rigs/docs/investigations/auto-mode-and-plus-command.md`](docs/investigations/auto-mode-and-plus-command.md).
 
+## Open — Feather M4 feasibility
+
+9. **Physical measurement needed before any Feather M4 bring-up**: no
+   physical Feather exists in this investigation yet. Once one does,
+   the first test should follow
+   [`cases/performing-rigs/docs/investigations/feather-m4-feasibility.md`](docs/investigations/feather-m4-feasibility.md)'s
+   §8 recommendation (continuity-check the QSPI pins, do not drive the
+   STEP0/1/3 and DIR0/1/3 outputs into the onboard flash chip, try a
+   D12→3V3 jumper for the confirmed PA22 blocker) rather than flashing
+   the unmodified image directly.
+10. **RESOLVED by simulation, still needs a real physical test.** A
+    D12→3V3 jumper's equivalent (re-adding only the PA22 seed to the
+    Feather profile, radio stand-in still dropped) was checked this
+    pass: it does clear `FUN_00006968`'s wait loop (reaches `0x69d8`)
+    and reaches the radio-ID probe (`0x9dd4`), then stalls there
+    instead (no device on those pins on a bare Feather either) — see
+    [`cases/performing-rigs/docs/investigations/feather-m4-feasibility.md`](docs/investigations/feather-m4-feasibility.md)'s
+    §7a. `CONFIRMED` in simulation; the real-hardware jumper test is
+    still open.
+
 ## Tooling gaps (not firmware blockers)
 
 - **Readonly flash vs. plain Crucible execution**: a whole-function

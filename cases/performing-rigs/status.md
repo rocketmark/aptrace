@@ -281,6 +281,22 @@ check) already have independent level-3 confirmation.
   "The EIC/EXTINT interrupt-callback dispatch mechanism".
 - **Physical hardware facts** (part numbers, board/bootloader mechanics,
   condensed manual summary): [`cases/performing-rigs/docs/hardware/hardware-reference.md`](docs/hardware/hardware-reference.md).
+- **Feather M4 Express feasibility (simulation-only so far — no physical
+  Feather exists in this investigation yet)**: the unmodified AutoPilot
+  image, run under a Feather-grounded hardware profile derived from
+  `AUTOPILOT_RECIPE` (`config/boot_recipes.py`'s `FEATHER_M4_PROFILE`),
+  never reaches the main loop within a 4,000,000-instruction bound — it
+  stalls inside the real startup-reference routine's own wait loop,
+  which never accumulates its required continuous-PA22-high streak once
+  AutoPilot's board-specific PA22 drive is removed (mechanically
+  confirmed via the firmware's own pin-descriptor table, not assumed).
+  Separately, **AutoPilot's STEP0/1/3 and DIR0/1/3 GPIO pins are exactly
+  Feather M4's onboard QSPI flash chip's SCK/IO0/IO2/CS/IO1/IO3** — a
+  real wiring collision with no header exposure at all, confirmed
+  against Adafruit's own vendored board-support source already in this
+  repo. See
+  [`cases/performing-rigs/docs/investigations/feather-m4-feasibility.md`](docs/investigations/feather-m4-feasibility.md)
+  for the full evidence chain and the first-physical-test recommendation.
 
 ## Current open questions
 

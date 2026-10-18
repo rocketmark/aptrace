@@ -274,6 +274,113 @@ MANDO_RECIPE = {
 RECIPES_BY_REFERENCE = {"autopilot868": AUTOPILOT_RECIPE, "mando868": MANDO_RECIPE}
 
 
+# ---------------------------------------------------------------------------
+# Feather M4 Express hardware profile
+# ---------------------------------------------------------------------------
+# See cases/performing-rigs/docs/investigations/feather-m4-feasibility.md for the
+# full investigation this supports. This is NOT a new firmware/boot
+# investigation and does NOT touch ConcreteMachine -- it derives a SECOND
+# environmental-assumption set for the SAME, unmodified firmware image by
+# reclassifying AUTOPILOT_RECIPE's own already-cited assumptions as either
+# generic SAMD51 chip behavior (kept) or AutoPilot-board-specific wiring
+# (dropped). See cases/performing-rigs/config/feather_m4.py for the Feather-side
+# pin/hardware facts this classification depends on.
+#
+#   KEPT (generic SAMD51 chip behavior, true on any board with this die,
+#   independent of what -- if anything -- is wired to the peripheral's
+#   pins): fake_tick (the firmware's own RAM tick mechanism), all four
+#   clock/PLL mmio_force_bits entries, both SERCOM SWRST mmio_clear_bits
+#   entries and DRE mmio_force_bits entries (peripheral-enable-time
+#   self-reporting), the NVMCTRL DONE mmio_force_bits entry, the DWT
+#   delay stub_call, and the NVM Software Calibration Row map_page.
+#
+#   DROPPED (model something specific to AutoPilot's own board wiring
+#   that a bare Feather M4 does not have):
+#     - force_reg 0x9dd4:r0:0x12 -- stands in for "a radio module is
+#       present and answers this read correctly." A bare Feather M4 has
+#       no device wired to PA15/PA16/PA17 at all -- those pads are not
+#       even broken out on Feather (feather_m4.py's FEATHER_M4_PINS has
+#       no entries for them). Dropping this assumption reproduces
+#       boot-and-hardware-bringup.md's OWN already-documented real
+#       failure mode for this exact probe under zero-behavior MMIO
+#       (r0=0 at instruction 74157, real infinite retry branch, "no
+#       software bypass exists") -- see feather-m4-feasibility.md for
+#       the confirming extended run.
+#     - seed_mem 0x41008020 (PA22/PORT.GROUP0.IN bit22 held high) --
+#       boot-and-hardware-bringup.md itself discloses "no physical
+#       function claimed" for this seed. It models AutoPilot-board
+#       wiring (or the lack of it), not a SAMD51 chip fact, so it is
+#       not carried over. Feather's PA22 (= Arduino D12, a plain header
+#       pin with no onboard function -- feather_m4.py) is left at the
+#       harness's cold-boot default (zero-behavior MMIO) instead.
+_FEATHER_DROP_FORCE_REG = {0x9dd4}
+_FEATHER_DROP_SEED_MEM = {0x41008020}
+
+_FEATHER_CITATION = "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md"
+
+
+def feather_m4_profile_for(recipe):
+    """Derive a Feather-M4 environmental-assumption profile from any
+    resolved AutoPilot recipe dict (AUTOPILOT_RECIPE itself, or an
+    autopilot915 dict from `resolve_for_firmware`) -- same firmware,
+    same entry point, same flash/RAM geometry; only the assumptions
+    classified above as AutoPilot-board-specific are removed. Does not
+    mutate `recipe`."""
+    profile = dict(recipe)
+    profile["hardware_profile"] = "feather_m4"
+    profile["base_reference_key"] = recipe["reference_key"]
+    profile["reference_key"] = recipe["reference_key"] + "+feather_m4"
+    profile["force_reg"] = [t for t in recipe["force_reg"] if t[0] not in _FEATHER_DROP_FORCE_REG]
+    profile["seed_mem"] = [t for t in recipe["seed_mem"] if t[0] not in _FEATHER_DROP_SEED_MEM]
+    profile["assumptions"] = [
+        a for a in recipe["assumptions"]
+        if not (a["kind"] == "force_reg" and a["addr"] in _FEATHER_DROP_FORCE_REG)
+        and not (a["kind"] == "seed_mem" and a["addr"] in _FEATHER_DROP_SEED_MEM)
+    ]
+    profile["assumptions"].append(A(
+        "dropped_force_reg", 0x9dd4,
+        "AutoPilot's radio chip-ID stand-in NOT carried over -- PA15/16/17 are not wired to any device on a "
+        "bare Feather M4 (no entry in feather_m4.FEATHER_M4_PINS). Left at zero-behavior MMIO so the firmware's "
+        "real, documented retry branch is observed rather than hidden.",
+        _FEATHER_CITATION))
+    profile["assumptions"].append(A(
+        "dropped_seed_mem", 0x41008020,
+        "AutoPilot's PA22-held-high boundary condition NOT carried over -- boot-and-hardware-bringup.md itself "
+        "discloses no physical function for this seed, and PA22 is a plain, otherwise-unconnected Feather "
+        "header pin (Arduino D12). Left at zero-behavior MMIO default.",
+        _FEATHER_CITATION))
+    # CONFIRMED by an actual run (feather-m4-feasibility.md), not
+    # predicted: dropping the PA22 seed does NOT make the firmware reach
+    # the radio-ID probe (0x9dd4) and fail there, as might be guessed --
+    # it never gets that far. FUN_00006968's own inner wait loop
+    # (0x69ae-0x69ca) calls digitalRead(pin-table idx 1) every
+    # iteration (mechanically resolved via the SAME g_APinDescription-
+    # shaped flash table at 0x14284 this project already uses for other
+    # pins -- idx 1 = group 0, pin 22 = PA22, confirmed by direct table
+    # read, not inferred from the citation text alone); whenever that
+    # read is 0, it resets its own elapsed-millis() accumulator to zero
+    # instead of advancing toward the 0x708-tick (1800) timeout that
+    # reaches 0x69d8. Under zero-behavior MMIO (Feather profile), this
+    # read is always 0, so the loop's own progress condition is never
+    # satisfied within any tested budget (confirmed to 4,000,000
+    # instructions) -- a real, bounded-per-iteration, bootstrapping
+    # dependency on AutoPilot's own PA22 wiring, reached BEFORE the
+    # previously-expected radio-ID probe, not a Unicorn fault or an
+    # unsupported instruction.
+    profile["blocker"] = {
+        "addr": 0x69ae, "wait_site": 0x69a4,
+        "description": "FUN_00006968's own inner wait loop never accumulates its required 1800-tick "
+                        "continuous-PA22-high streak under zero-behavior MMIO (idx-1 digitalRead always 0) -- "
+                        "confirmed by direct execution, 4,000,000-instruction budget, never reaches 0x69d8.",
+        "citation": _FEATHER_CITATION,
+    }
+    profile["resolved_blockers"] = []
+    return profile
+
+
+FEATHER_M4_PROFILE = feather_m4_profile_for(AUTOPILOT_RECIPE)
+
+
 def _remap_code_addr(conn, sibling_fw_id, reference_key, ref_addr, gaps):
     """Remap one CODE address from the reference image to the sibling,
     via an EXACT function-fingerprint match (see module docstring).
