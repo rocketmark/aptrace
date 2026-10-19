@@ -181,7 +181,11 @@ belong in each case's status document.
   USB structural inventory, call-graph common-path analysis, function effects,
   and validated per-function leads. The planner sees a character-budgeted
   projection of the research state; the evidence ledger, claims and
-  provenance stay complete in APTrace.
+  provenance stay complete in APTrace. An objective-bounded run
+  ([`objective-bounded-investigation.md`](objective-bounded-investigation.md))
+  declares the relations it investigates; APTrace keeps that objective whole,
+  withholds unrelated operations, classifies each step's progress, and stops
+  with a per-relation unresolved report. Per-edge levels are never composed.
 - Keep a durable research ledger with adversarial audit and deterministic
   verification ([`research-ledger.md`](research-ledger.md)): content-addressed
   evidence with typed-operation replay, versioned claims with dependencies,

@@ -1,0 +1,2067 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-19T15:34:32.778442+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+  "seed_function": null,
+  "stop_reason": "step_budget_exhausted",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "follow_lead",
+      "lead_id": "L7",
+      "evidence_id": "E1",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "follow_lead",
+      "lead_id": "L2",
+      "evidence_id": "E2",
+      "reason": null
+    },
+    {
+      "number": 3,
+      "action": "observation",
+      "lead_id": "L28",
+      "evidence_id": "E3",
+      "reason": null
+    },
+    {
+      "number": 4,
+      "action": "observation",
+      "lead_id": "L29",
+      "evidence_id": "E4",
+      "reason": null
+    },
+    {
+      "number": 5,
+      "action": "effects",
+      "lead_id": "L30",
+      "evidence_id": "E5",
+      "reason": null
+    },
+    {
+      "number": 6,
+      "action": "follow_lead",
+      "lead_id": "L6",
+      "evidence_id": "E6",
+      "reason": null
+    },
+    {
+      "number": 7,
+      "action": "follow_lead",
+      "lead_id": "L5",
+      "evidence_id": "E7",
+      "reason": null
+    },
+    {
+      "number": 8,
+      "action": "follow_lead",
+      "lead_id": "L4",
+      "evidence_id": "E8",
+      "reason": null
+    }
+  ],
+  "planner_requests": [
+    {
+      "phase": "decision",
+      "evidence": 0,
+      "open_leads": 7,
+      "claims": 0,
+      "prompt_chars": 4327,
+      "state_chars": 23,
+      "message_bytes": 4616,
+      "tool_bytes": 923,
+      "tools": [
+        "follow_lead",
+        "finish"
+      ],
+      "total_bytes": 5539,
+      "attempt": 0,
+      "prompt_tokens": 1907,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 1,
+      "open_leads": 19,
+      "claims": 0,
+      "prompt_chars": 4856,
+      "state_chars": 116,
+      "message_bytes": 5150,
+      "tool_bytes": 2102,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 7252,
+      "attempt": 0,
+      "prompt_tokens": 2457
+    },
+    {
+      "phase": "decision",
+      "evidence": 1,
+      "open_leads": 19,
+      "claims": 0,
+      "prompt_chars": 246,
+      "state_chars": 116,
+      "message_bytes": 5459,
+      "tool_bytes": 2102,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 7561,
+      "attempt": 1,
+      "prompt_tokens": 2500,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 2,
+      "open_leads": 25,
+      "claims": 0,
+      "prompt_chars": 4972,
+      "state_chars": 214,
+      "message_bytes": 5267,
+      "tool_bytes": 2104,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 7371,
+      "attempt": 0,
+      "prompt_tokens": 2521,
+      "decision": "observe_call_arguments"
+    },
+    {
+      "phase": "decision",
+      "evidence": 3,
+      "open_leads": 25,
+      "claims": 1,
+      "prompt_chars": 5291,
+      "state_chars": 663,
+      "message_bytes": 5593,
+      "tool_bytes": 2104,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 7697,
+      "attempt": 0,
+      "prompt_tokens": 2667,
+      "decision": "observe_call_arguments"
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 25,
+      "claims": 2,
+      "prompt_chars": 5558,
+      "state_chars": 933,
+      "message_bytes": 5861,
+      "tool_bytes": 1322,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 7183,
+      "attempt": 0,
+      "prompt_tokens": 2525,
+      "decision": "analyze_function_effects"
+    },
+    {
+      "phase": "decision",
+      "evidence": 5,
+      "open_leads": 25,
+      "claims": 2,
+      "prompt_chars": 5898,
+      "state_chars": 933,
+      "message_bytes": 6202,
+      "tool_bytes": 1322,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "finish"
+      ],
+      "total_bytes": 7524,
+      "attempt": 0,
+      "prompt_tokens": 2624
+    },
+    {
+      "phase": "decision",
+      "evidence": 5,
+      "open_leads": 25,
+      "claims": 2,
+      "prompt_chars": 5658,
+      "state_chars": 933,
+      "message_bytes": 5960,
+      "tool_bytes": 925,
+      "tools": [
+        "follow_lead",
+        "finish"
+      ],
+      "total_bytes": 6885,
+      "attempt": 0,
+      "prompt_tokens": 2434,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 6,
+      "open_leads": 27,
+      "claims": 2,
+      "prompt_chars": 5600,
+      "state_chars": 703,
+      "message_bytes": 5901,
+      "tool_bytes": 926,
+      "tools": [
+        "follow_lead",
+        "finish"
+      ],
+      "total_bytes": 6827,
+      "attempt": 0,
+      "prompt_tokens": 2409,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 7,
+      "open_leads": 33,
+      "claims": 2,
+      "prompt_chars": 5431,
+      "state_chars": 684,
+      "message_bytes": 5731,
+      "tool_bytes": 927,
+      "tools": [
+        "follow_lead",
+        "finish"
+      ],
+      "total_bytes": 6658,
+      "attempt": 0,
+      "prompt_tokens": 2409,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "final-claims",
+      "evidence": 8,
+      "open_leads": 36,
+      "claims": 2,
+      "prompt_chars": 4942,
+      "state_chars": 706,
+      "message_bytes": 5174,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 5826,
+      "attempt": 0,
+      "prompt_tokens": 2138,
+      "decision": "finish"
+    }
+  ],
+  "conclusion": {
+    "proven": [
+      "C2[OBS] FUN_00005898 was not entered under scenario vl-manual-f0e0 (219 instructions); not thereby unreachable. (E4)",
+      "C1[OBS] FUN_00005448 under scenario vl-manual-f0e0: 2 observed calls passed r0 0x00000000(?); 0 MMIO accesses from its code; other scenarios and values are not excluded. (E3)"
+    ],
+    "probable": [],
+    "open": [
+      "Q1[objective] R0 mando868:0x0000be94 -> FUN_00008258 is UNRESOLVED: mando868:0x0000be94 belongs to firmware mando868, not the loaded image: this controller investigates one image; a cross-image relation needs a multi-image scenario or composition capa...",
+      "Q2[objective] R2 FUN_00005448 -> FUN_00004d18 is STATIC: no concrete observation of FUN_00005448 calling FUN_00004d18: observe_call_arguments of FUN_00004d18 under a relevant scenario",
+      "Q3[objective] R3 FUN_00005448 -> 0x20001b14 is UNRESOLVED: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it; function_effects of FUN_00005448 failed (E5); no other offer...",
+      "Q4[objective] R4 FUN_00005ee8 -> FUN_00005c00 is STATIC: no concrete observation of FUN_00005ee8 calling FUN_00005c00: observe_call_arguments of FUN_00005c00 under a relevant scenario",
+      "Q5[objective] R5 FUN_0000607c -> FUN_00005898 is UNRESOLVED: no static call edge in evidence: function_facts of FUN_0000607c or FUN_00005898; no concrete observation of FUN_0000607c calling FUN_00005898: observe_call_arguments of FUN_00005898 under a..."
+    ]
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_00005898"
+      },
+      "result": {
+        "name": "FUN_00005898",
+        "entry": "0x00005898",
+        "size": 130,
+        "callers": [
+          {
+            "function": "FUN_0000593c",
+            "address": "0x00005942"
+          },
+          {
+            "function": "FUN_00005be8",
+            "address": "0x00005bf6"
+          },
+          {
+            "function": "FUN_00005c00",
+            "address": "0x00005cac"
+          },
+          {
+            "function": "FUN_00006098",
+            "address": "0x000060ac"
+          },
+          {
+            "function": "FUN_000060b4",
+            "address": "0x000060c8"
+          },
+          {
+            "function": "FUN_000060d0",
+            "address": "0x000060e4"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000d388",
+            "address": "0x000058c6"
+          },
+          {
+            "function": "FUN_0000d388",
+            "address": "0x000058ce"
+          },
+          {
+            "function": "FUN_00005858",
+            "address": "0x00005914"
+          }
+        ],
+        "unique_caller_count": 6,
+        "callsite_count": 6,
+        "unique_callee_count": 2,
+        "outgoing_callsite_count": 3,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E2",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_00005448"
+      },
+      "result": {
+        "name": "FUN_00005448",
+        "entry": "0x00005448",
+        "size": 84,
+        "callers": [
+          {
+            "function": "FUN_00008258",
+            "address": "0x000082c0"
+          },
+          {
+            "function": "FUN_00008258",
+            "address": "0x00008354"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000ccd0",
+            "address": "0x00005454"
+          },
+          {
+            "function": "FUN_00004d18",
+            "address": "0x00005496"
+          }
+        ],
+        "unique_caller_count": 1,
+        "callsite_count": 2,
+        "unique_callee_count": 2,
+        "outgoing_callsite_count": 2,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E3",
+      "tool": "observed_call_arguments",
+      "arguments": {
+        "function": "FUN_00005448",
+        "scenario": "vl-manual-f0e0"
+      },
+      "result": {
+        "status": "ok",
+        "function": "FUN_00005448",
+        "entry": "0x00005448",
+        "basis": "CALLER_GROUNDED_CONCRETE",
+        "scenario": "vl-manual-f0e0",
+        "scenario_config": {
+          "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded manual-mode records",
+          "firmware_keys": [
+            "autopilot868"
+          ],
+          "id": "vl-manual-f0e0",
+          "kind": "virtual-link",
+          "registry_sha256": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+          "runner": "run_manual_mode_f0_e0_check",
+          "source": "cases/performing-rigs/scripts/virtual_link.py::run_manual_mode_f0_e0_check",
+          "termination": "each leg's own stop address or instruction bound"
+        },
+        "scenario_failure": null,
+        "observed_entries": 2,
+        "call_sites": [
+          {
+            "call_site": "0x000082c0",
+            "caller": "FUN_00008258",
+            "status": "OBSERVED",
+            "call_kind": "BL",
+            "static_target_match": true,
+            "hits": 1,
+            "arguments": {
+              "r0": [
+                {
+                  "value": "0x00000000",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ],
+              "r1": [
+                {
+                  "value": "0x0000000a",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ],
+              "r2": [
+                {
+                  "value": "0x00000000",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ],
+              "r3": [
+                {
+                  "value": "0x00000000",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ]
+            }
+          },
+          {
+            "call_site": "0x00008354",
+            "caller": "FUN_00008258",
+            "status": "OBSERVED",
+            "call_kind": "BL",
+            "static_target_match": true,
+            "hits": 1,
+            "arguments": {
+              "r0": [
+                {
+                  "value": "0x00000000",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ],
+              "r1": [
+                {
+                  "value": "0x0000000a",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ],
+              "r2": [
+                {
+                  "value": "0x00000000",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ],
+              "r3": [
+                {
+                  "value": "0x00000001",
+                  "region": null,
+                  "count": 1,
+                  "pointee_word": null,
+                  "pointee_word_region": null,
+                  "register_name": null,
+                  "pointee_register_name": null
+                }
+              ]
+            }
+          }
+        ],
+        "mmio_in_function": {
+          "extent": [
+            "0x00005448",
+            "0x0000549c"
+          ],
+          "extent_source": "Ghidra function size (heuristic boundary)",
+          "access_count": 0,
+          "accesses": [],
+          "log_truncated": false
+        },
+        "run": {
+          "budget_exhausted_legs": 0,
+          "errored_legs": 0,
+          "instructions_executed": 219,
+          "legs": 5,
+          "observed_legs": 5
+        },
+        "legs": [
+          {
+            "entries": 1,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 37,
+            "label": "gapB-f0-under",
+            "leg": 0,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005448",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 36,
+            "label": "gapB-f0-over",
+            "leg": 1,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005274",
+            "stub_calls": []
+          },
+          {
+            "entries": 1,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 57,
+            "label": "gapB-e0-under-cold",
+            "leg": 2,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005448",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 42,
+            "label": "gapB-e0-over-cold",
+            "leg": 3,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005274",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 47,
+            "label": "gapB-e0-over-latched",
+            "leg": 4,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20001fdd",
+                "len": 1,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x000083ec",
+            "stub_calls": []
+          }
+        ],
+        "watched_fields": null,
+        "correlation": [],
+        "harness_assumptions": [
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 0,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 1,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 2,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 3,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 4,
+            "detail": "entry 0x00008a34 (fresh state); 3 seeded range(s), 1 register seed(s), 0 stub(s)"
+          }
+        ],
+        "coverage": "observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+        "provenance": {
+          "analysis": "observed_call_arguments",
+          "analysis_version": 2,
+          "summarizer": {
+            "analysis": "call_observation",
+            "analysis_version": 2
+          },
+          "engine": "Unicorn concrete execution of a registered case scenario (tools/unicorn/concrete.py)",
+          "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "scenario": "vl-manual-f0e0",
+          "scenario_registry_sha256": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+          "static_call_sites": "Ghidra export call references (heuristic function boundaries)"
+        },
+        "planner_summary": "FUN_00005448 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 2 entries in 219 instructions; 2 call site(s) reached, 0 unreached; r0 0x00000000(?); MMIO accesses from its code 0\n  0x000082c0 (FUN_00008258) BL x1: r0 0x00000000(?)\n  0x00008354 (FUN_00008258) BL x1: r0 0x00000000(?)\n  MMIO accesses from code in 0x00005448..0x0000549c: 0\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible"
+      }
+    },
+    {
+      "id": "E4",
+      "tool": "observed_call_arguments",
+      "arguments": {
+        "function": "FUN_00005898",
+        "scenario": "vl-manual-f0e0"
+      },
+      "result": {
+        "status": "ok",
+        "function": "FUN_00005898",
+        "entry": "0x00005898",
+        "basis": "CALLER_GROUNDED_CONCRETE",
+        "scenario": "vl-manual-f0e0",
+        "scenario_config": {
+          "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded manual-mode records",
+          "firmware_keys": [
+            "autopilot868"
+          ],
+          "id": "vl-manual-f0e0",
+          "kind": "virtual-link",
+          "registry_sha256": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+          "runner": "run_manual_mode_f0_e0_check",
+          "source": "cases/performing-rigs/scripts/virtual_link.py::run_manual_mode_f0_e0_check",
+          "termination": "each leg's own stop address or instruction bound"
+        },
+        "scenario_failure": null,
+        "observed_entries": 0,
+        "call_sites": [
+          {
+            "call_site": "0x00005942",
+            "caller": "FUN_0000593c",
+            "status": "UNOBSERVED",
+            "call_kind": null,
+            "static_target_match": null,
+            "hits": 0,
+            "arguments": {}
+          },
+          {
+            "call_site": "0x00005bf6",
+            "caller": "FUN_00005be8",
+            "status": "UNOBSERVED",
+            "call_kind": null,
+            "static_target_match": null,
+            "hits": 0,
+            "arguments": {}
+          },
+          {
+            "call_site": "0x00005cac",
+            "caller": "FUN_00005c00",
+            "status": "UNOBSERVED",
+            "call_kind": null,
+            "static_target_match": null,
+            "hits": 0,
+            "arguments": {}
+          },
+          {
+            "call_site": "0x000060ac",
+            "caller": "FUN_00006098",
+            "status": "UNOBSERVED",
+            "call_kind": null,
+            "static_target_match": null,
+            "hits": 0,
+            "arguments": {}
+          },
+          {
+            "call_site": "0x000060c8",
+            "caller": "FUN_000060b4",
+            "status": "UNOBSERVED",
+            "call_kind": null,
+            "static_target_match": null,
+            "hits": 0,
+            "arguments": {}
+          },
+          {
+            "call_site": "0x000060e4",
+            "caller": "FUN_000060d0",
+            "status": "UNOBSERVED",
+            "call_kind": null,
+            "static_target_match": null,
+            "hits": 0,
+            "arguments": {}
+          }
+        ],
+        "mmio_in_function": {
+          "extent": [
+            "0x00005898",
+            "0x0000591a"
+          ],
+          "extent_source": "Ghidra function size (heuristic boundary)",
+          "access_count": 0,
+          "accesses": [],
+          "log_truncated": false
+        },
+        "run": {
+          "budget_exhausted_legs": 0,
+          "errored_legs": 0,
+          "instructions_executed": 219,
+          "legs": 5,
+          "observed_legs": 5
+        },
+        "legs": [
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 37,
+            "label": "gapB-f0-under",
+            "leg": 0,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005448",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 36,
+            "label": "gapB-f0-over",
+            "leg": 1,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005274",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 57,
+            "label": "gapB-e0-under-cold",
+            "leg": 2,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005448",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 42,
+            "label": "gapB-e0-over-cold",
+            "leg": 3,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x00005274",
+            "stub_calls": []
+          },
+          {
+            "entries": 0,
+            "entry": "0x00008a34",
+            "error": null,
+            "firmware": "firmware_autopilot868.bin",
+            "forced": {},
+            "fresh": true,
+            "instructions_executed": 47,
+            "label": "gapB-e0-over-latched",
+            "leg": 4,
+            "observed": true,
+            "reg_seed": [
+              [
+                "r0",
+                "0x0000000c"
+              ]
+            ],
+            "seeds": [
+              {
+                "addr": "0x2000232a",
+                "len": 32,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20000180",
+                "len": 4,
+                "tag": "seed"
+              },
+              {
+                "addr": "0x20001fdd",
+                "len": 1,
+                "tag": "seed"
+              }
+            ],
+            "sp": null,
+            "stop_reason": "reached stop address 0x000083ec",
+            "stub_calls": []
+          }
+        ],
+        "watched_fields": null,
+        "correlation": [],
+        "harness_assumptions": [
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 0,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 1,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 2,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 3,
+            "detail": "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)"
+          },
+          {
+            "kind": "scenario-leg",
+            "addr": "0x00008a34",
+            "leg": 4,
+            "detail": "entry 0x00008a34 (fresh state); 3 seeded range(s), 1 register seed(s), 0 stub(s)"
+          }
+        ],
+        "coverage": "observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 6 static call site(s) never reached: 0x00005942, 0x00005bf6, 0x00005cac, 0x000060ac, 0x000060c8, 0x000060e4; unobserved values or call sites are not thereby impossible",
+        "provenance": {
+          "analysis": "observed_call_arguments",
+          "analysis_version": 2,
+          "summarizer": {
+            "analysis": "call_observation",
+            "analysis_version": 2
+          },
+          "engine": "Unicorn concrete execution of a registered case scenario (tools/unicorn/concrete.py)",
+          "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "scenario": "vl-manual-f0e0",
+          "scenario_registry_sha256": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+          "static_call_sites": "Ghidra export call references (heuristic function boundaries)"
+        },
+        "planner_summary": "FUN_00005898 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 6 unreached; not entered in this scenario: nothing about its accesses was observed\n  0x00005942 (FUN_0000593c): UNOBSERVED (not reached; not unreachable)\n  0x00005bf6 (FUN_00005be8): UNOBSERVED (not reached; not unreachable)\n  0x00005cac (FUN_00005c00): UNOBSERVED (not reached; not unreachable)\n  0x000060ac (FUN_00006098): UNOBSERVED (not reached; not unreachable)\n  0x000060c8 (FUN_000060b4): UNOBSERVED (not reached; not unreachable)\n  0x000060e4 (FUN_000060d0): UNOBSERVED (not reached; not unreachable)\n  MMIO accesses from code in 0x00005898..0x0000591a: 0\n  harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 6 static call site(s) never reached: 0x00005942, 0x00005bf6, 0x00005cac, 0x000060ac, 0x000060c8, 0x000060e4; unobserved values or call sites are not thereby impossible"
+      }
+    },
+    {
+      "id": "E5",
+      "tool": "function_effects",
+      "arguments": {
+        "function": "FUN_00005448",
+        "specialize": {}
+      },
+      "result": {
+        "status": "bounded: timeout 300s",
+        "function": "FUN_00005448",
+        "entry": "0x00005448",
+        "coverage": "bounded: bounded: timeout 300s",
+        "specialize": {},
+        "blocks": null,
+        "inputs_used": [],
+        "reads": 0,
+        "writes": 0,
+        "calls": [],
+        "accesses": [],
+        "return_depends_on": [],
+        "return_bit_valued": null,
+        "specialized": [],
+        "harness_assumptions": [],
+        "raw": {},
+        "solver": {},
+        "provenance": {},
+        "planner_summary": "FUN_00005448 effects: no result within the 300s bound (likely an input-dependent loop); nothing concluded (cached)"
+      }
+    },
+    {
+      "id": "E6",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000607c"
+      },
+      "result": {
+        "name": "FUN_0000607c",
+        "entry": "0x0000607c",
+        "size": 22,
+        "callers": [],
+        "callees": [
+          {
+            "function": "FUN_00005be8",
+            "address": "0x0000608e"
+          }
+        ],
+        "unique_caller_count": 0,
+        "callsite_count": 0,
+        "unique_callee_count": 1,
+        "outgoing_callsite_count": 1,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E7",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_00005c00"
+      },
+      "result": {
+        "name": "FUN_00005c00",
+        "entry": "0x00005c00",
+        "size": 256,
+        "callers": [
+          {
+            "function": "FUN_00005d24",
+            "address": "0x00005d2c"
+          },
+          {
+            "function": "FUN_00005ee8",
+            "address": "0x00005f38"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_00005be8",
+            "address": "0x00005c64"
+          },
+          {
+            "function": "FUN_000056e8",
+            "address": "0x00005c7a"
+          },
+          {
+            "function": "FUN_00005898",
+            "address": "0x00005cac"
+          }
+        ],
+        "unique_caller_count": 2,
+        "callsite_count": 2,
+        "unique_callee_count": 3,
+        "outgoing_callsite_count": 3,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E8",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_00005ee8"
+      },
+      "result": {
+        "name": "FUN_00005ee8",
+        "entry": "0x00005ee8",
+        "size": 140,
+        "callers": [
+          {
+            "function": "FUN_00005f8c",
+            "address": "0x00005f96"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x000065d6"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_000056e8",
+            "address": "0x00005f14"
+          },
+          {
+            "function": "FUN_00005c00",
+            "address": "0x00005f38"
+          }
+        ],
+        "unique_caller_count": 2,
+        "callsite_count": 2,
+        "unique_callee_count": 2,
+        "outgoing_callsite_count": 2,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    }
+  ],
+  "state": {
+    "objective": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+    "evidence_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6",
+      "E7",
+      "E8"
+    ],
+    "claims": [
+      {
+        "id": "C1",
+        "statement": "FUN_00005448 under scenario vl-manual-f0e0: 2 observed calls passed r0 0x00000000(?); 0 MMIO accesses from its code; other scenarios and values are not excluded.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E3"
+        ],
+        "basis": "concrete-observed"
+      },
+      {
+        "id": "C2",
+        "statement": "FUN_00005898 was not entered under scenario vl-manual-f0e0 (219 instructions); not thereby unreachable.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ],
+        "basis": "concrete-observed"
+      }
+    ],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [
+      {
+        "id": "Q1",
+        "question": "R0 mando868:0x0000be94 -> FUN_00008258 is UNRESOLVED: mando868:0x0000be94 belongs to firmware mando868, not the loaded image: this controller investigates one image; a cross-image relation needs a multi-image scenario or composition capa...",
+        "evidence_ids": [],
+        "status": "OPEN",
+        "source": "objective"
+      },
+      {
+        "id": "Q2",
+        "question": "R2 FUN_00005448 -> FUN_00004d18 is STATIC: no concrete observation of FUN_00005448 calling FUN_00004d18: observe_call_arguments of FUN_00004d18 under a relevant scenario",
+        "evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "source": "objective"
+      },
+      {
+        "id": "Q3",
+        "question": "R3 FUN_00005448 -> 0x20001b14 is UNRESOLVED: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it; function_effects of FUN_00005448 failed (E5); no other offer...",
+        "evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "source": "objective"
+      },
+      {
+        "id": "Q4",
+        "question": "R4 FUN_00005ee8 -> FUN_00005c00 is STATIC: no concrete observation of FUN_00005ee8 calling FUN_00005c00: observe_call_arguments of FUN_00005c00 under a relevant scenario",
+        "evidence_ids": [],
+        "status": "OPEN",
+        "source": "objective"
+      },
+      {
+        "id": "Q5",
+        "question": "R5 FUN_0000607c -> FUN_00005898 is UNRESOLVED: no static call edge in evidence: function_facts of FUN_0000607c or FUN_00005898; no concrete observation of FUN_0000607c calling FUN_00005898: observe_call_arguments of FUN_00005898 under a...",
+        "evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "source": "objective"
+      }
+    ],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_00008258",
+        "source_evidence_ids": [],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L2",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_00005448",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L3",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_00004d18",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L4",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_00005ee8",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L5",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_00005c00",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L6",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_0000607c",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L7",
+        "kind": "objective",
+        "description": "Objective relation endpoint FUN_00005898",
+        "source_evidence_ids": [
+          "E7"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L8",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005898 from FUN_0000593c at 0x00005942",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L9",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005898 from FUN_00005be8 at 0x00005bf6",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L10",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005898 from FUN_00005c00 at 0x00005cac",
+        "source_evidence_ids": [
+          "E1",
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L11",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005898 from FUN_00006098 at 0x000060ac",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L12",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005898 from FUN_000060b4 at 0x000060c8",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L13",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005898 from FUN_000060d0 at 0x000060e4",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L14",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005898 to FUN_0000d388 at 0x000058c6",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L15",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d388 from FUN_00005898",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L16",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d388 from FUN_00005898",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L17",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005898 to FUN_0000d388 at 0x000058ce",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L18",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005898 to FUN_00005858 at 0x00005914",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L19",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_00005858 from FUN_00005898",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L20",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_00005858 from FUN_00005898",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L21",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x000082c0",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L22",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x00008354",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L23",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005448 to FUN_0000ccd0 at 0x00005454",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L24",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000ccd0 from FUN_00005448",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L25",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000ccd0 from FUN_00005448",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L26",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005448 to FUN_00004d18 at 0x00005496",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L27",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_00004d18 from FUN_00005448",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L28",
+        "kind": "observation",
+        "description": "Observed call arguments of FUN_00005448 under scenario vl-manual-f0e0",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L29",
+        "kind": "observation",
+        "description": "Observed call arguments of FUN_00005898 under scenario vl-manual-f0e0",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L30",
+        "kind": "effects",
+        "description": "Function effects of FUN_00005448",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L31",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000607c to FUN_00005be8 at 0x0000608e",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L32",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_00005be8 from FUN_0000607c",
+        "source_evidence_ids": [
+          "E6",
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L33",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_00005be8 from FUN_0000607c",
+        "source_evidence_ids": [
+          "E6",
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L34",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005c00 from FUN_00005d24 at 0x00005d2c",
+        "source_evidence_ids": [
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L35",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005c00 from FUN_00005ee8 at 0x00005f38",
+        "source_evidence_ids": [
+          "E7",
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L36",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005c00 to FUN_00005be8 at 0x00005c64",
+        "source_evidence_ids": [
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L37",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005c00 to FUN_000056e8 at 0x00005c7a",
+        "source_evidence_ids": [
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L38",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_000056e8 from FUN_00005c00",
+        "source_evidence_ids": [
+          "E7",
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L39",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_000056e8 from FUN_00005c00",
+        "source_evidence_ids": [
+          "E7",
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L40",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_00005898 from FUN_00005c00",
+        "source_evidence_ids": [
+          "E7"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L41",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005ee8 from FUN_00005f8c at 0x00005f96",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L42",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005ee8 from FUN_00006338 at 0x000065d6",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L43",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005ee8 to FUN_000056e8 at 0x00005f14",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L44",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_00005c00 from FUN_00005ee8",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      }
+    ]
+  },
+  "objective_spec": {
+    "version": "objective-v1",
+    "question": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+    "firmware": "autopilot868",
+    "constraints": [
+      "Avoid broad census and peripheral inventory; reuse existing evidence.",
+      "Do not assume the encoder input mapping is established.",
+      "Keep static paths, concrete segments, symbolic evidence, unknown scheduling and physical effects distinct.",
+      "Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution."
+    ],
+    "relations": [
+      {
+        "id": "R0",
+        "source": "0xbe94",
+        "target": "FUN_00008258",
+        "label": "Remote sender frame reaches AutoPilot RX dispatch",
+        "source_firmware": "mando868",
+        "target_firmware": null
+      },
+      {
+        "id": "R1",
+        "source": "FUN_00008258",
+        "target": "FUN_00005448",
+        "label": "RX dispatch invokes the F0 jog handler",
+        "source_firmware": null,
+        "target_firmware": null
+      },
+      {
+        "id": "R2",
+        "source": "FUN_00005448",
+        "target": "FUN_00004d18",
+        "label": "jog handler reaches the motion target update",
+        "source_firmware": null,
+        "target_firmware": null
+      },
+      {
+        "id": "R3",
+        "source": "FUN_00005448",
+        "target": "0x20001b14",
+        "label": "jog path writes the busy gate",
+        "source_firmware": null,
+        "target_firmware": null
+      },
+      {
+        "id": "R4",
+        "source": "FUN_00005ee8",
+        "target": "FUN_00005c00",
+        "label": "rate machinery reaches timer period setup",
+        "source_firmware": null,
+        "target_firmware": null
+      },
+      {
+        "id": "R5",
+        "source": "FUN_0000607c",
+        "target": "FUN_00005898",
+        "label": "TC0 handler drives the STEP GPIO helper",
+        "source_firmware": null,
+        "target_firmware": null
+      }
+    ],
+    "terms": [
+      "F0",
+      "jog",
+      "manual",
+      "channel0",
+      "STEP",
+      "DIR",
+      "STOP"
+    ],
+    "scenarios": [],
+    "allow_broad_discovery": false,
+    "replan_after": 2,
+    "stall_limit": 3
+  },
+  "objective_report": {
+    "version": "objective-v1",
+    "question": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+    "constraints": [
+      "Avoid broad census and peripheral inventory; reuse existing evidence.",
+      "Do not assume the encoder input mapping is established.",
+      "Keep static paths, concrete segments, symbolic evidence, unknown scheduling and physical effects distinct.",
+      "Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution."
+    ],
+    "stop_reason": "step_budget_exhausted",
+    "explanation": "step budget exhausted",
+    "budget": {
+      "max_steps": 8,
+      "steps_used": 8
+    },
+    "relations": [
+      {
+        "id": "R0",
+        "source": "mando868:0x0000be94",
+        "target": "FUN_00008258",
+        "label": "Remote sender frame reaches AutoPilot RX dispatch",
+        "level": "UNRESOLVED",
+        "evidence": [],
+        "blockers": [],
+        "missing": [
+          "mando868:0x0000be94 belongs to firmware mando868, not the loaded image: this controller investigates one image; a cross-image relation needs a multi-image scenario or composition capability",
+          "no completed function_effects of FUN_00008258 showing an access to the address endpoint"
+        ]
+      },
+      {
+        "id": "R1",
+        "source": "FUN_00008258",
+        "target": "FUN_00005448",
+        "label": "RX dispatch invokes the F0 jog handler",
+        "level": "OBSERVED",
+        "evidence": [
+          {
+            "evidence_id": "E2",
+            "level": "STATIC",
+            "detail": "static call edge FUN_00008258 -> FUN_00005448 (Ghidra call graph; heuristic boundaries)"
+          },
+          {
+            "evidence_id": "E3",
+            "level": "OBSERVED",
+            "detail": "FUN_00008258 observed calling FUN_00005448 under scenario vl-manual-f0e0 (harness assumptions apply)"
+          }
+        ],
+        "blockers": [],
+        "missing": []
+      },
+      {
+        "id": "R2",
+        "source": "FUN_00005448",
+        "target": "FUN_00004d18",
+        "label": "jog handler reaches the motion target update",
+        "level": "STATIC",
+        "evidence": [
+          {
+            "evidence_id": "E2",
+            "level": "STATIC",
+            "detail": "static call edge FUN_00005448 -> FUN_00004d18 (Ghidra call graph; heuristic boundaries)"
+          }
+        ],
+        "blockers": [
+          {
+            "evidence_id": "E5",
+            "detail": "effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects"
+          }
+        ],
+        "missing": [
+          "no concrete observation of FUN_00005448 calling FUN_00004d18: observe_call_arguments of FUN_00004d18 under a relevant scenario"
+        ]
+      },
+      {
+        "id": "R3",
+        "source": "FUN_00005448",
+        "target": "0x20001b14",
+        "label": "jog path writes the busy gate",
+        "level": "UNRESOLVED",
+        "evidence": [],
+        "blockers": [
+          {
+            "evidence_id": "E5",
+            "detail": "effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects"
+          }
+        ],
+        "missing": [
+          "0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it",
+          "function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)"
+        ]
+      },
+      {
+        "id": "R4",
+        "source": "FUN_00005ee8",
+        "target": "FUN_00005c00",
+        "label": "rate machinery reaches timer period setup",
+        "level": "STATIC",
+        "evidence": [
+          {
+            "evidence_id": "E7",
+            "level": "STATIC",
+            "detail": "static call edge FUN_00005ee8 -> FUN_00005c00 (Ghidra call graph; heuristic boundaries)"
+          },
+          {
+            "evidence_id": "E8",
+            "level": "STATIC",
+            "detail": "static call edge FUN_00005ee8 -> FUN_00005c00 (Ghidra call graph; heuristic boundaries)"
+          }
+        ],
+        "blockers": [],
+        "missing": [
+          "no concrete observation of FUN_00005ee8 calling FUN_00005c00: observe_call_arguments of FUN_00005c00 under a relevant scenario"
+        ]
+      },
+      {
+        "id": "R5",
+        "source": "FUN_0000607c",
+        "target": "FUN_00005898",
+        "label": "TC0 handler drives the STEP GPIO helper",
+        "level": "UNRESOLVED",
+        "evidence": [],
+        "blockers": [
+          {
+            "evidence_id": "E4",
+            "detail": "FUN_00005898 not entered under scenario vl-manual-f0e0 (not thereby unreachable)"
+          }
+        ],
+        "missing": [
+          "no static call edge in evidence: function_facts of FUN_0000607c or FUN_00005898",
+          "no concrete observation of FUN_0000607c calling FUN_00005898: observe_call_arguments of FUN_00005898 under a relevant scenario"
+        ]
+      }
+    ],
+    "unresolved_relations": [
+      "R0",
+      "R2",
+      "R3",
+      "R4",
+      "R5"
+    ],
+    "answered": false,
+    "composition": "not attempted: per-edge levels are not an end-to-end causal result",
+    "anchors": {
+      "mando868:0xbe94": "other-image",
+      "autopilot868:FUN_00008258": "function",
+      "autopilot868:FUN_00005448": "function",
+      "autopilot868:FUN_00004d18": "function",
+      "autopilot868:0x20001b14": "address",
+      "autopilot868:FUN_00005ee8": "function",
+      "autopilot868:FUN_00005c00": "function",
+      "autopilot868:FUN_0000607c": "function",
+      "autopilot868:FUN_00005898": "function"
+    },
+    "outcomes": [
+      {
+        "step": 1,
+        "action": "follow_lead",
+        "target": "FUN_00005898",
+        "outcome": "relevant_partial",
+        "evidence_id": "E1",
+        "relations": [],
+        "note": "relevant evidence; no relation level changed"
+      },
+      {
+        "step": 2,
+        "action": "follow_lead",
+        "target": "FUN_00005448",
+        "outcome": "strengthened",
+        "evidence_id": "E2",
+        "relations": [
+          "R1",
+          "R2"
+        ],
+        "note": "relation evidence level raised"
+      },
+      {
+        "step": 3,
+        "action": "observation",
+        "target": "FUN_00005448",
+        "outcome": "strengthened",
+        "evidence_id": "E3",
+        "relations": [
+          "R1"
+        ],
+        "note": "relation evidence level raised"
+      },
+      {
+        "step": 4,
+        "action": "observation",
+        "target": "FUN_00005898",
+        "outcome": "blocker",
+        "evidence_id": "E4",
+        "relations": [
+          "R5"
+        ],
+        "note": "FUN_00005898 not entered under scenario vl-manual-f0e0 (not thereby unreachable)"
+      },
+      {
+        "step": 5,
+        "action": "effects",
+        "target": "FUN_00005448",
+        "outcome": "failed",
+        "evidence_id": "E5",
+        "relations": [
+          "R2",
+          "R3"
+        ],
+        "note": "function_effects produced no result: bounded: timeout 300s"
+      },
+      {
+        "step": 6,
+        "action": "follow_lead",
+        "target": "FUN_0000607c",
+        "outcome": "relevant_partial",
+        "evidence_id": "E6",
+        "relations": [],
+        "note": "relevant evidence; no relation level changed"
+      },
+      {
+        "step": 7,
+        "action": "follow_lead",
+        "target": "FUN_00005c00",
+        "outcome": "strengthened",
+        "evidence_id": "E7",
+        "relations": [
+          "R4"
+        ],
+        "note": "relation evidence level raised"
+      },
+      {
+        "step": 8,
+        "action": "follow_lead",
+        "target": "FUN_00005ee8",
+        "outcome": "relevant_partial",
+        "evidence_id": "E8",
+        "relations": [],
+        "note": "relevant evidence; no relation level changed"
+      }
+    ],
+    "rejections": []
+  },
+  "proposed_claims": [
+    {
+      "subject": "",
+      "assertion": "FUN_00005448 observed under vl-manual-f0e0",
+      "claim_type": "BEHAVIOR",
+      "grade": "PROBABLE",
+      "evidence_ids": [
+        "E3"
+      ],
+      "limitations": [],
+      "semantics": null,
+      "omissions": {},
+      "raw": "PROBABLE BEHAVIOR E3 FUN_00005448 observed under vl-manual-f0e0",
+      "admission": 0
+    }
+  ],
+  "ledger_run_id": "R-20261019T153432-330a3c"
+}

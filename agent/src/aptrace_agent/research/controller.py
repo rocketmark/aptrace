@@ -5,13 +5,17 @@ import os
 import re
 import sys
 import time
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any
 
 from openai import OpenAI
 
+from aptrace_agent.research.objective import (
+    ObjectiveSpec,
+    ObjectiveTracker,
+)
 from aptrace_agent.research.projection import (
     COMPACT_BUDGET,
     PlannerProjection,
@@ -46,6 +50,19 @@ STRUCTURAL_TOOLS = (
 # (`experimental_tools`). Admission cannot yet check the claims a planner
 # draws from their results; see docs/tooling/pcode-forward-use.md.
 EXPERIMENTAL_STRUCTURAL_TOOLS = ("value_forward_use",)
+
+# Planner action -> executor tool, for relevance and progress accounting.
+_ACTION_TOOLS = {
+    "analyze_peripheral": "census_peripheral_usage",
+    "analyze_usb_interface": "census_usb_inventory",
+    "find_common_paths": "census_common_paths",
+    "analyze_function_effects": "function_effects",
+    "observe_call_arguments": "observed_call_arguments",
+    "resolve_indirect_call": "indirect_call_target",
+    "trace_callback_argument": "callback_argument_provenance",
+    "trace_value_use": "value_forward_use",
+    "search_case_evidence": "search_case_evidence",
+}
 
 _FUNCTION_RE = re.compile(r"FUN_[0-9a-f]{8}")
 _SET_NAME_RE = re.compile(r"[A-Z][A-Z0-9_]{0,23}")
@@ -111,6 +128,9 @@ class ResearchRunResult:
     # Claim candidates offered and selected (CandidateSelection), when
     # candidate selection is enabled.
     candidate_selection: Any = None
+    # Objective-bounded runs only (research/objective.py): per-relation
+    # evidence levels, blockers, missing evidence and step outcomes.
+    objective_report: dict[str, Any] | None = None
 
 
 @dataclass
@@ -213,6 +233,9 @@ class ResearchController:
         projection_budget: ProjectionBudget | None = None,
         claim_contract: bool = False,
         max_claim_candidates: int = 0,
+        objective: ObjectiveSpec | None = None,
+        scenario_metadata: Mapping[str, Mapping[str, Any]] | None = None,
+        firmware_key: str | None = None,
     ) -> None:
         if max_steps < 1:
             raise ValueError("max_steps must be at least 1")
@@ -302,6 +325,16 @@ class ResearchController:
         self.max_claim_candidates = max_claim_candidates
         self.candidate_selection: Any = None
 
+        # Objective-bounded investigation (research/objective.py): active
+        # only when the objective declares relations; otherwise every
+        # behavior below is unchanged.
+        self.objective_spec = objective if objective is not None and objective.focused else None
+        self.scenario_metadata = dict(scenario_metadata or {})
+        self.firmware_key = firmware_key
+        self.tracker: ObjectiveTracker | None = None
+        self.objective_report: dict[str, Any] | None = None
+        self._steps_used = 0
+
         budget = projection_budget or ProjectionBudget(latest_count=recent_evidence_limit)
         self.normal_projection = PlannerProjection(budget)
         self.compact_projection = PlannerProjection(COMPACT_BUDGET)
@@ -376,6 +409,185 @@ class ResearchController:
                 sets["USB"] = list(dict.fromkeys(sets.get("USB", []) + functions))
 
         return sets
+
+    # -- objective (research/objective.py) --------------------------------------
+
+    def _operation(self, session: ResearchSession, action: str, arguments: dict[str, Any]) -> tuple[str, dict[str, Any], list[str]]:
+        """Executor tool, arguments and lead source evidence of one validated decision."""
+
+        if action == "follow_lead":
+            lead_id = str(arguments["lead_id"])
+            resolved = session.registry.resolve(lead_id)
+            return resolved.tool, resolved.arguments, list(session.state.lead(lead_id).source_evidence_ids)
+
+        return _ACTION_TOOLS.get(action, action), arguments, []
+
+    def _assess(self, session: ResearchSession, action: str, arguments: dict[str, Any]):
+        tool, args, sources = self._operation(session, action, arguments)
+        return self.tracker.assess(
+            tool, args, session.ledger.all(), scenarios=self.observation_scenarios, source_evidence=sources
+        )
+
+    def _focus_problem(self, session: ResearchSession, action: str, arguments: dict[str, Any]) -> str | None:
+        """For a focused run: why a validated decision is unrelated to the objective, else None."""
+
+        if self.tracker is None or action not in _ACTION_TOOLS and action != "follow_lead":
+            return None
+
+        assessment = self._assess(session, action, arguments)
+
+        if assessment.relevant:
+            return None
+
+        tool, args, _ = self._operation(session, action, arguments)
+        target = str(args.get("function") or args.get("peripheral") or args.get("site") or args.get("origin")
+                      or args.get("query") or arguments.get("lead_id") or "")
+        self.tracker.reject(action, f"{target}" + (f"@{args['scenario']}" if args.get("scenario") else ""), assessment.reason)
+        return f"{action} is not relevant to the objective: {assessment.reason}"
+
+    def _unexpected(self, name: str, arguments: dict[str, Any], kind: str = "tool") -> str:
+        if self.tracker is not None and name in _ACTION_TOOLS:
+            target = str(arguments.get("peripheral") or arguments.get("function") or arguments.get("query") or "")
+            reason = "withheld in this objective-bounded run: not related to the objective, or its budget is spent"
+            self.tracker.reject(name, target + (f"@{arguments['scenario']}" if arguments.get("scenario") else ""), reason)
+            return f"{name} is {reason}"
+
+        return f"unexpected {kind} {name!r}"
+
+    def _lead_relevant(self, session: ResearchSession, lead) -> bool:
+        try:
+            action = session.registry.resolve(lead.id)
+        except (KeyError, ValueError):
+            return False
+
+        return self.tracker.assess(
+            action.tool, action.arguments, session.ledger.all(), scenarios=self.observation_scenarios,
+            source_evidence=lead.source_evidence_ids,
+        ).relevant
+
+    def _objective_candidates(self, session: ResearchSession, generated):
+        """
+        Focused run: offer only candidates whose subject is an objective-relevant
+        function; record the rest as withheld with the reason. Selection scope
+        only: every offered candidate still passes the same admission.
+        """
+
+        from dataclasses import replace
+
+        from aptrace_agent.ledger.models import CandidateWithheld
+        from aptrace_agent.research.objective import CANDIDATE_OUTSIDE_OBJECTIVE
+
+        relevant = set(self.tracker.relevant_functions(session.ledger.all()))
+        kept = tuple(c for c in generated.candidates if c.subject in relevant)
+        withheld = tuple(
+            CandidateWithheld(
+                code=CANDIDATE_OUTSIDE_OBJECTIVE, fact=c.assertion[:300],
+                detail=f"{c.subject} is not a relation endpoint or one call hop from one", evidence_ids=list(c.supporting_evidence_ids),
+            )
+            for c in generated.candidates
+            if c.subject not in relevant
+        )
+        return replace(generated, candidates=kept, withheld=tuple(generated.withheld) + withheld)
+
+    def _focus_palette(self, session: ResearchSession, palette: _Palette) -> None:
+        """Withhold structural tools and choices with no relevance to a focused objective."""
+
+        if self.tracker is None:
+            return
+
+        names = palette.names()
+
+        if "analyze_peripheral" in names:
+            relevant = [name for name in palette.analyzable if self.tracker.peripheral_relevant(name)]
+            palette.drop("analyze_peripheral")
+
+            if relevant:
+                palette.analyzable = relevant
+                palette.tools.append(self._analysis_tool(relevant))
+
+        if "analyze_usb_interface" in names and not self.tracker.peripheral_relevant("USB"):
+            palette.drop("analyze_usb_interface")
+
+        if "observe_call_arguments" in names:
+            relevance = self.tracker.scenario_relevance(self.observation_scenarios, session.ledger.all())
+            tool = next(t for t in palette.tools if t["function"]["name"] == "observe_call_arguments")
+
+            if not relevance.relevant:
+                palette.drop("observe_call_arguments")
+            else:
+                tool["function"]["parameters"]["properties"]["scenario"]["enum"] = list(relevance.relevant)
+                tool["function"]["description"] += " Objective-relevant: " + "; ".join(
+                    f"{name} ({relevance.basis[name][:80]})" for name in relevance.relevant
+                ) + "."
+
+    def _objective_block(self, session: ResearchSession) -> str:
+        """The planner's objective: the tracker's complete block, or the clipped prose."""
+
+        if self.tracker is None:
+            return f"OBJECTIVE: {self.projection.objective(session)}"
+
+        return self.tracker.render(
+            session.ledger.all(), scenarios=self.observation_scenarios, steps_used=self._steps_used, max_steps=self.max_steps
+        )
+
+    def _start_objective(self, session: ResearchSession) -> None:
+        """Create the run's tracker and offer each validated relation endpoint as a lead."""
+
+        from aptrace_agent.research.admission import function_resolver
+
+        self.tracker = ObjectiveTracker(
+            spec=self.objective_spec, function_exists=function_resolver(session), scenario_metadata=self.scenario_metadata,
+            firmware_key=self.firmware_key,
+        )
+        inspected = {o.arguments.get("function") for o in session.ledger.all() if o.tool == "function_facts"}
+
+        for function in self.tracker.anchors():
+            if function in inspected:
+                continue
+
+            lead = session.registry.register(
+                kind="objective",
+                description=f"Objective relation endpoint {function}",
+                tool="function_facts",
+                arguments={"function": function},
+                source_evidence_ids=[],
+            )
+
+            if all(existing.id != lead.id for existing in session.state.leads):
+                session.state.add_lead(lead)
+
+        for observation in session.ledger.all():
+            if self.tracker.assess(observation.tool, observation.arguments, session.ledger.all(),
+                                   scenarios=self.observation_scenarios).relevant:
+                self.tracker.mark_relevant(observation.id)
+
+    def _record_outcome(self, session: ResearchSession, step: int, action: str, tool: str, arguments: dict[str, Any],
+                        observation, relevant: bool) -> None:
+        if self.tracker is not None:
+            self.tracker.record(step=step, action=action, tool=tool, arguments=arguments, observation=observation,
+                                observations=session.ledger.all(), relevant=relevant)
+
+    def _finish_objective(self, session: ResearchSession, stop_reason: str) -> None:
+        """Terminal report; unresolved relations become open questions with their blockers."""
+
+        if self.tracker is None:
+            return
+
+        self.objective_report = self.tracker.report(
+            session.ledger.all(), stop_reason=stop_reason, steps_used=self._steps_used, max_steps=self.max_steps
+        )
+
+        for relation in self.objective_report["relations"]:
+            if relation["level"] == "OBSERVED":
+                continue
+
+            missing = "; ".join(relation["missing"][:2]) or "no stronger evidence recorded"
+            self.updater.merge_open_question(
+                session.state,
+                question=clip(f"{relation['id']} {relation['source']} -> {relation['target']} is {relation['level']}: {missing}", 240),
+                evidence_ids=[b["evidence_id"] for b in relation["blockers"]][:4],
+                source="objective",
+            )
 
     # -- palette ----------------------------------------------------------------
 
@@ -586,6 +798,7 @@ class ResearchController:
             )
 
         self._structural_palette(session, palette)
+        self._focus_palette(session, palette)
         palette.tools.append(self._finish_tool())
         self._apply_cooldown(palette)
 
@@ -608,6 +821,7 @@ class ResearchController:
             ]
         )
         self._structural_palette(session, palette)
+        self._focus_palette(session, palette)
         palette.tools.append(
             _function_tool(
                 "finish",
@@ -805,9 +1019,14 @@ class ResearchController:
             session.ledger.all(), objective=session.state.objective, seeded=candidates.seeded_evidence(session),
             function_exists=resolver, peripherals=peripherals, existing=existing,
         )
+        total = len(generated.candidates)
+
+        if self.tracker is not None:
+            generated = self._objective_candidates(session, generated)
+
         offered, omitted = generated.offer(self.max_claim_candidates)
         summary = {
-            "generator": candidates.GENERATOR, "limit": self.max_claim_candidates, "generated": len(generated.candidates),
+            "generator": candidates.GENERATOR, "limit": self.max_claim_candidates, "generated": total,
             "offered": list(offered), "omitted": list(omitted), "withheld": list(generated.withheld),
         }
 
@@ -871,6 +1090,10 @@ class ResearchController:
         if self._seeded_open(session):
             return "peripheral discovery is withheld while follow-up leads are open; follow a [follow-up] lead"
 
+        if self.tracker is not None and peripheral in self.census_peripherals and not self.tracker.peripheral_relevant(peripheral):
+            reason = f"peripheral {peripheral} is not named by the objective; inventory is not progress on a relation"
+            self.tracker.reject("analyze_peripheral", str(peripheral), reason)
+            return f"analyze_peripheral is not relevant to the objective: {reason}"
 
         return "analyze_peripheral requires one of the listed peripherals"
 
@@ -1456,6 +1679,10 @@ class ResearchController:
                 return False
 
         open_leads = [lead for lead in session.state.open_leads() if not withheld(lead)]
+
+        # Focused objective: only leads connected to it are offered.
+        if self.tracker is not None:
+            open_leads = [lead for lead in open_leads if self._lead_relevant(session, lead)]
         ranked = sorted(open_leads, key=lambda lead: (lead.origin is None, *rank(lead)))
         limit = 4 if self.projection is self.compact_projection else self.max_visible_leads
         return ranked[:limit]
@@ -1525,14 +1752,33 @@ class ResearchController:
         state, state_chars = self._research_state(session)
 
         return (
-            f"""OBJECTIVE: {self.projection.objective(session)}
+            f"""{self._objective_block(session)}
 
 {state}
 
 LEADS (APTrace-validated)
 {lead_text}
 {self._analysis_guidance(session, palette)}
-TASK: make exactly one tool call, by the first rule that applies:
+{self._task_rules(session)}""",
+            state_chars,
+        )
+
+    def _task_rules(self, session: ResearchSession) -> str:
+        if self.tracker is not None:
+            return f"""TASK: make exactly one tool call, by the first rule that applies:
+{self._followup_rule(session)}1) an operation on an UNRESOLVED or STATIC relation's endpoint (or a listed
+   relevant function or scenario) that could raise its evidence level or
+   expose a concrete blocker: run it;
+2) otherwise follow a listed lead toward a relation endpoint;
+3) no listed operation can address a relation, or REPLAN is shown with
+   nothing new to try: finish, naming each unresolved relation and the
+   missing evidence or capability as open questions{self._claim_guidance()}.
+Inventory of subsystems no relation names is not progress. Never repeat a
+FAILED or ALREADY RUN operation or invent identifiers. Per-edge evidence is
+not an end-to-end causal result.
+"""
+
+        return f"""TASK: make exactly one tool call, by the first rule that applies:
 {self._followup_rule(session)}1) a subsystem the objective names is not under ALREADY RUN: analyze it;
 2) the objective asks whether subsystems connect and their sets exist:
    find_common_paths (once per pair);
@@ -1540,15 +1786,22 @@ TASK: make exactly one tool call, by the first rule that applies:
    a specific question);
 4) evidence suffices: finish, listing hypotheses and open questions{self._claim_guidance()}.
 Never repeat an ALREADY RUN analysis or invent identifiers.
-""",
-            state_chars,
-        )
+"""
 
     def _followup_rule(self, session: ResearchSession) -> str:
         if not self._seeded_open(session):
             return ""
 
         return "0) [follow-up] leads are the open question this run exists for: follow one;\n"
+
+    def _composition_caution(self) -> str:
+        if self.tracker is None:
+            return ""
+
+        return (
+            "\nRelations above are per-edge evidence. Do not claim a composed end-to-end\n"
+            "path; list each unresolved relation and what is missing as an open question."
+        )
 
     def _claim_guidance(self) -> str:
         if not self.claim_contract:
@@ -1574,7 +1827,7 @@ Never repeat an ALREADY RUN analysis or invent identifiers.
         state, state_chars = self._research_state(session)
 
         return (
-            f"""OBJECTIVE: {self.projection.objective(session)}
+            f"""{self._objective_block(session)}
 
 TASK: one lexical search (1-3 discriminative terms, a new angle each time:
 device, peripheral, protocol, signal) of case documents for firmware anchors
@@ -1621,7 +1874,11 @@ SEARCHES TRIED: {attempted}
                 return "finish requires a non-empty reason"
 
             outcome = self._parse_structural(session, palette, name, arguments)
-            return outcome if outcome is not None else f"unexpected tool {name!r}"
+
+            if isinstance(outcome, tuple):
+                return self._focus_problem(session, *outcome) or outcome
+
+            return outcome if outcome is not None else self._unexpected(name, arguments)
 
         return self._ask(
             session,
@@ -1656,14 +1913,18 @@ SEARCHES TRIED: {attempted}
                 if query.casefold() in attempted_queries:
                     return "discovery query was already tried"
 
-                return name, {"query": query}
+                return self._focus_problem(session, name, {"query": query}) or (name, {"query": query})
 
             if name == "finish":
                 reason = str(arguments.get("reason", "")).strip()
                 return (name, {"reason": reason}) if reason else "finish requires a non-empty reason"
 
             outcome = self._parse_structural(session, palette, name, arguments)
-            return outcome if outcome is not None else f"unexpected discovery tool {name!r}"
+
+            if isinstance(outcome, tuple):
+                return self._focus_problem(session, *outcome) or outcome
+
+            return outcome if outcome is not None else self._unexpected(name, arguments, "discovery tool")
 
         return self._ask(
             session,
@@ -1693,7 +1954,7 @@ SEARCHES TRIED: {attempted}
         def prompt_for(palette: _Palette) -> tuple[str, int]:
             state, state_chars = self._research_state(session)
             return (
-                f"""OBJECTIVE: {self.projection.objective(session)}
+                f"""{self._objective_block(session)}
 
 {state}
 
@@ -1701,7 +1962,7 @@ TASK: the step budget is exhausted; no further analysis is possible. Call
 finish now with your reason and claims: one line per evidence-backed
 conclusion, formatted '{CLAIM_FORMAT}', for example
 'PROBABLE BEHAVIOR E2 <assertion>'. Name functions exactly as FUN_xxxxxxxx.
-State only what the cited evidence shows; claims are graded PROBABLE.
+State only what the cited evidence shows; claims are graded PROBABLE.{self._composition_caution()}
 """,
                 state_chars,
             )
@@ -1738,7 +1999,7 @@ State only what the cited evidence shows; claims are graded PROBABLE.
         def prompt_for(palette: _Palette) -> tuple[str, int]:
             state, state_chars = self._research_state(session)
             return (
-                f"""OBJECTIVE: {self.projection.objective(session)}
+                f"""{self._objective_block(session)}
 
 {state}
 
@@ -1802,7 +2063,7 @@ what the cited evidence shows. To leave out follow-up evidence, append
 
         def prompt_for(palette: _Palette) -> tuple[str, int]:
             return (
-                f"""OBJECTIVE: {self.projection.objective(session)}
+                f"""{self._objective_block(session)}
 
 APTrace derived these candidate facts mechanically from the recorded
 evidence. Each has fixed typed semantics, evidence, grade and scope; you
@@ -1991,9 +2252,15 @@ answer any other question.
     def _structural_available(self, session: ResearchSession) -> bool:
         palette = _Palette(tools=[])
         self._structural_palette(session, palette)
+        self._focus_palette(session, palette)
         return bool(palette.tools)
 
     def _result(self, stop_reason: str, steps: list[ResearchStep], reconciled: bool) -> ResearchRunResult:
+        session = getattr(self, "_run_session", None)
+
+        if session is not None:
+            self._finish_objective(session, stop_reason)
+
         return ResearchRunResult(
             stop_reason=stop_reason,
             steps=tuple(steps),
@@ -2002,6 +2269,7 @@ answer any other question.
             proposed_claims=tuple(self.proposed_claims),
             claim_admission=tuple(self.claim_admission),
             candidate_selection=self.candidate_selection,
+            objective_report=self.objective_report,
         )
 
     def _fallback_lead(self, session: ResearchSession):
@@ -2032,13 +2300,26 @@ answer any other question.
         continuity = getattr(session, "continuity", None)
         charged = 0
         decision = 0
+        self._run_session = session
+        self._steps_used = 0
+        self.objective_report = None
+
+        if self.objective_spec is not None:
+            self._start_objective(session)
 
         def charge(observation) -> None:
             nonlocal charged
             charged += continuity.charge(observation.reused_from is not None) if continuity is not None else 1
+            self._steps_used = charged
 
             if continuity is not None:
                 continuity.steps_charged = charged
+
+        def prepare(action: str, arguments: dict[str, Any]) -> tuple[str, dict[str, Any], bool]:
+            """(tool, arguments, relevant) of a decision, judged before it executes."""
+
+            tool, args, _ = self._operation(session, action, arguments)
+            return tool, dict(args), self.tracker is None or self._assess(session, action, arguments).relevant
 
         while charged < self.max_steps:
             decision += 1
@@ -2047,11 +2328,19 @@ answer any other question.
             if continuity is not None:
                 continuity.decisions = decision
 
-            open_leads = session.state.open_leads()
+            # Focused objective: repeated low-value steps end the run with an
+            # explicit unresolved report instead of further exploration.
+            if self.tracker is not None and self.tracker.stalled():
+                return self._terminal_claims_result(session, "objective_stalled", steps)
+
+            open_leads = self._planner_open_leads(session) if self.tracker is not None else session.state.open_leads()
             discovering = (
                 not open_leads
                 and objective_discovery
                 and discovery_attempts < self.max_discovery_steps
+                # A focused run's relations, not case search, define its
+                # targets; discovery only when the objective allows it.
+                and (self.tracker is None or self.tracker.spec.allow_broad_discovery)
             )
 
             # With no lead left, research continues only through an enabled
@@ -2068,7 +2357,8 @@ answer any other question.
                 ):
                     return self._result("discovery_exhausted", steps, False)
 
-                return self._result("research_graph_exhausted", steps, self._reconcile_terminal(session))
+                exhausted = "objective_no_relevant_operation" if self.tracker is not None else "research_graph_exhausted"
+                return self._result(exhausted, steps, self._reconcile_terminal(session))
 
             if discovering:
                 action, arguments = self._request_discovery(session, discovery_queries)
@@ -2079,7 +2369,9 @@ answer any other question.
                 # The planner produced no valid decision; APTrace takes the
                 # top open follow-up lead instead of ending the run.
                 continuity.fallbacks += 1
+                tool, args, relevant = prepare("follow_lead", {"lead_id": lead.id})
                 observation = session.follow_lead(lead.id, step=step_number, trigger="fallback")
+                self._record_outcome(session, step_number, "fallback_lead", tool, args, observation, relevant)
                 steps.append(
                     ResearchStep(
                         number=step_number,
@@ -2126,7 +2418,9 @@ answer any other question.
             if action == "search_case_evidence":
                 query = str(arguments["query"]).strip()
                 discovery_queries.add(query.casefold())
+                tool, args, relevant = prepare(action, {"query": query})
                 lead, observation = self._follow_discovery_search(session, query)
+                self._record_outcome(session, step_number, "discover", tool, args, observation, relevant)
                 discovery_attempts += 1
                 steps.append(ResearchStep(number=step_number, action="discover", lead_id=lead.id, evidence_id=observation.id, reused_from=observation.reused_from))
                 charge(observation)
@@ -2134,14 +2428,23 @@ answer any other question.
 
             if action == "follow_lead":
                 lead_id = str(arguments["lead_id"])
+                tool, args, relevant = prepare(action, arguments)
                 observation = session.follow_lead(lead_id, step=step_number)
+                self._record_outcome(session, step_number, action, tool, args, observation, relevant)
                 steps.append(ResearchStep(number=step_number, action="follow_lead", lead_id=lead_id, evidence_id=observation.id, reused_from=observation.reused_from))
                 charge(observation)
                 continue
 
+            tool, args, relevant = prepare(action, arguments)
             step_action, lead, observation = self._execute_structural(session, action, arguments, step=step_number)
+            self._record_outcome(session, step_number, step_action, tool, args, observation, relevant)
             steps.append(ResearchStep(number=step_number, action=step_action, lead_id=lead.id, evidence_id=observation.id, reused_from=observation.reused_from))
             charge(observation)
+
+        return self._terminal_claims_result(session, "step_budget_exhausted", steps)
+
+    def _terminal_claims_result(self, session: ResearchSession, stop_reason: str, steps: list[ResearchStep]) -> ResearchRunResult:
+        """Budget or stall termination: the bounded final-claims request, then the result."""
 
         if self.claim_contract:
             action, arguments = self._request_final_claims(session)
@@ -2152,4 +2455,4 @@ answer any other question.
 
             self._select_candidates(session)
 
-        return self._result("step_budget_exhausted", steps, self._reconcile_terminal(session))
+        return self._result(stop_reason, steps, self._reconcile_terminal(session))

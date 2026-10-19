@@ -77,7 +77,14 @@ def _research_payload(
             for observation in run.evidence
         ],
         "state": run.state.model_dump(),
-    }
+    } | (
+        {
+            "objective_spec": run.objective_spec.model_dump(),
+            "objective_report": run.result.objective_report,
+        }
+        if getattr(run, "objective_spec", None) is not None
+        else {}
+    )
 
 
 def _print_research_summary(
@@ -115,6 +122,17 @@ def _print_research_summary(
             print("  (none)")
 
         for line in answer[key]:
+            print(f"  {line}")
+
+    report = getattr(run.result, "objective_report", None)
+
+    if report:
+        from aptrace_agent.research.objective import render_report
+
+        print()
+        print("OBJECTIVE RELATIONS")
+
+        for line in render_report(report):
             print(f"  {line}")
 
     remaining = (
@@ -266,6 +284,31 @@ def main() -> None:
     )
 
     research.add_argument(
+        "--objective-file",
+        help=(
+            "JSON objective (research/objective.py ObjectiveSpec): question, "
+            "constraints, relations, terms, scenarios. Declared relations make "
+            "the run objective-bounded"
+        ),
+    )
+
+    research.add_argument(
+        "--relation",
+        dest="relations",
+        action="append",
+        default=[],
+        help="Relation to investigate, SRC->DST[:label] with FUN_ or 0x endpoints (repeatable)",
+    )
+
+    research.add_argument(
+        "--constraint",
+        dest="constraints",
+        action="append",
+        default=[],
+        help="Objective constraint shown whole to the planner (repeatable)",
+    )
+
+    research.add_argument(
         "objective",
         nargs="*",
         help=(
@@ -299,6 +342,20 @@ def main() -> None:
             parser.error("--work-item requires --ledger")
         if not args.work_item and (args.restart or args.rerun):
             parser.error("--restart and --rerun require --work-item")
+        objective_spec = None
+
+        if args.objective_file or args.relations or args.constraints:
+            from aptrace_agent.research.objective import load_spec
+
+            try:
+                objective_spec = load_spec(
+                    args.objective_file or "", question=objective, relations=args.relations, constraints=args.constraints
+                )
+            except (OSError, ValueError) as exc:
+                parser.error(f"invalid objective: {exc}")
+
+            objective = objective or objective_spec.question
+
         if not args.work_item and not objective:
             parser.error("a research objective is required")
 
@@ -348,6 +405,7 @@ def main() -> None:
                         else {}
                     ),
                     **({"followup": followup, "history": history} if followup is not None else {}),
+                    **({"objective_spec": objective_spec} if objective_spec is not None else {}),
                 )
             )
 

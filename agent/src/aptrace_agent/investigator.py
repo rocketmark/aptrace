@@ -47,6 +47,8 @@ class AutonomousInvestigationRun:
     evidence: tuple[EvidenceObservation, ...]
     # ContinuityRecord of a follow-up run with history; None otherwise.
     continuity: Any = None
+    # Declared objective (research/objective.py ObjectiveSpec) of a focused run.
+    objective_spec: Any = None
 
 
 def run_investigation(
@@ -134,6 +136,7 @@ def run_autonomous_investigation(
     followup: FollowUpCandidate | None = None,
     history: HistoricalOperations | None = None,
     experimental_tools: Sequence[str] = (),
+    objective_spec: Any = None,
 ) -> AutonomousInvestigationRun:
     """
     Run one bounded autonomous firmware investigation.
@@ -148,9 +151,13 @@ def run_autonomous_investigation(
 
     Experimental structural tools (EXPERIMENTAL_STRUCTURAL_TOOLS) are
     offered to the planner only when named in `experimental_tools`.
+
+    An `objective_spec` (research/objective.py) that declares relations
+    makes the run objective-bounded: relevance gating, progress tracking and
+    an unresolved-relation report. Without one, behavior is unchanged.
     """
 
-    objective = objective.strip()
+    objective = (objective or (objective_spec.question if objective_spec is not None else "")).strip()
 
     if not objective:
         raise ValueError(
@@ -257,6 +264,17 @@ def run_autonomous_investigation(
             ),
             claim_contract=claim_contract,
             max_claim_candidates=claim_candidates,
+            objective=objective_spec,
+            scenario_metadata=(
+                executor.observed_calls.scenarios
+                if hasattr(executor, "observed_calls")
+                else None
+            ),
+            firmware_key=(
+                executor.census.firmware_key
+                if hasattr(executor, "census")
+                else None
+            ),
         )
     )
 
@@ -279,4 +297,5 @@ def run_autonomous_investigation(
             if session.continuity is not None
             else None
         ),
+        objective_spec=objective_spec,
     )

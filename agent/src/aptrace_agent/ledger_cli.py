@@ -533,7 +533,8 @@ def record_research_run(run, *, executor, recorder, ledger_dir_override, started
         context=context_provider(executor)(),
         recorder=recorder,
         model=os.environ.get("APTRACE_MODEL"),
-        execution_config={"temperature": 0.0, "max_tokens": 512, "endpoint": "local-omlx", "claim_contract": True, "claim_candidates": claim_candidates},
+        execution_config={"temperature": 0.0, "max_tokens": 512, "endpoint": "local-omlx", "claim_contract": True, "claim_candidates": claim_candidates}
+        | ({"objective": run.objective_spec.model_dump()} if getattr(run, "objective_spec", None) is not None else {}),
         planner_version=f"controller:{code_identity(controller_cls)} projection:{code_identity(projection)}",
         budgets={"max_steps": max_steps},
         started_at=started_at,

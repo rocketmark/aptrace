@@ -1,0 +1,36 @@
+{
+ "version": "objective-v1",
+ "question": "Bounded AutoPilot868 F0 channel0 jog follow-up. Determine whether FUN_00005448 sets busy state 0x20001b14 and how its target update reaches FUN_00004d18; preserve conditions. Report unsupported connection to timer activation and STOP on RF silence as open questions. Finish after relevant function evidence rather than peripheral inventory. Request case reconciliation review of unsupported causal composition.",
+ "firmware": "autopilot868",
+ "constraints": [
+  "Finish after relevant function evidence rather than peripheral inventory.",
+  "Report unsupported connections to timer activation and STOP on RF silence as open questions."
+ ],
+ "relations": [
+  {
+   "id": "R1",
+   "source": "FUN_00008258",
+   "target": "FUN_00005448",
+   "label": "RX dispatch invokes the F0 jog handler"
+  },
+  {
+   "id": "R2",
+   "source": "FUN_00005448",
+   "target": "FUN_00004d18",
+   "label": "jog handler reaches the motion target update"
+  },
+  {
+   "id": "R3",
+   "source": "FUN_00005448",
+   "target": "0x20001b14",
+   "label": "jog path writes the busy gate"
+  }
+ ],
+ "terms": [
+  "F0",
+  "jog",
+  "manual",
+  "channel0"
+ ],
+ "allow_broad_discovery": false
+}

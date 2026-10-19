@@ -17,6 +17,9 @@ development. Concrete target findings and evidence belong to a case under
 - [`toolchain.md`](toolchain.md) — build and development environment.
 - [`aptrace-agent-framework.md`](aptrace-agent-framework.md) — roadmap for the
   Galois-first binary map, local-model labeling, and investigation tooling.
+- [`objective-bounded-investigation.md`](objective-bounded-investigation.md) —
+  declared relations, operation relevance, progress tracking and the
+  unresolved-relation report for focused research runs.
 - [`research-ledger.md`](research-ledger.md) — research ledger, adversarial
   audit, and deterministic verification.
 - [`cross-engine-verification.md`](cross-engine-verification.md) — normative

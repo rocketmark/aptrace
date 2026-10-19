@@ -520,7 +520,16 @@ class PlannerProjection:
         return text
 
     def objective(self, session: ResearchSession) -> str:
-        return clip(session.state.objective, self.budget.objective)
+        text = " ".join(session.state.objective.split())
+
+        if len(text) <= self.budget.objective:
+            return text
+
+        # Say that text was lost rather than letting a clipped objective
+        # pass as complete. A focused run (research/objective.py) shows its
+        # declared objective whole instead.
+        kept = clip(text, self.budget.objective)
+        return f"{kept} [objective clipped: {len(text) - len(kept) + 3} more characters not shown]"
 
 
 def known_functions(observations: Iterable[EvidenceObservation]) -> list[str]:

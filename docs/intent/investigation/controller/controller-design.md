@@ -122,6 +122,7 @@ which are dropped silently (`lead_generation.py:704-708`).
   - `discovery_finished`
   - `planner_finished`
   - `step_budget_exhausted`
+  - `objective_stalled`, `objective_no_relevant_operation` (focused runs only)
 - *Fallback:* follow-up sessions fall back to a seeded lead on contract
   exhaustion.
 - *Exceptions:* exceptions during lead execution propagate.
@@ -139,6 +140,26 @@ which are dropped silently (`lead_generation.py:704-708`).
 **Planner configuration** (`:1141-1142`): temperature 0.0, `max_tokens`
 512. The client comes from `OMLX_BASE_URL`, `OMLX_API_KEY` and
 `APTRACE_MODEL`.
+
+## Objective-bounded runs
+
+When the controller is given an `ObjectiveSpec` with relations
+(`research/objective.py`), an `ObjectiveTracker` is created per run:
+
+- **Objective block:** every planner request (decision, discovery, final
+  claims, correction, candidate selection) starts with the complete question,
+  constraints, per-relation levels, relevant functions and scenarios, failed
+  and rejected operations, and the budget. The prose objective is not clipped.
+- **Relevance:** leads, peripheral and scenario enums are narrowed in the
+  palette; parse rejects unrelated requests and records the reason.
+  Discovery runs only with `allow_broad_discovery`.
+- **Progress:** each executed step is classified; `replan_after` low-value
+  steps add a REPLAN notice and `stall_limit` stops with `objective_stalled`.
+  No relevant operation stops with `objective_no_relevant_operation`.
+- **Report:** `ResearchRunResult.objective_report`; unresolved relations are
+  merged as open questions with source `objective`.
+
+Without relations nothing above applies.
 
 ## Projection and conclusion
 
@@ -196,6 +217,9 @@ which are dropped silently (`lead_generation.py:704-708`).
 | Reconciliation output | `SUPPORTED`, never `PROVEN` | Promote | `reconciliation.py:45`. |
 | Budgets | Character budgets | Token budgets | ~3.5–4 characters per token proxy (`projection.py:50-60`). |
 | Errors | Propagate out of `run` | Record and continue | Not stated `[inferred]`. |
+| Focused objectives (objective-v1) | Opt-in `ObjectiveSpec` with declared relations; APTrace holds the objective, gates relevance, classifies progress, stops on stall with a report | Longer prose objective; prompt-only instructions; model-judged relevance | The remote-to-motor runs drifted with a clipped objective and no failure memory; relevance and progress must be mechanical, not model judgment. See `docs/objective-bounded-investigation.md`. |
+| Relevance bound | Endpoints plus one static call hop; scenario relevance from registry metadata, declaration or evidence | Transitive spread; case-specific scenario lists | A fixed bound keeps relevance from following every lead; framework code names no case scenario. |
+| Relation levels | Per edge only, never composed | Compose into a chain | Composition and its verification are a separate, unbuilt capability. |
 
 ## Open Questions & Future Decisions
 
