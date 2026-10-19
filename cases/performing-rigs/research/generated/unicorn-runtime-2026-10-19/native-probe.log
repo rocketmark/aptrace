@@ -1,0 +1,5 @@
+Command: tools/unicorn/.venv/bin/python3 -u -c 'import ctypes,ctypes.util,unicorn; c=ctypes.CDLL(ctypes.util.find_library("c"),use_errno=True); v=ctypes.c_size_t(); n=ctypes.c_size_t(ctypes.sizeof(v)); r=c.sysctlbyname(b"hw.cachelinesize",ctypes.byref(v),ctypes.byref(n),None,0); print("sysctl",r,"errno",ctypes.get_errno(),"value",v.value,flush=True); u=unicorn.Uc(unicorn.UC_ARCH_ARM,unicorn.UC_MODE_THUMB|unicorn.UC_MODE_MCLASS); print("Uc constructed",flush=True); u.mem_map(0x1000,0x1000); print("mapped",flush=True)'
+Exit: 132
+
+sysctl -1 errno 1 value 0
+Uc constructed

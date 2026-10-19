@@ -39,6 +39,31 @@ Concrete execution is authoritative for what a chosen input does in the modeled
 environment. It is not proof over all inputs, and a peripheral stand-in remains
 a harness assumption that must be disclosed.
 
+## Native initialization failures on sandboxed macOS ARM64
+
+An import/version check does not exercise native engine initialization.
+Unicorn 2.1.4 can construct a `Uc` object, then fail with host SIGILL on the
+first `mem_map`. In the inspected macOS ARM64 library, `init_cache_info`
+queries `sysctlbyname("hw.cachelinesize")`; a failed query falls back to
+`mrs CTR_EL0`. A sandbox denial of the query can therefore lead to a native
+illegal-instruction failure before any guest instruction executes.
+
+First check the host crash report and the actual native-library path. Compare
+an existing regression and the documented CLI under the same interpreter;
+do not reinstall packages or change firmware to diagnose this boundary.
+The functional Unicorn check in `tools/doctor.sh` supplies a small existing
+execution example. A native process crash has no `RunResult`; preserve its
+exit status and host diagnostics separately.
+
+Command-policy matching can change the execution context. Where an existing
+policy authorizes a canonical command prefix, invoke that documented command
+directly. Adding interpreter options such as `-u`, shell redirection, or a
+compound shell wrapper may cause a different policy decision. This is not a
+Unicorn requirement about Python buffering. Do not broaden policy or disguise
+unapproved commands to make a test pass. Use `run_concrete.py --out PATH` for
+snapshots, or save the tool's returned output after a direct invocation.
+Record context-dependent failures even when an authorized invocation passes.
+
 The Performing Rigs case preserves its concrete scenario results and backend
 development record in
 [`cases/performing-rigs/docs/investigations/unicorn-backend-results.md`](../../cases/performing-rigs/docs/investigations/unicorn-backend-results.md).

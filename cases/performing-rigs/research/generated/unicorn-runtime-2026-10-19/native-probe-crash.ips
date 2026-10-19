@@ -1,0 +1,289 @@
+{"app_name":"Python","timestamp":"2026-10-19 16:37:02.00 -0400","app_version":"3.9.6","slice_uuid":"9805a778-2af0-3015-89ba-e894e66111c6","build_version":"3.9.6","platform":1,"bundleID":"com.apple.python3","share_with_app_devs":0,"is_first_party":0,"bug_type":"309","os_version":"macOS 26.6.2 (25G83)","roots_installed":0,"name":"Python","incident_id":"0CA1E75E-7BF5-4BB5-85EF-01883578CD36"}
+{
+  "uptime" : 590000,
+  "procRole" : "Unspecified",
+  "version" : 2,
+  "userID" : 501,
+  "deployVersion" : 210,
+  "modelCode" : "Mac16,11",
+  "coalitionID" : 16635,
+  "osVersion" : {
+    "train" : "macOS 26.6.2",
+    "build" : "25G83",
+    "releaseType" : "User"
+  },
+  "captureTime" : "2026-10-19 16:37:02.5329 -0400",
+  "codeSigningMonitor" : 2,
+  "incident" : "0CA1E75E-7BF5-4BB5-85EF-01883578CD36",
+  "pid" : 11931,
+  "translated" : false,
+  "cpuType" : "ARM-64",
+  "procLaunch" : "2026-10-19 16:37:02.4257 -0400",
+  "procStartAbsTime" : 14222480378451,
+  "procExitAbsTime" : 14222482942627,
+  "procName" : "Python",
+  "procPath" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/Resources\/Python.app\/Contents\/MacOS\/Python",
+  "bundleInfo" : {"CFBundleShortVersionString":"3.9.6","CFBundleVersion":"3.9.6","CFBundleIdentifier":"com.apple.python3"},
+  "buildInfo" : {"ProjectName":"python3","SourceVersion":"176000000000000","BuildVersion":"150"},
+  "storeInfo" : {"deviceIdentifierForVendor":"E9E25DCD-57D9-5286-BA83-7D84BE4084E4","thirdParty":true},
+  "parentProc" : "codex",
+  "parentPid" : 62705,
+  "coalitionName" : "com.microsoft.VSCode",
+  "crashReporterKey" : "E53DE2AB-D46D-BF9B-29ED-2D54C21DDF62",
+  "appleIntelligenceStatus" : {"reasons":["notOptedIn"],"state":"unavailable"},
+  "developerMode" : 1,
+  "responsiblePid" : 62679,
+  "responsibleProc" : "Code",
+  "codeSigningID" : "com.apple.python3",
+  "codeSigningTeamID" : "",
+  "codeSigningFlags" : 570442241,
+  "codeSigningValidationCategory" : 1,
+  "codeSigningTrustLevel" : 4294967295,
+  "codeSigningAuxiliaryInfo" : 0,
+  "instructionByteStream" : {"beforePC":"BACA0o00LJQAAQA16AtAucgAADRo2ge5\/XtCqfRPQan\/wwCRwANf1g==","atPC":"KAA71QgNABKJAIBSKCHIGmjaB7n9e0Kp9E9Bqf\/DAJHAA1\/W\/Xu\/qQ=="},
+  "bootSessionUUID" : "450CC3D4-3880-4438-A755-8C35F143053B",
+  "sip" : "enabled",
+  "exception" : {"codes":"0x0000000000000001, 0x00000000d53b0028","rawCodes":[1,3577413672],"type":"EXC_BAD_INSTRUCTION","signal":"SIGILL"},
+  "termination" : {"flags":0,"code":4,"namespace":"SIGNAL","indicator":"Illegal instruction: 4","byProc":"exc handler","byPid":11931},
+  "extMods" : {"caller":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"system":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"targeted":{"thread_create":0,"thread_set_state":0,"task_for_pid":0},"warnings":0},
+  "faultingThread" : 0,
+  "threads" : [{"triggered":true,"id":6169265,"threadState":{"x":[{"value":18446744073709551615},{"value":18446744073709551615},{"value":6122690616},{"value":6122690608},{"value":0},{"value":0},{"value":0},{"value":0},{"value":10786453242735165623},{"value":10786453242735165623},{"value":636715},{"value":1000000},{"value":480105},{"value":642884},{"value":24},{"value":48},{"value":202},{"value":8371581920},{"value":0},{"value":47394652160},{"value":7},{"value":4096},{"value":4096},{"value":6122691296},{"value":47394666792},{"value":4},{"value":0},{"value":4},{"value":6122691224}],"flavor":"ARM_THREAD_STATE64","lr":{"value":4448013400},"cpsr":{"value":1610612736},"fp":{"value":6122690640},"sp":{"value":6122690608},"esr":{"value":1647493377},"pc":{"value":4448013432,"matchesCrashFrame":1},"far":{"value":0}},"queue":"com.apple.main-thread","frames":[{"imageOffset":68728,"symbol":"init_cache_info","symbolLocation":88,"imageIndex":17},{"imageOffset":37396,"symbol":"machine_initialize","symbolLocation":36,"imageIndex":17},{"imageOffset":12596,"symbol":"uc_init_engine","symbolLocation":164,"imageIndex":17},{"imageOffset":22060,"symbol":"uc_mem_map","symbolLocation":688,"imageIndex":17},{"imageOffset":32848,"symbol":"ffi_call_SYSV","symbolLocation":80,"imageIndex":19},{"imageOffset":71096,"symbol":"ffi_call_int","symbolLocation":1220,"imageIndex":19},{"imageOffset":45888,"imageIndex":7},{"imageOffset":15324,"imageIndex":7},{"imageOffset":266620,"symbol":"_PyObject_MakeTpCall","symbolLocation":352,"imageIndex":1},{"imageOffset":1159984,"imageIndex":1},{"imageOffset":1148364,"symbol":"_PyEval_EvalFrameDefault","symbolLocation":15448,"imageIndex":1},{"imageOffset":1163304,"imageIndex":1},{"imageOffset":268760,"symbol":"_PyFunction_Vectorcall","symbolLocation":228,"imageIndex":1},{"imageOffset":1159888,"imageIndex":1},{"imageOffset":1148328,"symbol":"_PyEval_EvalFrameDefault","symbolLocation":15412,"imageIndex":1},{"imageOffset":1163304,"imageIndex":1},{"imageOffset":1132716,"symbol":"PyEval_EvalCode","symbolLocation":80,"imageIndex":1},{"imageOffset":1409412,"imageIndex":1},{"imageOffset":1409908,"imageIndex":1},{"imageOffset":1403708,"symbol":"PyRun_SimpleFileExFlags","symbolLocation":812,"imageIndex":1},{"imageOffset":1525988,"imageIndex":1},{"imageOffset":1523368,"symbol":"Py_RunMain","symbolLocation":1340,"imageIndex":1},{"imageOffset":1524420,"imageIndex":1},{"imageOffset":1524584,"symbol":"Py_BytesMain","symbolLocation":44,"imageIndex":1},{"imageOffset":132324,"symbol":"start","symbolLocation":6992,"imageIndex":20}]}],
+  "usedImages" : [
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4344184832,
+    "CFBundleShortVersionString" : "3.9.6",
+    "CFBundleIdentifier" : "com.apple.python3",
+    "size" : 16384,
+    "uuid" : "9805a778-2af0-3015-89ba-e894e66111c6",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/Resources\/Python.app\/Contents\/MacOS\/Python",
+    "name" : "Python",
+    "CFBundleVersion" : "3.9.6"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4351885312,
+    "CFBundleShortVersionString" : "3.9.6",
+    "CFBundleIdentifier" : "com.apple.python3",
+    "size" : 2539520,
+    "uuid" : "d096cc01-ada4-37c0-ada6-b4b6e1beab2b",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/Python3",
+    "name" : "Python3",
+    "CFBundleVersion" : "3.9.6"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4426874880,
+    "size" : 32768,
+    "uuid" : "457ada59-fd14-30bb-9ad1-7f076d638a26",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_heapq.cpython-39-darwin.so",
+    "name" : "_heapq.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4347805696,
+    "size" : 16384,
+    "uuid" : "c4895cea-e609-334b-8131-845931def4e5",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/grp.cpython-39-darwin.so",
+    "name" : "grp.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4351803392,
+    "size" : 16384,
+    "uuid" : "20bde52e-4775-31f2-a9a5-d5156c043b97",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_posixsubprocess.cpython-39-darwin.so",
+    "name" : "_posixsubprocess.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4347658240,
+    "size" : 32768,
+    "uuid" : "4d06f4b7-3535-3384-b2bf-8a570855b45b",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/select.cpython-39-darwin.so",
+    "name" : "select.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4427972608,
+    "size" : 49152,
+    "uuid" : "4d821dd7-a983-32bb-b6e3-303b287cb4c0",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/math.cpython-39-darwin.so",
+    "name" : "math.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4427759616,
+    "size" : 81920,
+    "uuid" : "c7f36a2e-a9f1-379f-b5c7-0b1d726990d4",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_ctypes.cpython-39-darwin.so",
+    "name" : "_ctypes.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4429053952,
+    "size" : 32768,
+    "uuid" : "aaf65e2c-f410-3ba0-bb08-09e00870e47c",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_struct.cpython-39-darwin.so",
+    "name" : "_struct.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4430200832,
+    "size" : 16384,
+    "uuid" : "db1dbebf-265e-3928-8d5a-98587a5321c8",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_opcode.cpython-39-darwin.so",
+    "name" : "_opcode.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4430544896,
+    "size" : 32768,
+    "uuid" : "7db684db-bca8-3b09-92b2-56f7974382a2",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/binascii.cpython-39-darwin.so",
+    "name" : "binascii.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4430905344,
+    "size" : 32768,
+    "uuid" : "2f8ee18a-568f-319d-ab23-ec1a9d04765e",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/zlib.cpython-39-darwin.so",
+    "name" : "zlib.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4431003648,
+    "size" : 16384,
+    "uuid" : "c7d1d24c-d14d-33fc-af51-9da246f758b1",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_bz2.cpython-39-darwin.so",
+    "name" : "_bz2.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4431085568,
+    "size" : 32768,
+    "uuid" : "e173a9a4-6a9f-3596-9468-b9a7d2303b72",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_lzma.cpython-39-darwin.so",
+    "name" : "_lzma.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4431183872,
+    "size" : 16384,
+    "uuid" : "8aff5b66-70ae-35a6-b4f6-08cfd8c8a33d",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_bisect.cpython-39-darwin.so",
+    "name" : "_bisect.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4431265792,
+    "size" : 16384,
+    "uuid" : "012cc332-ed8f-3a1c-be53-e765889bb86b",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_random.cpython-39-darwin.so",
+    "name" : "_random.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4431347712,
+    "size" : 32768,
+    "uuid" : "0ac2b8a2-f9ea-32ea-98fe-596012d50853",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_sha512.cpython-39-darwin.so",
+    "name" : "_sha512.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4447944704,
+    "size" : 12091392,
+    "uuid" : "1d49ef35-60ca-3ccd-90a6-fa5b1d4ab9e6",
+    "path" : "\/Users\/USER\/*\/libunicorn.2.dylib",
+    "name" : "libunicorn.2.dylib"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64",
+    "base" : 4431970304,
+    "size" : 32768,
+    "uuid" : "f08e6a49-ad8e-382d-9ac3-ec911b8e58a4",
+    "path" : "\/Applications\/Xcode.app\/Contents\/Developer\/Library\/Frameworks\/Python3.framework\/Versions\/3.9\/lib\/python3.9\/lib-dynload\/_csv.cpython-39-darwin.so",
+    "name" : "_csv.cpython-39-darwin.so"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6869237760,
+    "size" : 74280,
+    "uuid" : "b3a9c739-301d-3c6f-a0b6-3ae0b4e67cda",
+    "path" : "\/usr\/lib\/libffi.dylib",
+    "name" : "libffi.dylib"
+  },
+  {
+    "source" : "P",
+    "arch" : "arm64e",
+    "base" : 6521454592,
+    "size" : 734464,
+    "uuid" : "74e52480-c2bd-3c8d-812d-95fe2b74a096",
+    "path" : "\/usr\/lib\/dyld",
+    "name" : "dyld"
+  },
+  {
+    "size" : 0,
+    "source" : "A",
+    "base" : 0,
+    "uuid" : "00000000-0000-0000-0000-000000000000"
+  }
+],
+  "sharedCache" : {
+  "base" : 6520324096,
+  "size" : 6010847232,
+  "uuid" : "f2e86c53-6052-388b-ba71-5a0c9b569413"
+},
+  "legacyInfo" : {
+  "threadTriggered" : {
+    "queue" : "com.apple.main-thread"
+  }
+},
+  "logWritingSignature" : "2696444fc0f1691b036451bc75de1e6d27dda421",
+  "roots_installed" : 0,
+  "bug_type" : "309",
+  "trmStatus" : 8192,
+  "trialInfo" : {
+  "rollouts" : [
+    {
+      "rolloutId" : "648cada15dbc71671bb3aa1b",
+      "factorPackIds" : [
+        "65a81173096f6a1f1ba46525"
+      ],
+      "deploymentId" : 240000116
+    },
+    {
+      "rolloutId" : "60f8ddccefea4203d95cbeef",
+      "factorPackIds" : [
+
+      ],
+      "deploymentId" : 240000025
+    }
+  ],
+  "experiments" : [
+
+  ]
+}
+}
