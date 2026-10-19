@@ -375,17 +375,24 @@ Headline items still unresolved:
 ## Tooling limitations that still matter
 
 - **Original AutoPilot on Feather minimum READY conditions (2026-10-19):**
-  unresolved beyond historical modeled receive-loop startup. PA22 plus the
-  radio-ID stand-in restores the successful AutoPilot execution assumptions,
-  but neither READY nor USB responsiveness has been verified. Fresh comparison,
-  ten-instruction reset replay and existing regressions all fail with host
-  Unicorn 2.1.4 SIGILL in `init_cache_info` during `uc_mem_map`, before target
-  execution. No new target blocker is inferred. Six motor-output/QSPI net
-  conflicts rule out recommending an intact-Feather trial; earlier advice to
-  test whether the flash survives is superseded. See
-  [minimum startup / READY report](docs/investigations/feather-minimum-ready.md)
-  for separate milestones, partial regression results, the candidate recipe,
-  USB assessment and next discrimination experiment.
+  configured command-responsive AutoPilot868 operation is now reproduced
+  twice, with identical snapshots, through the validated direct CLI. PA22
+  must be high through the startup wait and released for the tested sustained
+  operation; holding it high exposes a zero-NVM-geometry save loop. The
+  radio-ID stand-in plus input release sustains startup polling, but MC4
+  configuration is additionally needed to clear `0x20000060` and enter the
+  actual loop at `0x93fc`. A later RAM-ring-injected `&|` causes the original
+  outbound dispatcher to send `V01R39`; 1305 loop entries are observed and the
+  known motion-commit stop guard is not hit. This is modeled application
+  responsiveness, not independently verified vendor-specific READY, USB
+  responsiveness or a safe physical minimum. No motor peripheral model was
+  needed, but zero-behavior readbacks falsely imply presence (`MT11112|`),
+  observed periodically in setup. Six QSPI net conflicts still prohibit
+  recommending an intact-Feather trial. See the
+  [resumed report](docs/investigations/feather-ready-resumed.md) for replay
+  commands, controls, assumptions and remaining evidence requirements, and
+  [runtime diagnosis](docs/investigations/unicorn-runtime-failure.md) for why
+  the comparison wrapper remains unsuitable in its current launch context.
 
 - **Readonly flash vs. plain Crucible execution**: a whole-function
   symbolic replay through a literal-pool-derived branch doesn't fold

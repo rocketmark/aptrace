@@ -1,5 +1,11 @@
 # Original AutoPilot on Feather M4: minimum startup and READY investigation
 
+> **Continuation:** [Resumed investigation](feather-ready-resumed.md) now
+> reproduces configured, command-responsive operation through the validated
+> direct CLI. It identifies the PA22 release requirement, NVM save-loop
+> artifact and MC4 configuration gate. The execution blocker described below
+> is historical; USB and safe physical execution remain unverified.
+
 Date: 2026-10-19. Result: **partial; stopped at a concrete execution blocker,
 not a demonstrated firmware READY blocker.** No board was flashed, firmware
 changed, replacement firmware built, or physical motor operated. APTrace

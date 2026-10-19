@@ -2,14 +2,14 @@
 
 ## Feather original-firmware READY follow-up (2026-10-19)
 
-Restore supported Unicorn execution first: current baseline, reduced reset
-and existing regression suite crash in host `init_cache_info` before firmware
-execution. Then replay the PA22/radio-ID matrix, observe the >700-tick setup
-transmit branch and firmware-produced state, and ground a READY criterion
-before adding READY regressions. Assess USB enumeration and command replies
-separately. No intact-Feather execution trial: validate electrical isolation
-of all six onboard QSPI conflicts first. See
-[report and acceptance matrix](docs/investigations/feather-minimum-ready.md).
+Configured application operation and version response are now reproducible
+through the direct CLI, using PA22 high then release, the existing radio-ID
+stand-in and an MC4 configuration exchange. Next: ground any stronger product
+READY predicate, deliver transactions through a validated radio/absent-device
+model, and assess USB enumeration and command replies separately. Replay the
+new controls before extending to AutoPilot915. No intact-Feather execution
+trial: validate electrical isolation of all six onboard QSPI conflicts first.
+See [resumed report and regressions](docs/investigations/feather-ready-resumed.md).
 
 Current, unfinished work only. For what's already proven and how the
 system got here, see [`cases/performing-rigs/status.md`](status.md)

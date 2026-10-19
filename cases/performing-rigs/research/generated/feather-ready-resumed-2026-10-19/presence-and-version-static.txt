@@ -1,0 +1,53 @@
+==================================================
+Function: FUN_0000a970 @ 0000a970  size=18  params=0  callingConvention=unknown
+
+
+uint FUN_0000a970(int *param_1)
+
+{
+  uint uVar1;
+  
+  uVar1 = (**(code **)(*param_1 + 0x10))();
+  return (uVar1 & 0x3fffffff) >> 0x1d;
+}
+
+
+
+==================================================
+Function: FUN_0000a982 @ 0000a982  size=18  params=0  callingConvention=unknown
+
+
+uint FUN_0000a982(int *param_1)
+
+{
+  uint uVar1;
+  
+  uVar1 = (**(code **)(*param_1 + 0x10))();
+  return (uVar1 & 0x7fffffff) >> 0x1e;
+}
+
+
+
+==================================================
+Function: FUN_00004328 @ 00004328  size=32  params=0  callingConvention=unknown
+
+
+void FUN_00004328(void)
+
+{
+  undefined1 *puVar1;
+  
+  puVar1 = DAT_00004348;
+  *DAT_00004348 = 0x56;
+  puVar1[1] = 0x30;
+  puVar1[2] = 0x31;
+  puVar1[3] = 0x52;
+  puVar1[4] = 0x33;
+  puVar1[5] = 0x39;
+  puVar1[6] = 0;
+  return;
+}
+
+
+
+

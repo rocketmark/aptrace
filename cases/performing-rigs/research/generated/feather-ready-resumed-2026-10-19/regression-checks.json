@@ -1,0 +1,53 @@
+{
+  "scope": "Mechanical checks of saved APTrace CLI replay evidence; no separate execution engine or vendor READY oracle",
+  "checks": [
+    {
+      "check": "all 17 captured runs have no Unicorn target error",
+      "passed": true
+    },
+    {
+      "check": "neither and ID-only stay before startup exit",
+      "passed": true
+    },
+    {
+      "check": "PA22 alone reaches probe but not receive loop",
+      "passed": true
+    },
+    {
+      "check": "input release produces repeated receive and TX calls",
+      "passed": true
+    },
+    {
+      "check": "released-input repeat is byte-identical",
+      "passed": true
+    },
+    {
+      "check": "extended released-input run advances without erase entry",
+      "passed": true
+    },
+    {
+      "check": "preconfiguration query stays pending without event dispatch",
+      "passed": true
+    },
+    {
+      "check": "MC4 clears flag and reaches bounded operational entry",
+      "passed": true
+    },
+    {
+      "check": "configured query produces firmware version and drains events",
+      "passed": true
+    },
+    {
+      "check": "configured operation repeats byte-identically",
+      "passed": true
+    },
+    {
+      "check": "no NVM DONE assumption needed for tested configured behavior",
+      "passed": true
+    },
+    {
+      "check": "watch-cap termination is not mislabeled completed",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,364 @@
+{
+  "both": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x00009464": 1,
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 11,
+      "0x000094d0": 2,
+      "0x00008c10": 2
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20001fc0": "0200000000000000",
+      "0x20000060": "010000002602000001140100d0070000"
+    },
+    "version_tx": [],
+    "sha256": "19f5ac73519159b6967e66fe24364a43f86ec7e85e758d6bcf6ed462e8a4f91c"
+  },
+  "config-handoff": {
+    "instructions": 11880918,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008a34": 1,
+      "0x00008258": 1,
+      "0x00008718": 1,
+      "0x000094e4": 1
+    },
+    "final_memory": {
+      "0x20000060": "00000000260200000114010040060000",
+      "0x2000006c": "40060000400600004006000040060000"
+    },
+    "version_tx": [],
+    "sha256": "92b4954a164bb4d1243f29725fe3837315cb675d1f31b34210808be9095559e5"
+  },
+  "config-identity-operational-repeat": {
+    "instructions": 17960240,
+    "stop_reason": "max watch hits (2000) reached at 0x000093fc",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008a34": 2,
+      "0x00008258": 2,
+      "0x00008718": 1,
+      "0x000094e4": 1,
+      "0x000093fc": 1305,
+      "0x00009268": 684,
+      "0x00008c10": 4
+    },
+    "final_memory": {
+      "0x200025bc": "000000000000000000000000000000000000",
+      "0x20000060": "00000000260200000114010040060000",
+      "0x2000006c": "40060000400600004006000040060000"
+    },
+    "version_tx": [
+      {
+        "instruction": 12095830,
+        "bytes": "56303152333900000000000000000000"
+      }
+    ],
+    "sha256": "e8c3bfd4a344108e8d980151832d6593c77ef40c896873318914c40c0a7b90c5"
+  },
+  "config-identity-operational": {
+    "instructions": 17960240,
+    "stop_reason": "max watch hits (2000) reached at 0x000093fc",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008a34": 2,
+      "0x00008258": 2,
+      "0x00008718": 1,
+      "0x000094e4": 1,
+      "0x000093fc": 1305,
+      "0x00009268": 684,
+      "0x00008c10": 4
+    },
+    "final_memory": {
+      "0x200025bc": "000000000000000000000000000000000000",
+      "0x20000060": "00000000260200000114010040060000",
+      "0x2000006c": "40060000400600004006000040060000"
+    },
+    "version_tx": [
+      {
+        "instruction": 12095830,
+        "bytes": "56303152333900000000000000000000"
+      }
+    ],
+    "sha256": "e8c3bfd4a344108e8d980151832d6593c77ef40c896873318914c40c0a7b90c5"
+  },
+  "held-nvm-geometry": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 25,
+      "0x000094d0": 16,
+      "0x00008c10": 16,
+      "0x000098f0": 15
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x20004148": "00020000000400000000080000200000"
+    },
+    "version_tx": [],
+    "sha256": "9b61c655bd4dc7d97b8c740f17cd8488998ec3d87f0b98e8e1fb5da0eab22459"
+  },
+  "held-zero-geometry": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 11,
+      "0x000094d0": 2,
+      "0x00008c10": 2,
+      "0x000098f0": 1
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x20004148": "08000000000000000000000000000000"
+    },
+    "version_tx": [],
+    "sha256": "335221792fbef4dbed9c28236153c3073546c1a16fe052511b1f2f3347e4b136"
+  },
+  "id": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x00009464": 1
+    },
+    "final_memory": {
+      "0x20002548": "00000000000000000000000000000000",
+      "0x20001fc0": "0200000000000000",
+      "0x20000060": "010000002602000001140100d0070000"
+    },
+    "version_tx": [],
+    "sha256": "6ad74b691aacad667ed4ae91be39bbce7118b1142fd923db91ad0f48a42b0aa3"
+  },
+  "neither": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x00009464": 1
+    },
+    "final_memory": {
+      "0x20002548": "00000000000000000000000000000000",
+      "0x20001fc0": "0200000000000000",
+      "0x20000060": "010000002602000001140100d0070000"
+    },
+    "version_tx": [],
+    "sha256": "6ad74b691aacad667ed4ae91be39bbce7118b1142fd923db91ad0f48a42b0aa3"
+  },
+  "operational-no-nvm-done": {
+    "instructions": 17960240,
+    "stop_reason": "max watch hits (2000) reached at 0x000093fc",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008a34": 2,
+      "0x00008258": 2,
+      "0x00008718": 1,
+      "0x000094e4": 1,
+      "0x000093fc": 1305,
+      "0x00009268": 684,
+      "0x00008c10": 4
+    },
+    "final_memory": {
+      "0x200025bc": "000000000000000000000000000000000000",
+      "0x20000060": "00000000260200000114010040060000",
+      "0x2000006c": "40060000400600004006000040060000"
+    },
+    "version_tx": [
+      {
+        "instruction": 12095830,
+        "bytes": "56303152333900000000000000000000"
+      }
+    ],
+    "sha256": "1f9d11a06b06420f1a0b6854d6532526ed49292ffb51ea3d31ee386f992e11dc"
+  },
+  "pa22": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x00009464": 1,
+      "0x000069d8": 1,
+      "0x00009dd4": 1
+    },
+    "final_memory": {
+      "0x20002548": "00000000000000000000000000000000",
+      "0x20001fc0": "0200000000000000",
+      "0x20000060": "010000002602000001140100d0070000"
+    },
+    "version_tx": [],
+    "sha256": "8e63a3fdbaa175e8146e259d4121eff3c70186488d8fdc7a71f073251d14ae8e"
+  },
+  "preconfig-pending": {
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008960": 621,
+      "0x00008a34": 1,
+      "0x00008258": 1,
+      "0x00008c10": 8
+    },
+    "final_memory": {
+      "0x200025bc": "000000000001000000000000000100000000",
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x200024c0": "0200000002000000"
+    },
+    "version_tx": [],
+    "sha256": "6629dcd0bc64777540c9109e7abf2ce51b6a18a28a8cd698fb5cde786e39ab75"
+  },
+  "release-extended": {
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 602,
+      "0x000094d0": 120,
+      "0x00008c10": 120
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x20004148": "08000000000000000000000000000000"
+    },
+    "version_tx": [],
+    "sha256": "34b2dbf6b133de1f3c0a3f6bd0e2f039cbf72fe6407e1284450086982bf94586"
+  },
+  "release-no-nvm-done": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 190,
+      "0x000094d0": 38,
+      "0x00008c10": 38
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x20004148": "08000000000000000000000000000000"
+    },
+    "version_tx": [],
+    "sha256": "98b8e8d008c382eccd4861a5963ab69d97607a6945ab6830cb463815d1bee4bc"
+  },
+  "release-repeat": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 190,
+      "0x000094d0": 38,
+      "0x00008c10": 38
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x20004148": "08000000000000000000000000000000"
+    },
+    "version_tx": [],
+    "sha256": "261c2ea9868ba18075a1462260356003745dc7b7896ea04fd697247509b524ed"
+  },
+  "release": {
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000069d8": 1,
+      "0x00009dd4": 1,
+      "0x000094b8": 1,
+      "0x00008960": 190,
+      "0x000094d0": 38,
+      "0x00008c10": 38
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x20004148": "08000000000000000000000000000000"
+    },
+    "version_tx": [],
+    "sha256": "261c2ea9868ba18075a1462260356003745dc7b7896ea04fd697247509b524ed"
+  },
+  "released-identity-corrected": {
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008960": 621,
+      "0x00008a34": 1,
+      "0x00008258": 1,
+      "0x00008c10": 8
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x200024c0": "0200000002000000"
+    },
+    "version_tx": [],
+    "sha256": "d25daca2c4472655751695bd094af48b15598e69d17618af56e398e0259755b5"
+  },
+  "released-identity": {
+    "instructions": 7601903,
+    "stop_reason": "max watch hits (2000) reached at 0x00008c10",
+    "error": null,
+    "completed": true,
+    "watch_counts": {
+      "0x000094b8": 1,
+      "0x00008960": 1972,
+      "0x00008c10": 27
+    },
+    "final_memory": {
+      "0x20002548": "4d5431313131327c0000000000000000",
+      "0x20000060": "010000002602000001140100d0070000",
+      "0x200024c0": "0000000000000000"
+    },
+    "version_tx": [],
+    "sha256": "3d33f4ddcf6966149264361acd2c4c44522fa05f99956f27d9879330508984fa"
+  }
+}

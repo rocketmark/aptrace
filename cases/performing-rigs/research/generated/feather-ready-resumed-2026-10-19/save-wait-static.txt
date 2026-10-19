@@ -1,0 +1,114 @@
+==================================================
+Function: nvm_erase_call__UNKNOWN @ 000098f0  size=30  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: UNKNOWN -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void nvm_erase_call__UNKNOWN(int param_1,int param_2,uint param_3)
+
+{
+  undefined8 uVar1;
+  
+  for (; *(uint *)(param_1 + 0xc) < param_3; param_3 = param_3 - *(int *)(param_1 + 0xc)) {
+    uVar1 = nvm_bulk_erase__UNKNOWN(param_1,param_2);
+    param_1 = (int)uVar1;
+    param_2 = (int)((ulonglong)uVar1 >> 0x20) + *(int *)(param_1 + 0xc);
+  }
+  nvm_bulk_erase__UNKNOWN(param_1,param_2);
+  return;
+}
+
+
+
+==================================================
+Function: loop_housekeeping_save_trigger__CUSTOM @ 00005dd0  size=226  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void loop_housekeeping_save_trigger__CUSTOM(void)
+
+{
+  char cVar1;
+  int *piVar2;
+  undefined4 *puVar3;
+  char *pcVar4;
+  char *pcVar5;
+  undefined4 uVar6;
+  int iVar7;
+  int iVar8;
+  uint uVar9;
+  
+  iVar7 = millis__ADAFRUIT_CORE();
+  piVar2 = DAT_00005eb8;
+  if (3000 < (uint)(iVar7 - *DAT_00005eb4)) {
+    *DAT_00005ebc = 0;
+  }
+  iVar7 = millis__ADAFRUIT_CORE();
+  if (*DAT_00005ec0 < (uint)(iVar7 - *piVar2)) {
+    iVar7 = millis__ADAFRUIT_CORE();
+    puVar3 = DAT_00005ec4;
+    *piVar2 = iVar7;
+    *puVar3 = 0x578;
+    FUN_00004440();
+  }
+  iVar8 = FUN_0000d3dc(1);
+  iVar7 = DAT_00005ee4;
+  piVar2 = DAT_00005ecc;
+  pcVar4 = DAT_00005ec8;
+  if (iVar8 == 0) {
+    if (*DAT_00005ed8 != '\0') {
+      *DAT_00005ed8 = '\0';
+      *(undefined1 *)(iVar7 + 0x10) = 3;
+    }
+    *pcVar4 = '\0';
+    *DAT_00005edc = '\x01';
+  }
+  else {
+    if (*DAT_00005ec8 != '\0') {
+      iVar7 = millis__ADAFRUIT_CORE();
+      pcVar5 = DAT_00005ed0;
+      if (1000 < (uint)(iVar7 - *piVar2)) {
+        if (*DAT_00005ed0 != '\0') {
+          FUN_00005d24();
+          delay__STANDARD_LIBRARY(500);
+          FUN_0000434c();
+          *pcVar5 = '\0';
+        }
+        channel0_move_complete__CUSTOM();
+        uVar6 = DAT_00005ed4;
+        *DAT_00005ebc = 1;
+        FUN_000095c8(uVar6,200,0);
+        do {
+                    /* WARNING: Do nothing block with infinite loop */
+        } while( true );
+      }
+      if (*pcVar4 != '\0') {
+        return;
+      }
+    }
+    pcVar5 = DAT_00005edc;
+    *DAT_00005ed8 = '\x01';
+    *pcVar4 = *pcVar5;
+    iVar7 = millis__ADAFRUIT_CORE();
+    cVar1 = *pcVar5;
+    *piVar2 = iVar7;
+    if ((cVar1 == '\0') && (uVar9 = millis__ADAFRUIT_CORE(), 20000 < uVar9)) {
+      config_write_byte_dirty_setter__CUSTOM(DAT_00005ee0,0x14,0);
+      channel0_move_complete__CUSTOM();
+      *DAT_00005ebc = 1;
+    }
+  }
+  return;
+}
+
+
+
+==================================================
+No function at 000095a8 (seed it first via APTraceSeedVectorTable.java)
+
+
