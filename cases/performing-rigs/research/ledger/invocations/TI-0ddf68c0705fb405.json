@@ -1,0 +1,26 @@
+{
+  "arguments": {
+    "function": "FUN_0000984c",
+    "specialize": {}
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:17:56.594+00:00",
+  "error": null,
+  "evidence_id": "EV-cad3cdf1782aa97a",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-0ddf68c0705fb405",
+  "operation_key": "f17df6a71ce8baf757e3ac09076001bc752977a07d60fb7b6561fe5bd4712a49",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "97f98ecf6314c47ec621c7cca340bc183a5616b92cbddfff301eb3f0db6630ab",
+  "run_id": "R-20261019T211813-2ea211",
+  "runtime_ms": 3754.707,
+  "session_evidence_id": "E3",
+  "started_at": "2026-10-19T21:17:52.839+00:00",
+  "status": "ok",
+  "tool": "function_effects"
+}

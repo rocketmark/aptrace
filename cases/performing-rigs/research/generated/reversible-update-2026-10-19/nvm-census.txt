@@ -1,0 +1,15 @@
+NVMCTRL  base=0x41004000  size=0x30  static access_count=13
+  0x00009822  nvm_param_object_ctor__CUSTOM  PARAM  [READ]
+  0x0000982e  nvm_param_object_ctor__CUSTOM  PARAM  [READ]
+  0x00009852  nvm_write_call__UNKNOWN  CTRLA  [READ]
+  0x0000985e  nvm_write_call__UNKNOWN  CTRLA  [WRITE]
+  0x0000986c  nvm_write_call__UNKNOWN  CTRLB  [WRITE]
+  0x00009870  nvm_write_call__UNKNOWN  INTFLAG  [READ]
+  0x000098be  nvm_write_call__UNKNOWN  CTRLB  [WRITE]
+  0x000098c2  nvm_write_call__UNKNOWN  INTFLAG  [READ]
+  0x000098de  nvm_bulk_erase__UNKNOWN  ADDR  [WRITE]
+  0x000098e0  nvm_bulk_erase__UNKNOWN  CTRLB  [WRITE]
+  0x000098e2  nvm_bulk_erase__UNKNOWN  INTFLAG  [READ]
+  0x0000cdda  FUN_0000cdd8  CTRLA  [READ]
+  0x0000cdde  FUN_0000cdd8  CTRLA  [WRITE]
+  dynamically touched in scenario(s): boot

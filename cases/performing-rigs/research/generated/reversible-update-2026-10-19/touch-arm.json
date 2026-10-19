@@ -1,0 +1,111 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "entry": "0x0000b7a9",
+  "instructions_executed": 31,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "registers": {
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "r2": "0x000004b0",
+    "r3": "0x20000224",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x0000b7ef",
+    "pc": "0x2fff0010",
+    "cpsr": "0x60100033"
+  },
+  "memory": {
+    "0x200001a0": "b004000000000000",
+    "0x20000224": "fa000000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x0000b7a8",
+    "0x0000b7aa",
+    "0x0000b7ac",
+    "0x0000b7ae",
+    "0x0000b7b0",
+    "0x0000b7c4",
+    "0x0000b7c6",
+    "0x0000b7c8",
+    "0x0000b7ca",
+    "0x0000b7f2",
+    "0x0000b7f4",
+    "0x0000b7f6",
+    "0x0000b7f8",
+    "0x0000b7fa",
+    "0x0000b7fc",
+    "0x0000b7d6",
+    "0x0000b7d8",
+    "0x0000b7da",
+    "0x0000b7de",
+    "0x0000b7e0",
+    "0x0000b7e2",
+    "0x0000b7e6",
+    "0x0000b7e8",
+    "0x0000b7ea",
+    "0x0000d4c0",
+    "0x0000d4c2",
+    "0x0000d4c4",
+    "0x0000b7ee",
+    "0x0000b7f0",
+    "0x0000b7c2",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20001000",
+      "len": 8,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200001a0",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000224",
+      "len": 4,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x0000b7a8",
+    "args": [
+      "0x20001000"
+    ],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x00000000",
+      "r1": "0x00000000",
+      "r2": "0x000004b0",
+      "r3": "0x20000224"
+    }
+  }
+}

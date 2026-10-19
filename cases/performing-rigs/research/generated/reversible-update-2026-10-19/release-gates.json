@@ -1,0 +1,83 @@
+{
+  "assessment": "Operator evidence assessment; no physical PASS inferred from simulation",
+  "recommendation": "NO-GO",
+  "production_requirement": "All six gates PASS; F must be qualified on representative non-production hardware before production",
+  "gates": [
+    {
+      "gate": "A",
+      "status": "PARTIAL",
+      "evidence": [
+        "E1",
+        "E2",
+        "E5"
+      ],
+      "missing": "Bootloader version/image/capabilities and reliable entry without application execution are missing.",
+      "software_next": "Identify supplied bootloader/monitor documentation and exact host build.",
+      "physical_next": "Capture identity read-only; subsequently demonstrate hardware entry on an authorized engineering unit.",
+      "consequence": "Broken application may remove the only USB update path."
+    },
+    {
+      "gate": "B",
+      "status": "PARTIAL",
+      "evidence": [
+        "E1",
+        "E3",
+        "E4"
+      ],
+      "missing": "Actual BOOTPROT/BPDIS/security/locks and version-specific erase/offset/verify scope are unknown.",
+      "software_next": "Inspect version-matched BOSSA source and apfw2 flash/linker manifests.",
+      "physical_next": "Read protection/geometry; qualify bounded writes and sentinel preservation on a sacrificial equivalent.",
+      "consequence": "Wrong erase or protection operation can destroy bootloader or state."
+    },
+    {
+      "gate": "C",
+      "status": "PARTIAL",
+      "evidence": [
+        "E1",
+        "E3"
+      ],
+      "missing": "No unit-bound original full flash/bootloader/state backup, installed-version match or physical restoration proof.",
+      "software_next": "Preserve image identities and separate code-versus-state readback manifests.",
+      "physical_next": "Identify unit and region; capture duplicate consistent backups and test restoration.",
+      "consequence": "Vendor application may be wrong for the unit or insufficient after wider corruption."
+    },
+    {
+      "gate": "D",
+      "status": "BLOCKED",
+      "evidence": [
+        "E3",
+        "E4"
+      ],
+      "missing": "Configuration overlaps application; live backups and apfw2-compatible partition/schema contract are absent.",
+      "software_next": "Compare actual apfw2 map, erase behavior and versioned data contract.",
+      "physical_next": "Back up complete readable device/state/fuse/calibration evidence and verify same-board restoration.",
+      "consequence": "Settings may be lost or restored into replacement code; downgraded behavior may be unsafe."
+    },
+    {
+      "gate": "E",
+      "status": "BLOCKED",
+      "evidence": [
+        "E5"
+      ],
+      "missing": "Accessible SWD/reset routing, voltage, security access and independent recovery procedure are unverified.",
+      "software_next": "Prepare a board-specific offline recovery manifest and compatible probe procedure.",
+      "physical_next": "Verify routing unpowered, then authorized read-only attach and app-independent recovery on engineering hardware.",
+      "consequence": "USB loss may make unit unrecoverable; destructive unlock may erase the only original state."
+    },
+    {
+      "gate": "F",
+      "status": "BLOCKED",
+      "evidence": [
+        "E1",
+        "E2",
+        "E3",
+        "E5",
+        "E6"
+      ],
+      "missing": "No qualified apfw2 release or physical upgrade/downgrade/interruption recovery demonstration.",
+      "software_next": "Supply release hash/map and approve an interruption/rollback test plan.",
+      "physical_next": "Perform controlled round trip and representative interrupted-update recovery on non-production hardware after A-E closure.",
+      "consequence": "Normal update success would leave failure recovery and downgrade unproven."
+    }
+  ]
+}

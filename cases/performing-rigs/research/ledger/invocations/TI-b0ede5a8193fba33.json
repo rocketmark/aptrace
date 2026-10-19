@@ -1,0 +1,26 @@
+{
+  "arguments": {
+    "limit": 25,
+    "peripheral": "NVMCTRL"
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:18:00.802+00:00",
+  "error": null,
+  "evidence_id": "EV-3d4f592a40f7fa8f",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-b0ede5a8193fba33",
+  "operation_key": "d16322169bc734383e94edf20eae770b12cadd8dc3e67dbe7b5251bd85605684",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "77ccae41fdd8126e62eca5a427739f4249f082b2ed08492e0948299ff7a94983",
+  "run_id": "R-20261019T211813-2ea211",
+  "runtime_ms": 7.646,
+  "session_evidence_id": "E4",
+  "started_at": "2026-10-19T21:18:00.794+00:00",
+  "status": "ok",
+  "tool": "census_peripheral_usage"
+}

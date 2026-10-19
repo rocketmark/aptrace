@@ -199,15 +199,22 @@ electrical signal up to 48 V, either polarity.
 
 ## Bootloader / Flashing
 
-- Flasher: `bossac` (BOSSA), the standard tool for Atmel/Microchip SAM-D/E
-  parts with a UART/USB bootloader.
-- Device enumerates under USB VID `0x239A` (Adafruit Industries); board
-  enters the bootloader via the standard 1200-baud touch-reset.
-- Bootloader occupies the first 16 KB of flash (`0x0000`–`0x3FFF`);
-  application images are flashed starting at offset **`0x4000`**.
-- Vendor updater tool: **NOXON Firmware Uploader**, Windows-only.
-- After programming, the updater issues a Cortex-M software reset via the
-  AIRCR register (`0xE000ED0C`).
+- The vendor package contains Windows `bossac.exe` and a batch file named
+  **NOXON Firmware Uploader**. It filters serial-device text for `VID_239A`,
+  attempts a 1200-baud touch, waits, then requests write/verify at **`0x4000`**
+  and reset (`-R`). These are package observations, not a captured physical
+  enumeration, bootloader version or successful update transcript.
+- `[0,0x4000)` is the expected pre-application reservation. Actual bootloader
+  bytes, identity, size, protection and independent hardware entry are not
+  established; stock Adafruit/UF2 identity must not be inferred from the VID.
+- Original application evidence establishes a 1200-baud/control-bit predicate
+  that arms a countdown, then boot-magic/AIRCR reset-request stores. It does
+  not establish physical reset completion, bootloader consumption or recovery
+  without a working application. The host updater's `-R` is not proof that
+  it executes the application's AIRCR block.
+- Production firmware replacement is **NO-GO** pending the independent entry,
+  protection, backup, state-preservation and recovery gates in the
+  [reversible-update assessment](../investigations/reversible-firmware-update.md).
 
 ## Firmware File Inventory
 

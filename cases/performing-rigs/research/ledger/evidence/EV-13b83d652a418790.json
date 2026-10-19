@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "bootloader identity"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a857980f729acb06",
+  "evidence_id": "EV-13b83d652a418790",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "PROBABLE",
+  "grade_basis": "case documents (documentary)",
+  "invocation_id": "TI-628ebd9c1b605fa1",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 6252,
+  "result_sha256": "2b4f83116e71a332ecf6cac184deb3b0ae2cbce824ef7e2075a4102a41ac43d0",
+  "summary": "",
+  "tool": "search_case_evidence"
+}

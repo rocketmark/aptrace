@@ -25,10 +25,12 @@ bossac -i -d --port=%com% -U -i --offset=0x4000 -w -v %FILENAME% -R
 
 - Uses `bossac` (BOSSA), the standard flasher for Atmel/Microchip SAM-D/E parts with a
   UART/USB bootloader (used by Arduino Due/Zero and all Adafruit SAMD boards).
-- Device is found via `wmic ... | findstr VID_239A` — **USB VID 0x239A is Adafruit
-  Industries**. Board enters bootloader via the classic 1200-baud touch-reset trick.
+- The script searches via `wmic ... | findstr VID_239A` and attempts a 1200-baud
+  touch. This is vendor procedure evidence; physical enumeration, successful
+  entry and recovery without application USB are not established by the script.
 - `--offset=0x4000`: application is flashed starting at flash address **0x00004000**,
-  i.e. after a 16 KB bootloader region. **The `.bin` files are the application image
+  i.e. after an inferred 16 KB pre-application reservation, whose actual bootloader
+  contents and protection have not been read. **The `.bin` files are the application image
   only — file offset 0 corresponds to flash address 0x4000, not 0x0.**
 
 ## MCU identification
@@ -46,8 +48,10 @@ This directly names the MCU and toolchain:
   SAMD21 (Cortex-M0+). Confirmed independently by the initial stack pointer (see below).
 - **Toolchain: Arduino IDE + Adafruit SAMD board package v1.7.11** (`arm-none-eabi-gcc`
   under the hood, Adafruit's fork of the Arduino SAMD core).
-- **Bootloader: Adafruit UF2/bossac-style bootloader**, 16 KB (`0x0`–`0x3FFF`), consistent
-  with the `--offset=0x4000` flashing command.
+- **Bootloader identity unknown.** The vendor command implies intended BOSSA
+  compatibility and a reserved `[0,0x4000)` interval. It does not establish
+  stock Adafruit/UF2 code, actual size, protection or capabilities. See the
+  [reversible-update release gates](../investigations/reversible-firmware-update.md).
 
 Initial stack pointer in every image is `0x20030000` = `0x20000000 + 0x30000` (192 KB from
 RAM base), consistent with the x19 die variants (512 KB flash / 192 KB SRAM).

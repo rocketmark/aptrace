@@ -1,5 +1,15 @@
 # Harness Roadmap
 
+## Production upgrade/downgrade release gates
+
+Production replacement is NO-GO: obtain actual bootloader/BOSSA provenance,
+application-independent entry, live protection/erase bounds, unit-bound full
+backups, apfw2 layout/state compatibility, verified SWD or equivalent recovery,
+and a representative non-production round trip with interruption recovery.
+These require separately authorized physical evidence; no board operations
+were performed in the assessment. See
+[six-gate plan](docs/investigations/reversible-firmware-update.md).
+
 ## Feather original-firmware READY follow-up (2026-10-19)
 
 Configured application operation and version response are now reproducible

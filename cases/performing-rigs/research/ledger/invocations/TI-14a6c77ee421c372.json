@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "BOSSA erase scope"
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:17:49.612+00:00",
+  "error": null,
+  "evidence_id": "EV-a7c63dff696f19aa",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-14a6c77ee421c372",
+  "operation_key": "787edb1bbc3c2d6958f4fbbd5a00e4647a84d96e704b93b87774f1cbf78b4b45",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "d32b759ccf611095e0d8ef745ab9b6dfe2b2f376e752cafc86526310bc77a386",
+  "run_id": "R-20261019T211813-2ea211",
+  "runtime_ms": 779.218,
+  "session_evidence_id": "E2",
+  "started_at": "2026-10-19T21:17:48.833+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

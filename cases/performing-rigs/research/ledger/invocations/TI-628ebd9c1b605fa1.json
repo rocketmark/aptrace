@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "bootloader identity"
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:17:47.812+00:00",
+  "error": null,
+  "evidence_id": "EV-13b83d652a418790",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-628ebd9c1b605fa1",
+  "operation_key": "57eaaaedf026be65029d16cb8898ac0a933ca994f3a71624d6a2355b8ab384fe",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "2b4f83116e71a332ecf6cac184deb3b0ae2cbce824ef7e2075a4102a41ac43d0",
+  "run_id": "R-20261019T211813-2ea211",
+  "runtime_ms": 674.199,
+  "session_evidence_id": "E1",
+  "started_at": "2026-10-19T21:17:47.138+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

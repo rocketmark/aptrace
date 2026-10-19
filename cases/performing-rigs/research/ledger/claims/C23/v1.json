@@ -1,0 +1,60 @@
+{
+  "assertion": "FUN_0000984c accesses NVMCTRL registers (function-effects access(es): read 0x41004000, write 0x41004000; census constant-address MMIO site(s): read 0x41004000, read 0x41004010, write 0x41004000, write 0x41004004).",
+  "assumptions": [
+    "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+    "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+    "non-GPR (ASL bookkeeping) registers concrete zero",
+    "generic step bound 3000"
+  ],
+  "claim_id": "C23",
+  "claim_type": "BEHAVIOR",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-19T21:18:13.610+00:00",
+  "depends_on": [],
+  "derivation": "claim candidate K-fc36a418e96d (peripheral-role, candidates-v1), selected by the planner",
+  "limitations": [
+    {
+      "code": null,
+      "source_evidence_ids": [],
+      "text": "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000984c reads or writes."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "proposed_by": "candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261019T211813-2ea211",
+  "schema_version": 1,
+  "scope": "symbolic function-effects analysis without argument specialization (Macaw/Crucible), not solver-confirmed; static census references (Ghidra reference manager), heuristic function boundaries",
+  "semantics": {
+    "call": null,
+    "code_presence": null,
+    "function_role": {
+      "function": "FUN_0000984c",
+      "peripheral": "NVMCTRL",
+      "role": "MMIO_USER",
+      "slot": null
+    },
+    "path": null,
+    "predicate": "FUNCTION_ROLE",
+    "resolved_pointer": null
+  },
+  "subject": "FUN_0000984c",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-3d4f592a40f7fa8f"
+  ],
+  "version": 1
+}

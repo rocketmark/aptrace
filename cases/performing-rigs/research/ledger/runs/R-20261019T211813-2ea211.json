@@ -1,0 +1,560 @@
+{
+  "budgets": {
+    "max_steps": 5
+  },
+  "candidate_selection": {
+    "generated": 4,
+    "generator": "candidates-v1",
+    "invalid": [],
+    "limit": 5,
+    "offered": [
+      {
+        "assertion": "FUN_0000cdd8 accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004000, write 0x41004000).",
+        "assumptions": [],
+        "candidate_id": "K-65a426f7d4ff",
+        "claim_type": "BEHAVIOR",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-3d4f592a40f7fa8f"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000cdd8 reads or writes."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000cdd8",
+            "peripheral": "NVMCTRL",
+            "role": "MMIO_USER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000cdd8",
+        "supporting_evidence_ids": [
+          "E4"
+        ]
+      },
+      {
+        "assertion": "FUN_0000981c accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004008).",
+        "assumptions": [],
+        "candidate_id": "K-7049e3d66d9a",
+        "claim_type": "BEHAVIOR",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-3d4f592a40f7fa8f"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000981c reads or writes."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000981c",
+            "peripheral": "NVMCTRL",
+            "role": "MMIO_USER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000981c",
+        "supporting_evidence_ids": [
+          "E4"
+        ]
+      },
+      {
+        "assertion": "FUN_000098d8 accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004010, write 0x41004004, write 0x41004014).",
+        "assumptions": [],
+        "candidate_id": "K-f5dd0c7f86b6",
+        "claim_type": "BEHAVIOR",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-3d4f592a40f7fa8f"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_000098d8 reads or writes."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_000098d8",
+            "peripheral": "NVMCTRL",
+            "role": "MMIO_USER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_000098d8",
+        "supporting_evidence_ids": [
+          "E4"
+        ]
+      },
+      {
+        "assertion": "FUN_0000984c accesses NVMCTRL registers (function-effects access(es): read 0x41004000, write 0x41004000; census constant-address MMIO site(s): read 0x41004000, read 0x41004010, write 0x41004000, write 0x41004004).",
+        "assumptions": [
+          "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+          "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+          "non-GPR (ASL bookkeeping) registers concrete zero",
+          "generic step bound 3000"
+        ],
+        "candidate_id": "K-fc36a418e96d",
+        "claim_type": "BEHAVIOR",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-3d4f592a40f7fa8f"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000984c reads or writes."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "symbolic function-effects analysis without argument specialization (Macaw/Crucible), not solver-confirmed; static census references (Ghidra reference manager), heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000984c",
+            "peripheral": "NVMCTRL",
+            "role": "MMIO_USER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000984c",
+        "supporting_evidence_ids": [
+          "E4"
+        ]
+      }
+    ],
+    "omitted": [],
+    "outcome": "selected",
+    "prompt_chars": 1450,
+    "response": "K-65a426f7d4ff,K-7049e3d66d9a,K-f5dd0c7f86b6,K-fc36a418e96d",
+    "selected": [
+      "K-65a426f7d4ff",
+      "K-7049e3d66d9a",
+      "K-f5dd0c7f86b6",
+      "K-fc36a418e96d"
+    ],
+    "withheld": []
+  },
+  "case": "performing-rigs",
+  "claim_admission": [
+    {
+      "assertion": "FUN_0000984c is a key function interacting with NVMCTRL",
+      "claim_type": "STRUCTURE",
+      "claim_version": "C17:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "evidence_ids": [
+        "E4"
+      ],
+      "grade": "PROBABLE",
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E4 FUN_0000984c is a key function interacting with NVMCTRL",
+      "round": 1
+    },
+    {
+      "assertion": "FUN_0000984c is a 136-byte function at 0x0000984c",
+      "claim_type": "STRUCTURE",
+      "claim_version": "C18:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-925ae25e9d829483"
+      ],
+      "evidence_ids": [
+        "E5"
+      ],
+      "grade": "PROBABLE",
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E5 FUN_0000984c is a 136-byte function at 0x0000984c",
+      "round": 1
+    },
+    {
+      "assertion": "FUN_0000984c is a key function interacting with NVMCTRL",
+      "claim_type": "STRUCTURE",
+      "claim_version": "C19:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-3d4f592a40f7fa8f",
+        "EV-925ae25e9d829483"
+      ],
+      "evidence_ids": [
+        "E4",
+        "E5"
+      ],
+      "grade": "PROBABLE",
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E4,E5 FUN_0000984c is a key function interacting with NVMCTRL",
+      "round": 1
+    },
+    {
+      "assertion": "FUN_0000cdd8 accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004000, write 0x41004000).",
+      "candidate_id": "K-65a426f7d4ff",
+      "claim_type": "BEHAVIOR",
+      "claim_version": "C20:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "evidence_ids": [
+        "E4"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-65a426f7d4ff",
+      "round": 2
+    },
+    {
+      "assertion": "FUN_0000981c accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004008).",
+      "candidate_id": "K-7049e3d66d9a",
+      "claim_type": "BEHAVIOR",
+      "claim_version": "C21:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "evidence_ids": [
+        "E4"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-7049e3d66d9a",
+      "round": 2
+    },
+    {
+      "assertion": "FUN_000098d8 accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004010, write 0x41004004, write 0x41004014).",
+      "candidate_id": "K-f5dd0c7f86b6",
+      "claim_type": "BEHAVIOR",
+      "claim_version": "C22:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "evidence_ids": [
+        "E4"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-f5dd0c7f86b6",
+      "round": 2
+    },
+    {
+      "assertion": "FUN_0000984c accesses NVMCTRL registers (function-effects access(es): read 0x41004000, write 0x41004000; census constant-address MMIO site(s): read 0x41004000, read 0x41004010, write 0x41004000, write 0x41004004).",
+      "candidate_id": "K-fc36a418e96d",
+      "claim_type": "BEHAVIOR",
+      "claim_version": "C23:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "evidence_ids": [
+        "E4"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-fc36a418e96d",
+      "round": 2
+    }
+  ],
+  "claim_versions": [
+    "C17:v1",
+    "C18:v1",
+    "C19:v1",
+    "C20:v1",
+    "C21:v1",
+    "C22:v1",
+    "C23:v1"
+  ],
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:18:13.496796+00:00",
+  "evidence_ids": [
+    "EV-13b83d652a418790",
+    "EV-a7c63dff696f19aa",
+    "EV-cad3cdf1782aa97a",
+    "EV-3d4f592a40f7fa8f",
+    "EV-925ae25e9d829483"
+  ],
+  "execution_config": {
+    "claim_candidates": 5,
+    "claim_contract": true,
+    "endpoint": "local-omlx",
+    "max_tokens": 512,
+    "temperature": 0.0
+  },
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-628ebd9c1b605fa1",
+    "TI-14a6c77ee421c372",
+    "TI-0ddf68c0705fb405",
+    "TI-b0ede5a8193fba33",
+    "TI-51016253158d6d58"
+  ],
+  "kind": "investigation",
+  "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "objective": "Find local evidence for reversible AutoPilot application replacement: bootloader identity, independent entry, BOSSA erase scope and boot protection, original image completeness, persistent NVM backup, SWD recovery. Treat undocumented physical entry and bootloader bytes as unknown. No hardware access or firmware modifications.",
+  "parent_run_id": null,
+  "planner_requests": [
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 0,
+      "message_bytes": 1266,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 1016,
+      "prompt_tokens": 765,
+      "state_chars": 23,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2261
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 1,
+      "message_bytes": 1610,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 1356,
+      "prompt_tokens": 857,
+      "state_chars": 350,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2605
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "analyze_function_effects",
+      "evidence": 2,
+      "message_bytes": 2346,
+      "open_leads": 4,
+      "phase": "decision",
+      "prompt_chars": 2073,
+      "prompt_tokens": 1663,
+      "state_chars": 561,
+      "tool_bytes": 2622,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4968
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "evidence": 3,
+      "message_bytes": 2410,
+      "open_leads": 4,
+      "phase": "decision",
+      "prompt_chars": 2133,
+      "prompt_tokens": 1759,
+      "state_chars": 621,
+      "tool_bytes": 2622,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5032
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "analyze_peripheral",
+      "evidence": 3,
+      "message_bytes": 2332,
+      "open_leads": 4,
+      "phase": "decision",
+      "prompt_chars": 2055,
+      "prompt_tokens": 1600,
+      "state_chars": 621,
+      "tool_bytes": 2225,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4557
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 4,
+      "message_bytes": 3097,
+      "open_leads": 10,
+      "phase": "decision",
+      "prompt_chars": 2812,
+      "prompt_tokens": 1916,
+      "state_chars": 1280,
+      "tool_bytes": 2228,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5325
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 4,
+      "message_bytes": 3011,
+      "open_leads": 10,
+      "phase": "decision",
+      "prompt_chars": 2726,
+      "prompt_tokens": 1693,
+      "state_chars": 1280,
+      "tool_bytes": 1717,
+      "tools": [
+        "follow_lead",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4728
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "finish",
+      "evidence": 5,
+      "message_bytes": 2054,
+      "open_leads": 10,
+      "phase": "final-claims",
+      "prompt_chars": 1840,
+      "prompt_tokens": 1068,
+      "state_chars": 1107,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 2706
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "select_claims",
+      "evidence": 5,
+      "message_bytes": 1671,
+      "open_leads": 10,
+      "phase": "candidate-selection",
+      "prompt_chars": 1450,
+      "prompt_tokens": 826,
+      "state_chars": 686,
+      "tool_bytes": 349,
+      "tools": [
+        "select_claims"
+      ],
+      "total_bytes": 2020
+    }
+  ],
+  "planner_version": "controller:1fad7f7d50b8 projection:92147f78dcce",
+  "run_id": "R-20261019T211813-2ea211",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "4e655be0e0c0dc9a",
+    "git_branch": "main",
+    "git_commit": "123a3425cfef5a5803057cde3723c3a50dd274b0"
+  },
+  "started_at": "2026-10-19T21:17:09.169780+00:00",
+  "termination_reason": "step_budget_exhausted",
+  "trajectory": [
+    {
+      "action": "discover",
+      "evidence_id": "E1",
+      "lead_id": "L1",
+      "number": 1,
+      "reason": null
+    },
+    {
+      "action": "discover",
+      "evidence_id": "E2",
+      "lead_id": "L2",
+      "number": 2,
+      "reason": null
+    },
+    {
+      "action": "effects",
+      "evidence_id": "E3",
+      "lead_id": "L7",
+      "number": 3,
+      "reason": null
+    },
+    {
+      "action": "analyze",
+      "evidence_id": "E4",
+      "lead_id": "L8",
+      "number": 4,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E5",
+      "lead_id": "L5",
+      "number": 5,
+      "reason": null
+    }
+  ]
+}

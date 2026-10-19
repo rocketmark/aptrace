@@ -1,0 +1,1947 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-19T21:18:13.496132+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Find local evidence for reversible AutoPilot application replacement: bootloader identity, independent entry, BOSSA erase scope and boot protection, original image completeness, persistent NVM backup, SWD recovery. Treat undocumented physical entry and bootloader bytes as unknown. No hardware access or firmware modifications.",
+  "seed_function": null,
+  "stop_reason": "step_budget_exhausted",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "discover",
+      "lead_id": "L1",
+      "evidence_id": "E1",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "discover",
+      "lead_id": "L2",
+      "evidence_id": "E2",
+      "reason": null
+    },
+    {
+      "number": 3,
+      "action": "effects",
+      "lead_id": "L7",
+      "evidence_id": "E3",
+      "reason": null
+    },
+    {
+      "number": 4,
+      "action": "analyze",
+      "lead_id": "L8",
+      "evidence_id": "E4",
+      "reason": null
+    },
+    {
+      "number": 5,
+      "action": "follow_lead",
+      "lead_id": "L5",
+      "evidence_id": "E5",
+      "reason": null
+    }
+  ],
+  "planner_requests": [
+    {
+      "phase": "discovery",
+      "evidence": 0,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 1016,
+      "state_chars": 23,
+      "message_bytes": 1266,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2261,
+      "attempt": 0,
+      "prompt_tokens": 765,
+      "decision": "search_case_evidence"
+    },
+    {
+      "phase": "discovery",
+      "evidence": 1,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 1356,
+      "state_chars": 350,
+      "message_bytes": 1610,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2605,
+      "attempt": 0,
+      "prompt_tokens": 857,
+      "decision": "search_case_evidence"
+    },
+    {
+      "phase": "decision",
+      "evidence": 2,
+      "open_leads": 4,
+      "claims": 0,
+      "prompt_chars": 2073,
+      "state_chars": 561,
+      "message_bytes": 2346,
+      "tool_bytes": 2622,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4968,
+      "attempt": 0,
+      "prompt_tokens": 1663,
+      "decision": "analyze_function_effects"
+    },
+    {
+      "phase": "decision",
+      "evidence": 3,
+      "open_leads": 4,
+      "claims": 0,
+      "prompt_chars": 2133,
+      "state_chars": 621,
+      "message_bytes": 2410,
+      "tool_bytes": 2622,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5032,
+      "attempt": 0,
+      "prompt_tokens": 1759
+    },
+    {
+      "phase": "decision",
+      "evidence": 3,
+      "open_leads": 4,
+      "claims": 0,
+      "prompt_chars": 2055,
+      "state_chars": 621,
+      "message_bytes": 2332,
+      "tool_bytes": 2225,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4557,
+      "attempt": 0,
+      "prompt_tokens": 1600,
+      "decision": "analyze_peripheral"
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 10,
+      "claims": 5,
+      "prompt_chars": 2812,
+      "state_chars": 1280,
+      "message_bytes": 3097,
+      "tool_bytes": 2228,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5325,
+      "attempt": 0,
+      "prompt_tokens": 1916
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 10,
+      "claims": 5,
+      "prompt_chars": 2726,
+      "state_chars": 1280,
+      "message_bytes": 3011,
+      "tool_bytes": 1717,
+      "tools": [
+        "follow_lead",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4728,
+      "attempt": 0,
+      "prompt_tokens": 1693,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "final-claims",
+      "evidence": 5,
+      "open_leads": 10,
+      "claims": 5,
+      "prompt_chars": 1840,
+      "state_chars": 1107,
+      "message_bytes": 2054,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 2706,
+      "attempt": 0,
+      "prompt_tokens": 1068,
+      "decision": "finish"
+    },
+    {
+      "phase": "candidate-selection",
+      "evidence": 5,
+      "open_leads": 10,
+      "claims": 5,
+      "prompt_chars": 1450,
+      "state_chars": 686,
+      "message_bytes": 1671,
+      "tool_bytes": 349,
+      "tools": [
+        "select_claims"
+      ],
+      "total_bytes": 2020,
+      "attempt": 0,
+      "prompt_tokens": 826,
+      "decision": "select_claims"
+    }
+  ],
+  "conclusion": {
+    "proven": [
+      "C5[census] FUN_0000cdd8 has 2 statically resolved NVMCTRL MMIO site(s) (CTRLA READ, CTRLA WRITE); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x0000cdd8; census reachability DEFINITELY_REACHABLE. (E4)",
+      "C4[census] FUN_000098d8 has 3 statically resolved NVMCTRL MMIO site(s) (ADDR WRITE, CTRLB WRITE, INTFLAG READ); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x000098d8; census reachability DEFINITELY_REACHABLE. (E4)",
+      "C3[census] FUN_0000984c has 6 statically resolved NVMCTRL MMIO site(s) (CTRLA READ, CTRLA WRITE, CTRLB WRITE, INTFLAG READ); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x00009850; census reachability DEFINITELY_REACHABLE. (E4)",
+      "C2[census] FUN_0000981c has 2 statically resolved NVMCTRL MMIO site(s) (PARAM READ); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x0000981e; census reachability NO_KNOWN_PATH. (E4)",
+      "C1[census] Census structural usage of NVMCTRL: 13 constant-address MMIO site(s), 4 flash address constant(s) (0 with no code reference), 4 attributed function(s), 0 unattributed reference site(s) (reduction present). (E4)"
+    ],
+    "probable": [],
+    "open": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "bootloader identity",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "bootloader identity",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/replacement/replacement-firmware-bench-checklist.md",
+            "line": 31,
+            "kind": "documentation",
+            "excerpt": "29: | BENCH-03 | Remaining mux control/source behavior and shared-channel containment | Reuse two-device and RJ45 route measurements. Resolve B1/B2 source behavior and diode/resistor network effects under the engineer-approved powered setup; exclude unintended energization of other motors | Isolation of one channel and external-input interaction |\n30: | BENCH-04 | Reconcile recorded TMC1 mode/CFG straps and populated serial-routing table with an authoritative **local** device mode truth table | Do not remeasure known TMC1 straps by default. Preserve raw HIGH/HIGH and LOW CFG readings without accepting the unsupported \u201cno SPI\u201d summary. Resolve actual mode/configuration expectations and missing current/microstep programming; verify other-driver differences only as needed | Decide whether replacement needs driver transactions and which initial state must be supplied |\n31: | BENCH-05 | Current-sense resistors, bridge configuration, effective current limit and any programmable current state | Derive a documented effective limit from actual circuit/device settings and applicable local device evidence. Responsible engineering sets a first-test limit within motor/driver/power-stage ratings and demonstrates it. **No numeric limit can be supplied by current APTrace evidence** | Motor/power-stage compatibility and permissible energization/current settings |\n32: | BENCH-06 | Actual DRV_ENN\n...[excerpt truncated]",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/replacement/replacement-firmware-hardware-contract.md",
+            "line": 101,
+            "kind": "documentation",
+            "excerpt": "99: ## Execution, limitations and next work\n100: \n101: Fresh operations: existing Ghidra decompile/disasm/xrefs/callers/dump; native `run_concrete.py` for application boot, seven direct helper cases and two reset-request attempts. No new analysis code, engine, harness model, firmware test suite or ledger claim was introduced. P-code acceptance suite and concrete regression suite pass; 148 focused agent tests pass. Initial sandbox Java-config and native interpreter failures were resolved by permitted execution outside the sandbox. A dump invocation initially used positional length; corrected to `--length`. Ghidra could not decompile unseeded 0x78d8/0x5e48/0x5e58; no functions were created to hide that boundary.\n102: \n103: Capability gaps, impact, likely causes and priority are in the readiness report. Highest priorities: physical measurements before power, then timer/IRQ waveform validation; framework development for evidence-semantics enforcement/identity is separate work. Existing APTrace can inspect named functions or repeat these exact bounded traces. It cannot substitute for the missing bootloader image, hardware measurements or a timer model. No existing ledger or historical finding was rewritten, no apfw2 modification was made, and no commit/push was performed.",
+            "score": 12
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 25,
+            "kind": "documentation",
+            "excerpt": "23: bossac -i -d --port=%com% -U -i --offset=0x4000 -w -v %FILENAME% -R\n24: ```\n25: \n26: - Uses `bossac` (BOSSA), the standard flasher for Atmel/Microchip SAM-D/E parts with a\n27:   UART/USB bootloader (used by Arduino Due/Zero and all Adafruit SAMD boards).",
+            "score": 3
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 30,
+            "kind": "documentation",
+            "excerpt": "28: - Device is found via `wmic ... | findstr VID_239A` \u2014 **USB VID 0x239A is Adafruit\n29:   Industries**. Board enters bootloader via the classic 1200-baud touch-reset trick.\n30: - `--offset=0x4000`: application is flashed starting at flash address **0x00004000**,\n31:   i.e. after a 16 KB bootloader region. **The `.bin` files are the application image\n32:   only \u2014 file offset 0 corresponds to flash address 0x4000, not 0x0.**",
+            "score": 3
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 47,
+            "kind": "documentation",
+            "excerpt": "45: - **MCU: Microchip/Atmel ATSAMD51** \u2014 Cortex-**M4F** (has FPU), not the more common\n46:   SAMD21 (Cortex-M0+). Confirmed independently by the initial stack pointer (see below).\n47: - **Toolchain: Arduino IDE + Adafruit SAMD board package v1.7.11** (`arm-none-eabi-gcc`\n48:   under the hood, Adafruit's fork of the Arduino SAMD core).\n49: - **Bootloader: Adafruit UF2/bossac-style bootloader**, 16 KB (`0x0`\u2013`0x3FFF`), consistent",
+            "score": 3
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 67,
+            "kind": "documentation",
+            "excerpt": "65: Adafruit/BOSSA hypothesis from the application's own startup code.\n66: \n67: **Working assumptions for APTrace:**\n68: - Flash base (absolute): `0x00000000` (standard Cortex-M internal flash mapping; ATSAMD51 flash starts at 0x0)\n69: - Bootloader region: `0x00000000`\u2013`0x00003FFF` (not present in our `.bin` files)",
+            "score": 3
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 147,
+            "kind": "documentation",
+            "excerpt": "145:   ATSAMD51J19A SVD rather than hardcoding a memory map by hand: see\n146:   [`cases/performing-rigs/config/svd/resolve_mmio.py`](../../../../cases/performing-rigs/config/svd/resolve_mmio.py) and\n147:   [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md)\n148:   (startup peripheral survey, a confirmed PB22 GPIO-toggle finding, and an\n149:   honest negative result for the outbound TX path's peripheral identity).",
+            "score": 3
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/feather-m4-reference.md",
+            "line": 29,
+            "kind": "documentation",
+            "excerpt": "27: or memory. Classification: `CONFIRMED \u2014 VENDOR SOURCE`.\n28: \n29: | Category | Pins | Detail |\n30: |---|---|---|\n31: | Onboard QSPI NOR flash | `PB10` (SCK), `PB11` (CS), `PA08` (IO0), `PA09` (IO1), `PA10` (IO2), `PA11` (IO3) | A real, powered, actively-driven 2 MB SPI flash chip storing the UF2 bootloader and any CircuitPython/compiled image. **Not broken out to any header pin** \u2014 these six MCU pads exist only to drive this chip. |",
+            "score": 3
+          }
+        ],
+        "files_scanned": 146,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E2",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "BOSSA erase scope",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "BOSSA erase scope",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+            "line": 553,
+            "kind": "investigation",
+            "excerpt": "551:   `+0x1002`, marks the buffer written) -> the same NVM erase/write\n552:   primitives (`FUN_000098f0`/`FUN_0000984c`) the read side uses,\n553:   sharing driver-object base `0x20004148`. This was found here, not\n554:   chased further \u2014 what actually sets the `+0x1002` dirty byte, and\n555:   whether the handler's apparent channel-0-only scope is real or an",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/census-results.md",
+            "line": 619,
+            "kind": "investigation",
+            "excerpt": "617: **Beyond AutoPilot's and Mando's own steady-state milestones, nothing\n618: further is modeled.** `AUTOPILOT_RECIPE` reproduces the cited\n619: document's FULL recipe and reaches real main-loop steady state; what\n620: remains unmodeled there is explicitly out of scope, unchanged from that\n621: document's own \"Open items\": a second, deeper NVM-erase-loop dependency",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-inventory.md",
+            "line": 35,
+            "kind": "documentation",
+            "excerpt": "33: \n34: - User manual: `PerformingRigs_UserManual_AutoPilot.pdf` (repo root) \u2014\n35:   yielded no extractable MCU-level text (image-based/compressed PDF\n36:   streams), not useful for firmware analysis.\n37: - Flashing mechanism: `cases/performing-rigs/research/firmware/vendor-package/update_firmware.bat` invokes `bossac`",
+            "score": 1
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 21,
+            "kind": "documentation",
+            "excerpt": "19: \n20: ## Flashing mechanism (`cases/performing-rigs/research/firmware/vendor-package/update_firmware.bat`)\n21: \n22: ```\n23: bossac -i -d --port=%com% -U -i --offset=0x4000 -w -v %FILENAME% -R",
+            "score": 1
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 26,
+            "kind": "documentation",
+            "excerpt": "24: ```\n25: \n26: - Uses `bossac` (BOSSA), the standard flasher for Atmel/Microchip SAM-D/E parts with a\n27:   UART/USB bootloader (used by Arduino Due/Zero and all Adafruit SAMD boards).\n28: - Device is found via `wmic ... | findstr VID_239A` \u2014 **USB VID 0x239A is Adafruit",
+            "score": 1
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 47,
+            "kind": "documentation",
+            "excerpt": "45: - **MCU: Microchip/Atmel ATSAMD51** \u2014 Cortex-**M4F** (has FPU), not the more common\n46:   SAMD21 (Cortex-M0+). Confirmed independently by the initial stack pointer (see below).\n47: - **Toolchain: Arduino IDE + Adafruit SAMD board package v1.7.11** (`arm-none-eabi-gcc`\n48:   under the hood, Adafruit's fork of the Arduino SAMD core).\n49: - **Bootloader: Adafruit UF2/bossac-style bootloader**, 16 KB (`0x0`\u2013`0x3FFF`), consistent",
+            "score": 1
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 63,
+            "kind": "documentation",
+            "excerpt": "61: This is now used directly for SVD-based MMIO/peripheral naming \u2014 see\n62: [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](../investigations/boot-and-hardware-bringup.md),\n63: which also confirms the Reset_Handler/startup peripheral-init chain below\n64: and adds new circumstantial-but-multi-signal evidence for the\n65: Adafruit/BOSSA hypothesis from the application's own startup code.",
+            "score": 1
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 147,
+            "kind": "documentation",
+            "excerpt": "145: **No PCB component was confidently attributed to either pin.** A front\n146: power button is a documented AutoPilot board-level fact and is a\n147: plausible candidate for PA22's \"held input\" role, but this is a\n148: plausibility note, not a traced or silkscreen-confirmed finding. Per\n149: this pass's explicit scope, PA22's physical identity is **not**",
+            "score": 1
+          }
+        ],
+        "files_scanned": 146,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E3",
+      "tool": "function_effects",
+      "arguments": {
+        "function": "FUN_0000984c",
+        "specialize": {}
+      },
+      "result": {
+        "status": "failed: all paths aborted",
+        "function": "FUN_0000984c",
+        "entry": "0x0000984c",
+        "coverage": "bounded: failed: all paths aborted",
+        "specialize": {},
+        "blocks": 1,
+        "inputs_used": [],
+        "reads": 2,
+        "writes": 10,
+        "calls": [],
+        "accesses": [
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xfdc",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always-true"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xfe0",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xfe4",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xfe8",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xfec",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xff0",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xff4",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xff8",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "write",
+            "pc": "0x984c",
+            "width": null,
+            "address": "0xffc",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "STACK",
+            "register_name": null,
+            "guard": "always"
+          },
+          {
+            "kind": "read",
+            "pc": "0x9850",
+            "width": 4,
+            "address": "0x98d4",
+            "depends_on": [],
+            "served_from_flash": true,
+            "region": "FLASH",
+            "register_name": null,
+            "guard": "always-true"
+          },
+          {
+            "kind": "read",
+            "pc": "0x9852",
+            "width": 2,
+            "address": "0x41004000",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "MMIO",
+            "register_name": "NVMCTRL.CTRLA",
+            "guard": "always-true"
+          },
+          {
+            "kind": "write",
+            "pc": "0x985e",
+            "width": null,
+            "address": "0x41004000",
+            "depends_on": [],
+            "served_from_flash": false,
+            "region": "MMIO",
+            "register_name": "NVMCTRL.CTRLA",
+            "guard": "always-true"
+          }
+        ],
+        "return_depends_on": [],
+        "return_bit_valued": null,
+        "specialized": [],
+        "harness_assumptions": [
+          "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+          "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+          "non-GPR (ASL bookkeeping) registers concrete zero",
+          "generic step bound 3000"
+        ],
+        "raw": {
+          "accesses": [
+            {
+              "address": {
+                "concrete": "0xfdc",
+                "expr": "0xfdc:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xfe0",
+                "expr": "0xfe0:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xfe4",
+                "expr": "0xfe4:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xfe8",
+                "expr": "0xfe8:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xfec",
+                "expr": "0xfec:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xff0",
+                "expr": "0xff0:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xff4",
+                "expr": "0xff4:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xff8",
+                "expr": "0xff8:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0xffc",
+                "expr": "0xffc:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 2,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": true,
+              "kind": "write",
+              "pc": "0x984c",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            },
+            {
+              "address": {
+                "concrete": "0x98d4",
+                "expr": "0x98d4:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 1,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": false,
+              "kind": "read",
+              "pc": "0x9850",
+              "served_from_concrete_readonly": true,
+              "width_bytes": 4
+            },
+            {
+              "address": {
+                "concrete": "0x41004000",
+                "expr": "0x41004000:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 1,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": false,
+              "kind": "read",
+              "pc": "0x9852",
+              "served_from_concrete_readonly": false,
+              "width_bytes": 2
+            },
+            {
+              "address": {
+                "concrete": "0x41004000",
+                "expr": "0x41004000:[32]",
+                "free_vars": []
+              },
+              "alloc_block": 0,
+              "guard": {
+                "concrete": true,
+                "expr": "true",
+                "free_vars": []
+              },
+              "is_stack_block": false,
+              "kind": "write",
+              "pc": "0x985e",
+              "served_from_concrete_readonly": false,
+              "width_bytes": null
+            }
+          ],
+          "arg_overrides": [],
+          "arg_specializations": [],
+          "assumptions": [
+            "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+            "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+            "non-GPR (ASL bookkeeping) registers concrete zero",
+            "generic step bound 3000"
+          ],
+          "calls": [],
+          "counts": {
+            "backend_assumptions": 1,
+            "calls": 0,
+            "reads": 2,
+            "writes": 10
+          },
+          "crucible_steps": 12,
+          "entry": "0x984c",
+          "inputs_referenced": [],
+          "macaw_blocks": 1,
+          "regions": [
+            {
+              "base": "0x4000",
+              "region": "FLASH",
+              "size": "0x11470"
+            },
+            {
+              "base": "0x20000000",
+              "region": "RAM",
+              "size": "0x30000"
+            },
+            {
+              "base": "0x40000000",
+              "region": "MMIO",
+              "size": "0x4000000"
+            }
+          ],
+          "return_r0": null,
+          "runtime_s": {
+            "cfg_and_setup": 0.127289,
+            "discovery": 0.03995,
+            "simulation": 0.330811
+          },
+          "spike": "aptrace-effects-spike-v1-raw",
+          "status": "failed: all paths aborted"
+        },
+        "solver": {
+          "query_log": [
+            {
+              "additional_assumptions": [],
+              "n": 1,
+              "result": "SAT",
+              "runtime_s": 0.015621,
+              "source": "x==1",
+              "type": "smoke"
+            },
+            {
+              "additional_assumptions": [],
+              "n": 2,
+              "result": "UNSAT",
+              "runtime_s": 0.000107,
+              "source": "x==1 && x==2",
+              "type": "smoke"
+            }
+          ],
+          "raw_effects": {
+            "accesses": [
+              {
+                "address": {
+                  "concrete": "0xfdc",
+                  "expr": "0xfdc:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xfe0",
+                  "expr": "0xfe0:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xfe4",
+                  "expr": "0xfe4:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xfe8",
+                  "expr": "0xfe8:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xfec",
+                  "expr": "0xfec:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xff0",
+                  "expr": "0xff0:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xff4",
+                  "expr": "0xff4:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xff8",
+                  "expr": "0xff8:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0xffc",
+                  "expr": "0xffc:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 2,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": true,
+                "kind": "write",
+                "pc": "0x984c",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              },
+              {
+                "address": {
+                  "concrete": "0x98d4",
+                  "expr": "0x98d4:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 1,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": false,
+                "kind": "read",
+                "pc": "0x9850",
+                "served_from_concrete_readonly": true,
+                "width_bytes": 4
+              },
+              {
+                "address": {
+                  "concrete": "0x41004000",
+                  "expr": "0x41004000:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 1,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": false,
+                "kind": "read",
+                "pc": "0x9852",
+                "served_from_concrete_readonly": false,
+                "width_bytes": 2
+              },
+              {
+                "address": {
+                  "concrete": "0x41004000",
+                  "expr": "0x41004000:[32]",
+                  "free_vars": []
+                },
+                "alloc_block": 0,
+                "guard": {
+                  "concrete": true,
+                  "expr": "true",
+                  "free_vars": []
+                },
+                "is_stack_block": false,
+                "kind": "write",
+                "pc": "0x985e",
+                "served_from_concrete_readonly": false,
+                "width_bytes": null
+              }
+            ],
+            "arg_overrides": [],
+            "arg_specializations": [],
+            "assumptions": [
+              "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+              "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+              "non-GPR (ASL bookkeeping) registers concrete zero",
+              "generic step bound 3000"
+            ],
+            "calls": [],
+            "counts": {
+              "backend_assumptions": 1,
+              "calls": 0,
+              "reads": 2,
+              "writes": 10
+            },
+            "crucible_steps": 12,
+            "entry": "0x984c",
+            "inputs_referenced": [],
+            "macaw_blocks": 1,
+            "regions": [
+              {
+                "base": "0x4000",
+                "region": "FLASH",
+                "size": "0x11470"
+              },
+              {
+                "base": "0x20000000",
+                "region": "RAM",
+                "size": "0x30000"
+              },
+              {
+                "base": "0x40000000",
+                "region": "MMIO",
+                "size": "0x4000000"
+              }
+            ],
+            "return_r0": null,
+            "runtime_s": {
+              "cfg_and_setup": 0.127289,
+              "discovery": 0.03995,
+              "simulation": 0.330811
+            },
+            "spike": "aptrace-effects-spike-v1-raw",
+            "status": "failed: all paths aborted"
+          },
+          "solver_derived_facts": {
+            "accesses": [
+              {
+                "address_uniqueness_under_guard": {
+                  "method": "concrete term (no solver)",
+                  "outcome": "unique",
+                  "value": "0xfdc"
+                },
+                "guard_status": {
+                  "method": "concrete term (no solver)",
+                  "status": "always-true"
+                },
+                "index": 1,
+                "kind": "write",
+                "pc": "0x984c",
+                "region_membership_under_guard": [
+                  {
+                    "membership": "proven",
+                    "method": "allocation block (no solver)",
+                    "region": "STACK"
+                  }
+                ],
+                "specializations": []
+              },
+              {
+                "address_uniqueness_under_guard": {
+                  "method": "concrete term (no solver)",
+                  "outcome": "unique",
+                  "value": "0x98d4"
+                },
+                "guard_status": {
+                  "method": "concrete term (no solver)",
+                  "status": "always-true"
+                },
+                "index": 10,
+                "kind": "read",
+                "pc": "0x9850",
+                "region_membership_under_guard": [
+                  {
+                    "base": "0x4000",
+                    "membership": "proven",
+                    "method": "concrete address (no solver)",
+                    "region": "FLASH",
+                    "size": "0x11470"
+                  }
+                ],
+                "specializations": []
+              },
+              {
+                "address_uniqueness_under_guard": {
+                  "method": "concrete term (no solver)",
+                  "outcome": "unique",
+                  "value": "0x41004000"
+                },
+                "guard_status": {
+                  "method": "concrete term (no solver)",
+                  "status": "always-true"
+                },
+                "index": 11,
+                "kind": "read",
+                "pc": "0x9852",
+                "region_membership_under_guard": [
+                  {
+                    "base": "0x40000000",
+                    "membership": "proven",
+                    "method": "concrete address (no solver)",
+                    "region": "MMIO",
+                    "size": "0x4000000"
+                  }
+                ],
+                "specializations": []
+              },
+              {
+                "address_uniqueness_under_guard": {
+                  "method": "concrete term (no solver)",
+                  "outcome": "unique",
+                  "value": "0x41004000"
+                },
+                "guard_status": {
+                  "method": "concrete term (no solver)",
+                  "status": "always-true"
+                },
+                "index": 12,
+                "kind": "write",
+                "pc": "0x985e",
+                "region_membership_under_guard": [
+                  {
+                    "base": "0x40000000",
+                    "membership": "proven",
+                    "method": "concrete address (no solver)",
+                    "region": "MMIO",
+                    "size": "0x4000000"
+                  }
+                ],
+                "specializations": []
+              }
+            ],
+            "return_r0": null
+          },
+          "solver_session": {
+            "common_assumptions_asserted_once": true,
+            "enrichment_s": 0.000912,
+            "per_query_isolation": "push/pop frame",
+            "processes": 1,
+            "queries": 2,
+            "shutdown": "ExitSuccess",
+            "smoke_test": true
+          },
+          "spike": "aptrace-effects-spike-v2"
+        },
+        "provenance": {
+          "analysis": "function_effects",
+          "analysis_version": 1,
+          "engine": "Macaw discovery + Crucible simulation (raw); What4/Z3 (solver)",
+          "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "raw_artifact": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/function_effects/6dcdb4c1cbe5cae0_0000984c.raw.json",
+          "enriched_artifact": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/function_effects/6dcdb4c1cbe5cae0_0000984c.enriched.json",
+          "cached": false,
+          "mmio_window": [
+            "0x40000000",
+            "0x4000000"
+          ]
+        },
+        "planner_summary": "FUN_0000984c effects [RAW bounded: failed: all paths aborted; 1 blocks]: inputs none; 2 reads, 10 writes at 4 sites, 0 calls\n  MMIO: read @0x9852 0x41004000(NVMCTRL.CTRLA) guard=always-true; write @0x985e 0x41004000(NVMCTRL.CTRLA) guard=always-true\n  other: write @0x984c 0xfdc(STACK); read @0x9850 0x98d4(FLASH) [flash]\n  return r0 depends on nothing symbolic"
+      }
+    },
+    {
+      "id": "E4",
+      "tool": "census_peripheral_usage",
+      "arguments": {
+        "peripheral": "NVMCTRL",
+        "limit": 25
+      },
+      "result": {
+        "status": "ok",
+        "peripheral": "NVMCTRL",
+        "diagnostic": null,
+        "peripheral_base": "0x41004000",
+        "peripheral_size": 48,
+        "total_mmio_sites": 13,
+        "total_address_constants": 4,
+        "unreferenced_address_constants": 0,
+        "total_functions": 4,
+        "functions": [
+          {
+            "function": "FUN_0000981c",
+            "census_name": "nvm_param_object_ctor__CUSTOM",
+            "entry": "0x0000981c",
+            "size": 38,
+            "mmio_site_count": 2,
+            "mmio_sites": [
+              {
+                "site": "0x00009822",
+                "address": "0x41004008",
+                "register_name": "PARAM",
+                "direction": "READ",
+                "width": 4,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000982e",
+                "address": "0x41004008",
+                "register_name": "PARAM",
+                "direction": "READ",
+                "width": 4,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              }
+            ],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x0000981e",
+                "pool_address": "0x00009844",
+                "value": "0x41004000",
+                "register_name": "NVMCTRL.CTRLA",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "NO_KNOWN_PATH",
+              "hops": null,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": null
+          },
+          {
+            "function": "FUN_0000984c",
+            "census_name": "nvm_write_call__UNKNOWN",
+            "entry": "0x0000984c",
+            "size": 136,
+            "mmio_site_count": 6,
+            "mmio_sites": [
+              {
+                "site": "0x00009852",
+                "address": "0x41004000",
+                "register_name": "CTRLA",
+                "direction": "READ",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000985e",
+                "address": "0x41004000",
+                "register_name": "CTRLA",
+                "direction": "WRITE",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000986c",
+                "address": "0x41004004",
+                "register_name": "CTRLB",
+                "direction": "WRITE",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x00009870",
+                "address": "0x41004010",
+                "register_name": "INTFLAG",
+                "direction": "READ",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x000098be",
+                "address": "0x41004004",
+                "register_name": "CTRLB",
+                "direction": "WRITE",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x000098c2",
+                "address": "0x41004010",
+                "register_name": "INTFLAG",
+                "direction": "READ",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              }
+            ],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x00009850",
+                "pool_address": "0x000098d4",
+                "value": "0x41004000",
+                "register_name": "NVMCTRL.CTRLA",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 4,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          },
+          {
+            "function": "FUN_000098d8",
+            "census_name": "nvm_bulk_erase__UNKNOWN",
+            "entry": "0x000098d8",
+            "size": 18,
+            "mmio_site_count": 3,
+            "mmio_sites": [
+              {
+                "site": "0x000098de",
+                "address": "0x41004014",
+                "register_name": "ADDR",
+                "direction": "WRITE",
+                "width": 4,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x000098e0",
+                "address": "0x41004004",
+                "register_name": "CTRLB",
+                "direction": "WRITE",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x000098e2",
+                "address": "0x41004010",
+                "register_name": "INTFLAG",
+                "direction": "READ",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              }
+            ],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x000098d8",
+                "pool_address": "0x000098ec",
+                "value": "0x41004000",
+                "register_name": "NVMCTRL.CTRLA",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 5,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          },
+          {
+            "function": "FUN_0000cdd8",
+            "census_name": "FUN_0000cdd8",
+            "entry": "0x0000cdd8",
+            "size": 444,
+            "mmio_site_count": 2,
+            "mmio_sites": [
+              {
+                "site": "0x0000cdda",
+                "address": "0x41004000",
+                "register_name": "CTRLA",
+                "direction": "READ",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000cdde",
+                "address": "0x41004000",
+                "register_name": "CTRLA",
+                "direction": "WRITE",
+                "width": 2,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              }
+            ],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x0000cdd8",
+                "pool_address": "0x0000cf94",
+                "value": "0x41004000",
+                "register_name": "NVMCTRL.CTRLA",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 1,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          }
+        ],
+        "functions_truncated": false,
+        "unattributed_sites": [],
+        "address_constants": [
+          {
+            "location": "0x00009844",
+            "value": "0x41004000",
+            "register_name": "NVMCTRL.CTRLA",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x000098d4",
+            "value": "0x41004000",
+            "register_name": "NVMCTRL.CTRLA",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x000098ec",
+            "value": "0x41004000",
+            "register_name": "NVMCTRL.CTRLA",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x0000cf94",
+            "value": "0x41004000",
+            "register_name": "NVMCTRL.CTRLA",
+            "referenced": true,
+            "reference_count": 1
+          }
+        ],
+        "address_constants_truncated": false,
+        "warnings": [],
+        "warnings_total": 0,
+        "limitations": [
+          "MMIO sites are constant-address references resolved by Ghidra's reference manager; accesses through a base-address register are not attributed to a peripheral in mmio_accesses.",
+          "Address constants are aligned flash words whose value lies in the peripheral's SVD range; loading an address is not proof of an access.",
+          "Absence of evidence is bounded to these two static methods and does not exclude runtime-computed peripheral addresses.",
+          "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+        ],
+        "provenance": {
+          "analysis": "census_peripheral_usage",
+          "analysis_version": 1,
+          "firmware_key": "autopilot868",
+          "expected_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "census_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "census_built_at": "2026-10-12T21:10:48.410436+00:00",
+          "census_ghidra_version": "12.1.3",
+          "reduction_status": "present",
+          "reduced_at": "2026-10-12T21:11:27.342291+00:00",
+          "peripheral_catalog": "ATSAMD51J19A.svd sha256:58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+          "flash_word_scan": "sha256-verified",
+          "sources": [
+            "census-components",
+            "census-reachability",
+            "flash-word-scan",
+            "ghidra-refmgr",
+            "svd"
+          ],
+          "limit": 25
+        }
+      }
+    },
+    {
+      "id": "E5",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000984c"
+      },
+      "result": {
+        "name": "FUN_0000984c",
+        "entry": "0x0000984c",
+        "size": 136,
+        "callers": [
+          {
+            "function": "FUN_000097a4",
+            "address": "0x000097e2"
+          }
+        ],
+        "callees": [],
+        "unique_caller_count": 1,
+        "callsite_count": 1,
+        "unique_callee_count": 0,
+        "outgoing_callsite_count": 0,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    }
+  ],
+  "state": {
+    "objective": "Find local evidence for reversible AutoPilot application replacement: bootloader identity, independent entry, BOSSA erase scope and boot protection, original image completeness, persistent NVM backup, SWD recovery. Treat undocumented physical entry and bootloader bytes as unknown. No hardware access or firmware modifications.",
+    "evidence_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5"
+    ],
+    "claims": [
+      {
+        "id": "C1",
+        "statement": "Census structural usage of NVMCTRL: 13 constant-address MMIO site(s), 4 flash address constant(s) (0 with no code reference), 4 attributed function(s), 0 unattributed reference site(s) (reduction present).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C2",
+        "statement": "FUN_0000981c has 2 statically resolved NVMCTRL MMIO site(s) (PARAM READ); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x0000981e; census reachability NO_KNOWN_PATH.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C3",
+        "statement": "FUN_0000984c has 6 statically resolved NVMCTRL MMIO site(s) (CTRLA READ, CTRLA WRITE, CTRLB WRITE, INTFLAG READ); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x00009850; census reachability DEFINITELY_REACHABLE.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C4",
+        "statement": "FUN_000098d8 has 3 statically resolved NVMCTRL MMIO site(s) (ADDR WRITE, CTRLB WRITE, INTFLAG READ); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x000098d8; census reachability DEFINITELY_REACHABLE.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C5",
+        "statement": "FUN_0000cdd8 has 2 statically resolved NVMCTRL MMIO site(s) (CTRLA READ, CTRLA WRITE); loads NVMCTRL address constant 0x41004000 (NVMCTRL base) at 0x0000cdd8; census reachability DEFINITELY_REACHABLE.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E4"
+        ],
+        "basis": "census"
+      }
+    ],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'bootloader identity'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L2",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'BOSSA erase scope'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L3",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_000098f0 mentioned by discovery query 'BOSSA erase scope'",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L4",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_000098f0 mentioned by discovery query 'BOSSA erase scope'",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L5",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_0000984c mentioned by discovery query 'BOSSA erase scope'",
+        "source_evidence_ids": [
+          "E2",
+          "E4"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L6",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_0000984c mentioned by discovery query 'BOSSA erase scope'",
+        "source_evidence_ids": [
+          "E2",
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L7",
+        "kind": "effects",
+        "description": "Function effects of FUN_0000984c",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L8",
+        "kind": "census",
+        "description": "Census structural usage of peripheral NVMCTRL",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L9",
+        "kind": "function",
+        "description": "Inspect FUN_0000981c, which the census associates with NVMCTRL",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L10",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_0000981c, which the census associates with NVMCTRL",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L11",
+        "kind": "function",
+        "description": "Inspect FUN_000098d8, which the census associates with NVMCTRL",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L12",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_000098d8, which the census associates with NVMCTRL",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L13",
+        "kind": "function",
+        "description": "Inspect FUN_0000cdd8, which the census associates with NVMCTRL",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L14",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_0000cdd8, which the census associates with NVMCTRL",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L15",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000984c from FUN_000097a4 at 0x000097e2",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      }
+    ]
+  },
+  "proposed_claims": [
+    {
+      "subject": "",
+      "assertion": "FUN_0000984c is a key function interacting with NVMCTRL",
+      "claim_type": "STRUCTURE",
+      "grade": "PROBABLE",
+      "evidence_ids": [
+        "E4"
+      ],
+      "limitations": [],
+      "semantics": null,
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E4 FUN_0000984c is a key function interacting with NVMCTRL",
+      "admission": 0
+    },
+    {
+      "subject": "",
+      "assertion": "FUN_0000984c is a 136-byte function at 0x0000984c",
+      "claim_type": "STRUCTURE",
+      "grade": "PROBABLE",
+      "evidence_ids": [
+        "E5"
+      ],
+      "limitations": [],
+      "semantics": null,
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E5 FUN_0000984c is a 136-byte function at 0x0000984c",
+      "admission": 1
+    },
+    {
+      "subject": "",
+      "assertion": "FUN_0000984c is a key function interacting with NVMCTRL",
+      "claim_type": "STRUCTURE",
+      "grade": "PROBABLE",
+      "evidence_ids": [
+        "E4",
+        "E5"
+      ],
+      "limitations": [],
+      "semantics": null,
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E4,E5 FUN_0000984c is a key function interacting with NVMCTRL",
+      "admission": 2
+    },
+    {
+      "subject": "FUN_0000cdd8",
+      "assertion": "FUN_0000cdd8 accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004000, write 0x41004000).",
+      "claim_type": "BEHAVIOR",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E4"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000cdd8",
+          "role": "MMIO_USER",
+          "slot": null,
+          "peripheral": "NVMCTRL"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000cdd8 reads or writes."
+      ],
+      "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-65a426f7d4ff",
+      "derivation": "claim candidate K-65a426f7d4ff (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-65a426f7d4ff",
+      "admission": 3
+    },
+    {
+      "subject": "FUN_0000981c",
+      "assertion": "FUN_0000981c accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004008).",
+      "claim_type": "BEHAVIOR",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E4"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000981c",
+          "role": "MMIO_USER",
+          "slot": null,
+          "peripheral": "NVMCTRL"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000981c reads or writes."
+      ],
+      "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-7049e3d66d9a",
+      "derivation": "claim candidate K-7049e3d66d9a (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-7049e3d66d9a",
+      "admission": 4
+    },
+    {
+      "subject": "FUN_000098d8",
+      "assertion": "FUN_000098d8 accesses NVMCTRL registers (census constant-address MMIO site(s): read 0x41004010, write 0x41004004, write 0x41004014).",
+      "claim_type": "BEHAVIOR",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E4"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_000098d8",
+          "role": "MMIO_USER",
+          "slot": null,
+          "peripheral": "NVMCTRL"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_000098d8 reads or writes."
+      ],
+      "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-f5dd0c7f86b6",
+      "derivation": "claim candidate K-f5dd0c7f86b6 (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-f5dd0c7f86b6",
+      "admission": 5
+    },
+    {
+      "subject": "FUN_0000984c",
+      "assertion": "FUN_0000984c accesses NVMCTRL registers (function-effects access(es): read 0x41004000, write 0x41004000; census constant-address MMIO site(s): read 0x41004000, read 0x41004010, write 0x41004000, write 0x41004004).",
+      "claim_type": "BEHAVIOR",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E4"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000984c",
+          "role": "MMIO_USER",
+          "slot": null,
+          "peripheral": "NVMCTRL"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000984c reads or writes."
+      ],
+      "scope": "symbolic function-effects analysis without argument specialization (Macaw/Crucible), not solver-confirmed; static census references (Ghidra reference manager), heuristic function boundaries",
+      "assumptions": [
+        "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+        "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+        "non-GPR (ASL bookkeeping) registers concrete zero",
+        "generic step bound 3000"
+      ],
+      "candidate_id": "K-fc36a418e96d",
+      "derivation": "claim candidate K-fc36a418e96d (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-fc36a418e96d",
+      "admission": 6
+    }
+  ],
+  "ledger_run_id": "R-20261019T211813-2ea211"
+}

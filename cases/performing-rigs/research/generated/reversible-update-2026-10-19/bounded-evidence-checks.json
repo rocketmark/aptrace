@@ -1,0 +1,10 @@
+{
+  "scope": "Saved simulation evidence only; not hardware release-gate tests",
+  "checks": {
+    "touch_arms_250": true,
+    "dtr_held_disables": true,
+    "request_magic_and_aircr": true,
+    "disabled_no_request": true,
+    "vendor_default_blob_zero": true
+  }
+}

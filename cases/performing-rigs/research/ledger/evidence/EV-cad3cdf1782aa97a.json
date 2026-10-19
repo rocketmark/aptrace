@@ -1,0 +1,26 @@
+{
+  "arguments": {
+    "function": "FUN_0000984c",
+    "specialize": {}
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a857980f729acb06",
+  "evidence_id": "EV-cad3cdf1782aa97a",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "BOUNDED",
+  "grade_basis": "function effects failed: all paths aborted",
+  "invocation_id": "TI-0ddf68c0705fb405",
+  "limitations": [
+    {
+      "code": "EFFECTS_COVERAGE_BOUNDED",
+      "source_evidence_ids": [],
+      "text": "Function effects coverage is bounded: failed: all paths aborted."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 13103,
+  "result_sha256": "97f98ecf6314c47ec621c7cca340bc183a5616b92cbddfff301eb3f0db6630ab",
+  "summary": "FUN_0000984c effects [RAW bounded: failed: all paths aborted; 1 blocks]: inputs none; 2 reads, 10 writes at 4 sites, 0 calls\n  MMIO: read @0x9852 0x41004000(NVMCTRL.CTRLA) guard=always-true; write @0x985e 0x41004000(NVMCTRL.CTRLA) guard=always-true\n  other: write @0x984c 0xfdc(STACK); read @0x9850 0x98d4(FLASH) [flash]\n  return r0 depends on nothing symbolic",
+  "tool": "function_effects"
+}

@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-19",
+  "revision": "123a3425cfef5a5803057cde3723c3a50dd274b0",
+  "scope": "Local analysis only; no physical device operation, firmware modification, updater execution or dependency installation",
+  "simulations": [
+    {
+      "name": "reset-request-positive",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry d4dc --seed-mem 20000224:01000000 --dump-mem 20000224:4 --dump-mem 2002fffc:4 --dump-mem e000ed0c:4 --stop-at d508 --max-instructions 100 --out cases/performing-rigs/research/generated/reversible-update-2026-10-19/reset-request-positive.json",
+      "exit_code": 0
+    },
+    {
+      "name": "reset-request-disabled",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry d4dc --seed-mem 20000224:ffffffff --dump-mem 20000224:4 --dump-mem 2002fffc:4 --dump-mem e000ed0c:4 --stop-at d50c --max-instructions 100 --out cases/performing-rigs/research/generated/reversible-update-2026-10-19/reset-request-disabled.json",
+      "exit_code": 0
+    },
+    {
+      "name": "application-default-nvm",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --max-instructions 1 --dump-mem 12000:4097 --out cases/performing-rigs/research/generated/reversible-update-2026-10-19/application-default-nvm.json",
+      "exit_code": 0
+    },
+    {
+      "name": "touch-arm",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call b7a8 --arg 0x20001000 --seed-mem 20001000:2122000000000000 --seed-mem 200001a0:b0040000 --seed-mem 20000224:ffffffff --dump-mem 200001a0:8 --dump-mem 20000224:4 --max-instructions 1000 --out cases/performing-rigs/research/generated/reversible-update-2026-10-19/touch-arm.json",
+      "exit_code": 0
+    },
+    {
+      "name": "touch-dtr-held",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call b7a8 --arg 0x20001000 --seed-mem 20001000:2122010000000000 --seed-mem 200001a0:b0040000 --seed-mem 20000224:ffffffff --dump-mem 200001a0:8 --dump-mem 20000224:4 --max-instructions 1000 --out cases/performing-rigs/research/generated/reversible-update-2026-10-19/touch-dtr-held.json",
+      "exit_code": 0
+    }
+  ],
+  "static_commands": [
+    "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20000224",
+    "python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0xd4c0",
+    "python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0xd4cc",
+    "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0xb810",
+    "python3 tools/census/aptrace_census.py peripheral autopilot868 NVMCTRL",
+    "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0xd4c0 0xd524",
+    "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0xb7a8 0xd4c0 0xd4cc 0x9724 0x981c"
+  ],
+  "workflow": {
+    "failed_seed": "FUN_0000d4dc",
+    "failure": "KeyError: Function not found: FUN_0000d4dc",
+    "retry": "unseeded research --max-steps 5 --ledger",
+    "artifact": "cases/performing-rigs/research/runs/agent/reversible-update-2026-10-19.json"
+  },
+  "limits": [
+    "No bootloader bytes or target readback",
+    "No version-matched BOSSA source/research found",
+    "No supported host PE analysis performed",
+    "No apfw2 release image or map supplied",
+    "Simulation stops at AIRCR store; does not reset or execute bootloader"
+  ]
+}

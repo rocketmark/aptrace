@@ -1,0 +1,38 @@
+{
+  "assertion": "FUN_0000984c is a key function interacting with NVMCTRL",
+  "assumptions": [],
+  "claim_id": "C17",
+  "claim_type": "STRUCTURE",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-19T21:18:13.598+00:00",
+  "depends_on": [],
+  "derivation": "planner finish claim proposal",
+  "limitations": [
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [
+        "EV-3d4f592a40f7fa8f"
+      ],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "proposed_by": "investigator:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "PROBABLE",
+  "run_id": "R-20261019T211813-2ea211",
+  "schema_version": 1,
+  "scope": "",
+  "semantics": null,
+  "subject": "FUN_0000984c is a key function interacting with NVMCTRL",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-3d4f592a40f7fa8f"
+  ],
+  "version": 1
+}

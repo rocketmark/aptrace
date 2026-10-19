@@ -12,6 +12,17 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
+**Production firmware replacement: NO-GO (2026-10-19).** The original vendor
+applications and updater are hash-identified, and the application-side
+1200-baud/DTR-release countdown/reset request is statically and concretely
+supported. Stock bootloader identity, actual boot protection/erase scope,
+application-independent entry and SWD recovery are not established. Noxon
+configuration `[0x12000,0x13001)` lies inside the vendor application image;
+reflashing canonical code does not preserve device-specific user data. Gates
+A/B/C are PARTIAL; D/E/F are BLOCKED. No physical hardware was accessed.
+See [the six-gate reversible-update assessment](docs/investigations/reversible-firmware-update.md)
+for required backups, validation, risk ranking and downgrade acceptance.
+
 APTrace orchestrates four specialist tools against real, unmodified
 AutoPilot/Remote (`mando`) firmware (ATSAMD51J19A, Cortex-M4F) rather than
 reimplementing any of them — see [`docs/architecture.md`](../../docs/architecture.md)

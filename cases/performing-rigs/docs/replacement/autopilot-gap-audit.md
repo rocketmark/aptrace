@@ -286,6 +286,9 @@ bit-match this") before finalizing those sections.
 `EXTERNAL_EVIDENCE_REQUIRED` subsystems (external STEP/DIR input, status
 LED) have no firmware evidence to write from at all.
 
-**Out of scope, no action needed**: USB/update/runtime behavior — write
-this section directly from the standard-bootloader facts already in
-`hardware-reference.md`.
+**Bootloader implementation is outside this application-contract audit**, but
+firmware replacement cannot rely on a stock/standard-bootloader assumption.
+The [reversible-update assessment](../investigations/reversible-firmware-update.md)
+requires independent entry, measured protection, backups and recovery validation
+before production flashing. Existing VID/updater evidence does not close those
+gates.

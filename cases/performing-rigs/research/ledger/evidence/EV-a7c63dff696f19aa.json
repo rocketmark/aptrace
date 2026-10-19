@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "BOSSA erase scope"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a857980f729acb06",
+  "evidence_id": "EV-a7c63dff696f19aa",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "PROBABLE",
+  "grade_basis": "case documents (documentary)",
+  "invocation_id": "TI-14a6c77ee421c372",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 3876,
+  "result_sha256": "d32b759ccf611095e0d8ef745ab9b6dfe2b2f376e752cafc86526310bc77a386",
+  "summary": "",
+  "tool": "search_case_evidence"
+}

@@ -1,0 +1,31 @@
+{
+  "arguments": {
+    "limit": 25,
+    "peripheral": "NVMCTRL"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a857980f729acb06",
+  "evidence_id": "EV-3d4f592a40f7fa8f",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "census constant-address MMIO references (heuristic function boundaries)",
+  "invocation_id": "TI-b0ede5a8193fba33",
+  "limitations": [
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 6102,
+  "result_sha256": "77ccae41fdd8126e62eca5a427739f4249f082b2ed08492e0948299ff7a94983",
+  "summary": "",
+  "tool": "census_peripheral_usage"
+}
