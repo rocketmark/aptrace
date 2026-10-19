@@ -1,0 +1,26 @@
+{
+  "arguments": {
+    "limit": 25,
+    "peripheral": "PORT"
+  },
+  "context_id": "X-a7082bca223d3723",
+  "ended_at": "2026-10-17T23:06:25.344+00:00",
+  "error": null,
+  "evidence_id": "EV-5b5c3f6b97d4d66a",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-bb15f79776036107",
+  "operation_key": "cd15a01a9dd1deeb292a188c198ddbd448e8fd5214af2f8bd4771cefd5091722",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "64b377e29ecadfc72ddf890c56a3008f49fc57d70af31d10a642187918a7947b",
+  "run_id": "R-20261017T230712-2ee78d",
+  "runtime_ms": 7.874,
+  "session_evidence_id": "E2",
+  "started_at": "2026-10-17T23:06:25.336+00:00",
+  "status": "ok",
+  "tool": "census_peripheral_usage"
+}

@@ -1,0 +1,1021 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "operator_reference_vectors",
+  "investigation_dates": [
+    "2026-10-17",
+    "2026-10-19"
+  ],
+  "firmware": {
+    "mando868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+      "sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc",
+      "mode": "original firmware",
+      "load_base": "0x4000",
+      "bootloader_included": false
+    },
+    "autopilot868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "mode": "original firmware",
+      "load_base": "0x4000",
+      "bootloader_included": false
+    }
+  },
+  "working_directory": "repository root",
+  "payload": {
+    "payload_hex": "f00bffffffff004c4b407c",
+    "payload_length": 11,
+    "buffer_sentinel_hex": "00",
+    "logical_channel": 0,
+    "decoded_value": 5000000,
+    "value_units": null,
+    "physical_motor_number": null,
+    "sequence_digit_established": false
+  },
+  "global_assumptions": [
+    "MMIO is plain memory, not peripheral or GPIO alias semantics.",
+    "No autonomous interrupts or physical time/rotation inferred.",
+    "Separate executions reset state unless explicitly carried; none of these new runs carries state.",
+    "Seeds are hypotheses/infrastructure inputs, not command-produced state.",
+    "Operator documentary export; no new VERIFIED motor claim."
+  ],
+  "state_composition": {
+    "carry_used": false,
+    "new_runs_share_execution_state": false,
+    "comparison": "Operator checked exact11 payload bytes, not whole-machine continuity",
+    "formal_composition_verified": false
+  },
+  "scenarios": [
+    {
+      "id": "remote-builder-cold",
+      "status": "newly_executed",
+      "producer": "Codex operating existing APTrace native CLI",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+        "--call",
+        "0xbe94",
+        "--seed-mem",
+        "0x20002679:01",
+        "--stop-at",
+        "0x117f4",
+        "--watch",
+        "0x117f4",
+        "--watch",
+        "0x11282",
+        "--dump-mem",
+        "0x2000183c:16",
+        "--dump-mem",
+        "0x200018e6:1",
+        "--mmio-size",
+        "0x4000000",
+        "--max-instructions",
+        "5000",
+        "--out",
+        "cases/performing-rigs/research/runs/remote-to-motor/remote-builder-cold.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-builder-cold.json",
+        "sha256": "4e9f11736cdc9f0d367833546938810af32daa9668ccf2590897d65f45ed0c93",
+        "mode": "fresh native concrete output"
+      },
+      "firmware": "mando868",
+      "execution_mode": "direct_AAPCS_call",
+      "stop_reason": "reached stop address 0x2fff0010",
+      "instructions_executed": 333,
+      "error": null,
+      "expected_memory": {
+        "0x2000183c": "f00bffffffff004c4b407c0000000000",
+        "0x200018e6": "0b"
+      },
+      "expected_watch_entries": [],
+      "expected_mmio_access_count": null,
+      "expected_busy_write_count": 0,
+      "assumptions": [
+        "MMIO is plain memory, not peripheral or GPIO alias semantics.",
+        "No autonomous interrupts or physical time/rotation inferred.",
+        "Separate executions reset state unless explicitly carried; none of these new runs carries state.",
+        "Seeds are hypotheses/infrastructure inputs, not command-produced state.",
+        "Operator documentary export; no new VERIFIED motor claim.",
+        "Known CLI ignores --stop-at with --call; returned normally, not checkpoint proof."
+      ],
+      "verification_state": null,
+      "mmio_logging_enabled": false,
+      "mmio_scope_note": "Unlogged; empty recorded MMIO list cannot establish no accesses."
+    },
+    {
+      "id": "remote-tx-boundary",
+      "status": "newly_executed",
+      "producer": "Codex operating existing APTrace native CLI",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+        "--entry",
+        "0xbe94",
+        "--seed-mem",
+        "0x20002679:01",
+        "--seed-mem",
+        "0x20005a08:01000000",
+        "--stop-at",
+        "0x117f4",
+        "--dump-mem",
+        "0x2000183c:16",
+        "--dump-mem",
+        "0x200018e6:1",
+        "--dump-mem",
+        "0x20002679:1",
+        "--max-instructions",
+        "5000",
+        "--mmio-size",
+        "0x4000000",
+        "--out",
+        "cases/performing-rigs/research/runs/remote-to-motor/remote-tx-boundary.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-tx-boundary.json",
+        "sha256": "e2f5518eed4628675fe47db964009e68d4f786bbce57356ac53ca878244139de",
+        "mode": "fresh native concrete output"
+      },
+      "firmware": "mando868",
+      "execution_mode": "raw_entry_to_checkpoint",
+      "stop_reason": "reached stop address 0x000117f4",
+      "instructions_executed": 367,
+      "error": null,
+      "expected_memory": {
+        "0x2000183c": "f00bffffffff004c4b407c0000000000",
+        "0x200018e6": "0b",
+        "0x20002679": "00"
+      },
+      "expected_watch_entries": [],
+      "expected_mmio_access_count": null,
+      "expected_busy_write_count": 0,
+      "assumptions": [
+        "MMIO is plain memory, not peripheral or GPIO alias semantics.",
+        "No autonomous interrupts or physical time/rotation inferred.",
+        "Separate executions reset state unless explicitly carried; none of these new runs carries state.",
+        "Seeds are hypotheses/infrastructure inputs, not command-produced state.",
+        "Operator documentary export; no new VERIFIED motor claim."
+      ],
+      "verification_state": null,
+      "mmio_logging_enabled": false,
+      "mmio_scope_note": "Unlogged; empty recorded MMIO list cannot establish no accesses."
+    },
+    {
+      "id": "f0-captured-value-to-planner",
+      "status": "newly_executed",
+      "producer": "Codex operating existing APTrace native CLI",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--entry",
+        "0x8a34",
+        "--reg",
+        "r0=12",
+        "--seed-mem",
+        "0x2000232a:f00bffffffff004c4b407c00",
+        "--seed-mem",
+        "0x20000180:808d5b00",
+        "--seed-mem",
+        "0x20000094:01000000",
+        "--stop-at",
+        "0x4d18",
+        "--watch",
+        "0x5448",
+        "--watch-mem",
+        "0x200024cc:4",
+        "--watch-mem-write",
+        "0x20001b14:4",
+        "--dump-mem",
+        "0x20000134:1",
+        "--dump-mem",
+        "0x200023d8:4",
+        "--dump-mem",
+        "0x20002524:1",
+        "--dump-mem",
+        "0x200024cc:4",
+        "--dump-mem",
+        "0x20001b14:4",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-instructions",
+        "5000",
+        "--out",
+        "cases/performing-rigs/research/runs/remote-to-motor/f0-captured-value-to-planner.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-captured-value-to-planner.json",
+        "sha256": "854a7b2df42306d0116a3715e3b99b0e675fb2852ad36a05a829cb08f15ba671",
+        "mode": "fresh native concrete output"
+      },
+      "firmware": "autopilot868",
+      "execution_mode": "raw_entry_to_checkpoint",
+      "stop_reason": "reached stop address 0x00004d18",
+      "instructions_executed": 71,
+      "error": null,
+      "expected_memory": {
+        "0x20000134": "01",
+        "0x200023d8": "00000000",
+        "0x20002524": "02",
+        "0x200024cc": "404b4c00",
+        "0x20001b14": "00000000"
+      },
+      "expected_watch_entries": [
+        {
+          "address": "0x00005448",
+          "instruction": 37
+        }
+      ],
+      "expected_mmio_access_count": 0,
+      "expected_busy_write_count": 0,
+      "assumptions": [
+        "MMIO is plain memory, not peripheral or GPIO alias semantics.",
+        "No autonomous interrupts or physical time/rotation inferred.",
+        "Separate executions reset state unless explicitly carried; none of these new runs carries state.",
+        "Seeds are hypotheses/infrastructure inputs, not command-produced state.",
+        "Operator documentary export; no new VERIFIED motor claim."
+      ],
+      "verification_state": null,
+      "mmio_logging_enabled": true
+    },
+    {
+      "id": "f0-through-motor-state",
+      "status": "newly_executed",
+      "producer": "Codex operating existing APTrace native CLI",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--entry",
+        "0x8a34",
+        "--reg",
+        "r0=12",
+        "--seed-mem",
+        "0x2000232a:f00bffffffff004c4b407c00",
+        "--seed-mem",
+        "0x20000180:808d5b00",
+        "--seed-mem",
+        "0x20000094:01000000",
+        "--stop-at",
+        "0x83ec",
+        "--watch",
+        "0x5448",
+        "--watch",
+        "0x4d18",
+        "--watch",
+        "0x5ee8",
+        "--watch",
+        "0x5c00",
+        "--watch",
+        "0x607c",
+        "--watch-mem-write",
+        "0x20001b14:4",
+        "--dump-mem",
+        "0x20000094:4",
+        "--dump-mem",
+        "0x20000040:8",
+        "--dump-mem",
+        "0x200024cc:4",
+        "--dump-mem",
+        "0x2000309d:1",
+        "--dump-mem",
+        "0x2000310c:1",
+        "--dump-mem",
+        "0x20002524:1",
+        "--dump-mem",
+        "0x20001b14:4",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/remote-to-motor/f0-through-motor-state.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-through-motor-state.json",
+        "sha256": "d976742e8191713b1bb1c1acdf8c1383aa85c4d832cd12704c2b0be5c1233cc4",
+        "mode": "fresh native concrete output"
+      },
+      "firmware": "autopilot868",
+      "execution_mode": "raw_entry_to_checkpoint",
+      "stop_reason": "reached stop address 0x000083ec",
+      "instructions_executed": 2537,
+      "error": null,
+      "expected_memory": {
+        "0x20000094": "01000000",
+        "0x20000040": "613255302aa9333f",
+        "0x200024cc": "404b4c00",
+        "0x2000309d": "00",
+        "0x2000310c": "02",
+        "0x20002524": "02",
+        "0x20001b14": "00000000"
+      },
+      "expected_watch_entries": [
+        {
+          "address": "0x00005448",
+          "instruction": 37
+        },
+        {
+          "address": "0x00004d18",
+          "instruction": 71
+        }
+      ],
+      "expected_mmio_access_count": 0,
+      "expected_busy_write_count": 0,
+      "assumptions": [
+        "MMIO is plain memory, not peripheral or GPIO alias semantics.",
+        "No autonomous interrupts or physical time/rotation inferred.",
+        "Separate executions reset state unless explicitly carried; none of these new runs carries state.",
+        "Seeds are hypotheses/infrastructure inputs, not command-produced state.",
+        "Operator documentary export; no new VERIFIED motor claim."
+      ],
+      "verification_state": null,
+      "mmio_logging_enabled": true
+    },
+    {
+      "id": "ch0-isr-positive",
+      "status": "reused_not_rerun",
+      "producer": "prior APTrace native reference",
+      "firmware": "autopilot868",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x607c",
+        "--seed-mem",
+        "0x20000164:292b072d",
+        "--seed-mem",
+        "0x20000094:01000000",
+        "--seed-mem",
+        "0x20003099:01",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--dump-mem",
+        "0x20002064:4",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+        "sha256": "14c73ef37a03dd40a2b09c3cbadcd86ea29b4928084e0ba82bbd5dafbee54449",
+        "mode": "reused native concrete output"
+      },
+      "stop_reason": "reached stop address 0x2fff0010",
+      "instructions_executed": 108,
+      "error": null,
+      "expected_memory": {
+        "0x20002064": "01000000"
+      },
+      "expected_mmio_writes": [
+        {
+          "instruction": 4,
+          "pc": "0x00006084",
+          "address": "0x4000380a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 7,
+          "pc": "0x0000608c",
+          "address": "0x4000380a",
+          "size": 1,
+          "direction": "write",
+          "value": "0x11"
+        },
+        {
+          "instruction": 56,
+          "pc": "0x0000d3c2",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x4"
+        },
+        {
+          "instruction": 60,
+          "pc": "0x0000d3d0",
+          "address": "0x41008098",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        },
+        {
+          "instruction": 89,
+          "pc": "0x0000d3c2",
+          "address": "0x410080ca",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 93,
+          "pc": "0x0000d3cc",
+          "address": "0x41008094",
+          "size": 4,
+          "direction": "write",
+          "value": "0x400"
+        }
+      ],
+      "scope": "Independent direct helper/ISR call; not downstream of selected command",
+      "verification_state": null
+    },
+    {
+      "id": "ch0-timer-init",
+      "status": "reused_not_rerun",
+      "producer": "prior APTrace native reference",
+      "firmware": "autopilot868",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5570",
+        "--arg",
+        "0",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json",
+        "sha256": "f92c3d2fa6110a20b9d4bac6cdfea4f104132b0dd3e462663659d99c4477b2ec",
+        "mode": "reused native concrete output"
+      },
+      "stop_reason": "reached stop address 0x2fff0010",
+      "instructions_executed": 40,
+      "error": null,
+      "expected_memory": {},
+      "expected_mmio_writes": [
+        {
+          "instruction": 10,
+          "pc": "0x00005590",
+          "address": "0x40000814",
+          "size": 4,
+          "direction": "write",
+          "value": "0x4000"
+        },
+        {
+          "instruction": 14,
+          "pc": "0x0000559a",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 17,
+          "pc": "0x000055a4",
+          "address": "0x40001c3c",
+          "size": 4,
+          "direction": "write",
+          "value": "0x306"
+        },
+        {
+          "instruction": 23,
+          "pc": "0x000055b2",
+          "address": "0x40001ca4",
+          "size": 4,
+          "direction": "write",
+          "value": "0x47"
+        },
+        {
+          "instruction": 26,
+          "pc": "0x000055bc",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        },
+        {
+          "instruction": 28,
+          "pc": "0x000055c0",
+          "address": "0x4000380c",
+          "size": 1,
+          "direction": "write",
+          "value": "0x1"
+        },
+        {
+          "instruction": 34,
+          "pc": "0x000055d0",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x2"
+        },
+        {
+          "instruction": 36,
+          "pc": "0x000055d4",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x0"
+        },
+        {
+          "instruction": 37,
+          "pc": "0x000055d6",
+          "address": "0x40003809",
+          "size": 1,
+          "direction": "write",
+          "value": "0x10"
+        },
+        {
+          "instruction": 38,
+          "pc": "0x000055d8",
+          "address": "0x40003814",
+          "size": 2,
+          "direction": "write",
+          "value": "0x0"
+        }
+      ],
+      "scope": "Independent direct helper/ISR call; not downstream of selected command",
+      "verification_state": null
+    },
+    {
+      "id": "ch0-timer-disable",
+      "status": "reused_not_rerun",
+      "producer": "prior APTrace native reference",
+      "firmware": "autopilot868",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5858",
+        "--arg",
+        "0",
+        "--seed-mem",
+        "0x40003800:02060000",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json",
+        "sha256": "47ef12c16a8a2f961f52a91560b4efb3c55581e1f47837ee72d1a62b84d588fe",
+        "mode": "reused native concrete output"
+      },
+      "stop_reason": "reached stop address 0x2fff0010",
+      "instructions_executed": 9,
+      "error": null,
+      "expected_memory": {},
+      "expected_mmio_writes": [
+        {
+          "instruction": 7,
+          "pc": "0x00005870",
+          "address": "0x40003800",
+          "size": 4,
+          "direction": "write",
+          "value": "0x600"
+        }
+      ],
+      "scope": "Independent direct helper/ISR call; not downstream of selected command",
+      "verification_state": null
+    },
+    {
+      "id": "ch0-period-unmodeled",
+      "status": "reused_not_rerun",
+      "producer": "prior APTrace native reference",
+      "firmware": "autopilot868",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "tools/unicorn/run_concrete.py",
+        "--firmware",
+        "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+        "--call",
+        "0x5c00",
+        "--arg",
+        "0",
+        "--arg",
+        "10000",
+        "--mmio-size",
+        "0x4000000",
+        "--log-mmio",
+        "--max-mmio-log",
+        "10000",
+        "--max-instructions",
+        "20000",
+        "--out",
+        "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json"
+      ],
+      "artifact": {
+        "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json",
+        "sha256": "f646e61f7ec100f9eb66ea583835a3fdfc86b08020043f4a1c90c533c7fbca9b",
+        "mode": "reused native concrete output"
+      },
+      "stop_reason": "instruction limit reached",
+      "instructions_executed": 20000,
+      "error": null,
+      "expected_memory": {},
+      "expected_mmio_writes": [
+        {
+          "instruction": 15,
+          "pc": "0x00005c44",
+          "address": "0x4000381c",
+          "size": 2,
+          "direction": "write",
+          "value": "0x2710"
+        },
+        {
+          "instruction": 20,
+          "pc": "0x00005c4e",
+          "address": "0x40003805",
+          "size": 1,
+          "direction": "write",
+          "value": "0x80"
+        }
+      ],
+      "scope": "Independent direct helper/ISR call; not downstream of selected command",
+      "verification_state": null
+    },
+    {
+      "id": "manual-f0e0",
+      "status": "newly_replayed_existing_scenario",
+      "command_argv": [
+        "tools/unicorn/.venv/bin/python3",
+        "cases/performing-rigs/scripts/virtual_link.py",
+        "manual-f0e0"
+      ],
+      "exit_code": 0,
+      "evidence_source": "virtual_link",
+      "expected": [
+        "F0 value10 threshold100 reaches0x5448(0,10)",
+        "F0 value200 threshold100 reaches0x5274(0,4)",
+        "E0 value10 same decode",
+        "E0 value200 cold latch reaches0x5274",
+        "E0 value200 latch1 skips both handlers to0x83ec"
+      ],
+      "limitations": [
+        "Synthetic twelfth numeric byte differs from captured binary sentinel convention.",
+        "Handler-entry stops only; no motion state or release run.",
+        "Final xref/timeout text is printed reused narrative, not fresh static/dynamic analysis."
+      ],
+      "verification_state": null
+    }
+  ],
+  "agent_operations": {
+    "runtime_probe_source": "qwen_probe",
+    "broad": {
+      "source": "agent_broad",
+      "argv": [
+        "agent/.venv/bin/aptrace-agent",
+        "research",
+        "--max-steps",
+        "8",
+        "--ledger",
+        "--output",
+        "cases/performing-rigs/research/runs/agent/remote-to-motor-2026-10-17.json",
+        "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution."
+      ],
+      "result": "step_budget_exhausted;8steps;8evidence;reconciled=false;C10-C13 PROPOSED"
+    },
+    "focused": {
+      "source": "agent_focused",
+      "argv": [
+        "agent/.venv/bin/aptrace-agent",
+        "research",
+        "--function",
+        "FUN_00005448",
+        "--max-steps",
+        "4",
+        "--output",
+        "cases/performing-rigs/research/runs/agent/remote-to-motor-focused-2026-10-19.json",
+        "Bounded AutoPilot868 F0 channel0 jog follow-up. Determine whether FUN_00005448 sets busy state 0x20001b14 and how its target update reaches FUN_00004d18; preserve conditions. Report unsupported connection to timer activation and STOP on RF silence as open questions. Finish after relevant function evidence rather than peripheral inventory. Request case reconciliation review of unsupported causal composition."
+      ],
+      "result": "step_budget_exhausted;4steps;6evidence;effects timeout300s;vl-ampersand observation failed;reconciled=false"
+    },
+    "gemma": {
+      "source": "gemma_audit",
+      "argv": [
+        "agent/.venv/bin/aptrace-agent",
+        "audit",
+        "C10:v1",
+        "--diagnostic",
+        "--max-decisions",
+        "3"
+      ],
+      "result": "HTTP507 model-load memory ceiling;UNRESOLVED;no valid review"
+    }
+  },
+  "ghidra_operations": [
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "decompile",
+        "autopilot868",
+        "0x5448",
+        "0x5274"
+      ],
+      "source": "jog_handlers"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "decompile",
+        "mando868",
+        "0xbe94",
+        "0xde3c"
+      ],
+      "source": "remote_sender"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "decompile",
+        "mando868",
+        "0x4898",
+        "0x4880",
+        "0x48c8",
+        "0x468c"
+      ],
+      "source": "binary_builders"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "decompile",
+        "mando868",
+        "0x4750",
+        "0x47e8",
+        "0x479c"
+      ],
+      "source": "channel_builders"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "dump",
+        "autopilot868",
+        "0x549c",
+        "--length",
+        "28"
+      ],
+      "source": "jog_literals"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "dump",
+        "autopilot868",
+        "0x5018",
+        "--length",
+        "88"
+      ],
+      "source": "motion_literals"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "dump",
+        "mando868",
+        "0x9408",
+        "--length",
+        "28"
+      ],
+      "source": "remote_tx_literals"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/ghidra/aptrace_ghidra.py",
+        "dump",
+        "mando868",
+        "0x4820",
+        "--length",
+        "20"
+      ],
+      "source": "channel_literals"
+    }
+  ],
+  "additional_queries_not_promoted_to_standalone_evidence": [
+    "literal autopilot8680x5448 returns instruction word, not useful target resolution",
+    "dump mando8680x4820 length20 resolves dirty/value/buffer constants",
+    "dump mando8680x48c0 length44 resolves builder buffer/length",
+    "decompile mando8680xbb38,0x8560 for sender prerequisites",
+    "decompile mando8680x16840 resolves millis shape; counter address reused from boot recipe"
+  ],
+  "sources": {
+    "remote_tx": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-tx-boundary.json",
+      "sha256": "e2f5518eed4628675fe47db964009e68d4f786bbce57356ac53ca878244139de",
+      "mode": "fresh concrete"
+    },
+    "remote_cold": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-builder-cold.json",
+      "sha256": "4e9f11736cdc9f0d367833546938810af32daa9668ccf2590897d65f45ed0c93",
+      "mode": "fresh concrete"
+    },
+    "rx_checkpoint": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-captured-value-to-planner.json",
+      "sha256": "854a7b2df42306d0116a3715e3b99b0e675fb2852ad36a05a829cb08f15ba671",
+      "mode": "fresh concrete"
+    },
+    "rx_state": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-through-motor-state.json",
+      "sha256": "d976742e8191713b1bb1c1acdf8c1383aa85c4d832cd12704c2b0be5c1233cc4",
+      "mode": "fresh concrete"
+    },
+    "remote_sender": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-sender-release-decompile.txt",
+      "sha256": "1ee3edccefc76266b94a6b526ecb9ed90533a9c1f684b55b84c7efd391c18997",
+      "mode": "fresh Ghidra structural"
+    },
+    "binary_builders": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-binary-builders.txt",
+      "sha256": "e67748e417c7f984561b9698f0379f523b69329ca2c23ca7733e167b72700967",
+      "mode": "fresh Ghidra structural"
+    },
+    "channel_builders": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-channel-builders.txt",
+      "sha256": "0a32c62f6ba789300d3919271caf73405e70a215276d570970b1ee2799eb7421",
+      "mode": "fresh Ghidra structural"
+    },
+    "jog_handlers": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/jog-handlers-decompile.txt",
+      "sha256": "27f06f46f9c9681b69a8ce652d9e0c40b52b01361f6d023332baf8726cdf545f",
+      "mode": "fresh Ghidra structural"
+    },
+    "jog_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/jog-literals.txt",
+      "sha256": "ab8af0abdb2810d3841850b87146220fdccdb2907f6795bd05c701e588fff341",
+      "mode": "fresh Ghidra raw bytes"
+    },
+    "motion_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/motion-literals.txt",
+      "sha256": "8644602ad549ad83617df0de6798e0eda8b37fcf300a6f421198aab4bd6f946b",
+      "mode": "fresh Ghidra raw bytes"
+    },
+    "remote_tx_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-tx-literals.txt",
+      "sha256": "0b3b33229d88d00784b36f2160b65fc9d6fb798ab4d3628dc782da5cfed4ff33",
+      "mode": "fresh Ghidra raw bytes"
+    },
+    "manual_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/manual-mode-and-limits.md",
+      "sha256": "a0d163e845fb9a69f8322270148c236af5ba46794ab4c130815bb68df9611e29",
+      "mode": "reused historical narrative; later binary-layout corrections apply"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "mode": "reused historical structural/concrete narrative; absence is search-relative"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "mode": "reused structural/boot narrative"
+    },
+    "gap_audit": {
+      "path": "cases/performing-rigs/docs/replacement/autopilot-gap-audit.md",
+      "sha256": "ae93c1ed4399aaf9cf8fd6876c7772af296308c3df2e41a9723f8251a81d7846",
+      "mode": "reused historical structural/concrete narrative"
+    },
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "mode": "reused pin identities, not scenario-specific physical routing"
+    },
+    "rf_boundaries": {
+      "path": "cases/performing-rigs/research/autopilot_static_inventory/rf-boundaries.md",
+      "sha256": "cd4b5aa2bb8d8b5b5221a65e069afb06cb876b4d45f1801f835ef8d6f6f8e44f",
+      "mode": "reused static RF boundaries"
+    },
+    "protocol": {
+      "path": "cases/performing-rigs/docs/investigations/protocol-pipeline.md",
+      "sha256": "cee17f096567e62093bc895f10f4b642d2a02775a23990bb29fc31491fe8fe65",
+      "mode": "reused protocol structure, not fresh validation"
+    },
+    "virtual_link": {
+      "path": "cases/performing-rigs/scripts/virtual_link.py",
+      "sha256": "72ad6a2fd5e05067effc7af66ef3ab3e86715b12364e92399a08424c1da1283f",
+      "mode": "existing implementation inspected and manual-f0e0 replayed; not changed"
+    },
+    "isr": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+      "sha256": "14c73ef37a03dd40a2b09c3cbadcd86ea29b4928084e0ba82bbd5dafbee54449",
+      "mode": "reused complete direct handler-body reference"
+    },
+    "period": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json",
+      "sha256": "f646e61f7ec100f9eb66ea583835a3fdfc86b08020043f4a1c90c533c7fbca9b",
+      "mode": "reused partial bounded direct call"
+    },
+    "timer_init": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json",
+      "sha256": "f92c3d2fa6110a20b9d4bac6cdfea4f104132b0dd3e462663659d99c4477b2ec",
+      "mode": "reused complete helper reference"
+    },
+    "timer_stop": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json",
+      "sha256": "47ef12c16a8a2f961f52a91560b4efb3c55581e1f47837ee72d1a62b84d588fe",
+      "mode": "reused complete helper reference"
+    },
+    "timer_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/function-review.txt",
+      "sha256": "2b5ea2dc911b6b4367063d806afe13041c3ef00f466c3565af7cce4f9b70d915",
+      "mode": "reused Ghidra decompile"
+    },
+    "direction_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/direction-usb-review.txt",
+      "sha256": "7c1cabe512950524e188586eb5b2030d62d253a8e2e126ba0b117ee03c4b73ad",
+      "mode": "reused Ghidra decompile, not DIR write witness"
+    },
+    "rate_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/rate-scaling-disasm.txt",
+      "sha256": "0695fe274c70432be153e1767f2f9ddebed3c76ded719e4421b52a2ab3430326",
+      "mode": "reused Ghidra disassembly"
+    },
+    "stop_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/stop-watchdog-review.txt",
+      "sha256": "b91f41bea8c0ea2b12ea504f49e64869bf0c786fd288e2e826c953647252071d",
+      "mode": "reused Ghidra decompile"
+    },
+    "readiness": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-readiness.md",
+      "sha256": "4f3639137678c31d95723f487155ba8535f2d8aa5510e99cfeda6305ed45af3c",
+      "mode": "reused assessment"
+    },
+    "tmc_contract": {
+      "path": "cases/performing-rigs/docs/replacement/tmc5160-apfw2-contract.md",
+      "sha256": "9775d369f0f44a29baacae44b271f6d04a7f984bbac23de8dd4b927e830c2406",
+      "mode": "reused POC contract; no repeat investigation"
+    },
+    "qwen_probe": {
+      "path": "cases/performing-rigs/research/runs/agent/local-llm-check-2026-10-17-qwen.json",
+      "sha256": "be9203f386380cf31e03571dc183a4572058371dcba6fddcfa0b2880979b04fe",
+      "mode": "saved successful live runtime probe read before research"
+    },
+    "agent_broad": {
+      "path": "cases/performing-rigs/research/runs/agent/remote-to-motor-2026-10-17.json",
+      "sha256": "c1b35f96ed177d595b3cce82125977e0059a6dad58cfec64931dd0f058ab815d",
+      "mode": "new agent-produced research"
+    },
+    "agent_focused": {
+      "path": "cases/performing-rigs/research/runs/agent/remote-to-motor-focused-2026-10-19.json",
+      "sha256": "9ddc76e2f61d0fcb40c34aab17a6e064d8f87bb1e60c407b4138bd4fec2da0f1",
+      "mode": "new agent-produced research; effects timeout/observation failure"
+    },
+    "gemma_audit": {
+      "path": "cases/performing-rigs/research/ledger/audits/A-20261019T133615-906232.json",
+      "sha256": "ac8ff6aeee851050ae427ab2f9db775ef62d108b0b1133b96972216d04d4f3ff",
+      "mode": "new diagnostic audit; HTTP507, no valid model verdict"
+    },
+    "precheck": {
+      "path": "cases/performing-rigs/research/ledger/verifications/V-20261019T133615-2106ab.json",
+      "sha256": "e1fcd21157a72c7bb6447fb30db984f6e99bf312bd673a1ac49d8b9d54192e7e",
+      "mode": "new deterministic precheck; policy UNEVALUABLE"
+    },
+    "operator_method": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7",
+      "mode": "operator methodology"
+    },
+    "config": {
+      "path": ".codex/config.toml",
+      "sha256": "c52838a8f60e154bc38cf6e99f7c1e49a2cd63661e0bf49349b41d3d271ee469",
+      "mode": "user-updated config read October19; not changed by investigator"
+    },
+    "channel_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-channel-literals.txt",
+      "sha256": "dad0a35cd153212d4ebd76d9a87dcce2aa1a6b8cf19696faecfa69a8cc2da7bd",
+      "mode": "bounded Ghidra raw-byte query, retained numeric builder constants"
+    }
+  },
+  "replay_note": "Commands reproduce original artifacts and overwrite --out files; use another output path to preserve originals. No replay was run merely to validate this export.",
+  "verification_state": null
+}

@@ -1,0 +1,2585 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-17T23:07:12.486664+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+  "seed_function": null,
+  "stop_reason": "step_budget_exhausted",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "discover",
+      "lead_id": "L1",
+      "evidence_id": "E1",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "analyze",
+      "lead_id": "L8",
+      "evidence_id": "E2",
+      "reason": null
+    },
+    {
+      "number": 3,
+      "action": "follow_lead",
+      "lead_id": "L15",
+      "evidence_id": "E3",
+      "reason": null
+    },
+    {
+      "number": 4,
+      "action": "follow_lead",
+      "lead_id": "L13",
+      "evidence_id": "E4",
+      "reason": null
+    },
+    {
+      "number": 5,
+      "action": "follow_lead",
+      "lead_id": "L11",
+      "evidence_id": "E5",
+      "reason": null
+    },
+    {
+      "number": 6,
+      "action": "follow_lead",
+      "lead_id": "L9",
+      "evidence_id": "E6",
+      "reason": null
+    },
+    {
+      "number": 7,
+      "action": "follow_lead",
+      "lead_id": "L12",
+      "evidence_id": "E7",
+      "reason": null
+    },
+    {
+      "number": 8,
+      "action": "follow_lead",
+      "lead_id": "L6",
+      "evidence_id": "E8",
+      "reason": null
+    }
+  ],
+  "planner_requests": [
+    {
+      "phase": "discovery",
+      "evidence": 0,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 1329,
+      "state_chars": 23,
+      "message_bytes": 1579,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2574,
+      "attempt": 0,
+      "prompt_tokens": 913,
+      "decision": "search_case_evidence"
+    },
+    {
+      "phase": "decision",
+      "evidence": 1,
+      "open_leads": 6,
+      "claims": 0,
+      "prompt_chars": 2258,
+      "state_chars": 365,
+      "message_bytes": 2532,
+      "tool_bytes": 2632,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5164,
+      "attempt": 0,
+      "prompt_tokens": 1789,
+      "decision": "analyze_peripheral"
+    },
+    {
+      "phase": "decision",
+      "evidence": 2,
+      "open_leads": 14,
+      "claims": 5,
+      "prompt_chars": 3136,
+      "state_chars": 1222,
+      "message_bytes": 3418,
+      "tool_bytes": 2628,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 6046,
+      "attempt": 0,
+      "prompt_tokens": 2166
+    },
+    {
+      "phase": "decision",
+      "evidence": 2,
+      "open_leads": 14,
+      "claims": 5,
+      "prompt_chars": 3053,
+      "state_chars": 1222,
+      "message_bytes": 3335,
+      "tool_bytes": 2114,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5449,
+      "attempt": 0,
+      "prompt_tokens": 1943,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 3,
+      "open_leads": 21,
+      "claims": 5,
+      "prompt_chars": 2869,
+      "state_chars": 1039,
+      "message_bytes": 3152,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5265,
+      "attempt": 0,
+      "prompt_tokens": 1920,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 41,
+      "claims": 5,
+      "prompt_chars": 2797,
+      "state_chars": 961,
+      "message_bytes": 3080,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5193,
+      "attempt": 0,
+      "prompt_tokens": null
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 41,
+      "claims": 5,
+      "prompt_chars": 212,
+      "state_chars": 961,
+      "message_bytes": 3355,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5468,
+      "attempt": 1,
+      "prompt_tokens": 1925,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 5,
+      "open_leads": 54,
+      "claims": 5,
+      "prompt_chars": 2907,
+      "state_chars": 982,
+      "message_bytes": 3190,
+      "tool_bytes": 2627,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5817,
+      "attempt": 0,
+      "prompt_tokens": 2123
+    },
+    {
+      "phase": "decision",
+      "evidence": 5,
+      "open_leads": 54,
+      "claims": 5,
+      "prompt_chars": 2824,
+      "state_chars": 982,
+      "message_bytes": 3107,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5220,
+      "attempt": 0,
+      "prompt_tokens": 1900,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 6,
+      "open_leads": 53,
+      "claims": 5,
+      "prompt_chars": 2851,
+      "state_chars": 1002,
+      "message_bytes": 3134,
+      "tool_bytes": 2114,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5248,
+      "attempt": 0,
+      "prompt_tokens": 1911,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 7,
+      "open_leads": 52,
+      "claims": 5,
+      "prompt_chars": 2888,
+      "state_chars": 1039,
+      "message_bytes": 3171,
+      "tool_bytes": 2114,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5285,
+      "attempt": 0,
+      "prompt_tokens": 1920,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "final-claims",
+      "evidence": 8,
+      "open_leads": 60,
+      "claims": 5,
+      "prompt_chars": 2106,
+      "state_chars": 1060,
+      "message_bytes": 2320,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 2972,
+      "attempt": 0,
+      "prompt_tokens": 1223,
+      "decision": "finish"
+    },
+    {
+      "phase": "claim-correction",
+      "evidence": 8,
+      "open_leads": 60,
+      "claims": 5,
+      "prompt_chars": 2595,
+      "state_chars": 1060,
+      "message_bytes": 2813,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 3465,
+      "attempt": 0,
+      "prompt_tokens": 1391,
+      "decision": "finish"
+    },
+    {
+      "phase": "candidate-selection",
+      "evidence": 8,
+      "open_leads": 60,
+      "claims": 5,
+      "prompt_chars": 2020,
+      "state_chars": 943,
+      "message_bytes": 2242,
+      "tool_bytes": 349,
+      "tools": [
+        "select_claims"
+      ],
+      "total_bytes": 2591,
+      "attempt": 0,
+      "prompt_tokens": 999,
+      "decision": "select_claims"
+    }
+  ],
+  "conclusion": {
+    "proven": [
+      "C5[census] FUN_0000d388 loads PORT address constant 0x41008000 (PORT base) at 0x0000d3c6; census reachability DEFINITELY_REACHABLE. (E2)",
+      "C4[census] FUN_0000c7c0 loads PORT address constant 0x41008018 (PORT.GROUP0.OUTSET) at 0x0000c824 (+1 more load site(s)); census reachability NO_KNOWN_PATH. (E2)",
+      "C3[census] FUN_0000bc44 has 12 statically resolved PORT MMIO site(s) (GROUP0.PINCFG24 READ, GROUP0.PINCFG24 WRITE, GROUP0.PINCFG25 READ, GROUP0.PINCFG25 WRITE, ...); loads PORT address constant 0x41008000 (PORT base) at 0x0000bc88; census reachability DEFINITELY_REACHABLE. (E2)",
+      "C2[census] FUN_000060ec has 1 statically resolved PORT MMIO site(s) (GROUP1.OUTTGL WRITE); loads PORT address constant 0x41008000 (PORT base) at 0x000060f6; census reachability DEFINITELY_REACHABLE. (E2)",
+      "C1[census] Census structural usage of PORT: 13 constant-address MMIO site(s), 6 flash address constant(s) (0 with no code reference), 5 attributed function(s), 0 unattributed reference site(s) (reduction present). (E2)"
+    ],
+    "probable": [],
+    "open": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "mando868 firmware firmware pin function map",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "mando868 firmware firmware pin function map",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/protocol/command-inventory.md",
+            "line": 32,
+            "kind": "documentation",
+            "excerpt": "30: | `TR0\\|` / `TR1\\|` | Remote -> AutoPilot | Boolean family (false/true). **`TR0\\|`'s Remote-side sender confirmed** (`manual-mode-and-limits.md`): same shared settings/row-action widget, sent 3x on a different row selection. **AutoPilot-side effect now CONFIRMED** (found while tracing the trigger-input reported bug): the dispatcher's real `'T'`\u2192`'R'`\u2192`<digit>` branch (`0x84fa`-`0x8512`) writes the parsed digit into `0x20003120` \u2014 this is the enable byte gating whether the trigger-status `T<>,<>,\\|` frame (below) is ever sent at all (`TR1\\|` arms it, `TR0\\|`, the default, disarms it) \u2014 see [`trigger-input.md`](../investigations/trigger-input.md) | inline state change |\n31: | `W0\\|` / `W1\\|` | Remote -> AutoPilot | W-family subcommand | `W1` -> up to five `#` (event 17), conditional |\n32: | `R0\\|` / `R1\\|` / `R2\\|` | Remote -> AutoPilot | R-family state | `R0`->`@`, `R1`->`@@` (event 4) |\n33: | `MC<0-3><a>,<b>,<c>,<d>,\\|` | Remote -> AutoPilot | Motor configuration, one channel \u2014 does **not** unlock the motor subsystem (see next row). **Remote sender confirmed**: a single function, `FUN_00005a8c` (mando868), builds every `MC` frame in the image (the sole such builder, confirmed by four independent full-image scans) \u2014 the `<0-3>` call site is `0x10cbe` in `FUN_00010698`, the Remote's motor-settings numeric-row editor, sent every time the user clicks out of an edited row (`\"CUR\n...[excerpt truncated]",
+            "score": 15
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 1,
+            "kind": "documentation",
+            "excerpt": "1: # Hardware Pin \u2194 Firmware Function Map (AutoPilot)\n2: \n3: **Purpose**: chain UI/protocol action \u2192 firmware handler/state \u2192 MCU",
+            "score": 10
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+            "line": 10,
+            "kind": "documentation",
+            "excerpt": "8: in this project; what's new is the package-pin numbers, the PCB photo\n9: inspection, and the explicit per-layer grading.\n10: \n11: **Machine-readable companion (authoritative)**:\n12: [`cases/performing-rigs/research/generated/firmware-pin-function-map.json`](../../research/generated/firmware-pin-function-map.json),",
+            "score": 10
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+            "line": 126,
+            "kind": "documentation",
+            "excerpt": "124: negative evidence against a direct, unbuffered connection (an indirect/\n125: buffered path is not ruled out), downgrading that specific GPIO-identity\n126: claim from `HIGH-CONFIDENCE INFERENCE` to `TESTED \u2014 DIRECT CONNECTION\n127: NOT CONFIRMED`. See\n128: [`firmware-pin-function-map.md`](firmware-pin-function-map.md)'s \"Motor",
+            "score": 10
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/galois-premeeting.md",
+            "line": 253,
+            "kind": "investigation",
+            "excerpt": "251: source (`Grease.Macaw.Arch.AArch32`): it wires in\n252: `Stubs.aarch32LinuxStmtExtensionOverride`, per-syscall argument/return\n253: register mappings, and TLS-global initialization unconditionally, and\n254: assumes AAPCS32 call-boundary conventions for its function-level\n255: reasoning. None of that is applicable to firmware with no OS underneath",
+            "score": 10
+          },
+          {
+            "source": "cases/performing-rigs/docs/protocol/command-inventory.md",
+            "line": 37,
+            "kind": "documentation",
+            "excerpt": "35: ...ram==0`), additionally caches live position into the per-channel config struct as a side effect. The response value itself is `LIVE_POSITION[channel]` regardless of mode \u2014 confirmed live for both a positive and a negative value, both signs round-tripping correctly into Remote's own per-channel storage (`0x20001908+channel*4`). See [`protocol-pipeline.md`](../investigations/protocol-pipeline.md)'s Open items for the full trace | `<signed-number>,` (event 15) |\n36: ...st/second limit workflow \u2014 **execution-confirmed**: `LL1` clears two globals + a validity flag; `LL2` orders them and sets the flag only if they differ. Neither touches live position, target/config, or `0x20001b14`; no GPIO/MMIO dependency; no other firmware code writes either global with a real value \u2014 see [`manual-mode-and-limits.md`](../investigations/manual-mode-and-limits.md). **Both `LL1`'s and `LL2`'s Remote-side senders are now CONFIRMED, and they are the same function**: `FUN_0000de3c`, the same screen that hosts the real live-jog loop (see the `0xF0`/`0xE0` row below). `LL1` is sent 3x as an entry preamble AND 3x again after the first jog phase's click, gated on a real position-que...\n37: ... mode value). **`I1\\|` silently aliases channel 0** \u2014 AutoPilot decodes it exactly as `I<channel=0>\\|` and the transaction completes normally through the same real dispatch/monitor/event-15 path `I<channel><mode\n...[excerpt truncated]",
+            "score": 10
+          },
+          {
+            "source": "cases/performing-rigs/docs/protocol/command-inventory.md",
+            "line": 42,
+            "kind": "documentation",
+            "excerpt": "40: ...and-plus-command.md). Full workflow placement (which screen, which of the four interactive call sites \u2014 not three, see [`auto-mode-and-plus-command.md`](../investigations/auto-mode-and-plus-command.md) \u2014 what stacks with what) is in [`action-command-map.md`](../ui/action-command-map.md)'s Auto Mode deep dive | \u2014 |\n41: | `D<value>,\\|` | Remote -> AutoPilot | Writes a 32-bit numeric field into the persisted config buffer (the same buffer backing the `0x12000` flash region) at logical offset `0x15`, then writes a `0xDE` marker byte at offset `0x19`; a real boot-time reader (`FUN_00004c20`) checks that marker and, if present, reads the value back. If the written value differs from what's already stored, this also sets the buffer's dirty/save-pending flag. **Execution-confirmed, concretely, full round trip**: requires the trailing comma (`D1234,\\|` parses cleanly and writes the exact value; a bare `D1234\\|` dispatches but the field parser runs past the packet into adjacent memory since its only real terminator...\n42: ...ed concretely, both shapes**. Sent from inside the `MC4`-gated motor-phase/ramp state machine (`phase_ramp_state_machine__CUSTOM`), only when trigger-status reporting is armed (`0x20003120 != 0`, set by `TR1\\|`, above), rate-limited to once per ~500 firmware ticks, reporting a live `digitalRead()` of the trigger circuit's PB05 pin: `\"T1023,0,\\|\"` when PB05 rea\n...[excerpt truncated]",
+            "score": 10
+          },
+          {
+            "source": "cases/performing-rigs/docs/replacement/autopilot-gap-audit.md",
+            "line": 145,
+            "kind": "documentation",
+            "excerpt": "143: HIGH (and does not set them back LOW within that function); `0x7868`\n144: sets them LOW instead. Each function writes PB06/PB07 to one static\n145: value, once; the apparent \"pulse\" only exists across separate calls,\n146: never inside one function body. `0x77a0` (enable) never touches\n147: PB06/PB07 at all. See `firmware-pin-function-map.md`'s \"Firmware",
+            "score": 10
+          }
+        ],
+        "files_scanned": 85,
+        "truncated": true
+      }
+    },
+    {
+      "id": "E2",
+      "tool": "census_peripheral_usage",
+      "arguments": {
+        "peripheral": "PORT",
+        "limit": 25
+      },
+      "result": {
+        "status": "ok",
+        "peripheral": "PORT",
+        "diagnostic": null,
+        "peripheral_base": "0x41008000",
+        "peripheral_size": 256,
+        "total_mmio_sites": 13,
+        "total_address_constants": 6,
+        "unreferenced_address_constants": 0,
+        "total_functions": 5,
+        "functions": [
+          {
+            "function": "FUN_000060ec",
+            "census_name": "FUN_000060ec",
+            "entry": "0x000060ec",
+            "size": 22,
+            "mmio_site_count": 1,
+            "mmio_sites": [
+              {
+                "site": "0x000060fc",
+                "address": "0x4100809c",
+                "register_name": "GROUP1.OUTTGL",
+                "direction": "WRITE",
+                "width": 4,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              }
+            ],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x000060f6",
+                "pool_address": "0x00006108",
+                "value": "0x41008000",
+                "register_name": "PORT.GROUP0.DIR",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 0,
+              "nearest_root": "0x000060ec",
+              "nearest_root_kind": "irq-vector",
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          },
+          {
+            "function": "FUN_0000bc44",
+            "census_name": "FUN_0000bc44",
+            "entry": "0x0000bc44",
+            "size": 254,
+            "mmio_site_count": 12,
+            "mmio_sites": [
+              {
+                "site": "0x0000bc8a",
+                "address": "0x41008058",
+                "register_name": "GROUP0.PINCFG24",
+                "direction": "READ",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bc92",
+                "address": "0x41008058",
+                "register_name": "GROUP0.PINCFG24",
+                "direction": "WRITE",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bc96",
+                "address": "0x4100803c",
+                "register_name": "GROUP0.PMUX12",
+                "direction": "READ",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bc9e",
+                "address": "0x4100803c",
+                "register_name": "GROUP0.PMUX12",
+                "direction": "WRITE",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bca2",
+                "address": "0x4100803c",
+                "register_name": "GROUP0.PMUX12",
+                "direction": "READ",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bcaa",
+                "address": "0x4100803c",
+                "register_name": "GROUP0.PMUX12",
+                "direction": "WRITE",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bcae",
+                "address": "0x41008059",
+                "register_name": "GROUP0.PINCFG25",
+                "direction": "READ",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              },
+              {
+                "site": "0x0000bcb6",
+                "address": "0x41008059",
+                "register_name": "GROUP0.PINCFG25",
+                "direction": "WRITE",
+                "width": 1,
+                "resolution_note": null,
+                "source": "ghidra-refmgr"
+              }
+            ],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x0000bc88",
+                "pool_address": "0x0000bd58",
+                "value": "0x41008000",
+                "register_name": "PORT.GROUP0.DIR",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 2,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          },
+          {
+            "function": "FUN_0000c7c0",
+            "census_name": "FUN_0000c7c0",
+            "entry": "0x0000c7c0",
+            "size": 232,
+            "mmio_site_count": 0,
+            "mmio_sites": [],
+            "constant_load_count": 2,
+            "constant_loads": [
+              {
+                "site": "0x0000c824",
+                "pool_address": "0x0000c898",
+                "value": "0x41008018",
+                "register_name": "PORT.GROUP0.OUTSET",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              },
+              {
+                "site": "0x0000c830",
+                "pool_address": "0x0000c89c",
+                "value": "0x41008014",
+                "register_name": "PORT.GROUP0.OUTCLR",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "NO_KNOWN_PATH",
+              "hops": null,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": null
+          },
+          {
+            "function": "FUN_0000d388",
+            "census_name": "digitalWrite_pulse_shared__STANDARD_LIBRARY",
+            "entry": "0x0000d388",
+            "size": 76,
+            "mmio_site_count": 0,
+            "mmio_sites": [],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x0000d3c6",
+                "pool_address": "0x0000d3d8",
+                "value": "0x41008000",
+                "register_name": "PORT.GROUP0.DIR",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 2,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          },
+          {
+            "function": "FUN_0000d40c",
+            "census_name": "FUN_0000d40c",
+            "entry": "0x0000d40c",
+            "size": 172,
+            "mmio_site_count": 0,
+            "mmio_sites": [],
+            "constant_load_count": 1,
+            "constant_loads": [
+              {
+                "site": "0x0000d462",
+                "pool_address": "0x0000d4bc",
+                "value": "0x41008000",
+                "register_name": "PORT.GROUP0.DIR",
+                "ref_type": "READ",
+                "source": "ghidra-refmgr+flash-word-scan"
+              }
+            ],
+            "reachability": {
+              "status": "DEFINITELY_REACHABLE",
+              "hops": 4,
+              "nearest_root": null,
+              "nearest_root_kind": null,
+              "source": "reachability"
+            },
+            "component": {
+              "index": 0,
+              "n_functions": 285,
+              "source": "components"
+            }
+          }
+        ],
+        "functions_truncated": false,
+        "unattributed_sites": [],
+        "address_constants": [
+          {
+            "location": "0x00006108",
+            "value": "0x41008000",
+            "register_name": "PORT.GROUP0.DIR",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x0000bd58",
+            "value": "0x41008000",
+            "register_name": "PORT.GROUP0.DIR",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x0000c898",
+            "value": "0x41008018",
+            "register_name": "PORT.GROUP0.OUTSET",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x0000c89c",
+            "value": "0x41008014",
+            "register_name": "PORT.GROUP0.OUTCLR",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x0000d3d8",
+            "value": "0x41008000",
+            "register_name": "PORT.GROUP0.DIR",
+            "referenced": true,
+            "reference_count": 1
+          },
+          {
+            "location": "0x0000d4bc",
+            "value": "0x41008000",
+            "register_name": "PORT.GROUP0.DIR",
+            "referenced": true,
+            "reference_count": 1
+          }
+        ],
+        "address_constants_truncated": false,
+        "warnings": [
+          {
+            "category": "exec-bytes-unowned",
+            "address": "0x0000c894",
+            "detail": "0x0000c894-0x0000c89f (12 bytes) is in an executable region but not covered by any discovered basic block.",
+            "source": "ghidra-basicblockmodel"
+          }
+        ],
+        "warnings_total": 1,
+        "limitations": [
+          "MMIO sites are constant-address references resolved by Ghidra's reference manager; accesses through a base-address register are not attributed to a peripheral in mmio_accesses.",
+          "Address constants are aligned flash words whose value lies in the peripheral's SVD range; loading an address is not proof of an access.",
+          "Absence of evidence is bounded to these two static methods and does not exclude runtime-computed peripheral addresses.",
+          "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+        ],
+        "provenance": {
+          "analysis": "census_peripheral_usage",
+          "analysis_version": 1,
+          "firmware_key": "autopilot868",
+          "expected_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "census_firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+          "census_built_at": "2026-10-12T21:10:48.410436+00:00",
+          "census_ghidra_version": "12.1.3",
+          "reduction_status": "present",
+          "reduced_at": "2026-10-12T21:11:27.342291+00:00",
+          "peripheral_catalog": "ATSAMD51J19A.svd sha256:58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+          "flash_word_scan": "sha256-verified",
+          "sources": [
+            "census-components",
+            "census-reachability",
+            "flash-word-scan",
+            "ghidra-refmgr",
+            "svd"
+          ],
+          "limit": 25
+        }
+      }
+    },
+    {
+      "id": "E3",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000d388"
+      },
+      "result": {
+        "name": "FUN_0000d388",
+        "entry": "0x0000d388",
+        "size": 76,
+        "callers": [
+          {
+            "function": "FUN_0000434c",
+            "address": "0x0000435c"
+          },
+          {
+            "function": "FUN_0000449c",
+            "address": "0x000044d2"
+          },
+          {
+            "function": "FUN_000054b8",
+            "address": "0x000054c8"
+          },
+          {
+            "function": "FUN_00005898",
+            "address": "0x000058c6"
+          },
+          {
+            "function": "FUN_00005898",
+            "address": "0x000058ce"
+          },
+          {
+            "function": "FUN_0000693c",
+            "address": "0x00006942"
+          },
+          {
+            "function": "FUN_0000693c",
+            "address": "0x0000694e"
+          },
+          {
+            "function": "FUN_00006952",
+            "address": "0x00006958"
+          },
+          {
+            "function": "FUN_00006952",
+            "address": "0x00006964"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x000069e4"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x000069f4"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006a20"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006a48"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006a52"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006a5c"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006a64"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006ad4"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006adc"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006ae6"
+          },
+          {
+            "function": "FUN_00006968",
+            "address": "0x00006af0"
+          },
+          {
+            "function": "FUN_000077a0",
+            "address": "0x000077ac"
+          },
+          {
+            "function": "FUN_000077a0",
+            "address": "0x000077b6"
+          },
+          {
+            "function": "FUN_000077f8",
+            "address": "0x0000781e"
+          },
+          {
+            "function": "FUN_000077f8",
+            "address": "0x00007828"
+          },
+          {
+            "function": "FUN_000077f8",
+            "address": "0x00007838"
+          }
+        ],
+        "callees": [],
+        "unique_caller_count": 18,
+        "callsite_count": 43,
+        "unique_callee_count": 0,
+        "outgoing_callsite_count": 0,
+        "callers_truncated": true,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E4",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000c7c0"
+      },
+      "result": {
+        "name": "FUN_0000c7c0",
+        "entry": "0x0000c7c0",
+        "size": 232,
+        "callers": [],
+        "callees": [
+          {
+            "function": "FUN_0000d40c",
+            "address": "0x0000c7da"
+          },
+          {
+            "function": "FUN_0000d40c",
+            "address": "0x0000c7ea"
+          },
+          {
+            "function": "FUN_0000d40c",
+            "address": "0x0000c806"
+          },
+          {
+            "function": "FUN_0000d300",
+            "address": "0x0000c814"
+          },
+          {
+            "function": "FUN_0000b658",
+            "address": "0x0000c84a"
+          },
+          {
+            "function": "FUN_0000c786",
+            "address": "0x0000c852"
+          },
+          {
+            "function": "FUN_0000c7aa",
+            "address": "0x0000c860"
+          },
+          {
+            "function": "FUN_0000b31a",
+            "address": "0x0000c876"
+          },
+          {
+            "function": "FUN_0000b352",
+            "address": "0x0000c884"
+          }
+        ],
+        "unique_caller_count": 0,
+        "callsite_count": 0,
+        "unique_callee_count": 7,
+        "outgoing_callsite_count": 9,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E5",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000bc44"
+      },
+      "result": {
+        "name": "FUN_0000bc44",
+        "entry": "0x0000bc44",
+        "size": 254,
+        "callers": [
+          {
+            "function": "FUN_0000cd90",
+            "address": "0x0000cda8"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000d300",
+            "address": "0x0000bc52"
+          },
+          {
+            "function": "FUN_0000d388",
+            "address": "0x0000bc5a"
+          },
+          {
+            "function": "FUN_0000d300",
+            "address": "0x0000bc68"
+          },
+          {
+            "function": "FUN_0000d388",
+            "address": "0x0000bc70"
+          },
+          {
+            "function": "FUN_0000ccc4",
+            "address": "0x0000bcda"
+          },
+          {
+            "function": "FUN_0000d5a8",
+            "address": "0x0000bce0"
+          },
+          {
+            "function": "FUN_0000d5d8",
+            "address": "0x0000bce6"
+          }
+        ],
+        "unique_caller_count": 1,
+        "callsite_count": 1,
+        "unique_callee_count": 5,
+        "outgoing_callsite_count": 7,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E6",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_000060ec"
+      },
+      "result": {
+        "name": "FUN_000060ec",
+        "entry": "0x000060ec",
+        "size": 22,
+        "callers": [],
+        "callees": [],
+        "unique_caller_count": 0,
+        "callsite_count": 0,
+        "unique_callee_count": 0,
+        "outgoing_callsite_count": 0,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E7",
+      "tool": "function_disassembly",
+      "arguments": {
+        "function": "FUN_0000bc44"
+      },
+      "result": {
+        "name": "FUN_0000bc44",
+        "entry": "0x0000bc44",
+        "size": 254,
+        "architecture": "ARM Cortex-M4F",
+        "mode": "Thumb/Thumb-2 M-class",
+        "bounds_source": "Ghidra function metadata",
+        "decoder": "Capstone",
+        "bytes_requested": 254,
+        "bytes_decoded": 254,
+        "complete": true,
+        "instructions": [
+          {
+            "address": "0x0000bc44",
+            "size": 2,
+            "bytes_hex": "3f 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0xfc]"
+          },
+          {
+            "address": "0x0000bc46",
+            "size": 2,
+            "bytes_hex": "70 b5",
+            "mnemonic": "push",
+            "operands": "{r4, r5, r6, lr}"
+          },
+          {
+            "address": "0x0000bc48",
+            "size": 2,
+            "bytes_hex": "01 21",
+            "mnemonic": "movs",
+            "operands": "r1, #1"
+          },
+          {
+            "address": "0x0000bc4a",
+            "size": 2,
+            "bytes_hex": "00 24",
+            "mnemonic": "movs",
+            "operands": "r4, #0"
+          },
+          {
+            "address": "0x0000bc4c",
+            "size": 2,
+            "bytes_hex": "05 46",
+            "mnemonic": "mov",
+            "operands": "r5, r0"
+          },
+          {
+            "address": "0x0000bc4e",
+            "size": 2,
+            "bytes_hex": "04 20",
+            "mnemonic": "movs",
+            "operands": "r0, #4"
+          },
+          {
+            "address": "0x0000bc50",
+            "size": 2,
+            "bytes_hex": "1c 70",
+            "mnemonic": "strb",
+            "operands": "r4, [r3]"
+          },
+          {
+            "address": "0x0000bc52",
+            "size": 4,
+            "bytes_hex": "01 f0 55 fb",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          },
+          {
+            "address": "0x0000bc56",
+            "size": 2,
+            "bytes_hex": "01 21",
+            "mnemonic": "movs",
+            "operands": "r1, #1"
+          },
+          {
+            "address": "0x0000bc58",
+            "size": 2,
+            "bytes_hex": "04 20",
+            "mnemonic": "movs",
+            "operands": "r0, #4"
+          },
+          {
+            "address": "0x0000bc5a",
+            "size": 4,
+            "bytes_hex": "01 f0 95 fb",
+            "mnemonic": "bl",
+            "operands": "#0xd388"
+          },
+          {
+            "address": "0x0000bc5e",
+            "size": 2,
+            "bytes_hex": "3a 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0xe8]"
+          },
+          {
+            "address": "0x0000bc60",
+            "size": 2,
+            "bytes_hex": "3a 4e",
+            "mnemonic": "ldr",
+            "operands": "r6, [pc, #0xe8]"
+          },
+          {
+            "address": "0x0000bc62",
+            "size": 2,
+            "bytes_hex": "1c 70",
+            "mnemonic": "strb",
+            "operands": "r4, [r3]"
+          },
+          {
+            "address": "0x0000bc64",
+            "size": 2,
+            "bytes_hex": "01 21",
+            "mnemonic": "movs",
+            "operands": "r1, #1"
+          },
+          {
+            "address": "0x0000bc66",
+            "size": 2,
+            "bytes_hex": "04 20",
+            "mnemonic": "movs",
+            "operands": "r0, #4"
+          },
+          {
+            "address": "0x0000bc68",
+            "size": 4,
+            "bytes_hex": "01 f0 4a fb",
+            "mnemonic": "bl",
+            "operands": "#0xd300"
+          },
+          {
+            "address": "0x0000bc6c",
+            "size": 2,
+            "bytes_hex": "01 21",
+            "mnemonic": "movs",
+            "operands": "r1, #1"
+          },
+          {
+            "address": "0x0000bc6e",
+            "size": 2,
+            "bytes_hex": "04 20",
+            "mnemonic": "movs",
+            "operands": "r0, #4"
+          },
+          {
+            "address": "0x0000bc70",
+            "size": 4,
+            "bytes_hex": "01 f0 8a fb",
+            "mnemonic": "bl",
+            "operands": "#0xd388"
+          },
+          {
+            "address": "0x0000bc74",
+            "size": 2,
+            "bytes_hex": "36 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0xd8]"
+          },
+          {
+            "address": "0x0000bc76",
+            "size": 2,
+            "bytes_hex": "37 48",
+            "mnemonic": "ldr",
+            "operands": "r0, [pc, #0xdc]"
+          },
+          {
+            "address": "0x0000bc78",
+            "size": 2,
+            "bytes_hex": "9a 69",
+            "mnemonic": "ldr",
+            "operands": "r2, [r3, #0x18]"
+          },
+          {
+            "address": "0x0000bc7a",
+            "size": 4,
+            "bytes_hex": "42 f0 01 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #1"
+          },
+          {
+            "address": "0x0000bc7e",
+            "size": 2,
+            "bytes_hex": "9a 61",
+            "mnemonic": "str",
+            "operands": "r2, [r3, #0x18]"
+          },
+          {
+            "address": "0x0000bc80",
+            "size": 2,
+            "bytes_hex": "1a 69",
+            "mnemonic": "ldr",
+            "operands": "r2, [r3, #0x10]"
+          },
+          {
+            "address": "0x0000bc82",
+            "size": 4,
+            "bytes_hex": "42 f4 80 62",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #0x400"
+          },
+          {
+            "address": "0x0000bc86",
+            "size": 2,
+            "bytes_hex": "1a 61",
+            "mnemonic": "str",
+            "operands": "r2, [r3, #0x10]"
+          },
+          {
+            "address": "0x0000bc88",
+            "size": 2,
+            "bytes_hex": "33 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0xcc]"
+          },
+          {
+            "address": "0x0000bc8a",
+            "size": 4,
+            "bytes_hex": "93 f8 58 20",
+            "mnemonic": "ldrb.w",
+            "operands": "r2, [r3, #0x58]"
+          },
+          {
+            "address": "0x0000bc8e",
+            "size": 4,
+            "bytes_hex": "42 f0 01 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #1"
+          },
+          {
+            "address": "0x0000bc92",
+            "size": 4,
+            "bytes_hex": "83 f8 58 20",
+            "mnemonic": "strb.w",
+            "operands": "r2, [r3, #0x58]"
+          },
+          {
+            "address": "0x0000bc96",
+            "size": 4,
+            "bytes_hex": "93 f8 3c 20",
+            "mnemonic": "ldrb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bc9a",
+            "size": 4,
+            "bytes_hex": "02 f0 f0 02",
+            "mnemonic": "and",
+            "operands": "r2, r2, #0xf0"
+          },
+          {
+            "address": "0x0000bc9e",
+            "size": 4,
+            "bytes_hex": "83 f8 3c 20",
+            "mnemonic": "strb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bca2",
+            "size": 4,
+            "bytes_hex": "93 f8 3c 20",
+            "mnemonic": "ldrb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bca6",
+            "size": 4,
+            "bytes_hex": "42 f0 07 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #7"
+          },
+          {
+            "address": "0x0000bcaa",
+            "size": 4,
+            "bytes_hex": "83 f8 3c 20",
+            "mnemonic": "strb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bcae",
+            "size": 4,
+            "bytes_hex": "93 f8 59 20",
+            "mnemonic": "ldrb.w",
+            "operands": "r2, [r3, #0x59]"
+          },
+          {
+            "address": "0x0000bcb2",
+            "size": 4,
+            "bytes_hex": "42 f0 01 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #1"
+          },
+          {
+            "address": "0x0000bcb6",
+            "size": 4,
+            "bytes_hex": "83 f8 59 20",
+            "mnemonic": "strb.w",
+            "operands": "r2, [r3, #0x59]"
+          },
+          {
+            "address": "0x0000bcba",
+            "size": 4,
+            "bytes_hex": "93 f8 3c 20",
+            "mnemonic": "ldrb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bcbe",
+            "size": 4,
+            "bytes_hex": "02 f0 0f 02",
+            "mnemonic": "and",
+            "operands": "r2, r2, #0xf"
+          },
+          {
+            "address": "0x0000bcc2",
+            "size": 4,
+            "bytes_hex": "83 f8 3c 20",
+            "mnemonic": "strb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bcc6",
+            "size": 4,
+            "bytes_hex": "93 f8 3c 20",
+            "mnemonic": "ldrb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bcca",
+            "size": 4,
+            "bytes_hex": "42 f0 70 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #0x70"
+          },
+          {
+            "address": "0x0000bcce",
+            "size": 4,
+            "bytes_hex": "83 f8 3c 20",
+            "mnemonic": "strb.w",
+            "operands": "r2, [r3, #0x3c]"
+          },
+          {
+            "address": "0x0000bcd2",
+            "size": 2,
+            "bytes_hex": "22 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x88]"
+          },
+          {
+            "address": "0x0000bcd4",
+            "size": 2,
+            "bytes_hex": "41 22",
+            "mnemonic": "movs",
+            "operands": "r2, #0x41"
+          },
+          {
+            "address": "0x0000bcd6",
+            "size": 4,
+            "bytes_hex": "c3 f8 a8 20",
+            "mnemonic": "str.w",
+            "operands": "r2, [r3, #0xa8]"
+          },
+          {
+            "address": "0x0000bcda",
+            "size": 4,
+            "bytes_hex": "00 f0 f3 ff",
+            "mnemonic": "bl",
+            "operands": "#0xccc4"
+          },
+          {
+            "address": "0x0000bcde",
+            "size": 2,
+            "bytes_hex": "30 46",
+            "mnemonic": "mov",
+            "operands": "r0, r6"
+          },
+          {
+            "address": "0x0000bce0",
+            "size": 4,
+            "bytes_hex": "01 f0 62 fc",
+            "mnemonic": "bl",
+            "operands": "#0xd5a8"
+          },
+          {
+            "address": "0x0000bce4",
+            "size": 2,
+            "bytes_hex": "30 46",
+            "mnemonic": "mov",
+            "operands": "r0, r6"
+          },
+          {
+            "address": "0x0000bce6",
+            "size": 4,
+            "bytes_hex": "01 f0 77 fc",
+            "mnemonic": "bl",
+            "operands": "#0xd5d8"
+          },
+          {
+            "address": "0x0000bcea",
+            "size": 2,
+            "bytes_hex": "33 68",
+            "mnemonic": "ldr",
+            "operands": "r3, [r6]"
+          },
+          {
+            "address": "0x0000bcec",
+            "size": 2,
+            "bytes_hex": "1a 78",
+            "mnemonic": "ldrb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x0000bcee",
+            "size": 4,
+            "bytes_hex": "64 f3 c7 12",
+            "mnemonic": "bfi",
+            "operands": "r2, r4, #7, #1"
+          },
+          {
+            "address": "0x0000bcf2",
+            "size": 2,
+            "bytes_hex": "1a 70",
+            "mnemonic": "strb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x0000bcf4",
+            "size": 2,
+            "bytes_hex": "1a 78",
+            "mnemonic": "ldrb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x0000bcf6",
+            "size": 4,
+            "bytes_hex": "42 f0 04 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #4"
+          },
+          {
+            "address": "0x0000bcfa",
+            "size": 2,
+            "bytes_hex": "1a 70",
+            "mnemonic": "strb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x0000bcfc",
+            "size": 2,
+            "bytes_hex": "1a 89",
+            "mnemonic": "ldrh",
+            "operands": "r2, [r3, #8]"
+          },
+          {
+            "address": "0x0000bcfe",
+            "size": 4,
+            "bytes_hex": "64 f3 83 02",
+            "mnemonic": "bfi",
+            "operands": "r2, r4, #2, #2"
+          },
+          {
+            "address": "0x0000bd02",
+            "size": 2,
+            "bytes_hex": "1a 81",
+            "mnemonic": "strh",
+            "operands": "r2, [r3, #8]"
+          },
+          {
+            "address": "0x0000bd04",
+            "size": 2,
+            "bytes_hex": "16 4a",
+            "mnemonic": "ldr",
+            "operands": "r2, [pc, #0x58]"
+          },
+          {
+            "address": "0x0000bd06",
+            "size": 4,
+            "bytes_hex": "4f f4 80 31",
+            "mnemonic": "mov.w",
+            "operands": "r1, #0x10000"
+          },
+          {
+            "address": "0x0000bd0a",
+            "size": 4,
+            "bytes_hex": "82 f8 50 43",
+            "mnemonic": "strb.w",
+            "operands": "r4, [r2, #0x350]"
+          },
+          {
+            "address": "0x0000bd0e",
+            "size": 4,
+            "bytes_hex": "82 f8 51 43",
+            "mnemonic": "strb.w",
+            "operands": "r4, [r2, #0x351]"
+          },
+          {
+            "address": "0x0000bd12",
+            "size": 4,
+            "bytes_hex": "82 f8 52 43",
+            "mnemonic": "strb.w",
+            "operands": "r4, [r2, #0x352]"
+          },
+          {
+            "address": "0x0000bd16",
+            "size": 4,
+            "bytes_hex": "82 f8 53 43",
+            "mnemonic": "strb.w",
+            "operands": "r4, [r2, #0x353]"
+          },
+          {
+            "address": "0x0000bd1a",
+            "size": 2,
+            "bytes_hex": "91 60",
+            "mnemonic": "str",
+            "operands": "r1, [r2, #8]"
+          },
+          {
+            "address": "0x0000bd1c",
+            "size": 4,
+            "bytes_hex": "4f f4 00 31",
+            "mnemonic": "mov.w",
+            "operands": "r1, #0x20000"
+          },
+          {
+            "address": "0x0000bd20",
+            "size": 2,
+            "bytes_hex": "91 60",
+            "mnemonic": "str",
+            "operands": "r1, [r2, #8]"
+          },
+          {
+            "address": "0x0000bd22",
+            "size": 4,
+            "bytes_hex": "4f f4 80 21",
+            "mnemonic": "mov.w",
+            "operands": "r1, #0x40000"
+          },
+          {
+            "address": "0x0000bd26",
+            "size": 2,
+            "bytes_hex": "91 60",
+            "mnemonic": "str",
+            "operands": "r1, [r2, #8]"
+          },
+          {
+            "address": "0x0000bd28",
+            "size": 4,
+            "bytes_hex": "4f f4 00 21",
+            "mnemonic": "mov.w",
+            "operands": "r1, #0x80000"
+          },
+          {
+            "address": "0x0000bd2c",
+            "size": 2,
+            "bytes_hex": "91 60",
+            "mnemonic": "str",
+            "operands": "r1, [r2, #8]"
+          },
+          {
+            "address": "0x0000bd2e",
+            "size": 2,
+            "bytes_hex": "1a 78",
+            "mnemonic": "ldrb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x0000bd30",
+            "size": 4,
+            "bytes_hex": "42 f0 02 02",
+            "mnemonic": "orr",
+            "operands": "r2, r2, #2"
+          },
+          {
+            "address": "0x0000bd34",
+            "size": 2,
+            "bytes_hex": "1a 70",
+            "mnemonic": "strb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x0000bd36",
+            "size": 2,
+            "bytes_hex": "9a 78",
+            "mnemonic": "ldrb",
+            "operands": "r2, [r3, #2]"
+          },
+          {
+            "address": "0x0000bd38",
+            "size": 2,
+            "bytes_hex": "92 07",
+            "mnemonic": "lsls",
+            "operands": "r2, r2, #0x1e"
+          },
+          {
+            "address": "0x0000bd3a",
+            "size": 2,
+            "bytes_hex": "fc d4",
+            "mnemonic": "bmi",
+            "operands": "#0xbd36"
+          },
+          {
+            "address": "0x0000bd3c",
+            "size": 2,
+            "bytes_hex": "01 23",
+            "mnemonic": "movs",
+            "operands": "r3, #1"
+          },
+          {
+            "address": "0x0000bd3e",
+            "size": 2,
+            "bytes_hex": "2b 70",
+            "mnemonic": "strb",
+            "operands": "r3, [r5]"
+          },
+          {
+            "address": "0x0000bd40",
+            "size": 2,
+            "bytes_hex": "70 bd",
+            "mnemonic": "pop",
+            "operands": "{r4, r5, r6, pc}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E8",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_000077a0"
+      },
+      "result": {
+        "name": "FUN_000077a0",
+        "entry": "0x000077a0",
+        "size": 66,
+        "callers": [
+          {
+            "function": "FUN_00008258",
+            "address": "0x00008274"
+          },
+          {
+            "function": "FUN_00008258",
+            "address": "0x000082d6"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000d388",
+            "address": "0x000077ac"
+          },
+          {
+            "function": "FUN_0000d388",
+            "address": "0x000077b6"
+          },
+          {
+            "function": "FUN_0000cd50",
+            "address": "0x000077bc"
+          },
+          {
+            "function": "FUN_0000d300",
+            "address": "0x000077c8"
+          },
+          {
+            "function": "FUN_0000d300",
+            "address": "0x000077d2"
+          }
+        ],
+        "unique_caller_count": 1,
+        "callsite_count": 2,
+        "unique_callee_count": 3,
+        "outgoing_callsite_count": 5,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    }
+  ],
+  "state": {
+    "objective": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+    "evidence_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6",
+      "E7",
+      "E8"
+    ],
+    "claims": [
+      {
+        "id": "C1",
+        "statement": "Census structural usage of PORT: 13 constant-address MMIO site(s), 6 flash address constant(s) (0 with no code reference), 5 attributed function(s), 0 unattributed reference site(s) (reduction present).",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E2"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C2",
+        "statement": "FUN_000060ec has 1 statically resolved PORT MMIO site(s) (GROUP1.OUTTGL WRITE); loads PORT address constant 0x41008000 (PORT base) at 0x000060f6; census reachability DEFINITELY_REACHABLE.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E2"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C3",
+        "statement": "FUN_0000bc44 has 12 statically resolved PORT MMIO site(s) (GROUP0.PINCFG24 READ, GROUP0.PINCFG24 WRITE, GROUP0.PINCFG25 READ, GROUP0.PINCFG25 WRITE, ...); loads PORT address constant 0x41008000 (PORT base) at 0x0000bc88; census reachability DEFINITELY_REACHABLE.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E2"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C4",
+        "statement": "FUN_0000c7c0 loads PORT address constant 0x41008018 (PORT.GROUP0.OUTSET) at 0x0000c824 (+1 more load site(s)); census reachability NO_KNOWN_PATH.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E2"
+        ],
+        "basis": "census"
+      },
+      {
+        "id": "C5",
+        "statement": "FUN_0000d388 loads PORT address constant 0x41008000 (PORT base) at 0x0000d3c6; census reachability DEFINITELY_REACHABLE.",
+        "grade": "PROVEN",
+        "evidence_ids": [
+          "E2"
+        ],
+        "basis": "census"
+      }
+    ],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L2",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_00004c20 mentioned by discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L3",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_00004c20 mentioned by discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L4",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_00007868 mentioned by discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L5",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_00007868 mentioned by discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L6",
+        "kind": "function",
+        "description": "Inspect firmware function FUN_000077a0 mentioned by discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L7",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_000077a0 mentioned by discovery query 'mando868 firmware firmware pin function map'",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L8",
+        "kind": "census",
+        "description": "Census structural usage of peripheral PORT",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L9",
+        "kind": "function",
+        "description": "Inspect FUN_000060ec, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L10",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_000060ec, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L11",
+        "kind": "function",
+        "description": "Inspect FUN_0000bc44, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L12",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_0000bc44, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L13",
+        "kind": "function",
+        "description": "Inspect FUN_0000c7c0, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L14",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_0000c7c0, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L15",
+        "kind": "function",
+        "description": "Inspect FUN_0000d388, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2",
+          "E5",
+          "E8"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L16",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of FUN_0000d388, which the census associates with PORT",
+        "source_evidence_ids": [
+          "E2",
+          "E5",
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L17",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_0000434c at 0x0000435c",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L18",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_0000449c at 0x000044d2",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L19",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_000054b8 at 0x000054c8",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L20",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_00005898 at 0x000058c6",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L21",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_00005898 at 0x000058ce",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L22",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_0000693c at 0x00006942",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L23",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_0000693c at 0x0000694e",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L24",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000d388 from FUN_00006952 at 0x00006958",
+        "source_evidence_ids": [
+          "E3"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L25",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000d40c at 0x0000c7da",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L26",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d40c from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L27",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d40c from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L28",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000d40c at 0x0000c7ea",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L29",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000d40c at 0x0000c806",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L30",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000d300 at 0x0000c814",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L31",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d300 from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4",
+          "E5",
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L32",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d300 from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4",
+          "E5",
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L33",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000b658 at 0x0000c84a",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L34",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000b658 from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L35",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000b658 from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L36",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000c786 at 0x0000c852",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L37",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000c786 from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L38",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000c786 from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L39",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000c7aa at 0x0000c860",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L40",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000c7aa from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L41",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000c7aa from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L42",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000b31a at 0x0000c876",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L43",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000b31a from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L44",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000b31a from FUN_0000c7c0",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L45",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000c7c0 to FUN_0000b352 at 0x0000c884",
+        "source_evidence_ids": [
+          "E4"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L46",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000bc44 from FUN_0000cd90 at 0x0000cda8",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L47",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000d300 at 0x0000bc52",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L48",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000d388 at 0x0000bc5a",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L49",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000d300 at 0x0000bc68",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L50",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000d388 at 0x0000bc70",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L51",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000ccc4 at 0x0000bcda",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L52",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000ccc4 from FUN_0000bc44",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L53",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000ccc4 from FUN_0000bc44",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L54",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000d5a8 at 0x0000bce0",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L55",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d5a8 from FUN_0000bc44",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L56",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d5a8 from FUN_0000bc44",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L57",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000bc44 to FUN_0000d5d8 at 0x0000bce6",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L58",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d5d8 from FUN_0000bc44",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L59",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d5d8 from FUN_0000bc44",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L60",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_000077a0 from FUN_00008258 at 0x00008274",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L61",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_000077a0 from FUN_00008258 at 0x000082d6",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L62",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_000077a0 to FUN_0000d388 at 0x000077ac",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L63",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_000077a0 to FUN_0000d388 at 0x000077b6",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L64",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_000077a0 to FUN_0000cd50 at 0x000077bc",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L65",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000cd50 from FUN_000077a0",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L66",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000cd50 from FUN_000077a0",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L67",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_000077a0 to FUN_0000d300 at 0x000077c8",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L68",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_000077a0 to FUN_0000d300 at 0x000077d2",
+        "source_evidence_ids": [
+          "E8"
+        ],
+        "status": "OPEN",
+        "origin": null
+      }
+    ]
+  },
+  "proposed_claims": [
+    {
+      "subject": "FUN_0000bc44",
+      "assertion": "FUN_0000bc44 accesses PORT registers (census constant-address MMIO site(s): read 0x4100803c, read 0x41008058, read 0x41008059, write 0x4100803c).",
+      "claim_type": "BEHAVIOR",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E2"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000bc44",
+          "role": "MMIO_USER",
+          "slot": null,
+          "peripheral": "PORT"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000bc44 reads or writes."
+      ],
+      "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-e9ed1c03b163",
+      "derivation": "claim candidate K-e9ed1c03b163 (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-e9ed1c03b163",
+      "admission": 2
+    },
+    {
+      "subject": "FUN_0000d388",
+      "assertion": "FUN_0000d388 loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "claim_type": "STRUCTURE",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E2"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000d388",
+          "role": "ADDRESS_CONSTANT_LOADER",
+          "slot": null,
+          "peripheral": "PORT"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "Does not establish or exclude a PORT register access by FUN_0000d388: the census does not attribute accesses through a base-address register to a peripheral."
+      ],
+      "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-d52343113667",
+      "derivation": "claim candidate K-d52343113667 (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-d52343113667",
+      "admission": 3
+    },
+    {
+      "subject": "FUN_0000c7c0",
+      "assertion": "FUN_0000c7c0 loads PORT address constant 0x41008014, 0x41008018 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "claim_type": "STRUCTURE",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E2"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000c7c0",
+          "role": "ADDRESS_CONSTANT_LOADER",
+          "slot": null,
+          "peripheral": "PORT"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "Does not establish or exclude a PORT register access by FUN_0000c7c0: the census does not attribute accesses through a base-address register to a peripheral."
+      ],
+      "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-d8554433f371",
+      "derivation": "claim candidate K-d8554433f371 (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-d8554433f371",
+      "admission": 4
+    },
+    {
+      "subject": "FUN_0000d40c",
+      "assertion": "FUN_0000d40c loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "claim_type": "STRUCTURE",
+      "grade": "STRONG",
+      "evidence_ids": [
+        "E2"
+      ],
+      "semantics": {
+        "predicate": "FUNCTION_ROLE",
+        "resolved_pointer": null,
+        "function_role": {
+          "function": "FUN_0000d40c",
+          "role": "ADDRESS_CONSTANT_LOADER",
+          "slot": null,
+          "peripheral": "PORT"
+        },
+        "path": null,
+        "code_presence": null,
+        "call": null
+      },
+      "omissions": {},
+      "limitations": [
+        "Does not establish or exclude a PORT register access by FUN_0000d40c: the census does not attribute accesses through a base-address register to a peripheral."
+      ],
+      "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+      "assumptions": [],
+      "candidate_id": "K-fa4beedfeda7",
+      "derivation": "claim candidate K-fa4beedfeda7 (peripheral-role, candidates-v1), selected by the planner",
+      "raw": "select K-fa4beedfeda7",
+      "admission": 5
+    }
+  ],
+  "ledger_run_id": "R-20261017T230712-2ee78d"
+}

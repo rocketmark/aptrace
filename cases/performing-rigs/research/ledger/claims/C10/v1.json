@@ -1,0 +1,55 @@
+{
+  "assertion": "FUN_0000bc44 accesses PORT registers (census constant-address MMIO site(s): read 0x4100803c, read 0x41008058, read 0x41008059, write 0x4100803c).",
+  "assumptions": [],
+  "claim_id": "C10",
+  "claim_type": "BEHAVIOR",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-17T23:07:12.618+00:00",
+  "depends_on": [],
+  "derivation": "claim candidate K-e9ed1c03b163 (peripheral-role, candidates-v1), selected by the planner",
+  "limitations": [
+    {
+      "code": null,
+      "source_evidence_ids": [],
+      "text": "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000bc44 reads or writes."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "proposed_by": "candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261017T230712-2ee78d",
+  "schema_version": 1,
+  "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+  "semantics": {
+    "call": null,
+    "code_presence": null,
+    "function_role": {
+      "function": "FUN_0000bc44",
+      "peripheral": "PORT",
+      "role": "MMIO_USER",
+      "slot": null
+    },
+    "path": null,
+    "predicate": "FUNCTION_ROLE",
+    "resolved_pointer": null
+  },
+  "subject": "FUN_0000bc44",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-5b5c3f6b97d4d66a"
+  ],
+  "version": 1
+}

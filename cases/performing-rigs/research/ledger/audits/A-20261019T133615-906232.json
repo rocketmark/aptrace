@@ -1,0 +1,89 @@
+{
+  "allowed_tools": [
+    "inspect_evidence",
+    "function_facts",
+    "function_disassembly",
+    "analyze_peripheral",
+    "analyze_usb_interface",
+    "find_common_paths",
+    "analyze_function_effects",
+    "replay_evidence"
+  ],
+  "audit_id": "A-20261019T133615-906232",
+  "batch_id": null,
+  "budgets": {
+    "max_decisions": 3,
+    "max_tokens": 1200,
+    "max_tool_requests": 2,
+    "temperature": 0.0
+  },
+  "challenges": [],
+  "claim_version": "C10:v1",
+  "contradictory_evidence": [],
+  "diagnostic": true,
+  "ended_at": "2026-10-19T13:36:15.418+00:00",
+  "evidence_inspected": [],
+  "falsification": {
+    "coverage_gap": 0,
+    "executed": 0,
+    "parse_failure": 0,
+    "rejected": 0,
+    "requested": 0,
+    "satisfied": false,
+    "successful": 0,
+    "tool_error": 0,
+    "verdict_rejected": 0
+  },
+  "follow_up_requests": [],
+  "initial_context": "AUDIT TARGET: claim C10:v1\nINVESTIGATION OBJECTIVE: Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.\nCLAIM SUBJECT: FUN_0000bc44\nASSERTION: FUN_0000bc44 accesses PORT registers (census constant-address MMIO site(s): read 0x4100803c, read 0x41008058, read 0x41008059, write 0x4100803c).\nSTRUCTURED SEMANTICS (authoritative for APTrace verification): FUNCTION_ROLE(FUN_0000bc44 is MMIO_USER, peripheral=PORT)\nAPTRACE DETERMINISTIC SEMANTIC CHECKS: CONSISTENT role=FUN_0000bc44 [EV-5b5c3f6b97d4d66a]\nCLAIM TYPE: BEHAVIOR\nPROPOSED GRADE: STRONG\nSCOPE: static census references (Ghidra reference manager), heuristic function boundaries\nASSUMPTIONS:\n  (none)\nLIMITATIONS ON RECORD:\n  - A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000bc44 reads or writes.\n  - [FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic.\n  - [STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY] Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence.\nDEPENDS ON:\n  (none)\n\nSUPPORTING EVIDENCE (deterministic APTrace results, compact):\n[EV-5b5c3f6b97d4d66a] census_peripheral_usage({\"limit\": 25, \"peripheral\": \"PORT\"}) grade=STRONG (census constant-address MMIO references (heuristic function boundaries))\n  EV-5b5c3f6b97d4d66a census_peripheral_usage PORT: status=ok mmio_sites=13 address_constants=6 (unreferenced=0) functions=5 [FUN_000060ec, FUN_0000bc44, FUN_0000c7c0, FUN_0000d388, FUN_0000d40c]\n  carried limitations:\n    - [FUNCTION_BOUNDARIES_HEURISTIC] Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic.\n    - [STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY] Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence.\n\nCONTRADICTORY EVIDENCE ON RECORD:\n  (none)\n\nSTRUCTURAL SOURCE AGREEMENT (recorded by APTrace for the code addresses the evidence names; structural only):\n  (no code addresses named by structured evidence)\n\nAVAILABLE APTRACE ANALYSES:\n- inspect_evidence {\"evidence_id\": \"EV-...\", \"field\": optional top-level result key}: full structured result field of listed evidence\n- function_facts {\"function\": \"FUN_xxxxxxxx\"}: Ghidra callers/callees of a function named in evidence\n- function_disassembly {\"function\": \"FUN_xxxxxxxx\"}: decoded instructions of a function named in evidence\n- analyze_peripheral {\"peripheral\": \"<NAME>\"}: census functions using one MCU peripheral's registers\n- analyze_usb_interface {}: USB register users, IRQ handlers, descriptors, resolved indirect edges\n- find_common_paths {\"left\": [...], \"right\": [...]}: do two function sets converge in the census call graph? Members: analyzed peripheral names (e.g. \"USB\"), FUN_ names from evidence, or \"IRQ:<PREFIX>\" for the interrupt-vector handlers whose interrupt name starts with PREFIX\n- analyze_function_effects {\"function\": \"FUN_...\", \"r0\": optional int, \"r1\": optional int}: symbolic MMIO/RAM effects\n- replay_evidence {\"evidence_id\": \"EV-...\"}: re-run the analysis that produced listed evidence and compare its result hash\n\nRESPONSE FORMAT (one JSON object):\nTo request one analysis:\n{\"action\": \"request\", \"tool\": \"<tool name>\", \"arguments\": {...}, \"purpose\": \"<what you are trying to falsify>\"}\nTo finish:\n{\"action\": \"verdict\", \"verdict\": \"SUPPORTED\" | \"CHALLENGED\" | \"UNRESOLVED\",\n \"scope_check\": \"<for each function set, bound, or relationship the evidence uses: is it exactly the one the assertion names?>\",\n \"reasoning\": \"<concise>\", \"challenges\": [\"<each specific problem>\"],\n \"evidence_inspected\": [\"EV-...\"], \"contradictory_evidence\": [\"EV-...\"],\n \"limitations\": [\"<limitations that apply to the claim>\"],\n \"follow_up_requests\": [{\"question\": \"<evidence that would decide>\", \"suggested_tool\": \"<tool or null>\"}]}\n\nBUDGET: at most 3 decisions including the verdict, at most 2 executed analyses.",
+  "input_components": {
+    "budget": "1c534a557f5cbe7e",
+    "claim": "f34fb9c03b6eaa0c",
+    "context": "c1fa5739b8536753",
+    "evidence": "3ca377e9c82077b9",
+    "generation": "c640f6511e9362cb",
+    "limitations": "880a0ea6e1cc3221",
+    "model": "d0867eee56b7126c",
+    "source_agreement": "74234e98afe7498f",
+    "template": "2d5519c2f8d38afc",
+    "tools": "2e26360ba4da9428"
+  },
+  "input_fingerprint": "AI-c4e6f6780a97917d",
+  "limitations": [],
+  "model": "gemma-4-26b-a4b-it-4bit",
+  "model_verdict": null,
+  "reasoning": "No valid verdict was produced (model_error); APTrace recorded UNRESOLVED.",
+  "runtime": {
+    "served_models": [],
+    "system_fingerprints": []
+  },
+  "schema_version": 1,
+  "scope_check": "",
+  "source_agreement_evidence": null,
+  "started_at": "2026-10-19T13:36:15.170+00:00",
+  "steps": [
+    {
+      "action": "error",
+      "arguments": {},
+      "attempt": 0,
+      "completion_tokens": null,
+      "counts_as_falsification": null,
+      "error": "InternalServerError: Error code: 507 - {'error': {'message': 'Cannot load gemma-4-26b-a4b-it-4bit: projected memory 32.06GB would exceed the dynamic memory ceiling 19.00GB (current: 16.80GB, model: 15.26GB). Raise custom_ceiling_bytes in admin Memory settings (currently pinned at 19.00GB), or unload another model.', 'type': 'server_error', 'param': None, 'code': None}}",
+      "evidence_id": null,
+      "invocation_id": null,
+      "number": 1,
+      "outcome": null,
+      "prompt_tokens": null,
+      "raw_response": null,
+      "rejection": null,
+      "request_chars": 7091,
+      "request_messages": 2,
+      "result_summary": null,
+      "tool": null
+    }
+  ],
+  "template_version": "audit-v0.5",
+  "termination_reason": "model_error",
+  "verdict": "UNRESOLVED",
+  "verdict_synthesized": true
+}

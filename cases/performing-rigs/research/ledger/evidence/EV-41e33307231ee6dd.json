@@ -1,0 +1,37 @@
+{
+  "arguments": {
+    "addresses": [
+      "0x0000bc44"
+    ]
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a7082bca223d3723",
+  "evidence_id": "EV-41e33307231ee6dd",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "static structural agreement between code-discovery sources (heuristic boundaries)",
+  "invocation_id": "TI-88b28f9c75928320",
+  "limitations": [
+    {
+      "code": "AGREEMENT_SOURCES_NOT_INDEPENDENT",
+      "source_evidence_ids": [],
+      "text": "Not every agreeing source is independent (census <- ghidra:2c80bf9dfade293e)."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "SOURCE_AGREEMENT_IS_STRUCTURAL",
+      "source_evidence_ids": [],
+      "text": "Source agreement is structural consistency between analysis sources about where code and functions are; it does not establish behavior, and a source coverage gap is not negative evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 2710,
+  "result_sha256": "efb4dc6fbc4366be8f7d62e3c0b40e6a47951c8c76c4dae516830966334579f0",
+  "summary": "structural source agreement:\n  0x0000bc44 AGREE census=FUN_0000bc44[0x0000bc44,0x0000bd42) ghidra=FUN_0000bc44[0x0000bc44,0x0000bd42) macaw=FUN_0000bc44[0x0000bc44,0x0000bd42)",
+  "tool": "structural_source_agreement"
+}

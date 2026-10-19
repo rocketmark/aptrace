@@ -1,0 +1,55 @@
+{
+  "assertion": "FUN_0000d40c loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+  "assumptions": [],
+  "claim_id": "C13",
+  "claim_type": "STRUCTURE",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-17T23:07:12.622+00:00",
+  "depends_on": [],
+  "derivation": "claim candidate K-fa4beedfeda7 (peripheral-role, candidates-v1), selected by the planner",
+  "limitations": [
+    {
+      "code": null,
+      "source_evidence_ids": [],
+      "text": "Does not establish or exclude a PORT register access by FUN_0000d40c: the census does not attribute accesses through a base-address register to a peripheral."
+    },
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "proposed_by": "candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "STRONG",
+  "run_id": "R-20261017T230712-2ee78d",
+  "schema_version": 1,
+  "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+  "semantics": {
+    "call": null,
+    "code_presence": null,
+    "function_role": {
+      "function": "FUN_0000d40c",
+      "peripheral": "PORT",
+      "role": "ADDRESS_CONSTANT_LOADER",
+      "slot": null
+    },
+    "path": null,
+    "predicate": "FUNCTION_ROLE",
+    "resolved_pointer": null
+  },
+  "subject": "FUN_0000d40c",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-5b5c3f6b97d4d66a"
+  ],
+  "version": 1
+}

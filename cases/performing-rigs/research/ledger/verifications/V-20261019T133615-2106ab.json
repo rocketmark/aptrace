@@ -1,0 +1,159 @@
+{
+  "at": "2026-10-19T13:36:15.169+00:00",
+  "audit_id": null,
+  "audit_skipped": false,
+  "audit_verdict": null,
+  "checks": [
+    {
+      "detail": "1 reference(s) resolve",
+      "name": "evidence_references",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "a claim needs at least one supporting evidence id",
+      "name": "supporting_evidence_present",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "same firmware and case",
+      "name": "evidence_context",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "0 dependency reference(s)",
+      "name": "dependencies_exist",
+      "passed": true,
+      "phase": "A",
+      "severity": "block"
+    },
+    {
+      "detail": "identifiers are canonical",
+      "name": "entity_identity",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "FUNCTION_ROLE(FUN_0000bc44 is MMIO_USER, peripheral=PORT) consistent with supporting evidence (1 check(s))",
+      "name": "claim_semantics",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "proposed STRONG; strongest supporting derivation permits STRONG (EV-5b5c3f6b97d4d66a=STRONG)",
+      "name": "grade_ceiling",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "2 inherited limitation(s) present",
+      "name": "limitations_preserved",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "no bounded-negative promotion",
+      "name": "no_unreachability_promotion",
+      "passed": true,
+      "phase": "B",
+      "severity": "block"
+    },
+    {
+      "detail": "stored result hashes match",
+      "name": "evidence_integrity",
+      "passed": true,
+      "phase": "C",
+      "severity": "stale"
+    },
+    {
+      "detail": "no supporting evidence invalidated",
+      "name": "evidence_valid",
+      "passed": true,
+      "phase": "C",
+      "severity": "stale"
+    },
+    {
+      "detail": "1 replay(s) identical",
+      "name": "deterministic_replay",
+      "passed": true,
+      "phase": "C",
+      "severity": "stale"
+    },
+    {
+      "detail": "UNEVALUABLE NO_EVIDENCE_CONTRACT: MEMORY_ACCESS requires independent agreement on constant-address accesses; no ledger operation produces such evidence yet",
+      "name": "independent_corroboration",
+      "passed": false,
+      "phase": "P",
+      "severity": "hold"
+    }
+  ],
+  "claim_version": "C10:v1",
+  "context_id": "X-a7082bca223d3723",
+  "gate": {
+    "agreement_evidence_ids": [
+      "EV-41e33307231ee6dd"
+    ],
+    "claim_class": "MEMORY_ACCESS",
+    "class_basis": "FUNCTION_ROLE MMIO_USER",
+    "conditions": [
+      {
+        "address": null,
+        "code": "NO_EVIDENCE_CONTRACT",
+        "detail": "MEMORY_ACCESS requires independent agreement on constant-address accesses; no ledger operation produces such evidence yet",
+        "evidence_ids": [],
+        "field": null,
+        "kind": "corroboration",
+        "status": "UNEVALUABLE"
+      }
+    ],
+    "policy": {
+      "digest": "32154fb7b79038188e733f1d3969240835149f34d137253ebae4e90dae958dad",
+      "policy_id": "aptrace-claim-verification",
+      "version": "1"
+    },
+    "status": "UNEVALUABLE"
+  },
+  "mode": "precheck",
+  "note": "Verified means: consistent with the currently recorded evidence and APTrace's deterministic checks. It is not a proof of semantic truth.",
+  "outcome": "PROPOSED",
+  "phases": {
+    "A": "passed",
+    "B": "passed",
+    "C": "passed",
+    "D": "skipped",
+    "P": "failed"
+  },
+  "policy": {
+    "digest": "32154fb7b79038188e733f1d3969240835149f34d137253ebae4e90dae958dad",
+    "policy_id": "aptrace-claim-verification",
+    "version": "1"
+  },
+  "replay_invocation_ids": [
+    "TI-c6c238e3777ecbd2"
+  ],
+  "schema_version": 1,
+  "semantic_checks": [
+    {
+      "claimed": "FUN_0000bc44",
+      "claimed_role": "MMIO_USER",
+      "code": "CONSISTENT",
+      "detail": "",
+      "diagnostic": null,
+      "evidence_id": "EV-5b5c3f6b97d4d66a",
+      "evidence_role": "MMIO_USER",
+      "evidence_value": null,
+      "field": "role",
+      "passed": true
+    }
+  ],
+  "verification_id": "V-20261019T133615-2106ab"
+}

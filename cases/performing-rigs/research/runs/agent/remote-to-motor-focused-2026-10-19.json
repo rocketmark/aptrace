@@ -1,0 +1,1305 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-19T13:41:51.524508+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Bounded AutoPilot868 F0 channel0 jog follow-up. Determine whether FUN_00005448 sets busy state 0x20001b14 and how its target update reaches FUN_00004d18; preserve conditions. Report unsupported connection to timer activation and STOP on RF silence as open questions. Finish after relevant function evidence rather than peripheral inventory. Request case reconciliation review of unsupported causal composition.",
+  "seed_function": "FUN_00005448",
+  "stop_reason": "step_budget_exhausted",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "effects",
+      "lead_id": "L9",
+      "evidence_id": "E3",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "observation",
+      "lead_id": "L10",
+      "evidence_id": "E4",
+      "reason": null
+    },
+    {
+      "number": 3,
+      "action": "follow_lead",
+      "lead_id": "L7",
+      "evidence_id": "E5",
+      "reason": null
+    },
+    {
+      "number": 4,
+      "action": "follow_lead",
+      "lead_id": "L32",
+      "evidence_id": "E6",
+      "reason": null
+    }
+  ],
+  "planner_requests": [
+    {
+      "phase": "decision",
+      "evidence": 2,
+      "open_leads": 8,
+      "claims": 0,
+      "prompt_chars": 1818,
+      "state_chars": 230,
+      "message_bytes": 2092,
+      "tool_bytes": 2347,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4439,
+      "attempt": 0,
+      "prompt_tokens": 1588,
+      "decision": "analyze_function_effects"
+    },
+    {
+      "phase": "decision",
+      "evidence": 3,
+      "open_leads": 8,
+      "claims": 0,
+      "prompt_chars": 1897,
+      "state_chars": 309,
+      "message_bytes": 2173,
+      "tool_bytes": 2347,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4520,
+      "attempt": 0,
+      "prompt_tokens": 1601
+    },
+    {
+      "phase": "decision",
+      "evidence": 3,
+      "open_leads": 8,
+      "claims": 0,
+      "prompt_chars": 1819,
+      "state_chars": 309,
+      "message_bytes": 2095,
+      "tool_bytes": 1950,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4045,
+      "attempt": 0,
+      "prompt_tokens": 1442,
+      "decision": "observe_call_arguments"
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 8,
+      "claims": 0,
+      "prompt_chars": 1826,
+      "state_chars": 316,
+      "message_bytes": 2102,
+      "tool_bytes": 1950,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 4052,
+      "attempt": 0,
+      "prompt_tokens": 1439
+    },
+    {
+      "phase": "decision",
+      "evidence": 4,
+      "open_leads": 8,
+      "claims": 0,
+      "prompt_chars": 1729,
+      "state_chars": 316,
+      "message_bytes": 2005,
+      "tool_bytes": 1159,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3164,
+      "attempt": 0,
+      "prompt_tokens": 1186,
+      "decision": "follow_lead"
+    },
+    {
+      "phase": "decision",
+      "evidence": 5,
+      "open_leads": 43,
+      "claims": 0,
+      "prompt_chars": 1704,
+      "state_chars": 307,
+      "message_bytes": 1980,
+      "tool_bytes": 1164,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 3144,
+      "attempt": 0,
+      "prompt_tokens": 1197,
+      "decision": "follow_lead"
+    }
+  ],
+  "conclusion": {
+    "proven": [],
+    "probable": [],
+    "open": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_00005448"
+      },
+      "result": {
+        "name": "FUN_00005448",
+        "entry": "0x00005448",
+        "size": 84,
+        "callers": [
+          {
+            "function": "FUN_00008258",
+            "address": "0x000082c0"
+          },
+          {
+            "function": "FUN_00008258",
+            "address": "0x00008354"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000ccd0",
+            "address": "0x00005454"
+          },
+          {
+            "function": "FUN_00004d18",
+            "address": "0x00005496"
+          }
+        ],
+        "unique_caller_count": 1,
+        "callsite_count": 2,
+        "unique_callee_count": 2,
+        "outgoing_callsite_count": 2,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    },
+    {
+      "id": "E2",
+      "tool": "function_disassembly",
+      "arguments": {
+        "function": "FUN_00005448"
+      },
+      "result": {
+        "name": "FUN_00005448",
+        "entry": "0x00005448",
+        "size": 84,
+        "architecture": "ARM Cortex-M4F",
+        "mode": "Thumb/Thumb-2 M-class",
+        "bounds_source": "Ghidra function metadata",
+        "decoder": "Capstone",
+        "bytes_requested": 84,
+        "bytes_decoded": 84,
+        "complete": true,
+        "instructions": [
+          {
+            "address": "0x00005448",
+            "size": 2,
+            "bytes_hex": "38 b5",
+            "mnemonic": "push",
+            "operands": "{r3, r4, r5, lr}"
+          },
+          {
+            "address": "0x0000544a",
+            "size": 2,
+            "bytes_hex": "14 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x50]"
+          },
+          {
+            "address": "0x0000544c",
+            "size": 2,
+            "bytes_hex": "01 22",
+            "mnemonic": "movs",
+            "operands": "r2, #1"
+          },
+          {
+            "address": "0x0000544e",
+            "size": 2,
+            "bytes_hex": "04 46",
+            "mnemonic": "mov",
+            "operands": "r4, r0"
+          },
+          {
+            "address": "0x00005450",
+            "size": 2,
+            "bytes_hex": "1a 54",
+            "mnemonic": "strb",
+            "operands": "r2, [r3, r0]"
+          },
+          {
+            "address": "0x00005452",
+            "size": 2,
+            "bytes_hex": "0d 46",
+            "mnemonic": "mov",
+            "operands": "r5, r1"
+          },
+          {
+            "address": "0x00005454",
+            "size": 4,
+            "bytes_hex": "07 f0 3c fc",
+            "mnemonic": "bl",
+            "operands": "#0xccd0"
+          },
+          {
+            "address": "0x00005458",
+            "size": 2,
+            "bytes_hex": "11 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x44]"
+          },
+          {
+            "address": "0x0000545a",
+            "size": 4,
+            "bytes_hex": "43 f8 24 00",
+            "mnemonic": "str.w",
+            "operands": "r0, [r3, r4, lsl #2]"
+          },
+          {
+            "address": "0x0000545e",
+            "size": 2,
+            "bytes_hex": "11 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x44]"
+          },
+          {
+            "address": "0x00005460",
+            "size": 2,
+            "bytes_hex": "02 22",
+            "mnemonic": "movs",
+            "operands": "r2, #2"
+          },
+          {
+            "address": "0x00005462",
+            "size": 2,
+            "bytes_hex": "1a 55",
+            "mnemonic": "strb",
+            "operands": "r2, [r3, r4]"
+          },
+          {
+            "address": "0x00005464",
+            "size": 2,
+            "bytes_hex": "10 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x40]"
+          },
+          {
+            "address": "0x00005466",
+            "size": 2,
+            "bytes_hex": "1a 78",
+            "mnemonic": "ldrb",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x00005468",
+            "size": 2,
+            "bytes_hex": "0a 2a",
+            "mnemonic": "cmp",
+            "operands": "r2, #0xa"
+          },
+          {
+            "address": "0x0000546a",
+            "size": 2,
+            "bytes_hex": "04 bf",
+            "mnemonic": "itt",
+            "operands": "eq"
+          },
+          {
+            "address": "0x0000546c",
+            "size": 2,
+            "bytes_hex": "00 22",
+            "mnemonic": "moveq",
+            "operands": "r2, #0"
+          },
+          {
+            "address": "0x0000546e",
+            "size": 2,
+            "bytes_hex": "1a 70",
+            "mnemonic": "strbeq",
+            "operands": "r2, [r3]"
+          },
+          {
+            "address": "0x00005470",
+            "size": 2,
+            "bytes_hex": "0e 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x38]"
+          },
+          {
+            "address": "0x00005472",
+            "size": 4,
+            "bytes_hex": "53 f8 24 20",
+            "mnemonic": "ldr.w",
+            "operands": "r2, [r3, r4, lsl #2]"
+          },
+          {
+            "address": "0x00005476",
+            "size": 2,
+            "bytes_hex": "aa 42",
+            "mnemonic": "cmp",
+            "operands": "r2, r5"
+          },
+          {
+            "address": "0x00005478",
+            "size": 2,
+            "bytes_hex": "0f d0",
+            "mnemonic": "beq",
+            "operands": "#0x549a"
+          },
+          {
+            "address": "0x0000547a",
+            "size": 2,
+            "bytes_hex": "0d 4a",
+            "mnemonic": "ldr",
+            "operands": "r2, [pc, #0x34]"
+          },
+          {
+            "address": "0x0000547c",
+            "size": 4,
+            "bytes_hex": "43 f8 24 50",
+            "mnemonic": "str.w",
+            "operands": "r5, [r3, r4, lsl #2]"
+          },
+          {
+            "address": "0x00005480",
+            "size": 2,
+            "bytes_hex": "0c 4b",
+            "mnemonic": "ldr",
+            "operands": "r3, [pc, #0x30]"
+          },
+          {
+            "address": "0x00005482",
+            "size": 4,
+            "bytes_hex": "52 f8 24 10",
+            "mnemonic": "ldr.w",
+            "operands": "r1, [r2, r4, lsl #2]"
+          },
+          {
+            "address": "0x00005486",
+            "size": 4,
+            "bytes_hex": "53 f8 24 30",
+            "mnemonic": "ldr.w",
+            "operands": "r3, [r3, r4, lsl #2]"
+          },
+          {
+            "address": "0x0000548a",
+            "size": 2,
+            "bytes_hex": "4d 43",
+            "mnemonic": "muls",
+            "operands": "r5, r1, r5"
+          },
+          {
+            "address": "0x0000548c",
+            "size": 2,
+            "bytes_hex": "9d 42",
+            "mnemonic": "cmp",
+            "operands": "r5, r3"
+          },
+          {
+            "address": "0x0000548e",
+            "size": 2,
+            "bytes_hex": "04 d0",
+            "mnemonic": "beq",
+            "operands": "#0x549a"
+          },
+          {
+            "address": "0x00005490",
+            "size": 2,
+            "bytes_hex": "20 46",
+            "mnemonic": "mov",
+            "operands": "r0, r4"
+          },
+          {
+            "address": "0x00005492",
+            "size": 4,
+            "bytes_hex": "bd e8 38 40",
+            "mnemonic": "pop.w",
+            "operands": "{r3, r4, r5, lr}"
+          },
+          {
+            "address": "0x00005496",
+            "size": 4,
+            "bytes_hex": "ff f7 3f bc",
+            "mnemonic": "b.w",
+            "operands": "#0x4d18"
+          },
+          {
+            "address": "0x0000549a",
+            "size": 2,
+            "bytes_hex": "38 bd",
+            "mnemonic": "pop",
+            "operands": "{r3, r4, r5, pc}"
+          }
+        ]
+      }
+    },
+    {
+      "id": "E3",
+      "tool": "function_effects",
+      "arguments": {
+        "function": "FUN_00005448",
+        "specialize": {}
+      },
+      "result": {
+        "status": "bounded: timeout 300s",
+        "function": "FUN_00005448",
+        "entry": "0x00005448",
+        "coverage": "bounded: timeout 300s",
+        "specialize": {},
+        "blocks": null,
+        "inputs_used": [],
+        "reads": 0,
+        "writes": 0,
+        "calls": [],
+        "accesses": [],
+        "return_depends_on": [],
+        "return_bit_valued": null,
+        "specialized": [],
+        "harness_assumptions": [],
+        "raw": {},
+        "solver": {},
+        "provenance": {},
+        "planner_summary": "FUN_00005448 effects: no result within the 300s bound (likely an input-dependent loop); nothing concluded"
+      }
+    },
+    {
+      "id": "E4",
+      "tool": "observed_call_arguments",
+      "arguments": {
+        "function": "FUN_00005448",
+        "scenario": "vl-ampersand"
+      },
+      "result": {
+        "status": "failed",
+        "function": "FUN_00005448",
+        "entry": "0x00005448",
+        "basis": "CALLER_GROUNDED_CONCRETE",
+        "scenario": "vl-ampersand",
+        "scenario_config": {},
+        "scenario_failure": null,
+        "observed_entries": 0,
+        "call_sites": [],
+        "mmio_in_function": null,
+        "run": {},
+        "legs": [],
+        "watched_fields": null,
+        "correlation": [],
+        "harness_assumptions": [],
+        "coverage": "",
+        "provenance": {},
+        "planner_summary": "FUN_00005448 observed arguments (vl-ampersand): harness failed (no output)"
+      }
+    },
+    {
+      "id": "E5",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_00004d18"
+      },
+      "result": {
+        "name": "FUN_00004d18",
+        "entry": "0x00004d18",
+        "size": 1162,
+        "callers": [
+          {
+            "function": "FUN_00005274",
+            "address": "0x00005294"
+          },
+          {
+            "function": "FUN_00005448",
+            "address": "0x00005496"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004d4a"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004d58"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004d72"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004d80"
+          },
+          {
+            "function": "FUN_0000e0c0",
+            "address": "0x00004dbe"
+          },
+          {
+            "function": "FUN_0000d86c",
+            "address": "0x00004dde"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004de6"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004dee"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004df6"
+          },
+          {
+            "function": "FUN_0000e0c0",
+            "address": "0x00004e02"
+          },
+          {
+            "function": "FUN_0000e0c0",
+            "address": "0x00004e16"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004e30"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004e3e"
+          },
+          {
+            "function": "FUN_0000e0fc",
+            "address": "0x00004e4a"
+          },
+          {
+            "function": "FUN_0000ccdc",
+            "address": "0x00004e5a"
+          },
+          {
+            "function": "FUN_0000d86c",
+            "address": "0x00004e7e"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004e86"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004e8a"
+          },
+          {
+            "function": "FUN_0000e0c0",
+            "address": "0x00004ef0"
+          },
+          {
+            "function": "FUN_0000e0fc",
+            "address": "0x00004f1a"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004f30"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004f3e"
+          },
+          {
+            "function": "FUN_0000e0c0",
+            "address": "0x00004f4a"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004f6c"
+          },
+          {
+            "function": "FUN_0000d61c",
+            "address": "0x00004f7a"
+          }
+        ],
+        "unique_caller_count": 2,
+        "callsite_count": 2,
+        "unique_callee_count": 7,
+        "outgoing_callsite_count": 40,
+        "callers_truncated": false,
+        "callees_truncated": true
+      }
+    },
+    {
+      "id": "E6",
+      "tool": "function_facts",
+      "arguments": {
+        "function": "FUN_0000e0fc"
+      },
+      "result": {
+        "name": "FUN_0000e0fc",
+        "entry": "0x0000e0fc",
+        "size": 18,
+        "callers": [
+          {
+            "function": "FUN_00004d18",
+            "address": "0x00004e4a"
+          },
+          {
+            "function": "FUN_00004d18",
+            "address": "0x00004f1a"
+          },
+          {
+            "function": "FUN_00004d18",
+            "address": "0x00005084"
+          },
+          {
+            "function": "FUN_00004d18",
+            "address": "0x000050e8"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x0000649a"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x000064c0"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x000065e2"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x00006620"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x000066aa"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x00006826"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x0000683e"
+          },
+          {
+            "function": "FUN_00006338",
+            "address": "0x00006880"
+          },
+          {
+            "function": "FUN_0000f6b0",
+            "address": "0x0000fafa"
+          },
+          {
+            "function": "FUN_0000f6b0",
+            "address": "0x0000fcae"
+          },
+          {
+            "function": "FUN_0000f6b0",
+            "address": "0x0000fd62"
+          }
+        ],
+        "callees": [
+          {
+            "function": "FUN_0000e08c",
+            "address": "0x0000e100"
+          }
+        ],
+        "unique_caller_count": 3,
+        "callsite_count": 15,
+        "unique_callee_count": 1,
+        "outgoing_callsite_count": 1,
+        "callers_truncated": false,
+        "callees_truncated": false
+      }
+    }
+  ],
+  "state": {
+    "objective": "Bounded AutoPilot868 F0 channel0 jog follow-up. Determine whether FUN_00005448 sets busy state 0x20001b14 and how its target update reaches FUN_00004d18; preserve conditions. Report unsupported connection to timer activation and STOP on RF silence as open questions. Finish after relevant function evidence rather than peripheral inventory. Request case reconciliation review of unsupported causal composition.",
+    "evidence_ids": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "E5",
+      "E6"
+    ],
+    "claims": [],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x000082c0",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L2",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x00008354",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L3",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005448 to FUN_0000ccd0 at 0x00005454",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L4",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000ccd0 from FUN_00005448",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L5",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000ccd0 from FUN_00005448",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L6",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00005448 to FUN_00004d18 at 0x00005496",
+        "source_evidence_ids": [
+          "E1",
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L7",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_00004d18 from FUN_00005448",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L8",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_00004d18 from FUN_00005448",
+        "source_evidence_ids": [
+          "E1"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L9",
+        "kind": "effects",
+        "description": "Function effects of FUN_00005448",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L10",
+        "kind": "observation",
+        "description": "Observed call arguments of FUN_00005448 under scenario vl-ampersand",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L11",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_00004d18 from FUN_00005274 at 0x00005294",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L12",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004d4a",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L13",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d61c from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L14",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d61c from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L15",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004d58",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L16",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004d72",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L17",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004d80",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L18",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0c0 at 0x00004dbe",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L19",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000e0c0 from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L20",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000e0c0 from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L21",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d86c at 0x00004dde",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L22",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000d86c from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L23",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000d86c from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L24",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004de6",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L25",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004dee",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L26",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004df6",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L27",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0c0 at 0x00004e02",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L28",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0c0 at 0x00004e16",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L29",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004e30",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L30",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004e3e",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L31",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0fc at 0x00004e4a",
+        "source_evidence_ids": [
+          "E5",
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L32",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000e0fc from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "FOLLOWED",
+        "origin": null
+      },
+      {
+        "id": "L33",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000e0fc from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L34",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000ccdc at 0x00004e5a",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L35",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000ccdc from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L36",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000ccdc from FUN_00004d18",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L37",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d86c at 0x00004e7e",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L38",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004e86",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L39",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004e8a",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L40",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0c0 at 0x00004ef0",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L41",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0fc at 0x00004f1a",
+        "source_evidence_ids": [
+          "E5",
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L42",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004f30",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L43",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004f3e",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L44",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000e0c0 at 0x00004f4a",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L45",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004f6c",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L46",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_00004d18 to FUN_0000d61c at 0x00004f7a",
+        "source_evidence_ids": [
+          "E5"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L47",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000e0fc from FUN_00004d18 at 0x00005084",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L48",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000e0fc from FUN_00004d18 at 0x000050e8",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L49",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000e0fc from FUN_00006338 at 0x0000649a",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L50",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000e0fc from FUN_00006338 at 0x000064c0",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L51",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000e0fc from FUN_00006338 at 0x000065e2",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L52",
+        "kind": "callsite",
+        "description": "Inspect incoming call to FUN_0000e0fc from FUN_00006338 at 0x00006620",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L53",
+        "kind": "callsite",
+        "description": "Inspect outgoing call from FUN_0000e0fc to FUN_0000e08c at 0x0000e100",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L54",
+        "kind": "function",
+        "description": "Inspect outgoing callee FUN_0000e08c from FUN_0000e0fc",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      },
+      {
+        "id": "L55",
+        "kind": "function-disassembly",
+        "description": "Inspect disassembly of outgoing callee FUN_0000e08c from FUN_0000e0fc",
+        "source_evidence_ids": [
+          "E6"
+        ],
+        "status": "OPEN",
+        "origin": null
+      }
+    ]
+  }
+}

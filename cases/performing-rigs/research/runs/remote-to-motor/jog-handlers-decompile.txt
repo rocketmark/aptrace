@@ -1,0 +1,122 @@
+==================================================
+Function: FUN_00005448 @ 00005448  size=84  params=0  callingConvention=unknown
+
+
+void FUN_00005448(int param_1,int param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  int iVar1;
+  undefined4 uVar2;
+  int iVar3;
+  
+  *(undefined1 *)(DAT_0000549c + param_1) = 1;
+  uVar2 = millis__ADAFRUIT_CORE();
+  *(undefined4 *)(DAT_000054a0 + param_1 * 4) = uVar2;
+  *(undefined1 *)(DAT_000054a4 + param_1) = 2;
+  if (*DAT_000054a8 == '\n') {
+    *DAT_000054a8 = '\0';
+  }
+  iVar1 = DAT_000054b0;
+  if (*(int *)(DAT_000054ac + param_1 * 4) != param_2) {
+    *(int *)(DAT_000054ac + param_1 * 4) = param_2;
+    iVar3 = *(int *)(iVar1 + param_1 * 4);
+    if (iVar3 * param_2 - *(int *)(DAT_000054b4 + param_1 * 4) != 0) {
+      FUN_00004d18(param_1,iVar3,iVar1,param_4);
+      return;
+    }
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00005274 @ 00005274  size=322  params=0  callingConvention=unknown
+
+
+void FUN_00005274(int param_1,int param_2,undefined4 param_3,int param_4)
+
+{
+  undefined1 *puVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  undefined4 uVar6;
+  int iVar7;
+  int *piVar8;
+  uint uVar9;
+  int iVar10;
+  uint uVar11;
+  undefined4 *puVar12;
+  undefined8 uVar13;
+  
+  puVar1 = DAT_000053b8;
+  if (param_2 == 4) {
+    *(int *)(DAT_000053c4 + param_1 * 4) =
+         *(int *)(DAT_000053bc + param_1 * 4) * *(int *)(DAT_000053c0 + param_1 * 4);
+    FUN_00004d18();
+    puVar1[param_1] = 1;
+  }
+  else {
+    *DAT_000053b8 = 1;
+    iVar5 = DAT_000053e4;
+    iVar4 = DAT_000053dc;
+    iVar3 = DAT_000053d8;
+    iVar10 = DAT_000053d4;
+    iVar2 = DAT_000053d0;
+    piVar8 = DAT_000053cc;
+    if ((*DAT_000053c8 == 1) || (piVar8 = DAT_00005414, *DAT_000053c8 - 2 < 3)) {
+      param_4 = *piVar8;
+    }
+    if (param_2 == 3) {
+      if (param_4 < 0) {
+        param_4 = param_4 + 3;
+      }
+      param_4 = param_4 >> 2;
+    }
+    iVar7 = *(int *)(DAT_000053d0 + param_1 * 4);
+    uVar11 = *DAT_00005418;
+    if (((uint)(*(int *)(DAT_000053dc + param_1 * 4) *
+               (iVar7 - *(int *)(DAT_000053d8 + param_1 * 4))) <
+         (uint)(param_4 * 40000) / *(uint *)(DAT_000053d4 + param_1 * 4)) &&
+       (*DAT_000053e0 == '\x01')) {
+      uVar9 = (uint)((iVar7 - *(int *)(DAT_000053d8 + param_1 * 4)) *
+                    *(int *)(DAT_000053dc + param_1 * 4)) / uVar11;
+    }
+    else {
+      uVar9 = (uint)(param_4 * 40000) / (uVar11 * *(int *)(DAT_000053d4 + param_1 * 4));
+    }
+    if (uVar9 == 0) {
+      uVar9 = 1;
+    }
+    *(uint *)(DAT_000053e4 + param_1 * 4) = uVar9;
+    *(int *)(DAT_000053e8 + param_1 * 4) =
+         *(int *)(iVar5 + param_1 * 4) * *(int *)(iVar10 + param_1 * 4);
+    puVar12 = (undefined4 *)(DAT_000053ec + param_1 * 4);
+    uVar13 = aeabi_fixed_math__STANDARD_LIBRARY();
+    aeabi_fixed_math__STANDARD_LIBRARY(0,DAT_000053f0,(int)uVar13,(int)((ulonglong)uVar13 >> 0x20));
+    uVar6 = FUN_0000e1cc();
+    iVar5 = DAT_000053f8;
+    iVar10 = DAT_000053f4;
+    *puVar12 = uVar6;
+    *(undefined4 *)(iVar10 + param_1 * 4) = 0;
+    *(undefined4 *)(iVar2 + param_1 * 4) = 0;
+    iVar2 = DAT_00005400;
+    *DAT_000053fc = uVar11;
+    iVar10 = *(int *)(DAT_00005404 + param_1 * 4);
+    if (iVar10 < 0) {
+      iVar10 = iVar10 + 3;
+    }
+    *(int *)(iVar2 + param_1 * 4) = iVar10 >> 2;
+    *(int *)(DAT_00005408 + param_1 * 4) =
+         iVar5 * *(int *)(iVar4 + param_1 * 4) + *(int *)(iVar3 + param_1 * 4);
+    *(int *)(DAT_0000540c + param_1 * 4) =
+         iVar5 * *(int *)(iVar4 + param_1 * 4) + *(int *)(iVar3 + param_1 * 4);
+    *(undefined4 *)(DAT_00005410 + param_1 * 4) = 0xffffffff;
+  }
+  return;
+}
+
+
+

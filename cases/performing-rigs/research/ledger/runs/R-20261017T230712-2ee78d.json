@@ -1,0 +1,853 @@
+{
+  "budgets": {
+    "max_steps": 8
+  },
+  "candidate_selection": {
+    "generated": 5,
+    "generator": "candidates-v1",
+    "invalid": [],
+    "limit": 5,
+    "offered": [
+      {
+        "assertion": "FUN_000060ec accesses PORT registers (census constant-address MMIO site(s): write 0x4100809c).",
+        "assumptions": [],
+        "candidate_id": "K-bfd98a987e70",
+        "claim_type": "BEHAVIOR",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-5b5c3f6b97d4d66a"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_000060ec reads or writes."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_000060ec",
+            "peripheral": "PORT",
+            "role": "MMIO_USER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_000060ec",
+        "supporting_evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "assertion": "FUN_0000bc44 accesses PORT registers (census constant-address MMIO site(s): read 0x4100803c, read 0x41008058, read 0x41008059, write 0x4100803c).",
+        "assumptions": [],
+        "candidate_id": "K-e9ed1c03b163",
+        "claim_type": "BEHAVIOR",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-5b5c3f6b97d4d66a"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "A register access site is structural: it does not show which executions reach it, how often, or which values FUN_0000bc44 reads or writes."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "static census references (Ghidra reference manager), heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000bc44",
+            "peripheral": "PORT",
+            "role": "MMIO_USER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000bc44",
+        "supporting_evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "assertion": "FUN_0000d388 loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+        "assumptions": [],
+        "candidate_id": "K-d52343113667",
+        "claim_type": "STRUCTURE",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-5b5c3f6b97d4d66a"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "Does not establish or exclude a PORT register access by FUN_0000d388: the census does not attribute accesses through a base-address register to a peripheral."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000d388",
+            "peripheral": "PORT",
+            "role": "ADDRESS_CONSTANT_LOADER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000d388",
+        "supporting_evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "assertion": "FUN_0000c7c0 loads PORT address constant 0x41008014, 0x41008018 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+        "assumptions": [],
+        "candidate_id": "K-d8554433f371",
+        "claim_type": "STRUCTURE",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-5b5c3f6b97d4d66a"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "Does not establish or exclude a PORT register access by FUN_0000c7c0: the census does not attribute accesses through a base-address register to a peripheral."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000c7c0",
+            "peripheral": "PORT",
+            "role": "ADDRESS_CONSTANT_LOADER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000c7c0",
+        "supporting_evidence_ids": [
+          "E2"
+        ]
+      },
+      {
+        "assertion": "FUN_0000d40c loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+        "assumptions": [],
+        "candidate_id": "K-fa4beedfeda7",
+        "claim_type": "STRUCTURE",
+        "considered": {},
+        "durable_evidence_ids": [
+          "EV-5b5c3f6b97d4d66a"
+        ],
+        "existing_claims": [],
+        "extractor": "peripheral-role",
+        "grade": "STRONG",
+        "limitations": [
+          "Does not establish or exclude a PORT register access by FUN_0000d40c: the census does not attribute accesses through a base-address register to a peripheral."
+        ],
+        "prior_evidence_ids": [],
+        "scope": "census_peripheral_usage static analysis of PORT (Ghidra references and flash-word scan); heuristic function boundaries",
+        "seeded_leads": [],
+        "semantics": {
+          "call": null,
+          "code_presence": null,
+          "function_role": {
+            "function": "FUN_0000d40c",
+            "peripheral": "PORT",
+            "role": "ADDRESS_CONSTANT_LOADER",
+            "slot": null
+          },
+          "path": null,
+          "predicate": "FUNCTION_ROLE",
+          "resolved_pointer": null
+        },
+        "subject": "FUN_0000d40c",
+        "supporting_evidence_ids": [
+          "E2"
+        ]
+      }
+    ],
+    "omitted": [],
+    "outcome": "selected",
+    "prompt_chars": 2020,
+    "response": "K-e9ed1c03b163,K-d52343113667,K-d8554433f371,K-fa4beedfeda7",
+    "selected": [
+      "K-e9ed1c03b163",
+      "K-d52343113667",
+      "K-d8554433f371",
+      "K-fa4beedfeda7"
+    ],
+    "withheld": []
+  },
+  "case": "performing-rigs",
+  "claim_admission": [
+    {
+      "assertion": "FUN_0000d388, FUN_0000c7c0, FUN_0000bc44, FUN_000060ec, FUN_000077a0, E1,E2,E3,E4,E5,E6,E7,E8",
+      "claim_type": "STRUCTURE",
+      "claim_version": null,
+      "decision": "rejected",
+      "diagnostics": [
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E1' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E1"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E2' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E2"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E3' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E3"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E4' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E4"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E5' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E5"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E6' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E6"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E7' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E7"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E8' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E8"
+        }
+      ],
+      "durable_evidence_ids": [
+        "EV-014f48c824cf16dc",
+        "EV-5b5c3f6b97d4d66a",
+        "EV-1ffc7782c8b6bea9",
+        "EV-450acbaf503e483e",
+        "EV-0d4e8c0bbf491483",
+        "EV-f2a03de4ae3b9186",
+        "EV-157f0cbc527625ff",
+        "EV-1aa2e1622821a865"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8"
+      ],
+      "grade": "PROBABLE",
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E1,E2,E3,E4,E5,E6,E7,E8 FUN_0000d388, FUN_0000c7c0, FUN_0000bc44, FUN_000060ec, FUN_000077a0, E1,E2,E3,E4,E5,E6,E7,E8",
+      "round": 1
+    },
+    {
+      "assertion": "FUN_0000d388, FUN_0000c7c0, FUN_0000bc44, FUN_000060ec, FUN_000077a0, E1,E2,E3,E4,E5,E6,E7,E8",
+      "claim_type": "STRUCTURE",
+      "claim_version": null,
+      "decision": "rejected",
+      "diagnostics": [
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E1' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E1"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E2' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E2"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E3' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E3"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E4' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E4"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E5' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E5"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E6' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E6"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E7' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E7"
+        },
+        {
+          "basis": "structured",
+          "code": "ENTITY_SESSION_REFERENCE",
+          "detail": "'E8' is a session evidence id used in the assertion; name the firmware entity it concerns and list evidence only in the citation",
+          "evidence_ids": [],
+          "severity": "reject",
+          "value": "E8"
+        }
+      ],
+      "durable_evidence_ids": [
+        "EV-014f48c824cf16dc",
+        "EV-5b5c3f6b97d4d66a",
+        "EV-1ffc7782c8b6bea9",
+        "EV-450acbaf503e483e",
+        "EV-0d4e8c0bbf491483",
+        "EV-f2a03de4ae3b9186",
+        "EV-157f0cbc527625ff",
+        "EV-1aa2e1622821a865"
+      ],
+      "evidence_ids": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8"
+      ],
+      "grade": "PROBABLE",
+      "omissions": {},
+      "raw": "PROBABLE STRUCTURE E1,E2,E3,E4,E5,E6,E7,E8 FUN_0000d388, FUN_0000c7c0, FUN_0000bc44, FUN_000060ec, FUN_000077a0, E1,E2,E3,E4,E5,E6,E7,E8",
+      "round": 2
+    },
+    {
+      "assertion": "FUN_0000bc44 accesses PORT registers (census constant-address MMIO site(s): read 0x4100803c, read 0x41008058, read 0x41008059, write 0x4100803c).",
+      "candidate_id": "K-e9ed1c03b163",
+      "claim_type": "BEHAVIOR",
+      "claim_version": "C10:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "evidence_ids": [
+        "E2"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-e9ed1c03b163",
+      "round": 3
+    },
+    {
+      "assertion": "FUN_0000d388 loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "candidate_id": "K-d52343113667",
+      "claim_type": "STRUCTURE",
+      "claim_version": "C11:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "evidence_ids": [
+        "E2"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-d52343113667",
+      "round": 3
+    },
+    {
+      "assertion": "FUN_0000c7c0 loads PORT address constant 0x41008014, 0x41008018 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "candidate_id": "K-d8554433f371",
+      "claim_type": "STRUCTURE",
+      "claim_version": "C12:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "evidence_ids": [
+        "E2"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-d8554433f371",
+      "round": 3
+    },
+    {
+      "assertion": "FUN_0000d40c loads PORT address constant 0x41008000 from its literal pool; the census records no constant-address MMIO site in it. Loading an address is not a register access.",
+      "candidate_id": "K-fa4beedfeda7",
+      "claim_type": "STRUCTURE",
+      "claim_version": "C13:v1",
+      "decision": "admitted",
+      "diagnostics": [],
+      "durable_evidence_ids": [
+        "EV-5b5c3f6b97d4d66a"
+      ],
+      "evidence_ids": [
+        "E2"
+      ],
+      "grade": "STRONG",
+      "omissions": {},
+      "raw": "select K-fa4beedfeda7",
+      "round": 3
+    }
+  ],
+  "claim_versions": [
+    "C10:v1",
+    "C11:v1",
+    "C12:v1",
+    "C13:v1"
+  ],
+  "context_id": "X-a7082bca223d3723",
+  "ended_at": "2026-10-17T23:07:12.487355+00:00",
+  "evidence_ids": [
+    "EV-014f48c824cf16dc",
+    "EV-5b5c3f6b97d4d66a",
+    "EV-1ffc7782c8b6bea9",
+    "EV-450acbaf503e483e",
+    "EV-0d4e8c0bbf491483",
+    "EV-f2a03de4ae3b9186",
+    "EV-157f0cbc527625ff",
+    "EV-1aa2e1622821a865"
+  ],
+  "execution_config": {
+    "claim_candidates": 5,
+    "claim_contract": true,
+    "endpoint": "local-omlx",
+    "max_tokens": 512,
+    "temperature": 0.0
+  },
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-c190677c44160765",
+    "TI-bb15f79776036107",
+    "TI-80b83f9f4aa9370e",
+    "TI-2467040115a6b14a",
+    "TI-249a9d78042f6b8c",
+    "TI-6590ab71db148c84",
+    "TI-4d70a75906ccffa3",
+    "TI-29b6926a171d9753"
+  ],
+  "kind": "investigation",
+  "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "objective": "Investigate original mando868 Manual Mode F0 jog through autopilot868 logical channel 0 to STEP/DIR and release STOP. Known captured F0 one-record bytes f0 0b ff ff ff ff 00 4c 4b 40 7c 00 encode channel0 +5000000; do not assume encoder input mapping is established. Seed evidence manual-mode-and-limits.md, motor-subsystem-unlock.md, firmware-pin-function-map.md and replacement-firmware-readiness.md. Establish exact supported causal edges through sender 0xbe94, receiver 0x8258, 0x5274/0x4d18, busy gate 0x20001b14, timer 0x5ee8/0x5c00 and GPIO 0x5898. Distinguish static paths, concrete segments, validated composition, symbolic evidence, unknown scheduling and physical effects. Investigate silence on wheel click versus actual cessation. Review existing virtual_link.py support; reuse evidence and avoid broad census. Use available tools to plan and perform bounded investigation; have Gemma review where supported. Preserve unsupported relationships and capability gaps; do not infer full end-to-end execution.",
+  "parent_run_id": null,
+  "planner_requests": [
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 0,
+      "message_bytes": 1579,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 1329,
+      "prompt_tokens": 913,
+      "state_chars": 23,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2574
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "analyze_peripheral",
+      "evidence": 1,
+      "message_bytes": 2532,
+      "open_leads": 6,
+      "phase": "decision",
+      "prompt_chars": 2258,
+      "prompt_tokens": 1789,
+      "state_chars": 365,
+      "tool_bytes": 2632,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5164
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 2,
+      "message_bytes": 3418,
+      "open_leads": 14,
+      "phase": "decision",
+      "prompt_chars": 3136,
+      "prompt_tokens": 2166,
+      "state_chars": 1222,
+      "tool_bytes": 2628,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 6046
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 2,
+      "message_bytes": 3335,
+      "open_leads": 14,
+      "phase": "decision",
+      "prompt_chars": 3053,
+      "prompt_tokens": 1943,
+      "state_chars": 1222,
+      "tool_bytes": 2114,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5449
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 3,
+      "message_bytes": 3152,
+      "open_leads": 21,
+      "phase": "decision",
+      "prompt_chars": 2869,
+      "prompt_tokens": 1920,
+      "state_chars": 1039,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5265
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 4,
+      "message_bytes": 3080,
+      "open_leads": 41,
+      "phase": "decision",
+      "prompt_chars": 2797,
+      "prompt_tokens": null,
+      "state_chars": 961,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5193
+    },
+    {
+      "attempt": 1,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 4,
+      "message_bytes": 3355,
+      "open_leads": 41,
+      "phase": "decision",
+      "prompt_chars": 212,
+      "prompt_tokens": 1925,
+      "state_chars": 961,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5468
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "evidence": 5,
+      "message_bytes": 3190,
+      "open_leads": 54,
+      "phase": "decision",
+      "prompt_chars": 2907,
+      "prompt_tokens": 2123,
+      "state_chars": 982,
+      "tool_bytes": 2627,
+      "tools": [
+        "follow_lead",
+        "analyze_peripheral",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5817
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 5,
+      "message_bytes": 3107,
+      "open_leads": 54,
+      "phase": "decision",
+      "prompt_chars": 2824,
+      "prompt_tokens": 1900,
+      "state_chars": 982,
+      "tool_bytes": 2113,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5220
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 6,
+      "message_bytes": 3134,
+      "open_leads": 53,
+      "phase": "decision",
+      "prompt_chars": 2851,
+      "prompt_tokens": 1911,
+      "state_chars": 1002,
+      "tool_bytes": 2114,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5248
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "follow_lead",
+      "evidence": 7,
+      "message_bytes": 3171,
+      "open_leads": 52,
+      "phase": "decision",
+      "prompt_chars": 2888,
+      "prompt_tokens": 1920,
+      "state_chars": 1039,
+      "tool_bytes": 2114,
+      "tools": [
+        "follow_lead",
+        "analyze_function_effects",
+        "observe_call_arguments",
+        "finish"
+      ],
+      "total_bytes": 5285
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "finish",
+      "evidence": 8,
+      "message_bytes": 2320,
+      "open_leads": 60,
+      "phase": "final-claims",
+      "prompt_chars": 2106,
+      "prompt_tokens": 1223,
+      "state_chars": 1060,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 2972
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "finish",
+      "evidence": 8,
+      "message_bytes": 2813,
+      "open_leads": 60,
+      "phase": "claim-correction",
+      "prompt_chars": 2595,
+      "prompt_tokens": 1391,
+      "state_chars": 1060,
+      "tool_bytes": 652,
+      "tools": [
+        "finish"
+      ],
+      "total_bytes": 3465
+    },
+    {
+      "attempt": 0,
+      "claims": 5,
+      "decision": "select_claims",
+      "evidence": 8,
+      "message_bytes": 2242,
+      "open_leads": 60,
+      "phase": "candidate-selection",
+      "prompt_chars": 2020,
+      "prompt_tokens": 999,
+      "state_chars": 943,
+      "tool_bytes": 349,
+      "tools": [
+        "select_claims"
+      ],
+      "total_bytes": 2591
+    }
+  ],
+  "planner_version": "controller:0632f3b40d1c projection:88dd323aa6e7",
+  "run_id": "R-20261017T230712-2ee78d",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "7309faf28c52a5b6",
+    "git_branch": "main",
+    "git_commit": "2e74a1a01f095fbcf1bc92985e6d0732b7454056"
+  },
+  "started_at": "2026-10-17T23:06:07.143677+00:00",
+  "termination_reason": "step_budget_exhausted",
+  "trajectory": [
+    {
+      "action": "discover",
+      "evidence_id": "E1",
+      "lead_id": "L1",
+      "number": 1,
+      "reason": null
+    },
+    {
+      "action": "analyze",
+      "evidence_id": "E2",
+      "lead_id": "L8",
+      "number": 2,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E3",
+      "lead_id": "L15",
+      "number": 3,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E4",
+      "lead_id": "L13",
+      "number": 4,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E5",
+      "lead_id": "L11",
+      "number": 5,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E6",
+      "lead_id": "L9",
+      "number": 6,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E7",
+      "lead_id": "L12",
+      "number": 7,
+      "reason": null
+    },
+    {
+      "action": "follow_lead",
+      "evidence_id": "E8",
+      "lead_id": "L6",
+      "number": 8,
+      "reason": null
+    }
+  ]
+}

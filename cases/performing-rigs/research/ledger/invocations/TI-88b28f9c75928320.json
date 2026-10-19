@@ -1,0 +1,28 @@
+{
+  "arguments": {
+    "addresses": [
+      "0x0000bc44"
+    ]
+  },
+  "context_id": "X-a7082bca223d3723",
+  "ended_at": "2026-10-19T13:36:15.159+00:00",
+  "error": null,
+  "evidence_id": "EV-41e33307231ee6dd",
+  "input_artifacts": {
+    "census_db": "31376900a7228ca4ed9a76415f626427b5c89e0ecf47062567f69abaebe8f66c",
+    "ghidra_export": "2c80bf9dfade293e86a90f7a56e63792c68b9628dd06fd30c482d5c43fffc1f2",
+    "macaw_census": "d568cf00249fb3e29e918f9c34b27392ca8a55b0902d28822b1df1f867ad1814"
+  },
+  "input_evidence_ids": [],
+  "invocation_id": "TI-88b28f9c75928320",
+  "operation_key": "66b1ac68d5b1169148ad793c7b0c682cdf4bd016d3810b96d8b85e2373870841",
+  "replay_of": null,
+  "replayable": true,
+  "result_sha256": "efb4dc6fbc4366be8f7d62e3c0b40e6a47951c8c76c4dae516830966334579f0",
+  "run_id": "VG-20261019T133615-83990f",
+  "runtime_ms": 39.396,
+  "session_evidence_id": null,
+  "started_at": "2026-10-19T13:36:15.120+00:00",
+  "status": "ok",
+  "tool": "structural_source_agreement"
+}

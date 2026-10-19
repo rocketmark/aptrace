@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "mando868 firmware firmware pin function map"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a7082bca223d3723",
+  "evidence_id": "EV-014f48c824cf16dc",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "PROBABLE",
+  "grade_basis": "case documents (documentary)",
+  "invocation_id": "TI-c190677c44160765",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 6995,
+  "result_sha256": "580a9de5bc6ba694290a7a72ca26215da5c3bc2e4a2b6d8852fa7bbc42e49c25",
+  "summary": "",
+  "tool": "search_case_evidence"
+}

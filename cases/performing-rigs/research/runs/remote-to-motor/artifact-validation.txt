@@ -1,0 +1,16 @@
+2026-10-19: operator artifact validation, no new firmware execution.
+
+PASS: both requested JSON artifacts parse.
+PASS: 19 unique node IDs; all 20 causal-edge endpoints resolve.
+PASS: all edge evidence references resolve; no edge has a VERIFIED state.
+PASS: all 37 source-file SHA-256 values match current files in both exports.
+PASS: both original firmware SHA-256 values match.
+PASS: native result hashes, stop reasons, instruction counts and dumped memory match reference vectors.
+PASS: selected payload equals first 11 bytes of original Remote TX-buffer capture.
+PASS: completed selected RX segment has target5000000, busy0, empty enabled MMIO log and no watched busy writes/drops.
+
+Scope: JSON/data consistency checks only. These checks do not establish execution continuity, interrupt scheduling, physical motion, or universal absence. No framework tests or firmware replays were repeated for packaging validation.
+
+Native MMIO logging was enabled in the new RX runs. It was not enabled in the two new Remote runs; their empty MMIO lists are not absence evidence.
+
+Known native-call checkpoint issue retained: remote-builder-cold used --call and --stop-at; the CLI ignores the latter in call mode. That run returned normally after333 instructions. The separate raw-entry remote-tx-boundary run actually reached0x117f4 after367 instructions.

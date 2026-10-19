@@ -1,0 +1,31 @@
+{
+  "arguments": {
+    "limit": 25,
+    "peripheral": "PORT"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a7082bca223d3723",
+  "evidence_id": "EV-5b5c3f6b97d4d66a",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "STRONG",
+  "grade_basis": "census constant-address MMIO references (heuristic function boundaries)",
+  "invocation_id": "TI-bb15f79776036107",
+  "limitations": [
+    {
+      "code": "FUNCTION_BOUNDARIES_HEURISTIC",
+      "source_evidence_ids": [],
+      "text": "Census structure is statically derived from Ghidra references; function boundaries and attribution are heuristic."
+    },
+    {
+      "code": "STRUCTURAL_USAGE_NOT_DEVICE_IDENTITY",
+      "source_evidence_ids": [],
+      "text": "Structural usage does not identify what external device is attached to the peripheral; that requires hardware-routing evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 6762,
+  "result_sha256": "64b377e29ecadfc72ddf890c56a3008f49fc57d70af31d10a642187918a7947b",
+  "summary": "",
+  "tool": "census_peripheral_usage"
+}

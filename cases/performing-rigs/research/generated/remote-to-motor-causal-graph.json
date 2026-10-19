@@ -1,0 +1,962 @@
+{
+  "schema_version": 1,
+  "artifact_kind": "operator_documentary_causal_graph",
+  "investigation_dates": [
+    "2026-10-17",
+    "2026-10-19"
+  ],
+  "repository_revision": "2e74a1a01f095fbcf1bc92985e6d0732b7454056",
+  "result": "partial",
+  "end_to_end_proven": false,
+  "firmware": {
+    "mando868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+      "sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc",
+      "mode": "original firmware",
+      "load_base": "0x4000",
+      "bootloader_included": false
+    },
+    "autopilot868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "mode": "original firmware",
+      "load_base": "0x4000",
+      "bootloader_included": false
+    }
+  },
+  "selected_frame": {
+    "payload_hex": "f00bffffffff004c4b407c",
+    "payload_length": 11,
+    "buffer_sentinel_hex": "00",
+    "logical_channel": 0,
+    "decoded_value": 5000000,
+    "value_units": null,
+    "physical_motor_number": null,
+    "sequence_digit_established": false
+  },
+  "limitations": [
+    "MMIO is plain memory, not peripheral or GPIO alias semantics.",
+    "No autonomous interrupts or physical time/rotation inferred.",
+    "Separate executions reset state unless explicitly carried; none of these new runs carries state.",
+    "Seeds are hypotheses/infrastructure inputs, not command-produced state.",
+    "Operator documentary export; no new VERIFIED motor claim."
+  ],
+  "verification_state": null,
+  "sources": {
+    "remote_tx": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-tx-boundary.json",
+      "sha256": "e2f5518eed4628675fe47db964009e68d4f786bbce57356ac53ca878244139de",
+      "mode": "fresh concrete"
+    },
+    "remote_cold": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-builder-cold.json",
+      "sha256": "4e9f11736cdc9f0d367833546938810af32daa9668ccf2590897d65f45ed0c93",
+      "mode": "fresh concrete"
+    },
+    "rx_checkpoint": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-captured-value-to-planner.json",
+      "sha256": "854a7b2df42306d0116a3715e3b99b0e675fb2852ad36a05a829cb08f15ba671",
+      "mode": "fresh concrete"
+    },
+    "rx_state": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-through-motor-state.json",
+      "sha256": "d976742e8191713b1bb1c1acdf8c1383aa85c4d832cd12704c2b0be5c1233cc4",
+      "mode": "fresh concrete"
+    },
+    "remote_sender": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-sender-release-decompile.txt",
+      "sha256": "1ee3edccefc76266b94a6b526ecb9ed90533a9c1f684b55b84c7efd391c18997",
+      "mode": "fresh Ghidra structural"
+    },
+    "binary_builders": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-binary-builders.txt",
+      "sha256": "e67748e417c7f984561b9698f0379f523b69329ca2c23ca7733e167b72700967",
+      "mode": "fresh Ghidra structural"
+    },
+    "channel_builders": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-channel-builders.txt",
+      "sha256": "0a32c62f6ba789300d3919271caf73405e70a215276d570970b1ee2799eb7421",
+      "mode": "fresh Ghidra structural"
+    },
+    "jog_handlers": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/jog-handlers-decompile.txt",
+      "sha256": "27f06f46f9c9681b69a8ce652d9e0c40b52b01361f6d023332baf8726cdf545f",
+      "mode": "fresh Ghidra structural"
+    },
+    "jog_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/jog-literals.txt",
+      "sha256": "ab8af0abdb2810d3841850b87146220fdccdb2907f6795bd05c701e588fff341",
+      "mode": "fresh Ghidra raw bytes"
+    },
+    "motion_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/motion-literals.txt",
+      "sha256": "8644602ad549ad83617df0de6798e0eda8b37fcf300a6f421198aab4bd6f946b",
+      "mode": "fresh Ghidra raw bytes"
+    },
+    "remote_tx_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-tx-literals.txt",
+      "sha256": "0b3b33229d88d00784b36f2160b65fc9d6fb798ab4d3628dc782da5cfed4ff33",
+      "mode": "fresh Ghidra raw bytes"
+    },
+    "manual_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/manual-mode-and-limits.md",
+      "sha256": "a0d163e845fb9a69f8322270148c236af5ba46794ab4c130815bb68df9611e29",
+      "mode": "reused historical narrative; later binary-layout corrections apply"
+    },
+    "motor_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md",
+      "sha256": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+      "mode": "reused historical structural/concrete narrative; absence is search-relative"
+    },
+    "boot_dossier": {
+      "path": "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md",
+      "sha256": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+      "mode": "reused structural/boot narrative"
+    },
+    "gap_audit": {
+      "path": "cases/performing-rigs/docs/replacement/autopilot-gap-audit.md",
+      "sha256": "ae93c1ed4399aaf9cf8fd6876c7772af296308c3df2e41a9723f8251a81d7846",
+      "mode": "reused historical structural/concrete narrative"
+    },
+    "pin_map": {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5",
+      "mode": "reused pin identities, not scenario-specific physical routing"
+    },
+    "rf_boundaries": {
+      "path": "cases/performing-rigs/research/autopilot_static_inventory/rf-boundaries.md",
+      "sha256": "cd4b5aa2bb8d8b5b5221a65e069afb06cb876b4d45f1801f835ef8d6f6f8e44f",
+      "mode": "reused static RF boundaries"
+    },
+    "protocol": {
+      "path": "cases/performing-rigs/docs/investigations/protocol-pipeline.md",
+      "sha256": "cee17f096567e62093bc895f10f4b642d2a02775a23990bb29fc31491fe8fe65",
+      "mode": "reused protocol structure, not fresh validation"
+    },
+    "virtual_link": {
+      "path": "cases/performing-rigs/scripts/virtual_link.py",
+      "sha256": "72ad6a2fd5e05067effc7af66ef3ab3e86715b12364e92399a08424c1da1283f",
+      "mode": "existing implementation inspected and manual-f0e0 replayed; not changed"
+    },
+    "isr": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+      "sha256": "14c73ef37a03dd40a2b09c3cbadcd86ea29b4928084e0ba82bbd5dafbee54449",
+      "mode": "reused complete direct handler-body reference"
+    },
+    "period": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-period-unmodeled.json",
+      "sha256": "f646e61f7ec100f9eb66ea583835a3fdfc86b08020043f4a1c90c533c7fbca9b",
+      "mode": "reused partial bounded direct call"
+    },
+    "timer_init": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-init.json",
+      "sha256": "f92c3d2fa6110a20b9d4bac6cdfea4f104132b0dd3e462663659d99c4477b2ec",
+      "mode": "reused complete helper reference"
+    },
+    "timer_stop": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-timer-disable.json",
+      "sha256": "47ef12c16a8a2f961f52a91560b4efb3c55581e1f47837ee72d1a62b84d588fe",
+      "mode": "reused complete helper reference"
+    },
+    "timer_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/function-review.txt",
+      "sha256": "2b5ea2dc911b6b4367063d806afe13041c3ef00f466c3565af7cce4f9b70d915",
+      "mode": "reused Ghidra decompile"
+    },
+    "direction_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/direction-usb-review.txt",
+      "sha256": "7c1cabe512950524e188586eb5b2030d62d253a8e2e126ba0b117ee03c4b73ad",
+      "mode": "reused Ghidra decompile, not DIR write witness"
+    },
+    "rate_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/rate-scaling-disasm.txt",
+      "sha256": "0695fe274c70432be153e1767f2f9ddebed3c76ded719e4421b52a2ab3430326",
+      "mode": "reused Ghidra disassembly"
+    },
+    "stop_static": {
+      "path": "cases/performing-rigs/research/runs/replacement-firmware-readiness/stop-watchdog-review.txt",
+      "sha256": "b91f41bea8c0ea2b12ea504f49e64869bf0c786fd288e2e826c953647252071d",
+      "mode": "reused Ghidra decompile"
+    },
+    "readiness": {
+      "path": "cases/performing-rigs/docs/replacement/replacement-firmware-readiness.md",
+      "sha256": "4f3639137678c31d95723f487155ba8535f2d8aa5510e99cfeda6305ed45af3c",
+      "mode": "reused assessment"
+    },
+    "tmc_contract": {
+      "path": "cases/performing-rigs/docs/replacement/tmc5160-apfw2-contract.md",
+      "sha256": "9775d369f0f44a29baacae44b271f6d04a7f984bbac23de8dd4b927e830c2406",
+      "mode": "reused POC contract; no repeat investigation"
+    },
+    "qwen_probe": {
+      "path": "cases/performing-rigs/research/runs/agent/local-llm-check-2026-10-17-qwen.json",
+      "sha256": "be9203f386380cf31e03571dc183a4572058371dcba6fddcfa0b2880979b04fe",
+      "mode": "saved successful live runtime probe read before research"
+    },
+    "agent_broad": {
+      "path": "cases/performing-rigs/research/runs/agent/remote-to-motor-2026-10-17.json",
+      "sha256": "c1b35f96ed177d595b3cce82125977e0059a6dad58cfec64931dd0f058ab815d",
+      "mode": "new agent-produced research"
+    },
+    "agent_focused": {
+      "path": "cases/performing-rigs/research/runs/agent/remote-to-motor-focused-2026-10-19.json",
+      "sha256": "9ddc76e2f61d0fcb40c34aab17a6e064d8f87bb1e60c407b4138bd4fec2da0f1",
+      "mode": "new agent-produced research; effects timeout/observation failure"
+    },
+    "gemma_audit": {
+      "path": "cases/performing-rigs/research/ledger/audits/A-20261019T133615-906232.json",
+      "sha256": "ac8ff6aeee851050ae427ab2f9db775ef62d108b0b1133b96972216d04d4f3ff",
+      "mode": "new diagnostic audit; HTTP507, no valid model verdict"
+    },
+    "precheck": {
+      "path": "cases/performing-rigs/research/ledger/verifications/V-20261019T133615-2106ab.json",
+      "sha256": "e1fcd21157a72c7bb6447fb30db984f6e99bf312bd673a1ac49d8b9d54192e7e",
+      "mode": "new deterministic precheck; policy UNEVALUABLE"
+    },
+    "operator_method": {
+      "path": "docs/codex-operator.md",
+      "sha256": "518e7254c864d47225655132d49d53d53d688d18f7f69f49dd1ff6947d5af0c7",
+      "mode": "operator methodology"
+    },
+    "config": {
+      "path": ".codex/config.toml",
+      "sha256": "c52838a8f60e154bc38cf6e99f7c1e49a2cd63661e0bf49349b41d3d271ee469",
+      "mode": "user-updated config read October19; not changed by investigator"
+    },
+    "channel_literals": {
+      "path": "cases/performing-rigs/research/runs/remote-to-motor/remote-channel-literals.txt",
+      "sha256": "dad0a35cd153212d4ebd76d9a87dcce2aa1a6b8cf19696faecfa69a8cc2da7bd",
+      "mode": "bounded Ghidra raw-byte query, retained numeric builder constants"
+    }
+  },
+  "nodes": [
+    {
+      "id": "input",
+      "firmware": "mando868",
+      "addresses": [
+        "0x7de8",
+        "0x20001084",
+        "0x20001818",
+        "0x2000181c"
+      ],
+      "description": "Encoder callback/pump and shared input state; exact selected-frame gesture unresolved",
+      "evidence_refs": [
+        "manual_dossier"
+      ],
+      "status": "partial",
+      "verification_state": null
+    },
+    {
+      "id": "ui",
+      "firmware": "mando868",
+      "addresses": [
+        "0xde3c",
+        "0x171f0"
+      ],
+      "description": "Identified jog loop calls sender and tests wheel click",
+      "evidence_refs": [
+        "manual_dossier",
+        "remote_sender"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "sender",
+      "firmware": "mando868",
+      "addresses": [
+        "0xbe94",
+        "0x4898",
+        "0x4880",
+        "0x47e8",
+        "0x468c",
+        "0x48c8"
+      ],
+      "description": "Binary construction, dirty/time gating and radio call structure",
+      "evidence_refs": [
+        "remote_tx",
+        "remote_cold",
+        "remote_sender",
+        "binary_builders",
+        "channel_builders",
+        "channel_literals"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "tx_buffer",
+      "firmware": "mando868",
+      "addresses": [
+        "0x2000183c",
+        "0x200018e6",
+        "0x117f4"
+      ],
+      "description": "11-byte selected frame at radio-start entry, no over-air transmission",
+      "evidence_refs": [
+        "remote_tx"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "rf",
+      "firmware": null,
+      "addresses": [],
+      "description": "Over-air radio emission and reception/validation",
+      "evidence_refs": [
+        "rf_boundaries",
+        "protocol"
+      ],
+      "status": "unresolved",
+      "verification_state": null
+    },
+    {
+      "id": "rx",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x8a34",
+        "0x2000232a",
+        "0x8258"
+      ],
+      "description": "Direct packet-buffer RX boundary; preceding validation bypassed",
+      "evidence_refs": [
+        "rx_checkpoint",
+        "rx_state"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "jog",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x5448"
+      ],
+      "description": "Under-threshold decoded channel0,value5000000",
+      "evidence_refs": [
+        "rx_checkpoint",
+        "jog_handlers"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "limit",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x5274"
+      ],
+      "description": "Alternative at/over-threshold handler with mode4",
+      "evidence_refs": [
+        "jog_handlers",
+        "virtual_link"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "motion",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x4d18",
+        "0x200024cc",
+        "0x20002524",
+        "0x2000310c",
+        "0x20000094",
+        "0x20000040"
+      ],
+      "description": "Target/mode/phase and raw rate state; direction sign final+1 was seeded initially",
+      "evidence_refs": [
+        "rx_state",
+        "direction_static",
+        "motion_literals"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "gate",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x20001b14"
+      ],
+      "description": "Busy gate remains zero; naturally reachable nonzero writer unresolved",
+      "evidence_refs": [
+        "rx_state",
+        "motor_dossier"
+      ],
+      "status": "unresolved_activation",
+      "verification_state": null
+    },
+    {
+      "id": "rate",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x6338",
+        "0x5ee8"
+      ],
+      "description": "Periodic phase/rate machinery, structural only for this command",
+      "evidence_refs": [
+        "motor_dossier",
+        "rate_static"
+      ],
+      "status": "structural_only",
+      "verification_state": null
+    },
+    {
+      "id": "timer",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x5570",
+        "0x5c00",
+        "0x40003800",
+        "0x4000381c"
+      ],
+      "description": "Separate TC0 init/partial-period references; command-derived activation absent",
+      "evidence_refs": [
+        "timer_init",
+        "period",
+        "timer_static"
+      ],
+      "status": "partial",
+      "verification_state": null
+    },
+    {
+      "id": "isr",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x607c"
+      ],
+      "description": "IRQ107 handler, directly called in archived reference",
+      "evidence_refs": [
+        "boot_dossier",
+        "isr"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "step",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x5898",
+        "0xd388",
+        "0x41008098",
+        "0x41008094"
+      ],
+      "description": "PB10 OUTSET then OUTCLR mask0x400, software writes only",
+      "evidence_refs": [
+        "isr",
+        "pin_map"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "dir",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x200000a4",
+        "PB11"
+      ],
+      "description": "DIR channel0 identity; no selected-command DIR write/setup witness",
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "status": "identity_only",
+      "verification_state": null
+    },
+    {
+      "id": "motor",
+      "firmware": null,
+      "addresses": [],
+      "description": "Physical driver/connector, voltage waveform and rotation",
+      "evidence_refs": [
+        "pin_map",
+        "tmc_contract"
+      ],
+      "status": "unresolved",
+      "verification_state": null
+    },
+    {
+      "id": "click",
+      "firmware": "mando868",
+      "addresses": [
+        "0x171f0",
+        "0xde3c"
+      ],
+      "description": "Wheel click exits identified send loop; idle wheel/release is distinct",
+      "evidence_refs": [
+        "remote_sender",
+        "manual_dossier"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    },
+    {
+      "id": "silence",
+      "firmware": null,
+      "addresses": [],
+      "description": "Cessation/loss of jog stream, not necessarily all radio traffic",
+      "evidence_refs": [
+        "remote_sender",
+        "gap_audit"
+      ],
+      "status": "partial",
+      "verification_state": null
+    },
+    {
+      "id": "stop_helper",
+      "firmware": "autopilot868",
+      "addresses": [
+        "0x5858",
+        "0x40003800"
+      ],
+      "description": "Separate direct stop helper clears ENABLE0x602\u21920x600",
+      "evidence_refs": [
+        "timer_stop"
+      ],
+      "status": "established_within_scope",
+      "verification_state": null
+    }
+  ],
+  "edges": [
+    {
+      "id": "E01",
+      "from": "input",
+      "to": "ui",
+      "evidence_mode": "static_structural",
+      "statement": "Encoder/pump shared state converges on identified jog loop",
+      "evidence_refs": [
+        "manual_dossier"
+      ],
+      "conditions": [
+        "Existing 868MHz dossier scope"
+      ],
+      "unresolved": [
+        "Exact physical input yielding selected record"
+      ],
+      "confidence": "medium",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E02",
+      "from": "ui",
+      "to": "sender",
+      "evidence_mode": "static_structural",
+      "statement": "Identified loop invokes0xbe94 before click test",
+      "evidence_refs": [
+        "remote_sender"
+      ],
+      "conditions": [
+        "Identified0xde3c loop only"
+      ],
+      "unresolved": [
+        "Other UI paths, invocation versus actual transmission"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E03",
+      "from": "sender",
+      "to": "tx_buffer",
+      "evidence_mode": "continuous_concrete",
+      "statement": "Seeded sender builds selected frame and reaches radio-start entry in367 instructions",
+      "evidence_refs": [
+        "remote_tx"
+      ],
+      "conditions": [
+        "dirty0=1",
+        "millis=1",
+        "otherwise cold RAM/MMIO",
+        "stop before0x117f4"
+      ],
+      "unresolved": [
+        "Radio driver execution and physical RF emission"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E04",
+      "from": "tx_buffer",
+      "to": "rf",
+      "evidence_mode": "unresolved",
+      "statement": "Static TX byte loop exists; no emitted packet observed",
+      "evidence_refs": [
+        "remote_sender",
+        "remote_tx"
+      ],
+      "conditions": [
+        "Would execute0x117f4\u21920x11282 byte loop\u21920x113b0"
+      ],
+      "unresolved": [
+        "Radio/peripheral behavior"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E05",
+      "from": "rf",
+      "to": "rx",
+      "evidence_mode": "unresolved",
+      "statement": "RX seed substitutes for RF reception and earlier validation",
+      "evidence_refs": [
+        "rf_boundaries",
+        "protocol",
+        "rx_state"
+      ],
+      "conditions": [
+        "No radio or receive interrupt modeled"
+      ],
+      "unresolved": [
+        "Actual packet delivery, assembly, checksum/address/freshness validation"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E06",
+      "from": "tx_buffer",
+      "to": "rx",
+      "evidence_mode": "operator_checked_byte_composition",
+      "statement": "First11 TX-buffer bytes equal first11 RX-seed bytes; trailing NUL is sentinel",
+      "evidence_refs": [
+        "remote_tx",
+        "rx_checkpoint",
+        "rx_state"
+      ],
+      "conditions": [
+        "Independent fresh machines",
+        "RX seed includes sentinel; r0=12",
+        "Operator comparison, no native composition verifier"
+      ],
+      "unresolved": [
+        "Physical delivery and cross-image execution-state continuity"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E07",
+      "from": "rx",
+      "to": "jog",
+      "evidence_mode": "continuous_concrete",
+      "statement": "RX dispatch reaches0x5448 withr0=0,r1=5000000 at instruction37",
+      "evidence_refs": [
+        "rx_checkpoint",
+        "rx_state"
+      ],
+      "conditions": [
+        "threshold0=6000000",
+        "delta0=1",
+        "otherwise cold state"
+      ],
+      "unresolved": [
+        "Pre-dispatch validation"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E08",
+      "from": "rx",
+      "to": "limit",
+      "evidence_mode": "separate_concrete_scenario",
+      "statement": "Existing manual-f0e0 replay reaches0x5274(0,4) for value200, threshold100",
+      "evidence_refs": [
+        "virtual_link",
+        "jog_handlers"
+      ],
+      "conditions": [
+        "Synthetic scenario frame; separate from selected5000000 vector"
+      ],
+      "unresolved": [
+        "No selected-frame at-limit execution recorded"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E09",
+      "from": "jog",
+      "to": "motion",
+      "evidence_mode": "continuous_concrete",
+      "statement": "Changed value invokes0x4d18 at instruction71; command returns to0x83ec at2537 with phase2 and target5000000",
+      "evidence_refs": [
+        "rx_state",
+        "rx_checkpoint"
+      ],
+      "conditions": [
+        "delta0=1 seeded",
+        "zero prior target/position",
+        "busy0=0"
+      ],
+      "unresolved": [
+        "Rate units, subsequent polling, DIR write"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E10",
+      "from": "motion",
+      "to": "gate",
+      "evidence_mode": "continuous_concrete_scoped_negative",
+      "statement": "At command-segment exit busy remainszero; watched writes and MMIO stream empty",
+      "evidence_refs": [
+        "rx_state"
+      ],
+      "conditions": [
+        "Only2537-instruction RX\u2192exit segment"
+      ],
+      "unresolved": [
+        "Later execution and naturally reachable gate writer"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E11",
+      "from": "gate",
+      "to": "rate",
+      "evidence_mode": "static_structural_with_unresolved_precondition",
+      "statement": "Existing phase/rate path depends on busy state; no selected-command activation witness",
+      "evidence_refs": [
+        "motor_dossier",
+        "rx_state"
+      ],
+      "conditions": [
+        "Nonzero busy prerequisite not produced by selected run"
+      ],
+      "unresolved": [
+        "Caller-grounded activation and feasible state composition"
+      ],
+      "confidence": "low",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E12",
+      "from": "rate",
+      "to": "timer",
+      "evidence_mode": "static_plus_separate_partial_concrete",
+      "statement": "0x5ee8 structurally calls0x5c00; direct period reference writesCC0 then READSYNC-stalls",
+      "evidence_refs": [
+        "rate_static",
+        "period",
+        "timer_static"
+      ],
+      "conditions": [
+        "Independent direct call period10000",
+        "20000-instruction bound"
+      ],
+      "unresolved": [
+        "Command-derived period, completed synchronization, ENABLE scheduling"
+      ],
+      "confidence": "medium",
+      "status": "partial",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E13",
+      "from": "timer",
+      "to": "isr",
+      "evidence_mode": "static_vector_mapping_only",
+      "statement": "IRQ107 vector maps TC0 handler0x607c; no automatic expiry/delivery observed",
+      "evidence_refs": [
+        "boot_dossier",
+        "isr"
+      ],
+      "conditions": [
+        "Direct AAPCS handler call is not IRQ delivery"
+      ],
+      "unresolved": [
+        "Natural timer expiry, pending flags, exception ordering"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E14",
+      "from": "isr",
+      "to": "step",
+      "evidence_mode": "continuous_concrete_archival",
+      "statement": "Direct handler body reaches0x5898/d388 and writes PB10 set/clear; position0\u21921",
+      "evidence_refs": [
+        "isr"
+      ],
+      "conditions": [
+        "delta=1",
+        "divisor=1",
+        "original STEP indices seeded",
+        "108-instruction complete direct call"
+      ],
+      "unresolved": [
+        "Physical pulse width/voltage and command provenance"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E15",
+      "from": "motion",
+      "to": "dir",
+      "evidence_mode": "unresolved",
+      "statement": "Direction state is not evidence of selected-command DIR output",
+      "evidence_refs": [
+        "rx_state",
+        "pin_map"
+      ],
+      "conditions": [
+        "PB11 identity reused"
+      ],
+      "unresolved": [
+        "GPIO writer path, polarity, setup interval"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E16",
+      "from": "step",
+      "to": "motor",
+      "evidence_mode": "unresolved",
+      "statement": "No physical channel0 motor rotation established",
+      "evidence_refs": [
+        "pin_map",
+        "tmc_contract"
+      ],
+      "conditions": [
+        "Software write observation only"
+      ],
+      "unresolved": [
+        "MCU-to-driver route, connector numbering, physical timing/current/rotation"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E17",
+      "from": "dir",
+      "to": "motor",
+      "evidence_mode": "unresolved",
+      "statement": "Logical DIR0 identity does not identify rotation direction",
+      "evidence_refs": [
+        "pin_map"
+      ],
+      "conditions": [],
+      "unresolved": [
+        "Physical routing and rotation polarity"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E18",
+      "from": "click",
+      "to": "silence",
+      "evidence_mode": "static_structural",
+      "statement": "Click exits identified loop after current invocation; no explicit zero/STOP frame on that exit",
+      "evidence_refs": [
+        "remote_sender",
+        "manual_dossier"
+      ],
+      "conditions": [
+        "Identified loop, not all future radio activity",
+        "Release/idle distinct from click"
+      ],
+      "unresolved": [
+        "Complete input-to-exit dynamic witness"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E19",
+      "from": "silence",
+      "to": "stop_helper",
+      "evidence_mode": "unresolved_negative_search",
+      "statement": "No demonstrated silence-to-stop consumer; prior E0 timestamp xrefs find no independent consumer",
+      "evidence_refs": [
+        "gap_audit",
+        "virtual_link"
+      ],
+      "conditions": [
+        "Existing cached search only; scenario prints narrative, not new dynamic timeout test"
+      ],
+      "unresolved": [
+        "Computed/unobserved consumer and moving release scenario"
+      ],
+      "confidence": "unknown",
+      "status": "unresolved",
+      "verification_state": null,
+      "agent_produced": false
+    },
+    {
+      "id": "E20",
+      "from": "stop_helper",
+      "to": "timer",
+      "evidence_mode": "continuous_concrete_archival",
+      "statement": "Direct0x5858(0) clears TC0ENABLE0x602\u21920x600",
+      "evidence_refs": [
+        "timer_stop"
+      ],
+      "conditions": [
+        "Independent seeded direct call"
+      ],
+      "unresolved": [
+        "Upstream click/loss path, pending IRQs, cessation latency"
+      ],
+      "confidence": "high_within_stated_scope",
+      "status": "supported",
+      "verification_state": null,
+      "agent_produced": false
+    }
+  ],
+  "symbolic_evidence": {
+    "operation": "function_effects",
+    "source": "agent_focused",
+    "function": "FUN_00005448",
+    "result": "bounded: timeout 300s",
+    "positive_or_negative_firmware_conclusion": null
+  },
+  "scope_note": "No chain-wide solver proof or APTrace mechanical cross-segment validation. Confidence applies to exact observations, not universal behavior."
+}
