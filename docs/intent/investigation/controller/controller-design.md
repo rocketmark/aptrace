@@ -164,6 +164,10 @@ When the controller is given an `ObjectiveSpec` with relations
   (`research/terminal.py`), built deterministically for every focused stop
   reason; the CLI persists it, then runs the adversarial terminal review
   through verified sequential oMLX residency (`docs/terminal-review.md`).
+  Each completed review is validated deterministically against the
+  assessment (`research/critic.py`): findings are grounded, classified,
+  checked for execution-state continuity (`research/continuity.py`), and
+  turned into follow-up question proposals (`docs/critic-validation.md`).
 
 Without relations nothing above applies.
 

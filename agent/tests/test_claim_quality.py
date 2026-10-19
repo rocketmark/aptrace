@@ -304,7 +304,51 @@ def test_j_persisted_records_load_unchanged_and_carry_no_malformed_identifiers()
     for claim in ledger.all_claim_versions():
         assert entity_diagnostics(f"{claim.subject} {claim.assertion}") == [], claim.key
 
+    # The case ledger holds runs from before and after claim admission
+    # existed: each must round-trip unchanged, and recorded admission
+    # decisions must agree with the claim versions the run created.
     for run in ledger.runs():
         raw = json.loads((root / "runs" / f"{run.run_id}.json").read_text())
-        assert "claim_admission" not in raw
         assert InvestigationRun.model_validate(raw).model_dump(mode="json") == raw
+
+        for decision in run.claim_admission or ():
+            assert (decision.claim_version in run.claim_versions) == (decision.decision == "admitted"), run.run_id
+
+
+def _run_record(**extra):
+    base = InvestigationRun(
+        run_id="R-test", case="test", firmware_key="fw", firmware_sha256="0" * 64, context_id="X",
+        objective="o", started_at="t0", ended_at="t1", termination_reason="finished",
+    ).model_dump(mode="json")
+    return {**base, **extra}
+
+
+ADMISSION = {
+    "round": 1, "raw": "PROBABLE E1 a", "decision": "admitted", "assertion": "a", "grade": "PROBABLE",
+    "claim_type": "BEHAVIOR", "evidence_ids": ["E1"], "durable_evidence_ids": ["V-1"], "omissions": {},
+    "diagnostics": [], "claim_version": "C1:v1",
+}
+
+
+def test_j_runs_with_and_without_claim_admission_round_trip_and_malformed_admission_is_rejected(tmp_path):
+    good = {"R-old": _run_record(run_id="R-old"), "R-new": _run_record(run_id="R-new", claim_versions=["C1:v1"], claim_admission=[ADMISSION])}
+
+    for run_id, raw in good.items():
+        (tmp_path / "runs").mkdir(exist_ok=True)
+        (tmp_path / "runs" / f"{run_id}.json").write_text(json.dumps(raw))
+
+    loaded = {run.run_id: run.model_dump(mode="json") for run in ResearchLedger(tmp_path).runs()}
+    assert loaded == good
+    assert "claim_admission" not in loaded["R-old"]
+
+    malformed = [
+        {**ADMISSION, "unexpected": 1},
+        {k: v for k, v in ADMISSION.items() if k != "decision"},
+        {**ADMISSION, "round": "first"},
+    ]
+
+    for admission in malformed:
+        (tmp_path / "runs" / "R-bad.json").write_text(json.dumps(_run_record(run_id="R-bad", claim_admission=[admission])))
+
+        with pytest.raises(ValueError):
+            ResearchLedger(tmp_path).runs()

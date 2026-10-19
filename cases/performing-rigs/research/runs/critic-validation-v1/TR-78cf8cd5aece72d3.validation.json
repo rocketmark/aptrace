@@ -1,0 +1,589 @@
+{
+  "assessment_sha256": "f9f49b5d9ca344becd275fef3743d0d4b81a51bb021e23c605627c79595fc6d6",
+  "assessment_version": "terminal-assessment-v1",
+  "attempt_id": "RA-20261019T171644-f41a47",
+  "authority": "critic validation classifies the reviewer's propositions about the investigation record; it changes no evidence, relation level, claim, grade or admission decision and does not verify firmware behavior",
+  "confidence": null,
+  "continuity": {
+    "concerns": [],
+    "not_raised_by_reviewer": [],
+    "unknown": [
+      {
+        "detail": "3 supplied item(s) not located; writes not logged (produced state not distinguished)",
+        "evidence_id": "E3"
+      },
+      {
+        "detail": "3 supplied item(s) not located; writes not logged (produced state not distinguished)",
+        "evidence_id": "E4"
+      }
+    ]
+  },
+  "continuity_source": "recomputed from v1 scopes (harness assumption text)",
+  "counts": {
+    "CONTRADICTED": 1,
+    "SUPPORTED": 3,
+    "UNGROUNDED": 0,
+    "UNRESOLVED": 2
+  },
+  "findings": [
+    {
+      "already_recorded": true,
+      "category": "unjustified_composition",
+      "characterization": {
+        "check": "composition_presented",
+        "detail": "the assessment does not compose these relations: composition is not attempted, every join is unvalidated, and no statement spans separately established segments",
+        "records": [
+          {
+            "record": "composition.attempted",
+            "text": "False: not attempted: per-edge levels are not an end-to-end causal result"
+          },
+          {
+            "record": "composition.joins[R1->R2]",
+            "text": "continuity not validated: the two sides were established by separate evidence; state continuity across the join is not established"
+          }
+        ],
+        "result": "CONTRADICTED"
+      },
+      "checks": [
+        {
+          "check": "relation_gap:R2",
+          "detail": "R2 is STATIC: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution",
+          "records": [
+            {
+              "record": "relations.R2.level",
+              "text": "STATIC"
+            },
+            {
+              "record": "relations.R2.evidence_needed[0]",
+              "text": "no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "missing_evidence"
+      },
+      "effective_kind": "hypothesis",
+      "index": 0,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": true,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation attempts to evaluate the relationship R2 (jog handler reaches motion target update) using a static call edge (E1) while the only available execution context (E4) explicitly shows the target function was not entered. The relationship is essentially a phantom edge in the current scenario.",
+      "target": {
+        "cited_relations": [
+          "R2"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E1",
+          "E4"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R2"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Execute a scenario where the control flow path from FUN_00005448 to FUN_00004d18 is actually traversed to validate if the static edge in E1 is a valid execution path."
+    },
+    {
+      "already_recorded": true,
+      "category": "missing_prerequisite_or_state_continuity",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "state_continuity",
+          "detail": "cited evidence E5 is not an execution segment, so it carries no state; the continuity part of the finding has no target",
+          "records": [],
+          "result": "UNGROUNDED"
+        },
+        {
+          "check": "relation_gap:R2",
+          "detail": "R2 is STATIC: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution",
+          "records": [
+            {
+              "record": "relations.R2.level",
+              "text": "STATIC"
+            },
+            {
+              "record": "relations.R2.evidence_needed[0]",
+              "text": "no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)"
+            }
+          ],
+          "result": "SUPPORTED"
+        },
+        {
+          "check": "relation_gap:R3",
+          "detail": "R3 is UNRESOLVED: no supporting evidence recorded",
+          "records": [
+            {
+              "record": "relations.R3.level",
+              "text": "UNRESOLVED"
+            },
+            {
+              "record": "relations.R3.evidence_needed[0]",
+              "text": "0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it"
+            },
+            {
+              "record": "relations.R3.evidence_needed[1]",
+              "text": "function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "missing_evidence"
+      },
+      "effective_kind": "hypothesis",
+      "index": 1,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation lacks state continuity between the observed execution of FUN_00005448 (E3) and the failed effect analysis (E5). Without understanding the state that caused the timeout in E5, the relationship between the observed code and the target address 0x20001b14 remains speculative.",
+      "target": {
+        "cited_relations": [
+          "R2",
+          "R3"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E3",
+          "E5"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R2",
+          "R3"
+        ],
+        "segments": [],
+        "unrelated_evidence": [
+          "E3"
+        ]
+      },
+      "test": "Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic."
+    },
+    {
+      "already_recorded": true,
+      "category": "scope_mismatch",
+      "characterization": {
+        "check": "scope_applied_elsewhere",
+        "detail": "each relation's evidence is reported with its own execution scope, and no statement applies one scenario's evidence to another",
+        "records": [
+          {
+            "evidence_id": "E5",
+            "record": "relations.R3.scopes[E5]",
+            "text": "scenario None, 0 harness assumption(s)"
+          }
+        ],
+        "result": "CONTRADICTED"
+      },
+      "checks": [
+        {
+          "check": "relation_gap:R3",
+          "detail": "R3 is UNRESOLVED: no supporting evidence recorded",
+          "records": [
+            {
+              "record": "relations.R3.level",
+              "text": "UNRESOLVED"
+            },
+            {
+              "record": "relations.R3.evidence_needed[0]",
+              "text": "0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it"
+            },
+            {
+              "record": "relations.R3.evidence_needed[1]",
+              "text": "function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "missing_evidence"
+      },
+      "effective_kind": "hypothesis",
+      "index": 2,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": true,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "R3 attempts to relate a function to a memory address (0x20001b14) that is not defined as a function in the provided evidence. The investigation treats a potential MMIO/data write as a functional relationship without providing the mapping between the instruction and the address.",
+      "target": {
+        "cited_relations": [
+          "R3"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E5"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R3"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Identify the specific instruction in FUN_00005448 that targets 0x20001b14 and provide the register/memory state at that moment."
+    },
+    {
+      "already_recorded": false,
+      "category": "unsupported_negative",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "negative_conclusion",
+          "detail": "the record draws no negative conclusion here: relation levels are positive or UNRESOLVED, blockers are recorded as incompleteness, and every statement citing this evidence carries an explicit scope qualifier",
+          "records": [
+            {
+              "record": "relations.R2.level",
+              "text": "STATIC: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution"
+            },
+            {
+              "evidence_id": "E4",
+              "record": "relations.R2.blockers[0]",
+              "text": "FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)"
+            },
+            {
+              "evidence_id": "E4",
+              "record": "claims.session_claims[1]",
+              "text": "FUN_00004d18 was not entered under scenario vl-manual-f0e0 (219 instructions); not thereby unreachable."
+            },
+            {
+              "record": "limitations[1]",
+              "text": "A blocker (failure, timeout, bounded coverage, target not entered) is incompleteness, never evidence of absence."
+            }
+          ],
+          "result": "CONTRADICTED"
+        }
+      ],
+      "classification": "CONTRADICTED",
+      "defect": {
+        "source": "category",
+        "type": "incorrect_inference"
+      },
+      "effective_kind": "hypothesis",
+      "index": 3,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation uses the absence of execution in scenario 'vl-manual-f0e0' (E4) to define the status of R2, but fails to account for the fact that the scenario itself might be insufficient to trigger the path. A 'not entered' result is not evidence of unreachability.",
+      "target": {
+        "cited_relations": [
+          "R2"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E4"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R2"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Determine the input constraints required to satisfy the branch at 0x00005496 (E6) to reach FUN_00004d18."
+    },
+    {
+      "already_recorded": false,
+      "category": "omitted_question",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "firmware_behavior",
+          "detail": "a proposition about firmware behavior; critic validation does not evaluate firmware",
+          "records": [],
+          "result": "UNRESOLVED"
+        }
+      ],
+      "classification": "UNRESOLVED",
+      "defect": {
+        "source": "category",
+        "type": "firmware_hypothesis"
+      },
+      "effective_kind": "hypothesis",
+      "index": 4,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "omitted_question",
+      "statement": "Does the branch at 0x00005496 in E6 represent a valid path to FUN_00004d18, or is it a tail-call/return-to-caller mechanism that bypasses the intended logic?",
+      "target": {
+        "cited_relations": [
+          "R2"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E6"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R2"
+        ],
+        "segments": [],
+        "unrelated_evidence": [
+          "E6"
+        ]
+      },
+      "test": null
+    },
+    {
+      "already_recorded": false,
+      "category": "omitted_question",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "firmware_behavior",
+          "detail": "a proposition about firmware behavior; critic validation does not evaluate firmware",
+          "records": [],
+          "result": "UNRESOLVED"
+        }
+      ],
+      "classification": "UNRESOLVED",
+      "defect": {
+        "source": "category",
+        "type": "firmware_hypothesis"
+      },
+      "effective_kind": "hypothesis",
+      "index": 5,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "omitted_question",
+      "statement": "What is the nature of the loop or condition in FUN_00005448 that caused the 300s timeout in E5, and how does it prevent the observation of effects on 0x20001b14?",
+      "target": {
+        "cited_relations": [
+          "R3"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E5"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R3"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": null
+    }
+  ],
+  "followups": [
+    {
+      "candidate_operations": [
+        {
+          "arguments": {
+            "function": "FUN_00004d18",
+            "scenario": null
+          },
+          "availability": "existing operation; needs a registered scenario that enters FUN_00005448 (tried: vl-manual-f0e0)",
+          "level_if_found": "OBSERVED",
+          "operation": "observe_call_arguments",
+          "relation": "R2"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005448"
+          },
+          "availability": "attempted: E5 produced no result; a repeat needs a different bound or specialization",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R2"
+        }
+      ],
+      "challenged": {
+        "from": "FUN_00005448",
+        "levels": {
+          "R2": "STATIC"
+        },
+        "relations": [
+          "R2"
+        ],
+        "segments": [
+          "E3",
+          "E4",
+          "E5"
+        ],
+        "to": "FUN_00004d18"
+      },
+      "conditions": [
+        "a registered scenario that enters FUN_00005448; already tried: vl-manual-f0e0",
+        "E3's 5 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state",
+        "E4's 5 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state"
+      ],
+      "executable": false,
+      "expected_evidence": [
+        "R2 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded"
+      ],
+      "id": "FQ-1e2b469c540a",
+      "kind": "relation",
+      "limitations": [
+        "E3 coverage: observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+        "E4 coverage: observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 2 static call site(s) never reached: 0x00005294, 0x00005496; unobserved values or call sites are not thereby impossible",
+        "E5 coverage: bounded: bounded: timeout 300s",
+        "E3 state: 3 supplied item(s) not located; writes not logged (produced state not distinguished)",
+        "E4 state: 3 supplied item(s) not located; writes not logged (produced state not distinguished)",
+        "the continuity check compares supplied, produced and carried address ranges between segments; it does not compare legs within one scenario or model register, peripheral or interrupt state"
+      ],
+      "missing_evidence": [
+        "R2 (STATIC): no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)"
+      ],
+      "note": "a proposal for a future bounded investigation; nothing here runs it, and reviewer tests are not APTrace requirements",
+      "question": "Is R2 (FUN_00005448 -> FUN_00004d18) established beyond STATIC?",
+      "reviewer_tests": [
+        "Execute a scenario where the control flow path from FUN_00005448 to FUN_00004d18 is actually traversed to validate if the static edge in E1 is a valid execution path.",
+        "Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic."
+      ],
+      "sources": [
+        {
+          "category": "unjustified_composition",
+          "classification": "SUPPORTED",
+          "finding": 0,
+          "source": "finding"
+        },
+        {
+          "category": "missing_prerequisite_or_state_continuity",
+          "classification": "SUPPORTED",
+          "finding": 1,
+          "source": "finding"
+        },
+        {
+          "category": "omitted_question",
+          "classification": "UNRESOLVED",
+          "finding": 4,
+          "source": "omitted_question"
+        }
+      ],
+      "status": "proposal"
+    },
+    {
+      "candidate_operations": [
+        {
+          "availability": "capability_gap",
+          "detail": "function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)",
+          "operation": null,
+          "relation": "R3"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005448"
+          },
+          "availability": "attempted: E5 produced no result; a repeat needs a different bound or specialization",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R3"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005448",
+            "scenario": null,
+            "watch": [
+              "0x20001b14"
+            ]
+          },
+          "availability": "executor operation with watched RAM fields; not offered in the planner palette, so it needs an operator request",
+          "level_if_found": "concrete store observation (scenario-scoped)",
+          "operation": "observed_call_arguments",
+          "relation": "R3"
+        }
+      ],
+      "challenged": {
+        "from": "FUN_00005448",
+        "levels": {
+          "R3": "UNRESOLVED"
+        },
+        "relations": [
+          "R3"
+        ],
+        "segments": [
+          "E3",
+          "E5"
+        ],
+        "to": "0x20001b14"
+      },
+      "conditions": [
+        "a registered scenario that enters FUN_00005448",
+        "E3's 5 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state"
+      ],
+      "executable": false,
+      "expected_evidence": [
+        "R3 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded"
+      ],
+      "id": "FQ-bda0aa9e1a7f",
+      "kind": "relation",
+      "limitations": [
+        "function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)",
+        "E3 coverage: observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+        "E5 coverage: bounded: bounded: timeout 300s",
+        "E3 state: 3 supplied item(s) not located; writes not logged (produced state not distinguished)",
+        "the continuity check compares supplied, produced and carried address ranges between segments; it does not compare legs within one scenario or model register, peripheral or interrupt state"
+      ],
+      "missing_evidence": [
+        "R3 (UNRESOLVED): 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it",
+        "R3 (UNRESOLVED): function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)"
+      ],
+      "note": "a proposal for a future bounded investigation; nothing here runs it, and reviewer tests are not APTrace requirements",
+      "question": "Is R3 (FUN_00005448 -> 0x20001b14) established beyond UNRESOLVED?",
+      "reviewer_tests": [
+        "Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic.",
+        "Identify the specific instruction in FUN_00005448 that targets 0x20001b14 and provide the register/memory state at that moment."
+      ],
+      "sources": [
+        {
+          "category": "missing_prerequisite_or_state_continuity",
+          "classification": "SUPPORTED",
+          "finding": 1,
+          "source": "finding"
+        },
+        {
+          "category": "scope_mismatch",
+          "classification": "SUPPORTED",
+          "finding": 2,
+          "source": "finding"
+        },
+        {
+          "category": "omitted_question",
+          "classification": "UNRESOLVED",
+          "finding": 5,
+          "source": "omitted_question"
+        }
+      ],
+      "status": "proposal"
+    }
+  ],
+  "investigation_id": "TR-78cf8cd5aece72d3",
+  "package_sha256": "c7f02e4c2689f176042b8720dfa2363880c892ede8fafdb7305e643a5449f47f",
+  "validation_sha256": "9b67c18dddcf0f1daec7e4c8aa12af4ae5746a6b2d5e3124ff8cbfbb38eac937",
+  "version": "critic-validation-v1"
+}

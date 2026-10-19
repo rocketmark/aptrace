@@ -10,6 +10,11 @@ merge:
 - The review is advisory criticism. It never changes evidence, relation
   levels, claim state or admission.
 
+APTrace then validates the criticism itself, mechanically, against its own
+record: [`critic-validation.md`](critic-validation.md). That milestone
+introduced the v2 versions of the assessment, package and template described
+below. Every v1 record stays valid.
+
 The review runs through **sequential model residency**. The planner and the
 reviewer do not fit under the oMLX memory ceiling together, so APTrace
 unloads one model and verifies the unload before it loads the other.
@@ -18,6 +23,7 @@ unloads one model and verifies the unload before it loads the other.
 |---|---|---|
 | Assessment | `agent/src/aptrace_agent/research/terminal.py` | `agent/tests/test_terminal_review.py` |
 | Review, store, report | `agent/src/aptrace_agent/research/review.py` | same |
+| Critic validation, continuity | `research/critic.py`, `research/continuity.py` | `agent/tests/test_critic_validation.py` |
 | Residency | `agent/src/aptrace_agent/omlx.py` | same (simulated oMLX) |
 | Wiring | `research/controller.py` (`_assess_terminal`), `cli.py` | same, plus each case's replay |
 
@@ -61,7 +67,8 @@ raised in the loop ends the run with that stop reason, the error is recorded,
 and the run still gets its report and assessment. An unfocused run lets the
 exception propagate, as before (INV-CTRL-LOOP-005).
 
-Contents (`terminal-assessment-v1`):
+Contents (`terminal-assessment-v2`; v1 lacked the scope `state` and the
+composition `continuity`):
 
 - **The objective:** the question, constraints, relations, terms and
   declared scenarios.
@@ -71,7 +78,9 @@ Contents (`terminal-assessment-v1`):
   plus the evidence, the blockers, the evidence needed, and the execution
   scope of every cited concrete or symbolic result. A scope gives the
   scenario, the engine, firmware and registry hashes, entry conditions,
-  coverage, and up to 12 harness assumptions with their total.
+  coverage, up to 12 harness assumptions with their total, and (v2) the
+  normalized execution `state`: supplied, produced, end state and carried
+  state.
 - **Composition:** always `attempted: false`. The assessment adds two
   descriptions:
   - **joins:** adjacent relations, where one relation's target is the next
@@ -80,6 +89,10 @@ Contents (`terminal-assessment-v1`):
   - **segments:** groups of evidenced relations connected by shared
     endpoints. When there is more than one segment, the assessment says that
     nothing recorded connects them.
+  - **continuity (v2):** state shared between separately executed segments
+    without being passed between them, such as both segments seeding one
+    address. A concern never establishes continuity
+    ([`critic-validation.md`](critic-validation.md#execution-state-continuity)).
 - **Tensions:** relations that have both positive evidence and blockers.
   This is never a contradiction verdict.
 - **Operations:** the trajectory, every evidence item with its status, a
@@ -121,7 +134,7 @@ not apply. The review runs on:
 Case reconciliation is unchanged and separate: it still runs only after
 non-discovery case searches.
 
-The **package** (`terminal-review-package-v1`) is built from the assessment
+The **package** (`terminal-review-package-v2`) is built from the assessment
 alone and is bounded to 24,000 rendered characters. When the package is over
 the bound, the reductions apply in this order:
 
@@ -129,18 +142,23 @@ the bound, the reductions apply in this order:
 2. clip evidence summaries;
 3. drop evidence arguments;
 4. cut open questions;
-5. cut harness assumptions to 3 per scope;
+5. cut harness assumptions to 3 per scope, keeping every assumption that
+   names a shared address or carries a qualifier (v1 kept only the first 3,
+   which dropped the F0/ISR seed of `0x20000094`);
 6. drop the summaries.
 
-Evidence ids, tools, statuses and result hashes always remain. The package
-records:
+Relation levels, blockers, scope states, continuity concerns, joins,
+segments, tensions, contradictions, and evidence ids, tools, statuses and
+result hashes always remain. v2 adds a `targets` index (joins `R1->R2`,
+segments `S1`, concerns `C1`). The package records:
 
-- every reduction it applied;
+- every reduction it applied, and every omission (`bounds.omitted`),
+  including the fixed caps on rejected operations, hypotheses and questions;
 - `assessment_sha256` and its own `package_sha256`;
 - links to the investigation: the ledger run id, the artifact, the objective
   file and the planner model.
 
-The **prompt** (`terminal-review-v1`) asks the reviewer to challenge the
+The **prompt** (`terminal-review-v2`) asks the reviewer to challenge the
 investigation, not to summarize it, under the eleven headings of the
 milestone:
 
@@ -162,15 +180,22 @@ Each finding must be one of three kinds:
 - `hypothesis`;
 - `suggested_test`.
 
+Template v2 also asks each finding to state its `defect`, its `targets`, a
+verbatim `quote` of any conclusion it attributes to APTrace, whether it is
+`checkable`, and its `resolving_evidence`. v1 responses still parse.
+
 The reviewer cannot run tools.
 
-**APTrace's mechanical checks** apply to each parsed finding:
+**APTrace's mechanical checks** apply to each parsed finding. They concern
+form; [critic validation](critic-validation.md) then classifies the
+substance of each finding of a completed attempt:
 
 - References to relations or evidence that the package does not contain are
   flagged.
 - A "contradiction" that cites no package evidence is reported as a
   hypothesis (`effective_kind`).
-- Unknown categories are flagged.
+- Unknown categories, unknown defects and targets not in the package's
+  index are flagged.
 - Extra top-level fields, such as a `verdict`, are recorded as
   `ignored_fields` and have no effect.
 
@@ -248,6 +273,7 @@ refused with `LedgerImmutableError`. Layout:
 <store>/<TR-id>/package.json           the review input, with package_sha256
 <store>/<TR-id>/attempts/<RA-id>.json  one per attempt
 <store>/<TR-id>/residency/<RA-id>-restore.json
+<store>/<TR-id>/validations/<RA-id>.json  critic validation of a completed attempt
 ```
 
 The store location:
@@ -301,10 +327,12 @@ A review failure has these limits:
 
 `terminal-review show` prints the report. `list` lists the reviews.
 `prepare --artifact RUN.json` assesses and packages a saved run.
+`validate TR-... [--attempt RA-...]` recomputes the critic validation from
+the store without writing it.
 
 ## 5. The final report
 
-`review.render_final_report` prints four separate sections:
+`review.render_final_report` prints five separate sections:
 
 1. **Deterministic investigation result:** the assessment, with relation
    levels, scopes, blockers, joins, segments, failures, rejections and claim
@@ -312,10 +340,15 @@ A review failure has these limits:
 2. **Adversarial criticism:** findings grouped by their effective kind, each
    with APTrace's checks; the omitted questions; and the reviewer's view of
    the stated confidence.
-3. **Unresolved evidence requirements:** first the deterministic ones, from
-   the relations, joins and segments. The reviewer's suggested tests follow,
-   labeled as not yet APTrace requirements.
-4. **Review availability:** the status, the attempts, the model and any
+3. **Critic validation:** each finding's classification (SUPPORTED,
+   CONTRADICTED, UNRESOLVED, UNGROUNDED) with the checks and records behind
+   it, rejected citations, mischaracterizations, and the continuity concerns
+   the reviewer did not raise.
+4. **Unresolved evidence requirements:** first the deterministic ones, from
+   the relations, joins, segments and continuity concerns. The follow-up
+   question proposals follow, built from supported and unresolved criticism.
+   They are never executed.
+5. **Review availability:** the status, the attempts, the model and any
    error. When the review did not complete, the report says that the review
    step is missing and that the deterministic result stands on its own
    evidence.
@@ -344,9 +377,10 @@ are not `AuditRecord`s, so verification never reads them.
 - **Headroom check.** The pre-load check uses the status-reported model
   memory. oMLX's own admission also considers live process memory, so a
   `507` can still happen. It is then retried once and reported.
-- **Mechanical checks only.** The checks validate references and kinds, not
-  the substance of a finding. A completed review can still be wrong or
-  shallow.
+- **Substance is validated against the record, not the firmware.**
+  Critic validation decides whether a criticism of the investigation holds
+  (see its limitations). It never decides firmware behavior, and a completed
+  review can still be shallow.
 - **One review per assessment.** There is no multi-round dialogue, and the
   reviewer cannot request APTrace analyses during terminal review. The
   claim auditor (`ledger/auditor.py`) is the path that can.

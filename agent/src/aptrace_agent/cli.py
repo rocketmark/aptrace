@@ -241,6 +241,30 @@ def handle_terminal_review_command(args: argparse.Namespace) -> bool:
     if not args.investigation:
         raise SystemExit("terminal-review: an investigation id (TR-...) is required")
 
+    if args.action == "validate":
+        # Critic validation of a persisted attempt: deterministic, computed from the store, never written to it.
+        from aptrace_agent.research.critic import render_followups, render_validation
+
+        validation = store.validate(args.investigation, args.attempt)
+
+        if validation is None:
+            raise SystemExit(f"terminal-review validate: {args.investigation} has no completed review attempt"
+                             + (f" {args.attempt}" if args.attempt else ""))
+
+        if args.output:
+            Path(args.output).expanduser().write_text(json.dumps(validation, indent=2, sort_keys=True) + "\n")
+
+        if args.json:
+            print(json.dumps(validation, indent=2, sort_keys=True))
+        else:
+            print(f"CRITIC VALIDATION {args.investigation} {validation['attempt_id']} ({validation['version']})")
+            print("\n".join(f"  {line}" for line in render_validation(validation)))
+            print("FOLLOW-UP QUESTION PROPOSALS (not executed)")
+            print("\n".join(f"  {line}" for line in render_followups(validation)) or "  (none)")
+            print(f"  {validation['authority']}")
+
+        return True
+
     if args.action == "retry":
         reviewer = _reviewer(args, store)
         restore = None if args.no_restore_planner else os.environ.get("APTRACE_MODEL")
@@ -443,9 +467,9 @@ def main() -> None:
 
     terminal = subparsers.add_parser(
         "terminal-review",
-        help="Show, list or retry persisted terminal reviews (never reruns the investigation)",
+        help="Show, list, retry or validate persisted terminal reviews (never reruns the investigation)",
     )
-    terminal.add_argument("action", choices=("show", "retry", "list", "prepare"))
+    terminal.add_argument("action", choices=("show", "retry", "list", "prepare", "validate"))
     terminal.add_argument("investigation", nargs="?", help="Terminal review id, TR-...")
     terminal.add_argument("--review-dir", help="Terminal review store (default: <ledger>/terminal-reviews)")
     terminal.add_argument("--ledger-dir", help="Research ledger directory whose terminal-reviews store to use")
@@ -454,6 +478,8 @@ def main() -> None:
     terminal.add_argument("--json", action="store_true", help="Emit the review summary as JSON")
     terminal.add_argument("--artifact", help="prepare: a saved research --output artifact to assess and package")
     terminal.add_argument("--objective-file", help="prepare: the objective spec, for an artifact that does not record one")
+    terminal.add_argument("--attempt", help="validate: the completed attempt (RA-...) to validate (default: the latest)")
+    terminal.add_argument("--output", help="validate: also write the validation JSON to this file (the store is not written)")
 
     add_research_work_options(research)
     add_ledger_commands(subparsers)

@@ -135,9 +135,14 @@ had no effect: the parser records unknown fields, and nothing reads them.
 2. **Composition.** The joins and segments state what is missing. Causal
    trace composition, the carried-state scenarios (RX → `0x5448` → `0x4d18`)
    and TC0 IRQ delivery remain unimplemented, as in the objective-v1 record.
-3. **Review substance.** APTrace checks the reviewer's references and kinds,
-   not whether a finding is right. Run 1 shows a reviewer error (the
-   unreachability finding) that passes every mechanical check.
+3. **Review substance.** APTrace checked the reviewer's references and
+   kinds, not whether a finding was right. Run 1 shows a reviewer error (the
+   unreachability finding) that passes every mechanical check. *Addressed by
+   Critic Validation v1*
+   ([`critic-validation-v1.md`](critic-validation-v1.md)): that finding is
+   now CONTRADICTED from the record. The F0/ISR connection challenge is
+   SUPPORTED, and the `0x20000094` seeding is an APTrace continuity concern.
 4. **Review depth.** The review is one request with no analysis requests.
-   Routing a reviewer's suggested tests into follow-up work items would be
-   the next step.
+   Critic Validation v1 turns supported and unresolved criticism into
+   follow-up question proposals. Routing them into work items is still
+   open.

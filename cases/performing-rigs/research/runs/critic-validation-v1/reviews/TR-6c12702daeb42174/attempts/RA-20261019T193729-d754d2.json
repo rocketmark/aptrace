@@ -1,0 +1,416 @@
+{
+  "assessment_sha256": "0b6fd98d91e7db93b386a95efdf4cbfb88186d28a58e531bd026463139366116",
+  "attempt_id": "RA-20261019T193729-d754d2",
+  "authority": "advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority",
+  "ended_at": "2026-10-19T19:38:23.810+00:00",
+  "error": null,
+  "investigation_id": "TR-6c12702daeb42174",
+  "links": {
+    "artifact": null,
+    "causal_graph": "cases/performing-rigs/research/generated/remote-to-motor-causal-graph.json",
+    "fixture": "cases/performing-rigs/scripts/terminal_review_f0_isr.py",
+    "ledger_run_id": null
+  },
+  "model": {
+    "client_timeout_s": 900.0,
+    "generation": {
+      "max_tokens": 2000,
+      "temperature": 0.0
+    },
+    "id": "gemma-4-26b-a4b-it-4bit",
+    "omlx_settings": {
+      "enable_thinking": false,
+      "is_pinned": false,
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "min_p": 0.05,
+      "temperature": 0.2,
+      "top_k": 64,
+      "top_p": 0.95,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_kv_enabled": true
+    },
+    "served": {
+      "estimated_size": 16389280502,
+      "is_loading": false,
+      "loaded": true,
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "pinned": false
+    },
+    "server_version": "0.7.0",
+    "source": "default"
+  },
+  "package_sha256": "0078b6924761384a1e7a082645219c8eacb809f9e2ab26a923a796090b1ee57c",
+  "raw_responses": [
+    {
+      "content": "```json\n{\n \"findings\": [\n  {\n   \"category\": \"missing_prerequisite_or_state_continuity\",\n   \"kind\": \"hypothesis\",\n   \"defect\": \"missing_evidence\",\n   \"relations\": [\"R7\"],\n   \"evidence_ids\": [\"E1\", \"E3\"],\n   \"targets\": [\"R7->R4\", \"C1\", \"C2\"],\n   \"statement\": \"The investigation fails to establish how the motion state produced in E1 (rx-f0-direct-seed) triggers the rate machinery in E3/R4. There is no evidence of state continuity between the 'rx-f0-direct-seed' scenario and the 'tc0-isr-direct-call' scenario.\",\n   \"checkable\": true,\n   \"resolting_evidence\": \"An execution trace where the state produced at the end of E1 is used as the starting state for the execution containing E3/R4.\",\n   \"test\": \"Execute the code path containing R4/R6/R5 using the exact memory state recorded at the end of E1.\"\n  },\n  {\n   \"category\": \"unjustified_composition\",\n   \"kind\": \"hypothesis\",\n   \"defect\": \"unsupported_assumption\",\n   \"relations\": [\"R7\", \"R4\", \"R6\"],\n   \"evidence_ids\": [\"E1\", \"E2\", \"E3\"],\n   \"targets\": [\"R7->R4\", \"R4->R6\"],\n   \"statement\": \"The investigation attempts to compose a causal chain (R7 -> R4 -> R6) across three disconnected execution environments: a seeded RX scenario (E1), a static analysis (E3), and a direct ISR call (E2).\",\n   \"checkable\": true,\n   \"resolting_evidence\": \"A single continuous execution trace or a verified state-transfer mechanism between these scenarios.\",\n   \"test\": \"Verify if the 'rate machinery' (R4) can actually be activated by the 'motion state' (R7) without an external interrupt or timer event that is not present in the E1/E2/E3 environments.\"\n  },\n  {\n   \"category\": \"static_as_execution\",\n   \"kind\": \"hypothesis\",\n   \"defect\": \"incorrect_inference\",\n   \"relations\": [\"R4\"],\n   \"evidence_ids\": [\"E3\"],\n   \"targets\": [\"R4\"],\n   \"quote\": \"rate machinery reaches timer period setup\",\n   \"statement\": \"R4 is treated as a functional link in the causal chain, but it is purely a static call-graph edge (E3). Static reachability does not imply that the 'rate machinery' is active or that it successfully configures the timer in a live environment.\",\n   \"checkable\": true,\n   \"resolting_evidence\": \"Concrete execution evidence showing the timer registers being written as a result of the R4 path.\",\n   \"test\": \"Run the code in a simulator and observe if the timer period is actually modified during the execution of the R4 path.\"\n  },\n  {\n   \"category\": \"peripheral_timer_interrupt_assumption\",\n   \"kind\": \"hypothesis\",\n   \"defect\": \"unsupported_assumption\",\n   \"relations\": [\"R6\"],\n   \"evidence_ids\": [\"E2\"],\n   \"targets\": [\"R6\"],\n   \"statement\": \"R6 assumes that 'timer period setup' leads to 'TC0 IRQ delivery'. However, E2 is a 'direct call' of the handler, not a hardware-triggered interrupt. The investigation lacks an interrupt/timer model to bridge the gap between setting a period and the execution of the handler.\",\n   \"checkable\": true,\n   \"resolting_evidence\": \"Evidence of the hardware timer triggering the interrupt or a software mechanism that transitions from R4 to R6.\",\n   \"test\": \"Demonstrate the mechanism that converts the static/observed timer configuration into the execution of the TC0 handler.\"\n  }\n ],\n \"omitted_questions\": [\n  \"How does the state produced in E1 (rx-f0-direct-seed) transition to the execution environment of E2 (tc0-isr-direct-call)?\",\n  \"Is the 'busy gate' (0x20001b14) required for the activation of the rate machinery, and if so, how is it satisfied given it remains zero in E1?\",\n  \"Does the static call in R4 actually result in the hardware-level timer configuration required to trigger E2?\"\n ],\n \"confidence\": \"appropriate\",\n \"summary\": \"The investigation attempts to build a causal chain across three fundamentally disconnected execution scenarios (seeded RX, static analysis, and direct ISR calls) without providing state continuity. The conclusion that the jog command drives the STEP output is unsupported because the link between the command (E1) and the output (E2) is never established through a continuous execution path.\"\n}\n```",
+      "finish_reason": "stop",
+      "served_model": "gemma-4-26b-a4b-it-4bit",
+      "usage": {
+        "completion_tokens": 1088,
+        "completion_tokens_details": null,
+        "generation_duration": 21.09,
+        "generation_tokens_per_second": 51.59,
+        "input_tokens": 8387,
+        "output_tokens": 1088,
+        "prompt_eval_duration": 18.95,
+        "prompt_tokens": 8387,
+        "prompt_tokens_details": {
+          "audio_tokens": null,
+          "cache_write_tokens": null,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+        },
+        "prompt_tokens_per_second": 442.65,
+        "time_to_first_token": 18.95,
+        "total_time": 40.04,
+        "total_tokens": 9475
+      }
+    }
+  ],
+  "requests": [
+    {
+      "messages_sha256": "06f056bdd5b1ff41575d115c9cc9ce37e3ee6ff7dbf1348065e9221a51ffc273",
+      "prompt_chars": 24246
+    }
+  ],
+  "residency": [
+    {
+      "actions": [
+        {
+          "action": "wait:idle",
+          "elapsed_s": 0.004,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "unload",
+          "elapsed_s": 1.308,
+          "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+          "result": "ok"
+        },
+        {
+          "action": "wait:unloaded:Qwen3-Coder-30B-A3B-Instruct-4bit",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "wait:headroom",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "wait:idle",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "load",
+          "elapsed_s": 9.411,
+          "model": "gemma-4-26b-a4b-it-4bit",
+          "result": "ok"
+        },
+        {
+          "action": "wait:loaded:gemma-4-26b-a4b-it-4bit",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        }
+      ],
+      "after": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 16389280502,
+        "loaded": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": true,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "before": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 18040125593,
+        "loaded": [
+          "Qwen3-Coder-30B-A3B-Instruct-4bit"
+        ],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": true,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "error": null,
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "ok": true,
+      "operation": "acquire",
+      "version": "omlx-residency-v1"
+    },
+    {
+      "actions": [
+        {
+          "action": "wait:idle",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "unload",
+          "elapsed_s": 2.973,
+          "model": "gemma-4-26b-a4b-it-4bit",
+          "result": "ok"
+        },
+        {
+          "action": "wait:unloaded:gemma-4-26b-a4b-it-4bit",
+          "elapsed_s": 0.003,
+          "polls": 1,
+          "satisfied": true
+        }
+      ],
+      "after": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 0,
+        "loaded": [],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "before": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 16389280502,
+        "loaded": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": true,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "error": null,
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "ok": true,
+      "operation": "release",
+      "version": "omlx-residency-v1"
+    }
+  ],
+  "retry_of": null,
+  "review": {
+    "authority": "advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority",
+    "confidence": "appropriate",
+    "findings": [
+      {
+        "aptrace_checks": [],
+        "category": "missing_prerequisite_or_state_continuity",
+        "checkable": true,
+        "defect": "missing_evidence",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E1",
+          "E3"
+        ],
+        "kind": "hypothesis",
+        "quote": null,
+        "relations": [
+          "R7"
+        ],
+        "resolving_evidence": null,
+        "statement": "The investigation fails to establish how the motion state produced in E1 (rx-f0-direct-seed) triggers the rate machinery in E3/R4. There is no evidence of state continuity between the 'rx-f0-direct-seed' scenario and the 'tc0-isr-direct-call' scenario.",
+        "targets": [
+          "R7->R4",
+          "C1",
+          "C2"
+        ],
+        "test": "Execute the code path containing R4/R6/R5 using the exact memory state recorded at the end of E1."
+      },
+      {
+        "aptrace_checks": [],
+        "category": "unjustified_composition",
+        "checkable": true,
+        "defect": "unsupported_assumption",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E1",
+          "E2",
+          "E3"
+        ],
+        "kind": "hypothesis",
+        "quote": null,
+        "relations": [
+          "R7",
+          "R4",
+          "R6"
+        ],
+        "resolving_evidence": null,
+        "statement": "The investigation attempts to compose a causal chain (R7 -> R4 -> R6) across three disconnected execution environments: a seeded RX scenario (E1), a static analysis (E3), and a direct ISR call (E2).",
+        "targets": [
+          "R7->R4",
+          "R4->R6"
+        ],
+        "test": "Verify if the 'rate machinery' (R4) can actually be activated by the 'motion state' (R7) without an external interrupt or timer event that is not present in the E1/E2/E3 environments."
+      },
+      {
+        "aptrace_checks": [],
+        "category": "static_as_execution",
+        "checkable": true,
+        "defect": "incorrect_inference",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E3"
+        ],
+        "kind": "hypothesis",
+        "quote": "rate machinery reaches timer period setup",
+        "relations": [
+          "R4"
+        ],
+        "resolving_evidence": null,
+        "statement": "R4 is treated as a functional link in the causal chain, but it is purely a static call-graph edge (E3). Static reachability does not imply that the 'rate machinery' is active or that it successfully configures the timer in a live environment.",
+        "targets": [
+          "R4"
+        ],
+        "test": "Run the code in a simulator and observe if the timer period is actually modified during the execution of the R4 path."
+      },
+      {
+        "aptrace_checks": [],
+        "category": "peripheral_timer_interrupt_assumption",
+        "checkable": true,
+        "defect": "unsupported_assumption",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E2"
+        ],
+        "kind": "hypothesis",
+        "quote": null,
+        "relations": [
+          "R6"
+        ],
+        "resolving_evidence": null,
+        "statement": "R6 assumes that 'timer period setup' leads to 'TC0 IRQ delivery'. However, E2 is a 'direct call' of the handler, not a hardware-triggered interrupt. The investigation lacks an interrupt/timer model to bridge the gap between setting a period and the execution of the handler.",
+        "targets": [
+          "R6"
+        ],
+        "test": "Demonstrate the mechanism that converts the static/observed timer configuration into the execution of the TC0 handler."
+      }
+    ],
+    "ignored_fields": [],
+    "omitted_questions": [
+      "How does the state produced in E1 (rx-f0-direct-seed) transition to the execution environment of E2 (tc0-isr-direct-call)?",
+      "Is the 'busy gate' (0x20001b14) required for the activation of the rate machinery, and if so, how is it satisfied given it remains zero in E1?",
+      "Does the static call in R4 actually result in the hardware-level timer configuration required to trigger E2?"
+    ],
+    "summary": "The investigation attempts to build a causal chain across three fundamentally disconnected execution scenarios (seeded RX, static analysis, and direct ISR calls) without providing state continuity. The conclusion that the jog command drives the STEP output is unsupported because the link between the command (E1) and the output (E2) is never established through a continuous execution path."
+  },
+  "sequence": 1,
+  "started_at": "2026-10-19T19:37:29.307+00:00",
+  "status": "completed",
+  "template_version": "terminal-review-v2",
+  "version": "terminal-review-attempt-v1"
+}

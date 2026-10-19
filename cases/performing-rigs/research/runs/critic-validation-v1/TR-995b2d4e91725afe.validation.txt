@@ -1,0 +1,69 @@
+CRITIC VALIDATION TR-995b2d4e91725afe RA-20261019T171754-640213 (critic-validation-v1)
+  counts: SUPPORTED 4, CONTRADICTED 1, UNRESOLVED 3, UNGROUNDED 0
+  [SUPPORTED] #0 unjustified_composition R7,E1,E3: The investigation attempts to bridge the gap between the command handler (E1) and the rate machinery (E3) via a shared endpoint (FUN_00005ee8) without any ev...
+      relation_gap:R7: SUPPORTED (R7 is UNRESOLVED: no supporting evidence recorded)
+      characterization composition_presented: CONTRADICTED (the assessment does not compose these relations: composition is not attempted, every join is unvalidated, and no statement spans separately established segments); the gap itself is kept
+      the gap is already an APTrace evidence requirement
+  [CONTRADICTED] #1 static_as_execution R4,R6,E3,E2: The investigation treats a static Ghidra call-graph edge (R4) as a functional link to the observed ISR execution (R6), despite no evidence that the 'rate mac...
+      static_presented_as_execution: CONTRADICTED (every targeted relation is reported at its own level with its meaning, no join is validated, and no statement presents static-only evidence as execution)
+  [SUPPORTED] #2 missing_prerequisite_or_state_continuity R7,E1: The relationship R7 (motion state activates rate machinery) is blocked by a lack of evidence relating the command handler to the rate machinery, yet the inve...
+      relation_gap:R7: SUPPORTED (R7 is UNRESOLVED: no supporting evidence recorded)
+      the gap is already an APTrace evidence requirement
+  [SUPPORTED] #3 peripheral_timer_interrupt_assumption R6,E2: The investigation relies on a 'direct call' to a handler (E2) to simulate an ISR, but provides no evidence that the timer hardware (TC0) actually triggers th...
+      scope_assumptions:E2: SUPPORTED (E2 holds only under 9 harness assumption(s); the assumed condition is supplied by the harness, not demonstrated)
+      relation_gap:R6: SUPPORTED (R6 is UNRESOLVED)
+      the gap is already an APTrace evidence requirement
+  [SUPPORTED] #4 scope_mismatch R2,R5,E1,E2: The investigation attempts to answer if a command causes a GPIO write by joining a command-processing segment (E1) with a separate, manually-triggered ISR se...
+      connection: SUPPORTED (nothing recorded connects R2 to R5 in one execution: every join is unvalidated, and intermediate relations lack execution evidence)
+      state_continuity: SUPPORTED (the segments share state they never passed to each other)
+      characterization scope_applied_elsewhere: CONTRADICTED (each relation's evidence is reported with its own execution scope, and no statement applies one scenario's evidence to another); the gap itself is kept
+      the gap is already an APTrace evidence requirement
+  [UNRESOLVED] #5 omitted_question R2,R5,E1,E2: Does the command execution in E1 modify the hardware state necessary to trigger the interrupt in E2?
+      firmware_behavior: UNRESOLVED (a proposition about firmware behavior; critic validation does not evaluate firmware)
+  [UNRESOLVED] #6 omitted_question R3,E1: Is the 'busy gate' (0x20001b14) a prerequisite for the ISR execution, and if so, why did E1 not trigger it?
+      firmware_behavior: UNRESOLVED (a proposition about firmware behavior; critic validation does not evaluate firmware)
+  [UNRESOLVED] #7 omitted_question R4,R5,E3,E2: What is the causal link between the static call in E3 and the observed hardware writes in E2?
+      firmware_behavior: UNRESOLVED (a proposition about firmware behavior; critic validation does not evaluate firmware)
+  reviewer confidence 'overstated': CONTRADICTED (the assessment states only per-edge levels with their meanings: no composition, no admitted claim, no end-to-end conclusion)
+  APTrace continuity C1 not raised by the reviewer: E1 and E2 each supply 0x20000094 (4 byte(s)) as an initial condition; neither execution produced the other's value, and no record carries state between them
+FOLLOW-UP QUESTION PROPOSALS (not executed)
+  FQ-491c114e58e2 [connection] Does one execution carry FUN_00005448 through FUN_00005898 (R2 -> R7 -> R4 -> R6 -> R5), with the intermediate relations established in that same execution? (from #4 SUPPORTED, #5 UNRESOLVED, APTrace C1, #7 UNRESOLVED)
+      missing: R7 (UNRESOLVED): no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition
+      missing: R4 (STATIC): no concrete observation of FUN_00005ee8 calling FUN_00005c00 under the selected command
+      missing: R6 (UNRESOLVED): no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)
+      missing: join R2->R7: continuity not validated
+      missing: join R7->R4: continuity not validated
+      missing: join R4->R6: continuity not validated
+      operation: observe_call_arguments [existing operation; needs a registered scenario that enters FUN_00004d18 (tried: rx-f0-direct-seed)]
+      operation: analyze_function_effects [existing operation]
+      operation: observe_call_arguments [existing operation; needs a registered scenario that enters FUN_00005ee8]
+      operation: analyze_function_effects [existing operation]
+      operation: - [capability_gap] no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)
+      condition: one execution, or segments recorded as carried forward, covering R2 -> R7 -> R4 -> R6 -> R5
+      condition: 0x20000094 must be produced by firmware execution or carried from a recorded segment, not supplied as an initial condition
+      condition: E1's 7 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      condition: E2's 9 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      expected: each of R2, R7, R4, R6, R5 OBSERVED under one scope whose state records no seed for the shared addresses (or records them as carried_from)
+  FQ-bda0aa9e1a7f [relation] Is R3 (FUN_00005448 -> 0x20001b14) established beyond UNRESOLVED? (from #6 UNRESOLVED)
+      missing: R3 (UNRESOLVED): no completed function_effects of FUN_00005448 showing an access to 0x20001b14 (the effects analysis timed out)
+      operation: analyze_function_effects [existing operation]
+      operation: observed_call_arguments [executor operation with watched RAM fields; not offered in the planner palette, so it needs an operator request]
+      condition: a registered scenario that enters FUN_00005448; already tried: rx-f0-direct-seed
+      condition: E1's 7 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      expected: R3 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded
+  FQ-808856d5fd9a [relation] Is R7 (FUN_00004d18 -> FUN_00005ee8) established beyond UNRESOLVED? (from #0 SUPPORTED, #2 SUPPORTED)
+      missing: R7 (UNRESOLVED): no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition
+      operation: observe_call_arguments [existing operation; needs a registered scenario that enters FUN_00004d18 (tried: rx-f0-direct-seed)]
+      operation: analyze_function_effects [existing operation]
+      condition: a registered scenario that enters FUN_00004d18; already tried: rx-f0-direct-seed
+      condition: E1's 7 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      expected: R7 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded
+  FQ-e4df1438feb5 [assumption] Does R6 hold without the harness assumptions its evidence (E2) supplies? (from #3 SUPPORTED)
+      missing: R6 (UNRESOLVED): no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)
+      operation: - [capability_gap] no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)
+      operation: observe_call_arguments [existing operation; needs a registered scenario that enters FUN_00005c00 (tried: tc0-isr-direct-call)]
+      operation: analyze_function_effects [existing operation]
+      condition: the assumed condition (for example an interrupt delivery or a seeded peripheral state) is produced by the modeled system, or the relation is observed without it
+      condition: E2's 9 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      expected: R6 observed under a scope that does not supply the challenged assumption
+  critic validation classifies the reviewer's propositions about the investigation record; it changes no evidence, relation level, claim, grade or admission decision and does not verify firmware behavior

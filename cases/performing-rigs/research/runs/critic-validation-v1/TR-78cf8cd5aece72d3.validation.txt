@@ -1,0 +1,40 @@
+CRITIC VALIDATION TR-78cf8cd5aece72d3 RA-20261019T171644-f41a47 (critic-validation-v1)
+  counts: SUPPORTED 3, CONTRADICTED 1, UNRESOLVED 2, UNGROUNDED 0
+  [SUPPORTED] #0 unjustified_composition R2,E1,E4: The investigation attempts to evaluate the relationship R2 (jog handler reaches motion target update) using a static call edge (E1) while the only available ...
+      relation_gap:R2: SUPPORTED (R2 is STATIC: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution)
+      characterization composition_presented: CONTRADICTED (the assessment does not compose these relations: composition is not attempted, every join is unvalidated, and no statement spans separately established segments); the gap itself is kept
+      the gap is already an APTrace evidence requirement
+  [SUPPORTED] #1 missing_prerequisite_or_state_continuity R2,R3,E3,E5: The investigation lacks state continuity between the observed execution of FUN_00005448 (E3) and the failed effect analysis (E5). Without understanding the s...
+      state_continuity: UNGROUNDED (cited evidence E5 is not an execution segment, so it carries no state; the continuity part of the finding has no target)
+      relation_gap:R2: SUPPORTED (R2 is STATIC: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution)
+      relation_gap:R3: SUPPORTED (R3 is UNRESOLVED: no supporting evidence recorded)
+      the gap is already an APTrace evidence requirement
+  [SUPPORTED] #2 scope_mismatch R3,E5: R3 attempts to relate a function to a memory address (0x20001b14) that is not defined as a function in the provided evidence. The investigation treats a pote...
+      relation_gap:R3: SUPPORTED (R3 is UNRESOLVED: no supporting evidence recorded)
+      characterization scope_applied_elsewhere: CONTRADICTED (each relation's evidence is reported with its own execution scope, and no statement applies one scenario's evidence to another); the gap itself is kept
+      the gap is already an APTrace evidence requirement
+  [CONTRADICTED] #3 unsupported_negative R2,E4: The investigation uses the absence of execution in scenario 'vl-manual-f0e0' (E4) to define the status of R2, but fails to account for the fact that the scen...
+      negative_conclusion: CONTRADICTED (the record draws no negative conclusion here: relation levels are positive or UNRESOLVED, blockers are recorded as incompleteness, and every statement citing this evidence carries an explicit scope...)
+  [UNRESOLVED] #4 omitted_question R2,E6: Does the branch at 0x00005496 in E6 represent a valid path to FUN_00004d18, or is it a tail-call/return-to-caller mechanism that bypasses the intended logic?
+      firmware_behavior: UNRESOLVED (a proposition about firmware behavior; critic validation does not evaluate firmware)
+  [UNRESOLVED] #5 omitted_question R3,E5: What is the nature of the loop or condition in FUN_00005448 that caused the 300s timeout in E5, and how does it prevent the observation of effects on 0x20001...
+      firmware_behavior: UNRESOLVED (a proposition about firmware behavior; critic validation does not evaluate firmware)
+FOLLOW-UP QUESTION PROPOSALS (not executed)
+  FQ-1e2b469c540a [relation] Is R2 (FUN_00005448 -> FUN_00004d18) established beyond STATIC? (from #0 SUPPORTED, #1 SUPPORTED, #4 UNRESOLVED)
+      missing: R2 (STATIC): no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+      operation: observe_call_arguments [existing operation; needs a registered scenario that enters FUN_00005448 (tried: vl-manual-f0e0)]
+      operation: analyze_function_effects [attempted: E5 produced no result; a repeat needs a different bound or specialization]
+      condition: a registered scenario that enters FUN_00005448; already tried: vl-manual-f0e0
+      condition: E3's 5 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      condition: E4's 5 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      expected: R2 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded
+  FQ-bda0aa9e1a7f [relation] Is R3 (FUN_00005448 -> 0x20001b14) established beyond UNRESOLVED? (from #1 SUPPORTED, #2 SUPPORTED, #5 UNRESOLVED)
+      missing: R3 (UNRESOLVED): 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it
+      missing: R3 (UNRESOLVED): function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)
+      operation: - [capability_gap] function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)
+      operation: analyze_function_effects [attempted: E5 produced no result; a repeat needs a different bound or specialization]
+      operation: observed_call_arguments [executor operation with watched RAM fields; not offered in the planner palette, so it needs an operator request]
+      condition: a registered scenario that enters FUN_00005448
+      condition: E3's 5 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state
+      expected: R3 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded
+  critic validation classifies the reviewer's propositions about the investigation record; it changes no evidence, relation level, claim, grade or admission decision and does not verify firmware behavior

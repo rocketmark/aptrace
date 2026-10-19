@@ -1,0 +1,740 @@
+{
+  "assessment_sha256": "0b6fd98d91e7db93b386a95efdf4cbfb88186d28a58e531bd026463139366116",
+  "bounds": {
+    "chars": 16230,
+    "max_chars": 24000,
+    "omitted": [],
+    "truncated": [],
+    "within_bound": true
+  },
+  "content": {
+    "claims": {
+      "admitted": 0,
+      "note": "APTrace admission decided these; admitted proposals are PROPOSED claim versions, not verified",
+      "proposals": [],
+      "session_claims": []
+    },
+    "composition": {
+      "attempted": false,
+      "continuity": {
+        "concerns": [
+          {
+            "addresses": [
+              {
+                "addr": "0x20000094",
+                "len": 4
+              }
+            ],
+            "establishes_continuity": false,
+            "id": "C1",
+            "kind": "independently_supplied_state",
+            "relations": {
+              "E1": [
+                "R2",
+                "R3",
+                "R7"
+              ],
+              "E2": [
+                "R6",
+                "R5"
+              ]
+            },
+            "requirement": "one execution in which 0x20000094 (4 byte(s)) is produced by the firmware before the later segment uses it, or a later segment that starts from E1's recorded final state instead of a seed",
+            "scenarios": [
+              "rx-f0-direct-seed",
+              "tc0-isr-direct-call"
+            ],
+            "segments": [
+              "E1",
+              "E2"
+            ],
+            "state": {
+              "E1": "supplied",
+              "E2": "supplied"
+            },
+            "statement": "E1 and E2 each supply 0x20000094 (4 byte(s)) as an initial condition; neither execution produced the other's value, and no record carries state between them"
+          },
+          {
+            "addresses": [
+              {
+                "addr": "0x20000040",
+                "len": 1
+              },
+              {
+                "addr": "0x20001b14",
+                "len": 1
+              },
+              {
+                "addr": "0x200024cc",
+                "len": 1
+              },
+              {
+                "addr": "0x20002524",
+                "len": 1
+              },
+              {
+                "addr": "0x2000309d",
+                "len": 1
+              },
+              {
+                "addr": "0x2000310c",
+                "len": 1
+              }
+            ],
+            "establishes_continuity": false,
+            "id": "C2",
+            "kind": "prior_state_not_carried",
+            "relations": {
+              "E1": [
+                "R2",
+                "R3",
+                "R7"
+              ],
+              "E2": [
+                "R6",
+                "R5"
+              ]
+            },
+            "requirement": "an execution of E2's code that starts from E1's end state, recorded as carried forward",
+            "scenarios": [
+              "rx-f0-direct-seed",
+              "tc0-isr-direct-call"
+            ],
+            "segments": [
+              "E1",
+              "E2"
+            ],
+            "state": {
+              "E1": [
+                "end_state"
+              ],
+              "E2": "fresh"
+            },
+            "statement": "E1 ends with 6 recorded address(es) of state (end_state); E2 starts from fresh machine state and carries none of it"
+          }
+        ],
+        "note": "a concern states that continuity is unsupported; no result here establishes runtime continuity",
+        "unknown": [
+          {
+            "detail": "writes not logged (produced state not distinguished)",
+            "evidence_id": "E1"
+          },
+          {
+            "detail": "writes not logged (produced state not distinguished)",
+            "evidence_id": "E2"
+          }
+        ]
+      },
+      "disconnected": "3 separately established segments; no recorded relation connects them, so nothing here relates one segment's execution to another's",
+      "joins": [
+        {
+          "continuity": "not validated",
+          "from_evidence": [
+            {
+              "evidence_id": "E1",
+              "harness_assumptions_total": 7,
+              "scenario": "rx-f0-direct-seed"
+            }
+          ],
+          "from_level": "OBSERVED",
+          "from_relation": "R2",
+          "reason": "at least one side has no supporting evidence",
+          "shared_endpoint": "FUN_00004d18",
+          "to_evidence": [],
+          "to_level": "UNRESOLVED",
+          "to_relation": "R7"
+        },
+        {
+          "continuity": "not validated",
+          "from_evidence": [],
+          "from_level": "UNRESOLVED",
+          "from_relation": "R7",
+          "reason": "at least one side has no supporting evidence",
+          "shared_endpoint": "FUN_00005ee8",
+          "to_evidence": [
+            {
+              "evidence_id": "E3",
+              "harness_assumptions_total": 0,
+              "scenario": null
+            }
+          ],
+          "to_level": "STATIC",
+          "to_relation": "R4"
+        },
+        {
+          "continuity": "not validated",
+          "from_evidence": [
+            {
+              "evidence_id": "E3",
+              "harness_assumptions_total": 0,
+              "scenario": null
+            }
+          ],
+          "from_level": "STATIC",
+          "from_relation": "R4",
+          "reason": "at least one side has no supporting evidence",
+          "shared_endpoint": "FUN_00005c00",
+          "to_evidence": [],
+          "to_level": "UNRESOLVED",
+          "to_relation": "R6"
+        },
+        {
+          "continuity": "not validated",
+          "from_evidence": [],
+          "from_level": "UNRESOLVED",
+          "from_relation": "R6",
+          "reason": "at least one side has no supporting evidence",
+          "shared_endpoint": "FUN_0000607c",
+          "to_evidence": [
+            {
+              "evidence_id": "E2",
+              "harness_assumptions_total": 9,
+              "scenario": "tc0-isr-direct-call"
+            }
+          ],
+          "to_level": "OBSERVED",
+          "to_relation": "R5"
+        }
+      ],
+      "segments": [
+        {
+          "evidence": [
+            "E1"
+          ],
+          "levels": {
+            "R2": "OBSERVED"
+          },
+          "relations": [
+            "R2"
+          ],
+          "scenarios": [
+            "rx-f0-direct-seed"
+          ]
+        },
+        {
+          "evidence": [
+            "E3"
+          ],
+          "levels": {
+            "R4": "STATIC"
+          },
+          "relations": [
+            "R4"
+          ],
+          "scenarios": []
+        },
+        {
+          "evidence": [
+            "E2"
+          ],
+          "levels": {
+            "R5": "OBSERVED"
+          },
+          "relations": [
+            "R5"
+          ],
+          "scenarios": [
+            "tc0-isr-direct-call"
+          ]
+        }
+      ],
+      "statement": "not attempted: per-edge levels are not an end-to-end causal result"
+    },
+    "contradictions": [],
+    "evidence": [
+      {
+        "arguments": {
+          "artifact": "cases/performing-rigs/research/runs/remote-to-motor/f0-through-motor-state.json",
+          "entry": "0x00008a35"
+        },
+        "evidence_id": "E1",
+        "result_sha256": "488712c77bc5aec5741e305d1a7c00e0befee0570460362ff41ffe584f30ef4f",
+        "status": "ok",
+        "summary": "E1 RX entry 0x00008a35 with the seeded F0 record reaches FUN_00005448 at instruction 37 and FUN_00004d18 at instruction 71; returns to 0x000083ec after 2537 instructions. Final memory 0x200024cc=404b4c00 (target 5000000 LE), 0x20002524=02, busy gate 0x20001b14=00000000; MMIO log 0 entries. At command-segment exit busy remainszero; watched writes and MMIO stream empty",
+        "tool": "concrete_segment"
+      },
+      {
+        "arguments": {
+          "artifact": "cases/performing-rigs/research/runs/replacement-firmware-readiness/ch0-isr-positive.json",
+          "entry": "0x0000607d"
+        },
+        "evidence_id": "E2",
+        "result_sha256": "b5e184df2979bd8851c12b524c2aa6974e01eda28750c25532e81034ddccb0a1",
+        "status": "ok",
+        "summary": "E2 Direct call of the TC0 handler 0x0000607c (not IRQ delivery) for 108 instructions: GPIO writes 0x41008098=0x400, 0x41008094=0x400 (PB10 OUTSET then OUTCLR); final 0x20002064=01000000 (position 0 -> 1).",
+        "tool": "concrete_segment"
+      },
+      {
+        "arguments": {
+          "function": "FUN_00005ee8"
+        },
+        "evidence_id": "E3",
+        "result_sha256": "1570d4bdb2e7ac58c96f518f14f4316db06f28e3b409b0769a06ead9f712357d",
+        "status": "ok",
+        "summary": "E3 FUN_00005ee8 static call to FUN_00005c00 (Ghidra; 0x5ee8 structurally calls0x5c00; direct period reference writesCC0 then READSYNC-stalls)",
+        "tool": "function_facts"
+      }
+    ],
+    "failed_operations": [],
+    "hypotheses": [],
+    "limitations": [
+      "Relation levels are per edge. APTrace did not compose relations into a path, and no composition was verified.",
+      "A blocker (failure, timeout, bounded coverage, target not entered) is incompleteness, never evidence of absence.",
+      "OBSERVED evidence is scoped to its scenario's harness assumptions; separately executed scenarios do not share state unless the evidence says so.",
+      "STATIC evidence uses Ghidra's heuristic function boundaries and is not evidence of execution.",
+      "Admitted claim proposals are PROPOSED; only APTrace deterministic verification changes claim state.",
+      "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)"
+    ],
+    "objective": {
+      "constraints": [
+        "Keep static paths, concrete segments, symbolic evidence, unknown scheduling and physical effects distinct.",
+        "Do not infer full end-to-end execution."
+      ],
+      "firmware": "autopilot868",
+      "question": "Does the selected Manual Mode F0 jog command (channel 0, value 5000000) cause autopilot868 to drive the channel-0 STEP output? Keep separately executed segments, static paths and unknown scheduling distinct; do not infer end-to-end execution."
+    },
+    "operations": [],
+    "planner": {
+      "model": null
+    },
+    "rejected_operations": [],
+    "relations": [
+      {
+        "blockers": [],
+        "evidence": [
+          {
+            "detail": "FUN_00005448 reaches FUN_00004d18 in the seeded RX execution (harness assumptions apply)",
+            "evidence_id": "E1",
+            "level": "OBSERVED"
+          }
+        ],
+        "evidence_needed": [],
+        "id": "R2",
+        "label": "jog handler reaches the motion target update",
+        "level": "OBSERVED",
+        "level_meaning": "concrete observation under one registered scenario and its harness assumptions; not natural execution",
+        "scopes": [
+          {
+            "coverage": "one concrete execution of 2537 instructions from 0x00008a35, reached stop address 0x000083ec; MMIO is plain memory, no peripheral or interrupt model",
+            "engine": "Unicorn concrete execution (tools/unicorn/concrete.py), operator-run",
+            "entry_conditions": null,
+            "evidence_id": "E1",
+            "firmware_sha256": null,
+            "harness_assumptions": [
+              "fresh machine state at entry 0x00008a35",
+              "seeded 12 byte(s) at 0x2000232a (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000180 (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000094 (value is a harness input)",
+              "delta0=1 seeded",
+              "zero prior target/position",
+              "busy0=0"
+            ],
+            "harness_assumptions_total": 7,
+            "instructions_executed": 2537,
+            "scenario": "rx-f0-direct-seed",
+            "scenario_registry_sha256": null,
+            "state": {
+              "carried_from": [],
+              "end_state": [
+                "0x20000040",
+                "0x20001b14",
+                "0x200024cc",
+                "0x20002524",
+                "0x2000309d",
+                "0x2000310c"
+              ],
+              "initial": "fresh",
+              "produced": [],
+              "produced_recorded": false,
+              "supplied": [
+                {
+                  "addr": "0x20000094",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20000180",
+                  "len": 4
+                },
+                {
+                  "addr": "0x2000232a",
+                  "len": 12
+                }
+              ],
+              "supplied_unidentified": 0
+            },
+            "termination": null,
+            "tool": "concrete_segment"
+          }
+        ],
+        "source": "FUN_00005448",
+        "status": "observed_within_scope",
+        "target": "FUN_00004d18"
+      },
+      {
+        "blockers": [
+          {
+            "detail": "busy gate 0x20001b14 is still 0 at the RX segment exit; scoped to that segment, not absence of a writer",
+            "evidence_id": "E1"
+          }
+        ],
+        "evidence": [],
+        "evidence_needed": [
+          "no completed function_effects of FUN_00005448 showing an access to 0x20001b14 (the effects analysis timed out)"
+        ],
+        "id": "R3",
+        "label": "jog path writes the busy gate",
+        "level": "UNRESOLVED",
+        "level_meaning": "no supporting evidence recorded",
+        "scopes": [
+          {
+            "coverage": "one concrete execution of 2537 instructions from 0x00008a35, reached stop address 0x000083ec; MMIO is plain memory, no peripheral or interrupt model",
+            "engine": "Unicorn concrete execution (tools/unicorn/concrete.py), operator-run",
+            "entry_conditions": null,
+            "evidence_id": "E1",
+            "firmware_sha256": null,
+            "harness_assumptions": [
+              "fresh machine state at entry 0x00008a35",
+              "seeded 12 byte(s) at 0x2000232a (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000180 (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000094 (value is a harness input)",
+              "delta0=1 seeded",
+              "zero prior target/position",
+              "busy0=0"
+            ],
+            "harness_assumptions_total": 7,
+            "instructions_executed": 2537,
+            "scenario": "rx-f0-direct-seed",
+            "scenario_registry_sha256": null,
+            "state": {
+              "carried_from": [],
+              "end_state": [
+                "0x20000040",
+                "0x20001b14",
+                "0x200024cc",
+                "0x20002524",
+                "0x2000309d",
+                "0x2000310c"
+              ],
+              "initial": "fresh",
+              "produced": [],
+              "produced_recorded": false,
+              "supplied": [
+                {
+                  "addr": "0x20000094",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20000180",
+                  "len": 4
+                },
+                {
+                  "addr": "0x2000232a",
+                  "len": 12
+                }
+              ],
+              "supplied_unidentified": 0
+            },
+            "termination": null,
+            "tool": "concrete_segment"
+          }
+        ],
+        "source": "FUN_00005448",
+        "status": "blocked",
+        "target": "0x20001b14"
+      },
+      {
+        "blockers": [
+          {
+            "detail": "Existing phase/rate path depends on busy state; no selected-command activation witness",
+            "evidence_id": "E1"
+          }
+        ],
+        "evidence": [],
+        "evidence_needed": [
+          "no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition"
+        ],
+        "id": "R7",
+        "label": "motion state activates the rate machinery",
+        "level": "UNRESOLVED",
+        "level_meaning": "no supporting evidence recorded",
+        "scopes": [
+          {
+            "coverage": "one concrete execution of 2537 instructions from 0x00008a35, reached stop address 0x000083ec; MMIO is plain memory, no peripheral or interrupt model",
+            "engine": "Unicorn concrete execution (tools/unicorn/concrete.py), operator-run",
+            "entry_conditions": null,
+            "evidence_id": "E1",
+            "firmware_sha256": null,
+            "harness_assumptions": [
+              "fresh machine state at entry 0x00008a35",
+              "seeded 12 byte(s) at 0x2000232a (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000180 (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000094 (value is a harness input)",
+              "delta0=1 seeded",
+              "zero prior target/position",
+              "busy0=0"
+            ],
+            "harness_assumptions_total": 7,
+            "instructions_executed": 2537,
+            "scenario": "rx-f0-direct-seed",
+            "scenario_registry_sha256": null,
+            "state": {
+              "carried_from": [],
+              "end_state": [
+                "0x20000040",
+                "0x20001b14",
+                "0x200024cc",
+                "0x20002524",
+                "0x2000309d",
+                "0x2000310c"
+              ],
+              "initial": "fresh",
+              "produced": [],
+              "produced_recorded": false,
+              "supplied": [
+                {
+                  "addr": "0x20000094",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20000180",
+                  "len": 4
+                },
+                {
+                  "addr": "0x2000232a",
+                  "len": 12
+                }
+              ],
+              "supplied_unidentified": 0
+            },
+            "termination": null,
+            "tool": "concrete_segment"
+          }
+        ],
+        "source": "FUN_00004d18",
+        "status": "blocked",
+        "target": "FUN_00005ee8"
+      },
+      {
+        "blockers": [],
+        "evidence": [
+          {
+            "detail": "static call edge FUN_00005ee8 -> FUN_00005c00 (Ghidra)",
+            "evidence_id": "E3",
+            "level": "STATIC"
+          }
+        ],
+        "evidence_needed": [
+          "no concrete observation of FUN_00005ee8 calling FUN_00005c00 under the selected command"
+        ],
+        "id": "R4",
+        "label": "rate machinery reaches timer period setup",
+        "level": "STATIC",
+        "level_meaning": "a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution",
+        "scopes": [],
+        "source": "FUN_00005ee8",
+        "status": "partial",
+        "target": "FUN_00005c00"
+      },
+      {
+        "blockers": [
+          {
+            "detail": "IRQ107 vector maps TC0 handler0x607c; no automatic expiry/delivery observed",
+            "evidence_id": "E2"
+          }
+        ],
+        "evidence": [],
+        "evidence_needed": [
+          "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)"
+        ],
+        "id": "R6",
+        "label": "timer period setup leads to TC0 IRQ delivery",
+        "level": "UNRESOLVED",
+        "level_meaning": "no supporting evidence recorded",
+        "scopes": [
+          {
+            "coverage": "one concrete execution of 108 instructions from 0x0000607d, reached stop address 0x2fff0010; MMIO is plain memory, no peripheral or interrupt model",
+            "engine": "Unicorn concrete execution (tools/unicorn/concrete.py), operator-run",
+            "entry_conditions": null,
+            "evidence_id": "E2",
+            "firmware_sha256": null,
+            "harness_assumptions": [
+              "fresh machine state at entry 0x0000607d",
+              "seeded 4 byte(s) at 0x20000164 (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000094 (value is a harness input)",
+              "seeded 1 byte(s) at 0x20003099 (value is a harness input)",
+              "Direct AAPCS handler call is not IRQ delivery",
+              "delta=1",
+              "divisor=1",
+              "original STEP indices seeded",
+              "108-instruction complete direct call"
+            ],
+            "harness_assumptions_total": 9,
+            "instructions_executed": 108,
+            "scenario": "tc0-isr-direct-call",
+            "scenario_registry_sha256": null,
+            "state": {
+              "carried_from": [],
+              "end_state": [
+                "0x20002064"
+              ],
+              "initial": "fresh",
+              "produced": [],
+              "produced_recorded": false,
+              "supplied": [
+                {
+                  "addr": "0x20000094",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20000164",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20003099",
+                  "len": 1
+                }
+              ],
+              "supplied_unidentified": 0
+            },
+            "termination": null,
+            "tool": "concrete_segment"
+          }
+        ],
+        "source": "FUN_00005c00",
+        "status": "blocked",
+        "target": "FUN_0000607c"
+      },
+      {
+        "blockers": [],
+        "evidence": [
+          {
+            "detail": "direct handler call reaches FUN_00005898 and writes PB10 set then clear (harness assumptions apply)",
+            "evidence_id": "E2",
+            "level": "OBSERVED"
+          }
+        ],
+        "evidence_needed": [],
+        "id": "R5",
+        "label": "TC0 handler drives the STEP GPIO helper",
+        "level": "OBSERVED",
+        "level_meaning": "concrete observation under one registered scenario and its harness assumptions; not natural execution",
+        "scopes": [
+          {
+            "coverage": "one concrete execution of 108 instructions from 0x0000607d, reached stop address 0x2fff0010; MMIO is plain memory, no peripheral or interrupt model",
+            "engine": "Unicorn concrete execution (tools/unicorn/concrete.py), operator-run",
+            "entry_conditions": null,
+            "evidence_id": "E2",
+            "firmware_sha256": null,
+            "harness_assumptions": [
+              "fresh machine state at entry 0x0000607d",
+              "seeded 4 byte(s) at 0x20000164 (value is a harness input)",
+              "seeded 4 byte(s) at 0x20000094 (value is a harness input)",
+              "seeded 1 byte(s) at 0x20003099 (value is a harness input)",
+              "Direct AAPCS handler call is not IRQ delivery",
+              "delta=1",
+              "divisor=1",
+              "original STEP indices seeded",
+              "108-instruction complete direct call"
+            ],
+            "harness_assumptions_total": 9,
+            "instructions_executed": 108,
+            "scenario": "tc0-isr-direct-call",
+            "scenario_registry_sha256": null,
+            "state": {
+              "carried_from": [],
+              "end_state": [
+                "0x20002064"
+              ],
+              "initial": "fresh",
+              "produced": [],
+              "produced_recorded": false,
+              "supplied": [
+                {
+                  "addr": "0x20000094",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20000164",
+                  "len": 4
+                },
+                {
+                  "addr": "0x20003099",
+                  "len": 1
+                }
+              ],
+              "supplied_unidentified": 0
+            },
+            "termination": null,
+            "tool": "concrete_segment"
+          }
+        ],
+        "source": "FUN_0000607c",
+        "status": "observed_within_scope",
+        "target": "FUN_00005898"
+      }
+    ],
+    "targets": {
+      "continuity": {
+        "C1": [
+          "E1",
+          "E2"
+        ],
+        "C2": [
+          "E1",
+          "E2"
+        ]
+      },
+      "evidence": [
+        "E1",
+        "E2",
+        "E3"
+      ],
+      "joins": [
+        "R2->R7",
+        "R7->R4",
+        "R4->R6",
+        "R6->R5"
+      ],
+      "relations": [
+        "R2",
+        "R3",
+        "R7",
+        "R4",
+        "R6",
+        "R5"
+      ],
+      "segments": {
+        "S1": [
+          "R2"
+        ],
+        "S2": [
+          "R4"
+        ],
+        "S3": [
+          "R5"
+        ]
+      }
+    },
+    "tensions": [],
+    "termination": {
+      "analysis_failures": 0,
+      "budget": {},
+      "category": "other",
+      "error": null,
+      "every_relation_observed": false,
+      "explanation": "review fixture assembled from operator concrete artifacts; not an APTrace research run",
+      "stop_reason": "review_fixture"
+    },
+    "unresolved_questions": []
+  },
+  "investigation_id": "TR-6c12702daeb42174",
+  "links": {
+    "artifact": null,
+    "causal_graph": "cases/performing-rigs/research/generated/remote-to-motor-causal-graph.json",
+    "fixture": "cases/performing-rigs/scripts/terminal_review_f0_isr.py",
+    "ledger_run_id": null
+  },
+  "package_sha256": "0078b6924761384a1e7a082645219c8eacb809f9e2ab26a923a796090b1ee57c",
+  "template_version": "terminal-review-v2",
+  "version": "terminal-review-package-v2"
+}

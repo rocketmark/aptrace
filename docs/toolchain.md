@@ -19,14 +19,37 @@ cabal test aptrace-test
 The currently validated compiler line is GHC 9.6.7. Install Z3 separately and
 ensure it is on `PATH` for solver-backed commands.
 
-## Python and Ghidra
+## Python environments
 
-Create the pinned Unicorn environment with:
+APTrace uses two separate Python environments. Do not install one's
+dependencies into the other.
+
+| Environment | Declared by | Holds | Used for |
+|---|---|---|---|
+| `agent/.venv` | `agent/pyproject.toml`, `agent/uv.lock` | Python ≥ 3.12, pydantic-ai, Capstone; pytest (dev group) | the agent and `ResearchController`, ledger, agent tests, case tests that import `aptrace_agent` |
+| `tools/unicorn/.venv` | `tools/unicorn/requirements.txt` | pinned `unicorn==2.1.4`, Capstone; no pytest | the concrete harness (`tools/unicorn/`), boot recipes and scenarios, and the plain-assertion scripts that exercise them |
+
+The agent environment does not contain Unicorn. The agent runs concrete
+execution as a subprocess under `tools/unicorn/.venv/bin/python3`
+(`UNICORN_PYTHON` in `agent/src/aptrace_agent/structural_wiring.py`), never by
+importing Unicorn into its own process.
+
+Create them with:
 
 ```sh
+(cd agent && uv sync)
 python3 -m venv tools/unicorn/.venv
 tools/unicorn/.venv/bin/pip install -r tools/unicorn/requirements.txt
 ```
+
+Each test file names its interpreter in its docstring. Tests that execute
+Unicorn are plain-assertion scripts run with `tools/unicorn/.venv/bin/python3`;
+when pytest in `agent/.venv` collects them, they are reported as skipped,
+with that reason. A case may provide a runner that uses the right
+interpreter for each file; for Performing Rigs it is
+`cases/performing-rigs/test/run_python_tests.sh`.
+
+## Ghidra
 
 Install Ghidra and make `analyzeHeadless` available directly or through
 `GHIDRA_HOME`. Run `tools/doctor.sh` for dependency and backend smoke checks.

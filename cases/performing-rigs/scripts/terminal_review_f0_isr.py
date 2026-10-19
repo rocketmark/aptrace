@@ -93,6 +93,12 @@ def _concrete(evidence_id: str, run: dict, source: dict, *, label: str, conditio
             "coverage": f"one concrete execution of {run['instructions_executed']} instructions from {run['entry']}, "
                         f"{run['stop_reason']}; MMIO is plain memory, no peripheral or interrupt model",
             "run": {"instructions_executed": run["instructions_executed"]},
+            # Execution state in the registered-scenario result shape (one fresh leg and its seeds),
+            # plus the artifact's final-memory snapshot. The artifacts log no RAM writes, so nothing
+            # here is recorded as produced by execution.
+            "legs": [{"leg": 0, "entry": run["entry"], "fresh": True, "seeds": list(run.get("applied_seeds", [])),
+                      "reg_seed": [], "forced": {}, "stub_calls": []}],
+            "final_memory": dict(run.get("memory", {})),
             "provenance": {"analysis": "operator_concrete_artifact", "engine": ENGINE, "artifact": source,
                            "firmware_sha256": None},
             "planner_summary": summary,

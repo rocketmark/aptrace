@@ -21,6 +21,11 @@ Authority: the review is advisory. It never changes evidence, relation
 levels, claim state or admission. Its findings are kept apart from the
 deterministic result in every report. A completed review does not mean the
 conclusions are correct.
+
+Critic validation (research/critic.py) classifies each finding of a completed
+attempt against the full assessment and persists the result beside the
+attempt (``validations/<attempt_id>.json``). It has no more authority than
+the review.
 """
 
 from __future__ import annotations
@@ -36,11 +41,23 @@ from typing import Any
 
 from aptrace_agent.ledger.hashing import digest
 from aptrace_agent.ledger.store import LedgerImmutableError, new_id
+from aptrace_agent.research import continuity
+from aptrace_agent.research.critic import (
+    DEFECTS,
+    render_followups,
+    render_validation,
+    state_continuity,
+    target_index,
+    validate_review,
+)
 from aptrace_agent.research.terminal import assessment_sha256, render_assessment, unresolved_requirements
 
 
-PACKAGE_VERSION = "terminal-review-package-v1"
-TEMPLATE_VERSION = "terminal-review-v1"
+# v2 (Critic Validation v1): a targets index, compact execution state per
+# scope, material-first reduction and recorded omissions. Template v2 asks
+# for grounded findings. v1 packages and attempts stay valid.
+PACKAGE_VERSION = "terminal-review-package-v2"
+TEMPLATE_VERSION = "terminal-review-v2"
 ATTEMPT_VERSION = "terminal-review-attempt-v1"
 DEFAULT_REVIEW_MODEL = "gemma-4-26b-a4b-it-4bit"
 
@@ -99,18 +116,33 @@ Classify every finding:
 - "hypothesis": a plausible problem the package does not demonstrate.
 - "suggested_test": a specific analysis, execution or measurement that would confirm or refute something.
 
+Ground every finding. Name its target with ids from the package: relations (R..), evidence (E..), and the
+"targets" index (joins R1->R2, segments S1, continuity concerns C1). State the defect:
+- "missing_evidence": a relationship, prerequisite or state continuity the evidence does not establish;
+- "incorrect_inference": APTrace concluded or implied something the evidence does not support. Quote the exact
+  package text you challenge in "quote". Do not attribute a conclusion the package does not state;
+- "unsupported_assumption": a harness, peripheral, timer or interrupt condition supplied rather than shown;
+- "contradiction": two cited evidence items conflict;
+- "firmware_hypothesis": a claim about firmware behavior to be tested.
+APTrace checks every finding mechanically against its full record. Citations that are not in the package are
+rejected, and a finding without a valid target is ungrounded.
+
 Respond with exactly one JSON object and nothing else."""
 
 
 RESPONSE_FORMAT = """RESPONSE FORMAT (one JSON object, no markdown):
 {"findings": [{"category": "<one of: %s>",
                "kind": "demonstrated_contradiction" | "hypothesis" | "suggested_test",
-               "relations": ["R1", ...], "evidence_ids": ["E3", ...],
+               "defect": "<one of: %s>",
+               "relations": ["R1", ...], "evidence_ids": ["E3", ...], "targets": ["R1->R2", "S1", "C1", ...],
+               "quote": "<exact package text challenged; only for incorrect_inference>",
                "statement": "<the specific problem or test>",
+               "checkable": true | false,
+               "resolving_evidence": "<the evidence that would establish or refute the finding>",
                "test": "<the falsification test or evidence that would decide it>"}],
  "omitted_questions": ["<important unresolved question the conclusion omits>"],
  "confidence": "overstated" | "appropriate" | "understated" | "cannot_judge",
- "summary": "<two sentences at most>"}""" % ", ".join(CATEGORIES)
+ "summary": "<two sentences at most>"}""" % (", ".join(CATEGORIES), ", ".join(DEFECTS))
 
 
 def _now() -> str:
@@ -129,11 +161,41 @@ def investigation_id(assessment: Mapping[str, Any], links: Mapping[str, Any]) ->
     return "TR-" + digest({"assessment_sha256": assessment_sha256(assessment), "links": dict(links)})[:16]
 
 
+def _compact_state(scope: Mapping[str, Any]) -> dict[str, Any] | None:
+    state = continuity.segment_state(scope)
+
+    if state is None:
+        return None
+
+    return {"initial": state["initial"], "supplied": state["supplied"], "supplied_unidentified": state["supplied_unidentified"],
+            "carried_from": state["carried_from"], "produced": state["produced"][:8],
+            "produced_recorded": state["produced_recorded"], "end_state": state["end_state"][:8]}
+
+
+def _material(text: str, addresses: set[int]) -> bool:
+    """A harness assumption a reviewer needs to challenge continuity or scope: one naming a shared
+    address, or a qualifier (what the harness did not model)."""
+
+    lowered = f" {text.lower()} "
+    named = {int(h, 16) for h in re.findall(r"0x[0-9a-f]{1,8}", lowered)}
+    return bool(named & addresses) or any(q in lowered for q in (" not ", " no ", "without", "direct call", "fresh"))
+
+
 def build_package(assessment: Mapping[str, Any], *, links: Mapping[str, Any], max_chars: int = MAX_PACKAGE_CHARS) -> dict[str, Any]:
     """Bounded, deterministic review input built only from the assessment."""
 
     inv, assessment_hash = investigation_id(assessment, links), assessment_sha256(assessment)
     assessment = copy.deepcopy(dict(assessment))  # the reductions below must never touch the caller's assessment
+    flow = state_continuity(assessment)
+    shared = {int(a["addr"], 16) for c in flow["concerns"] for a in c.get("addresses", [])}
+
+    # Scopes can be shared between relations (and with assessment["scopes"]): compact each once.
+    compact = {s["evidence_id"]: _compact_state(s) for r in assessment["relations"] for s in r["scopes"]}
+
+    for relation in assessment["relations"]:
+        for scope in relation["scopes"]:
+            scope["state"] = compact[scope["evidence_id"]]
+
     content: dict[str, Any] = {
         "objective": {k: assessment["objective"][k] for k in ("question", "constraints", "firmware")},
         "termination": assessment["termination"],
@@ -143,7 +205,9 @@ def build_package(assessment: Mapping[str, Any], *, links: Mapping[str, Any], ma
                                "blockers", "evidence_needed", "scopes")}
             for r in assessment["relations"]
         ],
-        "composition": assessment["composition"],
+        "composition": dict(assessment["composition"], continuity={
+            "concerns": flow["concerns"], "unknown": flow["unknown"], "note": flow["note"]}),
+        "targets": target_index(assessment),
         "tensions": assessment["tensions"],
         "evidence": [
             {k: e[k] for k in ("evidence_id", "tool", "arguments", "status", "summary", "result_sha256") if k in e}
@@ -162,21 +226,67 @@ def build_package(assessment: Mapping[str, Any], *, links: Mapping[str, Any], ma
         ],
     }
     truncated: list[str] = []
+    omitted: list[dict[str, Any]] = []
+
+    def cap(label: str, total: int, kept: int) -> None:
+        if total > kept:
+            omitted.append({"item": label, "dropped": total - kept, "kept": kept})
+
+    # Fixed caps, recorded (they apply whatever the size).
+    cap("rejected_operations", len(assessment["rejected_operations"]), 8)
+    cap("hypotheses", len(assessment["hypotheses"]), 6)
+    cap("unresolved_questions", len(assessment["unresolved_questions"]), 12)
+
+    for relation in assessment["relations"]:
+        for scope in relation["scopes"]:
+            cap(f"assessment harness_assumptions {relation['id']}/{scope['evidence_id']} (beyond terminal.MAX_ASSUMPTIONS)",
+                scope.get("harness_assumptions_total", 0), len(scope.get("harness_assumptions") or []))
 
     def size() -> int:
         return len(json.dumps(content, sort_keys=True))
 
-    # Lowest value first: the trajectory, then evidence prose, then lists.
+    def keep_material_assumptions() -> None:
+        for relation in content["relations"]:
+            for scope in relation["scopes"]:
+                items = scope["harness_assumptions"]
+                kept = [a for i, a in enumerate(items) if i < 3 or _material(a, shared)]
+                cap(f"harness_assumptions {relation['id']}/{scope['evidence_id']}", len(items), len(kept))
+                scope["harness_assumptions"] = kept
+
+    def drop(label: str, key: str, limit: int | None = None) -> Callable[[], None]:
+        def reduce() -> None:
+            items = content[key]
+            kept = items[:limit] if limit is not None else []
+            cap(label, len(items), len(kept))
+            content[key] = kept
+        return reduce
+
+    def clip_summaries(limit: int | None) -> Callable[[], None]:
+        def reduce() -> None:
+            touched = [e["evidence_id"] for e in content["evidence"] if e.get("summary") and (limit is None or len(e["summary"]) > limit)]
+
+            for e in content["evidence"]:
+                if limit is None:
+                    e.pop("summary", None)
+                elif e.get("summary"):
+                    e["summary"] = _clip(e["summary"], limit)
+
+            if touched:
+                omitted.append({"item": "evidence.summary" + (f">{limit} chars" if limit else ""), "evidence": touched})
+        return reduce
+
+    # Lowest value first: the trajectory, then evidence prose, then lists. Material state (scope state,
+    # continuity concerns, segment boundaries, blockers, qualifiers, contradictions) is never reduced.
     reducers: list[tuple[str, Callable[[], None]]] = [
-        ("operations", lambda: content.__setitem__("operations", [])),
-        ("evidence.summary<=300", lambda: [e.__setitem__("summary", _clip(e["summary"], 300)) for e in content["evidence"]]),
-        ("evidence.arguments", lambda: [e.pop("arguments", None) for e in content["evidence"]]),
-        ("unresolved_questions<=6", lambda: content.__setitem__("unresolved_questions", content["unresolved_questions"][:6])),
-        ("scopes.harness_assumptions<=3", lambda: [s.__setitem__("harness_assumptions", s["harness_assumptions"][:3])
-                                                   for r in content["relations"] for s in r["scopes"]]),
-        ("evidence.summary<=120", lambda: [e.__setitem__("summary", _clip(e["summary"], 120)) for e in content["evidence"]]),
+        ("operations", drop("operations (trajectory)", "operations")),
+        ("evidence.summary<=300", clip_summaries(300)),
+        ("evidence.arguments", lambda: (omitted.append({"item": "evidence.arguments"}),
+                                        [e.pop("arguments", None) for e in content["evidence"]])),
+        ("unresolved_questions<=6", drop("unresolved_questions (reduction)", "unresolved_questions", 6)),
+        ("scopes.harness_assumptions<=3+material", keep_material_assumptions),
+        ("evidence.summary<=120", clip_summaries(120)),
         # Last: ids, tool, status and result hash remain for every item.
-        ("evidence.summary", lambda: [e.pop("summary", None) for e in content["evidence"]]),
+        ("evidence.summary", clip_summaries(None)),
     ]
 
     for label, reduce in reducers:
@@ -192,11 +302,73 @@ def build_package(assessment: Mapping[str, Any], *, links: Mapping[str, Any], ma
         "investigation_id": inv,
         "assessment_sha256": assessment_hash,
         "links": dict(links),
-        "bounds": {"max_chars": max_chars, "chars": size(), "truncated": truncated, "within_bound": size() <= max_chars},
+        "bounds": {"max_chars": max_chars, "chars": size(), "truncated": truncated, "within_bound": size() <= max_chars,
+                   "omitted": omitted},
         "content": content,
     }
     package["package_sha256"] = package_sha256(package)
     return package
+
+
+def package_integrity(assessment: Mapping[str, Any], package: Mapping[str, Any]) -> dict[str, Any]:
+    """Whether a package kept the material a reviewer needs to challenge causal relationships.
+
+    Material: every relation's level, blockers and evidence needed; every execution scope with its
+    assumption total; the harness assumptions that name a shared address or a qualifier; continuity
+    concerns; segment boundaries and joins; contradictions and tensions; every evidence id. Anything
+    else the package dropped is listed as low-value omission. Works for v1 and v2 packages.
+    """
+
+    content = package["content"]
+    flow = state_continuity(assessment)
+    shared = {int(a["addr"], 16) for c in flow["concerns"] for a in c.get("addresses", [])}
+    shown = {r["id"]: r for r in content["relations"]}
+    missing: list[str] = []
+
+    for relation in assessment["relations"]:
+        mine = shown.get(relation["id"])
+
+        if mine is None:
+            missing.append(f"relation {relation['id']}")
+            continue
+
+        for key in ("level", "blockers", "evidence_needed"):
+            if mine.get(key) != relation[key]:
+                missing.append(f"{relation['id']}.{key}")
+
+        scopes = {s["evidence_id"]: s for s in mine.get("scopes") or []}
+
+        for scope in relation["scopes"]:
+            kept = scopes.get(scope["evidence_id"])
+
+            if kept is None:
+                missing.append(f"{relation['id']} scope {scope['evidence_id']}")
+                continue
+
+            for text in scope.get("harness_assumptions") or []:
+                if _material(text, shared) and text not in (kept.get("harness_assumptions") or []):
+                    missing.append(f"{relation['id']}/{scope['evidence_id']} harness assumption: {text}")
+
+    composition = content.get("composition") or {}
+
+    for key in ("joins", "segments", "disconnected"):
+        if composition.get(key) != assessment["composition"].get(key):
+            missing.append(f"composition.{key}")
+
+    shown_concerns = {c["id"] for c in (composition.get("continuity") or {}).get("concerns") or []}
+
+    for concern in flow["concerns"]:
+        if concern["id"] not in shown_concerns:
+            missing.append(f"continuity {concern['id']} ({concern['kind']}) is not stated in the package")
+
+    for key in ("contradictions", "tensions"):
+        if content.get(key) != assessment.get(key):
+            missing.append(key)
+
+    absent = {e["evidence_id"] for e in assessment["evidence"]} - {e["evidence_id"] for e in content["evidence"]}
+    missing += [f"evidence {e}" for e in sorted(absent)]
+    return {"package_version": package.get("version"), "material_complete": not missing, "missing_material": missing,
+            "truncated": package["bounds"].get("truncated", []), "omitted_recorded": package["bounds"].get("omitted")}
 
 
 def package_sha256(package: Mapping[str, Any]) -> str:
@@ -253,6 +425,9 @@ def parse_review(content: str, package: Mapping[str, Any]) -> dict[str, Any]:
 
     relation_ids = {r["id"] for r in package["content"]["relations"]}
     evidence_ids = {e["evidence_id"] for e in package["content"]["evidence"]}
+    index = package["content"].get("targets") or {}
+    target_ids = relation_ids | evidence_ids | set(index.get("joins") or []) | set(index.get("segments") or {}) \
+        | set(index.get("continuity") or {})
     findings = []
 
     for index, item in enumerate(data["findings"][:16]):
@@ -281,6 +456,16 @@ def parse_review(content: str, package: Mapping[str, Any]) -> dict[str, Any]:
         if unknown_evidence:
             checks.append(f"evidence not in the package: {', '.join(unknown_evidence)}")
 
+        targets = [str(t) for t in item.get("targets") or [] if isinstance(t, (str, int))]
+        unknown_targets = [t for t in targets if t not in target_ids]
+        defect = str(item.get("defect") or "").strip() or None
+
+        if unknown_targets:
+            checks.append(f"targets not in the package: {', '.join(unknown_targets)}")
+
+        if defect is not None and defect not in DEFECTS:
+            checks.append(f"unknown defect {defect!r}")
+
         effective = kind
 
         # A contradiction is demonstrated only by evidence in the package.
@@ -296,6 +481,12 @@ def parse_review(content: str, package: Mapping[str, Any]) -> dict[str, Any]:
             "evidence_ids": cited,
             "statement": _clip(item.get("statement"), 600),
             "test": _clip(item.get("test"), 600) if item.get("test") else None,
+            # Grounding fields (template v2); absent from v1 responses.
+            "targets": targets,
+            "defect": defect,
+            "quote": _clip(item.get("quote"), 400) if item.get("quote") else None,
+            "checkable": item.get("checkable") if isinstance(item.get("checkable"), bool) else None,
+            "resolving_evidence": _clip(item.get("resolving_evidence"), 600) if item.get("resolving_evidence") else None,
             "aptrace_checks": checks,
         })
 
@@ -322,6 +513,7 @@ class TerminalReviewStore:
         <root>/<investigation_id>/package.json
         <root>/<investigation_id>/attempts/<attempt_id>.json
         <root>/<investigation_id>/residency/<record_id>.json
+        <root>/<investigation_id>/validations/<attempt_id>.json   critic validation of a completed attempt
     """
 
     def __init__(self, root: Path | str) -> None:
@@ -365,6 +557,13 @@ class TerminalReviewStore:
     def put_residency(self, inv: str, record_id: str, record: Mapping[str, Any]) -> None:
         self._write_once(self._dir(inv) / "residency" / f"{record_id}.json", record)
 
+    def put_validation(self, inv: str, attempt_id: str, record: Mapping[str, Any]) -> None:
+        self._write_once(self._dir(inv) / "validations" / f"{attempt_id}.json", record)
+
+    def validation(self, inv: str, attempt_id: str) -> dict[str, Any] | None:
+        path = self._dir(inv) / "validations" / f"{attempt_id}.json"
+        return json.loads(path.read_text()) if path.is_file() else None
+
     def assessment(self, inv: str) -> dict[str, Any]:
         return json.loads((self._dir(inv) / "assessment.json").read_text())
 
@@ -382,6 +581,20 @@ class TerminalReviewStore:
     def status(self, inv: str) -> str:
         attempts = self.attempts(inv)
         return attempts[-1]["status"] if attempts else PENDING
+
+    def validate(self, inv: str, attempt_id: str | None = None) -> dict[str, Any] | None:
+        """Critic validation of a completed attempt (the latest by default), computed from the persisted
+        assessment and package. Deterministic; it writes nothing."""
+
+        completed = [a for a in self.attempts(inv) if a["status"] == COMPLETED and a.get("review")]
+        attempt = next((a for a in completed if a["attempt_id"] == attempt_id), None) if attempt_id else (
+            completed[-1] if completed else None)
+
+        if attempt is None:
+            return None
+
+        return validate_review(self.assessment(inv)["assessment"], attempt["review"], package=self.package(inv),
+                               attempt=attempt)
 
     def verified_package(self, inv: str) -> dict[str, Any]:
         """The persisted package, after checking it still matches its own hash and the assessment."""
@@ -552,6 +765,15 @@ class TerminalReviewer:
 
             self.store.put_attempt(attempt)
 
+        if attempt["status"] == COMPLETED:
+            # Derived, deterministic and advisory; a validation error never changes the review status.
+            try:
+                validation = self.store.validate(inv, attempt["attempt_id"])
+            except Exception as exc:  # noqa: BLE001
+                validation = {"error": {"kind": type(exc).__name__, "detail": str(exc)[:800]}}
+
+            self.store.put_validation(inv, attempt["attempt_id"], validation)
+
         if restore_model and self.residency is not None:
             record_id = f"{attempt['attempt_id']}-restore"
 
@@ -668,15 +890,20 @@ def render_final_report(store: TerminalReviewStore, inv: str) -> list[str]:
 
         lines.append(f"  reviewer's view of stated confidence: {review['confidence']}")
 
+    validation = store.validate(inv, latest["attempt_id"]) if review is not None else None
+    lines += ["", "CRITIC VALIDATION (APTrace's deterministic checks of the criticism; not firmware verification)"]
+
+    if validation is None:
+        lines.append("  (none: no completed review)")
+    else:
+        lines += [f"  {line}" for line in render_validation(validation)]
+
     lines += ["", "UNRESOLVED EVIDENCE REQUIREMENTS"]
     lines += [f"  {line}" for line in unresolved_requirements(assessment)] or ["  (none recorded)"]
 
-    if review is not None:
-        tests = [f for f in review["findings"] if f["test"]]
-
-        if tests:
-            lines.append("  reviewer-suggested tests (not yet APTrace requirements):")
-            lines += [f"    {','.join(f['relations']) or '-'}: {f['test']}" for f in tests]
+    if validation is not None and validation["followups"]:
+        lines.append("  follow-up question proposals (from supported/unresolved criticism and continuity; not executed):")
+        lines += [f"    {line}" for line in render_followups(validation)]
 
     lines += ["", "REVIEW AVAILABILITY"]
     lines.append(f"  status: {summary['status']} ({len(summary['attempts'])} attempt(s)); investigation {inv}")
@@ -700,6 +927,7 @@ def render_final_report(store: TerminalReviewStore, inv: str) -> list[str]:
 __all__ = [
     "PACKAGE_VERSION", "TEMPLATE_VERSION", "ATTEMPT_VERSION", "DEFAULT_REVIEW_MODEL", "STATUSES", "CATEGORIES", "KINDS",
     "PENDING", "COMPLETED", "UNAVAILABLE", "FAILED", "SKIPPED", "AUTHORITY",
-    "build_package", "package_sha256", "investigation_id", "review_messages", "parse_review", "MalformedReview",
+    "build_package", "package_sha256", "package_integrity", "investigation_id", "review_messages", "parse_review",
+    "MalformedReview",
     "TerminalReviewStore", "TerminalReviewer", "review_summary", "render_final_report",
 ]

@@ -6,7 +6,9 @@ investigation these assertions support.
 
 Deliberately not pytest-based, matching cases/performing-rigs/test/
 test_concrete.py's own convention -- plain assertions, run as a script.
-Exit code 0 means everything passed.
+Exit code 0 means everything passed. Run with the Unicorn venv:
+
+    tools/unicorn/.venv/bin/python3 cases/performing-rigs/test/test_feather_m4_profile.py
 
 Opens the canonical census DB read-only (mode=ro); never writes to it.
 """

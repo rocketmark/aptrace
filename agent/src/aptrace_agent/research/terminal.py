@@ -20,6 +20,11 @@ evidence grade, verdict or claim. In particular:
 - **Tensions.** A relation with both positive evidence and blockers is
   listed as a tension, never as a contradiction verdict. Scenario-scoped
   observations under different harness states are not contradictory.
+- **Continuity (v2).** Each execution scope carries its normalized state
+  (supplied, produced, carried, unknown), and the composition section
+  reports where separately executed segments share state they never passed
+  to each other (research/continuity.py). A concern never establishes
+  continuity.
 
 See docs/terminal-review.md.
 """
@@ -30,6 +35,7 @@ from collections.abc import Mapping, Sequence
 from typing import Any
 
 from aptrace_agent.ledger.hashing import digest
+from aptrace_agent.research import continuity
 from aptrace_agent.research.objective import (
     OBSERVED,
     STATIC,
@@ -41,7 +47,9 @@ from aptrace_agent.research.objective import (
 from aptrace_agent.research.projection import summarize_observation
 
 
-ASSESSMENT_VERSION = "terminal-assessment-v1"
+# v2 (Critic Validation v1): scopes carry normalized execution state and the
+# composition section carries state continuity. v1 records stay valid.
+ASSESSMENT_VERSION = "terminal-assessment-v2"
 
 # Bounds that keep the assessment a reviewable size. The complete evidence
 # stays in the run artifact and the ledger; the assessment carries hashes.
@@ -126,6 +134,7 @@ def _scope(observation: Any) -> dict[str, Any] | None:
             for item in assumptions[:MAX_ASSUMPTIONS]
         ],
         "harness_assumptions_total": len(assumptions),
+        "state": continuity.state_from_result(result),
     }
 
 
@@ -348,6 +357,7 @@ def build_assessment(
     category = TERMINATION_CATEGORIES.get(stop_reason, "other")
     answered = all(r["level"] == OBSERVED for r in relations)
     segments = _segments(relations)
+    state_continuity = continuity.analyze(relations, list(scopes.values()))
     disconnected = (
         f"{len(segments)} separately established segments; no recorded relation connects them, so nothing "
         "here relates one segment's execution to another's"
@@ -383,6 +393,7 @@ def build_assessment(
             "joins": _joins(relations, scopes),
             "segments": segments,
             "disconnected": disconnected,
+            "continuity": state_continuity,
         },
         "tensions": tensions,
         "scopes": list(scopes.values()),
@@ -488,6 +499,9 @@ def render_assessment(assessment: Mapping[str, Any]) -> list[str]:
         lines.append(f"segments: {assessment['composition']['disconnected']}: "
                      + "; ".join("+".join(s["relations"]) for s in assessment["composition"]["segments"]))
 
+    for concern in (assessment["composition"].get("continuity") or {}).get("concerns", []):
+        lines.append(f"continuity {concern['id']} {concern['kind']}: {concern['statement']}")
+
     for item in assessment["failed_operations"]:
         lines.append(f"failed {item['evidence_id']} {item['tool']}: {item['status']}")
 
@@ -519,6 +533,9 @@ def unresolved_requirements(assessment: Mapping[str, Any]) -> list[str]:
     if assessment["composition"].get("disconnected"):
         lines.append(f"segments {' | '.join('+'.join(s['relations']) for s in assessment['composition']['segments'])}: "
                      "no recorded relation connects them; the intermediate relations need evidence")
+
+    for concern in (assessment["composition"].get("continuity") or {}).get("concerns", []):
+        lines.append(f"continuity {concern['id']} ({'/'.join(concern['segments'])}): {concern['requirement']}")
 
     return lines
 

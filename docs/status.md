@@ -191,7 +191,14 @@ belong in each case's status document.
   sequential oMLX residency (planner unloaded before the reviewer loads), with
   write-once review records, explicit review status and retry from the
   persisted package ([`terminal-review.md`](terminal-review.md)). The review
-  is advisory and never changes evidence or claim state.
+  is advisory and never changes evidence or claim state. Each finding is then
+  validated deterministically against the assessment
+  ([`critic-validation.md`](critic-validation.md)). Validation grounds the
+  finding's citations, classifies it as supported, contradicted, unresolved
+  or ungrounded, and detects state shared between separately executed
+  segments without being passed between them. Supported and unresolved
+  criticism becomes bounded follow-up question proposals, which are never
+  executed.
 - Keep a durable research ledger with adversarial audit and deterministic
   verification ([`research-ledger.md`](research-ledger.md)): content-addressed
   evidence with typed-operation replay, versioned claims with dependencies,

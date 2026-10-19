@@ -41,4 +41,8 @@ Case-specific Haskell modules, configuration, scenarios, scripts, and tests live
 under this directory. They call reusable engines at the repository root. Run
 commands from the repository root unless a document says otherwise.
 
+The Python tests in `test/` are split between the agent and Unicorn
+environments ([`docs/toolchain.md`](../../docs/toolchain.md)). Run them all,
+each with its own interpreter, with `cases/performing-rigs/test/run_python_tests.sh`.
+
 Read [`CLAUDE.md`](CLAUDE.md) before adding findings or experiments.

@@ -1,0 +1,1006 @@
+{
+  "assessment_sha256": "24d24909e194c4dbefcb392483799d4c92690f1adab6b3d43fbad63b1089834c",
+  "assessment_version": "terminal-assessment-v1",
+  "attempt_id": "RA-20261019T171754-640213",
+  "authority": "critic validation classifies the reviewer's propositions about the investigation record; it changes no evidence, relation level, claim, grade or admission decision and does not verify firmware behavior",
+  "confidence": {
+    "check": "stated_confidence",
+    "detail": "the assessment states only per-edge levels with their meanings: no composition, no admitted claim, no end-to-end conclusion",
+    "records": [
+      {
+        "record": "composition.attempted",
+        "text": "not attempted: per-edge levels are not an end-to-end causal result"
+      },
+      {
+        "record": "termination.every_relation_observed",
+        "text": ""
+      },
+      {
+        "record": "claims.admitted",
+        "text": ""
+      }
+    ],
+    "result": "CONTRADICTED",
+    "reviewer": "overstated"
+  },
+  "continuity": {
+    "concerns": [
+      {
+        "addresses": [
+          {
+            "addr": "0x20000094",
+            "len": 4
+          }
+        ],
+        "establishes_continuity": false,
+        "id": "C1",
+        "kind": "independently_supplied_state",
+        "relations": {
+          "E1": [
+            "R2",
+            "R3",
+            "R7"
+          ],
+          "E2": [
+            "R6",
+            "R5"
+          ]
+        },
+        "requirement": "one execution in which 0x20000094 (4 byte(s)) is produced by the firmware before the later segment uses it, or a later segment that starts from E1's recorded final state instead of a seed",
+        "scenarios": [
+          "rx-f0-direct-seed",
+          "tc0-isr-direct-call"
+        ],
+        "segments": [
+          "E1",
+          "E2"
+        ],
+        "state": {
+          "E1": "supplied",
+          "E2": "supplied"
+        },
+        "statement": "E1 and E2 each supply 0x20000094 (4 byte(s)) as an initial condition; neither execution produced the other's value, and no record carries state between them"
+      }
+    ],
+    "not_raised_by_reviewer": [
+      {
+        "concern": "C1",
+        "findings_citing_both_segments": [
+          4,
+          5
+        ],
+        "kind": "independently_supplied_state",
+        "statement": "E1 and E2 each supply 0x20000094 (4 byte(s)) as an initial condition; neither execution produced the other's value, and no record carries state between them"
+      }
+    ],
+    "unknown": [
+      {
+        "detail": "writes not logged (produced state not distinguished)",
+        "evidence_id": "E1"
+      },
+      {
+        "detail": "writes not logged (produced state not distinguished)",
+        "evidence_id": "E2"
+      }
+    ]
+  },
+  "continuity_source": "recomputed from v1 scopes (harness assumption text)",
+  "counts": {
+    "CONTRADICTED": 1,
+    "SUPPORTED": 4,
+    "UNGROUNDED": 0,
+    "UNRESOLVED": 3
+  },
+  "findings": [
+    {
+      "already_recorded": true,
+      "category": "unjustified_composition",
+      "characterization": {
+        "check": "composition_presented",
+        "detail": "the assessment does not compose these relations: composition is not attempted, every join is unvalidated, and no statement spans separately established segments",
+        "records": [
+          {
+            "record": "composition.attempted",
+            "text": "False: not attempted: per-edge levels are not an end-to-end causal result"
+          },
+          {
+            "record": "composition.joins[R2->R7]",
+            "text": "continuity not validated: at least one side has no supporting evidence"
+          },
+          {
+            "record": "composition.joins[R7->R4]",
+            "text": "continuity not validated: at least one side has no supporting evidence"
+          }
+        ],
+        "result": "CONTRADICTED"
+      },
+      "checks": [
+        {
+          "check": "relation_gap:R7",
+          "detail": "R7 is UNRESOLVED: no supporting evidence recorded",
+          "records": [
+            {
+              "record": "relations.R7.level",
+              "text": "UNRESOLVED"
+            },
+            {
+              "record": "relations.R7.evidence_needed[0]",
+              "text": "no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "missing_evidence"
+      },
+      "effective_kind": "hypothesis",
+      "index": 0,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": true,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation attempts to bridge the gap between the command handler (E1) and the rate machinery (E3) via a shared endpoint (FUN_00005ee8) without any evidence of state continuity or causal linkage between the two separately executed scenarios.",
+      "target": {
+        "cited_relations": [
+          "R7"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E1",
+          "E3"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R7"
+        ],
+        "segments": [],
+        "unrelated_evidence": [
+          "E3"
+        ]
+      },
+      "test": "Provide evidence of a shared, persistent state or a valid execution path that connects the exit of the 'rx-f0-direct-seed' scenario to the entry of the 'static' analysis in E3."
+    },
+    {
+      "already_recorded": false,
+      "category": "static_as_execution",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "static_presented_as_execution",
+          "detail": "every targeted relation is reported at its own level with its meaning, no join is validated, and no statement presents static-only evidence as execution",
+          "records": [
+            {
+              "record": "relations.R4.level",
+              "text": "STATIC: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution"
+            },
+            {
+              "record": "relations.R6.level",
+              "text": "UNRESOLVED: no supporting evidence recorded"
+            }
+          ],
+          "result": "CONTRADICTED"
+        }
+      ],
+      "classification": "CONTRADICTED",
+      "defect": {
+        "source": "category",
+        "type": "incorrect_inference"
+      },
+      "effective_kind": "hypothesis",
+      "index": 1,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation treats a static Ghidra call-graph edge (R4) as a functional link to the observed ISR execution (R6), despite no evidence that the 'rate machinery' is actually active or that the timer-setup code is reachable during a real command execution.",
+      "target": {
+        "cited_relations": [
+          "R4",
+          "R6"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E3",
+          "E2"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R4",
+          "R6"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Demonstrate that the execution path from the command handler (E1) actually reaches the timer setup (E3/E2) in a single, continuous execution trace."
+    },
+    {
+      "already_recorded": true,
+      "category": "missing_prerequisite_or_state_continuity",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "relation_gap:R7",
+          "detail": "R7 is UNRESOLVED: no supporting evidence recorded",
+          "records": [
+            {
+              "record": "relations.R7.level",
+              "text": "UNRESOLVED"
+            },
+            {
+              "record": "relations.R7.evidence_needed[0]",
+              "text": "no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "missing_evidence"
+      },
+      "effective_kind": "hypothesis",
+      "index": 2,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The relationship R7 (motion state activates rate machinery) is blocked by a lack of evidence relating the command handler to the rate machinery, yet the investigation fails to define the necessary state transitions required to move from a 'jog' to an 'active' motion state.",
+      "target": {
+        "cited_relations": [
+          "R7"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E1"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R7"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Identify the specific memory-mapped register or global variable that must be modified by R2/R3 to enable the execution of R4/R6."
+    },
+    {
+      "already_recorded": true,
+      "category": "peripheral_timer_interrupt_assumption",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "scope_assumptions:E2",
+          "detail": "E2 holds only under 9 harness assumption(s); the assumed condition is supplied by the harness, not demonstrated",
+          "records": [
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[0]",
+              "text": "fresh machine state at entry 0x0000607d"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[1]",
+              "text": "seeded 4 byte(s) at 0x20000164 (value is a harness input)"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[2]",
+              "text": "seeded 4 byte(s) at 0x20000094 (value is a harness input)"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[3]",
+              "text": "seeded 1 byte(s) at 0x20003099 (value is a harness input)"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[4]",
+              "text": "Direct AAPCS handler call is not IRQ delivery"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[5]",
+              "text": "delta=1"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[6]",
+              "text": "divisor=1"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[7]",
+              "text": "original STEP indices seeded"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].harness_assumptions[8]",
+              "text": "108-instruction complete direct call"
+            },
+            {
+              "evidence_id": "E2",
+              "record": "scopes[E2].coverage",
+              "text": "one concrete execution of 108 instructions from 0x0000607d, reached stop address 0x2fff0010; MMIO is plain memory, no peripheral or interrupt model"
+            }
+          ],
+          "result": "SUPPORTED"
+        },
+        {
+          "check": "relation_gap:R6",
+          "detail": "R6 is UNRESOLVED",
+          "records": [
+            {
+              "record": "relations.R6.evidence_needed[0]",
+              "text": "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "unsupported_assumption"
+      },
+      "effective_kind": "suggested_test",
+      "index": 3,
+      "kind": "suggested_test",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation relies on a 'direct call' to a handler (E2) to simulate an ISR, but provides no evidence that the timer hardware (TC0) actually triggers this handler in a real-world scenario.",
+      "target": {
+        "cited_relations": [
+          "R6"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E2"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R6"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Perform a concrete execution trace where the timer hardware interrupt is the trigger for the handler, rather than a manual function call, to verify if the 'step' output (PB10) is driven as expected."
+    },
+    {
+      "already_recorded": true,
+      "category": "scope_mismatch",
+      "characterization": {
+        "check": "scope_applied_elsewhere",
+        "detail": "each relation's evidence is reported with its own execution scope, and no statement applies one scenario's evidence to another",
+        "records": [
+          {
+            "evidence_id": "E1",
+            "record": "relations.R2.scopes[E1]",
+            "text": "scenario rx-f0-direct-seed, 7 harness assumption(s)"
+          },
+          {
+            "evidence_id": "E2",
+            "record": "relations.R5.scopes[E2]",
+            "text": "scenario tc0-isr-direct-call, 9 harness assumption(s)"
+          }
+        ],
+        "result": "CONTRADICTED"
+      },
+      "checks": [
+        {
+          "check": "connection",
+          "detail": "nothing recorded connects R2 to R5 in one execution: every join is unvalidated, and intermediate relations lack execution evidence",
+          "records": [
+            {
+              "record": "composition.disconnected",
+              "text": "3 separately established segments; no recorded relation connects them, so nothing here relates one segment's execution to another's"
+            },
+            {
+              "record": "composition.joins[R2->R7]",
+              "text": "continuity not validated: at least one side has no supporting evidence"
+            },
+            {
+              "record": "composition.joins[R7->R4]",
+              "text": "continuity not validated: at least one side has no supporting evidence"
+            },
+            {
+              "record": "composition.joins[R4->R6]",
+              "text": "continuity not validated: at least one side has no supporting evidence"
+            },
+            {
+              "record": "composition.joins[R6->R5]",
+              "text": "continuity not validated: at least one side has no supporting evidence"
+            },
+            {
+              "record": "relations.R7.level",
+              "text": "UNRESOLVED"
+            },
+            {
+              "record": "relations.R4.level",
+              "text": "STATIC"
+            },
+            {
+              "record": "relations.R6.level",
+              "text": "UNRESOLVED"
+            },
+            {
+              "record": "composition.continuity.C1",
+              "text": "E1 and E2 each supply 0x20000094 (4 byte(s)) as an initial condition; neither execution produced the other's value, and no record carries state between them"
+            }
+          ],
+          "result": "SUPPORTED"
+        },
+        {
+          "check": "state_continuity",
+          "detail": "the segments share state they never passed to each other",
+          "records": [
+            {
+              "record": "composition.continuity.C1",
+              "text": "E1 and E2 each supply 0x20000094 (4 byte(s)) as an initial condition; neither execution produced the other's value, and no record carries state between them"
+            }
+          ],
+          "result": "SUPPORTED"
+        }
+      ],
+      "classification": "SUPPORTED",
+      "defect": {
+        "source": "category",
+        "type": "missing_evidence"
+      },
+      "effective_kind": "hypothesis",
+      "index": 4,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": true,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "finding",
+      "statement": "The investigation attempts to answer if a command causes a GPIO write by joining a command-processing segment (E1) with a separate, manually-triggered ISR segment (E2), which ignores the possibility that the command might not trigger the ISR at all.",
+      "target": {
+        "cited_relations": [
+          "R2",
+          "R5"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E1",
+          "E2"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R2",
+          "R5"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": "Verify if the command execution in E1 results in the specific hardware state (e.g., timer enable bits) required to trigger the ISR in E2."
+    },
+    {
+      "already_recorded": false,
+      "category": "omitted_question",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "firmware_behavior",
+          "detail": "a proposition about firmware behavior; critic validation does not evaluate firmware",
+          "records": [],
+          "result": "UNRESOLVED"
+        }
+      ],
+      "classification": "UNRESOLVED",
+      "defect": {
+        "source": "category",
+        "type": "firmware_hypothesis"
+      },
+      "effective_kind": "hypothesis",
+      "index": 5,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "omitted_question",
+      "statement": "Does the command execution in E1 modify the hardware state necessary to trigger the interrupt in E2?",
+      "target": {
+        "cited_relations": [],
+        "concerns": [],
+        "evidence": [
+          "E1",
+          "E2"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R2",
+          "R5"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": null
+    },
+    {
+      "already_recorded": false,
+      "category": "omitted_question",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "firmware_behavior",
+          "detail": "a proposition about firmware behavior; critic validation does not evaluate firmware",
+          "records": [],
+          "result": "UNRESOLVED"
+        }
+      ],
+      "classification": "UNRESOLVED",
+      "defect": {
+        "source": "category",
+        "type": "firmware_hypothesis"
+      },
+      "effective_kind": "hypothesis",
+      "index": 6,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "omitted_question",
+      "statement": "Is the 'busy gate' (0x20001b14) a prerequisite for the ISR execution, and if so, why did E1 not trigger it?",
+      "target": {
+        "cited_relations": [
+          "R3"
+        ],
+        "concerns": [],
+        "evidence": [
+          "E1"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R3"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": null
+    },
+    {
+      "already_recorded": false,
+      "category": "omitted_question",
+      "characterization": null,
+      "checks": [
+        {
+          "check": "firmware_behavior",
+          "detail": "a proposition about firmware behavior; critic validation does not evaluate firmware",
+          "records": [],
+          "result": "UNRESOLVED"
+        }
+      ],
+      "classification": "UNRESOLVED",
+      "defect": {
+        "source": "category",
+        "type": "firmware_hypothesis"
+      },
+      "effective_kind": "hypothesis",
+      "index": 7,
+      "kind": "hypothesis",
+      "mischaracterizes_investigation": false,
+      "reviewer_checkable": null,
+      "reviewer_resolving_evidence": null,
+      "source": "omitted_question",
+      "statement": "What is the causal link between the static call in E3 and the observed hardware writes in E2?",
+      "target": {
+        "cited_relations": [],
+        "concerns": [],
+        "evidence": [
+          "E3",
+          "E2"
+        ],
+        "joins": [],
+        "quote": null,
+        "rejected_citations": [],
+        "relations": [
+          "R4",
+          "R5"
+        ],
+        "segments": [],
+        "unrelated_evidence": []
+      },
+      "test": null
+    }
+  ],
+  "followups": [
+    {
+      "candidate_operations": [
+        {
+          "arguments": {
+            "function": "FUN_00005ee8",
+            "scenario": null
+          },
+          "availability": "existing operation; needs a registered scenario that enters FUN_00004d18 (tried: rx-f0-direct-seed)",
+          "level_if_found": "OBSERVED",
+          "operation": "observe_call_arguments",
+          "relation": "R7"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00004d18"
+          },
+          "availability": "existing operation",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R7"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005c00",
+            "scenario": null
+          },
+          "availability": "existing operation; needs a registered scenario that enters FUN_00005ee8",
+          "level_if_found": "OBSERVED",
+          "operation": "observe_call_arguments",
+          "relation": "R4"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005ee8"
+          },
+          "availability": "existing operation",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R4"
+        },
+        {
+          "availability": "capability_gap",
+          "detail": "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)",
+          "operation": null,
+          "relation": "R6"
+        },
+        {
+          "arguments": {
+            "function": "FUN_0000607c",
+            "scenario": null
+          },
+          "availability": "existing operation; needs a registered scenario that enters FUN_00005c00 (tried: tc0-isr-direct-call)",
+          "level_if_found": "OBSERVED",
+          "operation": "observe_call_arguments",
+          "relation": "R6"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005c00"
+          },
+          "availability": "existing operation",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R6"
+        },
+        {
+          "availability": "requires_registered_scenario",
+          "detail": "a case scenario that runs from FUN_00005448's caller context through FUN_00005898 in one execution without seeding 0x20000094; then observe_call_arguments of FUN_00005898 under it",
+          "operation": null
+        }
+      ],
+      "challenged": {
+        "from": "FUN_00005448",
+        "levels": {
+          "R2": "OBSERVED",
+          "R4": "STATIC",
+          "R5": "OBSERVED",
+          "R6": "UNRESOLVED",
+          "R7": "UNRESOLVED"
+        },
+        "relations": [
+          "R2",
+          "R7",
+          "R4",
+          "R6",
+          "R5"
+        ],
+        "segments": [
+          "E1",
+          "E2"
+        ],
+        "to": "FUN_00005898"
+      },
+      "conditions": [
+        "one execution, or segments recorded as carried forward, covering R2 -> R7 -> R4 -> R6 -> R5",
+        "0x20000094 must be produced by firmware execution or carried from a recorded segment, not supplied as an initial condition",
+        "E1's 7 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state",
+        "E2's 9 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state"
+      ],
+      "executable": false,
+      "expected_evidence": [
+        "each of R2, R7, R4, R6, R5 OBSERVED under one scope whose state records no seed for the shared addresses (or records them as carried_from)"
+      ],
+      "id": "FQ-491c114e58e2",
+      "kind": "connection",
+      "limitations": [
+        "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)",
+        "E1 coverage: one concrete execution of 2537 instructions from 0x00008a35, reached stop address 0x000083ec; MMIO is plain memory, no peripheral or interrupt model",
+        "E2 coverage: one concrete execution of 108 instructions from 0x0000607d, reached stop address 0x2fff0010; MMIO is plain memory, no peripheral or interrupt model",
+        "E1 state: writes not logged (produced state not distinguished)",
+        "E2 state: writes not logged (produced state not distinguished)",
+        "the continuity check compares supplied, produced and carried address ranges between segments; it does not compare legs within one scenario or model register, peripheral or interrupt state"
+      ],
+      "missing_evidence": [
+        "R7 (UNRESOLVED): no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition",
+        "R4 (STATIC): no concrete observation of FUN_00005ee8 calling FUN_00005c00 under the selected command",
+        "R6 (UNRESOLVED): no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)",
+        "join R2->R7: continuity not validated",
+        "join R7->R4: continuity not validated",
+        "join R4->R6: continuity not validated",
+        "join R6->R5: continuity not validated",
+        "C1: one execution in which 0x20000094 (4 byte(s)) is produced by the firmware before the later segment uses it, or a later segment that starts from E1's recorded final state instead of a seed"
+      ],
+      "note": "a proposal for a future bounded investigation; nothing here runs it, and reviewer tests are not APTrace requirements",
+      "question": "Does one execution carry FUN_00005448 through FUN_00005898 (R2 -> R7 -> R4 -> R6 -> R5), with the intermediate relations established in that same execution?",
+      "reviewer_tests": [
+        "Verify if the command execution in E1 results in the specific hardware state (e.g., timer enable bits) required to trigger the ISR in E2."
+      ],
+      "sources": [
+        {
+          "category": "scope_mismatch",
+          "classification": "SUPPORTED",
+          "finding": 4,
+          "source": "finding"
+        },
+        {
+          "category": "omitted_question",
+          "classification": "UNRESOLVED",
+          "finding": 5,
+          "source": "omitted_question"
+        },
+        {
+          "aptrace_continuity": "C1"
+        },
+        {
+          "category": "omitted_question",
+          "classification": "UNRESOLVED",
+          "finding": 7,
+          "source": "omitted_question"
+        }
+      ],
+      "status": "proposal"
+    },
+    {
+      "candidate_operations": [
+        {
+          "arguments": {
+            "function": "FUN_00005448"
+          },
+          "availability": "existing operation",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R3"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005448",
+            "scenario": null,
+            "watch": [
+              "0x20001b14"
+            ]
+          },
+          "availability": "executor operation with watched RAM fields; not offered in the planner palette, so it needs an operator request",
+          "level_if_found": "concrete store observation (scenario-scoped)",
+          "operation": "observed_call_arguments",
+          "relation": "R3"
+        }
+      ],
+      "challenged": {
+        "from": "FUN_00005448",
+        "levels": {
+          "R3": "UNRESOLVED"
+        },
+        "relations": [
+          "R3"
+        ],
+        "segments": [
+          "E1"
+        ],
+        "to": "0x20001b14"
+      },
+      "conditions": [
+        "a registered scenario that enters FUN_00005448; already tried: rx-f0-direct-seed",
+        "E1's 7 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state"
+      ],
+      "executable": false,
+      "expected_evidence": [
+        "R3 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded"
+      ],
+      "id": "FQ-bda0aa9e1a7f",
+      "kind": "relation",
+      "limitations": [
+        "E1 coverage: one concrete execution of 2537 instructions from 0x00008a35, reached stop address 0x000083ec; MMIO is plain memory, no peripheral or interrupt model",
+        "E1 state: writes not logged (produced state not distinguished)",
+        "the continuity check compares supplied, produced and carried address ranges between segments; it does not compare legs within one scenario or model register, peripheral or interrupt state"
+      ],
+      "missing_evidence": [
+        "R3 (UNRESOLVED): no completed function_effects of FUN_00005448 showing an access to 0x20001b14 (the effects analysis timed out)"
+      ],
+      "note": "a proposal for a future bounded investigation; nothing here runs it, and reviewer tests are not APTrace requirements",
+      "question": "Is R3 (FUN_00005448 -> 0x20001b14) established beyond UNRESOLVED?",
+      "reviewer_tests": [],
+      "sources": [
+        {
+          "category": "omitted_question",
+          "classification": "UNRESOLVED",
+          "finding": 6,
+          "source": "omitted_question"
+        }
+      ],
+      "status": "proposal"
+    },
+    {
+      "candidate_operations": [
+        {
+          "arguments": {
+            "function": "FUN_00005ee8",
+            "scenario": null
+          },
+          "availability": "existing operation; needs a registered scenario that enters FUN_00004d18 (tried: rx-f0-direct-seed)",
+          "level_if_found": "OBSERVED",
+          "operation": "observe_call_arguments",
+          "relation": "R7"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00004d18"
+          },
+          "availability": "existing operation",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R7"
+        }
+      ],
+      "challenged": {
+        "from": "FUN_00004d18",
+        "levels": {
+          "R7": "UNRESOLVED"
+        },
+        "relations": [
+          "R7"
+        ],
+        "segments": [
+          "E1"
+        ],
+        "to": "FUN_00005ee8"
+      },
+      "conditions": [
+        "a registered scenario that enters FUN_00004d18; already tried: rx-f0-direct-seed",
+        "E1's 7 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state"
+      ],
+      "executable": false,
+      "expected_evidence": [
+        "R7 at SYMBOLIC (completed effects show the call or access) or OBSERVED (a scenario-scoped observed call), with its scope recorded"
+      ],
+      "id": "FQ-808856d5fd9a",
+      "kind": "relation",
+      "limitations": [
+        "E1 coverage: one concrete execution of 2537 instructions from 0x00008a35, reached stop address 0x000083ec; MMIO is plain memory, no peripheral or interrupt model",
+        "E1 state: writes not logged (produced state not distinguished)",
+        "the continuity check compares supplied, produced and carried address ranges between segments; it does not compare legs within one scenario or model register, peripheral or interrupt state"
+      ],
+      "missing_evidence": [
+        "R7 (UNRESOLVED): no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition"
+      ],
+      "note": "a proposal for a future bounded investigation; nothing here runs it, and reviewer tests are not APTrace requirements",
+      "question": "Is R7 (FUN_00004d18 -> FUN_00005ee8) established beyond UNRESOLVED?",
+      "reviewer_tests": [
+        "Provide evidence of a shared, persistent state or a valid execution path that connects the exit of the 'rx-f0-direct-seed' scenario to the entry of the 'static' analysis in E3.",
+        "Identify the specific memory-mapped register or global variable that must be modified by R2/R3 to enable the execution of R4/R6."
+      ],
+      "sources": [
+        {
+          "category": "unjustified_composition",
+          "classification": "SUPPORTED",
+          "finding": 0,
+          "source": "finding"
+        },
+        {
+          "category": "missing_prerequisite_or_state_continuity",
+          "classification": "SUPPORTED",
+          "finding": 2,
+          "source": "finding"
+        }
+      ],
+      "status": "proposal"
+    },
+    {
+      "candidate_operations": [
+        {
+          "availability": "capability_gap",
+          "detail": "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)",
+          "operation": null,
+          "relation": "R6"
+        },
+        {
+          "arguments": {
+            "function": "FUN_0000607c",
+            "scenario": null
+          },
+          "availability": "existing operation; needs a registered scenario that enters FUN_00005c00 (tried: tc0-isr-direct-call)",
+          "level_if_found": "OBSERVED",
+          "operation": "observe_call_arguments",
+          "relation": "R6"
+        },
+        {
+          "arguments": {
+            "function": "FUN_00005c00"
+          },
+          "availability": "existing operation",
+          "level_if_found": "SYMBOLIC",
+          "operation": "analyze_function_effects",
+          "relation": "R6"
+        }
+      ],
+      "challenged": {
+        "from": "FUN_00005c00",
+        "levels": {
+          "R6": "UNRESOLVED"
+        },
+        "relations": [
+          "R6"
+        ],
+        "segments": [
+          "E2"
+        ],
+        "to": "FUN_0000607c"
+      },
+      "conditions": [
+        "the assumed condition (for example an interrupt delivery or a seeded peripheral state) is produced by the modeled system, or the relation is observed without it",
+        "E2's 9 harness assumption(s) stay disclosed; any that remain are conditions of the new evidence, not firmware state"
+      ],
+      "executable": false,
+      "expected_evidence": [
+        "R6 observed under a scope that does not supply the challenged assumption"
+      ],
+      "id": "FQ-e4df1438feb5",
+      "kind": "assumption",
+      "limitations": [
+        "no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)",
+        "E2 coverage: one concrete execution of 108 instructions from 0x0000607d, reached stop address 0x2fff0010; MMIO is plain memory, no peripheral or interrupt model",
+        "E2 state: writes not logged (produced state not distinguished)",
+        "the continuity check compares supplied, produced and carried address ranges between segments; it does not compare legs within one scenario or model register, peripheral or interrupt state"
+      ],
+      "missing_evidence": [
+        "R6 (UNRESOLVED): no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)"
+      ],
+      "note": "a proposal for a future bounded investigation; nothing here runs it, and reviewer tests are not APTrace requirements",
+      "question": "Does R6 hold without the harness assumptions its evidence (E2) supplies?",
+      "reviewer_tests": [
+        "Perform a concrete execution trace where the timer hardware interrupt is the trigger for the handler, rather than a manual function call, to verify if the 'step' output (PB10) is driven as expected."
+      ],
+      "sources": [
+        {
+          "category": "peripheral_timer_interrupt_assumption",
+          "classification": "SUPPORTED",
+          "finding": 3,
+          "source": "finding"
+        }
+      ],
+      "status": "proposal"
+    }
+  ],
+  "investigation_id": "TR-995b2d4e91725afe",
+  "package_sha256": "0d21e74d5239d54521ee09c6884f3dfc487f07d83fbfc3b765325f2844f3afd1",
+  "validation_sha256": "446a8aa12d6dec38180e7b45a15cd0f241bb85c007b7611f3c02541490bc1234",
+  "version": "critic-validation-v1"
+}
