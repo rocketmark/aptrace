@@ -23,13 +23,15 @@ A/B/C are PARTIAL; D/E/F are BLOCKED. No physical hardware was accessed.
 See [the six-gate reversible-update assessment](docs/investigations/reversible-firmware-update.md)
 for required backups, validation, risk ranking and downgrade acceptance.
 
-**Vendor flasher follow-up:** Gate B remains PARTIAL. `bossac.exe` is the
-hash-identified Windows PE32/x86 artifact, but its version/upstream match and
-erase/write/verify/protection implementation have not been established. The
-current public Ghidra wrapper rejects this target and fixes ARM/raw import;
-no independent PE-analysis substitute was used. See the
-[bounded investigation](docs/investigations/vendor-bossac-behavior.md) and
-[single hardware evidence packet](docs/investigations/vendor-bossac-hardware-handoff.md).
+**Vendor flasher follow-up:** Gate B remains PARTIAL, with its host-analysis
+prerequisite now closed. APTrace natively imports the pinned PE32/x86 EXE and
+routes its objectives to bounded static queries. It advertises BOSSA 1.9;
+inspected paths match pinned upstream 1.9 behavior, without exact-build proof.
+SAMD51 writes implicitly erase 16-page blocks even without `-e`; the embedded
+Noxon configuration is replaced by image bytes on successful programming.
+Physical protection, actual monitor behavior and recovery remain unverified.
+See [vendor behavior/evidence](docs/investigations/vendor-bossac-behavior.md) and
+[hardware evidence packet](docs/investigations/vendor-bossac-hardware-handoff.md).
 
 APTrace orchestrates four specialist tools against real, unmodified
 AutoPilot/Remote (`mando`) firmware (ATSAMD51J19A, Cortex-M4F) rather than

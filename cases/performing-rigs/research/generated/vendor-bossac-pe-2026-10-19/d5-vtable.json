@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "operation": "executable_structure_v1",
+  "target": "vendor_bossac",
+  "arguments": {
+    "kind": "data",
+    "pattern": "",
+    "address": "0x00436ae8",
+    "limit": 128
+  },
+  "identity": {
+    "target_key": "vendor_bossac",
+    "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "format_policy": "pe32-x86",
+    "loader": "Ghidra native executable detection",
+    "analysis_version": 1,
+    "ghidra_version": "12.1.3",
+    "script_hashes": {
+      "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+    },
+    "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+    "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+  },
+  "evidence_level": "static-ghidra",
+  "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+  "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+  "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+  "result": {
+    "format": "Portable Executable (PE)",
+    "language": "x86:LE:32:default",
+    "compiler": "windows",
+    "image_base": "0x00400000",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "kind": "data",
+    "start": "0x00436ae8",
+    "bytes": [
+      128,
+      64,
+      64,
+      0,
+      240,
+      63,
+      64,
+      0,
+      64,
+      54,
+      66,
+      0,
+      96,
+      54,
+      66,
+      0,
+      80,
+      54,
+      66,
+      0,
+      112,
+      54,
+      66,
+      0,
+      128,
+      54,
+      66,
+      0,
+      48,
+      54,
+      66,
+      0,
+      192,
+      56,
+      64,
+      0,
+      160,
+      50,
+      64,
+      0,
+      208,
+      51,
+      64,
+      0,
+      48,
+      46,
+      64,
+      0,
+      176,
+      50,
+      64,
+      0,
+      16,
+      45,
+      64,
+      0,
+      208,
+      50,
+      64,
+      0,
+      80,
+      45,
+      64,
+      0,
+      224,
+      48,
+      66,
+      0,
+      240,
+      50,
+      64,
+      0,
+      32,
+      45,
+      64,
+      0,
+      240,
+      48,
+      66,
+      0,
+      192,
+      50,
+      64,
+      0,
+      128,
+      45,
+      64,
+      0,
+      208,
+      48,
+      66,
+      0,
+      192,
+      58,
+      64,
+      0,
+      112,
+      57,
+      64,
+      0,
+      16,
+      51,
+      64,
+      0,
+      16,
+      57,
+      64,
+      0,
+      176,
+      45,
+      64,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      224,
+      95,
+      67,
+      0
+    ],
+    "references": [
+      {
+        "from": "0x00436ae8",
+        "to": "0x00404080",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436aec",
+        "to": "0x00403ff0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436af0",
+        "to": "0x00423640",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436af4",
+        "to": "0x00423660",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436af8",
+        "to": "0x00423650",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436afc",
+        "to": "0x00423670",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b00",
+        "to": "0x00423680",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b04",
+        "to": "0x00423630",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b08",
+        "to": "0x004038c0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b0c",
+        "to": "0x004032a0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b10",
+        "to": "0x004033d0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b14",
+        "to": "0x00402e30",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b18",
+        "to": "0x004032b0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b1c",
+        "to": "0x00402d10",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b20",
+        "to": "0x004032d0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b24",
+        "to": "0x00402d50",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b28",
+        "to": "0x004230e0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b2c",
+        "to": "0x004032f0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b30",
+        "to": "0x00402d20",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b34",
+        "to": "0x004230f0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b38",
+        "to": "0x004032c0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b3c",
+        "to": "0x00402d80",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b40",
+        "to": "0x004230d0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b44",
+        "to": "0x00403ac0",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b48",
+        "to": "0x00403970",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b4c",
+        "to": "0x00403310",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b50",
+        "to": "0x00403910",
+        "type": "DATA"
+      },
+      {
+        "from": "0x00436b54",
+        "to": "0x00402db0",
+        "type": "DATA"
+      }
+    ],
+    "bytes_returned": 128,
+    "scope": "requested byte window only; not an exhaustive data inventory"
+  },
+  "limitations": [
+    "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+    "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+    "Absence of a defined string/reference does not establish absence of behavior"
+  ],
+  "result_sha256": "2a5d5d8163f021f433246577f0fa5b6f917c85827074f02a27c1edfc4007c8a7"
+}

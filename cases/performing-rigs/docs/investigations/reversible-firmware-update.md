@@ -5,12 +5,12 @@
 
 ## Decision
 
-Follow-up: [vendor bossac.exe investigation](vendor-bossac-behavior.md) confirms
-the executable identity and demonstrates the missing APTrace PE/x86 workflow;
-actual flasher erase/write/protection semantics remain unresolved. All six
-classifications and NO-GO are unchanged. Use its
-[consolidated hardware handoff](vendor-bossac-hardware-handoff.md) for the next
-single acquisition/validation packet.
+Follow-up: [vendor bossac.exe investigation](vendor-bossac-behavior.md) now
+recovers native PE32/x86 command parsing and relevant BOSSA 1.9-family driver
+behavior. SAMD51 writes implicitly erase blocks; the input overwrites embedded
+Noxon configuration. Exact upstream build identity and physical protection,
+monitor erase outcomes and recovery remain unverified. All six classifications
+and NO-GO are unchanged. Use the [consolidated hardware handoff](vendor-bossac-hardware-handoff.md).
 
 **NO-GO for the first replacement on a production AutoPilot.** We possess
 hash-identified original application images and evidence of an application-side
@@ -83,21 +83,19 @@ was located. It is not accepted as release evidence here; current hardware,
 layout and gap-audit documentation has been qualified accordingly. Historical
 generated evidence was not rewritten.
 
-The Windows executable is present and hashed; file identification reports
-PE32 Intel 80386. No version-matched BOSSA source/research or bootloader binary
-was located in the available case. The referenced cached Arduino source tree
-and a separately expected `/Users/mstalzer/github/apfw2` directory are not
-available in this workspace. No apfw2 release binary, linker map or flash
-manifest was found. Absence from these searched locations is a dependency gap,
-not a claim that those artifacts do not exist elsewhere.
+The Windows executable is present, hashed and now natively analyzed through
+APTrace's format-aware PE32/x86 workflow. Its banner advertises BOSSA 1.9;
+inspected parsing, addressing, erase/write/verify and SAMD51 paths are consistent
+with pinned upstream tag 1.9. Exact byte/build equivalence is not established.
+See the [vendor dossier](vendor-bossac-behavior.md) for address-grounded evidence.
+No executable or hardware was operated. The host's offset does not provide a
+hardware protection boundary; omission of `-e` does not prevent erase. Its
+normal SAMD51 programming paths replace the Noxon blob with input bytes and
+can erase beyond the input length at block granularity.
 
-APTrace's current public Ghidra registry targets the Cortex-M applications;
-an approved analysis path for this Windows host executable was not identified.
-It was not executed, reverse engineered with an independent tool, or assigned
-a guessed BOSSA version. The meanings and address scope of this particular
-build's erase/write/verify/reset operations remain to be established. In
-particular, **no `-e` in the batch file does not prove no erase occurs**, and
-an offset on a write does not bound every possible erase or protection command.
+The actual target bootloader and physical protection remain unknown. The
+referenced Arduino tree and separate `/Users/mstalzer/github/apfw2` directory
+are still unavailable; no apfw2 release/map/flash manifest comparison is possible.
 
 The batch file is not a release validator: it does not check `bossac` exit
 status before printing success; after rediscovery it checks the earlier
@@ -185,7 +183,7 @@ permission to program factory/OTP values or clone them to another unit.
 | Gate | Status | Principal gap |
 |---|---|---|
 | A — Bootloader identity and independent entry | **PARTIAL** | Compatible vendor intent and application touch handler; no measured bootloader identity/capabilities or application-independent entry |
-| B — Addressing and protection | **PARTIAL** | Application offset established; actual protection, erase/write rounding and exact BOSSA build behavior unknown |
+| B — Addressing and protection | **PARTIAL** | Relevant host offset/erase/write/verify paths recovered; live monitor/protection, actual erase outcomes and exact-build equivalence unverified |
 | C — Original restoration | **PARTIAL** | Correctly hashed application candidates available; no per-device full backup, installed-version match or restore demonstration |
 | D — Persistent state | **BLOCKED** | Known config is overwritten by application replacement; live backup and apfw2 coexistence/restore contract absent |
 | E — Independent recovery | **BLOCKED** | SWD/reset board access, security state and restore procedure unverified; no application-independent recovery transcript |
@@ -200,10 +198,11 @@ hardware entry route without relying on application USB. No reset is performed
 now. Incorrect assumption: a failed application can permanently remove the
 only update path. A familiar VID or a stock Feather test cannot close A.
 
-**B — Evidence E1/E3/E4.** Smallest software task: identify the shipped BOSSA
-build and inspect its matching implementation/options, including erase scope,
-offset semantics, verification coverage, lock/fuse operations and reset behavior.
-Inspect the actual apfw2 linker/flash manifest. Smallest physical task: record
+**B — Evidence E1/E3/E4 plus the [native vendor analysis](vendor-bossac-behavior.md).**
+The shipped executable now has pinned static parsing/driver evidence, including
+implicit write-time erase and file-scoped verification. Remaining software work:
+obtain stronger build provenance if available and inspect the actual apfw2
+linker/flash manifest. Smallest physical task: record
 raw flash/protection/security/geometry values read-only, then validate write
 and erase bounds on an expendable equivalent target while hashing sentinel
 regions. Incorrect assumption: bootloader or neighboring configuration is erased
@@ -356,7 +355,7 @@ physical release gates.
 | Gap | Impact / observed evidence | Likely cause and needed capability | Priority |
 |---|---|---|---|
 | Missing target bootloader/live state | Cannot establish identity, protection or independent entry | Missing device/vendor evidence; authorized capture and hardware validation | High |
-| Missing pinned BOSSA implementation evidence / public host-PE workflow | Cannot prove erase/protection/verify behavior from `bossac.exe` hash | Obtain matching source/version evidence; supported host-binary inspection would require APTrace development | High |
+| Exact host build / target monitor and protection evidence | PE analysis recovers relevant host behavior, but cannot establish actual device erase/protection/recovery | Retain pinned host evidence; acquire monitor bytes/capabilities, raw protection state, backups and qualified physical validation | High |
 | Reset/peripheral simulation boundary | Memory stores observed, no actual reset/re-enumeration or power-failure model | Existing concrete engine does not establish real bootloader/hardware outcomes | High for physical gates |
 | Missing apfw2 release/map/data contract | Cannot assess overlap or touch-reset compatibility | Supply existing release artifacts for read-only analysis; not implementation work | High |
 | Controller seed attribution and bounded synthesis | Failed seed and structural-only retry cannot answer six gates alone | Use indexed functions and objective-bounded relations; improve coordination if needed | Medium |

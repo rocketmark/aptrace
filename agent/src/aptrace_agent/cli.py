@@ -339,6 +339,7 @@ def main() -> None:
             "bounded objective-driven discovery."
         ),
     )
+    research.add_argument("--target", help="Explicit registered host executable target (otherwise inferred from objective)")
 
     research.add_argument(
         "--max-steps",
@@ -525,6 +526,22 @@ def main() -> None:
 
         if not args.work_item and not objective:
             parser.error("a research objective is required")
+
+        from aptrace_agent.executable_research import select_target, research as research_executable
+        try:
+            host_target = select_target(objective, args.target)
+            if host_target:
+                if args.ledger or args.work_item or args.seed_function or args.experimental_tools or objective_spec is not None:
+                    parser.error("host static research does not enter the ARM claim/work pipeline; use --output without --ledger/--function")
+                payload = research_executable(objective, host_target, max_steps=args.max_steps)
+                rendered = json.dumps(payload, indent=2)
+                if args.output:
+                    Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+                    Path(args.output).write_text(rendered + "\n")
+                print(rendered if args.json else f"Host research: {host_target}; {len(payload['evidence'])} static observations; {payload['stop_reason']}; no admitted claims")
+                return
+        except ValueError as exc:
+            parser.error(str(exc))
 
         recorder = None
 
@@ -735,6 +752,16 @@ def main() -> None:
     question = " ".join(
         args.question
     )
+
+    from aptrace_agent.executable_research import select_target, research as research_executable
+    try:
+        host_target = select_target(question)
+        if host_target:
+            payload = research_executable(question, host_target, max_steps=6)
+            print(json.dumps(payload, indent=2))
+            return
+    except ValueError as exc:
+        raise SystemExit(f"aptrace-agent: {exc}") from exc
 
     try:
         run = run_investigation(

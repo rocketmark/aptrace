@@ -8,9 +8,11 @@ vendor batch file or send unreviewed monitor commands.
 
 ## Software preflight — complete without an AutoPilot
 
-Collect the exact vendor EXE/script/images and hash manifest; identify the
-EXE version, matching source/build or supported PE analysis, including all
-device branches exercised by this MCU. Obtain the actual apfw2 release binary,
+The pinned EXE/script/images now have supported native PE analysis: its banner
+is BOSSA 1.9 and relevant inspected paths match upstream 1.9 sources, without
+exact-build proof. Retain that evidence and obtain the unit’s monitor capability
+branch and exact-build provenance if available. SAMD51 writes implicitly erase
+16-page blocks; successful raw programming replaces the embedded Noxon blob. Obtain the actual apfw2 release binary,
 linker map, format, client version/command, flash/erase manifest and persistence
 contract. Resolve FLASH-01..08 in the companion report. Review host commands
 for side effects before calling any query “read-only.” An unknown `-i`, help

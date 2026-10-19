@@ -1,0 +1,673 @@
+{
+  "schema_version": 1,
+  "operation": "executable_structure_v1",
+  "target": "vendor_bossac",
+  "arguments": {
+    "kind": "references",
+    "pattern": "0x00436b",
+    "address": null,
+    "limit": 1000
+  },
+  "identity": {
+    "target_key": "vendor_bossac",
+    "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "format_policy": "pe32-x86",
+    "loader": "Ghidra native executable detection",
+    "analysis_version": 1,
+    "ghidra_version": "12.1.3",
+    "script_hashes": {
+      "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+    },
+    "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+    "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+  },
+  "evidence_level": "static-ghidra",
+  "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+  "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+  "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+  "result": {
+    "rows": [
+      {
+        "from": "0x004030c0",
+        "fromFunction": "FUN_00403010",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004030cb",
+        "fromFunction": "FUN_00403010",
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004030f9",
+        "fromFunction": "FUN_00403010",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00403104",
+        "fromFunction": "FUN_00403010",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0040310f",
+        "fromFunction": "FUN_00403010",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00403235",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0040323c",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00403243",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0040324a",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00403266",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004037db",
+        "fromFunction": "FUN_00403740",
+        "to": "0x00436bf8",
+        "toLabel": "PTR_LAB_00436bf8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404002",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404009",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404012",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404019",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0040402d",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404092",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404099",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004040a2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004040a9",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004040bd",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0040459b",
+        "fromFunction": "FUN_00404520",
+        "to": "0x00436bf8",
+        "toLabel": "PTR_LAB_00436bf8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404db2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404db9",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404dc2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404dc9",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404ddd",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404e42",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404e49",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404e52",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404e59",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00404e6d",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0040522b",
+        "fromFunction": "FUN_00405160",
+        "to": "0x00436bf8",
+        "toLabel": "PTR_LAB_00436bf8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405bde",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405be5",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405bec",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405bf3",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405c0f",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405c62",
+        "fromFunction": "FUN_00405c50",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405c69",
+        "fromFunction": "FUN_00405c50",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405c72",
+        "fromFunction": "FUN_00405c50",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405c79",
+        "fromFunction": "FUN_00405c50",
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405c8d",
+        "fromFunction": "FUN_00405c50",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405ce2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405ce9",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405cf2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405cf9",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405d0d",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00405e4a",
+        "fromFunction": "FUN_00405d70",
+        "to": "0x00436bf8",
+        "toLabel": "PTR_LAB_00436bf8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406e97",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406e9e",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406ea5",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406eac",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406ec8",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406f22",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406f29",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406f32",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406f39",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406f4d",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406fa2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406fa9",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406fb2",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406fb9",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00406fcd",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004075c7",
+        "fromFunction": "FUN_004074c0",
+        "to": "0x00436b68",
+        "toLabel": "PTR_LAB_00436b68",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004078fe",
+        "fromFunction": "FUN_004074c0",
+        "to": "0x00436bc8",
+        "toLabel": "PTR_LAB_00436bc8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00407932",
+        "fromFunction": "FUN_004074c0",
+        "to": "0x00436be0",
+        "toLabel": "PTR_LAB_00436be0",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00407b1b",
+        "fromFunction": "FUN_004079d0",
+        "to": "0x00436b68",
+        "toLabel": "PTR_LAB_00436b68",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00407e12",
+        "fromFunction": "FUN_004079d0",
+        "to": "0x00436bc8",
+        "toLabel": "PTR_LAB_00436bc8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00407e46",
+        "fromFunction": "FUN_004079d0",
+        "to": "0x00436be0",
+        "toLabel": "PTR_LAB_00436be0",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004081bd",
+        "fromFunction": "FUN_00407ee0",
+        "to": "0x00436bc8",
+        "toLabel": "PTR_LAB_00436bc8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004081f1",
+        "fromFunction": "FUN_00407ee0",
+        "to": "0x00436be0",
+        "toLabel": "PTR_LAB_00436be0",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423163",
+        "fromFunction": null,
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004231a0",
+        "fromFunction": null,
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004231bc",
+        "fromFunction": "FUN_004231b0",
+        "to": "0x00436ba0",
+        "toLabel": "PTR_FUN_00436ba0",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0042324c",
+        "fromFunction": "FUN_00423240",
+        "to": "0x00436ba0",
+        "toLabel": "PTR_FUN_00436ba0",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423416",
+        "fromFunction": null,
+        "to": "0x00436bf8",
+        "toLabel": "PTR_LAB_00436bf8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423430",
+        "fromFunction": null,
+        "to": "0x00436bf8",
+        "toLabel": "PTR_LAB_00436bf8",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004236a2",
+        "fromFunction": "FUN_00423690",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004236a9",
+        "fromFunction": "FUN_00423690",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004236b2",
+        "fromFunction": "FUN_00423690",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004236b9",
+        "fromFunction": "FUN_00423690",
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x004236cd",
+        "fromFunction": "FUN_00423690",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423732",
+        "fromFunction": "FUN_00423720",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423739",
+        "fromFunction": "FUN_00423720",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423742",
+        "fromFunction": "FUN_00423720",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x00423749",
+        "fromFunction": "FUN_00423720",
+        "to": "0x00436b80",
+        "toLabel": "PTR_LAB_00436b80",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0042375d",
+        "fromFunction": "FUN_00423720",
+        "to": "0x00436b90",
+        "toLabel": "PTR_LAB_00436b90",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0042b323",
+        "fromFunction": "FUN_0042ae60",
+        "to": "0x00436bb0",
+        "toLabel": "PTR_LAB_00436bb0",
+        "refType": "DATA"
+      },
+      {
+        "from": "0x0042b6e4",
+        "fromFunction": "FUN_0042ae60",
+        "to": "0x00436ba0",
+        "toLabel": "PTR_FUN_00436ba0",
+        "refType": "DATA"
+      }
+    ],
+    "matches_total": 90,
+    "truncated": false,
+    "text_truncated": false
+  },
+  "limitations": [
+    "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+    "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+    "Absence of a defined string/reference does not establish absence of behavior"
+  ],
+  "result_sha256": "64f876455619cd5aeedebf885b64b6925784c46debac65fb2ce4c9f087ed6f03"
+}

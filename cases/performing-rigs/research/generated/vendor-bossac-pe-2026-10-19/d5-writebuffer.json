@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "operation": "executable_structure_v1",
+  "target": "vendor_bossac",
+  "arguments": {
+    "kind": "entry-function",
+    "pattern": "",
+    "address": "0x403910",
+    "limit": 500
+  },
+  "identity": {
+    "target_key": "vendor_bossac",
+    "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "format_policy": "pe32-x86",
+    "loader": "Ghidra native executable detection",
+    "analysis_version": 1,
+    "ghidra_version": "12.1.3",
+    "script_hashes": {
+      "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+    },
+    "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+    "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+  },
+  "evidence_level": "static-ghidra",
+  "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+  "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+  "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+  "result": {
+    "format": "Portable Executable (PE)",
+    "language": "x86:LE:32:default",
+    "compiler": "windows",
+    "image_base": "0x00400000",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "kind": "entry-function",
+    "analysis_requested": "native disassembly/function creation at explicit entry; read-only project, transient analysis",
+    "status": "observed",
+    "function": "FUN_00403910",
+    "entry": "0x00403910",
+    "calling_convention": "unknown",
+    "body_ranges": [
+      {
+        "start": "0x00403910",
+        "end": "0x00403948"
+      },
+      {
+        "start": "0x00403950",
+        "end": "0x00403960"
+      }
+    ],
+    "decompile_completed": true,
+    "decompile_error": "",
+    "decompiled_c": "\nvoid __thiscall FUN_00403910(void *param_1,uint param_2,uint param_3)\n\n{\n  if ((*(char *)((int)param_1 + 0x88) != '\\0') &&\n     (((ulonglong)param_2 / (ulonglong)*(uint *)((int)param_1 + 0x14) & 0xf) == 0)) {\n    FUN_00403800(param_1,param_2,param_3);\n  }\n  FUN_00402df0(param_1,param_2,param_3);\n  return;\n}\n\n",
+    "decompile_truncated": false,
+    "instructions": [
+      {
+        "address": "0x00403910",
+        "text": "PUSH EBP"
+      },
+      {
+        "address": "0x00403911",
+        "text": "MOV EBP,ESP"
+      },
+      {
+        "address": "0x00403913",
+        "text": "PUSH EDI"
+      },
+      {
+        "address": "0x00403914",
+        "text": "PUSH ESI"
+      },
+      {
+        "address": "0x00403915",
+        "text": "PUSH EBX"
+      },
+      {
+        "address": "0x00403916",
+        "text": "MOV EBX,ECX"
+      },
+      {
+        "address": "0x00403918",
+        "text": "SUB ESP,0x1c"
+      },
+      {
+        "address": "0x0040391b",
+        "text": "MOV ESI,dword ptr [EBP + 0x8]"
+      },
+      {
+        "address": "0x0040391e",
+        "text": "CMP byte ptr [ECX + 0x88],0x0"
+      },
+      {
+        "address": "0x00403925",
+        "text": "MOV EDI,dword ptr [EBP + 0xc]"
+      },
+      {
+        "address": "0x00403928",
+        "text": "JZ 0x00403935"
+      },
+      {
+        "address": "0x0040392a",
+        "text": "XOR EDX,EDX"
+      },
+      {
+        "address": "0x0040392c",
+        "text": "MOV EAX,ESI"
+      },
+      {
+        "address": "0x0040392e",
+        "text": "DIV dword ptr [ECX + 0x14]"
+      },
+      {
+        "address": "0x00403931",
+        "text": "TEST AL,0xf"
+      },
+      {
+        "address": "0x00403933",
+        "text": "JZ 0x00403950"
+      },
+      {
+        "address": "0x00403935",
+        "text": "MOV dword ptr [EBP + 0xc],EDI"
+      },
+      {
+        "address": "0x00403938",
+        "text": "MOV ECX,EBX"
+      },
+      {
+        "address": "0x0040393a",
+        "text": "MOV dword ptr [EBP + 0x8],ESI"
+      },
+      {
+        "address": "0x0040393d",
+        "text": "LEA ESP,[EBP + -0xc]"
+      },
+      {
+        "address": "0x00403940",
+        "text": "POP EBX"
+      },
+      {
+        "address": "0x00403941",
+        "text": "POP ESI"
+      },
+      {
+        "address": "0x00403942",
+        "text": "POP EDI"
+      },
+      {
+        "address": "0x00403943",
+        "text": "POP EBP"
+      },
+      {
+        "address": "0x00403944",
+        "text": "JMP 0x00402df0"
+      },
+      {
+        "address": "0x00403950",
+        "text": "MOV dword ptr [ESP + 0x4],EDI"
+      },
+      {
+        "address": "0x00403954",
+        "text": "MOV dword ptr [ESP],ESI"
+      },
+      {
+        "address": "0x00403957",
+        "text": "CALL 0x00403800"
+      },
+      {
+        "address": "0x0040395c",
+        "text": "SUB ESP,0x8"
+      },
+      {
+        "address": "0x0040395f",
+        "text": "JMP 0x00403935"
+      }
+    ],
+    "instructions_total": 30,
+    "truncated": false
+  },
+  "limitations": [
+    "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+    "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+    "Absence of a defined string/reference does not establish absence of behavior"
+  ],
+  "result_sha256": "4d99b3cf39d7db8730893b6f8c5c801d160b4b5ff7799c6451349c4720ece195"
+}

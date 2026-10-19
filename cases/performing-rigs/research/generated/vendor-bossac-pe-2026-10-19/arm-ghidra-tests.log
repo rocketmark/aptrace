@@ -1,0 +1,26 @@
+build/status: cache identity and freshness
+'mando868' is already built and up to date at /var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/aptrace-arm-regression-wdrjbngd/mando868 (use 'rebuild' to force).
+  [ok] status is 'fresh' immediately after build
+  [ok] meta.json identity matches expected
+query cost: a decompile query after build must not re-run auto-analysis
+  [ok] decompile succeeds and finds the real function
+  [ok] reopened query is well under a full re-analysis (took 3.1s)
+callers/xrefs/containing/symbol: answered from cache, no Ghidra invocation
+  [ok] callers finds real call sites into the TX wrapper
+  [ok] cached-JSON query is near-instant (took 0.03s)
+  [ok] symbol finds FUN_000049c4 by address
+  [ok] containing attributes an address inside the function to it
+literal: raw firmware read, no Ghidra needed
+  [ok] literal reads the real struct-base pointer (0x20000b20)
+staleness detection: a changed build script must invalidate the cache (hardening pass)
+  [ok] modified script's own hash differs from the fresh cache's recorded hash
+  [ok] modifying a build script is detected as 'stale', not silently reused
+  [ok] cache is 'fresh' again once the real scripts are restored
+staleness detection: a changed provenance-labels TSV must invalidate the cache (hardening pass)
+  [ok] modified TSV's own hash differs from the unmodified TSV's hash
+  [ok] identity is unchanged once the real provenance TSV path is restored
+staleness detection: a tampered meta.json must be refused, not silently reused
+  [ok] tampered identity is detected as 'stale', not 'fresh'
+  [ok] a stale cache refuses to answer a Ghidra-backed query
+
+All checks passed.

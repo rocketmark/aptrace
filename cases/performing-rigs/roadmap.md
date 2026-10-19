@@ -10,11 +10,11 @@ These require separately authorized physical evidence; no board operations
 were performed in the assessment. See
 [six-gate plan](docs/investigations/reversible-firmware-update.md).
 
-Gate B software prerequisite: expose a supported PE/x86 target workflow or
-obtain accepted exact source/build provenance for the pinned vendor EXE before
-claiming its erase/protection behavior. Existing ARM application NVM results
-do not establish host-flasher behavior. Consolidate future AutoPilot requests
-using the [hardware handoff](docs/investigations/vendor-bossac-hardware-handoff.md);
+Gate B remaining work: host PE/x86 analysis now recovers the pinned vendor
+client's relevant BOSSA 1.9-family behavior. Obtain exact-build provenance if
+available, actual monitor capability/protection evidence, unit-bound backups,
+and measured erase/recovery validation. Native host queries cannot establish
+physical bootloader survival. Use the [hardware handoff](docs/investigations/vendor-bossac-hardware-handoff.md);
 all gate classifications and production NO-GO remain unchanged.
 
 ## Feather original-firmware READY follow-up (2026-10-19)

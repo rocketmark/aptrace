@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-19",
+  "scope": "static PE32/x86 capability and pinned vendor acceptance; no EXE launch or hardware",
+  "commands": [
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py rebuild vendor_bossac",
+      "exit_status": 0,
+      "observation": "native PE/x86 import succeeded; identity validated, no ARM loader/vector/census pass"
+    },
+    {
+      "command": "JAVA_HOME=... JAVA_TOOL_OPTIONS=... agent/.venv/bin/python -m pytest tools/ghidra/test_executable.py cases/performing-rigs/test/test_vendor_bossac_pe.py agent/tests/test_autonomous_cli.py agent/tests/test_work_cli.py -q",
+      "exit_status": 0,
+      "result": "22 passed in 49.56s",
+      "log": "focused-tests.log"
+    },
+    {
+      "command": "agent/.venv/bin/python -m pytest agent/tests -q",
+      "exit_status": 1,
+      "result": "645 passed, 1 skipped, 1 native Ghidra fixture failure without explicit Java configuration",
+      "log": "agent-suite.log"
+    },
+    {
+      "command": "JAVA_HOME=... JAVA_TOOL_OPTIONS=... agent/.venv/bin/python -m pytest agent/tests/test_value_forward_use.py::test_real_driver_on_a_fixture_project -q",
+      "exit_status": 0,
+      "result": "1 passed in 10.99s",
+      "log": "agent-native-recheck.log"
+    },
+    {
+      "command": "JAVA_HOME=... JAVA_TOOL_OPTIONS=... APTRACE_GHIDRA_CACHE_ROOT=<isolated copy> python3 tools/ghidra/test_aptrace_ghidra.py",
+      "exit_status": 0,
+      "result": "All checks passed; canonical seeds read-only, copied mando868 project",
+      "log": "arm-ghidra-tests.log"
+    },
+    {
+      "command": "tools/unicorn/.venv/bin/python3 cases/performing-rigs/test/test_concrete.py",
+      "exit_status": 0,
+      "result": "All checks passed; direct CLI context; no backend change",
+      "log": "stdout observed in tool execution; summary retained here"
+    },
+    {
+      "command": "APTRACE_GHIDRA_CACHE_ROOT=<existing fresh case cache> sh cases/performing-rigs/research/generated/vendor-bossac-pe-2026-10-19/reproduce.sh cases/performing-rigs/research/generated/vendor-bossac-pe-2026-10-19",
+      "exit_status": 0,
+      "result": "all saved native queries and 12-step automatic host research completed",
+      "log": "reproduce.log"
+    }
+  ],
+  "known_execution_failures": [
+    {
+      "boundary": "initial xrefs over mixed address spaces",
+      "observed": "ValueError on 0xStack[-0x60] before filtering completed",
+      "resolution": "ignore non-numeric address spaces for numeric matching; regression added"
+    },
+    {
+      "boundary": "incorrect explicit entry 0x402ab0",
+      "observed": "native script produced no JSON; initial JSONDecodeError",
+      "resolution": "entry address corrected to actual direct call target 0x402a00; missing JSON remains failure, with native log reference"
+    },
+    {
+      "boundary": "concurrent native queries against same project",
+      "observed": "exit 1 LockException: Unable to lock project",
+      "resolution": "serialize queries and run vendor tests on isolated project copies; final focused suite/replay passed"
+    }
+  ],
+  "claim_state": "No host claims admitted; ARM admission and historical evidence unchanged",
+  "release_gates": {
+    "A": "PARTIAL",
+    "B": "PARTIAL",
+    "C": "PARTIAL",
+    "D": "BLOCKED",
+    "E": "BLOCKED",
+    "F": "BLOCKED",
+    "production": "NO-GO"
+  }
+}

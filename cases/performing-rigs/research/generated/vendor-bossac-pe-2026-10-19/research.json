@@ -1,0 +1,1938 @@
+{
+  "schema_version": 1,
+  "routing": "native-executable-static",
+  "objective": "bossac.exe offset erase write verify reset",
+  "target": "vendor_bossac",
+  "budget": 12,
+  "stop_reason": "budget_exhausted",
+  "discovered_strings": [
+    {
+      "address": "0x004330d8",
+      "length": 402,
+      "dataType": "string",
+      "value": "Basic Open Source SAM-BA Application (BOSSA) Version 1.9\nFlash programmer for Atmel SAM devices.\nCopyright (c) 2011-2018 ShumaTech (http://www.shumatech.com)\n\nExamples:\n  bossac -e -w -v -b image.bin   # Erase flash, write flash with image.bin,\n                                 # verify the write, and set boot from flash\n  bossac -r0x10000 image.bin     # Read 64KB from flash and store in image.bin\n"
+    },
+    {
+      "address": "0x0043351c",
+      "length": 105,
+      "dataType": "string",
+      "value": "start erase/write/read/verify operation at flash OFFSET;\nOFFSET must be aligned to a flash page boundary"
+    },
+    {
+      "address": "0x0043305c",
+      "length": 49,
+      "dataType": "string",
+      "value": "%s: read option is exclusive of write or verify\n"
+    },
+    {
+      "address": "0x0043340c",
+      "length": 46,
+      "dataType": "string",
+      "value": "erase the entire flash starting at the offset"
+    },
+    {
+      "address": "0x00433440",
+      "length": 69,
+      "dataType": "string",
+      "value": "write FILE to the flash; accelerated when\ncombined with erase option"
+    },
+    {
+      "address": "0x004338d0",
+      "length": 44,
+      "dataType": "string",
+      "value": "erase and reset via Arduino 1200 baud hack"
+    },
+    {
+      "address": "0x004321db",
+      "length": 12,
+      "dataType": "string",
+      "value": "writeBuffer"
+    },
+    {
+      "address": "0x004321e7",
+      "length": 10,
+      "dataType": "string",
+      "value": "chipErase"
+    },
+    {
+      "address": "0x004321fc",
+      "length": 6,
+      "dataType": "string",
+      "value": "write"
+    },
+    {
+      "address": "0x00432210",
+      "length": 10,
+      "dataType": "string",
+      "value": "writeWord"
+    },
+    {
+      "address": "0x00432223",
+      "length": 10,
+      "dataType": "string",
+      "value": "writeByte"
+    },
+    {
+      "address": "0x004324e8",
+      "length": 19,
+      "dataType": "string",
+      "value": "Flash erase failed"
+    },
+    {
+      "address": "0x00432524",
+      "length": 20,
+      "dataType": "string",
+      "value": "Flash erase failed"
+    },
+    {
+      "address": "0x0043258b",
+      "length": 19,
+      "dataType": "string",
+      "value": "Flash erase failed"
+    },
+    {
+      "address": "0x0043265b",
+      "length": 19,
+      "dataType": "string",
+      "value": "Flash erase failed"
+    },
+    {
+      "address": "0x004326c0",
+      "length": 35,
+      "dataType": "string",
+      "value": "Operation ended with a short write"
+    },
+    {
+      "address": "0x00432706",
+      "length": 24,
+      "dataType": "string",
+      "value": "Flash offset is invalid"
+    },
+    {
+      "address": "0x00432867",
+      "length": 13,
+      "dataType": "string",
+      "value": "Erase flash\n"
+    },
+    {
+      "address": "0x00432874",
+      "length": 37,
+      "dataType": "string",
+      "value": "Write %ld bytes to flash (%u pages)\n"
+    },
+    {
+      "address": "0x004328b4",
+      "length": 27,
+      "dataType": "string",
+      "value": "Verify %ld bytes of flash\n"
+    }
+  ],
+  "evidence": [
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "inventory",
+        "pattern": "",
+        "address": null,
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "format": "Portable Executable (PE)",
+        "language": "x86:LE:32:default",
+        "compiler": "windows",
+        "image_base": "0x00400000",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "kind": "inventory",
+        "memory_blocks": [
+          {
+            "name": "Headers",
+            "start": "0x00400000",
+            "end": "0x004003ff",
+            "read": true,
+            "write": false,
+            "execute": false
+          },
+          {
+            "name": ".text",
+            "start": "0x00401000",
+            "end": "0x0042c1ff",
+            "read": true,
+            "write": false,
+            "execute": true
+          },
+          {
+            "name": ".data",
+            "start": "0x0042d000",
+            "end": "0x00431dff",
+            "read": true,
+            "write": true,
+            "execute": false
+          },
+          {
+            "name": ".rdata",
+            "start": "0x00432000",
+            "end": "0x00437dff",
+            "read": true,
+            "write": false,
+            "execute": false
+          },
+          {
+            "name": ".bss",
+            "start": "0x00438000",
+            "end": "0x00438e67",
+            "read": true,
+            "write": true,
+            "execute": false
+          },
+          {
+            "name": ".idata",
+            "start": "0x00439000",
+            "end": "0x00439fff",
+            "read": true,
+            "write": true,
+            "execute": false
+          },
+          {
+            "name": ".CRT",
+            "start": "0x0043a000",
+            "end": "0x0043a1ff",
+            "read": true,
+            "write": true,
+            "execute": false
+          },
+          {
+            "name": ".tls",
+            "start": "0x0043b000",
+            "end": "0x0043b1ff",
+            "read": true,
+            "write": true,
+            "execute": false
+          }
+        ],
+        "imports_total": 137,
+        "truncated": false,
+        "entry_points": [
+          "0x00416460",
+          "0x00416410",
+          "0x0041ec60",
+          "0x004014e0"
+        ],
+        "entry_points_total": 4,
+        "counts": {
+          "functions": 553,
+          "strings": 626,
+          "calls": 3017,
+          "dataReferences": 11513
+        }
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "9fe4de6d804ee1db4074688baa62dbadadb243dc031ed400ae0df071c03f4205"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x004330d8",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [
+          {
+            "from": "0x0042b193",
+            "fromFunction": "FUN_0042ae60",
+            "to": "0x004330d8",
+            "toLabel": "s_Basic_Open_Source_SAM-BA_Applica_004330d8",
+            "refType": "DATA"
+          }
+        ],
+        "matches_total": 1,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "fa47613db9550dac3b2b98a420002250802d8d332e8e20561f8031c09e353bf3"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "function",
+        "pattern": "",
+        "address": "0x0042ae60",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "format": "Portable Executable (PE)",
+        "language": "x86:LE:32:default",
+        "compiler": "windows",
+        "image_base": "0x00400000",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "kind": "function",
+        "status": "observed",
+        "function": "FUN_0042ae60",
+        "entry": "0x0042ae60",
+        "calling_convention": "__cdecl",
+        "body_ranges": [
+          {
+            "start": "0x0042ae60",
+            "end": "0x0042ba14"
+          }
+        ],
+        "decompile_completed": true,
+        "decompile_error": "",
+        "decompiled_c": "\nundefined4 __cdecl FUN_0042ae60(int param_1,undefined4 *param_2)\n\n{\n  undefined4 *puVar1;\n  char cVar2;\n  char *pcVar3;\n  int iVar4;\n  uint uVar5;\n  char *pcVar6;\n  int local_11c;\n  undefined4 local_118;\n  undefined4 local_114;\n  undefined4 local_110;\n  code *local_fc;\n  undefined *local_f8;\n  undefined1 *local_f4;\n  undefined1 *local_f0;\n  undefined1 *local_ec;\n  undefined1 local_da;\n  undefined1 local_d9;\n  int local_d8;\n  int *local_d4;\n  undefined **local_d0;\n  undefined **local_cc;\n  undefined4 local_c8;\n  undefined **local_c4;\n  undefined4 *local_c0;\n  int *local_bc;\n  undefined4 local_b8;\n  undefined **local_b4;\n  undefined4 *local_b0;\n  int **local_ac;\n  undefined ***local_a8;\n  undefined4 local_a4 [5];\n  undefined4 local_90 [3];\n  undefined1 local_84;\n  int local_7c [5];\n  undefined **local_68;\n  undefined4 local_64;\n  undefined4 local_58;\n  undefined4 local_34;\n  undefined4 local_30;\n  undefined4 local_2c;\n  undefined4 local_28;\n  undefined4 local_24;\n  undefined1 local_20 [8];\n  int *local_18;\n  \n  puVar1 = param_2;\n  local_11c = param_1;\n  local_18 = &param_1;\n  local_ec = &stack0xfffffec0;\n  local_f4 = local_20;\n  local_fc = FUN_0042a850;\n  local_f8 = &DAT_0042bf18;\n  local_f0 = &LAB_0042ba15;\n  FUN_00417810(&local_114);\n  FUN_00416e20();\n  local_110 = 0xffffffff;\n  FUN_0040e3c0(local_a4,local_11c,puVar1,0x12,&DAT_0042d080);\n  pcVar6 = (char *)*puVar1;\n  pcVar3 = strrchr(pcVar6,0x2f);\n  if ((pcVar3 != (char *)0x0) || (pcVar3 = strrchr(pcVar6,0x5c), pcVar3 != (char *)0x0)) {\n    *puVar1 = pcVar3 + 1;\n  }\n  if (local_11c < 2) {\n    FUN_0040df70((int)(_iob_exref + 0x40),\"%s: you must specify at least one option\\n\");\n  }\n  else {\n    local_110 = 1;\n    iVar4 = FUN_0040e570((int)local_a4);\n    if (-1 < iVar4) {\n      if (DAT_00438046 == '\\0') {\n        if ((DAT_00438045 != '\\0') || (DAT_00438047 != '\\0')) goto LAB_0042af93;\nLAB_0042afa6:\n        if (local_11c == iVar4) {\n          if (DAT_00438053 != '\\0') {\n            FUN_0040df50(\"Usage: %s [OPTION...] [FILE]\\n\");\n            FUN_0040df50(\n                        \"Basic Open Source SAM-BA Application (BOSSA) Version 1.9\\nFlash programmer for Atmel SAM devices.\\nCopyright (c) 2011-2018 ShumaTech (http://www.shumatech.com)\\n\\nExamples:\\n  bossac -e -w -v -b image.bin   # Erase flash, write flash with image.bin,\\n                                 # verify the write, and set boot from flash\\n  bossac -r0x10000 image.bin     # Read 64KB from flash and store in image.bin\\n\"\n                        );\n            FUN_0040df50(\"\\nOptions:\\n\");\n            local_110 = 1;\n            FUN_0040e3f0(local_a4,(FILE *)(_iob_exref + 0x20));\n            FUN_0040df50(\"\\nReport bugs to <bugs@shumatech.com>\\n\");\n            local_118 = 1;\n            goto LAB_0042b131;\n          }\n          local_110 = 2;\n          FUN_00401610(local_90);\n          local_110 = 3;\n          FUN_0040db40(local_7c);\n          if (DAT_00438052 != '\\0') {\n            local_84 = 1;\n          }\n          if (DAT_0043804a == '\\0') {\n            local_110 = 4;\n            FUN_0040d9b0(&local_d8,local_7c);\n            local_110 = 5;\n            FUN_00425c10(&DAT_00438060,&local_d8);\n            FUN_004259b0((void *)(local_d8 + -0xc));\n          }\n          if (DAT_00438055 == '\\0') {\nLAB_0042b00d:\n            if (*(int *)(DAT_00438060 + -0xc) == 0) {\n              FUN_0040df70((int)(_iob_exref + 0x40),\"No serial ports available\\n\");\n              local_118 = 1;\n            }\n            else {\n              if (DAT_00438054 == '\\0') {\n                local_110 = 4;\n                FUN_0040d9e0(&local_68,local_7c,&DAT_00438060);\n                local_110 = 8;\n                cVar2 = FUN_004027c0(local_90,&local_68,0x1c200);\n                local_d0 = local_68;\n              }\n              else {\n                local_110 = 4;\n                FUN_0040da60(&local_d0,local_7c,&DAT_00438060,DAT_00438078);\n                local_110 = 7;\n                cVar2 = FUN_004027c0(local_90,&local_d0,0x1c200);\n              }\n              if (local_d0 != (undefined **)0x0) {\n                (**(code **)(*local_d0 + 4))();\n              }\n              if (cVar2 != '\\0') {\n                local_c0 = local_90;\n                local_110 = 9;\n                local_c4 = &PTR_LAB_00436f08;\n                local_bc = (int *)0x0;\n                local_b8 = 0;\n                FUN_004089a0(&local_c4);\n                local_b0 = local_90;\n                local_ac = &local_bc;\n                local_a8 = &local_cc;\n                local_cc = &PTR_LAB_00436bb0;\n                local_c8 = 0xffffffff;\n                local_b4 = &PTR_LAB_00436f28;\n                if (DAT_00438051 != '\\0') {\n                  local_68 = &PTR_FUN_00436ba0;\n                  local_110 = 0xb;\n                  local_64 = FUN_00425430(0,'\\0',&local_d9);\n                  local_110 = 0xc;\n                  local_58 = FUN_00425430(0,'\\0',&local_da);\n                  local_34 = 0;\n                  local_30 = 0;\n                  local_2c = 0;\n                  local_28 = 0;\n                  local_24 = 0;\n                  local_110 = 10;\n                  FUN_00408690(&local_b4,(int)&local_68);\n                  local_110 = 10;\n                  FUN_00407250((int)&local_68);\n                  FUN_00423240(&local_68);\n                }\n                if (DAT_0043804f != '\\0') {\n                  local_110 = 0xb;\n                  FUN_00408270(&local_b4,&DAT_00438074,0);\n                }\n                if (DAT_00438044 != '\\0') {\n                  local_110 = 0xb;\n                  FUN_00418100((undefined4 *)&DAT_00438020,(LONG *)0x0);\n                  FUN_00407470(&local_b4,DAT_0043805c);\n                  FUN_0040e2e0();\n                  FUN_0040df50(\"\\nDone in %5.3f seconds\\n\");\n                }\n                if (DAT_00438045 != '\\0') {\n                  local_110 = 0xb;\n                  FUN_00418100((undefined4 *)&DAT_00438020,(LONG *)0x0);\n                  FUN_004074c0((char *)puVar1[local_11c],DAT_0043805c);\n                  FUN_0040e2e0();\n                  FUN_0040df50(\"\\nDone in %5.3f seconds\\n\");\n                }\n                if (DAT_00438047 != '\\0') {\n                  local_110 = 0xb;\n                  FUN_00418100((undefined4 *)&DAT_00438020,(LONG *)0x0);\n                  uVar5 = FUN_004079d0(puVar1[local_11c],(int *)&local_d0,(int *)&local_68,\n                                       DAT_0043805c);\n                  if ((char)uVar5 == '\\0') {\n                    FUN_0040df50(\"\\nVerify failed\\nPage errors: %d\\nByte errors: %d\\n\");\n                    local_b4 = &PTR_LAB_00436f28;\n                    local_cc = &PTR_LAB_00436d60;\n                    local_c4 = &PTR_LAB_00436f08;\n                    if (local_bc != (int *)0x0) {\n                      (**(code **)(*local_bc + 4))();\n                    }\n                    local_bc = (int *)0x0;\n                    local_118 = 2;\n                    goto LAB_0042b0c5;\n                  }\n                  local_110 = 0xb;\n                  FUN_0040e2e0();\n                  FUN_0040df50(\"\\nVerify successful\\nDone in %5.3f seconds\\n\");\n                }\n                if (DAT_00438046 != '\\0') {\n                  local_110 = 0xb;\n                  FUN_00418100((undefined4 *)&DAT_00438020,(LONG *)0x0);\n                  FUN_00407ee0(puVar1[local_11c],DAT_00438058,DAT_0043805c);\n                  FUN_0040e2e0();\n                  FUN_0040df50(\"\\nDone in %5.3f seconds\\n\");\n                }\n                if (DAT_0043804b != '\\0') {\n                  FUN_0040df50(\"Set boot flash %s\\n\");\n                  local_110 = 0xb;\n                  (**(code **)(*local_bc + 0x54))();\n                }\n                if (DAT_0043804d != '\\0') {\n                  FUN_0040df50(\"Set brownout detect %s\\n\");\n                  local_110 = 0xb;\n                  (**(code **)(*local_bc + 0x3c))();\n                }\n                if (DAT_0043804c != '\\0') {\n                  FUN_0040df50(\"Set brownout reset %s\\n\");\n                  local_110 = 0xb;\n                  (**(code **)(*local_bc + 0x48))();\n                }\n                if (DAT_00438050 != '\\0') {\n                  FUN_0040df50(\"Set security\\n\");\n                  local_110 = 0xb;\n                  (**(code **)(*local_bc + 0x34))();\n                }\n                if (DAT_0043804e != '\\0') {\n                  local_110 = 0xb;\n                  FUN_00408270(&local_b4,&DAT_00438070,1);\n                }\n                local_110 = 0xb;\n                (**(code **)(*local_bc + 0x5c))();\n                if (DAT_00438049 != '\\0') {\n                  local_110 = 0xb;\n                  FUN_0040d1f0((int)&local_c4);\n                }\n                local_b4 = &PTR_LAB_00436f28;\n                local_cc = &PTR_LAB_00436d60;\n                local_c4 = &PTR_LAB_00436f08;\n                if (local_bc != (int *)0x0) {\n                  (**(code **)(*local_bc + 4))();\n                }\n                local_bc = (int *)0x0;\n                FUN_0040dbd0(local_7c);\n                FUN_00401560(local_90);\n                local_118 = 0;\n                goto LAB_0042b131;\n              }\n              FUN_0040df70((int)(_iob_exref + 0x40),\"No device found on %s\\n\");\n              local_118 = 1;\n            }\n          }\n          else {\n            local_110 = 4;\n            FUN_0040da60(&local_d4,local_7c,&DAT_00438060,DAT_00438078);\n            local_110 = 6;\n            cVar2 = (**(code **)(*local_d4 + 8))();\n            if (cVar2 != '\\0') {\n              local_110 = 6;\n              (**(code **)(*local_d4 + 0x30))(1);\n              (**(code **)(*local_d4 + 0x2c))(0);\n              (**(code **)(*local_d4 + 0xc))(&local_114);\n              (**(code **)(*local_d4 + 4))();\n              goto LAB_0042b00d;\n            }\n            FUN_0040df70((int)(_iob_exref + 0x40),\"Failed to open port at 1200bps\\n\");\n            (**(code **)(*local_d4 + 4))();\n            local_118 = 1;\n          }\nLAB_0042b0c5:\n          FUN_0040dbd0(local_7c);\n          FUN_00401560(local_90);\n          goto LAB_0042b131;\n        }\n        pcVar6 = \"%s: extra arguments found\\n\";\n      }\n      else if ((DAT_00438045 == '\\0') && (DAT_00438047 == '\\0')) {\nLAB_0042af93:\n        if (local_11c != iVar4) {\n          local_11c = local_11c + -1;\n          goto LAB_0042afa6;\n        }\n        pcVar6 = \"%s: missing file\\n\";\n      }\n      else {\n        pcVar6 = \"%s: read option is exclusive of write or verify\\n\";\n      }\n      FUN_0040df70((int)(_iob_exref + 0x40),pcVar6);\n    }\n  }\n  FUN_0040df70((int)(_iob_exref + 0x40),\"Try \\'%s -h\\' or \\'%s --help\\' for more information\\n\");\n  local_118 = 1;\nLAB_0042b131:\n  FUN_0040e330(local_a4);\n  FUN_00417870(&local_114);\n  return local_118;\n}\n\n",
+        "decompile_truncated": false,
+        "instructions": [
+          {
+            "address": "0x0042ae60",
+            "text": "LEA ECX,[ESP + 0x4]"
+          },
+          {
+            "address": "0x0042ae64",
+            "text": "AND ESP,0xfffffff0"
+          },
+          {
+            "address": "0x0042ae67",
+            "text": "PUSH dword ptr [ECX + -0x4]"
+          },
+          {
+            "address": "0x0042ae6a",
+            "text": "PUSH EBP"
+          },
+          {
+            "address": "0x0042ae6b",
+            "text": "MOV EBP,ESP"
+          },
+          {
+            "address": "0x0042ae6d",
+            "text": "PUSH EDI"
+          },
+          {
+            "address": "0x0042ae6e",
+            "text": "PUSH ESI"
+          },
+          {
+            "address": "0x0042ae6f",
+            "text": "PUSH EBX"
+          },
+          {
+            "address": "0x0042ae70",
+            "text": "PUSH ECX"
+          },
+          {
+            "address": "0x0042ae71",
+            "text": "SUB ESP,0x128"
+          },
+          {
+            "address": "0x0042ae77",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x0042ae79",
+            "text": "LEA EDX,[EBP + -0x18]"
+          },
+          {
+            "address": "0x0042ae7c",
+            "text": "LEA ESI,[EBP + 0xfffffef4]"
+          },
+          {
+            "address": "0x0042ae82",
+            "text": "MOV dword ptr [EBP + 0xfffffee8],ESI"
+          },
+          {
+            "address": "0x0042ae88",
+            "text": "LEA EDI,[EBP + 0xffffff64]"
+          },
+          {
+            "address": "0x0042ae8e",
+            "text": "MOV dword ptr [EBP + 0xfffffeec],EAX"
+          },
+          {
+            "address": "0x0042ae94",
+            "text": "MOV EAX,dword ptr [ECX + 0x4]"
+          },
+          {
+            "address": "0x0042ae97",
+            "text": "MOV dword ptr [EBP + 0xffffff14],EDX"
+          },
+          {
+            "address": "0x0042ae9d",
+            "text": "MOV dword ptr [EBP + 0xffffff1c],ESP"
+          },
+          {
+            "address": "0x0042aea3",
+            "text": "MOV dword ptr [EBP + 0xffffff0c],0x42a850"
+          },
+          {
+            "address": "0x0042aead",
+            "text": "MOV dword ptr [EBP + 0xfffffef0],EAX"
+          },
+          {
+            "address": "0x0042aeb3",
+            "text": "MOV dword ptr [EBP + 0xffffff10],0x42bf18"
+          },
+          {
+            "address": "0x0042aebd",
+            "text": "MOV dword ptr [EBP + 0xffffff18],0x42ba15"
+          },
+          {
+            "address": "0x0042aec7",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x0042aeca",
+            "text": "CALL 0x00417810"
+          },
+          {
+            "address": "0x0042aecf",
+            "text": "CALL 0x00416e20"
+          },
+          {
+            "address": "0x0042aed4",
+            "text": "MOV ECX,EDI"
+          },
+          {
+            "address": "0x0042aed6",
+            "text": "MOV dword ptr [EBP + 0xfffffee4],EDI"
+          },
+          {
+            "address": "0x0042aedc",
+            "text": "MOV dword ptr [ESP + 0xc],0x42d080"
+          },
+          {
+            "address": "0x0042aee4",
+            "text": "MOV dword ptr [ESP + 0x8],0x12"
+          },
+          {
+            "address": "0x0042aeec",
+            "text": "MOV EAX,dword ptr [EBP + 0xfffffef0]"
+          },
+          {
+            "address": "0x0042aef2",
+            "text": "MOV dword ptr [ESP + 0x4],EAX"
+          },
+          {
+            "address": "0x0042aef6",
+            "text": "MOV EBX,dword ptr [EBP + 0xfffffeec]"
+          },
+          {
+            "address": "0x0042aefc",
+            "text": "MOV dword ptr [ESP],EBX"
+          },
+          {
+            "address": "0x0042aeff",
+            "text": "MOV dword ptr [EBP + 0xfffffef8],0xffffffff"
+          },
+          {
+            "address": "0x0042af09",
+            "text": "CALL 0x0040e3c0"
+          },
+          {
+            "address": "0x0042af0e",
+            "text": "MOV EAX,dword ptr [EBP + 0xfffffef0]"
+          },
+          {
+            "address": "0x0042af14",
+            "text": "MOV EAX,dword ptr [EAX]"
+          },
+          {
+            "address": "0x0042af16",
+            "text": "SUB ESP,0x10"
+          },
+          {
+            "address": "0x0042af19",
+            "text": "MOV dword ptr [EBP + 0xfffffee0],EAX"
+          },
+          {
+            "address": "0x0042af1f",
+            "text": "MOV dword ptr [ESP + 0x4],0x2f"
+          },
+          {
+            "address": "0x0042af27",
+            "text": "MOV dword ptr [ESP],EAX"
+          },
+          {
+            "address": "0x0042af2a",
+            "text": "CALL 0x0041d728"
+          },
+          {
+            "address": "0x0042af2f",
+            "text": "TEST EAX,EAX"
+          },
+          {
+            "address": "0x0042af31",
+            "text": "JZ 0x0042b22a"
+          },
+          {
+            "address": "0x0042af37",
+            "text": "MOV EBX,dword ptr [EBP + 0xfffffef0]"
+          },
+          {
+            "address": "0x0042af3d",
+            "text": "ADD EAX,0x1"
+          },
+          {
+            "address": "0x0042af40",
+            "text": "MOV dword ptr [EBX],EAX"
+          },
+          {
+            "address": "0x0042af42",
+            "text": "CMP dword ptr [EBP + 0xfffffeec],0x1"
+          },
+          {
+            "address": "0x0042af49",
+            "text": "JLE 0x0042b200"
+          },
+          {
+            "address": "0x0042af4f",
+            "text": "MOV ECX,dword ptr [EBP + 0xfffffee4]"
+          },
+          {
+            "address": "0x0042af55",
+            "text": "MOV dword ptr [EBP + 0xfffffef8],0x1"
+          },
+          {
+            "address": "0x0042af5f",
+            "text": "CALL 0x0040e570"
+          },
+          {
+            "address": "0x0042af64",
+            "text": "TEST EAX,EAX"
+          },
+          {
+            "address": "0x0042af66",
+            "text": "JS 0x0042b0ff"
+          },
+          {
+            "address": "0x0042af6c",
+            "text": "CMP byte ptr [0x00438046],0x0"
+          },
+          {
+            "address": "0x0042af73",
+            "text": "JZ 0x0042b15c"
+          },
+          {
+            "address": "0x0042af79",
+            "text": "CMP byte ptr [0x00438045],0x0"
+          },
+          {
+            "address": "0x0042af80",
+            "text": "JNZ 0x0042b1e7"
+          },
+          {
+            "address": "0x0042af86",
+            "text": "CMP byte ptr [0x00438047],0x0"
+          },
+          {
+            "address": "0x0042af8d",
+            "text": "JNZ 0x0042b1e7"
+          },
+          {
+            "address": "0x0042af93",
+            "text": "CMP dword ptr [EBP + 0xfffffeec],EAX"
+          },
+          {
+            "address": "0x0042af99",
+            "text": "JZ 0x0042b543"
+          },
+          {
+            "address": "0x0042af9f",
+            "text": "SUB dword ptr [EBP + 0xfffffeec],0x1"
+          },
+          {
+            "address": "0x0042afa6",
+            "text": "CMP dword ptr [EBP + 0xfffffeec],EAX"
+          },
+          {
+            "address": "0x0042afac",
+            "text": "JNZ 0x0042b0da"
+          },
+          {
+            "address": "0x0042afb2",
+            "text": "CMP byte ptr [0x00438053],0x0"
+          },
+          {
+            "address": "0x0042afb9",
+            "text": "JNZ 0x0042b17b"
+          },
+          {
+            "address": "0x0042afbf",
+            "text": "MOV dword ptr [EBP + 0xfffffef8],0x2"
+          },
+          {
+            "address": "0x0042afc9",
+            "text": "LEA ECX,[EBP + 0xffffff78]"
+          },
+          {
+            "address": "0x0042afcf",
+            "text": "CALL 0x00401610"
+          },
+          {
+            "address": "0x0042afd4",
+            "text": "MOV dword ptr [EBP + 0xfffffef8],0x3"
+          },
+          {
+            "address": "0x0042afde",
+            "text": "LEA ECX,[EBP + -0x74]"
+          },
+          {
+            "address": "0x0042afe1",
+            "text": "CALL 0x0040db40"
+          },
+          {
+            "address": "0x0042afe6",
+            "text": "CMP byte ptr [0x00438052],0x0"
+          },
+          {
+            "address": "0x0042afed",
+            "text": "JZ 0x0042aff3"
+          },
+          {
+            "address": "0x0042afef",
+            "text": "MOV byte ptr [EBP + -0x7c],0x1"
+          },
+          {
+            "address": "0x0042aff3",
+            "text": "CMP byte ptr [0x0043804a],0x0"
+          },
+          {
+            "address": "0x0042affa",
+            "text": "JZ 0x0042b608"
+          },
+          {
+            "address": "0x0042b000",
+            "text": "CMP byte ptr [0x00438055],0x0"
+          },
+          {
+            "address": "0x0042b007",
+            "text": "JNZ 0x0042b55c"
+          },
+          {
+            "address": "0x0042b00d",
+            "text": "MOV EAX,[0x00438060]"
+          },
+          {
+            "address": "0x0042b012",
+            "text": "CMP dword ptr [EAX + -0xc],0x0"
+          },
+          {
+            "address": "0x0042b016",
+            "text": "JZ 0x0042b65c"
+          },
+          {
+            "address": "0x0042b01c",
+            "text": "CMP byte ptr [0x00438054],0x0"
+          },
+          {
+            "address": "0x0042b023",
+            "text": "JNZ 0x0042b24d"
+          },
+          {
+            "address": "0x0042b029",
+            "text": "LEA EAX,[EBP + -0x60]"
+          },
+          {
+            "address": "0x0042b02c",
+            "text": "LEA EDX,[EBP + -0x74]"
+          },
+          {
+            "address": "0x0042b02f",
+            "text": "MOV ECX,EAX"
+          },
+          {
+            "address": "0x0042b031",
+            "text": "MOV dword ptr [ESP + 0x4],0x438060"
+          },
+          {
+            "address": "0x0042b039",
+            "text": "MOV dword ptr [ESP],EDX"
+          },
+          {
+            "address": "0x0042b03c",
+            "text": "MOV dword ptr [EBP + 0xfffffef8],0x4"
+          },
+          {
+            "address": "0x0042b046",
+            "text": "MOV dword ptr [EBP + 0xfffffee0],EAX"
+          },
+          {
+            "address": "0x0042b04c",
+            "text": "CALL 0x0040d9e0"
+          },
+          {
+            "address": "0x0042b051",
+            "text": "PUSH ECX"
+          },
+          {
+            "address": "0x0042b052",
+            "text": "PUSH ECX"
+          },
+          {
+            "address": "0x0042b053",
+            "text": "LEA ECX,[EBP + 0xffffff78]"
+          },
+          {
+            "address": "0x0042b059",
+            "text": "MOV dword ptr [ESP + 0x4],0x1c200"
+          },
+          {
+            "address": "0x0042b061",
+            "text": "MOV EAX,dword ptr [EBP + 0xfffffee0]"
+          },
+          {
+            "address": "0x0042b067",
+            "text": "MOV dword ptr [ESP],EAX"
+          }
+        ],
+        "instructions_total": 579,
+        "truncated": true
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "9f2d9765b2931b7d3cb7b2e90591a2170e2700321b20200975de317689435da4"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x0043351c",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [],
+        "matches_total": 0,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "8a1c41859c482f31deea86817f96b4acf246909342748ec6185c73199bb1a9fd"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x0043305c",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [
+          {
+            "from": "0x0042b1ef",
+            "fromFunction": "FUN_0042ae60",
+            "to": "0x0043305c",
+            "toLabel": "s_%s:_read_option_is_exclusive_of_w_0043305c",
+            "refType": "DATA"
+          }
+        ],
+        "matches_total": 1,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "ed7ea8df178ee014996642a119e94ffe2ed775d41ab30159fe6426a1a67cf309"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x0043340c",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [],
+        "matches_total": 0,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "8a1c41859c482f31deea86817f96b4acf246909342748ec6185c73199bb1a9fd"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x00433440",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [],
+        "matches_total": 0,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "8a1c41859c482f31deea86817f96b4acf246909342748ec6185c73199bb1a9fd"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x004338d0",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [],
+        "matches_total": 0,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "8a1c41859c482f31deea86817f96b4acf246909342748ec6185c73199bb1a9fd"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x004321db",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [
+          {
+            "from": "0x00402b59",
+            "fromFunction": "FUN_00402a00",
+            "to": "0x004321db",
+            "toLabel": "s_writeBuffer_004321db",
+            "refType": "DATA"
+          }
+        ],
+        "matches_total": 1,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "34aa4bfe384136c3677a59ed4b3ee071b3be2b0b4cc7d90e54000622fe055ce7"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "function",
+        "pattern": "",
+        "address": "0x00402a00",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "format": "Portable Executable (PE)",
+        "language": "x86:LE:32:default",
+        "compiler": "windows",
+        "image_base": "0x00400000",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "kind": "function",
+        "status": "observed",
+        "function": "FUN_00402a00",
+        "entry": "0x00402a00",
+        "calling_convention": "__thiscall",
+        "body_ranges": [
+          {
+            "start": "0x00402a00",
+            "end": "0x00402ba6"
+          }
+        ],
+        "decompile_completed": true,
+        "decompile_error": "",
+        "decompiled_c": "\nvoid __thiscall FUN_00402a00(void *this,undefined4 param_1,undefined4 param_2,uint param_3)\n\n{\n  int iVar1;\n  int iVar2;\n  undefined4 *puVar3;\n  char *pcVar4;\n  char local_5c [76];\n  \n  if ((*(char *)((int)this + 5) != '\\0') && (param_3 < 0x1001)) {\n    if (*(char *)((int)this + 0xc) != '\\0') {\n      FUN_004015c0(\"%s(scr_addr=%#x, dst_addr=%#x, size=%#x)\\n\");\n    }\n    pcVar4 = \"Y%08X,0#\";\n    iVar1 = FUN_004015e0((int)local_5c,0x40,\"Y%08X,0#\");\n    iVar2 = (**(code **)(**(int **)((int)this + 0x10) + 0x18))(local_5c,iVar1,pcVar4,param_1);\n    if (iVar1 == iVar2) {\n      (**(code **)(**(int **)((int)this + 0x10) + 0x24))(100);\n      local_5c[0] = '\\0';\n      (**(code **)(**(int **)((int)this + 0x10) + 0x14))(local_5c,3);\n      (**(code **)(**(int **)((int)this + 0x10) + 0x24))(1000);\n      if (local_5c[0] == 'Y') {\n        pcVar4 = \"Y%08X,%08X#\";\n        iVar1 = FUN_004015e0((int)local_5c,0x40,\"Y%08X,%08X#\");\n        iVar2 = (**(code **)(**(int **)((int)this + 0x10) + 0x18))\n                          (local_5c,iVar1,pcVar4,param_2,param_3);\n        if (iVar1 == iVar2) {\n          (**(code **)(**(int **)((int)this + 0x10) + 0x24))(5000);\n          local_5c[0] = '\\0';\n          (**(code **)(**(int **)((int)this + 0x10) + 0x14))(local_5c,3);\n          (**(code **)(**(int **)((int)this + 0x10) + 0x24))(1000);\n          if (local_5c[0] == 'Y') {\n            return;\n          }\n        }\n      }\n    }\n  }\n  puVar3 = FUN_00429b40(4);\n  *puVar3 = &PTR_LAB_004369d8;\n                    /* WARNING: Subroutine does not return */\n  FUN_0042a7f0((int)puVar3,&PTR_PTR_00435fac,&LAB_00422d40);\n}\n\n",
+        "decompile_truncated": false,
+        "instructions": [
+          {
+            "address": "0x00402a00",
+            "text": "PUSH EBP"
+          },
+          {
+            "address": "0x00402a01",
+            "text": "MOV EBP,ESP"
+          },
+          {
+            "address": "0x00402a03",
+            "text": "PUSH EDI"
+          },
+          {
+            "address": "0x00402a04",
+            "text": "PUSH ESI"
+          },
+          {
+            "address": "0x00402a05",
+            "text": "PUSH EBX"
+          },
+          {
+            "address": "0x00402a06",
+            "text": "MOV EBX,ECX"
+          },
+          {
+            "address": "0x00402a08",
+            "text": "SUB ESP,0x6c"
+          },
+          {
+            "address": "0x00402a0b",
+            "text": "MOV ESI,dword ptr [EBP + 0x8]"
+          },
+          {
+            "address": "0x00402a0e",
+            "text": "CMP byte ptr [ECX + 0x5],0x0"
+          },
+          {
+            "address": "0x00402a12",
+            "text": "JZ 0x00402b7d"
+          },
+          {
+            "address": "0x00402a18",
+            "text": "CMP dword ptr [EBP + 0x10],0x1000"
+          },
+          {
+            "address": "0x00402a1f",
+            "text": "JA 0x00402b7d"
+          },
+          {
+            "address": "0x00402a25",
+            "text": "CMP byte ptr [ECX + 0xc],0x0"
+          },
+          {
+            "address": "0x00402a29",
+            "text": "JNZ 0x00402b52"
+          },
+          {
+            "address": "0x00402a2f",
+            "text": "MOV dword ptr [ESP + 0xc],ESI"
+          },
+          {
+            "address": "0x00402a33",
+            "text": "LEA ESI,[EBP + -0x58]"
+          },
+          {
+            "address": "0x00402a36",
+            "text": "MOV dword ptr [ESP + 0x8],0x432186"
+          },
+          {
+            "address": "0x00402a3e",
+            "text": "MOV dword ptr [ESP + 0x4],0x40"
+          },
+          {
+            "address": "0x00402a46",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402a49",
+            "text": "CALL 0x004015e0"
+          },
+          {
+            "address": "0x00402a4e",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402a51",
+            "text": "MOV EDI,EAX"
+          },
+          {
+            "address": "0x00402a53",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402a55",
+            "text": "MOV EAX,dword ptr [EAX + 0x18]"
+          },
+          {
+            "address": "0x00402a58",
+            "text": "MOV dword ptr [ESP + 0x4],EDI"
+          },
+          {
+            "address": "0x00402a5c",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402a5f",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402a61",
+            "text": "SUB ESP,0x8"
+          },
+          {
+            "address": "0x00402a64",
+            "text": "CMP EDI,EAX"
+          },
+          {
+            "address": "0x00402a66",
+            "text": "JNZ 0x00402b7d"
+          },
+          {
+            "address": "0x00402a6c",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402a6f",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402a71",
+            "text": "MOV EAX,dword ptr [EAX + 0x24]"
+          },
+          {
+            "address": "0x00402a74",
+            "text": "MOV dword ptr [ESP],0x64"
+          },
+          {
+            "address": "0x00402a7b",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402a7d",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402a80",
+            "text": "MOV byte ptr [EBP + -0x58],0x0"
+          },
+          {
+            "address": "0x00402a84",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402a86",
+            "text": "SUB ESP,0x4"
+          },
+          {
+            "address": "0x00402a89",
+            "text": "MOV EAX,dword ptr [EAX + 0x14]"
+          },
+          {
+            "address": "0x00402a8c",
+            "text": "MOV dword ptr [ESP + 0x4],0x3"
+          },
+          {
+            "address": "0x00402a94",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402a97",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402a99",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402a9c",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402a9e",
+            "text": "SUB ESP,0x8"
+          },
+          {
+            "address": "0x00402aa1",
+            "text": "MOV EAX,dword ptr [EAX + 0x24]"
+          },
+          {
+            "address": "0x00402aa4",
+            "text": "MOV dword ptr [ESP],0x3e8"
+          },
+          {
+            "address": "0x00402aab",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402aad",
+            "text": "SUB ESP,0x4"
+          },
+          {
+            "address": "0x00402ab0",
+            "text": "CMP byte ptr [EBP + -0x58],0x59"
+          },
+          {
+            "address": "0x00402ab4",
+            "text": "JNZ 0x00402b7d"
+          },
+          {
+            "address": "0x00402aba",
+            "text": "MOV EAX,dword ptr [EBP + 0x10]"
+          },
+          {
+            "address": "0x00402abd",
+            "text": "MOV dword ptr [ESP + 0x8],0x43218f"
+          },
+          {
+            "address": "0x00402ac5",
+            "text": "MOV dword ptr [ESP + 0x4],0x40"
+          },
+          {
+            "address": "0x00402acd",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402ad0",
+            "text": "MOV dword ptr [ESP + 0x10],EAX"
+          },
+          {
+            "address": "0x00402ad4",
+            "text": "MOV EAX,dword ptr [EBP + 0xc]"
+          },
+          {
+            "address": "0x00402ad7",
+            "text": "MOV dword ptr [ESP + 0xc],EAX"
+          },
+          {
+            "address": "0x00402adb",
+            "text": "CALL 0x004015e0"
+          },
+          {
+            "address": "0x00402ae0",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402ae3",
+            "text": "MOV EDI,EAX"
+          },
+          {
+            "address": "0x00402ae5",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402ae7",
+            "text": "MOV EAX,dword ptr [EAX + 0x18]"
+          },
+          {
+            "address": "0x00402aea",
+            "text": "MOV dword ptr [ESP + 0x4],EDI"
+          },
+          {
+            "address": "0x00402aee",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402af1",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402af3",
+            "text": "SUB ESP,0x8"
+          },
+          {
+            "address": "0x00402af6",
+            "text": "CMP EDI,EAX"
+          },
+          {
+            "address": "0x00402af8",
+            "text": "JNZ 0x00402b7d"
+          },
+          {
+            "address": "0x00402afe",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402b01",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402b03",
+            "text": "MOV EAX,dword ptr [EAX + 0x24]"
+          },
+          {
+            "address": "0x00402b06",
+            "text": "MOV dword ptr [ESP],0x1388"
+          },
+          {
+            "address": "0x00402b0d",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402b0f",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402b12",
+            "text": "MOV byte ptr [EBP + -0x58],0x0"
+          },
+          {
+            "address": "0x00402b16",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402b18",
+            "text": "SUB ESP,0x4"
+          },
+          {
+            "address": "0x00402b1b",
+            "text": "MOV EAX,dword ptr [EAX + 0x14]"
+          },
+          {
+            "address": "0x00402b1e",
+            "text": "MOV dword ptr [ESP + 0x4],0x3"
+          },
+          {
+            "address": "0x00402b26",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402b29",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402b2b",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402b2e",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402b30",
+            "text": "SUB ESP,0x8"
+          },
+          {
+            "address": "0x00402b33",
+            "text": "MOV EAX,dword ptr [EAX + 0x24]"
+          },
+          {
+            "address": "0x00402b36",
+            "text": "MOV dword ptr [ESP],0x3e8"
+          },
+          {
+            "address": "0x00402b3d",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402b3f",
+            "text": "SUB ESP,0x4"
+          },
+          {
+            "address": "0x00402b42",
+            "text": "CMP byte ptr [EBP + -0x58],0x59"
+          },
+          {
+            "address": "0x00402b46",
+            "text": "JNZ 0x00402b7d"
+          },
+          {
+            "address": "0x00402b48",
+            "text": "LEA ESP,[EBP + -0xc]"
+          },
+          {
+            "address": "0x00402b4b",
+            "text": "POP EBX"
+          },
+          {
+            "address": "0x00402b4c",
+            "text": "POP ESI"
+          },
+          {
+            "address": "0x00402b4d",
+            "text": "POP EDI"
+          },
+          {
+            "address": "0x00402b4e",
+            "text": "POP EBP"
+          },
+          {
+            "address": "0x00402b4f",
+            "text": "RET 0xc"
+          },
+          {
+            "address": "0x00402b52",
+            "text": "MOV EAX,dword ptr [EBP + 0x10]"
+          },
+          {
+            "address": "0x00402b55",
+            "text": "MOV dword ptr [ESP + 0x8],ESI"
+          }
+        ],
+        "instructions_total": 114,
+        "truncated": true
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "1f8a7d01bb5de173a67f7febc96b59dee979fa9377ac35be0ed2b470b317a902"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "xrefs",
+        "pattern": "",
+        "address": "0x004321e7",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "rows": [
+          {
+            "from": "0x004029b4",
+            "fromFunction": "FUN_00402900",
+            "to": "0x004321e7",
+            "toLabel": "s_chipErase_004321e7",
+            "refType": "DATA"
+          }
+        ],
+        "matches_total": 1,
+        "truncated": false,
+        "text_truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "6a2b23fc2db8e7a1381143c53a4e1abee0c76b04904cbffd22706ef4a92f6945"
+    },
+    {
+      "schema_version": 1,
+      "operation": "executable_structure_v1",
+      "target": "vendor_bossac",
+      "arguments": {
+        "kind": "function",
+        "pattern": "",
+        "address": "0x00402900",
+        "limit": 100
+      },
+      "identity": {
+        "target_key": "vendor_bossac",
+        "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "format_policy": "pe32-x86",
+        "loader": "Ghidra native executable detection",
+        "analysis_version": 1,
+        "ghidra_version": "12.1.3",
+        "script_hashes": {
+          "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+          "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+        },
+        "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+        "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+      },
+      "evidence_level": "static-ghidra",
+      "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+      "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+      "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+      "result": {
+        "format": "Portable Executable (PE)",
+        "language": "x86:LE:32:default",
+        "compiler": "windows",
+        "image_base": "0x00400000",
+        "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+        "kind": "function",
+        "status": "observed",
+        "function": "FUN_00402900",
+        "entry": "0x00402900",
+        "calling_convention": "__thiscall",
+        "body_ranges": [
+          {
+            "start": "0x00402900",
+            "end": "0x004029aa"
+          },
+          {
+            "start": "0x004029b0",
+            "end": "0x004029f6"
+          }
+        ],
+        "decompile_completed": true,
+        "decompile_error": "",
+        "decompiled_c": "\nvoid __thiscall FUN_00402900(void *this,undefined4 param_1)\n\n{\n  int iVar1;\n  int iVar2;\n  undefined4 *puVar3;\n  char *pcVar4;\n  char local_5c [76];\n  \n  if (*(char *)((int)this + 4) != '\\0') {\n    if (*(char *)((int)this + 0xc) != '\\0') {\n      FUN_004015c0(\"%s(addr=%#x)\\n\");\n    }\n    pcVar4 = \"X%08X#\";\n    iVar1 = FUN_004015e0((int)local_5c,0x40,\"X%08X#\");\n    iVar2 = (**(code **)(**(int **)((int)this + 0x10) + 0x18))(local_5c,iVar1,pcVar4,param_1);\n    if (iVar1 == iVar2) {\n      (**(code **)(**(int **)((int)this + 0x10) + 0x24))(5000);\n      (**(code **)(**(int **)((int)this + 0x10) + 0x14))(local_5c,3);\n      (**(code **)(**(int **)((int)this + 0x10) + 0x24))(1000);\n      if (local_5c[0] == 'X') {\n        return;\n      }\n    }\n  }\n  puVar3 = FUN_00429b40(4);\n  *puVar3 = &PTR_LAB_004369d8;\n                    /* WARNING: Subroutine does not return */\n  FUN_0042a7f0((int)puVar3,&PTR_PTR_00435fac,&LAB_00422d40);\n}\n\n",
+        "decompile_truncated": false,
+        "instructions": [
+          {
+            "address": "0x00402900",
+            "text": "PUSH EBP"
+          },
+          {
+            "address": "0x00402901",
+            "text": "MOV EBP,ESP"
+          },
+          {
+            "address": "0x00402903",
+            "text": "PUSH EDI"
+          },
+          {
+            "address": "0x00402904",
+            "text": "PUSH ESI"
+          },
+          {
+            "address": "0x00402905",
+            "text": "PUSH EBX"
+          },
+          {
+            "address": "0x00402906",
+            "text": "MOV EBX,ECX"
+          },
+          {
+            "address": "0x00402908",
+            "text": "SUB ESP,0x5c"
+          },
+          {
+            "address": "0x0040290b",
+            "text": "MOV ESI,dword ptr [EBP + 0x8]"
+          },
+          {
+            "address": "0x0040290e",
+            "text": "CMP byte ptr [ECX + 0x4],0x0"
+          },
+          {
+            "address": "0x00402912",
+            "text": "JZ 0x004029cd"
+          },
+          {
+            "address": "0x00402918",
+            "text": "CMP byte ptr [ECX + 0xc],0x0"
+          },
+          {
+            "address": "0x0040291c",
+            "text": "JNZ 0x004029b0"
+          },
+          {
+            "address": "0x00402922",
+            "text": "MOV dword ptr [ESP + 0xc],ESI"
+          },
+          {
+            "address": "0x00402926",
+            "text": "LEA ESI,[EBP + -0x58]"
+          },
+          {
+            "address": "0x00402929",
+            "text": "MOV dword ptr [ESP + 0x8],0x432154"
+          },
+          {
+            "address": "0x00402931",
+            "text": "MOV dword ptr [ESP + 0x4],0x40"
+          },
+          {
+            "address": "0x00402939",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x0040293c",
+            "text": "CALL 0x004015e0"
+          },
+          {
+            "address": "0x00402941",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402944",
+            "text": "MOV EDI,EAX"
+          },
+          {
+            "address": "0x00402946",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402948",
+            "text": "MOV EAX,dword ptr [EAX + 0x18]"
+          },
+          {
+            "address": "0x0040294b",
+            "text": "MOV dword ptr [ESP + 0x4],EDI"
+          },
+          {
+            "address": "0x0040294f",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402952",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402954",
+            "text": "SUB ESP,0x8"
+          },
+          {
+            "address": "0x00402957",
+            "text": "CMP EDI,EAX"
+          },
+          {
+            "address": "0x00402959",
+            "text": "JNZ 0x004029cd"
+          },
+          {
+            "address": "0x0040295b",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x0040295e",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402960",
+            "text": "MOV EAX,dword ptr [EAX + 0x24]"
+          },
+          {
+            "address": "0x00402963",
+            "text": "MOV dword ptr [ESP],0x1388"
+          },
+          {
+            "address": "0x0040296a",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x0040296c",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x0040296f",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402971",
+            "text": "SUB ESP,0x4"
+          },
+          {
+            "address": "0x00402974",
+            "text": "MOV EAX,dword ptr [EAX + 0x14]"
+          },
+          {
+            "address": "0x00402977",
+            "text": "MOV dword ptr [ESP + 0x4],0x3"
+          },
+          {
+            "address": "0x0040297f",
+            "text": "MOV dword ptr [ESP],ESI"
+          },
+          {
+            "address": "0x00402982",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402984",
+            "text": "MOV ECX,dword ptr [EBX + 0x10]"
+          },
+          {
+            "address": "0x00402987",
+            "text": "MOV EAX,dword ptr [ECX]"
+          },
+          {
+            "address": "0x00402989",
+            "text": "SUB ESP,0x8"
+          },
+          {
+            "address": "0x0040298c",
+            "text": "MOV EAX,dword ptr [EAX + 0x24]"
+          },
+          {
+            "address": "0x0040298f",
+            "text": "MOV dword ptr [ESP],0x3e8"
+          },
+          {
+            "address": "0x00402996",
+            "text": "CALL EAX"
+          },
+          {
+            "address": "0x00402998",
+            "text": "SUB ESP,0x4"
+          },
+          {
+            "address": "0x0040299b",
+            "text": "CMP byte ptr [EBP + -0x58],0x58"
+          },
+          {
+            "address": "0x0040299f",
+            "text": "JNZ 0x004029cd"
+          },
+          {
+            "address": "0x004029a1",
+            "text": "LEA ESP,[EBP + -0xc]"
+          },
+          {
+            "address": "0x004029a4",
+            "text": "POP EBX"
+          },
+          {
+            "address": "0x004029a5",
+            "text": "POP ESI"
+          },
+          {
+            "address": "0x004029a6",
+            "text": "POP EDI"
+          },
+          {
+            "address": "0x004029a7",
+            "text": "POP EBP"
+          },
+          {
+            "address": "0x004029a8",
+            "text": "RET 0x4"
+          },
+          {
+            "address": "0x004029b0",
+            "text": "MOV dword ptr [ESP + 0x8],ESI"
+          },
+          {
+            "address": "0x004029b4",
+            "text": "MOV dword ptr [ESP + 0x4],0x4321e7"
+          },
+          {
+            "address": "0x004029bc",
+            "text": "MOV dword ptr [ESP],0x4320db"
+          },
+          {
+            "address": "0x004029c3",
+            "text": "CALL 0x004015c0"
+          },
+          {
+            "address": "0x004029c8",
+            "text": "JMP 0x00402922"
+          },
+          {
+            "address": "0x004029cd",
+            "text": "MOV dword ptr [ESP],0x4"
+          },
+          {
+            "address": "0x004029d4",
+            "text": "CALL 0x00429b40"
+          },
+          {
+            "address": "0x004029d9",
+            "text": "MOV dword ptr [EAX],0x4369d8"
+          },
+          {
+            "address": "0x004029df",
+            "text": "MOV dword ptr [ESP + 0x8],0x422d40"
+          },
+          {
+            "address": "0x004029e7",
+            "text": "MOV dword ptr [ESP + 0x4],0x435fac"
+          },
+          {
+            "address": "0x004029ef",
+            "text": "MOV dword ptr [ESP],EAX"
+          },
+          {
+            "address": "0x004029f2",
+            "text": "CALL 0x0042a7f0"
+          }
+        ],
+        "instructions_total": 67,
+        "truncated": false
+      },
+      "limitations": [
+        "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+        "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+        "Absence of a defined string/reference does not establish absence of behavior"
+      ],
+      "result_sha256": "910acc0aa59c2ba824d18fbd9330648feadc5bc7dfcac4bb7783445b388b2281"
+    }
+  ],
+  "claims": [],
+  "remaining_queries": [
+    {
+      "kind": "xrefs",
+      "address": "0x004321fc"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x00432210"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x00432223"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x004324e8"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x00432524"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x0043258b"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x0043265b"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x004326c0"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x00432706"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x00432867"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x00432874"
+    },
+    {
+      "kind": "xrefs",
+      "address": "0x004328b4"
+    }
+  ],
+  "limitations": [
+    "Static Ghidra evidence only; no claim admission or VERIFIED transition",
+    "Keyword discovery is bounded, not exhaustive behavior analysis"
+  ]
+}

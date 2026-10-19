@@ -24,3 +24,11 @@ projects are rejected rather than silently reused.
 The current Performing Rigs configuration is explicitly wired at the backend
 entry point. Its concrete backend history and examples are preserved in
 [`ghidra-backend-results.md`](../../cases/performing-rigs/docs/investigations/ghidra-backend-results.md).
+
+## Format-aware host executables
+
+Registered Windows PE32/x86 inputs now use native executable import through
+this lifecycle. See [executable-analysis.md](executable-analysis.md) for target
+policy, bounded `exe-query`, transient native entry discovery, objective routing,
+provenance, regression tests and explicit static-only limitations. Raw Cortex-M
+builds and evidence admission are unchanged.

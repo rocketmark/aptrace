@@ -1,0 +1,591 @@
+{
+  "schema_version": 1,
+  "operation": "executable_structure_v1",
+  "target": "vendor_bossac",
+  "arguments": {
+    "kind": "imports",
+    "pattern": "",
+    "address": null,
+    "limit": 1000
+  },
+  "identity": {
+    "target_key": "vendor_bossac",
+    "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "format_policy": "pe32-x86",
+    "loader": "Ghidra native executable detection",
+    "analysis_version": 1,
+    "ghidra_version": "12.1.3",
+    "script_hashes": {
+      "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+    },
+    "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+    "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+  },
+  "evidence_level": "static-ghidra",
+  "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+  "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+  "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+  "result": {
+    "rows": [
+      {
+        "name": "ADVAPI32.DLL::RegCloseKey",
+        "address": "0x00000001"
+      },
+      {
+        "name": "ADVAPI32.DLL::RegQueryValueExA",
+        "address": "0x00000002"
+      },
+      {
+        "name": "KERNEL32.DLL::CloseHandle",
+        "address": "0x00000003"
+      },
+      {
+        "name": "KERNEL32.DLL::CreateEventA",
+        "address": "0x00000004"
+      },
+      {
+        "name": "KERNEL32.DLL::CreateFileA",
+        "address": "0x00000005"
+      },
+      {
+        "name": "KERNEL32.DLL::CreateSemaphoreA",
+        "address": "0x00000006"
+      },
+      {
+        "name": "KERNEL32.DLL::DeleteCriticalSection",
+        "address": "0x00000007"
+      },
+      {
+        "name": "KERNEL32.DLL::DuplicateHandle",
+        "address": "0x00000008"
+      },
+      {
+        "name": "KERNEL32.DLL::EnterCriticalSection",
+        "address": "0x00000009"
+      },
+      {
+        "name": "KERNEL32.DLL::EscapeCommFunction",
+        "address": "0x0000000a"
+      },
+      {
+        "name": "KERNEL32.DLL::FreeLibrary",
+        "address": "0x0000000b"
+      },
+      {
+        "name": "KERNEL32.DLL::GetCommState",
+        "address": "0x0000000c"
+      },
+      {
+        "name": "KERNEL32.DLL::GetCurrentProcess",
+        "address": "0x0000000d"
+      },
+      {
+        "name": "KERNEL32.DLL::GetCurrentProcessId",
+        "address": "0x0000000e"
+      },
+      {
+        "name": "KERNEL32.DLL::GetCurrentThread",
+        "address": "0x0000000f"
+      },
+      {
+        "name": "KERNEL32.DLL::GetCurrentThreadId",
+        "address": "0x00000010"
+      },
+      {
+        "name": "KERNEL32.DLL::GetHandleInformation",
+        "address": "0x00000011"
+      },
+      {
+        "name": "KERNEL32.DLL::GetLastError",
+        "address": "0x00000012"
+      },
+      {
+        "name": "KERNEL32.DLL::GetModuleFileNameW",
+        "address": "0x00000013"
+      },
+      {
+        "name": "KERNEL32.DLL::GetModuleHandleA",
+        "address": "0x00000014"
+      },
+      {
+        "name": "KERNEL32.DLL::GetModuleHandleW",
+        "address": "0x00000015"
+      },
+      {
+        "name": "KERNEL32.DLL::GetProcAddress",
+        "address": "0x00000016"
+      },
+      {
+        "name": "KERNEL32.DLL::GetProcessAffinityMask",
+        "address": "0x00000017"
+      },
+      {
+        "name": "KERNEL32.DLL::GetStartupInfoA",
+        "address": "0x00000018"
+      },
+      {
+        "name": "KERNEL32.DLL::GetSystemTimeAsFileTime",
+        "address": "0x00000019"
+      },
+      {
+        "name": "KERNEL32.DLL::GetThreadContext",
+        "address": "0x0000001a"
+      },
+      {
+        "name": "KERNEL32.DLL::GetThreadPriority",
+        "address": "0x0000001b"
+      },
+      {
+        "name": "KERNEL32.DLL::GetTickCount",
+        "address": "0x0000001c"
+      },
+      {
+        "name": "KERNEL32.DLL::GetTimeZoneInformation",
+        "address": "0x0000001d"
+      },
+      {
+        "name": "KERNEL32.DLL::InitializeCriticalSection",
+        "address": "0x0000001e"
+      },
+      {
+        "name": "KERNEL32.DLL::IsDBCSLeadByteEx",
+        "address": "0x0000001f"
+      },
+      {
+        "name": "KERNEL32.DLL::LeaveCriticalSection",
+        "address": "0x00000020"
+      },
+      {
+        "name": "KERNEL32.DLL::LoadLibraryA",
+        "address": "0x00000021"
+      },
+      {
+        "name": "KERNEL32.DLL::MultiByteToWideChar",
+        "address": "0x00000022"
+      },
+      {
+        "name": "KERNEL32.DLL::QueryDosDeviceA",
+        "address": "0x00000023"
+      },
+      {
+        "name": "KERNEL32.DLL::QueryPerformanceCounter",
+        "address": "0x00000024"
+      },
+      {
+        "name": "KERNEL32.DLL::ReadFile",
+        "address": "0x00000025"
+      },
+      {
+        "name": "KERNEL32.DLL::ReleaseSemaphore",
+        "address": "0x00000026"
+      },
+      {
+        "name": "KERNEL32.DLL::ResetEvent",
+        "address": "0x00000027"
+      },
+      {
+        "name": "KERNEL32.DLL::ResumeThread",
+        "address": "0x00000028"
+      },
+      {
+        "name": "KERNEL32.DLL::SetCommState",
+        "address": "0x00000029"
+      },
+      {
+        "name": "KERNEL32.DLL::SetCommTimeouts",
+        "address": "0x0000002a"
+      },
+      {
+        "name": "KERNEL32.DLL::SetCriticalSectionSpinCount",
+        "address": "0x0000002b"
+      },
+      {
+        "name": "KERNEL32.DLL::SetEvent",
+        "address": "0x0000002c"
+      },
+      {
+        "name": "KERNEL32.DLL::SetLastError",
+        "address": "0x0000002d"
+      },
+      {
+        "name": "KERNEL32.DLL::SetProcessAffinityMask",
+        "address": "0x0000002e"
+      },
+      {
+        "name": "KERNEL32.DLL::SetThreadContext",
+        "address": "0x0000002f"
+      },
+      {
+        "name": "KERNEL32.DLL::SetThreadPriority",
+        "address": "0x00000030"
+      },
+      {
+        "name": "KERNEL32.DLL::SetUnhandledExceptionFilter",
+        "address": "0x00000031"
+      },
+      {
+        "name": "KERNEL32.DLL::Sleep",
+        "address": "0x00000032"
+      },
+      {
+        "name": "KERNEL32.DLL::SuspendThread",
+        "address": "0x00000033"
+      },
+      {
+        "name": "KERNEL32.DLL::TerminateProcess",
+        "address": "0x00000034"
+      },
+      {
+        "name": "KERNEL32.DLL::TlsAlloc",
+        "address": "0x00000035"
+      },
+      {
+        "name": "KERNEL32.DLL::TlsGetValue",
+        "address": "0x00000036"
+      },
+      {
+        "name": "KERNEL32.DLL::TlsSetValue",
+        "address": "0x00000037"
+      },
+      {
+        "name": "KERNEL32.DLL::TryEnterCriticalSection",
+        "address": "0x00000038"
+      },
+      {
+        "name": "KERNEL32.DLL::UnhandledExceptionFilter",
+        "address": "0x00000039"
+      },
+      {
+        "name": "KERNEL32.DLL::VirtualProtect",
+        "address": "0x0000003a"
+      },
+      {
+        "name": "KERNEL32.DLL::VirtualQuery",
+        "address": "0x0000003b"
+      },
+      {
+        "name": "KERNEL32.DLL::WaitForMultipleObjects",
+        "address": "0x0000003c"
+      },
+      {
+        "name": "KERNEL32.DLL::WaitForSingleObject",
+        "address": "0x0000003d"
+      },
+      {
+        "name": "KERNEL32.DLL::WideCharToMultiByte",
+        "address": "0x0000003e"
+      },
+      {
+        "name": "KERNEL32.DLL::WriteFile",
+        "address": "0x0000003f"
+      },
+      {
+        "name": "MSVCRT.DLL::__argv",
+        "address": "0x00000040"
+      },
+      {
+        "name": "MSVCRT.DLL::__dllonexit",
+        "address": "0x00000041"
+      },
+      {
+        "name": "MSVCRT.DLL::__getmainargs",
+        "address": "0x00000042"
+      },
+      {
+        "name": "MSVCRT.DLL::__initenv",
+        "address": "0x00000043"
+      },
+      {
+        "name": "MSVCRT.DLL::__lconv_init",
+        "address": "0x00000044"
+      },
+      {
+        "name": "MSVCRT.DLL::__mb_cur_max",
+        "address": "0x00000045"
+      },
+      {
+        "name": "MSVCRT.DLL::__set_app_type",
+        "address": "0x00000046"
+      },
+      {
+        "name": "MSVCRT.DLL::__setusermatherr",
+        "address": "0x00000047"
+      },
+      {
+        "name": "MSVCRT.DLL::_acmdln",
+        "address": "0x00000048"
+      },
+      {
+        "name": "MSVCRT.DLL::_amsg_exit",
+        "address": "0x00000049"
+      },
+      {
+        "name": "MSVCRT.DLL::_beginthreadex",
+        "address": "0x0000004a"
+      },
+      {
+        "name": "MSVCRT.DLL::_cexit",
+        "address": "0x0000004b"
+      },
+      {
+        "name": "MSVCRT.DLL::_endthreadex",
+        "address": "0x0000004c"
+      },
+      {
+        "name": "MSVCRT.DLL::_errno",
+        "address": "0x0000004d"
+      },
+      {
+        "name": "MSVCRT.DLL::_exit",
+        "address": "0x0000004e"
+      },
+      {
+        "name": "MSVCRT.DLL::_fmode",
+        "address": "0x0000004f"
+      },
+      {
+        "name": "MSVCRT.DLL::_ftime",
+        "address": "0x00000050"
+      },
+      {
+        "name": "MSVCRT.DLL::initterm",
+        "address": "0x00000051"
+      },
+      {
+        "name": "MSVCRT.DLL::_iob",
+        "address": "0x00000052"
+      },
+      {
+        "name": "MSVCRT.DLL::_lock",
+        "address": "0x00000053"
+      },
+      {
+        "name": "MSVCRT.DLL::_onexit",
+        "address": "0x00000054"
+      },
+      {
+        "name": "MSVCRT.DLL::setjmp3",
+        "address": "0x00000055"
+      },
+      {
+        "name": "MSVCRT.DLL::_snwprintf",
+        "address": "0x00000056"
+      },
+      {
+        "name": "MSVCRT.DLL::_unlock",
+        "address": "0x00000057"
+      },
+      {
+        "name": "MSVCRT.DLL::calloc",
+        "address": "0x00000058"
+      },
+      {
+        "name": "MSVCRT.DLL::exit",
+        "address": "0x00000059"
+      },
+      {
+        "name": "MSVCRT.DLL::fclose",
+        "address": "0x0000005a"
+      },
+      {
+        "name": "MSVCRT.DLL::fflush",
+        "address": "0x0000005b"
+      },
+      {
+        "name": "MSVCRT.DLL::fopen",
+        "address": "0x0000005c"
+      },
+      {
+        "name": "MSVCRT.DLL::fprintf",
+        "address": "0x0000005d"
+      },
+      {
+        "name": "MSVCRT.DLL::fputc",
+        "address": "0x0000005e"
+      },
+      {
+        "name": "MSVCRT.DLL::fputs",
+        "address": "0x0000005f"
+      },
+      {
+        "name": "MSVCRT.DLL::fread",
+        "address": "0x00000060"
+      },
+      {
+        "name": "MSVCRT.DLL::free",
+        "address": "0x00000061"
+      },
+      {
+        "name": "MSVCRT.DLL::fseek",
+        "address": "0x00000062"
+      },
+      {
+        "name": "MSVCRT.DLL::ftell",
+        "address": "0x00000063"
+      },
+      {
+        "name": "MSVCRT.DLL::fwprintf",
+        "address": "0x00000064"
+      },
+      {
+        "name": "MSVCRT.DLL::fwrite",
+        "address": "0x00000065"
+      },
+      {
+        "name": "MSVCRT.DLL::getenv",
+        "address": "0x00000066"
+      },
+      {
+        "name": "MSVCRT.DLL::isprint",
+        "address": "0x00000067"
+      },
+      {
+        "name": "MSVCRT.DLL::localeconv",
+        "address": "0x00000068"
+      },
+      {
+        "name": "MSVCRT.DLL::malloc",
+        "address": "0x00000069"
+      },
+      {
+        "name": "MSVCRT.DLL::memchr",
+        "address": "0x0000006a"
+      },
+      {
+        "name": "MSVCRT.DLL::memcmp",
+        "address": "0x0000006b"
+      },
+      {
+        "name": "MSVCRT.DLL::memcpy",
+        "address": "0x0000006c"
+      },
+      {
+        "name": "MSVCRT.DLL::memmove",
+        "address": "0x0000006d"
+      },
+      {
+        "name": "MSVCRT.DLL::memset",
+        "address": "0x0000006e"
+      },
+      {
+        "name": "MSVCRT.DLL::printf",
+        "address": "0x0000006f"
+      },
+      {
+        "name": "MSVCRT.DLL::putchar",
+        "address": "0x00000070"
+      },
+      {
+        "name": "MSVCRT.DLL::raise",
+        "address": "0x00000071"
+      },
+      {
+        "name": "MSVCRT.DLL::realloc",
+        "address": "0x00000072"
+      },
+      {
+        "name": "MSVCRT.DLL::rewind",
+        "address": "0x00000073"
+      },
+      {
+        "name": "MSVCRT.DLL::setlocale",
+        "address": "0x00000074"
+      },
+      {
+        "name": "MSVCRT.DLL::signal",
+        "address": "0x00000075"
+      },
+      {
+        "name": "MSVCRT.DLL::sprintf",
+        "address": "0x00000076"
+      },
+      {
+        "name": "MSVCRT.DLL::strchr",
+        "address": "0x00000077"
+      },
+      {
+        "name": "MSVCRT.DLL::strcmp",
+        "address": "0x00000078"
+      },
+      {
+        "name": "MSVCRT.DLL::strerror",
+        "address": "0x00000079"
+      },
+      {
+        "name": "MSVCRT.DLL::strlen",
+        "address": "0x0000007a"
+      },
+      {
+        "name": "MSVCRT.DLL::strncmp",
+        "address": "0x0000007b"
+      },
+      {
+        "name": "MSVCRT.DLL::strrchr",
+        "address": "0x0000007c"
+      },
+      {
+        "name": "MSVCRT.DLL::strtol",
+        "address": "0x0000007d"
+      },
+      {
+        "name": "MSVCRT.DLL::abort",
+        "address": "0x0000007e"
+      },
+      {
+        "name": "MSVCRT.DLL::atoi",
+        "address": "0x0000007f"
+      },
+      {
+        "name": "MSVCRT.DLL::vfprintf",
+        "address": "0x00000080"
+      },
+      {
+        "name": "MSVCRT.DLL::wcscpy",
+        "address": "0x00000081"
+      },
+      {
+        "name": "MSVCRT.DLL::wcslen",
+        "address": "0x00000082"
+      },
+      {
+        "name": "MSVCRT.DLL::longjmp",
+        "address": "0x00000083"
+      },
+      {
+        "name": "MSVCRT.DLL::_write",
+        "address": "0x00000084"
+      },
+      {
+        "name": "SETUPAPI.DLL::SetupDiClassGuidsFromNameA",
+        "address": "0x00000085"
+      },
+      {
+        "name": "SETUPAPI.DLL::SetupDiDestroyDeviceInfoList",
+        "address": "0x00000086"
+      },
+      {
+        "name": "SETUPAPI.DLL::SetupDiEnumDeviceInfo",
+        "address": "0x00000087"
+      },
+      {
+        "name": "SETUPAPI.DLL::SetupDiGetClassDevsA",
+        "address": "0x00000088"
+      },
+      {
+        "name": "USER32.DLL::MessageBoxW",
+        "address": "0x00000089"
+      }
+    ],
+    "matches_total": 137,
+    "truncated": false,
+    "text_truncated": false
+  },
+  "limitations": [
+    "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+    "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+    "Absence of a defined string/reference does not establish absence of behavior"
+  ],
+  "result_sha256": "fec4e0d276ba5b5ea355abc32976fff25c10ffccd1c6a4a44d3cb43b3194785e"
+}

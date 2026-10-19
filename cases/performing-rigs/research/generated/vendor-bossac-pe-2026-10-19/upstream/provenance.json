@@ -1,0 +1,52 @@
+{
+  "tag": "1.9",
+  "commit": "b176eeef918fc810045c832348590595120187b4",
+  "retrieved": "2026-10-19",
+  "files": [
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/bossac.cpp",
+      "sha256": "c4c89013b46b45929fe95e5db1bcd5baccfa1253bab7ce2926d9b120eef92d85",
+      "file": "bossac.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/Flasher.cpp",
+      "sha256": "77982ed83ea090860875e055096e1f036efc45ebc073e66fab226ab7cc11c634",
+      "file": "Flasher.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/D5xNvmFlash.cpp",
+      "sha256": "75d6144877dffa45e363926447830e12fc24c2d2137f610aff2fcf5fc6000bdb",
+      "file": "D5xNvmFlash.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/D5xNvmFlash.h",
+      "sha256": "d3c1b4043405d06b99f426c517153e646d4fed5e94185be74b6652da76b8c70a",
+      "file": "D5xNvmFlash.h"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/Device.cpp",
+      "sha256": "4f76243b3e81c8ab70a7b24863e6ada28e39a0edbf25e6088cb47d6269a6e34e",
+      "file": "Device.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/Flash.cpp",
+      "sha256": "35e4602307c9dc587d9bcaff6dddb046dd80dfc18b2a9fbc54eb7ed1a20f775a",
+      "file": "Flash.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/Samba.cpp",
+      "sha256": "0225cfc75516f24265b27aa4de2d0e93e93442fb2aa26c1c4adbc9b2355a2282",
+      "file": "Samba.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/src/CmdOpts.cpp",
+      "sha256": "a84d0765e07d0db681083cc4a6d3f143cbdc8fcb2a72bbf907e29bd7b84c363a",
+      "file": "CmdOpts.cpp"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/shumatech/BOSSA/b176eeef918fc810045c832348590595120187b4/LICENSE",
+      "sha256": "f442f8564a2e424673470c4e10c204161eccdc872404d3c7cb348c7701ab3c0f",
+      "file": "LICENSE"
+    }
+  ]
+}

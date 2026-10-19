@@ -53,3 +53,13 @@ FIRMWARE_REGISTRY = {
     "mando868": ("cases/performing-rigs/research/firmware/originals/firmware_mando868.bin", "0x4000", None),
     "mando915": ("cases/performing-rigs/research/firmware/originals/firmware_mando915.bin", "0x4000", None),
 }
+
+# Host executables use Ghidra's native format/language detection, never the
+# raw Cortex-M loader. Target-specific provenance stays in this case.
+EXECUTABLE_REGISTRY = {
+    "vendor_bossac": {
+        "path": "cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+        "format": "pe32-x86",
+        "sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    },
+}

@@ -12,6 +12,12 @@ belong in each case's status document.
   APTrace semantic classification layer for ambiguous control transfers.
 - Build persistent headless Ghidra projects and query disassembly,
   decompilation, references, and exported static-analysis data.
+- Import registered Windows PE32/x86 through Ghidra's native loader, with
+  identity-bound persistent projects, bounded imports/strings/references/data/
+  function/CFG queries and transient native entry discovery. The research CLI
+  automatically routes registered executable objectives into a static journal;
+  host semantic admission/Windows execution remain outside this capability.
+  See [native executable analysis](tooling/executable-analysis.md).
 - Execute Thumb firmware concretely with Unicorn using explicit memory maps,
   hooks, state carry-forward, bounded traces, and structured failure snapshots.
 - Translate bounded Macaw regions into Crucible and ask What4/Z3 reachability

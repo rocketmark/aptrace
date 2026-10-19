@@ -51,6 +51,7 @@ per-query analyzeHeadless pattern.
 import argparse
 import hashlib
 import json
+import os
 import re
 import shutil
 import struct
@@ -60,7 +61,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
-CACHE_ROOT = REPO_ROOT / "cases" / "performing-rigs" / "research" / "runs" / "ghidra_cache"
+_DEFAULT_CACHE_ROOT = REPO_ROOT / "cases" / "performing-rigs" / "research" / "runs" / "ghidra_cache"
+CACHE_ROOT = Path(os.environ.get("APTRACE_GHIDRA_CACHE_ROOT", str(_DEFAULT_CACHE_ROOT)))
 
 # An explicit, manual override for a semantic change that content-hashing
 # below can't see on its own (e.g. a change to how Ghidra itself is
@@ -83,6 +85,7 @@ sys.path.insert(0, str(REPO_ROOT / "cases" / "performing-rigs" / "config"))
 from performing_rigs import (  # noqa: E402
     CENSUS_RAM_BASE, CENSUS_RAM_SIZE, CENSUS_MMIO_BASE, CENSUS_MMIO_SIZE,
     FIRMWARE_REGISTRY, NUM_EXTERNAL_IRQ,
+    EXECUTABLE_REGISTRY,
 )
 
 # Vector-table handler words after the initial-SP word that
@@ -111,8 +114,18 @@ def sha256_of(path):
 
 
 def firmware_info(key):
+    if key in EXECUTABLE_REGISTRY:
+        spec = EXECUTABLE_REGISTRY[key]
+        if spec["format"] != "pe32-x86":
+            sys.exit(f"error: unsupported executable policy {spec['format']}")
+        path = REPO_ROOT / spec["path"]
+        if not path.is_file():
+            sys.exit(f"error: executable not found: {path}")
+        if spec.get("sha256") and sha256_of(path) != spec["sha256"]:
+            sys.exit(f"error: executable provenance hash mismatch: {key}")
+        return path, None, None
     if key not in FIRMWARE_REGISTRY:
-        sys.exit(f"error: unknown firmware key '{key}'. Known: {', '.join(sorted(FIRMWARE_REGISTRY))}")
+        sys.exit(f"error: unknown target key '{key}'. Known: {', '.join(sorted(set(FIRMWARE_REGISTRY) | set(EXECUTABLE_REGISTRY)))}")
     rel_path, base, labels = FIRMWARE_REGISTRY[key]
     path = REPO_ROOT / rel_path
     if not path.exists():
@@ -128,7 +141,7 @@ def cache_dir(key):
 # `aptrace_census.py fnptr-seeds`, e.g. statically resolved RAM function-
 # pointer targets), passed to APTraceSeedVectorTable.java's extraHexAddrs.
 # Kept outside the cache dir, which a rebuild deletes.
-SEEDS_ROOT = CACHE_ROOT.parent / "ghidra_seeds"
+SEEDS_ROOT = Path(os.environ.get("APTRACE_GHIDRA_SEEDS_ROOT", str(_DEFAULT_CACHE_ROOT.parent / "ghidra_seeds")))
 
 
 def seed_file(key):
@@ -171,6 +184,17 @@ def _file_identity_hash(path):
 def expected_identity(key):
     path, base, labels_tsv = firmware_info(key)
     headless = resolve_headless()
+    if key in EXECUTABLE_REGISTRY:
+        return {
+            "target_key": key, "input_path": str(path.resolve()),
+            "input_sha256": sha256_of(path), "format_policy": "pe32-x86",
+            "loader": "Ghidra native executable detection", "analysis_version": 1,
+            "ghidra_version": ghidra_version(headless),
+            "script_hashes": {s: _file_identity_hash(SCRIPTS_DIR / s) for s in
+                ("APTraceExportStaticAnalysis.java", "APTraceExecutableQuery.java")},
+            "export_sha256": _file_identity_hash(cache_dir(key) / "static_export.json"),
+            "inventory_sha256": _file_identity_hash(cache_dir(key) / "executable.json"),
+        }
     identity = {
         "firmware_key": key,
         "firmware_path": str(path.relative_to(REPO_ROOT)),
@@ -220,11 +244,43 @@ def _run_headless(key, extra_args, description, readonly_process=False):
     cdir = cache_dir(key)
     project_name = "aptrace"
     cmd = [headless, str(cdir), project_name] + extra_args
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    if key in EXECUTABLE_REGISTRY:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=420)
+        (cdir / "_last_headless.log").write_text(result.stdout + result.stderr)
+    else:
+        result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         sys.exit(f"error: {description} failed (exit {result.returncode}):\n"
                   f"{result.stdout[-4000:]}\n{result.stderr[-4000:]}")
     return result
+
+
+def _validate_executable_inventory(key, inventory):
+    """Ghidra is the format/architecture authority; never decode PE as ARM."""
+    expected_hash = sha256_of(firmware_info(key)[0])
+    if (inventory.get("format") != "Portable Executable (PE)"
+            or inventory.get("language") != "x86:LE:32:default"
+            or inventory.get("input_sha256", "").lower() != expected_hash.lower()):
+        raise ValueError("native import did not recognize the requested PE32/x86 identity")
+
+
+def _build_executable(key):
+    path, _, _ = firmware_info(key)
+    cdir = cache_dir(key)
+    args = ["-import", str(path), "-scriptPath", str(SCRIPTS_DIR),
+            "-analysisTimeoutPerFile", "300",
+            "-postScript", "APTraceExportStaticAnalysis.java", str(cdir / "static_export.json"),
+            "-postScript", "APTraceExecutableQuery.java", str(cdir / "executable.json"),
+            "inventory", "0", "5000"]
+    result = _run_headless(key, args, f"native executable import '{key}'")
+    if "analysis timed out" in (result.stdout + result.stderr).lower():
+        raise RuntimeError("Ghidra analysis timed out; executable cache not admitted")
+    if not all((cdir / name).exists() for name in ("executable.json", "static_export.json")):
+        raise ValueError(f"native import produced no validated executable exports; see {cdir / '_last_headless.log'}")
+    inventory = json.loads((cdir / "executable.json").read_text())
+    _validate_executable_inventory(key, inventory)
+    (cdir / "meta.json").write_text(json.dumps(expected_identity(key), indent=2))
+    print(f"Built '{key}': {inventory['format']}, {inventory['language']}, native image base {inventory['image_base']}")
 
 
 def build(key, force=False):
@@ -238,6 +294,8 @@ def build(key, force=False):
     if state == "fresh" and not force:
         print(f"'{key}' is already built and up to date at {cdir} (use 'rebuild' to force).")
         return
+    if key in EXECUTABLE_REGISTRY and cdir.exists() and not force:
+        sys.exit(f"error: incomplete or stale executable cache; explicitly rebuild {key}")
     if cdir.exists():
         if state == "fresh":
             print(f"Rebuilding '{key}' (forced) -- removing {cdir}")
@@ -249,6 +307,10 @@ def build(key, force=False):
             print(f"Rebuilding at {cdir}")
         shutil.rmtree(cdir)
     cdir.mkdir(parents=True, exist_ok=True)
+
+    if key in EXECUTABLE_REGISTRY:
+        _build_executable(key)
+        return
 
     path, base, labels_tsv = firmware_info(key)
     static_export = cdir / "static_export.json"
@@ -429,6 +491,8 @@ def literal(key, addr, width=4, count=1):
     """Raw firmware read at a flash address -- no Ghidra needed at all.
     addr is a flash (load-base-relative) address; converted to a file
     offset using the firmware's own registered load base."""
+    if key in EXECUTABLE_REGISTRY:
+        sys.exit("error: raw load-base/file-offset arithmetic is invalid for PE; use executable queries")
     path, base_s, _ = firmware_info(key)
     base = int(base_s, 0)
     a = int(addr, 0)
@@ -447,6 +511,8 @@ def literal(key, addr, width=4, count=1):
 def dump(key, addr, length=64):
     """Raw hex dump of `length` bytes starting at a flash address -- no
     Ghidra needed, same file-offset conversion as `literal`."""
+    if key in EXECUTABLE_REGISTRY:
+        sys.exit("error: raw load-base/file-offset arithmetic is invalid for PE; use executable queries")
     path, base_s, _ = firmware_info(key)
     base = int(base_s, 0)
     a = int(addr, 0)
@@ -464,7 +530,7 @@ def dump(key, addr, length=64):
 
 
 def status(key=None):
-    keys = [key] if key else sorted(FIRMWARE_REGISTRY)
+    keys = [key] if key else sorted(set(FIRMWARE_REGISTRY) | set(EXECUTABLE_REGISTRY))
     for k in keys:
         state, meta, expected = cache_status(k)
         print(f"{k}: {state}")
@@ -523,6 +589,14 @@ def main(argv):
     st = sub.add_parser("status", help="show cache freshness for one or all known firmware keys")
     st.add_argument("firmware", nargs="?")
 
+    eq = sub.add_parser("exe-query", help="bounded native executable evidence query (JSON)")
+    eq.add_argument("firmware")
+    eq.add_argument("kind", choices=("inventory", "search", "functions", "imports", "references", "xrefs", "callers", "callees", "function", "entry-function", "cfg", "data"))
+    eq.add_argument("--pattern", default="")
+    eq.add_argument("--address")
+    eq.add_argument("--limit", type=int, default=100)
+    eq.add_argument("--out")
+
     args = p.parse_args(argv)
 
     if args.command == "build":
@@ -547,6 +621,15 @@ def main(argv):
         dump(args.firmware, args.addr, args.length)
     elif args.command == "status":
         status(args.firmware)
+    elif args.command == "exe-query":
+        from executable import query
+        doc = query(sys.modules[__name__], args.firmware, args.kind,
+                    pattern=args.pattern, address=args.address, limit=args.limit)
+        rendered = json.dumps(doc, indent=2)
+        if args.out:
+            Path(args.out).write_text(rendered + "\n")
+        else:
+            print(rendered)
     return 0
 
 

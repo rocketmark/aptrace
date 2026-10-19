@@ -1,0 +1,367 @@
+{
+  "schema_version": 1,
+  "operation": "executable_structure_v1",
+  "target": "vendor_bossac",
+  "arguments": {
+    "kind": "search",
+    "pattern": "flash",
+    "address": null,
+    "limit": 1000
+  },
+  "identity": {
+    "target_key": "vendor_bossac",
+    "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "format_policy": "pe32-x86",
+    "loader": "Ghidra native executable detection",
+    "analysis_version": 1,
+    "ghidra_version": "12.1.3",
+    "script_hashes": {
+      "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+    },
+    "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+    "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+  },
+  "evidence_level": "static-ghidra",
+  "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+  "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+  "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+  "result": {
+    "rows": [
+      {
+        "address": "0x00432454",
+        "length": 14,
+        "dataType": "string",
+        "value": "src/Flash.cpp"
+      },
+      {
+        "address": "0x004324c0",
+        "length": 19,
+        "dataType": "string",
+        "value": "Invalid flash page"
+      },
+      {
+        "address": "0x004324d3",
+        "length": 21,
+        "dataType": "string",
+        "value": "Flash command failed"
+      },
+      {
+        "address": "0x004324e8",
+        "length": 19,
+        "dataType": "string",
+        "value": "Flash erase failed"
+      },
+      {
+        "address": "0x004324fc",
+        "length": 19,
+        "dataType": "string",
+        "value": "Invalid flash page"
+      },
+      {
+        "address": "0x0043250f",
+        "length": 21,
+        "dataType": "string",
+        "value": "Flash command failed"
+      },
+      {
+        "address": "0x00432524",
+        "length": 20,
+        "dataType": "string",
+        "value": "Flash erase failed"
+      },
+      {
+        "address": "0x00432538",
+        "length": 19,
+        "dataType": "string",
+        "value": "Invalid flash page"
+      },
+      {
+        "address": "0x0043254b",
+        "length": 21,
+        "dataType": "string",
+        "value": "Flash page is locked"
+      },
+      {
+        "address": "0x00432560",
+        "length": 21,
+        "dataType": "string",
+        "value": "Flash command failed"
+      },
+      {
+        "address": "0x00432575",
+        "length": 22,
+        "dataType": "string",
+        "value": "Flash command timeout"
+      },
+      {
+        "address": "0x0043258b",
+        "length": 19,
+        "dataType": "string",
+        "value": "Flash erase failed"
+      },
+      {
+        "address": "0x0043259e",
+        "length": 17,
+        "dataType": "string",
+        "value": "src/EfcFlash.cpp"
+      },
+      {
+        "address": "0x004325f4",
+        "length": 19,
+        "dataType": "string",
+        "value": "Invalid flash page"
+      },
+      {
+        "address": "0x0043261b",
+        "length": 21,
+        "dataType": "string",
+        "value": "Flash page is locked"
+      },
+      {
+        "address": "0x00432630",
+        "length": 21,
+        "dataType": "string",
+        "value": "Flash command failed"
+      },
+      {
+        "address": "0x00432645",
+        "length": 22,
+        "dataType": "string",
+        "value": "Flash command timeout"
+      },
+      {
+        "address": "0x0043265b",
+        "length": 19,
+        "dataType": "string",
+        "value": "Flash erase failed"
+      },
+      {
+        "address": "0x0043266e",
+        "length": 18,
+        "dataType": "string",
+        "value": "src/EefcFlash.cpp"
+      },
+      {
+        "address": "0x004326e4",
+        "length": 34,
+        "dataType": "string",
+        "value": "File operation exceeds flash size"
+      },
+      {
+        "address": "0x00432706",
+        "length": 24,
+        "dataType": "string",
+        "value": "Flash offset is invalid"
+      },
+      {
+        "address": "0x0043282e",
+        "length": 19,
+        "dataType": "string",
+        "value": "Boot Flash   : %s\n"
+      },
+      {
+        "address": "0x00432867",
+        "length": 13,
+        "dataType": "string",
+        "value": "Erase flash\n"
+      },
+      {
+        "address": "0x00432874",
+        "length": 37,
+        "dataType": "string",
+        "value": "Write %ld bytes to flash (%u pages)\n"
+      },
+      {
+        "address": "0x004328b4",
+        "length": 27,
+        "dataType": "string",
+        "value": "Verify %ld bytes of flash\n"
+      },
+      {
+        "address": "0x004328d2",
+        "length": 26,
+        "dataType": "string",
+        "value": "Read %d bytes from flash\n"
+      },
+      {
+        "address": "0x004330d8",
+        "length": 402,
+        "dataType": "string",
+        "value": "Basic Open Source SAM-BA Application (BOSSA) Version 1.9\nFlash programmer for Atmel SAM devices.\nCopyright (c) 2011-2018 ShumaTech (http://www.shumatech.com)\n\nExamples:\n  bossac -e -w -v -b image.bin   # Erase flash, write flash with image.bin,\n                                 # verify the write, and set boot from flash\n  bossac -r0x10000 image.bin     # Read 64KB from flash and store in image.bin\n"
+      },
+      {
+        "address": "0x00433366",
+        "length": 19,
+        "dataType": "string",
+        "value": "Set boot flash %s\n"
+      },
+      {
+        "address": "0x0043340c",
+        "length": 46,
+        "dataType": "string",
+        "value": "erase the entire flash starting at the offset"
+      },
+      {
+        "address": "0x00433440",
+        "length": 69,
+        "dataType": "string",
+        "value": "write FILE to the flash; accelerated when\ncombined with erase option"
+      },
+      {
+        "address": "0x00433490",
+        "length": 80,
+        "dataType": "string",
+        "value": "read SIZE from flash and store in FILE;\nread entire flash if SIZE not specified"
+      },
+      {
+        "address": "0x004334e8",
+        "length": 35,
+        "dataType": "string",
+        "value": "verify FILE matches flash contents"
+      },
+      {
+        "address": "0x0043351c",
+        "length": 105,
+        "dataType": "string",
+        "value": "start erase/write/read/verify operation at flash OFFSET;\nOFFSET must be aligned to a flash page boundary"
+      },
+      {
+        "address": "0x004335f4",
+        "length": 109,
+        "dataType": "string",
+        "value": "boot from ROM if BOOL is 0;\nboot from FLASH if BOOL is 1 [default];\noption is ignored on unsupported devices"
+      },
+      {
+        "address": "0x00433718",
+        "length": 81,
+        "dataType": "string",
+        "value": "lock the flash REGION as a comma-separated list;\nlock all if not given [default]"
+      },
+      {
+        "address": "0x00433770",
+        "length": 85,
+        "dataType": "string",
+        "value": "unlock the flash REGION as a comma-separated list;\nunlock all if not given [default]"
+      },
+      {
+        "address": "0x004337ce",
+        "length": 28,
+        "dataType": "string",
+        "value": "set the flash security flag"
+      },
+      {
+        "address": "0x004362c8",
+        "length": 14,
+        "dataType": "string",
+        "value": "11D2xNvmFlash"
+      },
+      {
+        "address": "0x004362d8",
+        "length": 14,
+        "dataType": "string",
+        "value": "11D5xNvmFlash"
+      },
+      {
+        "address": "0x00436300",
+        "length": 33,
+        "dataType": "string",
+        "value": "11FlashOptionISt6vectorIbSaIbEEE"
+      },
+      {
+        "address": "0x00436340",
+        "length": 17,
+        "dataType": "string",
+        "value": "11FlashOptionIbE"
+      },
+      {
+        "address": "0x00436354",
+        "length": 14,
+        "dataType": "string",
+        "value": "11FlasherInfo"
+      },
+      {
+        "address": "0x00436394",
+        "length": 16,
+        "dataType": "string",
+        "value": "13FlashCmdError"
+      },
+      {
+        "address": "0x004363c8",
+        "length": 17,
+        "dataType": "string",
+        "value": "14FlashLockError"
+      },
+      {
+        "address": "0x004363dc",
+        "length": 17,
+        "dataType": "string",
+        "value": "14FlashPageError"
+      },
+      {
+        "address": "0x00436418",
+        "length": 18,
+        "dataType": "string",
+        "value": "15FlashEraseError"
+      },
+      {
+        "address": "0x0043642c",
+        "length": 18,
+        "dataType": "string",
+        "value": "15FlasherObserver"
+      },
+      {
+        "address": "0x00436454",
+        "length": 19,
+        "dataType": "string",
+        "value": "16FlashOffsetError"
+      },
+      {
+        "address": "0x00436468",
+        "length": 19,
+        "dataType": "string",
+        "value": "16FlashRegionError"
+      },
+      {
+        "address": "0x0043647c",
+        "length": 20,
+        "dataType": "string",
+        "value": "17FlashTimeoutError"
+      },
+      {
+        "address": "0x004364ac",
+        "length": 7,
+        "dataType": "string",
+        "value": "5Flash"
+      },
+      {
+        "address": "0x004364d8",
+        "length": 9,
+        "dataType": "string",
+        "value": "7Flasher"
+      },
+      {
+        "address": "0x004364e4",
+        "length": 10,
+        "dataType": "string",
+        "value": "8EfcFlash"
+      },
+      {
+        "address": "0x004364f0",
+        "length": 11,
+        "dataType": "string",
+        "value": "9EefcFlash"
+      }
+    ],
+    "matches_total": 54,
+    "truncated": false,
+    "text_truncated": false
+  },
+  "limitations": [
+    "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+    "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+    "Absence of a defined string/reference does not establish absence of behavior"
+  ],
+  "result_sha256": "d1bb5d7c9cdd0ff22c6e53b8a5dbafe15c9abc8d62d4fa33ee81301f55eb279a"
+}

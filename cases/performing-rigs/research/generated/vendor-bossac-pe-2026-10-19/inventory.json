@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "operation": "executable_structure_v1",
+  "target": "vendor_bossac",
+  "arguments": {
+    "kind": "inventory",
+    "pattern": "",
+    "address": null,
+    "limit": 100
+  },
+  "identity": {
+    "target_key": "vendor_bossac",
+    "input_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "format_policy": "pe32-x86",
+    "loader": "Ghidra native executable detection",
+    "analysis_version": 1,
+    "ghidra_version": "12.1.3",
+    "script_hashes": {
+      "APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550"
+    },
+    "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+    "inventory_sha256": "2cee3b36063690bd893794a023bcac8a8cf0f97e0da774a9b52d4f17914b82cc"
+  },
+  "evidence_level": "static-ghidra",
+  "query_script_sha256": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+  "query_implementation_sha256": "5a715e300ed8c922399bd8c0b090e5e5e5eaa1e0fa9dabbfc2abbb872cb26d10",
+  "export_sha256": "d58727bb5e619e68f91dfdf8df1287a0e519b629e5be68208e741e29803a59b4",
+  "result": {
+    "format": "Portable Executable (PE)",
+    "language": "x86:LE:32:default",
+    "compiler": "windows",
+    "image_base": "0x00400000",
+    "input_sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9",
+    "kind": "inventory",
+    "memory_blocks": [
+      {
+        "name": "Headers",
+        "start": "0x00400000",
+        "end": "0x004003ff",
+        "read": true,
+        "write": false,
+        "execute": false
+      },
+      {
+        "name": ".text",
+        "start": "0x00401000",
+        "end": "0x0042c1ff",
+        "read": true,
+        "write": false,
+        "execute": true
+      },
+      {
+        "name": ".data",
+        "start": "0x0042d000",
+        "end": "0x00431dff",
+        "read": true,
+        "write": true,
+        "execute": false
+      },
+      {
+        "name": ".rdata",
+        "start": "0x00432000",
+        "end": "0x00437dff",
+        "read": true,
+        "write": false,
+        "execute": false
+      },
+      {
+        "name": ".bss",
+        "start": "0x00438000",
+        "end": "0x00438e67",
+        "read": true,
+        "write": true,
+        "execute": false
+      },
+      {
+        "name": ".idata",
+        "start": "0x00439000",
+        "end": "0x00439fff",
+        "read": true,
+        "write": true,
+        "execute": false
+      },
+      {
+        "name": ".CRT",
+        "start": "0x0043a000",
+        "end": "0x0043a1ff",
+        "read": true,
+        "write": true,
+        "execute": false
+      },
+      {
+        "name": ".tls",
+        "start": "0x0043b000",
+        "end": "0x0043b1ff",
+        "read": true,
+        "write": true,
+        "execute": false
+      }
+    ],
+    "imports_total": 137,
+    "truncated": false,
+    "entry_points": [
+      "0x00416460",
+      "0x00416410",
+      "0x0041ec60",
+      "0x004014e0"
+    ],
+    "entry_points_total": 4,
+    "counts": {
+      "functions": 553,
+      "strings": 626,
+      "calls": 3017,
+      "dataReferences": 11513
+    }
+  },
+  "limitations": [
+    "Ghidra-discovered boundaries/flow are heuristic; unresolved computed edges remain incomplete",
+    "No Windows execution, serial-device behavior, physical protection or VERIFIED claim is established",
+    "Absence of a defined string/reference does not establish absence of behavior"
+  ],
+  "result_sha256": "9fe4de6d804ee1db4074688baa62dbadadb243dc031ed400ae0df071c03f4205"
+}
