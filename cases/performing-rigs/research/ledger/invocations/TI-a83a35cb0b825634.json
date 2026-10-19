@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "USB device protocol"
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T20:29:24.617+00:00",
+  "error": null,
+  "evidence_id": "EV-ed2382e4075f72c9",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-a83a35cb0b825634",
+  "operation_key": "d647f470eea4e43d7d82069dd8132cad7a9eba28351405dbd326129a0a4e9285",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "9c0c32b4d90606950b48b0cedf9b291f6fee16e0251f6ff2372046c445dc0110",
+  "run_id": "R-20261019T202931-7cd34e",
+  "runtime_ms": 251.433,
+  "session_evidence_id": "E1",
+  "started_at": "2026-10-19T20:29:24.365+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

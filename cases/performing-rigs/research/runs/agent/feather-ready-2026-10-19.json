@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-19T20:28:51.684006+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Investigate minimum conditions for unmodified AutoPilot firmware on Feather M4 to reach original-firmware READY; distinguish reset, initialization, receive-loop steady state, READY and USB command response. Inspect PA22, radio ID dependencies and six QSPI motor pin conflicts. Use existing scenarios only; do not modify firmware, toolchain or motor operation.",
+  "seed_function": null,
+  "stop_reason": "discovery_finished",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "discover",
+      "lead_id": "L1",
+      "evidence_id": "E1",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "finish",
+      "lead_id": null,
+      "evidence_id": null,
+      "reason": "Discovery planner could not produce a new valid search direction after one correction; first error: discovery query was already tried; second error: discovery query was already tried"
+    }
+  ],
+  "planner_requests": [
+    {
+      "phase": "discovery",
+      "evidence": 0,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 1071,
+      "state_chars": 23,
+      "message_bytes": 1321,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 2553,
+      "attempt": 0,
+      "prompt_tokens": 823,
+      "decision": "search_case_evidence"
+    },
+    {
+      "phase": "discovery",
+      "evidence": 1,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 1449,
+      "state_chars": 365,
+      "message_bytes": 1703,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 2935,
+      "attempt": 0,
+      "prompt_tokens": 937
+    },
+    {
+      "phase": "discovery",
+      "evidence": 1,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 209,
+      "state_chars": 365,
+      "message_bytes": 1975,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 3207,
+      "attempt": 1,
+      "prompt_tokens": 975
+    }
+  ],
+  "conclusion": {
+    "proven": [],
+    "probable": [],
+    "open": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "Feather M4 AutoPilot firmware USB protocol",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "Feather M4 AutoPilot firmware USB protocol",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 234,
+            "kind": "investigation",
+            "excerpt": "232:    shows `USB.DEVICE/HOST` register accesses in the Feather run). USB\n233:    D-/D+ are the same dedicated `PA24`/`PA25` pads on both boards\n234:    (`feather-m4-reference.md`'s resolved-ambiguity note) \u2014 no\n235:    collision.\n236: 7. **Does the firmware enter a main loop?** AutoPilot profile: yes",
+            "score": 11
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/feather-m4-reference.md",
+            "line": 3,
+            "kind": "documentation",
+            "excerpt": "1: # Hardware Reference \u2014 Adafruit Feather M4 Express\n2: \n3: Physical hardware facts about the **Adafruit Feather M4 Express**\n4: development board, collected to evaluate whether unmodified AutoPilot\n5: firmware is safe and useful to run on one (see",
+            "score": 6
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/feather-m4-reference.md",
+            "line": 8,
+            "kind": "documentation",
+            "excerpt": "6: [`docs/investigations/feather-m4-feasibility.md`](../investigations/feather-m4-feasibility.md)\n7: for the full investigation). This board is not part of the Performing\n8: Rigs product \u2014 it is candidate test hardware for AutoPilot firmware\n9: analysis.\n10: ",
+            "score": 6
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/feather-m4-reference.md",
+            "line": 55,
+            "kind": "documentation",
+            "excerpt": "53:   dedicated analog pads outside the ordinary PORT-mux pin table on this\n54:   silicon family (already an established fact in this case \u2014 see\n55:   `firmware-pin-function-map.json`'s `USB_DM`/`USB_DP` entries); the\n56:   vendor comment is a board-package housekeeping artifact, not a\n57:   competing electrical claim. See `config/feather_m4.py`'s module",
+            "score": 6
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 1,
+            "kind": "investigation",
+            "excerpt": "1: # Feather M4 Express Feasibility \u2014 Running Original AutoPilot Firmware\n2: \n3: **Question.** Before a physical Adafruit Feather M4 Express exists in",
+            "score": 6
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 6,
+            "kind": "investigation",
+            "excerpt": "4: this investigation, how far does the real, unmodified AutoPilot\n5: firmware (868/915) run against a Feather M4's actual hardware\n6: characteristics instead of AutoPilot's own board, and is flashing the\n7: unmodified image onto a real Feather electrically safe to attempt?\n8: ",
+            "score": 6
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 15,
+            "kind": "investigation",
+            "excerpt": "13: boots AutoPilot868/915 from the real `Reset_Handler` to real main-loop\n14: steady state \u2014 see\n15: [`boot-and-hardware-bringup.md`](boot-and-hardware-bringup.md). The new\n16: work is a second, Feather-grounded set of environmental assumptions for\n17: the SAME firmware image (`FEATHER_M4_PROFILE`), a Feather M4 pin/",
+            "score": 6
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 218,
+            "kind": "investigation",
+            "excerpt": "216:    \u00a77's full table \u2014 sourced from `firmware-pin-function-map.json`\n217:    (already `FIRMWARE_PROVEN`/`PROBABLE` graded by this case) crossed\n218:    against `config/feather_m4.py`.\n219: 4. **Could any configured output conflict with Feather onboard\n220:    circuitry?** **Yes \u2014 CONFIRMED.** AutoPilot's `STEP_CH0/CH1/CH3` and",
+            "score": 6
+          }
+        ],
+        "files_scanned": 100,
+        "truncated": true
+      }
+    }
+  ],
+  "state": {
+    "objective": "Investigate minimum conditions for unmodified AutoPilot firmware on Feather M4 to reach original-firmware READY; distinguish reset, initialization, receive-loop steady state, READY and USB command response. Inspect PA22, radio ID dependencies and six QSPI motor pin conflicts. Use existing scenarios only; do not modify firmware, toolchain or motor operation.",
+    "evidence_ids": [
+      "E1"
+    ],
+    "claims": [],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'Feather M4 AutoPilot firmware USB protocol'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      }
+    ]
+  },
+  "proposed_claims": [],
+  "ledger_run_id": "R-20261019T202851-dc7a35"
+}

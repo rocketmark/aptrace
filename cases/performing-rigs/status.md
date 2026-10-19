@@ -374,6 +374,19 @@ Headline items still unresolved:
 
 ## Tooling limitations that still matter
 
+- **Original AutoPilot on Feather minimum READY conditions (2026-10-19):**
+  unresolved beyond historical modeled receive-loop startup. PA22 plus the
+  radio-ID stand-in restores the successful AutoPilot execution assumptions,
+  but neither READY nor USB responsiveness has been verified. Fresh comparison,
+  ten-instruction reset replay and existing regressions all fail with host
+  Unicorn 2.1.4 SIGILL in `init_cache_info` during `uc_mem_map`, before target
+  execution. No new target blocker is inferred. Six motor-output/QSPI net
+  conflicts rule out recommending an intact-Feather trial; earlier advice to
+  test whether the flash survives is superseded. See
+  [minimum startup / READY report](docs/investigations/feather-minimum-ready.md)
+  for separate milestones, partial regression results, the candidate recipe,
+  USB assessment and next discrimination experiment.
+
 - **Readonly flash vs. plain Crucible execution**: a whole-function
   symbolic replay through a literal-pool-derived branch doesn't fold
   correctly (solver assumptions ≠ concrete literals to a non-solver-

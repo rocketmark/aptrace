@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-19T20:29:31.860197+00:00",
+  "models": {
+    "planner": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+    "reconciler": "gemma-4-26b-a4b-it-4bit"
+  },
+  "objective": "Assess USB command readiness of original AutoPilot separately from main-loop startup: enumerate USB initialization, interrupt and endpoint prerequisites and identify existing concrete enumeration or command-response scenarios; no firmware modifications or motor commands.",
+  "seed_function": null,
+  "stop_reason": "discovery_finished",
+  "reconciled": false,
+  "trajectory": [
+    {
+      "number": 1,
+      "action": "discover",
+      "lead_id": "L1",
+      "evidence_id": "E1",
+      "reason": null
+    },
+    {
+      "number": 2,
+      "action": "finish",
+      "lead_id": null,
+      "evidence_id": null,
+      "reason": "Discovery planner could not produce a new valid search direction after one correction; first error: discovery query was already tried; second error: discovery query was already tried"
+    }
+  ],
+  "planner_requests": [
+    {
+      "phase": "discovery",
+      "evidence": 0,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 983,
+      "state_chars": 23,
+      "message_bytes": 1233,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 2465,
+      "attempt": 0,
+      "prompt_tokens": 792,
+      "decision": "search_case_evidence"
+    },
+    {
+      "phase": "discovery",
+      "evidence": 1,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 1280,
+      "state_chars": 307,
+      "message_bytes": 1534,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 2766,
+      "attempt": 0,
+      "prompt_tokens": 878
+    },
+    {
+      "phase": "discovery",
+      "evidence": 1,
+      "open_leads": 0,
+      "claims": 0,
+      "prompt_chars": 209,
+      "state_chars": 307,
+      "message_bytes": 1806,
+      "tool_bytes": 1232,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "analyze_usb_interface",
+        "finish"
+      ],
+      "total_bytes": 3038,
+      "attempt": 1,
+      "prompt_tokens": 916
+    }
+  ],
+  "conclusion": {
+    "proven": [],
+    "probable": [],
+    "open": []
+  },
+  "evidence": [
+    {
+      "id": "E1",
+      "tool": "search_case_evidence",
+      "arguments": {
+        "query": "USB device protocol",
+        "max_results": 8,
+        "purpose": "discovery"
+      },
+      "result": {
+        "query": "USB device protocol",
+        "matches": [
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-inventory.md",
+            "line": 37,
+            "kind": "documentation",
+            "excerpt": "35:   yielded no extractable MCU-level text (image-based/compressed PDF\n36:   streams), not useful for firmware analysis.\n37: - Flashing mechanism: `cases/performing-rigs/research/firmware/vendor-package/update_firmware.bat` invokes `bossac`\n38:   (the standard flasher for Atmel/Microchip SAM-D/E parts) with\n39:   `--offset=0x4000`, and searches for the device via USB VID `239A`",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/firmware/firmware-layout.md",
+            "line": 26,
+            "kind": "documentation",
+            "excerpt": "24: ```\n25: \n26: - Uses `bossac` (BOSSA), the standard flasher for Atmel/Microchip SAM-D/E parts with a\n27:   UART/USB bootloader (used by Arduino Due/Zero and all Adafruit SAMD boards).\n28: - Device is found via `wmic ... | findstr VID_239A` \u2014 **USB VID 0x239A is Adafruit",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/feather-m4-reference.md",
+            "line": 33,
+            "kind": "documentation",
+            "excerpt": "31: | Onboard QSPI NOR flash | `PB10` (SCK), `PB11` (CS), `PA08` (IO0), `PA09` (IO1), `PA10` (IO2), `PA11` (IO3) | A real, powered, actively-driven 2 MB SPI flash chip storing the UF2 bootloader and any CircuitPython/compiled image. **Not broken out to any header pin** \u2014 these six MCU pads exist only to drive this chip. |\n32: | Onboard NeoPixel | `PB03` | Single addressable RGB LED soldered to the board. |\n33: | Onboard red LED | `PA23` | `LED_BUILTIN` / Arduino D13, driven through a series resistor. |\n34: | USB D-/D+ | `PA24`/`PA25` | Dedicated, fixed-function SAMD51 silicon pads (not PORT-mux'd), identical electrical role on every SAM D5x/E5x board including AutoPilot's. |\n35: | Feather hardware SPI bus (header) | `PB22` (MISO), `PB23` (MOSI), `PA17` (SCK) | Exposed on the Feather header; no onboard device on a bare board. |",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+            "line": 202,
+            "kind": "documentation",
+            "excerpt": "200: ## Bootloader / Flashing\n201: \n202: - Flasher: `bossac` (BOSSA), the standard tool for Atmel/Microchip SAM-D/E\n203:   parts with a UART/USB bootloader.\n204: - Device enumerates under USB VID `0x239A` (Adafruit Industries); board",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 187,
+            "kind": "investigation",
+            "excerpt": "185:   `AVGCTRL`/`CALIB`/`SYNCBUSY`) and **`DAC`** (`CTRLA`/`CTRLB`/\n186:   `DACCTRL0`/`DACCTRL1`/`SYNCBUSY`) \u2014 all brought up unconditionally,\n187:   consistent with `boot-and-hardware-bringup.md`'s own characterization\n188:   of this firmware's `init()` as full, un-pruned Arduino-core bring-up.\n189: - **`USB.DEVICE`/`HOST`** (`CTRLA`, `CTRLB`, `PADCAL`, `INTENSET`,",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/feather-m4-feasibility.md",
+            "line": 230,
+            "kind": "investigation",
+            "excerpt": "228:    mattered.\n229: 6. **Is USB initialization reached?** Yes, under **both** profiles \u2014\n230:    USB bring-up happens unconditionally in `main()`'s own `init()`\n231:    sequence, before `setup()`'s board-dependent code runs (\u00a75's log\n232:    shows `USB.DEVICE/HOST` register accesses in the Feather run). USB",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/investigations/trigger-input.md",
+            "line": 530,
+            "kind": "investigation",
+            "excerpt": "528: - Whether any of `pinPeripheral()`'s 4 generic-driver call sites ever\n529:   passes PB05's own pin index (bounded, not exhaustively chased).\n530: - The sensitivity-selector protocol command's exact wire identity (the\n531:   `ascii_dispatcher__CUSTOM` writer of `0x20000194` at `0x892a`/`0x892e`).\n532: - The debug-log sink for the `\"TRIGGER: <val>\"` line (likely USB-serial,",
+            "score": 4
+          },
+          {
+            "source": "cases/performing-rigs/docs/protocol/bidirectional-protocol.md",
+            "line": 112,
+            "kind": "documentation",
+            "excerpt": "110: construction, not independently observed and coincidentally aligned; and\n111: the Remote has its own \"don't downgrade\" guard \u2014 a fresh device\n112: receiving the short form `\"P1,\"` does not update its stored state at\n113: all. See\n114: [`cases/performing-rigs/docs/investigations/protocol-pipeline.md`](../investigations/protocol-pipeline.md).",
+            "score": 4
+          }
+        ],
+        "files_scanned": 101,
+        "truncated": true
+      }
+    }
+  ],
+  "state": {
+    "objective": "Assess USB command readiness of original AutoPilot separately from main-loop startup: enumerate USB initialization, interrupt and endpoint prerequisites and identify existing concrete enumeration or command-response scenarios; no firmware modifications or motor commands.",
+    "evidence_ids": [
+      "E1"
+    ],
+    "claims": [],
+    "hypotheses": [],
+    "contradictions": [],
+    "open_questions": [],
+    "leads": [
+      {
+        "id": "L1",
+        "kind": "discovery",
+        "description": "Search existing case evidence for discovery query 'USB device protocol'",
+        "source_evidence_ids": [],
+        "status": "FOLLOWED",
+        "origin": null
+      }
+    ]
+  },
+  "proposed_claims": [],
+  "ledger_run_id": "R-20261019T202931-7cd34e"
+}

@@ -1,0 +1,26 @@
+test_feather_profile_derivation (AUTOPILOT_RECIPE untouched, FEATHER_M4_PROFILE correctly derived)
+  [ok] AUTOPILOT_RECIPE still has its force_reg stand-in
+  [ok] AUTOPILOT_RECIPE still has its PA22 seed
+  [ok] FEATHER_M4_PROFILE drops force_reg
+  [ok] FEATHER_M4_PROFILE drops seed_mem
+  [ok] FEATHER_M4_PROFILE keeps the clock/PLL mmio_force_bits
+  [ok] FEATHER_M4_PROFILE keeps the SERCOM mmio_clear_bits
+  [ok] FEATHER_M4_PROFILE keeps the fake_tick mechanism
+  [ok] FEATHER_M4_PROFILE keeps the DWT stub_call
+  [ok] FEATHER_M4_PROFILE keeps the NVM calibration-row map_page
+  [ok] FEATHER_M4_PROFILE is tagged with its base reference
+  [ok] Same entry point as AUTOPILOT_RECIPE (same firmware, unmodified)
+test_feather_m4_pin_table (QSPI collision pins exactly as documented)
+  [ok] QSPI_FLASH_PINS is exactly the 6 documented pins
+  [ok] PB10 is marked an onboard-component collision in FEATHER_M4_PINS
+  [ok] PB11 is marked an onboard-component collision in FEATHER_M4_PINS
+  [ok] PA08 is marked an onboard-component collision in FEATHER_M4_PINS
+  [ok] PA09 is marked an onboard-component collision in FEATHER_M4_PINS
+  [ok] PA10 is marked an onboard-component collision in FEATHER_M4_PINS
+  [ok] PA11 is marked an onboard-component collision in FEATHER_M4_PINS
+  [ok] PA24 (USB D-) is fixed-function
+  [ok] PA25 (USB D+) is fixed-function
+  [ok] PA23 (onboard LED) is an onboard component
+  [ok] PB30/PB31 (AutoPilot's shared reload pulses) are NOT in Feather's pin table
+test_autopilot_profile_still_reaches_steady_state (regression, both images)
+  [ok] autopilot868: autopilot recipe resolves with no gaps

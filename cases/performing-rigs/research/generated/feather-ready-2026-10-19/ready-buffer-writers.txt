@@ -1,0 +1,5 @@
+0x000074b0  FUN_00007770  width=1  [ghidra-refmgr]
+0x00008ef4  phase_ramp_state_machine__CUSTOM  width=1  [ghidra-refmgr]
+0x000091c4  phase_ramp_state_machine__CUSTOM  width=1  [ghidra-refmgr]
+0x00009310  FUN_00009268  width=1  [ghidra-refmgr]
+(4 static writer(s); 0 dynamic write access(es) logged)

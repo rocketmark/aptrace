@@ -1,0 +1,23 @@
+{
+  "assertion": "FUN_0000c7c0 has 12 statically resolved PORT MMIO sites",
+  "assumptions": [],
+  "claim_id": "C14",
+  "claim_type": "BEHAVIOR",
+  "contradictory_evidence_ids": [],
+  "created_at": "2026-10-19T20:30:00.640+00:00",
+  "depends_on": [],
+  "derivation": "planner finish claim proposal",
+  "limitations": [],
+  "proposed_by": "investigator:Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "proposed_grade": "PROBABLE",
+  "run_id": "R-20261019T203000-170a92",
+  "schema_version": 1,
+  "scope": "",
+  "semantics": null,
+  "subject": "FUN_0000c7c0 has 12 statically resolved PORT MMIO sites",
+  "supersedes": null,
+  "supporting_evidence_ids": [
+    "EV-4f66400c971ce71e"
+  ],
+  "version": 1
+}

@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "Feather M4 AutoPilot firmware USB protocol"
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T20:28:49.971+00:00",
+  "error": null,
+  "evidence_id": "EV-f6bb9e5ab7cab999",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-988bb0d66058cf39",
+  "operation_key": "bb6ac01a8010728cd26f500cda7138721d88bb3b34974ed8d5ded100a5a5e71c",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "2b8b006feaf6f85d17d6e153ce13543327d50af46a6f569ad46ed0393e9d6dbc",
+  "run_id": "R-20261019T202851-dc7a35",
+  "runtime_ms": 885.101,
+  "session_evidence_id": "E1",
+  "started_at": "2026-10-19T20:28:49.085+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

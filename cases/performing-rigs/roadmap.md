@@ -1,5 +1,16 @@
 # Harness Roadmap
 
+## Feather original-firmware READY follow-up (2026-10-19)
+
+Restore supported Unicorn execution first: current baseline, reduced reset
+and existing regression suite crash in host `init_cache_info` before firmware
+execution. Then replay the PA22/radio-ID matrix, observe the >700-tick setup
+transmit branch and firmware-produced state, and ground a READY criterion
+before adding READY regressions. Assess USB enumeration and command replies
+separately. No intact-Feather execution trial: validate electrical isolation
+of all six onboard QSPI conflicts first. See
+[report and acceptance matrix](docs/investigations/feather-minimum-ready.md).
+
 Current, unfinished work only. For what's already proven and how the
 system got here, see [`cases/performing-rigs/status.md`](status.md)
 (authoritative) and the relevant `cases/performing-rigs/docs/investigations/*.md` dossier —

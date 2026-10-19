@@ -21,3 +21,6 @@
 {"seq":21,"at":"2026-10-17T23:07:12.620+00:00","subject_kind":"claim","subject":"C11:v1","state":"PROPOSED","actor":"aptrace-ledger","reason":"proposed by candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit","refs":[]}
 {"seq":22,"at":"2026-10-17T23:07:12.621+00:00","subject_kind":"claim","subject":"C12:v1","state":"PROPOSED","actor":"aptrace-ledger","reason":"proposed by candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit","refs":[]}
 {"seq":23,"at":"2026-10-17T23:07:12.622+00:00","subject_kind":"claim","subject":"C13:v1","state":"PROPOSED","actor":"aptrace-ledger","reason":"proposed by candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit","refs":[]}
+{"seq":24,"at":"2026-10-19T20:30:00.640+00:00","subject_kind":"claim","subject":"C14:v1","state":"PROPOSED","actor":"aptrace-ledger","reason":"proposed by investigator:Qwen3-Coder-30B-A3B-Instruct-4bit","refs":[]}
+{"seq":25,"at":"2026-10-19T20:30:00.640+00:00","subject_kind":"claim","subject":"C15:v1","state":"PROPOSED","actor":"aptrace-ledger","reason":"proposed by investigator:Qwen3-Coder-30B-A3B-Instruct-4bit","refs":[]}
+{"seq":26,"at":"2026-10-19T20:30:00.646+00:00","subject_kind":"claim","subject":"C16:v1","state":"PROPOSED","actor":"aptrace-ledger","reason":"proposed by candidate-selection:Qwen3-Coder-30B-A3B-Instruct-4bit","refs":[]}

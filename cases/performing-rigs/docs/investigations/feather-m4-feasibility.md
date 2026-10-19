@@ -1,5 +1,15 @@
 # Feather M4 Express Feasibility — Running Original AutoPilot Firmware
 
+> **2026-10-19 safety and evidence update:**
+> [Minimum startup / READY investigation](feather-minimum-ready.md) supersedes
+> §8's proposed physical power-up/jumper trial and its assurances about brief
+> contention and recovery. Do not run the original image on an intact Feather
+> to test whether its QSPI flash survives. Electrical isolation must first be
+> validated. Historical receive-loop success does not establish READY or USB
+> command responsiveness. Fresh replay is currently blocked by a host Unicorn
+> SIGILL before target execution; see the new report for artifacts and next
+> experiment.
+
 **Question.** Before a physical Adafruit Feather M4 Express exists in
 this investigation, how far does the real, unmodified AutoPilot
 firmware (868/915) run against a Feather M4's actual hardware

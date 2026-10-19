@@ -1,0 +1,267 @@
+==================================================
+Function: FUN_00007770 @ 00007770  size=482  params=0  callingConvention=unknown
+
+
+void FUN_00007770(void)
+
+{
+  undefined1 *puVar1;
+  byte *pbVar2;
+  undefined4 *puVar3;
+  byte bVar4;
+  uint uVar5;
+  int iVar6;
+  uint uVar7;
+  undefined1 *puVar8;
+  undefined4 *puVar9;
+  undefined1 *puVar10;
+  int iVar11;
+  undefined4 uVar12;
+  
+  puVar3 = DAT_0000779c;
+  uVar7 = 0;
+  puVar9 = DAT_00007798;
+  do {
+    uVar12 = *puVar9;
+    *puVar9 = *puVar3;
+    uVar5 = uVar7 & 0xff;
+    uVar7 = uVar7 + 1;
+    lcd_status_refresh__THIRD_PARTY(uVar5);
+    *puVar9 = uVar12;
+    puVar8 = DAT_000074f4;
+    puVar9 = puVar9 + 1;
+  } while (uVar7 != 4);
+  FUN_0000a9cc(DAT_000074f0,0);
+  FUN_0000aa44(DAT_000074f0,0);
+  FUN_0000a9cc(DAT_000074f8,0);
+  FUN_0000aa44(DAT_000074f8,0);
+  FUN_0000a9cc(DAT_000074fc,0);
+  FUN_0000aa44(DAT_000074fc,0);
+  FUN_0000a9cc(DAT_00007500,0);
+  FUN_0000aa44(DAT_00007500,0);
+  delay__STANDARD_LIBRARY(200);
+  iVar6 = 0;
+  puVar10 = puVar8;
+  do {
+    iVar6 = iVar6 + 1;
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar10,1);
+    puVar1 = DAT_00007504;
+    puVar10 = puVar10 + 1;
+  } while (iVar6 != 4);
+  iVar6 = 0x30;
+  do {
+    iVar11 = 4;
+    puVar10 = DAT_00007504;
+    do {
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar10,1);
+      FUN_0000cd34(2);
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar10,0);
+      FUN_0000cd34(300);
+      iVar11 = iVar11 + -1;
+      puVar10 = puVar10 + 1;
+    } while (iVar11 != 0);
+    iVar6 = iVar6 + -1;
+    iVar11 = 0;
+  } while (iVar6 != 0);
+  do {
+    iVar11 = iVar11 + 1;
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar8,0);
+    puVar8 = puVar8 + 1;
+  } while (iVar11 != 4);
+  delay__STANDARD_LIBRARY(200);
+  iVar6 = 0x30;
+  do {
+    iVar11 = 4;
+    puVar8 = puVar1;
+    do {
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar8,1);
+      FUN_0000cd34(2);
+      digitalWrite_pulse_shared__STANDARD_LIBRARY(*puVar8,0);
+      FUN_0000cd34(300);
+      iVar11 = iVar11 + -1;
+      puVar8 = puVar8 + 1;
+    } while (iVar11 != 0);
+    iVar6 = iVar6 + -1;
+  } while (iVar6 != 0);
+  iVar6 = FUN_0000a970(DAT_000074f0);
+  bVar4 = 0;
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_000074f0);
+    bVar4 = bVar4 ^ 1;
+  }
+  pbVar2 = DAT_00007508;
+  uVar12 = DAT_000074fc;
+  *DAT_00007508 = bVar4;
+  iVar6 = FUN_0000a970(uVar12);
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_000074fc);
+    bVar4 = bVar4 ^ 1;
+  }
+  else {
+    bVar4 = 0;
+  }
+  pbVar2[1] = bVar4;
+  iVar6 = FUN_0000a970(DAT_000074f8);
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_000074f8);
+    bVar4 = bVar4 ^ 1;
+  }
+  else {
+    bVar4 = 0;
+  }
+  pbVar2[2] = bVar4;
+  iVar6 = FUN_0000a970(DAT_00007500);
+  if (iVar6 == 0) {
+    bVar4 = FUN_0000a982(DAT_00007500);
+    bVar4 = bVar4 ^ 1;
+  }
+  else {
+    bVar4 = 0;
+  }
+  pbVar2[3] = bVar4;
+  FUN_0000a9cc(DAT_000074f0,1);
+  FUN_0000aa44(DAT_000074f0,1);
+  FUN_0000a9cc(DAT_000074f8,1);
+  FUN_0000aa44(DAT_000074f8,1);
+  FUN_0000a9cc(DAT_000074fc,1);
+  FUN_0000aa44(DAT_000074fc,1);
+  FUN_0000a9cc(DAT_00007500,1);
+  FUN_0000aa44(DAT_00007500,1);
+  puVar8 = DAT_0000750c;
+  *DAT_0000750c = 0x4d;
+  puVar8[1] = 0x54;
+  puVar8[2] = *pbVar2 + 0x30;
+  puVar8[3] = pbVar2[1] + 0x30;
+  puVar8[4] = pbVar2[2] + 0x30;
+  puVar8[5] = pbVar2[3] + 0x30;
+  puVar8[6] = *DAT_00007510 + '0';
+  puVar8[7] = 0x7c;
+  puVar8[8] = 0;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00008c10 @ 00008c10  size=170  params=0  callingConvention=unknown
+
+
+/* WARNING: Removing unreachable block (ram,0x00009a46) */
+/* WARNING: Removing unreachable block (ram,0x00009a58) */
+/* WARNING: Removing unreachable block (ram,0x00009a52) */
+
+int FUN_00008c10(int param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  char cVar1;
+  undefined4 *puVar2;
+  int iVar3;
+  int iVar4;
+  int extraout_r2;
+  code *pcVar5;
+  undefined4 unaff_r4;
+  int iVar6;
+  undefined4 unaff_r5;
+  undefined4 unaff_lr;
+  
+  cVar1 = *DAT_00008c60;
+  if (cVar1 == '\x01') {
+    FUN_00009e70(DAT_00008c68,0);
+    FUN_0000b23a(DAT_00008c68,param_1);
+    radio_reg_readwrite__THIRD_PARTY
+              (DAT_00008c68,0x81,0x83,param_4,param_4,unaff_r4,unaff_r5,unaff_lr);
+    FUN_0000cd34(0x96);
+    return 1;
+  }
+  if (cVar1 == '\x02') {
+    if (param_1 != 0) {
+      iVar4 = FUN_0000f3fc();
+      puVar2 = DAT_00008c6c;
+      iVar6 = 0;
+      iVar3 = iVar4;
+      while ((iVar6 != iVar4 &&
+             (pcVar5 = *(code **)*puVar2,
+             iVar3 = (*pcVar5)(puVar2,*(undefined1 *)(param_1 + iVar6),iVar3,pcVar5,param_4,unaff_r4
+                               ,unaff_r5), iVar3 != 0))) {
+        iVar6 = iVar6 + 1;
+        iVar3 = extraout_r2;
+      }
+      return iVar6;
+    }
+  }
+  else if (cVar1 == '\0') {
+    iVar3 = FUN_0000b23a(DAT_00008c64,param_1,param_3,param_4);
+    return iVar3;
+  }
+  return param_1;
+}
+
+
+
+==================================================
+Function: FUN_00006190 @ 00006190  size=156  params=0  callingConvention=unknown
+
+
+void FUN_00006190(void)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  undefined4 uVar4;
+  int iVar5;
+  undefined1 *puVar6;
+  undefined8 *puVar7;
+  int *piVar8;
+  int iVar9;
+  undefined8 *puVar10;
+  int *piVar11;
+  undefined4 extraout_s1;
+  undefined8 uVar12;
+  int *local_2c;
+  
+  iVar2 = DAT_0000625c;
+  iVar1 = DAT_0000623c;
+  local_2c = DAT_0000622c;
+  iVar9 = 0;
+  puVar6 = DAT_00006238;
+  puVar7 = DAT_00006234;
+  piVar8 = DAT_00006230;
+  puVar10 = DAT_00006254;
+  piVar11 = DAT_00006258;
+  do {
+    iVar3 = *local_2c;
+    *piVar8 = iVar3;
+    uVar12 = aeabi_fixed_math__STANDARD_LIBRARY(iVar2 / iVar3);
+    iVar5 = *piVar11;
+    *puVar10 = uVar12;
+    iVar3 = iVar2 / iVar5;
+    if (iVar3 < 1) {
+      iVar3 = DAT_00006240 / iVar5;
+    }
+    uVar4 = aeabi_fixed_math__STANDARD_LIBRARY(iVar3);
+    uVar4 = aeabi_fixed_math__STANDARD_LIBRARY(uVar4);
+    *(undefined1 *)(iVar1 + iVar9 * 2) = 0;
+    *(undefined1 *)(iVar1 + iVar9 * 2 + 1) = 0x40;
+    iVar3 = DAT_00006248;
+    *(undefined4 *)(DAT_00006244 + iVar9 * 4) = 0;
+    iVar5 = iVar9 * 200;
+    iVar9 = iVar9 + 1;
+    *puVar7 = CONCAT44(extraout_s1,uVar4);
+    puVar7 = puVar7 + 1;
+    *puVar6 = 0;
+    *(undefined4 *)(iVar5 + iVar3) = 0;
+    puVar6 = puVar6 + 1;
+    piVar8 = piVar8 + 1;
+    puVar10 = puVar10 + 1;
+    piVar11 = piVar11 + 1;
+    local_2c = local_2c + 1;
+  } while (iVar9 != 4);
+  FUN_000044ec();
+  *DAT_00006250 = *DAT_0000624c * 0x18;
+  return;
+}
+
+
+
+

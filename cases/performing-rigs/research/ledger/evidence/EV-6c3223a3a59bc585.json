@@ -1,0 +1,26 @@
+{
+  "arguments": {
+    "function": "FUN_00009464",
+    "specialize": {}
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a857980f729acb06",
+  "evidence_id": "EV-6c3223a3a59bc585",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "BOUNDED",
+  "grade_basis": "function effects failed: all paths aborted",
+  "invocation_id": "TI-5da20f2801395f7a",
+  "limitations": [
+    {
+      "code": "EFFECTS_COVERAGE_BOUNDED",
+      "source_evidence_ids": [],
+      "text": "Function effects coverage is bounded: failed: all paths aborted."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 29080,
+  "result_sha256": "04a4b27d958dcb32089ad814401cf2e4993ab3d9ba076be578139a43c20e15d1",
+  "summary": "FUN_00009464 effects [RAW bounded: failed: all paths aborted; 12 blocks]: inputs r2,r3; 11 reads, 8 writes at 16 sites, 11 calls\n  other: write @0x9464 0xff0(STACK); read @0x9466 0x94e8(FLASH) [flash]; read @0x9468 0x94ec(FLASH) [flash]; read @0x946a 0x94f0(FLASH) [flash]\n  writes: 5 (none to MMIO)\n  call sites: @0x9470->0xb81c; @0x9478->0x9980; @0x9484->0x9978; @0x9488->0x6968\n  return r0 depends on nothing symbolic",
+  "tool": "function_effects"
+}
