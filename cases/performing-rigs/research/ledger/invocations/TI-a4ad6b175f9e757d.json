@@ -1,0 +1,24 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "bossac.exe firmware vendor"
+  },
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:54:55.110+00:00",
+  "error": null,
+  "evidence_id": "EV-d36d2d8e6592e474",
+  "input_artifacts": {},
+  "input_evidence_ids": [],
+  "invocation_id": "TI-a4ad6b175f9e757d",
+  "operation_key": "0a5076df5a3851de5b86ca90ae59078fcbc3cfa4bd10bd1b8103e9753607f6f0",
+  "replay_of": null,
+  "replayable": false,
+  "result_sha256": "22980caf1d2318e72fd1a881a689db7412b5d367fbf74ff929bb642fad82ff73",
+  "run_id": "R-20261019T215457-d0794d",
+  "runtime_ms": 1151.621,
+  "session_evidence_id": "E1",
+  "started_at": "2026-10-19T21:54:53.958+00:00",
+  "status": "ok",
+  "tool": "search_case_evidence"
+}

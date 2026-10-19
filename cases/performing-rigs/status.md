@@ -23,6 +23,14 @@ A/B/C are PARTIAL; D/E/F are BLOCKED. No physical hardware was accessed.
 See [the six-gate reversible-update assessment](docs/investigations/reversible-firmware-update.md)
 for required backups, validation, risk ranking and downgrade acceptance.
 
+**Vendor flasher follow-up:** Gate B remains PARTIAL. `bossac.exe` is the
+hash-identified Windows PE32/x86 artifact, but its version/upstream match and
+erase/write/verify/protection implementation have not been established. The
+current public Ghidra wrapper rejects this target and fixes ARM/raw import;
+no independent PE-analysis substitute was used. See the
+[bounded investigation](docs/investigations/vendor-bossac-behavior.md) and
+[single hardware evidence packet](docs/investigations/vendor-bossac-hardware-handoff.md).
+
 APTrace orchestrates four specialist tools against real, unmodified
 AutoPilot/Remote (`mando`) firmware (ATSAMD51J19A, Cortex-M4F) rather than
 reimplementing any of them — see [`docs/architecture.md`](../../docs/architecture.md)

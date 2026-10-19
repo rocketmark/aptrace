@@ -1,0 +1,112 @@
+{
+  "budgets": {
+    "max_steps": 4
+  },
+  "case": "performing-rigs",
+  "claim_versions": [],
+  "context_id": "X-a857980f729acb06",
+  "ended_at": "2026-10-19T21:54:56.931412+00:00",
+  "evidence_ids": [
+    "EV-d36d2d8e6592e474"
+  ],
+  "execution_config": {
+    "claim_candidates": 5,
+    "claim_contract": true,
+    "endpoint": "local-omlx",
+    "max_tokens": 512,
+    "temperature": 0.0
+  },
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "invocation_ids": [
+    "TI-a4ad6b175f9e757d"
+  ],
+  "kind": "investigation",
+  "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+  "objective": "Determine the vendor bossac.exe implementation behavior under offset 0x4000 and release Gate B. Locate local binary/source provenance and supported PE/x86 analysis; distinguish batch-file arguments from executable behavior and device protection. If unsupported, report the capability gap without inferring behavior from the original application NVM routines. No hardware or tool modifications.",
+  "parent_run_id": null,
+  "planner_requests": [
+    {
+      "attempt": 0,
+      "claims": 0,
+      "decision": "search_case_evidence",
+      "evidence": 0,
+      "message_bytes": 1332,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 1082,
+      "prompt_tokens": 781,
+      "state_chars": 23,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2327
+    },
+    {
+      "attempt": 0,
+      "claims": 0,
+      "evidence": 1,
+      "message_bytes": 1697,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 1443,
+      "prompt_tokens": 887,
+      "state_chars": 364,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2692
+    },
+    {
+      "attempt": 1,
+      "claims": 0,
+      "evidence": 1,
+      "message_bytes": 1946,
+      "open_leads": 0,
+      "phase": "discovery",
+      "prompt_chars": 186,
+      "prompt_tokens": 921,
+      "state_chars": 364,
+      "tool_bytes": 995,
+      "tools": [
+        "search_case_evidence",
+        "analyze_peripheral",
+        "finish"
+      ],
+      "total_bytes": 2941
+    }
+  ],
+  "planner_version": "controller:1fad7f7d50b8 projection:92147f78dcce",
+  "run_id": "R-20261019T215457-d0794d",
+  "schema_version": 1,
+  "source": {
+    "dirty": true,
+    "dirty_fingerprint": "b6a1cef8abd1b212",
+    "git_branch": "main",
+    "git_commit": "4507828c27f6c0312816a47dde3f0872a664bd98"
+  },
+  "started_at": "2026-10-19T21:54:14.501354+00:00",
+  "termination_reason": "discovery_finished",
+  "trajectory": [
+    {
+      "action": "discover",
+      "evidence_id": "E1",
+      "lead_id": "L1",
+      "number": 1,
+      "reason": null
+    },
+    {
+      "action": "finish",
+      "evidence_id": null,
+      "lead_id": null,
+      "number": 2,
+      "reason": "Discovery planner could not produce a new valid search direction after one correction; first error: discovery query was already tried; second error: discovery query was already tried"
+    }
+  ]
+}

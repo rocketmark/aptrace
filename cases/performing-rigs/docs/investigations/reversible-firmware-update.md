@@ -5,6 +5,13 @@
 
 ## Decision
 
+Follow-up: [vendor bossac.exe investigation](vendor-bossac-behavior.md) confirms
+the executable identity and demonstrates the missing APTrace PE/x86 workflow;
+actual flasher erase/write/protection semantics remain unresolved. All six
+classifications and NO-GO are unchanged. Use its
+[consolidated hardware handoff](vendor-bossac-hardware-handoff.md) for the next
+single acquisition/validation packet.
+
 **NO-GO for the first replacement on a production AutoPilot.** We possess
 hash-identified original application images and evidence of an application-side
 1200-baud reset mechanism. We do not possess a verified device bootloader

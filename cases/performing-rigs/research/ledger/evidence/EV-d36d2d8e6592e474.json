@@ -1,0 +1,27 @@
+{
+  "arguments": {
+    "max_results": 8,
+    "purpose": "discovery",
+    "query": "bossac.exe firmware vendor"
+  },
+  "case": "performing-rigs",
+  "context_id": "X-a857980f729acb06",
+  "evidence_id": "EV-d36d2d8e6592e474",
+  "firmware_key": "autopilot868",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "grade": "PROBABLE",
+  "grade_basis": "case documents (documentary)",
+  "invocation_id": "TI-a4ad6b175f9e757d",
+  "limitations": [
+    {
+      "code": "DOCUMENTARY_NOT_FIRMWARE_DERIVED",
+      "source_evidence_ids": [],
+      "text": "Case documents are prior human findings, not firmware-derived evidence."
+    }
+  ],
+  "path_status": null,
+  "result_bytes": 3250,
+  "result_sha256": "22980caf1d2318e72fd1a881a689db7412b5d367fbf74ff929bb642fad82ff73",
+  "summary": "",
+  "tool": "search_case_evidence"
+}

@@ -10,6 +10,13 @@ These require separately authorized physical evidence; no board operations
 were performed in the assessment. See
 [six-gate plan](docs/investigations/reversible-firmware-update.md).
 
+Gate B software prerequisite: expose a supported PE/x86 target workflow or
+obtain accepted exact source/build provenance for the pinned vendor EXE before
+claiming its erase/protection behavior. Existing ARM application NVM results
+do not establish host-flasher behavior. Consolidate future AutoPilot requests
+using the [hardware handoff](docs/investigations/vendor-bossac-hardware-handoff.md);
+all gate classifications and production NO-GO remain unchanged.
+
 ## Feather original-firmware READY follow-up (2026-10-19)
 
 Configured application operation and version response are now reproducible

@@ -1,0 +1,25 @@
+{
+  "scope": "Read-only interface, metadata and local SVD inspection; no executable code analysis or hardware queries",
+  "records": [
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py status bossac",
+      "exit_code": 1,
+      "output": "error: unknown firmware key 'bossac'. Known: autopilot868, autopilot915, mando868, mando915\n"
+    },
+    {
+      "command": "rg -n 'PROCESSOR|BinaryLoader|SEED_VECTOR_WORDS' tools/ghidra/aptrace_ghidra.py",
+      "exit_code": 0,
+      "output": "74:PROCESSOR = \"ARM:LE:32:Cortex\"\n91:SEED_VECTOR_WORDS = 15 + NUM_EXTERNAL_IRQ\n179:        \"processor\": PROCESSOR,\n185:        \"seed_vector_words\": SEED_VECTOR_WORDS,\n258:        \"-processor\", PROCESSOR,\n260:        \"-loader\", \"BinaryLoader\",\n263:        \"-preScript\", \"APTraceSeedVectorTable.java\", str(SEED_VECTOR_WORDS),\n"
+    },
+    {
+      "command": "python3 cases/performing-rigs/config/svd/resolve_mmio.py 0x41002018 0x41002002 0x41004008 0x41004012 0x41004018",
+      "exit_code": 0,
+      "output": "0x41002018  DSU.DID (+0x18)\n0x41002002  DSU.STATUSB (+0x2)\n0x41004008  NVMCTRL.PARAM (+0x8)\n0x41004012  NVMCTRL.STATUS (+0x12)\n0x41004018  NVMCTRL.RUNLOCK (+0x18)\n"
+    },
+    {
+      "command": "file cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+      "exit_code": 0,
+      "output": "cases/performing-rigs/research/firmware/vendor-package/bossac.exe: PE32 executable (console) Intel 80386 (stripped to external PDB), for MS Windows\n"
+    }
+  ]
+}

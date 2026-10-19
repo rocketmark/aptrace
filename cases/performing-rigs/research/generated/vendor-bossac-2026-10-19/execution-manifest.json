@@ -1,0 +1,30 @@
+{
+  "revision": "4507828c27f6c0312816a47dde3f0872a664bd98",
+  "scope": "Metadata, script, existing source/interface and local SVD inspection only. EXE not imported/executed; no firmware/hardware actions.",
+  "controller_command": "agent/.venv/bin/aptrace-agent research 'Determine the vendor bossac.exe implementation behavior under offset 0x4000 and release Gate B. Locate local binary/source provenance and supported PE/x86 analysis; distinguish batch-file arguments from executable behavior and device protection. If unsupported, report the capability gap without inferring behavior from the original application NVM routines. No hardware or tool modifications.' --max-steps 4 --ledger --output cases/performing-rigs/research/runs/agent/vendor-bossac-2026-10-19.json",
+  "controller_result": {
+    "stop": "discovery_finished",
+    "evidence": 1,
+    "steps": 2,
+    "claims": 0
+  },
+  "interface_commands_artifact": "interface-evidence.json",
+  "inventory_method": "Python pathlib/hashlib read-only file metadata hashing and arithmetic from requested 0x4000 placement; no executable or firmware instruction decoding",
+  "script_excerpt_method": "Numbered UTF-8 rendering of existing batch source; original unchanged",
+  "searches": [
+    "rg -n 'PE32|Portable Executable|host.binary|BOSSA|bossac' docs tools agent/src cases/performing-rigs/docs --glob '*.md' --glob '*.py'",
+    "rg --files -uuu | rg -i '(boss|apfw2|host.binary|pe.analysis)'",
+    "rg --files /Users/mstalzer/github -g '*bossa*' -g '*BOSSA*' -g '*flashing*' -g '*apfw2*' -g 'AGENTS.md'",
+    "ls /Users/mstalzer/github/apfw2"
+  ],
+  "corrections": [
+    "resolve_mmio.py --help is not supported (ValueError); retried with numeric addresses and succeeded.",
+    "Initial inventory post-processing had a parenthesis SyntaxError before output; corrected and rerun."
+  ],
+  "limits": [
+    "No accepted host PE loader/x86 query workflow",
+    "No binary version or upstream source/build match",
+    "No apfw2 flashing contract found",
+    "No actual erase/write/verify/protection/reset or failure behavior measured"
+  ]
+}

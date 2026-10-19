@@ -1,0 +1,40 @@
+{
+  "bossac.exe": {
+    "path": "cases/performing-rigs/research/firmware/vendor-package/bossac.exe",
+    "size": 226816,
+    "sha256": "eaebd0b6ef980e464b1a6a5a50eee91f9d6202f51dae7d9f78779d18593121a9"
+  },
+  "update_firmware.bat": {
+    "path": "cases/performing-rigs/research/firmware/vendor-package/update_firmware.bat",
+    "size": 1672,
+    "sha256": "41005f6a4a2165928538fd33cdf43e1eb23a402caebafc0589dc474cd0667d6b"
+  },
+  "firmware_autopilot868.bin": {
+    "path": "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot868.bin",
+    "size": 70768,
+    "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "requested_interval": [
+      "0x4000",
+      "0x15470"
+    ],
+    "config_file_offset_interval": [
+      "0xe000",
+      "0xf001"
+    ],
+    "matches_working_copy": true
+  },
+  "firmware_autopilot915.bin": {
+    "path": "cases/performing-rigs/research/firmware/vendor-package/firmware_autopilot915.bin",
+    "size": 70768,
+    "sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+    "requested_interval": [
+      "0x4000",
+      "0x15470"
+    ],
+    "config_file_offset_interval": [
+      "0xe000",
+      "0xf001"
+    ],
+    "matches_working_copy": true
+  }
+}
