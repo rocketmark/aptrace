@@ -20,6 +20,9 @@ development. Concrete target findings and evidence belong to a case under
 - [`objective-bounded-investigation.md`](objective-bounded-investigation.md) —
   declared relations, operation relevance, progress tracking and the
   unresolved-relation report for focused research runs.
+- [`terminal-review.md`](terminal-review.md) — the deterministic terminal
+  assessment of every focused run, adversarial review by the review model,
+  sequential oMLX model residency, review persistence and retry.
 - [`research-ledger.md`](research-ledger.md) — research ledger, adversarial
   audit, and deterministic verification.
 - [`cross-engine-verification.md`](cross-engine-verification.md) — normative

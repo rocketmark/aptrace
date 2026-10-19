@@ -1,0 +1,70 @@
+
+TERMINAL REVIEW REPORT
+  DETERMINISTIC INVESTIGATION RESULT (APTrace evidence rules; no model)
+    termination: other (review_fixture: review fixture assembled from operator concrete artifacts; not an APTrace research run)
+    R2 FUN_00005448 -> FUN_00004d18: OBSERVED [observed_within_scope]
+        evidence E1: concrete observation under one registered scenario and its harness assumptions; not natural execution
+        scope E1: scenario rx-f0-direct-seed, 7 harness assumption(s)
+    R3 FUN_00005448 -> 0x20001b14: UNRESOLVED [blocked]
+        scope E1: scenario rx-f0-direct-seed, 7 harness assumption(s)
+        blocker E1: busy gate 0x20001b14 is still 0 at the RX segment exit; scoped to that segment, not absence of a writer
+    R7 FUN_00004d18 -> FUN_00005ee8: UNRESOLVED [blocked]
+        scope E1: scenario rx-f0-direct-seed, 7 harness assumption(s)
+        blocker E1: Existing phase/rate path depends on busy state; no selected-command activation witness
+    R4 FUN_00005ee8 -> FUN_00005c00: STATIC [partial]
+        evidence E3: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution
+    R6 FUN_00005c00 -> FUN_0000607c: UNRESOLVED [blocked]
+        scope E2: scenario tc0-isr-direct-call, 9 harness assumption(s)
+        blocker E2: IRQ107 vector maps TC0 handler0x607c; no automatic expiry/delivery observed
+    R5 FUN_0000607c -> FUN_00005898: OBSERVED [observed_within_scope]
+        evidence E2: concrete observation under one registered scenario and its harness assumptions; not natural execution
+        scope E2: scenario tc0-isr-direct-call, 9 harness assumption(s)
+    join R2->R7 at FUN_00004d18: continuity not validated (at least one side has no supporting evidence)
+    join R7->R4 at FUN_00005ee8: continuity not validated (at least one side has no supporting evidence)
+    join R4->R6 at FUN_00005c00: continuity not validated (at least one side has no supporting evidence)
+    join R6->R5 at FUN_0000607c: continuity not validated (at least one side has no supporting evidence)
+    segments: 3 separately established segments; no recorded relation connects them, so nothing here relates one segment's execution to another's: R2; R4; R5
+    claim proposals: 0, admitted 0 (PROPOSED, not verified)
+    composition: not attempted: per-edge levels are not an end-to-end causal result
+
+  ADVERSARIAL CRITICISM (review model; advisory, not verification)
+    demonstrated contradictions (cite package evidence): 0
+    hypotheses (not demonstrated): 4
+      [unjustified_composition] R7,E1,E3: The investigation attempts to bridge the gap between the command handler (E1) and the rate machinery (E3) via a shared endpoint (FUN_00005ee8) without any evidence of state continuity or causal linkage between the two separately executed scenarios.
+          test: Provide evidence of a shared, persistent state or a valid execution path that connects the exit of the 'rx-f0-direct-seed' scenario to the entry of the 'static' analysis in E3.
+      [static_as_execution] R4,R6,E3,E2: The investigation treats a static Ghidra call-graph edge (R4) as a functional link to the observed ISR execution (R6), despite no evidence that the 'rate machinery' is actually active or that the timer-setup code is reachable during a real command execution.
+          test: Demonstrate that the execution path from the command handler (E1) actually reaches the timer setup (E3/E2) in a single, continuous execution trace.
+      [missing_prerequisite_or_state_continuity] R7,E1: The relationship R7 (motion state activates rate machinery) is blocked by a lack of evidence relating the command handler to the rate machinery, yet the investigation fails to define the necessary state transitions required to move from a 'jog' to an 'active' motion state.
+          test: Identify the specific memory-mapped register or global variable that must be modified by R2/R3 to enable the execution of R4/R6.
+      [scope_mismatch] R2,R5,E1,E2: The investigation attempts to answer if a command causes a GPIO write by joining a command-processing segment (E1) with a separate, manually-triggered ISR segment (E2), which ignores the possibility that the command might not trigger the ISR at all.
+          test: Verify if the command execution in E1 results in the specific hardware state (e.g., timer enable bits) required to trigger the ISR in E2.
+    suggested tests: 1
+      [peripheral_timer_interrupt_assumption] R6,E2: The investigation relies on a 'direct call' to a handler (E2) to simulate an ISR, but provides no evidence that the timer hardware (TC0) actually triggers this handler in a real-world scenario.
+          test: Perform a concrete execution trace where the timer hardware interrupt is the trigger for the handler, rather than a manual function call, to verify if the 'step' output (PB10) is driven as expected.
+    omitted question: Does the command execution in E1 modify the hardware state necessary to trigger the interrupt in E2?
+    omitted question: Is the 'busy gate' (0x20001b14) a prerequisite for the ISR execution, and if so, why did E1 not trigger it?
+    omitted question: What is the causal link between the static call in E3 and the observed hardware writes in E2?
+    reviewer's view of stated confidence: overstated
+
+  UNRESOLVED EVIDENCE REQUIREMENTS
+    R3 (UNRESOLVED): no completed function_effects of FUN_00005448 showing an access to 0x20001b14 (the effects analysis timed out)
+    R7 (UNRESOLVED): no evidence relates FUN_00004d18 to FUN_00005ee8: Caller-grounded activation and feasible state composition
+    R4 (STATIC): no concrete observation of FUN_00005ee8 calling FUN_00005c00 under the selected command
+    R6 (UNRESOLVED): no timer expiry or IRQ delivery model: Natural timer expiry, pending flags, exception ordering (capability gap)
+    join R2->R7: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+    join R7->R4: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+    join R4->R6: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+    join R6->R5: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+    segments R2 | R4 | R5: no recorded relation connects them; the intermediate relations need evidence
+    reviewer-suggested tests (not yet APTrace requirements):
+      R7: Provide evidence of a shared, persistent state or a valid execution path that connects the exit of the 'rx-f0-direct-seed' scenario to the entry of the 'static' analysis in E3.
+      R4,R6: Demonstrate that the execution path from the command handler (E1) actually reaches the timer setup (E3/E2) in a single, continuous execution trace.
+      R7: Identify the specific memory-mapped register or global variable that must be modified by R2/R3 to enable the execution of R4/R6.
+      R6: Perform a concrete execution trace where the timer hardware interrupt is the trigger for the handler, rather than a manual function call, to verify if the 'step' output (PB10) is driven as expected.
+      R2,R5: Verify if the command execution in E1 results in the specific hardware state (e.g., timer enable bits) required to trigger the ISR in E2.
+
+  REVIEW AVAILABILITY
+    status: completed (1 attempt(s)); investigation TR-995b2d4e91725afe
+    model: gemma-4-26b-a4b-it-4bit (default); template terminal-review-v1
+    advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority
+exit=0

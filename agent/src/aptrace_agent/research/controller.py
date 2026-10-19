@@ -131,6 +131,9 @@ class ResearchRunResult:
     # Objective-bounded runs only (research/objective.py): per-relation
     # evidence levels, blockers, missing evidence and step outcomes.
     objective_report: dict[str, Any] | None = None
+    # Objective-bounded runs only (research/terminal.py): the deterministic
+    # terminal assessment, built without any model response.
+    terminal_assessment: dict[str, Any] | None = None
 
 
 @dataclass
@@ -333,6 +336,9 @@ class ResearchController:
         self.firmware_key = firmware_key
         self.tracker: ObjectiveTracker | None = None
         self.objective_report: dict[str, Any] | None = None
+        self.terminal_assessment: dict[str, Any] | None = None
+        # Exception that ended a focused run ({"type", "message"}), if any.
+        self._terminal_error: dict[str, str] | None = None
         self._steps_used = 0
 
         budget = projection_budget or ProjectionBudget(latest_count=recent_evidence_limit)
@@ -2255,11 +2261,33 @@ answer any other question.
         self._focus_palette(session, palette)
         return bool(palette.tools)
 
+    def _assess_terminal(self, session: ResearchSession, stop_reason: str, steps: list[ResearchStep]) -> None:
+        """Deterministic terminal assessment of a focused run (research/terminal.py)."""
+
+        if self.objective_report is None:
+            return
+
+        from aptrace_agent.research.terminal import build_assessment
+
+        self.terminal_assessment = build_assessment(
+            spec=self.tracker.spec,
+            report=self.objective_report,
+            observations=session.ledger.all(),
+            steps=steps,
+            state=session.state,
+            claim_admission=self.claim_admission,
+            stop_reason=stop_reason,
+            error=self._terminal_error,
+            planner_model=self.planner_model,
+            firmware_key=self.firmware_key,
+        )
+
     def _result(self, stop_reason: str, steps: list[ResearchStep], reconciled: bool) -> ResearchRunResult:
         session = getattr(self, "_run_session", None)
 
         if session is not None:
             self._finish_objective(session, stop_reason)
+            self._assess_terminal(session, stop_reason, steps)
 
         return ResearchRunResult(
             stop_reason=stop_reason,
@@ -2270,6 +2298,7 @@ answer any other question.
             claim_admission=tuple(self.claim_admission),
             candidate_selection=self.candidate_selection,
             objective_report=self.objective_report,
+            terminal_assessment=self.terminal_assessment,
         )
 
     def _fallback_lead(self, session: ResearchSession):
@@ -2285,6 +2314,37 @@ answer any other question.
 
     def run(self, session: ResearchSession) -> ResearchRunResult:
         """
+        One bounded research run.
+
+        A focused (objective-bounded) run always returns a result with its
+        objective report and terminal assessment: an exception raised in the
+        loop (planner transport failure, tool exception) ends it with
+        `investigation_error` and the error recorded, never without a
+        report. An unfocused run lets such exceptions propagate, as before.
+        """
+
+        self._terminal_error = None
+        self.terminal_assessment = None
+        self._run_steps: list[ResearchStep] = []
+        self._run_session = None
+
+        if self.objective_spec is None:
+            return self._run(session)
+
+        self.tracker = None
+
+        try:
+            return self._run(session)
+        except Exception as exc:  # noqa: BLE001 - recorded in the result, never swallowed silently
+            # Without a tracker there is no objective state to report.
+            if self.tracker is None or self._run_session is not session:
+                raise
+
+            self._terminal_error = {"type": type(exc).__name__, "message": clip(str(exc), 400)}
+            return self._result("investigation_error", self._run_steps, False)
+
+    def _run(self, session: ResearchSession) -> ResearchRunResult:
+        """
         Budget: each executed action charges one step (max_steps). In a
         follow-up session (session.continuity) an action satisfied by a
         historical result charges nothing for the first max_free_reuses
@@ -2293,7 +2353,7 @@ answer any other question.
         one step, exactly as before.
         """
 
-        steps: list[ResearchStep] = []
+        steps = self._run_steps
         objective_discovery = not session.ledger.all() and not session.state.open_leads()
         discovery_attempts = 0
         discovery_queries: set[str] = set()

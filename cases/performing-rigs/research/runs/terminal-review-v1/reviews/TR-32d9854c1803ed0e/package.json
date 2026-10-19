@@ -1,0 +1,342 @@
+{
+  "assessment_sha256": "0553dc0ddff2b103d69228eed3dbb4f3a10afd9b119a249c792c3d81ff2a059b",
+  "bounds": {
+    "chars": 11169,
+    "max_chars": 24000,
+    "truncated": [],
+    "within_bound": true
+  },
+  "content": {
+    "claims": {
+      "admitted": 0,
+      "note": "APTrace admission decided these; admitted proposals are PROPOSED claim versions, not verified",
+      "proposals": [],
+      "session_claims": [
+        {
+          "basis": "concrete-observed",
+          "evidence_ids": [
+            "E3"
+          ],
+          "grade": "PROVEN",
+          "statement": "FUN_00005448 under scenario vl-manual-f0e0: 2 observed calls passed r0 0x00000000(?); 0 MMIO accesses from its code; other scenarios and values are not excluded."
+        },
+        {
+          "basis": "concrete-observed",
+          "evidence_ids": [
+            "E4"
+          ],
+          "grade": "PROVEN",
+          "statement": "FUN_00004d18 was not entered under scenario vl-manual-f0e0 (219 instructions); not thereby unreachable."
+        }
+      ]
+    },
+    "composition": {
+      "attempted": false,
+      "disconnected": null,
+      "joins": [
+        {
+          "continuity": "not validated",
+          "from_evidence": [
+            {
+              "evidence_id": "E3",
+              "harness_assumptions_total": 5,
+              "scenario": "vl-manual-f0e0"
+            }
+          ],
+          "from_level": "OBSERVED",
+          "from_relation": "R1",
+          "reason": "the two sides were established by separate evidence; state continuity across the join is not established",
+          "shared_endpoint": "FUN_00005448",
+          "to_evidence": [
+            {
+              "evidence_id": "E1",
+              "harness_assumptions_total": 0,
+              "scenario": null
+            }
+          ],
+          "to_level": "STATIC",
+          "to_relation": "R2"
+        },
+        {
+          "continuity": "not validated",
+          "from_evidence": [
+            {
+              "evidence_id": "E3",
+              "harness_assumptions_total": 5,
+              "scenario": "vl-manual-f0e0"
+            }
+          ],
+          "from_level": "OBSERVED",
+          "from_relation": "R1",
+          "reason": "at least one side has no supporting evidence",
+          "shared_endpoint": "FUN_00005448",
+          "to_evidence": [],
+          "to_level": "UNRESOLVED",
+          "to_relation": "R3"
+        }
+      ],
+      "segments": [
+        {
+          "evidence": [
+            "E1",
+            "E3"
+          ],
+          "levels": {
+            "R1": "OBSERVED",
+            "R2": "STATIC"
+          },
+          "relations": [
+            "R1",
+            "R2"
+          ],
+          "scenarios": [
+            "vl-manual-f0e0"
+          ]
+        }
+      ],
+      "statement": "not attempted: per-edge levels are not an end-to-end causal result"
+    },
+    "contradictions": [],
+    "evidence": [
+      {
+        "arguments": {
+          "function": "FUN_00005448"
+        },
+        "evidence_id": "E1",
+        "result_sha256": "7e74dbce732c73359d3bba0cd13e80c628080cc936d20f2e50a1d7958d7999d2",
+        "status": "ok",
+        "summary": "E1 function_facts: FUN_00005448 entry=0x00005448 size=84 callers=1 callees=2",
+        "tool": "function_facts"
+      },
+      {
+        "arguments": {
+          "function": "FUN_00005448"
+        },
+        "evidence_id": "E2",
+        "result_sha256": "32e26e733ab2c689f5a35761f22906d3b881c9db2074f942bd8ec95ce8eb366c",
+        "status": "ok",
+        "summary": "E2 function_disassembly: FUN_00005448 34 instructions 0x00005448..0x0000549a; full listing retained by APTrace",
+        "tool": "function_disassembly"
+      },
+      {
+        "arguments": {
+          "function": "FUN_00005448",
+          "scenario": "vl-manual-f0e0"
+        },
+        "evidence_id": "E3",
+        "result_sha256": "b4db3213048c13cd4f7183274d2360b49e8539ade7bda6ca8b75f5644bd2454e",
+        "status": "ok",
+        "summary": "E3 FUN_00005448 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 2 entries in 219 instructions; 2 call site(s) reached, 0 unreached; r0 0x00000000(?); MMIO accesses from its code 0 0x000082c0 (FUN_00008258) BL x1: r0 0x00000000(?) 0x00008354 (FUN_00008258) BL x1: r0 0x00000000(?) MMIO accesses from code in 0x00005448..0x0000549c: 0 harness: 5 disclosed assumption(s); observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+        "tool": "observed_call_arguments"
+      },
+      {
+        "arguments": {
+          "function": "FUN_00004d18",
+          "scenario": "vl-manual-f0e0"
+        },
+        "evidence_id": "E4",
+        "result_sha256": "0aa8515177c1846afc10933a744646328ac24895d52b128050d4495b152228e3",
+        "status": "ok",
+        "summary": "E4 FUN_00004d18 observed arguments [CALLER_GROUNDED_CONCRETE; scenario vl-manual-f0e0 (virtual-link); status ok]: 0 entries in 219 instructions; 0 call site(s) reached, 2 unreached; not entered in this scenario: nothing about its accesses was observed 0x00005294 (FUN_00005274): UNOBSERVED (not reached; not unreachable) 0x00005496 (FUN_00005448): UNOBSERVED (not reached; not unreachable) MMIO accesses from code in 0x00004d18..0x000051a2: 0 ...",
+        "tool": "observed_call_arguments"
+      }
+    ],
+    "failed_operations": [],
+    "hypotheses": [],
+    "limitations": [
+      "Relation levels are per edge. APTrace did not compose relations into a path, and no composition was verified.",
+      "A blocker (failure, timeout, bounded coverage, target not entered) is incompleteness, never evidence of absence.",
+      "OBSERVED evidence is scoped to its scenario's harness assumptions; separately executed scenarios do not share state unless the evidence says so.",
+      "STATIC evidence uses Ghidra's heuristic function boundaries and is not evidence of execution.",
+      "Admitted claim proposals are PROPOSED; only APTrace deterministic verification changes claim state."
+    ],
+    "objective": {
+      "constraints": [
+        "Finish after relevant function evidence rather than peripheral inventory.",
+        "Report unsupported connections to timer activation and STOP on RF silence as open questions."
+      ],
+      "firmware": "autopilot868",
+      "question": "Bounded AutoPilot868 F0 channel0 jog follow-up. Determine whether FUN_00005448 sets busy state 0x20001b14 and how its target update reaches FUN_00004d18; preserve conditions. Report unsupported connection to timer activation and STOP on RF silence as open questions. Finish after relevant function evidence rather than peripheral inventory. Request case reconciliation review of unsupported causal composition."
+    },
+    "operations": [
+      {
+        "action": "observation",
+        "arguments": {
+          "function": "FUN_00005448",
+          "scenario": "vl-manual-f0e0"
+        },
+        "evidence_id": "E3",
+        "outcome": "strengthened",
+        "status": "ok",
+        "step": 1,
+        "tool": "observed_call_arguments"
+      },
+      {
+        "action": "observation",
+        "arguments": {
+          "function": "FUN_00004d18",
+          "scenario": "vl-manual-f0e0"
+        },
+        "evidence_id": "E4",
+        "outcome": "blocker",
+        "status": "ok",
+        "step": 2,
+        "tool": "observed_call_arguments"
+      }
+    ],
+    "planner": {
+      "model": "Qwen3-Coder-30B-A3B-Instruct-4bit"
+    },
+    "rejected_operations": [],
+    "relations": [
+      {
+        "blockers": [],
+        "evidence": [
+          {
+            "detail": "static call edge FUN_00008258 -> FUN_00005448 (Ghidra call graph; heuristic boundaries)",
+            "evidence_id": "E1",
+            "level": "STATIC"
+          },
+          {
+            "detail": "FUN_00008258 observed calling FUN_00005448 under scenario vl-manual-f0e0 (harness assumptions apply)",
+            "evidence_id": "E3",
+            "level": "OBSERVED"
+          }
+        ],
+        "evidence_needed": [],
+        "id": "R1",
+        "label": "RX dispatch invokes the F0 jog handler",
+        "level": "OBSERVED",
+        "level_meaning": "concrete observation under one registered scenario and its harness assumptions; not natural execution",
+        "scopes": [
+          {
+            "coverage": "observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; every static call site reached; unobserved values or call sites are not thereby impossible",
+            "engine": "Unicorn concrete execution of a registered case scenario (tools/unicorn/concrete.py)",
+            "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded manual-mode records",
+            "evidence_id": "E3",
+            "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+            "harness_assumptions": [
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 3 seeded range(s), 1 register seed(s), 0 stub(s)"
+            ],
+            "harness_assumptions_total": 5,
+            "instructions_executed": 219,
+            "scenario": "vl-manual-f0e0",
+            "scenario_registry_sha256": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+            "termination": "each leg's own stop address or instruction bound",
+            "tool": "observed_call_arguments"
+          }
+        ],
+        "source": "FUN_00008258",
+        "status": "observed_within_scope",
+        "target": "FUN_00005448"
+      },
+      {
+        "blockers": [
+          {
+            "detail": "FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)",
+            "evidence_id": "E4"
+          }
+        ],
+        "evidence": [
+          {
+            "detail": "static call edge FUN_00005448 -> FUN_00004d18 (Ghidra call graph; heuristic boundaries)",
+            "evidence_id": "E1",
+            "level": "STATIC"
+          }
+        ],
+        "evidence_needed": [
+          "no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)"
+        ],
+        "id": "R2",
+        "label": "jog handler reaches the motion target update",
+        "level": "STATIC",
+        "level_meaning": "a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution",
+        "scopes": [
+          {
+            "coverage": "observed contexts only: scenario 'vl-manual-f0e0' (virtual-link), 219 instructions of autopilot868 code; 2 static call site(s) never reached: 0x00005294, 0x00005496; unobserved values or call sites are not thereby impossible",
+            "engine": "Unicorn concrete execution of a registered case scenario (tools/unicorn/concrete.py)",
+            "entry_conditions": "mid-firmware leg entries on non-booted RAM with seeded manual-mode records",
+            "evidence_id": "E4",
+            "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+            "harness_assumptions": [
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 2 seeded range(s), 1 register seed(s), 0 stub(s)",
+              "entry 0x00008a34 (fresh state); 3 seeded range(s), 1 register seed(s), 0 stub(s)"
+            ],
+            "harness_assumptions_total": 5,
+            "instructions_executed": 219,
+            "scenario": "vl-manual-f0e0",
+            "scenario_registry_sha256": "eb9622df4c691a0ec2dc8c741e389f64cf0ecbe43d707243678447d3d8e98c46",
+            "termination": "each leg's own stop address or instruction bound",
+            "tool": "observed_call_arguments"
+          }
+        ],
+        "source": "FUN_00005448",
+        "status": "partial",
+        "target": "FUN_00004d18"
+      },
+      {
+        "blockers": [],
+        "evidence": [],
+        "evidence_needed": [
+          "0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it",
+          "no completed function_effects of FUN_00005448 showing an access to the address endpoint"
+        ],
+        "id": "R3",
+        "label": "jog path writes the busy gate",
+        "level": "UNRESOLVED",
+        "level_meaning": "no supporting evidence recorded",
+        "scopes": [],
+        "source": "FUN_00005448",
+        "status": "unresolved",
+        "target": "0x20001b14"
+      }
+    ],
+    "tensions": [
+      {
+        "blockers": [
+          "E4"
+        ],
+        "level": "STATIC",
+        "note": "positive evidence and blockers coexist; APTrace does not decide between them (not a contradiction verdict)",
+        "positive": [
+          "E1"
+        ],
+        "relation": "R2"
+      }
+    ],
+    "termination": {
+      "analysis_failures": 0,
+      "budget": {
+        "max_steps": 2,
+        "steps_used": 2
+      },
+      "category": "budget_exhausted",
+      "error": null,
+      "every_relation_observed": false,
+      "explanation": "step budget exhausted",
+      "stop_reason": "step_budget_exhausted"
+    },
+    "unresolved_questions": [
+      "R2 FUN_00005448 -> FUN_00004d18 is STATIC: no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)",
+      "R3 FUN_00005448 -> 0x20001b14 is UNRESOLVED: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it; no completed function_effects of FUN_00005448 showing an acc..."
+    ]
+  },
+  "investigation_id": "TR-32d9854c1803ed0e",
+  "links": {
+    "artifact": "cases/performing-rigs/research/runs/terminal-review-v1/live-after-restore-2026-10-19.json",
+    "generated_at": "2026-10-19T17:19:23.623787+00:00",
+    "ledger_run_id": null,
+    "objective_file": "cases/performing-rigs/research/objectives/remote-to-motor-focused-2026-10-19.objective.json",
+    "planner_model": "Qwen3-Coder-30B-A3B-Instruct-4bit"
+  },
+  "package_sha256": "4e1a6c1ed4e16d8517d752f0c152c934c0387c65081fc43ee9ad95b635473e63",
+  "template_version": "terminal-review-v1",
+  "version": "terminal-review-package-v1"
+}

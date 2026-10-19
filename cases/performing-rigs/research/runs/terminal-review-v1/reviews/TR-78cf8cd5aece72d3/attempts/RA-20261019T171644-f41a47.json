@@ -1,0 +1,383 @@
+{
+  "assessment_sha256": "f9f49b5d9ca344becd275fef3743d0d4b81a51bb021e23c605627c79595fc6d6",
+  "attempt_id": "RA-20261019T171644-f41a47",
+  "authority": "advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority",
+  "ended_at": "2026-10-19T17:17:26.092+00:00",
+  "error": null,
+  "investigation_id": "TR-78cf8cd5aece72d3",
+  "links": {
+    "artifact": "cases/performing-rigs/research/runs/terminal-review-v1/live-focused-2026-10-19.json",
+    "generated_at": "2026-10-19T17:16:44.793865+00:00",
+    "ledger_run_id": null,
+    "objective_file": "cases/performing-rigs/research/objectives/remote-to-motor-focused-2026-10-19.objective.json",
+    "planner_model": "Qwen3-Coder-30B-A3B-Instruct-4bit"
+  },
+  "model": {
+    "client_timeout_s": 900.0,
+    "generation": {
+      "max_tokens": 2000,
+      "temperature": 0.0
+    },
+    "id": "gemma-4-26b-a4b-it-4bit",
+    "omlx_settings": {
+      "enable_thinking": false,
+      "is_pinned": false,
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "min_p": 0.05,
+      "temperature": 0.2,
+      "top_k": 64,
+      "top_p": 0.95,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_kv_enabled": true
+    },
+    "served": {
+      "estimated_size": 16389280502,
+      "is_loading": false,
+      "loaded": true,
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "pinned": false
+    },
+    "server_version": "0.7.0",
+    "source": "default"
+  },
+  "package_sha256": "c7f02e4c2689f176042b8720dfa2363880c892ede8fafdb7305e643a5449f47f",
+  "raw_responses": [
+    {
+      "content": "```json\n{\n \"findings\": [\n  {\n   \"category\": \"unjustified_composition\",\n   \"kind\": \"hypothesis\",\n   \"relations\": [\n    \"R2\"\n   ],\n   \"evidence_ids\": [\n    \"E1\",\n    \"E4\"\n   ],\n   \"statement\": \"The investigation attempts to evaluate the relationship R2 (jog handler reaches motion target update) using a static call edge (E1) while the only available execution context (E4) explicitly shows the target function was not entered. The relationship is essentially a phantom edge in the current scenario.\",\n   \"test\": \"Execute a scenario where the control flow path from FUN_00005448 to FUN_00004d18 is actually traversed to validate if the static edge in E1 is a valid execution path.\"\n  },\n  {\n   \"category\": \"missing_prerequisite_or_state_continuity\",\n   \"kind\": \"hypothesis\",\n   \"relations\": [\n    \"R2\",\n    \"R3\"\n   ],\n   \"evidence_ids\": [\n    \"E3\",\n    \"E5\"\n   ],\n   \"statement\": \"The investigation lacks state continuity between the observed execution of FUN_00005448 (E3) and the failed effect analysis (E5). Without understanding the state that caused the timeout in E5, the relationship between the observed code and the target address 0x20001b14 remains speculative.\",\n   \"test\": \"Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic.\"\n  },\n  {\n   \"category\": \"scope_mismatch\",\n   \"kind\": \"hypothesis\",\n   \"relations\": [\n    \"R3\"\n   ],\n   \"evidence_ids\": [\n    \"E5\"\n   ],\n   \"statement\": \"R3 attempts to relate a function to a memory address (0x20001b14) that is not defined as a function in the provided evidence. The investigation treats a potential MMIO/data write as a functional relationship without providing the mapping between the instruction and the address.\",\n   \"test\": \"Identify the specific instruction in FUN_00005448 that targets 0x20001b14 and provide the register/memory state at that moment.\"\n  },\n  {\n   \"category\": \"unsupported_negative\",\n   \"kind\": \"hypothesis\",\n   \"relations\": [\n    \"R2\"\n   ],\n   \"evidence_ids\": [\n    \"E4\"\n   ],\n   \"statement\": \"The investigation uses the absence of execution in scenario 'vl-manual-f0e0' (E4) to define the status of R2, but fails to account for the fact that the scenario itself might be insufficient to trigger the path. A 'not entered' result is not evidence of unreachability.\",\n   \"test\": \"Determine the input constraints required to satisfy the branch at 0x00005496 (E6) to reach FUN_00004d18.\"\n  }\n ],\n \"omitted_questions\": [\n  \"Does the branch at 0x00005496 in E6 represent a valid path to FUN_00004d18, or is it a tail-call/return-to-caller mechanism that bypasses the intended logic?\",\n  \"What is the nature of the loop or condition in FUN_00005448 that caused the 300s timeout in E5, and how does it prevent the observation of effects on 0x20001b14?\"\n ],\n \"confidence\": \"appropriate\",\n \"summary\": \"The investigation relies heavily on a static call edge (R2) that is not exercised by the current scenario, creating a gap between potential and actual behavior. It fails to resolve the timeout in E5, leaving the primary objective (the 'busy gate' write) entirely unverified.\"\n}\n```",
+      "finish_reason": "stop",
+      "served_model": "gemma-4-26b-a4b-it-4bit",
+      "usage": {
+        "completion_tokens": 943,
+        "completion_tokens_details": null,
+        "generation_duration": 17.66,
+        "generation_tokens_per_second": 53.41,
+        "input_tokens": 6616,
+        "output_tokens": 943,
+        "prompt_eval_duration": 12.4,
+        "prompt_tokens": 6616,
+        "prompt_tokens_details": {
+          "audio_tokens": null,
+          "cache_write_tokens": null,
+          "cached_tokens": 0,
+          "image_tokens": null,
+          "text_tokens": null
+        },
+        "prompt_tokens_per_second": 533.43,
+        "time_to_first_token": 12.4,
+        "total_time": 30.06,
+        "total_tokens": 7559
+      }
+    }
+  ],
+  "requests": [
+    {
+      "messages_sha256": "9ab4b1151e89174c105f0b4f12a677d4082c51d1bb2c8d94879eb623d88198da",
+      "prompt_chars": 18327
+    }
+  ],
+  "residency": [
+    {
+      "actions": [
+        {
+          "action": "wait:idle",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "unload",
+          "elapsed_s": 1.085,
+          "model": "Qwen3-Coder-30B-A3B-Instruct-4bit",
+          "result": "ok"
+        },
+        {
+          "action": "wait:unloaded:Qwen3-Coder-30B-A3B-Instruct-4bit",
+          "elapsed_s": 0.003,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "wait:headroom",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "wait:idle",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "load",
+          "elapsed_s": 8.054,
+          "model": "gemma-4-26b-a4b-it-4bit",
+          "result": "ok"
+        },
+        {
+          "action": "wait:loaded:gemma-4-26b-a4b-it-4bit",
+          "elapsed_s": 0.003,
+          "polls": 1,
+          "satisfied": true
+        }
+      ],
+      "after": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 16389280502,
+        "loaded": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": true,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "before": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 18040125593,
+        "loaded": [
+          "Qwen3-Coder-30B-A3B-Instruct-4bit"
+        ],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": true,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "error": null,
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "ok": true,
+      "operation": "acquire",
+      "version": "omlx-residency-v1"
+    },
+    {
+      "actions": [
+        {
+          "action": "wait:idle",
+          "elapsed_s": 0.002,
+          "polls": 1,
+          "satisfied": true
+        },
+        {
+          "action": "unload",
+          "elapsed_s": 1.573,
+          "model": "gemma-4-26b-a4b-it-4bit",
+          "result": "ok"
+        },
+        {
+          "action": "wait:unloaded:gemma-4-26b-a4b-it-4bit",
+          "elapsed_s": 0.005,
+          "polls": 1,
+          "satisfied": true
+        }
+      ],
+      "after": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 0,
+        "loaded": [],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "before": {
+        "active_requests": 0,
+        "ceiling": 20401094656,
+        "current_model_memory": 16389280502,
+        "loaded": [
+          "gemma-4-26b-a4b-it-4bit"
+        ],
+        "loading": [],
+        "models": {
+          "Phi-4-reasoning-plus-4bit": {
+            "estimated_size": 9620968865,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 32768,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "Qwen3-Coder-30B-A3B-Instruct-4bit": {
+            "estimated_size": 18040125593,
+            "is_loading": false,
+            "loaded": false,
+            "max_context_window": 262144,
+            "max_tokens": 32768,
+            "pinned": false
+          },
+          "gemma-4-26b-a4b-it-4bit": {
+            "estimated_size": 16389280502,
+            "is_loading": false,
+            "loaded": true,
+            "max_context_window": 40000,
+            "max_tokens": 2048,
+            "pinned": false
+          }
+        },
+        "server_version": "0.7.0",
+        "waiting_requests": 0
+      },
+      "error": null,
+      "model": "gemma-4-26b-a4b-it-4bit",
+      "ok": true,
+      "operation": "release",
+      "version": "omlx-residency-v1"
+    }
+  ],
+  "retry_of": null,
+  "review": {
+    "authority": "advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority",
+    "confidence": "appropriate",
+    "findings": [
+      {
+        "aptrace_checks": [],
+        "category": "unjustified_composition",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E1",
+          "E4"
+        ],
+        "kind": "hypothesis",
+        "relations": [
+          "R2"
+        ],
+        "statement": "The investigation attempts to evaluate the relationship R2 (jog handler reaches motion target update) using a static call edge (E1) while the only available execution context (E4) explicitly shows the target function was not entered. The relationship is essentially a phantom edge in the current scenario.",
+        "test": "Execute a scenario where the control flow path from FUN_00005448 to FUN_00004d18 is actually traversed to validate if the static edge in E1 is a valid execution path."
+      },
+      {
+        "aptrace_checks": [],
+        "category": "missing_prerequisite_or_state_continuity",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E3",
+          "E5"
+        ],
+        "kind": "hypothesis",
+        "relations": [
+          "R2",
+          "R3"
+        ],
+        "statement": "The investigation lacks state continuity between the observed execution of FUN_00005448 (E3) and the failed effect analysis (E5). Without understanding the state that caused the timeout in E5, the relationship between the observed code and the target address 0x20001b14 remains speculative.",
+        "test": "Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic."
+      },
+      {
+        "aptrace_checks": [],
+        "category": "scope_mismatch",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E5"
+        ],
+        "kind": "hypothesis",
+        "relations": [
+          "R3"
+        ],
+        "statement": "R3 attempts to relate a function to a memory address (0x20001b14) that is not defined as a function in the provided evidence. The investigation treats a potential MMIO/data write as a functional relationship without providing the mapping between the instruction and the address.",
+        "test": "Identify the specific instruction in FUN_00005448 that targets 0x20001b14 and provide the register/memory state at that moment."
+      },
+      {
+        "aptrace_checks": [],
+        "category": "unsupported_negative",
+        "effective_kind": "hypothesis",
+        "evidence_ids": [
+          "E4"
+        ],
+        "kind": "hypothesis",
+        "relations": [
+          "R2"
+        ],
+        "statement": "The investigation uses the absence of execution in scenario 'vl-manual-f0e0' (E4) to define the status of R2, but fails to account for the fact that the scenario itself might be insufficient to trigger the path. A 'not entered' result is not evidence of unreachability.",
+        "test": "Determine the input constraints required to satisfy the branch at 0x00005496 (E6) to reach FUN_00004d18."
+      }
+    ],
+    "ignored_fields": [],
+    "omitted_questions": [
+      "Does the branch at 0x00005496 in E6 represent a valid path to FUN_00004d18, or is it a tail-call/return-to-caller mechanism that bypasses the intended logic?",
+      "What is the nature of the loop or condition in FUN_00005448 that caused the 300s timeout in E5, and how does it prevent the observation of effects on 0x20001b14?"
+    ],
+    "summary": "The investigation relies heavily on a static call edge (R2) that is not exercised by the current scenario, creating a gap between potential and actual behavior. It fails to resolve the timeout in E5, leaving the primary objective (the 'busy gate' write) entirely unverified."
+  },
+  "sequence": 1,
+  "started_at": "2026-10-19T17:16:44.798+00:00",
+  "status": "completed",
+  "template_version": "terminal-review-v1",
+  "version": "terminal-review-attempt-v1"
+}

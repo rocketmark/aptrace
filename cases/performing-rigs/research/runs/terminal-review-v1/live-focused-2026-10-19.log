@@ -1,0 +1,96 @@
+
+Research complete
+  stop: step_budget_exhausted
+  reconciled: False
+  evidence: 6
+  steps: 4
+
+PROVEN
+  C2[OBS] FUN_00004d18 was not entered under scenario vl-manual-f0e0 (219 instructions); not thereby unreachable. (E4)
+  C1[OBS] FUN_00005448 under scenario vl-manual-f0e0: 2 observed calls passed r0 0x00000000(?); 0 MMIO accesses from its code; other scenarios and values are not excluded. (E3)
+
+PROBABLE / HYPOTHESIS
+  (none)
+
+OPEN / UNRESOLVED
+  Q1[objective] R2 FUN_00005448 -> FUN_00004d18 is STATIC: no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+  Q2[objective] R3 FUN_00005448 -> 0x20001b14 is UNRESOLVED: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it; function_effects of FUN_00005448 failed (E5); no other offer...
+
+OBJECTIVE RELATIONS
+  objective: UNRESOLVED (step budget exhausted)
+    R1 FUN_00008258 -> FUN_00005448: OBSERVED
+    R2 FUN_00005448 -> FUN_00004d18: STATIC
+        blocker E4: FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)
+        blocker E5: effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects
+        missing: no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+    R3 FUN_00005448 -> 0x20001b14: UNRESOLVED
+        blocker E5: effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects
+        missing: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it
+        missing: function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)
+    not attempted: per-edge levels are not an end-to-end causal result
+
+REMAINING OPEN LEADS
+  L1: [callsite] Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x000082c0
+  L2: [callsite] Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x00008354
+  L3: [callsite] Inspect outgoing call from FUN_00005448 to FUN_0000ccd0 at 0x00005454
+  L4: [function] Inspect outgoing callee FUN_0000ccd0 from FUN_00005448
+  L5: [function-disassembly] Inspect disassembly of outgoing callee FUN_0000ccd0 from FUN_00005448
+  L7: [function] Inspect outgoing callee FUN_00004d18 from FUN_00005448
+  L8: [function-disassembly] Inspect disassembly of outgoing callee FUN_00004d18 from FUN_00005448
+  L9: [objective] Objective relation endpoint FUN_00008258
+
+TERMINAL REVIEW REPORT
+  DETERMINISTIC INVESTIGATION RESULT (APTrace evidence rules; no model)
+    termination: budget_exhausted (step_budget_exhausted: step budget exhausted)
+    R1 FUN_00008258 -> FUN_00005448: OBSERVED [observed_within_scope]
+        evidence E1,E3: concrete observation under one registered scenario and its harness assumptions; not natural execution
+        scope E3: scenario vl-manual-f0e0, 5 harness assumption(s)
+    R2 FUN_00005448 -> FUN_00004d18: STATIC [partial]
+        evidence E1: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution
+        scope E4: scenario vl-manual-f0e0, 5 harness assumption(s)
+        blocker E4: FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)
+        blocker E5: effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects
+    R3 FUN_00005448 -> 0x20001b14: UNRESOLVED [blocked]
+        blocker E5: effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects
+    join R1->R2 at FUN_00005448: continuity not validated (the two sides were established by separate evidence; state continuity across the join is not established)
+    join R1->R3 at FUN_00005448: continuity not validated (at least one side has no supporting evidence)
+    failed E5 function_effects: bounded: timeout 300s
+    claim proposals: 0, admitted 0 (PROPOSED, not verified)
+    composition: not attempted: per-edge levels are not an end-to-end causal result
+
+  ADVERSARIAL CRITICISM (review model; advisory, not verification)
+    demonstrated contradictions (cite package evidence): 0
+    hypotheses (not demonstrated): 4
+      [unjustified_composition] R2,E1,E4: The investigation attempts to evaluate the relationship R2 (jog handler reaches motion target update) using a static call edge (E1) while the only available execution context (E4) explicitly shows the target function was not entered. The relationship is essentially a phantom edge in the current scenario.
+          test: Execute a scenario where the control flow path from FUN_00005448 to FUN_00004d18 is actually traversed to validate if the static edge in E1 is a valid execution path.
+      [missing_prerequisite_or_state_continuity] R2,R3,E3,E5: The investigation lacks state continuity between the observed execution of FUN_00005448 (E3) and the failed effect analysis (E5). Without understanding the state that caused the timeout in E5, the relationship between the observed code and the target address 0x20001b14 remains speculative.
+          test: Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic.
+      [scope_mismatch] R3,E5: R3 attempts to relate a function to a memory address (0x20001b14) that is not defined as a function in the provided evidence. The investigation treats a potential MMIO/data write as a functional relationship without providing the mapping between the instruction and the address.
+          test: Identify the specific instruction in FUN_00005448 that targets 0x20001b14 and provide the register/memory state at that moment.
+      [unsupported_negative] R2,E4: The investigation uses the absence of execution in scenario 'vl-manual-f0e0' (E4) to define the status of R2, but fails to account for the fact that the scenario itself might be insufficient to trigger the path. A 'not entered' result is not evidence of unreachability.
+          test: Determine the input constraints required to satisfy the branch at 0x00005496 (E6) to reach FUN_00004d18.
+    suggested tests: 0
+    omitted question: Does the branch at 0x00005496 in E6 represent a valid path to FUN_00004d18, or is it a tail-call/return-to-caller mechanism that bypasses the intended logic?
+    omitted question: What is the nature of the loop or condition in FUN_00005448 that caused the 300s timeout in E5, and how does it prevent the observation of effects on 0x20001b14?
+    reviewer's view of stated confidence: appropriate
+
+  UNRESOLVED EVIDENCE REQUIREMENTS
+    R2 (STATIC): no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+    R3 (UNRESOLVED): 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it
+    R3 (UNRESOLVED): function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)
+    join R1->R2: the two sides were established by separate evidence; state continuity across the join is not established; needs an execution or composition capability that carries state across it
+    join R1->R3: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+    reviewer-suggested tests (not yet APTrace requirements):
+      R2: Execute a scenario where the control flow path from FUN_00005448 to FUN_00004d18 is actually traversed to validate if the static edge in E1 is a valid execution path.
+      R2,R3: Perform a symbolic execution or a trace-based analysis of FUN_00005448 that bypasses the loop/timeout condition in E5 to determine if 0x20001b14 is an address targeted by the function's logic.
+      R3: Identify the specific instruction in FUN_00005448 that targets 0x20001b14 and provide the register/memory state at that moment.
+      R2: Determine the input constraints required to satisfy the branch at 0x00005496 (E6) to reach FUN_00004d18.
+
+  REVIEW AVAILABILITY
+    status: completed (1 attempt(s)); investigation TR-78cf8cd5aece72d3
+    model: gemma-4-26b-a4b-it-4bit (default); template terminal-review-v1
+    advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority
+
+Artifact: cases/performing-rigs/research/runs/terminal-review-v1/live-focused-2026-10-19.json
+agent/.venv/bin/aptrace-agent research --objective-file  --function   4      0.95s user 0.32s system 1% cpu 1:59.34 total
+exit=0

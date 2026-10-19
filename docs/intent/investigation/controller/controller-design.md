@@ -125,7 +125,8 @@ which are dropped silently (`lead_generation.py:704-708`).
   - `objective_stalled`, `objective_no_relevant_operation` (focused runs only)
 - *Fallback:* follow-up sessions fall back to a seeded lead on contract
   exhaustion.
-- *Exceptions:* exceptions during lead execution propagate.
+- *Exceptions:* exceptions during lead execution propagate, except in a
+  focused run, which ends with `investigation_error` and keeps its report.
 
 **Finish** (with the claim contract):
 - *Parsing:* claims are parsed from one string, up to 3 kept; unparseable
@@ -158,6 +159,11 @@ When the controller is given an `ObjectiveSpec` with relations
   No relevant operation stops with `objective_no_relevant_operation`.
 - **Report:** `ResearchRunResult.objective_report`; unresolved relations are
   merged as open questions with source `objective`.
+
+- **Terminal assessment:** `ResearchRunResult.terminal_assessment`
+  (`research/terminal.py`), built deterministically for every focused stop
+  reason; the CLI persists it, then runs the adversarial terminal review
+  through verified sequential oMLX residency (`docs/terminal-review.md`).
 
 Without relations nothing above applies.
 

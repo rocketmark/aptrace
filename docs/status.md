@@ -186,6 +186,12 @@ belong in each case's status document.
   declares the relations it investigates; APTrace keeps that objective whole,
   withholds unrelated operations, classifies each step's progress, and stops
   with a per-relation unresolved report. Per-edge levels are never composed.
+  Every focused run ends with a deterministic terminal assessment and is
+  eligible for adversarial review by the review model, run through verified
+  sequential oMLX residency (planner unloaded before the reviewer loads), with
+  write-once review records, explicit review status and retry from the
+  persisted package ([`terminal-review.md`](terminal-review.md)). The review
+  is advisory and never changes evidence or claim state.
 - Keep a durable research ledger with adversarial audit and deterministic
   verification ([`research-ledger.md`](research-ledger.md)): content-addressed
   evidence with typed-operation replay, versioned claims with dependencies,

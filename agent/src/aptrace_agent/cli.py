@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 
 from datetime import datetime, timezone
 from pathlib import Path
@@ -81,6 +82,7 @@ def _research_payload(
         {
             "objective_spec": run.objective_spec.model_dump(),
             "objective_report": run.result.objective_report,
+            "terminal_assessment": getattr(run.result, "terminal_assessment", None),
         }
         if getattr(run, "objective_spec", None) is not None
         else {}
@@ -153,6 +155,103 @@ def _print_research_summary(
             f"[{lead.kind}] "
             f"{lead.description}"
         )
+
+
+def _review_store(args: argparse.Namespace, output_path: Path | None):
+    """Where terminal reviews persist: --review-dir, else the ledger's, else beside --output."""
+
+    from aptrace_agent.research.review import TerminalReviewStore
+
+    if getattr(args, "review_dir", None):
+        return TerminalReviewStore(args.review_dir)
+
+    if getattr(args, "ledger", False) or args.command == "terminal-review":
+        from aptrace_agent.ledger_wiring import ledger_dir
+
+        return TerminalReviewStore(ledger_dir(getattr(args, "ledger_dir", None)) / "terminal-reviews")
+
+    if output_path is not None:
+        return TerminalReviewStore(output_path.with_name(output_path.name + ".terminal-review"))
+
+    return None
+
+
+def _residency():
+    """oMLX residency manager (omlx.py), or None when no oMLX endpoint is configured."""
+
+    if not os.environ.get("OMLX_BASE_URL"):
+        return None
+
+    from aptrace_agent.omlx import ModelResidency, OmlxRuntime
+
+    return ModelResidency(OmlxRuntime())
+
+
+def _reviewer(args: argparse.Namespace, store):
+    from aptrace_agent.omlx import model_settings
+    from aptrace_agent.research.review import TerminalReviewer
+
+    return TerminalReviewer(store, model=getattr(args, "review_model", None), residency=_residency(), model_settings=model_settings)
+
+
+def _print_final_report(store, inv: str) -> None:
+    from aptrace_agent.research.review import render_final_report
+
+    print()
+    print("TERMINAL REVIEW REPORT")
+
+    for line in render_final_report(store, inv):
+        print(f"  {line}" if line else "")
+
+
+def handle_terminal_review_command(args: argparse.Namespace) -> bool:
+    if args.command != "terminal-review":
+        return False
+
+    from aptrace_agent.research.review import review_summary
+
+    store = _review_store(args, None)
+
+    if args.action == "list":
+        for inv in store.ids():
+            print(f"{inv}  {store.status(inv)}")
+        return True
+
+    if args.action == "prepare":
+        # Package a saved run artifact for review; nothing is rerun.
+        from aptrace_agent.research.objective import load_spec
+        from aptrace_agent.research.terminal import assessment_from_artifact
+
+        if not args.artifact:
+            raise SystemExit("terminal-review prepare: --artifact is required")
+
+        path = Path(args.artifact).expanduser()
+        payload = json.loads(path.read_text())
+        spec = load_spec(args.objective_file) if args.objective_file else None
+        assessment = assessment_from_artifact(payload, spec=spec)
+        links = {"ledger_run_id": payload.get("ledger_run_id"), "artifact": str(path),
+                 "generated_at": payload.get("generated_at"), "objective_file": args.objective_file,
+                 "planner_model": (payload.get("models") or {}).get("planner"), "prepared_from_artifact": True}
+        args.investigation = _reviewer(args, store).prepare(assessment, links)
+        print(args.investigation)
+
+        if not args.json:
+            return True
+
+    if not args.investigation:
+        raise SystemExit("terminal-review: an investigation id (TR-...) is required")
+
+    if args.action == "retry":
+        reviewer = _reviewer(args, store)
+        restore = None if args.no_restore_planner else os.environ.get("APTRACE_MODEL")
+        reviewer.retry(args.investigation, restore_model=restore)
+
+    if args.json:
+        print(json.dumps(review_summary(store, args.investigation), indent=2, default=str))
+    else:
+        _print_final_report(store, args.investigation)
+
+    return True
 
 
 def main() -> None:
@@ -317,6 +416,45 @@ def main() -> None:
         ),
     )
 
+    research.add_argument(
+        "--review",
+        choices=("auto", "skip"),
+        default="auto",
+        help=(
+            "Terminal review of a focused run by the review model (APTRACE_REVIEW_MODEL): "
+            "auto (default) or skip, recorded as skipped by explicit policy. The deterministic "
+            "terminal assessment is always produced"
+        ),
+    )
+
+    research.add_argument(
+        "--review-dir",
+        help=(
+            "Terminal review store (default: <ledger>/terminal-reviews with --ledger, "
+            "else <output>.terminal-review beside --output)"
+        ),
+    )
+
+    research.add_argument(
+        "--no-restore-planner",
+        action="store_true",
+        help="After terminal review, leave the planner model unloaded instead of restoring it",
+    )
+
+    terminal = subparsers.add_parser(
+        "terminal-review",
+        help="Show, list or retry persisted terminal reviews (never reruns the investigation)",
+    )
+    terminal.add_argument("action", choices=("show", "retry", "list", "prepare"))
+    terminal.add_argument("investigation", nargs="?", help="Terminal review id, TR-...")
+    terminal.add_argument("--review-dir", help="Terminal review store (default: <ledger>/terminal-reviews)")
+    terminal.add_argument("--ledger-dir", help="Research ledger directory whose terminal-reviews store to use")
+    terminal.add_argument("--review-model", help="Review model (default: APTRACE_REVIEW_MODEL or gemma-4-26b-a4b-it-4bit)")
+    terminal.add_argument("--no-restore-planner", action="store_true", help="Leave the planner model unloaded after retry")
+    terminal.add_argument("--json", action="store_true", help="Emit the review summary as JSON")
+    terminal.add_argument("--artifact", help="prepare: a saved research --output artifact to assess and package")
+    terminal.add_argument("--objective-file", help="prepare: the objective spec, for an artifact that does not record one")
+
     add_research_work_options(research)
     add_ledger_commands(subparsers)
     add_work_commands(subparsers)
@@ -331,6 +469,9 @@ def main() -> None:
         return
 
     if handle_followups_command(args):
+        return
+
+    if handle_terminal_review_command(args):
         return
 
     if args.command == "research":
@@ -370,6 +511,19 @@ def main() -> None:
         completed: dict = {}
         followup = None
         history = None
+        planner_residency = None
+
+        if objective_spec is not None and objective_spec.focused and args.review == "auto" and os.environ.get("APTRACE_MODEL"):
+            # Lifecycle step 1: the planner is the only resident model. A
+            # failure is reported; the run's own planner calls then decide.
+            residency = _residency()
+
+            if residency is not None:
+                try:
+                    planner_residency = residency.acquire(os.environ["APTRACE_MODEL"])
+                except Exception as exc:  # noqa: BLE001
+                    planner_residency = getattr(exc, "record", {"error": {"detail": str(exc)}})
+                    print(f"aptrace-agent: planner residency not established: {exc}", file=sys.stderr)
 
         if args.work_item:
             from aptrace_agent.ledger_wiring import context_provider
@@ -463,6 +617,34 @@ def main() -> None:
                 args.output
             ).expanduser()
 
+        # Terminal assessment and review (focused runs). The assessment and
+        # package persist before any model switch; the run artifact is
+        # written next, so neither depends on the review.
+        assessment = getattr(run.result, "terminal_assessment", None)
+        review_store = inv = None
+
+        if assessment is not None:
+            if planner_residency is not None:
+                payload["planner_residency"] = planner_residency
+
+            review_store = _review_store(args, output_path)
+
+            if review_store is None:
+                payload["terminal_review"] = {"status": "unavailable", "error": {"kind": "no_review_store",
+                                              "detail": "pass --review-dir, --output or --ledger to persist the review"}}
+            else:
+                links = {
+                    "ledger_run_id": payload.get("ledger_run_id"),
+                    "artifact": str(output_path) if output_path is not None else None,
+                    "generated_at": payload["generated_at"],
+                    "objective_file": args.objective_file,
+                    "planner_model": os.environ.get("APTRACE_MODEL"),
+                }
+                reviewer = _reviewer(args, review_store)
+                inv = reviewer.prepare(assessment, links)
+                payload["terminal_review"] = {"investigation_id": inv, "store": str(review_store.root / inv), "status": "pending"}
+
+        if output_path is not None:
             output_path.parent.mkdir(
                 parents=True,
                 exist_ok=True,
@@ -475,6 +657,17 @@ def main() -> None:
                 )
                 + "\n"
             )
+
+        if inv is not None:
+            from aptrace_agent.research.review import review_summary
+
+            if args.review == "skip":
+                reviewer.skip(inv, "research --review skip")
+            else:
+                reviewer.run(inv, restore_model=None if args.no_restore_planner else os.environ.get("APTRACE_MODEL"))
+
+            summary = review_summary(review_store, inv)
+            payload["terminal_review"] = {k: summary[k] for k in ("investigation_id", "store", "status", "attempts")}
 
         if args.json:
             print(
@@ -492,6 +685,12 @@ def main() -> None:
                 from aptrace_agent.work_cli import print_work_summary
 
                 print_work_summary(work)
+
+            if inv is not None:
+                _print_final_report(review_store, inv)
+            elif "terminal_review" in payload:
+                print()
+                print(f"TERMINAL REVIEW: {payload['terminal_review']['status']} ({payload['terminal_review']['error']['detail']})")
 
             if output_path is not None:
                 print()

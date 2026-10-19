@@ -1,0 +1,37 @@
+
+TERMINAL REVIEW REPORT
+  DETERMINISTIC INVESTIGATION RESULT (APTrace evidence rules; no model)
+    termination: budget_exhausted (step_budget_exhausted: step budget exhausted)
+    R1 FUN_00008258 -> FUN_00005448: OBSERVED [observed_within_scope]
+        evidence E1,E3: concrete observation under one registered scenario and its harness assumptions; not natural execution
+        scope E3: scenario vl-manual-f0e0, 5 harness assumption(s)
+    R2 FUN_00005448 -> FUN_00004d18: STATIC [partial]
+        evidence E1: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution
+        scope E4: scenario vl-manual-f0e0, 5 harness assumption(s)
+        blocker E4: FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)
+        blocker E5: effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects
+    R3 FUN_00005448 -> 0x20001b14: UNRESOLVED [blocked]
+        blocker E5: effects of FUN_00005448 produced no result (bounded: timeout 300s); this is not absence of effects
+    join R1->R2 at FUN_00005448: continuity not validated (the two sides were established by separate evidence; state continuity across the join is not established)
+    join R1->R3 at FUN_00005448: continuity not validated (at least one side has no supporting evidence)
+    failed E5 function_effects: bounded: timeout 300s
+    claim proposals: 0, admitted 0 (PROPOSED, not verified)
+    composition: not attempted: per-edge levels are not an end-to-end causal result
+
+  ADVERSARIAL CRITICISM (review model; advisory, not verification)
+    (none: review unavailable)
+
+  UNRESOLVED EVIDENCE REQUIREMENTS
+    R2 (STATIC): no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+    R3 (UNRESOLVED): 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it
+    R3 (UNRESOLVED): function_effects of FUN_00005448 failed (E5); no other offered operation relates an address endpoint (capability gap)
+    join R1->R2: the two sides were established by separate evidence; state continuity across the join is not established; needs an execution or composition capability that carries state across it
+    join R1->R3: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+
+  REVIEW AVAILABILITY
+    status: unavailable (1 attempt(s)); investigation TR-8bd85927c2c17277
+    model: no-such-model (argument); template terminal-review-v1
+    error: residency model_not_served: model_not_served: no-such-model is not served by oMLX (served: Phi-4-reasoning-plus-4bit, Qwen3-Coder-30B-A3B-Instruct-4bit, gemma-4-26b-a4b-it-4bit); no fallback model is used
+    the review step is missing; the deterministic result above stands on its own evidence
+    advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority
+exit=0

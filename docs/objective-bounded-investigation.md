@@ -200,6 +200,7 @@ still decides what is admitted.
 - **One image.** One run investigates one image. Cross-image relations are
   reported as needing a multi-image capability.
 - **Report persistence.** The ledger records the spec, not the report. The
-  report lives in the run artifact.
+  report lives in the run artifact, and in the terminal assessment that the
+  review store persists ([`terminal-review.md`](terminal-review.md)).
 - **Model behavior.** These contracts bound what Qwen can execute and make the
   state visible to it. They do not make its choices or its prose correct.

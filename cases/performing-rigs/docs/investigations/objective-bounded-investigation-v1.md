@@ -137,8 +137,9 @@ Qwen still made avoidable choices:
 5. **Composition.** Per-edge levels need a scope-preserving, weakest-link
    composition and its verification before any end-to-end claim. Neither
    exists, by design.
-6. **Terminal review.** The Gemma review path still never runs for these runs,
-   and the model residency problem (HTTP 507) remains.
+6. **Terminal review.** Addressed by Terminal Review v1
+   ([`terminal-review-v1.md`](terminal-review-v1.md)): every focused run is
+   assessed and reviewed through verified sequential model residency.
 7. **Report persistence.** The ledger records the objective spec, but the
    per-relation report lives only in the run artifact.
 8. **Relevance-aware claim semantics.** An admitted claim can still be

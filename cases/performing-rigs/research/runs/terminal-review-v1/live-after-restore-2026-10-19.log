@@ -1,0 +1,75 @@
+
+Research complete
+  stop: step_budget_exhausted
+  reconciled: False
+  evidence: 4
+  steps: 2
+
+PROVEN
+  C2[OBS] FUN_00004d18 was not entered under scenario vl-manual-f0e0 (219 instructions); not thereby unreachable. (E4)
+  C1[OBS] FUN_00005448 under scenario vl-manual-f0e0: 2 observed calls passed r0 0x00000000(?); 0 MMIO accesses from its code; other scenarios and values are not excluded. (E3)
+
+PROBABLE / HYPOTHESIS
+  (none)
+
+OPEN / UNRESOLVED
+  Q1[objective] R2 FUN_00005448 -> FUN_00004d18 is STATIC: no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+  Q2[objective] R3 FUN_00005448 -> 0x20001b14 is UNRESOLVED: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it; no completed function_effects of FUN_00005448 showing an acc...
+
+OBJECTIVE RELATIONS
+  objective: UNRESOLVED (step budget exhausted)
+    R1 FUN_00008258 -> FUN_00005448: OBSERVED
+    R2 FUN_00005448 -> FUN_00004d18: STATIC
+        blocker E4: FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)
+        missing: no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+    R3 FUN_00005448 -> 0x20001b14: UNRESOLVED
+        missing: 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it
+        missing: no completed function_effects of FUN_00005448 showing an access to the address endpoint
+    not attempted: per-edge levels are not an end-to-end causal result
+
+REMAINING OPEN LEADS
+  L1: [callsite] Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x000082c0
+  L2: [callsite] Inspect incoming call to FUN_00005448 from FUN_00008258 at 0x00008354
+  L3: [callsite] Inspect outgoing call from FUN_00005448 to FUN_0000ccd0 at 0x00005454
+  L4: [function] Inspect outgoing callee FUN_0000ccd0 from FUN_00005448
+  L5: [function-disassembly] Inspect disassembly of outgoing callee FUN_0000ccd0 from FUN_00005448
+  L6: [callsite] Inspect outgoing call from FUN_00005448 to FUN_00004d18 at 0x00005496
+  L7: [function] Inspect outgoing callee FUN_00004d18 from FUN_00005448
+  L8: [function-disassembly] Inspect disassembly of outgoing callee FUN_00004d18 from FUN_00005448
+  L9: [objective] Objective relation endpoint FUN_00008258
+
+TERMINAL REVIEW REPORT
+  DETERMINISTIC INVESTIGATION RESULT (APTrace evidence rules; no model)
+    termination: budget_exhausted (step_budget_exhausted: step budget exhausted)
+    R1 FUN_00008258 -> FUN_00005448: OBSERVED [observed_within_scope]
+        evidence E1,E3: concrete observation under one registered scenario and its harness assumptions; not natural execution
+        scope E3: scenario vl-manual-f0e0, 5 harness assumption(s)
+    R2 FUN_00005448 -> FUN_00004d18: STATIC [partial]
+        evidence E1: a Ghidra call-graph edge (heuristic function boundaries); static possibility, not execution
+        scope E4: scenario vl-manual-f0e0, 5 harness assumption(s)
+        blocker E4: FUN_00004d18 not entered under scenario vl-manual-f0e0 (not thereby unreachable)
+    R3 FUN_00005448 -> 0x20001b14: UNRESOLVED [unresolved]
+    join R1->R2 at FUN_00005448: continuity not validated (the two sides were established by separate evidence; state continuity across the join is not established)
+    join R1->R3 at FUN_00005448: continuity not validated (at least one side has no supporting evidence)
+    claim proposals: 0, admitted 0 (PROPOSED, not verified)
+    composition: not attempted: per-edge levels are not an end-to-end causal result
+
+  ADVERSARIAL CRITICISM (review model; advisory, not verification)
+    (none: review skipped)
+
+  UNRESOLVED EVIDENCE REQUIREMENTS
+    R2 (STATIC): no concrete observation of FUN_00005448 calling FUN_00004d18: the scenarios tried did not enter FUN_00004d18 (E4); needs a scenario that reaches it (scenario coverage gap)
+    R3 (UNRESOLVED): 0x20001b14 is not a function entry in this image (data/MMIO address or another image); only symbolic access evidence can relate it
+    R3 (UNRESOLVED): no completed function_effects of FUN_00005448 showing an access to the address endpoint
+    join R1->R2: the two sides were established by separate evidence; state continuity across the join is not established; needs an execution or composition capability that carries state across it
+    join R1->R3: at least one side has no supporting evidence; needs an execution or composition capability that carries state across it
+
+  REVIEW AVAILABILITY
+    status: skipped (1 attempt(s)); investigation TR-32d9854c1803ed0e
+    model: gemma-4-26b-a4b-it-4bit (default); template terminal-review-v1
+    skipped by policy: research --review skip
+    the review step is missing; the deterministic result above stands on its own evidence
+    advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority
+
+Artifact: cases/performing-rigs/research/runs/terminal-review-v1/live-after-restore-2026-10-19.json
+exit=0

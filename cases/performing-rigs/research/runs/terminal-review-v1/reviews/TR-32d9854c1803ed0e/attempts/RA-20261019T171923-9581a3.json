@@ -1,0 +1,48 @@
+{
+  "assessment_sha256": "0553dc0ddff2b103d69228eed3dbb4f3a10afd9b119a249c792c3d81ff2a059b",
+  "attempt_id": "RA-20261019T171923-9581a3",
+  "authority": "advisory: the review never changes evidence, relation levels, claim state or admission; APTrace deterministic verification remains the only authority",
+  "ended_at": "2026-10-19T17:19:23.627+00:00",
+  "error": null,
+  "investigation_id": "TR-32d9854c1803ed0e",
+  "links": {
+    "artifact": "cases/performing-rigs/research/runs/terminal-review-v1/live-after-restore-2026-10-19.json",
+    "generated_at": "2026-10-19T17:19:23.623787+00:00",
+    "ledger_run_id": null,
+    "objective_file": "cases/performing-rigs/research/objectives/remote-to-motor-focused-2026-10-19.objective.json",
+    "planner_model": "Qwen3-Coder-30B-A3B-Instruct-4bit"
+  },
+  "model": {
+    "client_timeout_s": 900.0,
+    "generation": {
+      "max_tokens": 2000,
+      "temperature": 0.0
+    },
+    "id": "gemma-4-26b-a4b-it-4bit",
+    "omlx_settings": {
+      "enable_thinking": false,
+      "is_pinned": false,
+      "max_context_window": 40000,
+      "max_tokens": 2048,
+      "min_p": 0.05,
+      "temperature": 0.2,
+      "top_k": 64,
+      "top_p": 0.95,
+      "turboquant_kv_bits": 8.0,
+      "turboquant_kv_enabled": true
+    },
+    "source": "default"
+  },
+  "package_sha256": "4e1a6c1ed4e16d8517d752f0c152c934c0387c65081fc43ee9ad95b635473e63",
+  "policy": "research --review skip",
+  "raw_responses": [],
+  "requests": [],
+  "residency": [],
+  "retry_of": null,
+  "review": null,
+  "sequence": 1,
+  "started_at": "2026-10-19T17:19:23.627+00:00",
+  "status": "skipped",
+  "template_version": "terminal-review-v1",
+  "version": "terminal-review-attempt-v1"
+}
