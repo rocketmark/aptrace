@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-20",
+  "repository_revision": "fb29ce393c31c701a1711cac78e7076a0ebd090e",
+  "scope": "X/trigger bounded investigation only; no A/D, apfw2, framework, original image or hardware changes",
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "project_identity": {
+    "firmware_key": "autopilot868",
+    "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000",
+    "processor": "ARM:LE:32:Cortex",
+    "cspec": "default",
+    "ghidra_version": "12.1.3",
+    "analysis_version": 1,
+    "seed_vector_words": 151,
+    "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+    "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+    "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+    "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+    "provenance_tsv_sha256": "c4b14f4f9f128fcf9461a8c7f3670b1f66221ec6d5240a20bc000fb17dcbdfbd",
+    "derived_seeds_sha256": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def"
+  },
+  "environment": {
+    "Ghidra": "12.1.3",
+    "Unicorn": "2.1.4",
+    "concrete_python": "tools/unicorn/.venv/bin/python3 (3.9.6)",
+    "JAVA_HOME": "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+    "JAVA_TOOL_OPTIONS": "-Duser.home=/tmp/aptrace-ghidra-home"
+  },
+  "static_operations": [
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x42a4 0x4c20 0x8e18 0x6b50 0x6e4c",
+      "output": "consumers.txt",
+      "exit_status": 0,
+      "sha256": "62b83dcd68f82dd8c9315c75733646f8b4da09b431567dbb718e97135a37b42d"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x88ec 0x8960",
+      "output": "x-command-native.txt",
+      "exit_status": 0,
+      "sha256": "2f2ca72318f6c3720e2d47fb72aac6f63aa0139f476f6687be31073e75398cba"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8e18 0x9238",
+      "output": "phase-native.txt",
+      "exit_status": 0,
+      "sha256": "d6d907d79bd3da170d8686a5bb4f9ad51f0cb0ef5ce968b04ee6c7aa51a50a31"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x42a4 0x4328",
+      "output": "filter-native.txt",
+      "exit_status": 0,
+      "sha256": "6661c3b80e7776836b482b5a4ef160ad5fb1d7a08a2ffede5c4b2705d04a4452"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x4c20 0x4c92",
+      "output": "boot-native.txt",
+      "exit_status": 0,
+      "sha256": "45f52bc1f6e034900056ab853e4513545cb4d84c25a8cccbdbb20f18fca6184e"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x879c 0x87c0",
+      "output": "x-stage-native.txt",
+      "exit_status": 0,
+      "sha256": "9db018c7e288f20a853c20e2fc8cffa498a4dc833f28efbef9ee6f47e75bef11"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x9770 0x97a4",
+      "output": "setter-native.txt",
+      "exit_status": 0,
+      "sha256": "5040ca19fed6029fb98f24449cc092a2219b9d22e5eb410c7185b15834622bd2"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8a14 0x8a50",
+      "output": "rx-boundary-native.txt",
+      "exit_status": 0,
+      "sha256": "27e99b6806abf53bfaddf5b03634c27d05aa2d34ca9ca81fcce069b3ea01aef9"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0xccd0 0xccf8",
+      "output": "tick-native.txt",
+      "exit_status": 0,
+      "sha256": "6bc2ea779fc2d23cb6d2d0b5095666215ee00456e7e880015d31c1f554be3474"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0xccdc 0xcd34",
+      "output": "micros-native.txt",
+      "exit_status": 0,
+      "sha256": "dd9a351110b1ade83ec0ec3ab37bf2a50c42cc020ff5e709380b0ca3e3a03cfc"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x6e4c 0x6e68",
+      "output": "reload-entry-native.txt",
+      "exit_status": 0,
+      "sha256": "558f67d67de6ffd993bec4c86fe7259a0533f0a457f7dda04a0033dd4f313041"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x4318 --count 4",
+      "output": "filter-pointers.txt",
+      "exit_status": 0,
+      "sha256": "df36670be4da296b3e892e2f3ffa85ed77a4e78f1fbc8e1676ccdde4c19ed145"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x9108 --count 28",
+      "output": "phase-pointers.txt",
+      "exit_status": 0,
+      "sha256": "51a8001c556b481475aaf76f562d5eb3563138561e904b1f6a543cbb6f39bc61"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20000014",
+      "output": "alpha-xrefs.txt",
+      "exit_status": 0,
+      "sha256": "9cbb7c53cbdc465d8e64d0078bdff1fdf6ab371bd3f013ab3d3dbea611ecdb80"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20003118",
+      "output": "latch-xrefs.txt",
+      "exit_status": 0,
+      "sha256": "45772f45d1de62c8151ad82f6ece9fb09563994f56b046cef926a3898b99161c"
+    }
+  ],
+  "concrete_commands": "concrete-commands.json",
+  "observations": "observations.json",
+  "native_execution": "59 direct CLI commands: 57 exit0, two RX-wrapper failures retained. 54 authoritative dispatcher/helper/phase runs exclude four initial wrapper probes and the mislabeled filter-not-due diagnostic. No comparison wrapper or security bypass.",
+  "failures_and_corrections": [
+    "x-command-1/2: valid X writes occur, but trace passes requested stop8a38 and faults at wrapper PC8a1c writing zero via unseeded R4; exit1. Boundary overshoot cause not diagnosed; clean --call8258 replaces incomplete wrapper runs.",
+    "filter-not-due was actually due: millisecond counter499 produces a roughly499000 sub-millisecond-clock result. Explicit clock-return/deadline499/500 controls supersede its name.",
+    "Ghidra has no separate decompiler function at6e4c; native range supplies actual reload-entry relationship.",
+    "Initial artifact checker expected a code watch at stubbed TX8c10; existing stub handling precedes watches. observations-initial.json preserves the failed assertion; final checker uses actual recorded TX stub hit and still requires rejection afterward.",
+    "Three documentary/metadata patch attempts failed validation and were corrected without changing framework or historical evidence."
+  ],
+  "assumptions": [
+    "ADC helper d1b4 stubbed; samples injected at42d4. Original filter/thresholds execute.",
+    "Two deadline controls force clock return at42aa. Counterfactual alpha1 and independent phasearm2 controls are not native producers.",
+    "Plain MMIO and zero fresh RAM; no electrical model, physical timing or motor execution.",
+    "Plus-generated channel0/staging/marker carried into fixture idle/mode states; no natural RF/session continuity.",
+    "Held-LOW followup carries relevant dumped state, not all peripheral or machine state.",
+    "Fresh reader uses provisioned synthetic flash data; no new X checkpoint or physical reset/durability proof."
+  ],
+  "validation": {
+    "artifact_checks_passed": 324,
+    "artifact_checks_failed": 0
+  },
+  "source_hashes": {
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/unicorn/concrete.py": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee",
+    "tools/ghidra/aptrace_ghidra.py": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2",
+    "tools/ghidra/scripts/APTraceDisassembleRange.java": "df8236aa7065ecb2d40d09db59624ba1249f518e42622e23a93136f877951bbc",
+    "tools/ghidra/scripts/APTraceDecompileFunctions.java": "5a55c2ee9653446b3277d423bae3244d25b31bdc0a4f7b3af49b76f0f9411e43",
+    "cases/performing-rigs/scripts/virtual_link.py": "72ad6a2fd5e05067effc7af66ef3ab3e86715b12364e92399a08424c1da1283f",
+    "cases/performing-rigs/scripts/trigger_transient_propagation.py": "d36aeea0b8f03cd65d84808bc0ead86c2513b04606d429e0f866b29061276499"
+  },
+  "release_gates": {
+    "A": "PARTIAL",
+    "B": "PARTIAL",
+    "C": "PARTIAL",
+    "D": "PARTIAL",
+    "E": "BLOCKED",
+    "F": "BLOCKED",
+    "production": "NO-GO"
+  },
+  "claims": "No ledger change; no new admitted/VERIFIED claims."
+}

@@ -12,6 +12,15 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
+The [X/trigger acceptance package](docs/investigations/x-trigger-acceptance.md)
+establishes selector/reset bands, reporting versus reload acceptance, record
+preparation and conditional reference resync. Analog acquisition can recur while
+alpha0 freezes its effective first sample; acquisition and telemetry use different
+clock units. Accepted reload clears phase arms and changes idle/channel guards:
+a carried held-LOW follow-up does not reaccept. Independently armed valid state
+can reach commit before trigger processing. Natural arming/restoration, physical
+reference and physical misfire causation remain unresolved; no gate promotion.
+
 The [motor-state ownership/reference investigation](docs/investigations/motor-state-ownership-and-reference.md)
 completes the first configuration-plan package: Remote-authored programs have
 an AutoPilot-local execution copy; reset/resync re-derive targets from a software
@@ -287,17 +296,16 @@ check) already have independent level-3 confirmation.
   bookkeeping with **no path to a real physical position anywhere in the
   firmware** — a negative result confirmed three independent ways. See
   [`cases/performing-rigs/docs/investigations/manual-mode-and-limits.md`](docs/investigations/manual-mode-and-limits.md).
-- **The 3.5mm trigger-input bug is fully characterized, on both of its two
-  mutually-exclusive boot-time arms**: a digital arm (no debounce, no
-  latch — a bouncy insertion can produce multiple accepted config-reloads)
-  and a previously-unknown analog arm (boot-time-latched: a *post-boot*
-  transient can't reach it, but a trigger chain already connected at
-  power-up can influence the one boot-time sample that gets latched for
-  the whole session). Neither arm can cause uncommanded motor motion. A
-  software mitigation (consecutive-sample debounce) is designed and
-  Unicorn-prototyped, but **not deployed to real firmware** — no verified
-  flash code cave was found for a real trampoline. See
-  [`cases/performing-rigs/docs/investigations/trigger-input.md`](docs/investigations/trigger-input.md).
+- **Trigger software behavior is bounded, physical misfire cause unresolved.**
+  Digital acceptance is level-based; repeated LOW acceptance in restored-gate
+  tests is not a natural uninterrupted reload/motion sequence. Analog alpha0
+  preserves the first effective sample despite later acquisition; X1/X2 can
+  reclassify it. T reporting is independent of program eligibility and disables
+  normal reload acceptance. The tested reload clears motion arms; this is not
+  a universal no-uncommanded-motion proof. Historical debounce prototypes are
+  not replacement requirements and have not been deployed. See the current
+  [X/acceptance report](docs/investigations/x-trigger-acceptance.md) and underlying
+  [trigger dossier](docs/investigations/trigger-input.md).
 - **The EIC/EXTINT interrupt-callback dispatch mechanism is identified;
   its registration path is not.** Vector-table indices 28-43 correspond
   exactly to the ATSAMD51's `EIC_0_IRQn`…`EIC_15_IRQn`, all 16 sharing one

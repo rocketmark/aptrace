@@ -9,8 +9,10 @@ E/F BLOCKED, production NO-GO.
 
 First-package outcome: [motor-state ownership/reference findings](motor-state-ownership-and-reference.md)
 now provide the semantic/lifetime matrix and bounded witnesses. Use that result
-before starting another motor-state investigation; later X/A/D packages remain
-separate. The priorities below retain the original planning rationale.
+before starting another motor-state investigation. The [X/trigger package](x-trigger-acceptance.md)
+now closes the bounded selector/reset/acceptance contract and qualifies the
+older repeated-accept/no-motion claims. A/D remain separate and unstarted.
+The priorities below retain the original planning rationale.
 
 The highest-value next work is a **field-to-behavior contract**, starting with
 motor targets/reference frames and runtime motor setup. The existence of NVM

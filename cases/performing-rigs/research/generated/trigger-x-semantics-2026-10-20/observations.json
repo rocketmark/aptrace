@@ -1,0 +1,1969 @@
+{
+  "scope": "Artifact assertions over existing APTrace outputs, not a new execution harness or framework test. Fixture claims only.",
+  "runs": 59,
+  "checks": [
+    {
+      "check": "x-command-1: process status",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "x-command-1: snapshot error_free",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "check": "x-command-1: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-command-2: process status",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "x-command-2: snapshot error_free",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "check": "x-command-2: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-command-0: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-command-0: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-command-0: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-command-3: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-command-3: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-command-3: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-1: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-1: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-1: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-2: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-2: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-2: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-0: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-0: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-0: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-3: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-3: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-3: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x1: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x1: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x1: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x2: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x2: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x2: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x0: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x0: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x0: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x3: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x3: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x3: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-latched-resample: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-latched-resample: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-latched-resample: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-not-due: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-not-due: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-not-due: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-new-session: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-new-session: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-new-session: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-alpha-one-control: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-alpha-one-control: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-alpha-one-control: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "latched-x1: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "latched-x1: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "latched-x1: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "latched-x2: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "latched-x2: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "latched-x2: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-x1: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-report-x1: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-x1: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-x2: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-report-x2: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-x2: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-bad-program: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-report-bad-program: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-bad-program: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-window-spent: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-report-window-spent: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-report-window-spent: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-accept-window-spent: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-accept-window-spent: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-accept-window-spent: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-bad-program: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-bad-program: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-bad-program: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-busy-channel: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-busy-channel: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-busy-channel: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-not-idle: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-not-idle: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-not-idle: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-x1-low: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-x1-low: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-x1-low: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-x2-low: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-x2-low: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-x2-low: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-x2-high: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-x2-high: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-x2-high: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-report-low: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-report-low: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-report-low: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-report-bad-program: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-report-bad-program: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-report-bad-program: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-report-window-spent: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-report-window-spent: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-report-window-spent: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "plus-predecessor: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "plus-predecessor: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "plus-predecessor: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-before-deadline: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-before-deadline: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-before-deadline: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-at-deadline: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-at-deadline: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-at-deadline: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "held-low-followup: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "held-low-followup: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "held-low-followup: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "independent-arm-commit: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "independent-arm-commit: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "independent-arm-commit: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "report-then-reject: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "report-then-reject: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "report-then-reject: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "independent-arm-invalid: process status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "independent-arm-invalid: snapshot error_free",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "independent-arm-invalid: instructions executed",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-0: selector",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-0: staged X",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-0: dirty",
+      "actual": "00",
+      "expected": "00",
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x0: selector",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x0: stored value not repaired in stage",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-1: selector",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-1: staged X",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-1: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x1: selector",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x1: stored value not repaired in stage",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-2: selector",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-2: staged X",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-2: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x2: selector",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x2: stored value not repaired in stage",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-3: selector",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-3: staged X",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x-dispatch-3: dirty",
+      "actual": "00",
+      "expected": "00",
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x3: selector",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "fresh-reader-x3: stored value not repaired in stage",
+      "actual": 3,
+      "expected": 3,
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: effective input",
+      "actual": 199,
+      "expected": 199,
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-199: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: effective input",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-200: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: effective input",
+      "actual": 249,
+      "expected": 249,
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-249: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: effective input",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-250: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: effective input",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-580: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: effective input",
+      "actual": 581,
+      "expected": 581,
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-581: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: effective input",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-750: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: effective input",
+      "actual": 751,
+      "expected": 751,
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: lower",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x1-751: upper",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: effective input",
+      "actual": 199,
+      "expected": 199,
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-199: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: effective input",
+      "actual": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-200: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: effective input",
+      "actual": 249,
+      "expected": 249,
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-249: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: effective input",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-250: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: effective input",
+      "actual": 580,
+      "expected": 580,
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-580: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: effective input",
+      "actual": 581,
+      "expected": 581,
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-581: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: effective input",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-750: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: effective input",
+      "actual": 751,
+      "expected": 751,
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: lower",
+      "actual": 250,
+      "expected": 250,
+      "passed": true
+    },
+    {
+      "check": "band-x2-751: upper",
+      "actual": 750,
+      "expected": 750,
+      "passed": true
+    },
+    {
+      "check": "filter-latched-resample: cached return",
+      "actual": "0x000000e1",
+      "expected": "0x000000e1",
+      "passed": true
+    },
+    {
+      "check": "filter-not-due: cached return",
+      "actual": "0x000000e1",
+      "expected": "0x000000e1",
+      "passed": true
+    },
+    {
+      "check": "filter-clock-before-deadline: cached return",
+      "actual": "0x000000e1",
+      "expected": "0x000000e1",
+      "passed": true
+    },
+    {
+      "check": "filter-clock-at-deadline: cached return",
+      "actual": "0x000000e1",
+      "expected": "0x000000e1",
+      "passed": true
+    },
+    {
+      "check": "filter-new-session: new return",
+      "actual": "0x00000384",
+      "expected": "0x00000384",
+      "passed": true
+    },
+    {
+      "check": "filter-alpha-one-control: new return",
+      "actual": "0x00000384",
+      "expected": "0x00000384",
+      "passed": true
+    },
+    {
+      "check": "filter-clock-before-deadline: ADC boundary hits",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "filter-clock-at-deadline: ADC boundary hits",
+      "actual": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "corrected deadline advancement",
+      "actual": 1000,
+      "expected": 1000,
+      "passed": true
+    },
+    {
+      "check": "latched-x1: stale decision",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "latched-x1: stale value",
+      "actual": "e1000000",
+      "expected": "e1000000",
+      "passed": true
+    },
+    {
+      "check": "latched-x2: stale decision",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "latched-x2: stale value",
+      "actual": "e1000000",
+      "expected": "e1000000",
+      "passed": true
+    },
+    {
+      "check": "analog-report-x1: TX entry",
+      "actual": "0x00008c10",
+      "expected": "0x00008c10",
+      "passed": true
+    },
+    {
+      "check": "analog-report-x1: frame",
+      "actual": "T225,0,|",
+      "expected": "T225,0,|",
+      "passed": true
+    },
+    {
+      "check": "analog-report-x2: TX entry",
+      "actual": "0x00008c10",
+      "expected": "0x00008c10",
+      "passed": true
+    },
+    {
+      "check": "analog-report-x2: frame",
+      "actual": "T225,1,|",
+      "expected": "T225,1,|",
+      "passed": true
+    },
+    {
+      "check": "analog-report-bad-program: TX entry",
+      "actual": "0x00008c10",
+      "expected": "0x00008c10",
+      "passed": true
+    },
+    {
+      "check": "analog-report-bad-program: frame",
+      "actual": "T225,1,|",
+      "expected": "T225,1,|",
+      "passed": true
+    },
+    {
+      "check": "digital-report-low: TX entry",
+      "actual": "0x00008c10",
+      "expected": "0x00008c10",
+      "passed": true
+    },
+    {
+      "check": "digital-report-low: frame",
+      "actual": "T0,1,|",
+      "expected": "T0,1,|",
+      "passed": true
+    },
+    {
+      "check": "digital-report-bad-program: TX entry",
+      "actual": "0x00008c10",
+      "expected": "0x00008c10",
+      "passed": true
+    },
+    {
+      "check": "digital-report-bad-program: frame",
+      "actual": "T0,1,|",
+      "expected": "T0,1,|",
+      "passed": true
+    },
+    {
+      "check": "analog-report-window-spent: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "digital-report-window-spent: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "analog-bad-program: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "analog-busy-channel: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "analog-not-idle: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "digital-x2-high: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "report-then-reject: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "independent-arm-invalid: rejected",
+      "actual": "0x00009232",
+      "expected": "0x00009232",
+      "passed": true
+    },
+    {
+      "check": "report continuation TX stub entered",
+      "actual": [
+        "0x00008c10"
+      ],
+      "expected": [
+        "0x00008c10"
+      ],
+      "passed": true,
+      "note": "CLI stub dispatch precedes code watches; use recorded stub entry, not an unreachable watch at the same PC. Initial failed observability assertion retained in observations-initial.json."
+    },
+    {
+      "check": "analog-accept-window-spent: accept",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "digital-x1-low: accept",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "digital-x2-low: accept",
+      "actual": "0x00008f98",
+      "expected": "0x00008f98",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: clean return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: accept watch",
+      "actual": [
+        "0x00008f98",
+        "0x00006b50"
+      ],
+      "expected": [
+        "0x00008f98",
+        "0x00006b50"
+      ],
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: 0x20002318",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: 0x200000d8",
+      "actual": "00",
+      "expected": "00",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: 0x200025bc",
+      "actual": "0003",
+      "expected": "0003",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: 0x20002524",
+      "actual": "01000000",
+      "expected": "01000000",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: 0x2000310c",
+      "actual": "01000000",
+      "expected": "01000000",
+      "passed": true
+    },
+    {
+      "check": "reload-valid-record: GPIO pulse writes",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: clean return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: accept watch",
+      "actual": [
+        "0x00008f98",
+        "0x00006b50"
+      ],
+      "expected": [
+        "0x00008f98",
+        "0x00006b50"
+      ],
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: 0x20002318",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: 0x200000d8",
+      "actual": "00",
+      "expected": "00",
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: 0x200025bc",
+      "actual": "0003",
+      "expected": "0003",
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: 0x20002524",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: 0x2000310c",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "reload-invalid-record: GPIO pulse writes",
+      "actual": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "held LOW followup returns",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true
+    },
+    {
+      "check": "held LOW followup does not accept",
+      "actual": [],
+      "expected": [],
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: start",
+      "actual": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: end",
+      "actual": 500,
+      "expected": 500,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: resync called",
+      "actual": false,
+      "expected": false,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-preserved: resync flag clear",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: start",
+      "actual": 600,
+      "expected": 600,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: end",
+      "actual": 1100,
+      "expected": 1100,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: resync called",
+      "actual": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "reload-reference-resync: resync flag clear",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "independent arm enters commit",
+      "actual": "0x00006fd8",
+      "expected": "0x00006fd8",
+      "passed": true
+    },
+    {
+      "check": "independent arm signed distance",
+      "actual": "0xfffffda8",
+      "expected": "0xfffffda8",
+      "passed": true
+    }
+  ],
+  "passed": 324,
+  "failed": 0
+}

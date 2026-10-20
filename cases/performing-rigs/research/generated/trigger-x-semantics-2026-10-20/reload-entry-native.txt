@@ -1,0 +1,9 @@
+0x00006e4c  push {r3,lr}
+0x00006e4e  ldr r3,[0x00006e60]
+0x00006e50  movs r2,#0x0
+0x00006e52  str r2,[r3,#0x0]
+0x00006e54  bl 0x00004b64
+0x00006e58  pop.w {r3,lr}
+0x00006e5c  b.w 0x00006b50
+0x00006e68  push {r4,r5,r6,r7,r8,r9,r10,r11,lr}
+

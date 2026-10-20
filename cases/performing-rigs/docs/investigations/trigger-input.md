@@ -2,15 +2,14 @@
 
 Reported bug: connecting a certain chain to the AutoPilot's 3.5mm trigger
 input causes exactly one trigger, then normal operation continues. The
-firmware-side mechanism is now fully characterized, cross-checked by
-disassembly, concrete (Unicorn) execution, and solver (Crucible/What4/Z3)
-proof: the trigger pin is polled, not interrupt-driven, has two
-mutually-exclusive boot-selected arms (digital and analog), and neither
-arm's accept path can arm motor motion or bridge back into motion via the
-Remote. A software mitigation (consecutive-sample debounce) has been
-designed and prototyped in Unicorn, but **no firmware has been patched or
-flashed** — the physical root cause of the transient itself remains
-unmeasured.
+[X/acceptance follow-up](x-trigger-acceptance.md) is the current behavioral
+qualification of this dossier. It demonstrates X1/X2 bands, reset defaults,
+reporting/acceptance divergence and conditional reload/reference preparation.
+The examined accept path clears the phase arm, but no universal absence of
+uncommanded motion or physical misfire cause is established. Earlier exhaustive
+and no-motion wording below is scoped to its searches, fixtures and paths.
+The historical mitigation prototype is not an apfw2 design requirement;
+**no firmware has been flashed**, and physical transients remain unmeasured.
 
 **A later, deliberately adversarial falsification pass** (started from
 "assume the no-motion conclusion is wrong, try to break it," not from
@@ -58,7 +57,7 @@ this cluster's later work — is a second, complete accept/status path
 inside the same state machine (`0x8e68`-`0x8f98`): it calls
 `analogRead(PB05)` (really ADC1, not ADC0), compares the result against
 a `[lower, upper]` RAM-resident threshold band (default `[200, 580]` on
-the raw 12-bit scale), and on out-of-band reads either sends an analog
+the effective integer sample scale; physical voltage conversion is unqualified), and on out-of-band reads either sends an analog
 T-status frame (`"T<raw ADC1.RESULT>,<0 or 1 band flag>,|"`) or falls
 through to the **same** `0x8f98` accept target the digital arm uses.
 
@@ -70,19 +69,22 @@ cleared. The practical effect: the very first sample this function ever
 takes, during the already-dead 128-sample boot loop milliseconds into
 `sketch_setup()`, is **permanently latched** for the rest of the power
 cycle; every later call re-executes the filter's math but the coefficient
-being zero makes every subsequent blend a no-op. **A transient occurring
-after boot cannot affect the analog path at all — it never resamples.**
+being zero makes every subsequent blend a no-op. Later ADC acquisitions can
+occur, but their effective filtered value remains unchanged under the observed
+zero coefficient. The acquisition deadline uses a microsecond-scale clock,
+whereas T telemetry uses milliseconds; the older shared “500-tick” description
+obscured that distinction. See the follow-up's explicit deadline controls.
 But a trigger chain **already connected / electrically present at
 power-up** *can* influence that first boot-time sample, and therefore the
 latched analog-path state for the whole session — it is specifically a
 **post-boot** insertion event this path is immune to, not a "connected
 before insertion is physically possible" claim. If that one boot-time
-sample happened to fall outside the threshold band, the accept path fires
-on every subsequent idle poll for the rest of the session (still
-non-motion-arming) — a consequence of a bad boot-time reading, not of a
-post-boot transient.
+sample happened to fall outside the threshold band, the input condition stays
+active under an unchanged X band. Acceptance also requires the other guards;
+reload changes those guards. A carried post-reload LOW poll does not accept
+again. Changing X can reclassify the same stale sample.
 
-**Why neither arm's accept path can arm motion.** `0x8f98`, the shared
+**Why the examined accept reload does not itself arm motion.** `0x8f98`, the shared
 accept target for both arms, writes a status byte and unconditionally
 tail-jumps into a real config-reload chain (`config_loader__CUSTOM` →
 `FUN_00006b50` → `FUN_00006952`): it re-reads the persisted motor-target
@@ -322,7 +324,7 @@ Concretely confirmed by delivering both real frame shapes
 and watching its TX wrapper (`0x58a8`) never fire.
 
 **Threshold band and its RAM cells.** Default `[lower=0x200000c0,
-upper=0x200000a8]` = `[200, 580]` (raw ADC1.RESULT, 10-bit-ish scale),
+upper=0x200000a8]` = `[200, 580]` (effective integer sample units),
 selected via `*0x20000194` (0=custom, 1=preset A [200,580], 2=preset B
 [250,750]) defaulting to preset A because the persisted config blob is
 blank and `config_read_byte__CUSTOM`'s out-of-range handling resolves the
@@ -384,7 +386,14 @@ through the shared, pin-descriptor-table-driven `digitalRead`/`pinMode`/
 `PMUX`) has 7 call sites total, 4 of which are generic driver helpers not
 traced to confirm they never pass PB05's index (named in Open/unknowns).
 
-## Mitigation design
+## Historical mitigation design
+
+The following ranks an older patch prototype against restored-gate fixtures.
+Its goal of preserving repeat-refire and rejection of a release/re-arm model
+are not current apfw2 requirements. The [X follow-up](x-trigger-acceptance.md)
+qualifies the repeated-acceptance premise and recommends an explicit product
+contract, sample freshness and physically informed timing before choosing a
+replacement qualification policy. No prototype is run or changed in that pass.
 
 Six candidates were evaluated against the confirmed trigger semantics
 (level-sensitive, active-LOW at the accept gate, no debounce, no latch,

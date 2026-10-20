@@ -17,8 +17,12 @@ The [first motor-state/reference package](docs/investigations/motor-state-owners
 is complete at its bounded exit. Next, choose the retained workflow's durable
 program authority and physical reference contract; resolve only necessary record
 units/bounds and late MC dependency/application rules. Do not repeat the NVM
-round trip or motor bus discovery. X/trigger, A/radio and D/reporting remain
-separate, unstarted packages in the [plan](docs/investigations/configuration-behavior-investigation-plan.md).
+round trip or motor bus discovery. The [X/trigger package](docs/investigations/x-trigger-acceptance.md)
+is complete at its bounded exit: separate bands, sample freshness, reporting,
+eligibility and arming. If legacy triggers are retained, trace one natural
+arm/eligibility-restoration sequence with STOP/reset controls; obtain physical
+timing/pulse evidence before selecting debounce/re-arm behavior. A/radio and
+D/reporting remain separate, unstarted packages in the [plan](docs/investigations/configuration-behavior-investigation-plan.md).
 No configuration implementation or physical validation has been performed.
 
 ## Production upgrade/downgrade release gates
