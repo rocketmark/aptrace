@@ -1,0 +1,8 @@
+References TO 0x20000069:
+  0x00004c32 (boot_config_reader__CUSTOM)  [PARAM]  label=DAT_20000069
+  0x00004c36 (boot_config_reader__CUSTOM)  [WRITE]  label=DAT_20000069
+  0x00004c7e (boot_config_reader__CUSTOM)  [WRITE]  label=DAT_20000069
+  0x00006112 (radio_bringup__THIRD_PARTY)  [READ]  label=DAT_20000069
+  0x00008900 (ascii_dispatcher__CUSTOM)  [PARAM]  label=DAT_20000069
+  0x00008904 (ascii_dispatcher__CUSTOM)  [WRITE]  label=DAT_20000069
+  0x00008906 (ascii_dispatcher__CUSTOM)  [READ]  label=DAT_20000069

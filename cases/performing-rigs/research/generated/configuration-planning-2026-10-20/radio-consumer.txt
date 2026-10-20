@@ -1,0 +1,40 @@
+==================================================
+Function: radio_bringup__THIRD_PARTY @ 0000610c  size=100  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: LIKELY_THIRD_PARTY_LIBRARY -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void radio_bringup__THIRD_PARTY(void)
+
+{
+  undefined4 uVar1;
+  undefined4 uVar2;
+  int iVar3;
+  undefined4 in_r3;
+  
+  iVar3 = radio_id_probe__THIRD_PARTY
+                    (DAT_0000617c,DAT_00006178 * (*DAT_00006170 - 0x13) + *DAT_00006174,
+                     *DAT_00006174,*DAT_00006170 - 0x13,in_r3);
+  if (iVar3 == 0) {
+    FUN_00005d24();
+    uVar2 = DAT_00006184;
+    uVar1 = DAT_00006180;
+    do {
+      FUN_0000b258(uVar2,uVar1);
+      delay__STANDARD_LIBRARY(1000);
+    } while( true );
+  }
+  FUN_00009bb0(DAT_0000617c,7);
+  FUN_00009c14(DAT_0000617c,DAT_00006188);
+  FUN_00009cac(DAT_0000617c,5);
+  FUN_00009d2a(DAT_0000617c,0x11,1);
+  FUN_00009cdc(DAT_0000617c);
+  *DAT_0000618c = 0;
+  return;
+}
+
+
+
+

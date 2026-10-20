@@ -11,6 +11,15 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 # Harness Roadmap
 
+## Configuration-to-behavior investigation
+
+Follow the [prioritized assessment](docs/investigations/configuration-behavior-investigation-plan.md):
+start with motor record ownership/reference frames and runtime MC4 versus applied
+driver state; then bounded X/trigger, A/radio and D/producer-reporting questions
+for retained features. Reuse existing persistence/driver evidence rather than
+repeat broad NVM or bus discovery. No configuration implementation is authorized
+by the plan, and release grades remain unchanged.
+
 ## Production upgrade/downgrade release gates
 
 Production replacement is NO-GO: obtain actual bootloader/BOSSA provenance,

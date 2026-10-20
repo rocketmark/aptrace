@@ -12,6 +12,12 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
+The [configuration behavior assessment and plan](docs/investigations/configuration-behavior-investigation-plan.md)
+prioritizes field consumers, motor reference/ownership and runtime-versus-applied
+settings. It separates established persistence from unresolved behavioral meaning;
+no new implementation, physical validation or release-gate promotion results
+from that planning pass.
+
 **Production firmware replacement: NO-GO (2026-10-19).** The original vendor
 applications and updater are hash-identified, and the application-side
 1200-baud/DTR-release countdown/reset request is statically and concretely

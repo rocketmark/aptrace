@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-20",
+  "repository_revision": "50aece37a6661b455a4a1628faa290b86104a26b",
+  "scope": "Assessment and planning; seven small public Ghidra queries, no new concrete/symbolic/controller runs or claims. Existing evidence grades unchanged.",
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "input_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "project_identity": {
+    "firmware_key": "autopilot868",
+    "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+    "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "load_base": "0x4000",
+    "processor": "ARM:LE:32:Cortex",
+    "cspec": "default",
+    "ghidra_version": "12.1.3",
+    "analysis_version": 1,
+    "seed_vector_words": 151,
+    "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+    "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+    "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+    "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+    "provenance_tsv_sha256": "c4b14f4f9f128fcf9461a8c7f3670b1f66221ec6d5240a20bc000fb17dcbdfbd",
+    "derived_seeds_sha256": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def"
+  },
+  "environment": {
+    "JAVA_HOME": "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+    "JAVA_TOOL_OPTIONS": "-Duser.home=/tmp/aptrace-ghidra-home"
+  },
+  "scripts": {
+    "tools/ghidra/scripts/APTraceDecompileFunctions.java": "5a55c2ee9653446b3277d423bae3244d25b31bdc0a4f7b3af49b76f0f9411e43",
+    "tools/ghidra/scripts/APTraceDisassembleRange.java": "df8236aa7065ecb2d40d09db59624ba1249f518e42622e23a93136f877951bbc"
+  },
+  "operations": [
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x4c94 --count 5",
+      "output": "boot-reader-pointers.txt",
+      "exit_status": 0,
+      "output_sha256": "261a0a41e53a735d43aae87a829e26f445d5ee4a31dd464ba18bed8f1314e620"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20000194",
+      "output": "x-selector-xrefs.txt",
+      "exit_status": 0,
+      "output_sha256": "410e4b9d2447cb2330683e9a96ed15b2509c589147bc8511ed548b77af3d68ea"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20000069",
+      "output": "a-setting-xrefs.txt",
+      "exit_status": 0,
+      "output_sha256": "46d118e12b2673f4a35dd1d8d2e4769f4c9adb0f989b3211c0b22c90de6747e1"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x200029d4",
+      "output": "d-value-xrefs.txt",
+      "exit_status": 0,
+      "output_sha256": "e9d2a41b8a66b508eb24e923eedd4d8e69ec7c04a2bb72a1a099a16ec35c8893"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x610c",
+      "output": "radio-consumer.txt",
+      "exit_status": 0,
+      "output_sha256": "002f94f71a92795dfd9c5fe469a5f1b07595390efd603d9435fbddf63832b5ce"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x6170 --count 3",
+      "output": "radio-parameter-pointers.txt",
+      "exit_status": 0,
+      "output_sha256": "ac5dd07aba697bf9b21fccaa55a619870d157bc480d13533713da09461943dc4"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8e68 0x8ed0",
+      "output": "trigger-selector-consumer.txt",
+      "exit_status": 0,
+      "output_sha256": "021cee4b9314289940e1b5f9a3320af33160f215a237936b718cd2cc908f2925"
+    }
+  ],
+  "limitations": [
+    "AutoPilot868 only; no new sibling equivalence",
+    "native static references and heuristic decompilation do not prove all consumers or hardware behavior",
+    "Ghidra queries reuse project and write normal output cache files; no cache rebuild, ledger mutation, firmware or implementation edit"
+  ],
+  "execution_note": "An initial combined documentary read failed with zsh unmatched quote, corrected before reading; all seven saved APTrace queries succeeded."
+}

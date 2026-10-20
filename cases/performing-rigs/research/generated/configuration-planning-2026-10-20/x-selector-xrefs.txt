@@ -1,0 +1,7 @@
+References TO 0x20000194:
+  0x00004c46 (boot_config_reader__CUSTOM)  [PARAM]  label=DAT_20000194
+  0x00004c4c (boot_config_reader__CUSTOM)  [WRITE]  label=DAT_20000194
+  0x00004c56 (boot_config_reader__CUSTOM)  [WRITE]  label=DAT_20000194
+  0x0000892a (ascii_dispatcher__CUSTOM)  [PARAM]  label=DAT_20000194
+  0x0000892e (ascii_dispatcher__CUSTOM)  [WRITE]  label=DAT_20000194
+  0x00008e7e (phase_ramp_state_machine__CUSTOM)  [READ]  label=DAT_20000194
