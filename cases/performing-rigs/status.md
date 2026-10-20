@@ -18,8 +18,14 @@ applications and updater are hash-identified, and the application-side
 supported. Stock bootloader identity, actual boot protection/erase scope,
 application-independent entry and SWD recovery are not established. Noxon
 configuration `[0x12000,0x13001)` lies inside the vendor application image;
-reflashing canonical code does not preserve device-specific user data. Gates
-A/B/C are PARTIAL; D/E/F are BLOCKED. No physical hardware was accessed.
+reflashing canonical code intentionally resets local settings. Both packaged
+variants reconstruct tested default startup with normal external configuration;
+a dedicated settings backup/migration is not required under the clarified product
+requirement. Factory/identity/protection and physical recovery remain unverified.
+Gates A/B/C/D are PARTIAL; E/F are BLOCKED. No physical hardware was accessed.
+See [the persistence reassessment](docs/investigations/persistent-state-release-assessment.md)
+for meaningful local-state evidence, default reconstruction, corrected historical
+interpretations, and the D BLOCKED → PARTIAL decision.
 See [the six-gate reversible-update assessment](docs/investigations/reversible-firmware-update.md)
 for required backups, validation, risk ranking and downgrade acceptance.
 

@@ -1,0 +1,3 @@
+Building 'autopilot915' (firmware_autopilot915.bin) -- this runs full auto-analysis once...
+Built 'autopilot915': 436 functions, 3548 basic blocks, cached at /tmp/aptrace-persistent-ghidra/autopilot915
+  (provenance labels not available for this image)

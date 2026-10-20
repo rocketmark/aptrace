@@ -1,0 +1,7 @@
+References TO 0x200029d4:
+  0x00004c62 (boot_config_reader__CUSTOM)  [WRITE]  label=DAT_200029d4
+  0x00004c8e (boot_config_reader__CUSTOM)  [WRITE]  label=DAT_200029d4
+  0x00008798 (ascii_dispatcher__CUSTOM)  [PARAM]  label=DAT_200029d4
+  0x0000879c (ascii_dispatcher__CUSTOM)  [WRITE]  label=DAT_200029d4
+  0x00008cfe (FUN_00008c70)  [PARAM]  label=DAT_200029d4
+  0x00008d00 (FUN_00008c70)  [READ]  label=DAT_200029d4

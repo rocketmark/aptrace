@@ -1,0 +1,1 @@
+'QSPI' is not referenced by 'autopilot868' (no resolved MMIO access).

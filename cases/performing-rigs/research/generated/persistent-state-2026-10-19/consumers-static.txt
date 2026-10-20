@@ -1,0 +1,223 @@
+==================================================
+Function: mc_config_handler__CUSTOM @ 00007a98  size=206  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void mc_config_handler__CUSTOM(int param_1)
+
+{
+  char cVar1;
+  char *pcVar2;
+  int iVar3;
+  undefined4 uVar4;
+  int iVar5;
+  int iVar6;
+  int iVar7;
+  undefined4 uVar8;
+  int iVar9;
+  
+  iVar7 = FUN_0000799c();
+  iVar6 = DAT_00007b88;
+  iVar5 = DAT_00007b84;
+  iVar3 = DAT_00007b70;
+  iVar9 = DAT_00007b6c;
+  pcVar2 = DAT_00007b68;
+  cVar1 = *DAT_00007b68;
+  *(int *)(DAT_00007b6c + param_1 * 4) = iVar7 * 0x50;
+  *pcVar2 = cVar1 + '\x01';
+  uVar8 = FUN_0000799c();
+  cVar1 = *pcVar2;
+  *(undefined4 *)(iVar3 + param_1 * 4) = uVar8;
+  *pcVar2 = cVar1 + '\x01';
+  iVar7 = FUN_0000799c();
+  if (iVar7 == 1) {
+    *(undefined4 *)(iVar5 + param_1 * 4) = 0;
+  }
+  cVar1 = *pcVar2;
+  if (iVar7 != 1) {
+    *(int *)(iVar5 + param_1 * 4) = iVar7;
+  }
+  *pcVar2 = cVar1 + '\x01';
+  uVar8 = FUN_0000799c();
+  cVar1 = *pcVar2;
+  *(undefined4 *)(iVar6 + param_1 * 4) = uVar8;
+  uVar4 = DAT_00007b78;
+  uVar8 = DAT_00007b74;
+  *pcVar2 = cVar1 + '\x01';
+  FUN_0000b23a(uVar4,uVar8);
+  iVar7 = DAT_00007b7c;
+  FUN_0000b2ea(DAT_00007b78,param_1 + 1,10);
+  FUN_0000b2ea(DAT_00007b78,*(undefined4 *)(iVar9 + param_1 * 4),10);
+  FUN_0000b2fe(DAT_00007b78,*(undefined4 *)(iVar3 + param_1 * 4),10);
+  FUN_0000b2ea(DAT_00007b78,*(undefined4 *)(iVar5 + param_1 * 4),10);
+  FUN_0000b2fe(DAT_00007b78,*(undefined4 *)(iVar6 + param_1 * 4),10);
+  FUN_0000b258(DAT_00007b78,DAT_00007b80);
+  FUN_000044ec();
+  iVar9 = millis__ADAFRUIT_CORE();
+  if (300 < (uint)(iVar9 - *(int *)(iVar7 + param_1 * 4))) {
+    lcd_status_refresh__THIRD_PARTY(param_1);
+    uVar8 = millis__ADAFRUIT_CORE();
+    *(undefined4 *)(iVar7 + param_1 * 4) = uVar8;
+  }
+  return;
+}
+
+
+
+==================================================
+Function: config_read_u32__CUSTOM @ 000043ac  size=62  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+int config_read_u32__CUSTOM(int param_1)
+
+{
+  undefined4 uVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  
+  uVar1 = DAT_000043ec;
+  iVar2 = config_read_byte__CUSTOM(DAT_000043ec,param_1);
+  iVar3 = config_read_byte__CUSTOM(uVar1,param_1 + 1);
+  iVar4 = config_read_byte__CUSTOM(uVar1,param_1 + 2);
+  iVar5 = config_read_byte__CUSTOM(uVar1,param_1 + 3);
+  return iVar5 + (iVar4 + (iVar3 + iVar2 * 0x100) * 0x100) * 0x100;
+}
+
+
+
+==================================================
+Function: config_loader__CUSTOM @ 00004b64  size=158  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void config_loader__CUSTOM(void)
+
+{
+  undefined1 *puVar1;
+  undefined4 uVar2;
+  undefined4 *puVar3;
+  char *pcVar4;
+  undefined1 uVar5;
+  undefined1 *puVar6;
+  uint uVar7;
+  int iVar8;
+  char *pcVar9;
+  
+  uVar2 = DAT_00004c08;
+  puVar1 = DAT_00004c04;
+  iVar8 = 500;
+  puVar6 = DAT_00004c04;
+  do {
+    uVar5 = config_read_byte__CUSTOM(uVar2,iVar8);
+    iVar8 = iVar8 + 1;
+    *puVar6 = uVar5;
+    puVar6 = puVar6 + 1;
+  } while (iVar8 != 0x674);
+  uVar5 = config_read_byte__CUSTOM(DAT_00004c08,300);
+  *DAT_00004c0c = uVar5;
+  uVar5 = config_read_byte__CUSTOM(DAT_00004c08,0x12d);
+  iVar8 = 0;
+  *DAT_00004c10 = uVar5;
+  puVar6 = DAT_00004c04;
+  do {
+    iVar8 = iVar8 + 1;
+    if (4 < (byte)puVar6[0x3c]) {
+      puVar6[0x3c] = 0;
+      puVar6[0x3b] = 0;
+    }
+    pcVar4 = DAT_00004c1c;
+    pcVar9 = DAT_00004c18;
+    puVar3 = DAT_00004c14;
+    puVar6 = puVar6 + 0x120;
+  } while (iVar8 != 4);
+  *(undefined4 *)(puVar1 + 0x40) = 1;
+  *(undefined4 *)(puVar1 + 0x160) = 1;
+  *(undefined4 *)(puVar1 + 0x280) = 1;
+  *(undefined4 *)(puVar1 + 0x3a0) = 1;
+  *puVar3 = 1;
+  uVar7 = 0;
+  do {
+    if ((*pcVar9 != '\0') && (*pcVar4 == '\0')) {
+      config_resync__CUSTOM(uVar7 & 0xff);
+      *pcVar9 = '\0';
+      config_persist_writeback__CUSTOM();
+    }
+    uVar7 = uVar7 + 1;
+    pcVar9 = pcVar9 + 1;
+  } while (uVar7 != 4);
+  return;
+}
+
+
+
+==================================================
+Function: nvm_param_object_ctor__CUSTOM @ 0000981c  size=38  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void nvm_param_object_ctor__CUSTOM(int *param_1,int param_2,int param_3)
+
+{
+  int iVar1;
+  uint uVar2;
+  int iVar3;
+  
+  iVar1 = DAT_00009844;
+  iVar3 = *(int *)(DAT_00009848 + ((*(uint *)(DAT_00009844 + 8) & 0x7ffff) >> 0x10) * 4);
+  *param_1 = iVar3;
+  uVar2 = *(uint *)(iVar1 + 8);
+  param_1[5] = param_3;
+  uVar2 = uVar2 & 0xffff;
+  param_1[1] = uVar2;
+  uVar2 = iVar3 * uVar2;
+  param_1[2] = uVar2;
+  param_1[3] = uVar2 >> 6;
+  param_1[4] = param_2;
+  return;
+}
+
+
+
+==================================================
+No function at 000098d4 (seed it first via APTraceSeedVectorTable.java)
+
+==================================================
+Function: nvm_erase_call__UNKNOWN @ 000098f0  size=30  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: UNKNOWN -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void nvm_erase_call__UNKNOWN(int param_1,int param_2,uint param_3)
+
+{
+  undefined8 uVar1;
+  
+  for (; *(uint *)(param_1 + 0xc) < param_3; param_3 = param_3 - *(int *)(param_1 + 0xc)) {
+    uVar1 = nvm_bulk_erase__UNKNOWN(param_1,param_2);
+    param_1 = (int)uVar1;
+    param_2 = (int)((ulonglong)uVar1 >> 0x20) + *(int *)(param_1 + 0xc);
+  }
+  nvm_bulk_erase__UNKNOWN(param_1,param_2);
+  return;
+}
+
+
+
+

@@ -14,6 +14,14 @@ persist), though delivering `'+'` itself concretely from a fresh boot is
 still blocked by an uncharacterized real hardware-probe cost, not a
 logic gap.
 
+Release interpretation and fresh replay: [persistent-state reassessment](persistent-state-release-assessment.md).
+Local state exists and is read back after modeled reset, but a mandatory
+per-device settings backup is not justified for an intentional factory-default
+downgrade. Both packaged variants start with normal external reconfiguration.
+Factory identity/calibration and physical recovery remain separate requirements.
+The fresh analysis below corrects earlier caller/constructor interpretations;
+historical generated observations are unchanged.
+
 ## Current model
 
 ### The config blob and the loader's fallback
@@ -96,17 +104,12 @@ command's write-back of the entire motor struct, offsets `300`,
 *read* paths never dirty the buffer — only writes through
 `FUN_0000977c` do.
 
-**`FUN_000097f4`** is the only code that clears the flag (`buffer[0x1002]
-= 0`, plus resets the "loaded" flag at `buffer[0]` to force a reload) —
-but it also does an *unconditional* raw NVM write first (no dirty
-check), and has **no confirmed caller anywhere in the image** (checked
-via both the calls graph and a full-image branch-target scan). Whether
-it's reached indirectly or is vestigial is unresolved. `FUN_000097a4`
-(the actual save-if-dirty path, see below) **never clears the flag
-after saving** — a real asymmetry, reported as observed, not
-adjudicated as bug vs. intentional. A cold boot implicitly clears it
-regardless, since `0x20004147` falls inside `Reset_Handler`'s `.bss`-zero
-range.
+**`FUN_000097f4`** clears the dirty and loaded flags after calling
+`FUN_0000981c`, the geometry/source/length constructor. Fresh native disassembly
+shows no unconditional flash-program call in this routine; the earlier prose
+misidentified the constructor as a raw write. No confirmed caller is established
+here. `FUN_000097a4` (the actual save-if-dirty path) does not clear the dirty
+flag after saving. A fresh reset initializes the RAM flags again.
 
 The dirty flag and the underlying buffer are global across all four
 channels — nothing about `FUN_0000977c`'s change detection is
@@ -161,10 +164,9 @@ three call sites:
   reach the save path: holding PA22 for the whole run naturally
   triggers this branch.
 
-`FUN_000097a4`, if the dirty flag is set, calls `FUN_0000981c(obj,
-dest, len)` to (re)build the driver object at `0x20004148`, then erases
-and writes. `FUN_0000981c` is not a one-time boot constructor — it is
-called fresh before *every* save attempt, and it reads
+`FUN_000097a4`, if the dirty flag is set, uses the driver object at
+`0x20004148`, then erases and writes. It does not call the constructor
+inside its own save path. `FUN_0000981c` initializes that object and reads
 **`NVMCTRL.PARAM` (`0x41004008`)**, a real, read-only SAMD51 hardware
 register: `PSZ = (param & 0x7ffff) >> 0x10` (bits 16-18) indexes a
 firmware-embedded table at flash `0x14000` (`[8,16,32,64,128,256,512,
@@ -184,13 +186,16 @@ the firmware's own table), `NVMP = 512KB / 512B = 1024 = 0x400`, giving
 already modeled elsewhere in this project as `--mmio-force-bits
 0x41004010:1`; reused here unchanged.
 
-With both bits modeled, the erase call fires with real arguments —
+With both bits modeled, the program call fires with real arguments —
 `FUN_0000984c(dest=0x00012000, len=0x1001)` — identical to the read
 path's address/length, confirming the write path targets the same
 flash region the read path consumes. `0x12000` is real, firmware-owned,
 round-trip persistent storage, not an external-provisioning boundary.
 
-### The `'+'` command: the real producer of nonzero targets
+### Writeback and the `'+'` command
+
+Fresh native analysis also shows `FUN_00004b64` calling `FUN_000043f0`
+during startup resynchronization. This writeback is not exclusive to `+`.
 
 `FUN_00004b64`'s bulk load has a real write-back counterpart,
 **`FUN_000043f0`**: it writes `0x20002941` -> offset `300`, `0x200029d0`
@@ -199,7 +204,7 @@ offsets `500`-`0x673`(1651) — the exact mirror of the load, same buffer,
 same range, opposite direction, dirtying the buffer through
 `FUN_0000977c` for any byte that actually differs.
 
-The only caller of `FUN_000043f0` is a previously undocumented ASCII
+A protocol caller of `FUN_000043f0` is a previously undocumented ASCII
 command, **`'+'`**, dispatched through a tail-jumped code region
 (`0x806c`-`0x8208`) that Ghidra's function boundaries don't attribute to
 `FUN_00008258` at all (the same silent-tail-jump artifact already

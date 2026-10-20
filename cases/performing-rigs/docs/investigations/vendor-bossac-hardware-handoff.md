@@ -6,6 +6,12 @@ operations were performed. Production remains **NO-GO**. This is one initial
 acquisition packet for Nathan/technician planning, not authorization to run the
 vendor batch file or send unreviewed monitor commands.
 
+Current state contract: [the persistence reassessment](persistent-state-release-assessment.md)
+advances D to PARTIAL. Local settings do persist, but the required downgrade
+may intentionally reconstruct packaged defaults. A dedicated Noxon settings
+export/migration or exact settings restore is not mandatory. Full recoverable
+backups and factory/identity/protection invariants remain separate safeguards.
+
 ## Software preflight — complete without an AutoPilot
 
 The pinned EXE/script/images now have supported native PE analysis: its banner
@@ -14,7 +20,9 @@ exact-build proof. Retain that evidence and obtain the unit’s monitor capabili
 branch and exact-build provenance if available. SAMD51 writes implicitly erase
 16-page blocks; successful raw programming replaces the embedded Noxon blob. Obtain the actual apfw2 release binary,
 linker map, format, client version/command, flash/erase manifest and persistence
-contract. Resolve FLASH-01..08 in the companion report. Review host commands
+contract. Resolve FLASH-01..08 in the companion report; FLASH-04 now permits
+intentional local-settings reset and requires factory/identity invariants, not
+a mandatory settings migration/export mechanism. Review host commands
 for side effects before calling any query “read-only.” An unknown `-i`, help
 flag or port-open sequence is not approved merely because another BOSSA
 version uses it for information.
@@ -45,7 +53,7 @@ Prepare a board-bound manifest with these result fields and actual values
 | Debug/security availability | Use a qualified non-programming/non-unlocking attachment procedure. Record debugger identity, target voltage, connection mode and all access restrictions. Do not let tool defaults auto-erase, recover, reset or write fuses | `debug/` logs; B/C/E |
 | Silicon/geometry/protection | When safe readable access is established, collect DSU.DID `0x41002018` (32-bit), DSU.STATUSB `0x41002002` (8-bit), NVMCTRL.PARAM `0x41004008` (32-bit), STATUS `0x41004012` (16-bit), RUNLOCK `0x41004018` (32-bit). Preserve raw bytes and applicable SVD/datasheet decoding, including PROT, BOOTPROT, BPDIS and bank selection. Obtain chip-erase-lock state by the applicable documented mechanism if readable; do not infer it from ordinary read access | `registers/` raw/decoded records; A/B/E |
 | Full internal flash | If readable, acquire the reported 512-KB range `[0,0x80000)` twice with a qualified method. Include `[0,0x4000)`, the app, config, neighboring erase blocks and unknown upper flash. Do not assume unused space is blank | `backup/flash-read1.bin`, `flash-read2.bin`, range/hash manifest; A/B/C/D/E |
-| Original Noxon state | Explicitly index `[0x12000,0x13001)` and surrounding `[0x12000,0x14000)` in those backups. Capture relevant non-motion settings/status and identify changing versus stable data. Record schema/markers without rewriting them. Resolve inconsistent reads before proceeding | `backup/noxon-state.*`, baseline logs; C/D |
+| Original Noxon state | Index `[0x12000,0x13001)` and surrounding `[0x12000,0x14000)` in the full recovery capture. Record the intentional settings-reset expectation and required default/non-motion acceptance. No separate settings export or exact previous-setting restoration is required; optional archival data must not be confused with mandatory factory provisioning. Resolve inconsistent reads | Region index in full recovery capture, default-acceptance logs; C/D |
 | User/calibration/device-specific NVM | Acquire only readable, documented user/fuse/calibration areas for the actual part, with explicit range manifest. Existing app evidence includes reads around `0x00800080`; it is not a complete factory-memory inventory. Record security/protection/boot configuration separately. Factory/OTP captures are same-board records, not permission to rewrite or clone them | `backup/nonvolatile/` raw data, hashes and restrictions; B/C/D/E |
 | Bootloader identity/capabilities | Capture the readable bootloader bytes and any documented non-writing monitor identity/capability response. If entering the monitor requires a reset, defer that portion to the next phase; do not silently treat the whole acquisition as reset-free | `bootloader/` bytes, hashes, decoded/source-match report and monitor log; A/B/E |
 
@@ -90,12 +98,15 @@ host/firmware/board manifest. Capture:
 2. The host's actual erase/write/verify/reset protocol sequence, requested and
    actual address ranges, alignment, padding, tool status and failures. Resolve
    differences between host intent and bootloader implementation.
-3. Readback of every intended byte, padding policy and all invariants. Compare
-   Noxon config before/after a normal vendor update to establish preservation,
-   migration or replacement **rather than inferring it from a command line**.
-4. apfw2 startup/non-motion verification, then downgrade of original code and
-   the same unit's preserved Noxon state. Check invariants before boot and
-   baseline behavior/settings across restart afterward.
+3. Readback of every intended byte, padding policy and factory/identity/boot
+   invariants. Confirm intentional packaged-default replacement of Noxon local
+   state and expected reconfiguration; exact previous-settings preservation is
+   not the acceptance criterion. Record actual reset/power-cycle behavior.
+4. apfw2 startup/non-motion verification, then downgrade to the correct
+   canonical Noxon package with default local state. Check factory/identity/boot
+   invariants, perform normal external reconfiguration, and validate documented
+   default behavior across reset and power cycle. Do not require a settings
+   migration/restore tool for this contract.
 5. Representative interrupted erase/write/verify/reset and unusable-application
    tests on sacrificial hardware. Demonstrate independent recovery and repeat
    backup/state/invariant checks. Bootloader/fuse writes are excluded from an
@@ -127,5 +138,5 @@ single packet against gates A–F before requesting any follow-up measurements.
 
 The first production replacement remains NO-GO until all six gates meet
 their full requirements, including representative end-to-end/interruption
-validation. A/B/C PARTIAL and D/E/F BLOCKED are not waived by obtaining a
+validation. A/B/C/D PARTIAL and E/F BLOCKED are not waived by obtaining a
 matching version string or by a successful Feather update.

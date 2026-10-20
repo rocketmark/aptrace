@@ -1,0 +1,150 @@
+{
+  "confidence": "bounded observed results; no hardware/whole-program absence claims",
+  "checks": [
+    {
+      "check": "868 default startup reaches actual loop",
+      "passed": true,
+      "scope": "This modeled run and supplied MC4, not physical product/USB READY"
+    },
+    {
+      "check": "868 MC4 has four handler entries",
+      "passed": true,
+      "scope": "tested packet"
+    },
+    {
+      "check": "868 no setter calls after MC4 begins",
+      "passed": true,
+      "scope": "registered entry watch, run stops at first application loop"
+    },
+    {
+      "check": "868 observed blob unchanged",
+      "passed": true,
+      "scope": "watched 4100-byte flash range only; not all-path absence"
+    },
+    {
+      "check": "868 direct default reader returns zero",
+      "passed": true,
+      "scope": "direct call with seeded geometry-object source/length; no full reset"
+    },
+    {
+      "check": "915 default startup reaches actual loop",
+      "passed": true,
+      "scope": "This modeled run and supplied MC4, not physical product/USB READY"
+    },
+    {
+      "check": "915 MC4 has four handler entries",
+      "passed": true,
+      "scope": "tested packet"
+    },
+    {
+      "check": "915 no setter calls after MC4 begins",
+      "passed": true,
+      "scope": "registered entry watch, run stops at first application loop"
+    },
+    {
+      "check": "915 observed blob unchanged",
+      "passed": true,
+      "scope": "watched 4100-byte flash range only; not all-path absence"
+    },
+    {
+      "check": "915 direct default reader returns zero",
+      "passed": true,
+      "scope": "direct call with seeded geometry-object source/length; no full reset"
+    },
+    {
+      "check": "D command supplies saved field",
+      "passed": true,
+      "scope": "modeled flash stores, not hardware NVM"
+    },
+    {
+      "check": "save completed after program",
+      "passed": true,
+      "scope": "stop immediately after original program call returns"
+    },
+    {
+      "check": "1025 observed program stores without truncation",
+      "passed": true,
+      "scope": "4100-byte watched range"
+    },
+    {
+      "check": "actual-save-fresh-reader868 restores 1234",
+      "passed": true,
+      "scope": "exact previous 4097 flash bytes seeded into a new machine; no new D command"
+    },
+    {
+      "check": "actual-save-fresh-startup868 restores 1234",
+      "passed": true,
+      "scope": "exact previous 4097 flash bytes seeded into a new machine; no new D command"
+    },
+    {
+      "check": "carry-replay.json carries exact saved bytes",
+      "passed": true,
+      "scope": "byte equality from observed save to seed arguments"
+    },
+    {
+      "check": "full-startup-carry-replay.json carries exact saved bytes",
+      "passed": true,
+      "scope": "byte equality from observed save to seed arguments"
+    },
+    {
+      "check": "save-disasm.txt equals sibling native disassembly",
+      "passed": true,
+      "scope": "specified native ranges only; same Ghidra, not independent corroboration"
+    },
+    {
+      "check": "mc868-disasm.txt equals sibling native disassembly",
+      "passed": true,
+      "scope": "specified native ranges only; same Ghidra, not independent corroboration"
+    }
+  ],
+  "variant_startup": {
+    "868": {
+      "instructions": 11880918,
+      "MC4_entries": [
+        11654994,
+        11710498,
+        11766496,
+        11822500
+      ],
+      "initial_dirty": "01",
+      "final_dirty": "01"
+    },
+    "915": {
+      "instructions": 11880918,
+      "MC4_entries": [
+        11654994,
+        11710498,
+        11766496,
+        11822500
+      ],
+      "initial_dirty": "01",
+      "final_dirty": "01"
+    }
+  },
+  "saved_blob_sha256": "e230ab0388379f8690bf12f4a104977bfc4eab8b8ca6c4cb81745ee067dc6e5f",
+  "saved_field_bytes": "000004d2de14",
+  "saved_provisioning": 1,
+  "fresh_saved_startup": {
+    "0x200029d4": "d2040000",
+    "0x20000060": "00",
+    "0x20004147": "00"
+  },
+  "early_runs": {
+    "d-command-save868": {
+      "stop_reason": "max watch hits (2000) reached at 0x0000977c",
+      "instructions": 201743
+    },
+    "d-command-save868-complete": {
+      "stop_reason": "reached stop address 0x000097e6",
+      "instructions": 460524
+    },
+    "d-command-triggered-save868": {
+      "stop_reason": "instruction limit reached",
+      "instructions": 10000000
+    },
+    "d-command-save868-tick4000": {
+      "stop_reason": "instruction limit reached",
+      "instructions": 20000000
+    }
+  }
+}

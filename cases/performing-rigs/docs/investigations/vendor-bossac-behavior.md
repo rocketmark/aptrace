@@ -1,7 +1,9 @@
 # Vendor bossac.exe: Gate B investigation
 
 2026-10-19. **Result: host PE/x86 analysis gap closed; flashing assessment
-PARTIAL. Production NO-GO remains.** Gates A/B/C remain PARTIAL; D/E/F BLOCKED.
+PARTIAL. Production NO-GO remains.** Gates A/B/C remain PARTIAL; E/F BLOCKED. The subsequent
+[persistence reassessment](persistent-state-release-assessment.md) advances D
+to PARTIAL under an intentional-default-reset requirement.
 APTrace now imports the original Windows executable natively and recovers its
 command parsing, offset forwarding, flash drivers, erase/write/verify and reset
 paths. The examined code is consistent with upstream BOSSA 1.9; an exact
@@ -147,12 +149,13 @@ weakened and no Unicorn/backend/security workaround was introduced.
 | Host semantic admission and exhaustive flow | Static journal has no admitted claims; computed virtual/control transfers and heuristic boundaries remain. Scoped native entry/data/CFG queries work, but complete symbolic Windows/serial execution and typed host claim/replay are not implemented. Develop only if the next bounded question needs them; never reuse ARM claim rules unchecked. | Medium |
 | Exact build provenance | Banner and inspected semantics match 1.9 sources; no byte/build equivalence. Obtain vendor source/compiler/link flags or authenticated exact binary release for a stronger identity result. | Medium |
 | Live monitor/device/protection | Host DID branches, `X`/`Y`/page algorithms are requests. Obtain unit DID/geometry, monitor bytes/capabilities, raw protection/fuse/bank state and duplicated backups. Then qualify actual erase footprint, below-offset invariants and recovery under a separately authorized bench plan. | High |
-| State / calibration / rollback | Host loops overwrite the embedded config and can affect neighboring block bytes. Back up unit-specific state independently; define state migration/restore and verify bootloader/factory-row invariants, not only the file. | High |
+| State / calibration / rollback | Host loops overwrite the embedded config and can affect neighboring block bytes. Under the clarified default-reset contract, no dedicated local-settings migration/backup is mandatory. Validate default reconstruction and factory/identity/boot invariants; retain full recovery safeguards. | High |
 | Missing apfw2 artifacts | No release binary/map/client/flash-state contract is available here. FLASH-01..08 remain requirements: pin identities, interval validation, erase envelope, state preservation, verification oracle, reset/recovery, failure handling and unit-bound reversible restore. No apfw2 change is implied. | High |
 
 Gate B's **software-analysis prerequisite is now satisfied for these inspected
 paths**. Gate B itself remains PARTIAL: physical bootloader protection, actual
-erase behavior and recovery still lack independent evidence. A/C remain
-PARTIAL and D/E/F BLOCKED. The next hardware step is qualified read-only
+erase behavior and recovery still lack independent evidence. A/C remain PARTIAL; D is now PARTIAL under the
+[subsequent persistence reassessment](persistent-state-release-assessment.md),
+and E/F remain BLOCKED. The next hardware step is qualified read-only
 identity/protection acquisition and unit-bound backups in the consolidated
 handoff, not running the vendor batch. Production **NO-GO is unchanged**.

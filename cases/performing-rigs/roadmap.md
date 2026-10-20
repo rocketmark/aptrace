@@ -1,3 +1,14 @@
+## Persistent-state release work
+
+Gate D is PARTIAL: both packaged variants reconstruct tested default startup;
+meaningful local state exists but dedicated settings preservation/migration is
+not mandatory for the agreed intentional reset. Obtain the actual apfw2
+release/map/erase contract and validate a default-state downgrade across physical
+reset/power cycle on a recovery-qualified engineering unit, with factory identity,
+calibration, boot protection and unowned-region invariants intact. A/B/C remain
+PARTIAL; E/F BLOCKED; production NO-GO. See the
+[persistence assessment](docs/investigations/persistent-state-release-assessment.md).
+
 # Harness Roadmap
 
 ## Production upgrade/downgrade release gates
@@ -15,7 +26,8 @@ client's relevant BOSSA 1.9-family behavior. Obtain exact-build provenance if
 available, actual monitor capability/protection evidence, unit-bound backups,
 and measured erase/recovery validation. Native host queries cannot establish
 physical bootloader survival. Use the [hardware handoff](docs/investigations/vendor-bossac-hardware-handoff.md);
-all gate classifications and production NO-GO remain unchanged.
+Gate B remains PARTIAL; current classifications are summarized above and
+production remains NO-GO.
 
 ## Feather original-firmware READY follow-up (2026-10-19)
 

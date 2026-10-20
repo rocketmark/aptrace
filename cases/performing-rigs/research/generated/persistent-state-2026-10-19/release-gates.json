@@ -1,0 +1,34 @@
+{
+  "decision": "NO-GO",
+  "scope": "intentional local-settings reset; factory identity/calibration and independent recovery unchanged",
+  "gates": {
+    "A": {
+      "previous": "PARTIAL",
+      "new": "PARTIAL"
+    },
+    "B": {
+      "previous": "PARTIAL",
+      "new": "PARTIAL"
+    },
+    "C": {
+      "previous": "PARTIAL",
+      "new": "PARTIAL"
+    },
+    "D": {
+      "previous": "BLOCKED",
+      "new": "PARTIAL",
+      "reason": "Meaningful persistent local state exists, but tested default reconstruction plus the user requirement removes a mandatory settings-backup/migration blocker.",
+      "remaining": "Actual apfw2 image/map/erase contract; physical factory-default downgrade/reset/power-cycle acceptance, with factory/identity/protection/unknown-range invariants intact."
+    },
+    "E": {
+      "previous": "BLOCKED",
+      "new": "BLOCKED"
+    },
+    "F": {
+      "previous": "BLOCKED",
+      "new": "BLOCKED"
+    }
+  },
+  "report": "../../../docs/investigations/persistent-state-release-assessment.md",
+  "evidence": "observations.json"
+}

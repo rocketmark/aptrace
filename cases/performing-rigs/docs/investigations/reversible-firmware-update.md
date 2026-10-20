@@ -5,19 +5,22 @@
 
 ## Decision
 
-Follow-up: [vendor bossac.exe investigation](vendor-bossac-behavior.md) now
-recovers native PE32/x86 command parsing and relevant BOSSA 1.9-family driver
-behavior. SAMD51 writes implicitly erase blocks; the input overwrites embedded
-Noxon configuration. Exact upstream build identity and physical protection,
-monitor erase outcomes and recovery remain unverified. All six classifications
-and NO-GO are unchanged. Use the [consolidated hardware handoff](vendor-bossac-hardware-handoff.md).
+Current follow-ups: [vendor PE analysis](vendor-bossac-behavior.md) recovers
+relevant host flashing behavior; [persistent-state reassessment](persistent-state-release-assessment.md)
+confirms meaningful local state but also default reconstruction with both
+packaged variants. Under the clarified requirement that local settings may
+reset, **Gate D advances BLOCKED → PARTIAL**: a separate Noxon settings backup
+or migration layer is not mandatory. A/B/C remain PARTIAL; E/F remain BLOCKED.
+Physical protection/recovery and the actual apfw2 artifact/flash contract remain
+unverified. Use the [revised hardware handoff](vendor-bossac-hardware-handoff.md).
 
 **NO-GO for the first replacement on a production AutoPilot.** We possess
 hash-identified original application images and evidence of an application-side
 1200-baud reset mechanism. We do not possess a verified device bootloader
 backup, a demonstrated application-independent entry/recovery path, measured
-flash protection, a version-pinned erase/write contract, a device-specific
-persistent-state backup, or a completed physical upgrade/downgrade/recovery test.
+flash protection, a version-pinned erase/write contract, a reviewed factory/identity/protection-preserving flash contract, or a completed
+physical upgrade/downgrade/recovery test. A separate local-settings backup is
+not required for the intentional-default-reset downgrade assessed here.
 
 Application replacement, preservation of the bootloader, preservation of user
 state and independent recovery are four separate requirements. Neither a
@@ -147,28 +150,37 @@ the actual flasher and target, not inferred from a file length.
 |---|---|
 | Internal flash `[0,0x4000)` | Expected pre-application/bootloader reservation. No bytes, actual length or protection readback available. Back up and hash before writes; do not replace with a Feather bootloader. |
 | Application file `[0x4000,0x15470)` | 70768-byte raw application; offset and vectors support placement. A raw file is not a full-chip image or UF2 package. |
-| Noxon persistent blob `[0x12000,0x13001)` | 4097 bytes, **inside that application file**. Fresh original-image Unicorn dump confirms all zeros for AutoPilot868. Actual device settings can differ; vendor defaults are not their backup. |
+| Noxon persistent blob `[0x12000,0x13001)` | 4097 bytes, **inside that application file**. Fresh original-image Unicorn dump confirms all zeros for AutoPilot868. Actual settings can differ; vendor defaults intentionally reset them and support tested default startup. Exact previous settings preservation is optional under the clarified requirement. |
 | Modeled NVM erase block `[0x12000,0x14000)` | Existing constructor derivation yields 8192-byte stride for the stated 512-KB geometry. Save/erase can affect padding beyond the logical blob. Actual flash geometry, granularity and preservation require readback/target validation. |
 | Internal flash `[0x15470,0x80000)` | Beyond the vendor application's end but within reported MCU capacity; contents and ownership unknown. Not a proven empty code cave or free persistent partition. |
 | NVM user/fuse, calibration/AUX areas | Outside the ordinary application-image contract. Preserve live protection, calibration and device-specific information; factory-row reads include `0x00800080` in existing startup evidence. A zero-filled simulator placeholder is not calibration data. |
 
-The persistence dossier and fresh `0x9724`/`0x981c` decompilation establish
-lazy loading, blank-data fallback, geometry-dependent save behavior and
-RAM staging at `0x20003145`. RAM loaded/dirty flags are not a substitute for
-the flash blob. Known stored fields include the `D` setting at logical
-offsets `0x15..0x18` and marker `0x19`, boot-clamped settings, and per-channel
-motor/target structures at logical offsets `500..1651`. The marker/fallback
-means erased, all-zero and valid saved state need not behave identically.
-Unknown fields must be preserved, not translated by guesswork.
+The [fresh persistence investigation](persistent-state-release-assessment.md)
+establishes command-controlled saves and readback across a fresh simulated
+reset. Stored fields include D's u32/marker, command-selectable settings and
+motor target/position structures. They are meaningful local state; no tested
+field was shown to be immutable per-device provisioning. The original loader
+has packaged-zero fallback/default/resynchronization behavior. Both frequency
+variants reach the configured application loop with the untouched packaged
+blob and a normal-format MC4 exchange. Factory calibration and silicon identity
+are read separately, outside this application interval.
 
-**Consequence:** restoring a bit-exact vendor application can reset persistent
-state, even if its flash command preserves every byte outside the image.
-Conversely, restoring an old config blob over apfw2 could overwrite its code
-unless its linker layout explicitly reserves this interval and erase blocks.
-Keep Noxon state as an immutable, board-specific backup plus a separate apfw2
-state store or explicit, tested versioned translation. No layout or translator
-is available for assessment here. Do not merge apfw2-era settings into the
-original blob without a schema and compatibility test.
+**Intentional-default-reset contract:** retain the correct original package,
+reset local settings to its defaults on downgrade, supply normal external
+configuration again, and validate expected non-motion behavior across restart.
+No separate Noxon settings export, app-blob migration or verbatim historical
+settings restoration is mandatory under the clarified product requirement.
+Do not blindly restore a Noxon blob over replacement code. If exact historical
+settings later become required, that is a separate unit-bound backup/schema
+contract; defaults do not reproduce those values.
+
+This removes the unsupported assumption that every writable application byte
+must be preserved for a usable downgrade. It does not prove all other writable
+or factory data disposable. The actual apfw2 image/map/erase manifest is still
+missing; exclude factory/identity/protection regions and classify unowned
+ranges. Full recoverable device backups remain C/E recovery safeguards, not a
+new requirement for a dedicated settings-backup product. Unknown real-device
+reset effects and product acceptance still require controlled validation.
 
 The SVD describes BOOTPROT and BPDIS, lock/unlock commands, security-bit setting,
 chip-erase lock/unlock and USER/AUX erase. These capabilities are **not actual
@@ -185,7 +197,7 @@ permission to program factory/OTP values or clone them to another unit.
 | A — Bootloader identity and independent entry | **PARTIAL** | Compatible vendor intent and application touch handler; no measured bootloader identity/capabilities or application-independent entry |
 | B — Addressing and protection | **PARTIAL** | Relevant host offset/erase/write/verify paths recovered; live monitor/protection, actual erase outcomes and exact-build equivalence unverified |
 | C — Original restoration | **PARTIAL** | Correctly hashed application candidates available; no per-device full backup, installed-version match or restore demonstration |
-| D — Persistent state | **BLOCKED** | Known config is overwritten by application replacement; live backup and apfw2 coexistence/restore contract absent |
+| D — Persistent state / intentional reset | **PARTIAL** | Both packaged variants reconstruct tested defaults; dedicated local-settings preservation is not required. Actual apfw2 flash contract and physical default-state/factory-invariant acceptance remain unqualified |
 | E — Independent recovery | **BLOCKED** | SWD/reset board access, security state and restore procedure unverified; no application-independent recovery transcript |
 | F — End-to-end reversibility | **BLOCKED** | No physical round trip, interrupted-update recovery or assessed apfw2 release artifact |
 
@@ -216,14 +228,17 @@ two copies before testing restoration on a representative engineering unit.
 Incorrect assumption: wrong product/region/version boots badly, or a vendor
 application file is mistaken for a complete device-restoration image.
 
-**D — Evidence E3/E4.** Smallest software task: compare candidate apfw2 map,
-erase algorithm and data schema with the Noxon blob and surrounding blocks.
-Smallest physical task: capture two consistent flash and configuration reads,
-including unknown regions and relevant readable user/factory rows, with board
-identity and security metadata. Establish an offline rollback restore image
-and explicit protected regions. Incorrect assumption: user settings, limits,
-positions, identity/calibration or boot protection are lost; apparently
-successful downgraded code may use unsafe or wrong settings.
+**D — [Fresh persistence evidence](persistent-state-release-assessment.md).**
+Previous BLOCKED; now PARTIAL. The product requirement permits local settings
+to reset, and original code reconstructs tested startup defaults in both
+variants. Smallest software task: review the actual apfw2 image/map and erase
+manifest against settings-reset and factory/identity/protection invariants.
+Smallest physical task: on a recovery-qualified engineering unit, downgrade to
+the correct canonical package, reconfigure normally, and test documented default
+behavior across reset and power cycle. Do not require exact previous motor
+positions/settings or a migration layer for this intentional reset. Retain
+unknown-range and physical safety checks; simulated startup is not a product
+or factory-data validation.
 
 **E — Evidence E5 and missing bootloader capture.** The silicon's SWD capability
 and PA30/PA31 pin identity are not proof of an accessible board connector,
@@ -250,7 +265,7 @@ failure. No simulator can mark this gate PASS.
 | Critical | No independent entry after replacing app USB/startup | Verified hardware entry or demonstrated SWD recovery before replacement |
 | Critical | Client erase/unlock damages bootloader, fuses or protected rows | Exact tool contract, measured protection, bounded writes and validated recovery backup |
 | Critical | Reset/programming transition energizes motors or generates steps | Motor/power-stage isolation and measured safe reset/bootloader/application levels on the real revision |
-| High | Config blob inside image destroyed or restored over apfw2 code | Immutable pre-upgrade snapshot, explicit linker/erase partition and tested rollback |
+| High | Blind old-blob restore overwrites replacement code, or erase affects unowned neighbors | Intentional settings-reset contract, reviewed erase partition and tested default rollback; no blind blob overlay |
 | High | Incomplete original backup or unknown upper-flash ownership | Full readable flash and relevant nonvolatile-region inventory, no assumption of blank tail |
 | High | Wrong unit or region selected by VID-only updater | Board-bound manifest and explicit target identity; one target attached |
 | High | Interrupted flash loses both app and entry mechanism | Fault-injection recovery on representative non-production hardware |
@@ -286,19 +301,21 @@ failure. No simulator can mark this gate PASS.
    bootloader; stop if protection/locking differs from the expected contract.
 5. **Controlled upgrade on that non-production target:** with A–E satisfied and
    an approved interruption/rollback plan, write only approved ranges. Verify
-   actual readback plus invariant bootloader/fuse/state hashes. Check apfw2
+   actual readback plus invariant bootloader/factory/identity/protection hashes;
+   classify permitted application-state changes explicitly. Check apfw2
    startup, safe outputs, identity, required update entry and non-motion
    functionality. Do not energize motors as part of this test.
 6. **Controlled downgrade:** re-enter via the qualified route, restore the
-   correct original application **and the same board's preserved Noxon state**
-   with erase-block-aware ordering. Verify all intended bytes and protected
+   correct canonical original application with its packaged default local state,
+   using erase-block-aware ordering. Verify all intended bytes and protected
    invariants before booting. Do not overlay an old blob on replacement code
    or invent a full-chip image by concatenation and padding.
 7. **Original-operation verification:** cold start and warm restart under
    controlled bench authorization; compare recorded original behavior,
-   application version, non-motion queries and persisted settings with the
-   pre-upgrade baseline. Ensure subsequent boot does not silently rewrite or
-   reject restored data. An updater verify flag alone is insufficient.
+   application version and required non-motion behavior. Verify intentional
+   default settings and normal reconfiguration across resets/power cycles;
+   exact previous settings equality is not required. Record expected startup
+   initialization writes rather than treating every write as failure. An updater verify flag alone is insufficient.
 8. **Interruption/failure qualification:** on sacrificial engineering hardware,
    interrupt representative erase/write/verify/reset stages and exercise a
    missing/nonfunctional application. Demonstrate recovery through the
@@ -326,9 +343,12 @@ otherwise the production NO-GO remains.
 
 Downgrade is reasonably **verified** only when readback matches the board-bound
 original restore manifest, bootloader/protection/calibration invariants hold,
-Noxon persisted state and required non-motion behavior match the baseline
-across restart, and the independent recovery route still works. If restoring
-the canonical vendor file plus user state, expect the whole-file hash to differ
+documented Noxon defaults plus normal external reconfiguration produce the
+required non-motion behavior across restart/power cycle, and the independent
+recovery route still works. Exact previous settings restoration is optional
+and outside this default-reset
+acceptance oracle. If separately restoring the canonical file plus historical
+user state, expect the whole-file hash to differ
 from the canonical defaults in the state interval: compare code and intended
 state separately, or compare to the actual pre-upgrade device snapshot. The
 exact vendor file hash is neither necessary for retained user state nor alone
