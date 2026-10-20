@@ -1,0 +1,154 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "entry": "0x00007e2d",
+  "instructions_executed": 59,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "registers": {
+    "r0": "0x20004c84",
+    "r1": "0x00002904",
+    "r2": "0x0000000a",
+    "r3": "0x00000002",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x00007d55",
+    "pc": "0x2fff0010",
+    "cpsr": "0x20100033"
+  },
+  "memory": {
+    "0x2000201c": "04290000",
+    "0x200025e0": "0102",
+    "0x20002064": "d8270000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00007e2c",
+    "0x00007e2e",
+    "0x00007e30",
+    "0x00007e32",
+    "0x00007e34",
+    "0x00007cc0",
+    "0x00007cc2",
+    "0x00007cc4",
+    "0x00007cc6",
+    "0x00007cc8",
+    "0x00007cca",
+    "0x00007ccc",
+    "0x00007cce",
+    "0x00007cd2",
+    "0x00007cd4",
+    "0x00007cd6",
+    "0x00007cd8",
+    "0x00007cda",
+    "0x00007cdc",
+    "0x00007cde",
+    "0x00007ce0",
+    "0x00007ce2",
+    "0x00007ce4",
+    "0x00007ce6",
+    "0x00007ce8",
+    "0x00007cea",
+    "0x00007cec",
+    "0x00007cee",
+    "0x00007cf2",
+    "0x00007cf4",
+    "0x00007cf6",
+    "0x00007cfa",
+    "0x00007cfc",
+    "0x00007cfe",
+    "0x00007d00",
+    "0x00007d04",
+    "0x00007d06",
+    "0x00007d0a",
+    "0x00007d0c",
+    "0x00007d0e",
+    "0x00007d12",
+    "0x00007d30",
+    "0x00007d32",
+    "0x00007d34",
+    "0x00007d36",
+    "0x00007d3e",
+    "0x00007d40",
+    "0x00007d42",
+    "0x0000b23a",
+    "0x00007d46",
+    "0x00007d48",
+    "0x00007d4a",
+    "0x00007d4e",
+    "0x00007d50",
+    "0x0000b2fe",
+    "0x00007d54",
+    "0x00007d56",
+    "0x00007d58",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20001b40",
+      "len": 144,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x2000232a",
+      "len": 6,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200025e0",
+      "len": 2,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20002064",
+      "len": 4,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [
+    {
+      "instruction": 49,
+      "address": "0x0000b23a",
+      "lr": "0x00007d47"
+    },
+    {
+      "instruction": 55,
+      "address": "0x0000b2fe",
+      "lr": "0x00007d55"
+    }
+  ],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x00007e2c",
+    "args": [],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x20004c84",
+      "r1": "0x00002904",
+      "r2": "0x0000000a",
+      "r3": "0x00000002"
+    }
+  }
+}

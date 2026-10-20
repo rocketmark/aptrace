@@ -1,0 +1,5 @@
+0x00004bec  config_loader__CUSTOM  -> 0x00004b24  config_resync__CUSTOM
+0x00008146  (unattributed -- possibly a tail-jump target)  -> 0x00004b24  config_resync__CUSTOM
+0x0000814c  (unattributed -- possibly a tail-jump target)  -> 0x00004b24  config_resync__CUSTOM
+0x00008152  (unattributed -- possibly a tail-jump target)  -> 0x00004b24  config_resync__CUSTOM
+0x00008158  (unattributed -- possibly a tail-jump target)  -> 0x00004b24  config_resync__CUSTOM

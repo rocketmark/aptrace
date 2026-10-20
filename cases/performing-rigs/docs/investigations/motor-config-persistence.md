@@ -22,6 +22,11 @@ Factory identity/calibration and physical recovery remain separate requirements.
 The fresh analysis below corrects earlier caller/constructor interpretations;
 historical generated observations are unchanged.
 
+Current semantic interpretation: [motor-state ownership and reference](motor-state-ownership-and-reference.md)
+distinguishes signed program deltas from rebased endpoints/current position,
+conditional reload resync, G target selection and separate MC4 driver state.
+A writeback that dirties staging is not itself a completed NVM save.
+
 ## Current model
 
 ### The config blob and the loader's fallback

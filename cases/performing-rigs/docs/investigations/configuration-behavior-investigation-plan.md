@@ -7,6 +7,11 @@ not initiate a broad reversing campaign, execute new motion scenarios, change
 APTrace/apfw2, or access hardware. The release matrix remains A/B/C/D PARTIAL,
 E/F BLOCKED, production NO-GO.
 
+First-package outcome: [motor-state ownership/reference findings](motor-state-ownership-and-reference.md)
+now provide the semantic/lifetime matrix and bounded witnesses. Use that result
+before starting another motor-state investigation; later X/A/D packages remain
+separate. The priorities below retain the original planning rationale.
+
 The highest-value next work is a **field-to-behavior contract**, starting with
 motor targets/reference frames and runtime motor setup. The existence of NVM
 and the ability to reload D after reset are already established; repeating them

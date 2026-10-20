@@ -1,0 +1,140 @@
+{
+  "date": "2026-10-20",
+  "repository_revision": "618dc2bba63e7b17237327fb453e7ebdcd1194d2",
+  "scope": "First planned motor-state/reference package and relevant MC4/driver state. No X/A/D investigation, apfw2 change or hardware access.",
+  "engine_versions": {
+    "Ghidra": "12.1.3",
+    "Unicorn": "2.1.4",
+    "concrete_python": "3.9.6"
+  },
+  "target_identities": {
+    "autopilot868": {
+      "firmware_key": "autopilot868",
+      "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "load_base": "0x4000",
+      "processor": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "ghidra_version": "12.1.3",
+      "analysis_version": 1,
+      "seed_vector_words": 151,
+      "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+      "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+      "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+      "provenance_tsv_sha256": "c4b14f4f9f128fcf9461a8c7f3670b1f66221ec6d5240a20bc000fb17dcbdfbd",
+      "derived_seeds_sha256": "21839fc07e717380a2930534783ea577080bf1cfe8f74c78db903266c0c94def"
+    },
+    "mando868": {
+      "firmware_key": "mando868",
+      "firmware_path": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+      "firmware_sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc",
+      "load_base": "0x4000",
+      "processor": "ARM:LE:32:Cortex",
+      "cspec": "default",
+      "ghidra_version": "12.1.3",
+      "analysis_version": 1,
+      "seed_vector_words": 151,
+      "script_sha256:APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+      "script_sha256:APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+      "script_sha256:APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+      "script_sha256:APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+      "provenance_tsv_sha256": null
+    }
+  },
+  "Ghidra_environment": {
+    "JAVA_HOME": "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+    "JAVA_TOOL_OPTIONS": "-Duser.home=/tmp/aptrace-ghidra-home"
+  },
+  "static_operations": [
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x4b24 0x4ca8 0x46c8 0x4910 0x7e2c 0x7a98 0x7514 0x6190",
+      "output": "motor-consumers.txt",
+      "exit_status": 0,
+      "sha256": "2b40f7ed4788813e2eefe5350bcb55300ed70c20dab9d8147311635efb3f88c0"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x49c4 0x4998 0xc440 0xb6f0",
+      "output": "remote-ownership.txt",
+      "exit_status": 0,
+      "sha256": "6cbc2bcd54f75edaa88348c24a9e7457edaaf86940618a287bb2b05928617d00"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x80f0 0x8196",
+      "output": "plus-mode-tail.txt",
+      "exit_status": 0,
+      "sha256": "8a50c64b82af3f3135f71ef40feda4c3c8a0dc898127afe324580604fd47841e"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x4b24 0x4b5a",
+      "output": "resync-native.txt",
+      "exit_status": 0,
+      "sha256": "d3bc52aa163b68a857cb59dd6beae231a344bcbf2bd7c2f8a67f68e73f1e9b00"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x7a98 0x7b66",
+      "output": "mc4-native.txt",
+      "exit_status": 0,
+      "sha256": "b87eeeb9791b13d647ccbc7e31d5ca55405a5649364a79a0e872c185aa7b9056"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc440 0xcb50",
+      "output": "remote-exchange-native.txt",
+      "exit_status": 0,
+      "sha256": "3c4ea521506ff708e23e0630bfa20611f2432b06d72a02c2e88ee61b42a81fb9"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x7b68 --count 9",
+      "output": "mc-pointers.txt",
+      "exit_status": 0,
+      "sha256": "9c96531d32ad0963e49bbd903fdc85497846b9dda42e0381dea87e8fcded51f2"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0x6190",
+      "output": "init-callers.txt",
+      "exit_status": 0,
+      "sha256": "cb8b104747e8b8247fef330f7cc5d7adac50ba25c705f5d90705c964fb8e0275"
+    },
+    {
+      "command": "python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0x4b24",
+      "output": "resync-callers.txt",
+      "exit_status": 0,
+      "sha256": "fda8441c27ee08d25788562744e8d013c831201bf6fae1c257d01c4e82036966"
+    }
+  ],
+  "concrete_commands": "concrete-commands.json",
+  "concrete_execution": "All twenty commands invoked directly through the verified CLI prefix, individually; all exited0 and reached their declared return/stop. No comparison wrapper or policy bypass.",
+  "output_checks": "39 bounded artifact checks passed; see observations.json. No new framework tests were needed for an operator investigation.",
+  "limitations": [
+    "Two helpers/phase composition are not natural scheduler or RF continuity",
+    "fixture records have zero timing fields; no physical trajectory validity",
+    "seeded flash data is synthetic program data, not code/image-file changes or hardware retention",
+    "only logical channel0 and one channel1 stride check",
+    "radio ID, RX delivery, tick, calibration, MMIO completion and delay stand-ins remain assumptions",
+    "desired or setter-requested configuration does not prove electrically active state"
+  ],
+  "source_hashes": {
+    "tools/unicorn/concrete.py": "5420ed465dc3459493d86ea070f00b85e5244cae501c0b1a446a72b257e6c4ee",
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/ghidra/scripts/APTraceDecompileFunctions.java": "5a55c2ee9653446b3277d423bae3244d25b31bdc0a4f7b3af49b76f0f9411e43",
+    "tools/ghidra/scripts/APTraceDisassembleRange.java": "df8236aa7065ecb2d40d09db59624ba1249f518e42622e23a93136f877951bbc",
+    "cases/performing-rigs/scripts/virtual_link.py": "72ad6a2fd5e05067effc7af66ef3ab3e86715b12364e92399a08424c1da1283f",
+    "cases/performing-rigs/docs/investigations/motor-config-persistence.md": "cd2cf655ab954125eb775fa0980b4d0f12c3ed81042b38f7d7afd8513583ce0f",
+    "cases/performing-rigs/docs/investigations/persistent-state-release-assessment.md": "987565ad63c7d63c4e7548748723ed1e573ff3d218a7f1d29f98b3d319deb713",
+    "cases/performing-rigs/docs/investigations/auto-mode-and-plus-command.md": "ef20fcca0a5a2f11847947e580cbb7dc5f29ae86e7d6f4138d8c0b3132724c40",
+    "cases/performing-rigs/docs/investigations/motor-subsystem-unlock.md": "c3e34d6777caa1644d2b8fc6b6e386257bb160c318775fc202436297c2e688c2",
+    "cases/performing-rigs/docs/investigations/remote-to-motor-causal-trace.md": "b891b128cc1b724c447da7bb7fbdd6f35149bb0b308cf2aa878b8a895e366815",
+    "cases/performing-rigs/docs/replacement/tmc5160-apfw2-contract.md": "9775d369f0f44a29baacae44b271f6d04a7f984bbac23de8dd4b927e830c2406",
+    "cases/performing-rigs/docs/replacement/tmc5160-interface-reconciliation.md": "b1c96c1e066fa2799f74a6d6e89ebfd59ba97a5be5af47bd29fa70c1a470affb"
+  },
+  "release_gates": {
+    "A": "PARTIAL",
+    "B": "PARTIAL",
+    "C": "PARTIAL",
+    "D": "PARTIAL",
+    "E": "BLOCKED",
+    "F": "BLOCKED",
+    "production": "NO-GO"
+  },
+  "claim_state": "No new admitted or VERIFIED claims; no ledger mutation"
+}

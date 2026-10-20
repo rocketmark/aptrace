@@ -13,12 +13,13 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 ## Configuration-to-behavior investigation
 
-Follow the [prioritized assessment](docs/investigations/configuration-behavior-investigation-plan.md):
-start with motor record ownership/reference frames and runtime MC4 versus applied
-driver state; then bounded X/trigger, A/radio and D/producer-reporting questions
-for retained features. Reuse existing persistence/driver evidence rather than
-repeat broad NVM or bus discovery. No configuration implementation is authorized
-by the plan, and release grades remain unchanged.
+The [first motor-state/reference package](docs/investigations/motor-state-ownership-and-reference.md)
+is complete at its bounded exit. Next, choose the retained workflow's durable
+program authority and physical reference contract; resolve only necessary record
+units/bounds and late MC dependency/application rules. Do not repeat the NVM
+round trip or motor bus discovery. X/trigger, A/radio and D/reporting remain
+separate, unstarted packages in the [plan](docs/investigations/configuration-behavior-investigation-plan.md).
+No configuration implementation or physical validation has been performed.
 
 ## Production upgrade/downgrade release gates
 

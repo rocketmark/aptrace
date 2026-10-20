@@ -8,6 +8,13 @@ function that builds the `'+'` wire frame and every real UI path that
 calls it, and a complete, concrete round trip from a real Remote `'+'`
 send through AutoPilot's persistence to a real motor move-commit call.
 
+Current qualifications: [motor-state/reference investigation](motor-state-ownership-and-reference.md)
+adds two-record signed/reference witnesses and distinguishes staging/dirty from
+a completed flash save. Its native review also narrows the handshake claim:
+normal mode-zero `0xc440` includes additional configuration-response validation;
+a P prefix alone does not guarantee the transfer tail for all invocation modes.
+These are current interpretations; historical generated evidence is unchanged.
+
 ## Current model
 
 ### The two real triggers for `FUN_0000c440`'s bulk push
@@ -15,10 +22,11 @@ send through AutoPilot's persistence to a real motor move-commit call.
 `FUN_0000c440` is the Remote's own `'S'`-query function (sends `"S|"`,
 waits for a `'P...'` response). Its tail bulk-pushes `'+'` (mode `0x62`)
 for every channel with nonzero stored data, then unconditionally sends
-`MC4`. This whole tail fires whenever a single, real, always-first
-action inside the function — sending `"S|"` and receiving a clean
-`'P'`-prefixed response within ~200 ticks — succeeds; the response's
-actual value never matters, only its shape.
+`MC4`. The tail requires the exchange success flag. A P-prefixed response within
+the query window is one condition, but normal mode-zero invocation includes
+another configuration-response parse/validation that can clear the flag.
+Nonzero invocation can skip that section. Response shape alone is therefore
+not sufficient for every invocation path.
 
 There are exactly four real callers of `FUN_0000c440` anywhere in the
 compiled image (confirmed both by Ghidra's call graph and an independent
@@ -162,8 +170,10 @@ dispatch, gated on `*0x20000fc9 == 0`, reset to `0` by
 `FUN_00016840()` elapsed time vs. `*0x20001734` exceeding **~5000
 ticks** with no has-ever-sent/Quick-Setup flags set. The bulk-push gate
 itself: `cmp r4,#0; beq 0xc458` at `0xc9a4`–`0xc9a6`, where `r4` (`cVar24`)
-is set purely by "did a clean `'P'`-response arrive within ~200 ticks,"
-independent of the response's value. `MC4` (`FUN_00005a8c(4)`) is sent
+is path-dependent: normal mode-zero invocation also validates the later
+configuration response. The P-prefix-only interpretation is superseded by
+[motor-state/reference analysis](motor-state-ownership-and-reference.md).
+`MC4` (`FUN_00005a8c(4)`) is sent
 from a single convergent instruction at `0xcb4a`, reached whether the
 push loop completes, aborts on a failed ack, or is skipped entirely
 (`*0x20000fa0 == 0`) — i.e. `MC4` is unconditional once `cVar24=1`,

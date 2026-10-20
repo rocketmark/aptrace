@@ -12,11 +12,14 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
-The [configuration behavior assessment and plan](docs/investigations/configuration-behavior-investigation-plan.md)
-prioritizes field consumers, motor reference/ownership and runtime-versus-applied
-settings. It separates established persistence from unresolved behavioral meaning;
-no new implementation, physical validation or release-gate promotion results
-from that planning pass.
+The [motor-state ownership/reference investigation](docs/investigations/motor-state-ownership-and-reference.md)
+completes the first configuration-plan package: Remote-authored programs have
+an AutoPilot-local execution copy; reset/resync re-derive targets from a software
+reference. Bounded G cases distinguish starts, endpoints and target-minus-current
+requests. MC4 desired settings can differ from setter requests under its timestamp
+gate. Physical reference, program-transfer agreement and active electrical driver
+state remain unverified. The [remaining plan](docs/investigations/configuration-behavior-investigation-plan.md)
+continues to scope later work; no apfw2 implementation or gate promotion follows.
 
 **Production firmware replacement: NO-GO (2026-10-19).** The original vendor
 applications and updater are hash-identified, and the application-side

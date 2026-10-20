@@ -1,0 +1,308 @@
+{
+  "scope": "Bounded original-code observations; not new admitted claims or physical qualification",
+  "checks": [
+    {
+      "check": "twenty bounded replay records",
+      "passed": true,
+      "scope": "CLI invocations, not independent corroboration"
+    },
+    {
+      "check": "chain completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "resync completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "resync-channel1 completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode0-select completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode1-select completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode2-select completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode2-invalid-select completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode0-request completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode1-request completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode2-request completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "g-mode2-invalid-request completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "saved-record-reset-startup completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "mc4-driver-update completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "mc4-recent-config completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "reload-established-reference completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "reload-resync-enabled completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "remote-build-two completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "remote-count-two completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "remote-count-leading-zero completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "remote-count-gap completes within bound",
+      "passed": true,
+      "scope": "declared fixture and stop only"
+    },
+    {
+      "check": "chain endpoints/starts",
+      "passed": true,
+      "scope": "one channel, two fixture records"
+    },
+    {
+      "check": "resync endpoints/starts",
+      "passed": true,
+      "scope": "one channel, two fixture records"
+    },
+    {
+      "check": "saved-record-reset-startup endpoints/starts",
+      "passed": true,
+      "scope": "one channel, two fixture records"
+    },
+    {
+      "check": "reload-established-reference endpoints/starts",
+      "passed": true,
+      "scope": "one channel, two fixture records"
+    },
+    {
+      "check": "reload-resync-enabled endpoints/starts",
+      "passed": true,
+      "scope": "one channel, two fixture records"
+    },
+    {
+      "check": "channel1 has four confined stores",
+      "passed": true,
+      "scope": "watched channels0/1; no physical mapping"
+    },
+    {
+      "check": "g-mode0 target and request",
+      "passed": true,
+      "scope": "phases composed by explicit target/phase carry, rate table zero; commit not executed"
+    },
+    {
+      "check": "g-mode1 target and request",
+      "passed": true,
+      "scope": "phases composed by explicit target/phase carry, rate table zero; commit not executed"
+    },
+    {
+      "check": "g-mode2 target and request",
+      "passed": true,
+      "scope": "phases composed by explicit target/phase carry, rate table zero; commit not executed"
+    },
+    {
+      "check": "g-mode2-invalid target and request",
+      "passed": true,
+      "scope": "phases composed by explicit target/phase carry, rate table zero; commit not executed"
+    },
+    {
+      "check": "mc4-driver-update desired fields",
+      "passed": true,
+      "scope": "RAM desired state and setup gate"
+    },
+    {
+      "check": "mc4-driver-update setter sequence",
+      "passed": true,
+      "scope": "native setter entry arguments, not applied physical state"
+    },
+    {
+      "check": "mc4-recent-config desired fields",
+      "passed": true,
+      "scope": "RAM desired state and setup gate"
+    },
+    {
+      "check": "mc4-recent-config setter sequence",
+      "passed": true,
+      "scope": "native setter entry arguments, not applied physical state"
+    },
+    {
+      "check": "remote-count-two prefix count",
+      "passed": true,
+      "scope": "three tested Remote delta patterns only"
+    },
+    {
+      "check": "remote-count-leading-zero prefix count",
+      "passed": true,
+      "scope": "three tested Remote delta patterns only"
+    },
+    {
+      "check": "remote-count-gap prefix count",
+      "passed": true,
+      "scope": "three tested Remote delta patterns only"
+    },
+    {
+      "check": "Remote frame has signed two-record payload",
+      "passed": true,
+      "scope": "real builder; timing parameters zero, no RF or valid trajectory claimed"
+    }
+  ],
+  "record_results": {
+    "chain": {
+      "endpoint0": 1500,
+      "start0": 1000,
+      "endpoint1": 1300,
+      "start1": 1500,
+      "instructions": 27
+    },
+    "resync": {
+      "endpoint0": 10500,
+      "start0": 10000,
+      "endpoint1": 10300,
+      "start1": 10500,
+      "instructions": 30
+    },
+    "saved-record-reset-startup": {
+      "endpoint0": 500,
+      "start0": 0,
+      "endpoint1": 300,
+      "start1": 500,
+      "instructions": 11864912
+    },
+    "reload-established-reference": {
+      "endpoint0": 500,
+      "start0": 0,
+      "endpoint1": 300,
+      "start1": 500,
+      "instructions": 17375
+    },
+    "reload-resync-enabled": {
+      "endpoint0": 1100,
+      "start0": 600,
+      "endpoint1": 900,
+      "start1": 1100,
+      "instructions": 39382
+    }
+  },
+  "G_requests": {
+    "g-mode0": {
+      "target": 10000,
+      "current": 10200,
+      "distance": -200,
+      "const": 30,
+      "rate": 0
+    },
+    "g-mode1": {
+      "target": 10500,
+      "current": 10200,
+      "distance": 300,
+      "const": 30,
+      "rate": 0
+    },
+    "g-mode2": {
+      "target": 10300,
+      "current": 10200,
+      "distance": 100,
+      "const": 30,
+      "rate": 0
+    },
+    "g-mode2-invalid": {
+      "target": 10200,
+      "current": 10200,
+      "distance": 0,
+      "const": 30,
+      "rate": 0
+    }
+  },
+  "MC4_application": {
+    "mc4-driver-update": {
+      "current_arguments": [
+        400,
+        400,
+        400,
+        400,
+        2400,
+        1600,
+        1600,
+        1600
+      ],
+      "microstep_arguments": [
+        16,
+        16,
+        16,
+        16,
+        16,
+        0,
+        0,
+        0
+      ],
+      "instructions": 11888911
+    },
+    "mc4-recent-config": {
+      "current_arguments": [
+        400,
+        400,
+        400,
+        400
+      ],
+      "microstep_arguments": [
+        16,
+        16,
+        16,
+        16
+      ],
+      "instructions": 11689817
+    }
+  },
+  "Remote_frame": "+1,1,1,0,98,2,0,0,0,500,0,0,0,0,-200,0,0|"
+}
