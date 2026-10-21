@@ -1,0 +1,87 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+  "entry": "0x00007489",
+  "instructions_executed": 14,
+  "stop_reason": "reached stop address 0x000074a6",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x000074a6"
+  ],
+  "registers": {
+    "r0": "0x00000019",
+    "r1": "0x00000000",
+    "r2": "0x00000019",
+    "r3": "0x20000159",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x0000748f",
+    "pc": "0x000074a6",
+    "cpsr": "0x60100033"
+  },
+  "memory": {
+    "0x20000159": "19"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00007488",
+    "0x0000748a",
+    "0x00007188",
+    "0x0000748e",
+    "0x00007490",
+    "0x00007492",
+    "0x00007494",
+    "0x00007496",
+    "0x00007498",
+    "0x0000749a",
+    "0x0000749c",
+    "0x0000749e",
+    "0x000074a0",
+    "0x000074a6"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x2000019c",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [
+    {
+      "instruction": 3,
+      "address": "0x00007188",
+      "lr": "0x0000748f"
+    }
+  ],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [
+    {
+      "instruction": 4,
+      "address": "0x0000748e",
+      "set": [
+        {
+          "reg": "r0",
+          "value": "0x00000019"
+        }
+      ]
+    }
+  ],
+  "force_mem_hits": []
+}

@@ -1,0 +1,2215 @@
+{
+  "scope": "Artifact-level assertions over public APTrace outputs. Diagnostic expectations document an instrumentation discrepancy, not endorsed firmware behavior. No new framework or reversing implementation.",
+  "runs": 52,
+  "checks": [
+    {
+      "check": "a-command-20-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-20-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-20-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-21-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-21-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-21-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-22-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-22-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-22-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-23-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-23-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-23-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-24-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-24-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-24-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-25-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-25-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-25-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-26-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-26-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-26-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a19: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a19: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a19: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a20: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a20: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a20: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a25: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a25: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a25: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a26: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a26: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "boot-reader-a26: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-no-write-watch: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-no-write-watch: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-no-write-watch: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-code-watch-only: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-code-watch-only: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-code-watch-only: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-20-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-20-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-20-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-21-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-21-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-21-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-22-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-22-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-22-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-23-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-23-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-23-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-24-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-24-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-24-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-25-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-25-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-25-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-26-clean: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-26-clean: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-26-clean: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-success: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-success: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-success: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-failure: exit",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-failure: error-free",
+      "actual": false,
+      "expected": false,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-failure: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "frequency-registers-864300000: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "frequency-registers-864300000: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "frequency-registers-864300000: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "frequency-registers-865800000: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "frequency-registers-865800000: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "frequency-registers-865800000: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a20: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a20: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a20: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a25: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a25: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a25: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando868-a20-bringup-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando868-a20-bringup-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando868-a20-bringup-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando868-a25-bringup-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando868-a25-bringup-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando868-a25-bringup-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando915-a20-bringup-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando915-a20-bringup-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando915-a20-bringup-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando915-a25-bringup-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando915-a25-bringup-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "mando915-a25-bringup-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot915-a20-bringup-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot915-a20-bringup-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot915-a20-bringup-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot915-a25-bringup-request: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot915-a25-bringup-request: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot915-a25-bringup-request: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a18-load: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a18-load: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a18-load: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a19-load: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a19-load: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a19-load: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a20-load: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a20-load: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a20-load: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a25-load: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a25-load: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a25-load: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a26-load: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a26-load: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-stored-a26-load: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot-a23-unchanged: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot-a23-unchanged: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "autopilot-a23-unchanged: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-reset-data: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-reset-data: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-reset-data: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote915-reset-data: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote915-reset-data: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote915-reset-data: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote915-setup-band-override: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote915-setup-band-override: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote915-setup-band-override: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a25-native-stage: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a25-native-stage: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote868-ui-a25-native-stage: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a19: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a19: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a19: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a20: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a20: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a20: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a25: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a25: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "remote-display-a25: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "instrumentation-control-no-write-watch: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "instrumentation-control-no-write-watch: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "instrumentation-control-no-write-watch: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "instrumentation-control-write-watch: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "instrumentation-control-write-watch: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "instrumentation-control-write-watch: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a25-control-no-write-watch: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a25-control-no-write-watch: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a25-control-no-write-watch: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a25-control-write-watch: exit",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a25-control-write-watch: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a25-control-write-watch: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "execution"
+    },
+    {
+      "check": "a-command-19-clean: runtime",
+      "actual": 23,
+      "expected": 23,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-19-clean: staged",
+      "actual": 23,
+      "expected": 23,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-19-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-19-clean: Hz",
+      "actual": 865200000,
+      "expected": 865200000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-19-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-19-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-19-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: runtime",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: staged",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: Hz",
+      "actual": 864300000,
+      "expected": 864300000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-20-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: runtime",
+      "actual": 21,
+      "expected": 21,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: staged",
+      "actual": 21,
+      "expected": 21,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: Hz",
+      "actual": 864600000,
+      "expected": 864600000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-21-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: runtime",
+      "actual": 22,
+      "expected": 22,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: staged",
+      "actual": 22,
+      "expected": 22,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: Hz",
+      "actual": 864900000,
+      "expected": 864900000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-22-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: runtime",
+      "actual": 23,
+      "expected": 23,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: staged",
+      "actual": 23,
+      "expected": 23,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: Hz",
+      "actual": 865200000,
+      "expected": 865200000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-23-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: runtime",
+      "actual": 24,
+      "expected": 24,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: staged",
+      "actual": 24,
+      "expected": 24,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: Hz",
+      "actual": 865500000,
+      "expected": 865500000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-24-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: runtime",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: staged",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: Hz",
+      "actual": 865800000,
+      "expected": 865800000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-25-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: runtime",
+      "actual": 23,
+      "expected": 23,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: staged",
+      "actual": 23,
+      "expected": 23,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: Hz",
+      "actual": 865200000,
+      "expected": 865200000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: probe boundary",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: arm unchanged",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a-command-26-clean: real setter calls",
+      "actual": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "expected": [
+        "0x000097a0",
+        "0x0000977c"
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a19: runtime",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a19: corrected stage",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a20: runtime",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a20: corrected stage",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a25: runtime",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a25: corrected stage",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a26: runtime",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "boot-reader-a26: corrected stage",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-stored-a18-load: retained/default",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-stored-a19-load: retained/default",
+      "actual": 19,
+      "expected": 19,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-stored-a20-load: retained/default",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-stored-a25-load: retained/default",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-stored-a26-load: retained/default",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote display A19",
+      "actual": 3,
+      "expected": 3,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote display A20",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote display A25",
+      "actual": 6,
+      "expected": 6,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "mando868: A20 frequency",
+      "actual": 864300000,
+      "expected": 864300000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "mando868: A25 frequency",
+      "actual": 865800000,
+      "expected": 865800000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "mando915: A20 frequency",
+      "actual": 915300000,
+      "expected": 915300000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "mando915: A25 frequency",
+      "actual": 916800000,
+      "expected": 916800000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "autopilot915: A20 frequency",
+      "actual": 915300000,
+      "expected": 915300000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "autopilot915: A25 frequency",
+      "actual": 916800000,
+      "expected": 916800000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-reset-data: copied base",
+      "actual": 864000000,
+      "expected": 864000000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-reset-data: count limit",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote915-reset-data: copied base",
+      "actual": 864000000,
+      "expected": 864000000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote915-reset-data: count limit",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "Remote915 setup override",
+      "actual": 915000000,
+      "expected": 915000000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: packet",
+      "actual": "A20,|",
+      "expected": "A20,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: local-init stop",
+      "actual": "0x00007ba4",
+      "expected": "0x00007ba4",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: five transmissions",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: store first",
+      "actual": "0x00006f7c",
+      "expected": "0x00006f7c",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: store index",
+      "actual": 45,
+      "expected": 45,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: store value",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: five frame-loop observations",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: frame at send loop",
+      "actual": "A20,|",
+      "expected": "A20,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: frame at send loop",
+      "actual": "A20,|",
+      "expected": "A20,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: frame at send loop",
+      "actual": "A20,|",
+      "expected": "A20,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: frame at send loop",
+      "actual": "A20,|",
+      "expected": "A20,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a20: frame at send loop",
+      "actual": "A20,|",
+      "expected": "A20,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: packet",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: local-init stop",
+      "actual": "0x00007ba4",
+      "expected": "0x00007ba4",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: five transmissions",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: store first",
+      "actual": "0x00006f7c",
+      "expected": "0x00006f7c",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: store index",
+      "actual": 45,
+      "expected": 45,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: store value",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: five frame-loop observations",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: frame at send loop",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: frame at send loop",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: frame at send loop",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: frame at send loop",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "remote868-ui-a25: frame at send loop",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "native Remote staging low byte",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "native Remote staging dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "native Remote staging frame",
+      "actual": "A25,|",
+      "expected": "A25,|",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "frequency-registers-864300000: register requests",
+      "actual": [
+        [
+          134,
+          216
+        ],
+        [
+          135,
+          19
+        ],
+        [
+          136,
+          51
+        ]
+      ],
+      "expected": [
+        [
+          134,
+          216
+        ],
+        [
+          135,
+          19
+        ],
+        [
+          136,
+          51
+        ]
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "frequency-registers-864300000: frequency shadow",
+      "actual": 864300000,
+      "expected": 864300000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "frequency-registers-865800000: register requests",
+      "actual": [
+        [
+          134,
+          216
+        ],
+        [
+          135,
+          115
+        ],
+        [
+          136,
+          51
+        ]
+      ],
+      "expected": [
+        [
+          134,
+          216
+        ],
+        [
+          135,
+          115
+        ],
+        [
+          136,
+          51
+        ]
+      ],
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "frequency-registers-865800000: frequency shadow",
+      "actual": 865800000,
+      "expected": 865800000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-success: return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-success: transport selector cleared",
+      "actual": "00",
+      "expected": "00",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-success: arm retained",
+      "actual": "02000000",
+      "expected": "02000000",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-success: frequency shadow",
+      "actual": 864300000,
+      "expected": 864300000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009bb0: present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009bb0: R1",
+      "actual": 7,
+      "expected": 7,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009c14: present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009c14: R1",
+      "actual": 250000,
+      "expected": 250000,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009cac: present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009cac: R1",
+      "actual": 5,
+      "expected": 5,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009d2a: present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009d2a: R1",
+      "actual": 17,
+      "expected": 17,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009d2a: R2",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009d2a: R1",
+      "actual": 17,
+      "expected": 17,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup setting 0x00009d2a: R2",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "bringup CRC call present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: error loop",
+      "actual": "0x0000612e",
+      "expected": "0x0000612e",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: A already staged",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a20-radio-id-failure-mapped: success-only transport clear absent",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "unchanged A still initializes",
+      "actual": "0x00009d88",
+      "expected": "0x00009d88",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "unchanged A does not dirty",
+      "actual": "00",
+      "expected": "00",
+      "passed": true,
+      "kind": "behavior"
+    },
+    {
+      "check": "a25-control-no-write-watch: diagnostic staged byte",
+      "actual": 25,
+      "expected": 25,
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "a25-control-no-write-watch: diagnostic dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "a25-control-write-watch: diagnostic staged byte",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "a25-control-write-watch: diagnostic dirty",
+      "actual": "00",
+      "expected": "00",
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "instrumentation-control-no-write-watch: diagnostic staged byte",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "instrumentation-control-no-write-watch: diagnostic dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "instrumentation-control-write-watch: diagnostic staged byte",
+      "actual": 20,
+      "expected": 20,
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "instrumentation-control-write-watch: diagnostic dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    },
+    {
+      "check": "A25 instrumentation only variable",
+      "actual": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132352c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 10000",
+      "expected": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132352c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 10000",
+      "passed": true,
+      "kind": "capability diagnostic; not firmware contract"
+    }
+  ],
+  "passed": 301,
+  "failed": 0
+}

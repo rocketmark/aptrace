@@ -12,6 +12,18 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
+The [A/radio reconfiguration investigation](docs/investigations/a-radio-reconfiguration.md)
+establishes normal channels1–6 / A20–25 at864.3–865.8MHz or915.3–916.8MHz,
+in300kHz steps, with common modem-setting requests. Remote stages its selection,
+sends A five times, then retunes locally; no acknowledged migration is established.
+Remote915 overrides its copied864MHz base during setup. Stored19 is retained by
+Remote but defaulted by AutoPilot, a bounded mismatch. Requested/applied/peer
+and durable state remain distinct. Packet defaults, physical RF and paired
+recovery remain open; gates unchanged. The same investigation demonstrates an
+A25 write-watch observability discrepancy with a single-variable control;
+code-watch/final-snapshot replays provide the behavior witnesses, and a separate
+tooling diagnosis is needed before trusting that write-watch configuration.
+
 The [X/trigger acceptance package](docs/investigations/x-trigger-acceptance.md)
 establishes selector/reset bands, reporting versus reload acceptance, record
 preparation and conditional reference resync. Analog acquisition can recur while

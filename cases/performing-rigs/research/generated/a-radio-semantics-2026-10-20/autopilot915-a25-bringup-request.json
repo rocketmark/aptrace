@@ -1,0 +1,70 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "entry": "0x0000610d",
+  "instructions_executed": 11,
+  "stop_reason": "reached stop address 0x00009d88",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x00009d88"
+  ],
+  "registers": {
+    "r0": "0x20004160",
+    "r1": "0x36a54200",
+    "r2": "0x3689cac0",
+    "r3": "0x00000006",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x2002fff0",
+    "lr": "0x00006125",
+    "pc": "0x00009d88",
+    "cpsr": "0x20100033"
+  },
+  "memory": {},
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x0000610c",
+    "0x0000610e",
+    "0x00006110",
+    "0x00006112",
+    "0x00006114",
+    "0x00006116",
+    "0x00006118",
+    "0x0000611a",
+    "0x0000611c",
+    "0x00006120",
+    "0x00009d88"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20000000",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000069",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": []
+}

@@ -1,0 +1,34 @@
+==================================================
+Function: FUN_000110e4 @ 000110e4  size=36  params=0  callingConvention=unknown
+
+
+void FUN_000110e4(char *param_1,int param_2,uint param_3)
+
+{
+  char cVar1;
+  uint extraout_r2;
+  uint uVar2;
+  bool bVar3;
+  
+  uVar2 = param_3;
+  if (*param_1 == '\0') {
+    FUN_0001108c();
+    uVar2 = extraout_r2;
+  }
+  cVar1 = (char)uVar2;
+  uVar2 = (uint)(byte)param_1[param_2 + 1];
+  bVar3 = uVar2 != param_3;
+  if (bVar3) {
+    uVar2 = 0x1002;
+    cVar1 = '\x01';
+  }
+  if (bVar3) {
+    param_1[uVar2] = cVar1;
+    param_1[param_2 + 1] = (char)param_3;
+  }
+  return;
+}
+
+
+
+

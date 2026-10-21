@@ -21,8 +21,14 @@ round trip or motor bus discovery. The [X/trigger package](docs/investigations/x
 is complete at its bounded exit: separate bands, sample freshness, reporting,
 eligibility and arming. If legacy triggers are retained, trace one natural
 arm/eligibility-restoration sequence with STOP/reset controls; obtain physical
-timing/pulse evidence before selecting debounce/re-arm behavior. A/radio and
-D/reporting remain separate, unstarted packages in the [plan](docs/investigations/configuration-behavior-investigation-plan.md).
+timing/pulse evidence before selecting debounce/re-arm behavior. The
+[A/radio package](docs/investigations/a-radio-reconfiguration.md) now establishes
+six channel requests, the Remote's five-send/local-retune sequence,915 setup
+override and invalid-value mismatch. Before claiming legacy RF compatibility,
+resolve remaining packet defaults and selected loss/reset/paired persistence
+behavior. Separately investigate its single-variable A25 write-watch discrepancy;
+do not use that instrumentation result as firmware behavior. D/reporting remains
+unstarted in the [plan](docs/investigations/configuration-behavior-investigation-plan.md).
 No configuration implementation or physical validation has been performed.
 
 ## Production upgrade/downgrade release gates

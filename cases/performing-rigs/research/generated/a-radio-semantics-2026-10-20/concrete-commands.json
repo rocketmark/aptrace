@@ -1,0 +1,262 @@
+[
+  {
+    "name": "a-command-20-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-20-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-21-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132312c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-21-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-22-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132322c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-22-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-23-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132332c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-23-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-24-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132342c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-24-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-25-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132352c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-25-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-19-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4131392c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-19-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-26-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132362c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch-mem-write 20000069:1 --watch-mem-write 20003160:1 --watch-mem-write 20004147:1 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-26-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "boot-reader-a19",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 4c20 --seed-mem 20004158:0020010001100000 --seed-mem 1201a:13 --seed-mem 13000:01 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 200000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/boot-reader-a19.json",
+    "exit_status": 0
+  },
+  {
+    "name": "boot-reader-a20",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 4c20 --seed-mem 20004158:0020010001100000 --seed-mem 1201a:14 --seed-mem 13000:01 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 200000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/boot-reader-a20.json",
+    "exit_status": 0
+  },
+  {
+    "name": "boot-reader-a25",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 4c20 --seed-mem 20004158:0020010001100000 --seed-mem 1201a:19 --seed-mem 13000:01 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 200000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/boot-reader-a25.json",
+    "exit_status": 0
+  },
+  {
+    "name": "boot-reader-a26",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 4c20 --seed-mem 20004158:0020010001100000 --seed-mem 1201a:1a --seed-mem 13000:01 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 200000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/boot-reader-a26.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a20-no-write-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --stop-at 9d88  --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 8900:20 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a20-no-write-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a20-code-watch-only",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --stop-at 9d88 --watch 97a0 --watch 977c --watch 97a4 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 8900:20 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a20-code-watch-only.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-20-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-20-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-21-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132312c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-21-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-22-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132322c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-22-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-23-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132332c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-23-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-24-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132342c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-24-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-25-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132352c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-25-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-19-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4131392c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-19-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a-command-26-clean",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132362c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --stop-at 9d88 --watch 97a0 --watch 977c --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002329:1 --dump-mem 20001fd4:1 --dump-mem 20002318:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a-command-26-clean.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a20-radio-id-success",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20000018:01 --seed-mem 20002318:02000000 --stub-call d300 --stub-call d388 --stub-call a1f4 --stub-call a000 --stub-call a05c --stub-call a03c --stub-call cd50 --stub-call 99c2 --force-reg 99c2:r0:12 --watch 9984 --watch 9bb0 --watch 9c14 --watch 9cac --watch 9d2a --watch 9cdc --stop-at 2fff0010 --stop-at 6fd8 --dump-mem 20000069:1 --dump-mem 20000018:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20004188:4 --dump-mem 20002318:4 --max-instructions 20000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a20-radio-id-success.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a20-radio-id-failure",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20000018:01 --seed-mem 20002318:02000000 --stub-call d300 --stub-call d388 --stub-call a1f4 --stub-call a000 --stub-call a05c --stub-call a03c --stub-call cd50 --stub-call 99c2 --force-reg 99c2:r0:0 --watch 9984 --watch 9bb0 --watch 9c14 --watch 9cac --watch 9d2a --watch 9cdc --stop-at 612e --stop-at 6fd8 --dump-mem 20000069:1 --dump-mem 20000018:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20004188:4 --dump-mem 20002318:4 --max-instructions 20000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a20-radio-id-failure.json",
+    "exit_status": 1
+  },
+  {
+    "name": "frequency-registers-864300000",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 9b20 --arg 0x20004160 --arg 864300000 --stub-call d388 --stub-call a000 --stub-call a05c --stub-call a03c --watch 9984 --dump-mem 20004188:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/frequency-registers-864300000.json",
+    "exit_status": 0
+  },
+  {
+    "name": "frequency-registers-865800000",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 9b20 --arg 0x20004160 --arg 865800000 --stub-call d388 --stub-call a000 --stub-call a05c --stub-call a03c --watch 9984 --dump-mem 20004188:4 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/frequency-registers-865800000.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a20-radio-id-failure-mapped",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --mmio-size 0x4000000 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20000018:01 --seed-mem 20002318:02000000 --stub-call d300 --stub-call d388 --stub-call a1f4 --stub-call a000 --stub-call a05c --stub-call a03c --stub-call cd50 --stub-call 99c2 --force-reg 99c2:r0:0 --stop-at 612e --stop-at 6fd8 --dump-mem 20000069:1 --dump-mem 20000018:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --dump-mem 20002318:4 --max-instructions 20000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a20-radio-id-failure-mapped.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-ui-a20",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry d218 --seed-mem 20000fae:07 --seed-mem 20000fad:00 --seed-mem 20000159:14 --stub-call 171f0 --force-reg 171f0:r0:1 --stub-call 110e4 --stub-call 168c0 --stub-call 5864 --stub-call 58a8 --watch 6f7c --watch 110e0 --watch 168c0 --watch d450 --watch-mem 2000183c:8 --stop-at 7ba4 --max-instructions 10000 --dump-mem 2000183c:8 --dump-mem 20000159:1 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-ui-a20.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-ui-a25",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry d218 --seed-mem 20000fae:07 --seed-mem 20000fad:00 --seed-mem 20000159:19 --stub-call 171f0 --force-reg 171f0:r0:1 --stub-call 110e4 --stub-call 168c0 --stub-call 5864 --stub-call 58a8 --watch 6f7c --watch 110e0 --watch 168c0 --watch d450 --watch-mem 2000183c:8 --stop-at 7ba4 --max-instructions 10000 --dump-mem 2000183c:8 --dump-mem 20000159:1 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-ui-a25.json",
+    "exit_status": 0
+  },
+  {
+    "name": "mando868-a20-bringup-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7ba4 --seed-mem 20000000:c0ca8936 --seed-mem 20000159:14 --seed-mem 20000000:00987f33 --stub-call 112e0 --stop-at 1170c --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/mando868-a20-bringup-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "mando868-a25-bringup-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7ba4 --seed-mem 20000000:c0ca8936 --seed-mem 20000159:19 --seed-mem 20000000:00987f33 --stub-call 112e0 --stop-at 1170c --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/mando868-a25-bringup-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "mando915-a20-bringup-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando915.bin --entry 7ba4 --seed-mem 20000000:c0ca8936 --seed-mem 20000159:14  --stub-call 112f0 --stop-at 1171c --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/mando915-a20-bringup-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "mando915-a25-bringup-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando915.bin --entry 7ba4 --seed-mem 20000000:c0ca8936 --seed-mem 20000159:19  --stub-call 112f0 --stop-at 1171c --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/mando915-a25-bringup-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "autopilot915-a20-bringup-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin --entry 610c --seed-mem 20000000:c0ca8936 --seed-mem 20000069:14   --stop-at 9d88 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/autopilot915-a20-bringup-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "autopilot915-a25-bringup-request",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin --entry 610c --seed-mem 20000000:c0ca8936 --seed-mem 20000069:19   --stop-at 9d88 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/autopilot915-a25-bringup-request.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-stored-a18-load",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7488 --stub-call 7188 --force-reg 748e:r0:12 --seed-mem 2000019c:05 --stop-at 74a6 --dump-mem 20000159:1 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-stored-a18-load.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-stored-a19-load",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7488 --stub-call 7188 --force-reg 748e:r0:13 --seed-mem 2000019c:05 --stop-at 74a6 --dump-mem 20000159:1 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-stored-a19-load.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-stored-a20-load",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7488 --stub-call 7188 --force-reg 748e:r0:14 --seed-mem 2000019c:05 --stop-at 74a6 --dump-mem 20000159:1 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-stored-a20-load.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-stored-a25-load",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7488 --stub-call 7188 --force-reg 748e:r0:19 --seed-mem 2000019c:05 --stop-at 74a6 --dump-mem 20000159:1 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-stored-a25-load.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-stored-a26-load",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 7488 --stub-call 7188 --force-reg 748e:r0:1a --seed-mem 2000019c:05 --stop-at 74a6 --dump-mem 20000159:1 --max-instructions 1000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-stored-a26-load.json",
+    "exit_status": 0
+  },
+  {
+    "name": "autopilot-a23-unchanged",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --seed-mem 2000232a:4132332c7c00 --seed-mem 20003145:01 --seed-mem 20003160:17 --seed-mem 20000069:17 --seed-mem 20000000:00987f33 --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003160:1 --dump-mem 20004147:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/autopilot-a23-unchanged.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-reset-data",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry 16794  --stop-at 16948 --dump-mem 20000000:4 --dump-mem 2000019c:1 --max-instructions 20000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-reset-data.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote915-reset-data",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando915.bin --entry 167a4  --stop-at 16958 --dump-mem 20000000:4 --dump-mem 2000019c:1 --max-instructions 20000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote915-reset-data.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote915-setup-band-override",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando915.bin --entry ffc0 --seed-mem 20000000:00987f33 --stop-at ffc6 --dump-mem 20000000:4 --dump-mem 2000019c:1 --max-instructions 20000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote915-setup-band-override.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote868-ui-a25-native-stage",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry d218 --seed-mem 20000fae:07 --seed-mem 20000fad:00 --seed-mem 20000159:19 --seed-mem 200028e1:01 --stub-call 171f0 --force-reg 171f0:r0:1 --stub-call 168c0 --stub-call 58a8 --watch 6f7c --watch d450 --watch-mem 2000183c:8 --stop-at 7ba4 --dump-mem 2000183c:8 --dump-mem 2000350f:1 --dump-mem 200038e3:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote868-ui-a25-native-stage.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-display-a19",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --call 4560 --seed-mem 20000159:13 --max-instructions 100 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote-display-a19.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-display-a20",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --call 4560 --seed-mem 20000159:14 --max-instructions 100 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote-display-a20.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-display-a25",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --call 4560 --seed-mem 20000159:19 --max-instructions 100 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote-display-a25.json",
+    "exit_status": 0
+  },
+  {
+    "name": "instrumentation-control-no-write-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000  --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/instrumentation-control-no-write-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "instrumentation-control-write-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132302c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --watch-mem-write 20000069:1 --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/instrumentation-control-write-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a25-control-no-write-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132352c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000  --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a25-control-no-write-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "a25-control-write-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8258 --reg lr=0x2fff0011 --reg r0=5 --seed-mem 2000232a:4132352c7c00 --seed-mem 20003145:01 --seed-mem 20000000:00987f33 --seed-mem 20000069:17 --seed-mem 20002329:09 --seed-mem 20001fd4:00 --seed-mem 20002318:02000000 --watch-mem-write 20000069:1 --stop-at 9d88 --dump-mem 20000069:1 --dump-mem 20003145:64 --dump-mem 20004147:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/a25-control-write-watch.json",
+    "exit_status": 0
+  }
+]

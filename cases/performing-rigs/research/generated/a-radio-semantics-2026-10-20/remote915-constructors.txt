@@ -1,0 +1,138 @@
+==================================================
+Function: FUN_00016958 @ 00016958  size=444  params=0  callingConvention=unknown
+
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_00016958(void)
+
+{
+  byte *pbVar1;
+  int iVar2;
+  byte *pbVar3;
+  uint uVar4;
+  
+  *DAT_00016b14 = *DAT_00016b14;
+  iVar2 = DAT_00016b18;
+  *(undefined2 *)(DAT_00016b18 + 0x14) = 0x200e;
+  pbVar1 = DAT_00016b1c;
+  do {
+  } while (-1 < *(int *)(iVar2 + 0xc) << 0x1f);
+  *DAT_00016b1c = *DAT_00016b1c | 1;
+  do {
+  } while (*(int *)(pbVar1 + 4) << 0x1f < 0);
+  pbVar1[0x2c] = 5;
+  pbVar3 = DAT_00016b1c;
+  pbVar1[0x2d] = 1;
+  pbVar1[0x2e] = 0;
+  pbVar1[0x2f] = 0;
+  do {
+  } while (*(int *)(pbVar1 + 4) << 0x1a < 0);
+  pbVar1[0x20] = 4;
+  iVar2 = DAT_00016b20;
+  pbVar1[0x21] = 1;
+  pbVar1[0x22] = 0;
+  pbVar1[0x23] = 0;
+  do {
+  } while ((*(uint *)(pbVar3 + 4) & 4) != 0);
+  *(undefined1 *)(DAT_00016b20 + 0x1c) = 0;
+  *(undefined4 *)(iVar2 + 0x28) = DAT_00016b24;
+  do {
+  } while ((*(byte *)(iVar2 + 0x2c) & 0x10) != 0);
+  *(byte *)(iVar2 + 0x20) = *(byte *)(iVar2 + 0x2c) & 0x10;
+  iVar2 = DAT_00016b20;
+  do {
+  } while ((int)((uint)*(byte *)(DAT_00016b20 + 0x2c) << 0x1d) < 0);
+  *(byte *)(DAT_00016b20 + 0x1c) = *(byte *)(DAT_00016b20 + 0x1c) | 2;
+  do {
+  } while ((int)((uint)*(byte *)(iVar2 + 0x2c) << 0x1e) < 0);
+  *(undefined4 *)(iVar2 + 0x24) = *(undefined4 *)(iVar2 + 0x24);
+  iVar2 = DAT_00016b20;
+  do {
+  } while ((int)((uint)*(byte *)(DAT_00016b20 + 0x2c) << 0x1c) < 0);
+  *(undefined1 *)(DAT_00016b20 + 0x20) = 0x98;
+  pbVar1 = DAT_00016b1c;
+  do {
+  } while (-1 < *(int *)(iVar2 + 0x10) << 0x17);
+  *(undefined4 *)(DAT_00016b1c + 0x34) = DAT_00016b28;
+  do {
+  } while (*(int *)(pbVar1 + 4) << 0x18 < 0);
+  pbVar1[0x84] = 0x45;
+  iVar2 = DAT_00016b20;
+  pbVar1[0x85] = 0;
+  pbVar1[0x86] = 0;
+  pbVar1[0x87] = 0;
+  *(undefined4 *)(DAT_00016b20 + 0x34) = 0x77;
+  do {
+  } while (*(int *)(iVar2 + 0x3c) << 0x1d < 0);
+  *(undefined4 *)(iVar2 + 0x38) = 0x800;
+  *(undefined1 *)(iVar2 + 0x30) = 2;
+  iVar2 = DAT_00016b20;
+  do {
+    do {
+    } while (-1 < *(int *)(DAT_00016b20 + 0x40) << 0x1e);
+  } while (-1 < *(int *)(DAT_00016b20 + 0x40) << 0x1f);
+  pbVar1 = DAT_00016b1c;
+  pbVar1[0x88] = 0x45;
+  pbVar1[0x89] = 0;
+  pbVar1[0x8a] = 0;
+  pbVar1[0x8b] = 0;
+  *(undefined4 *)(iVar2 + 0x48) = 99;
+  iVar2 = DAT_00016b20;
+  do {
+  } while (*(int *)(DAT_00016b20 + 0x50) << 0x1d < 0);
+  *(undefined4 *)(DAT_00016b20 + 0x4c) = 0x800;
+  *(undefined1 *)(iVar2 + 0x44) = 2;
+  pbVar1 = DAT_00016b1c;
+  do {
+    do {
+    } while (-1 < *(int *)(DAT_00016b20 + 0x54) << 0x1e);
+  } while (-1 < *(int *)(DAT_00016b20 + 0x54) << 0x1f);
+  pbVar1[0x24] = 6;
+  pbVar1[0x25] = 3;
+  pbVar1[0x26] = 0;
+  pbVar1[0x27] = 0;
+  do {
+  } while (*(int *)(pbVar1 + 4) << 0x1c < 0);
+  pbVar1[0x28] = 8;
+  pbVar1[0x29] = 3;
+  pbVar1[0x2a] = 0;
+  pbVar1[0x2b] = 0;
+  do {
+  } while (*(int *)(pbVar1 + 4) << 0x1b < 0);
+  *(undefined4 *)(pbVar1 + 0x30) = DAT_00016b2c;
+  pbVar1 = DAT_00016b1c;
+  do {
+  } while (*(int *)(DAT_00016b1c + 4) << 0x19 < 0);
+  pbVar1[0x20] = 7;
+  iVar2 = DAT_00016b30;
+  pbVar1[0x21] = 3;
+  pbVar1[0x22] = 0;
+  pbVar1[0x23] = 0;
+  do {
+  } while ((*(uint *)(pbVar1 + 4) & 4) != 0);
+  *(undefined1 *)(DAT_00016b30 + 5) = 1;
+  *(uint *)(iVar2 + 0x1018) = *(uint *)(iVar2 + 0x1018) & 0xfffffffb;
+  disableIRQinterrupts();
+  *(undefined4 *)(DAT_00016b34 + 8) = 1;
+  enableIRQinterrupts();
+  *(uint *)(DAT_00016b38 + 0xc) = *(uint *)(DAT_00016b38 + 0xc) | 0x1000000;
+  *DAT_00016b3c = *DAT_00016b3c | 1;
+  uVar4 = _DAT_00800080;
+  *(ushort *)(DAT_00016b40 + 0x24) = (ushort)_DAT_00800080 & 3;
+  *(ushort *)(DAT_00016b44 + 0x48) =
+       (ushort)(((uVar4 & 0x7ff) >> 8) << 4) | (ushort)(((uVar4 & 0xff) >> 5) << 8) |
+       (ushort)((uVar4 << 0x1b) >> 0x1d);
+  *(ushort *)(DAT_00016b48 + 0x48) =
+       (ushort)((uVar4 << 0xd) >> 0x1d) |
+       (ushort)(((uVar4 & 0x1ffffff) >> 0x16) << 4) | (ushort)(((uVar4 & 0x3fffff) >> 0x13) << 8);
+  uVar4 = *DAT_00016b4c;
+  _DAT_41000028 =
+       (ushort)((uVar4 << 0x16) >> 0x1b) | (ushort)((uVar4 & 0x1f) << 6) |
+       (ushort)(((uVar4 & 0x1fff) >> 10) << 0xc);
+  return;
+}
+
+
+
+

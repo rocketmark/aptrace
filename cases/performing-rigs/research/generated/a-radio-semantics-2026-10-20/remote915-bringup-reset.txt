@@ -1,0 +1,74 @@
+==================================================
+Function: FUN_00007ba4 @ 00007ba4  size=116  params=0  callingConvention=unknown
+
+
+void FUN_00007ba4(void)
+
+{
+  undefined4 uVar1;
+  byte bVar2;
+  int iVar3;
+  
+  FUN_000112f0(DAT_00007bfc,0x33,0x2a,7);
+  iVar3 = FUN_0001171c(DAT_00007bfc,DAT_00007c08 * (*DAT_00007c00 - 0x13) + *DAT_00007c04);
+  if (iVar3 == 0) {
+    FUN_00007b9c();
+    do {
+                    /* WARNING: Do nothing block with infinite loop */
+    } while( true );
+  }
+  FUN_00011544(DAT_00007bfc,7);
+  FUN_000115a8(DAT_00007bfc,DAT_00007c0c);
+  FUN_00011640(DAT_00007bfc,5);
+  FUN_000116be(DAT_00007bfc,0x11,1);
+  uVar1 = DAT_00007bfc;
+  bVar2 = FUN_00011336(DAT_00007bfc,0x1e);
+  FUN_000112f8(uVar1,0x9e,bVar2 | 4);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_000167a4 @ 000167a4  size=104  params=0  callingConvention=unknown
+
+
+void FUN_000167a4(void)
+
+{
+  undefined4 *puVar1;
+  undefined4 *puVar2;
+  undefined4 *puVar3;
+  undefined4 *puVar4;
+  undefined4 *puVar5;
+  
+  puVar1 = DAT_00016810;
+  puVar4 = DAT_0001680c;
+  puVar2 = DAT_0001680c;
+  puVar3 = DAT_00016814;
+  if ((DAT_0001680c != DAT_00016810) &&
+     (puVar3 = DAT_0001680c, puVar5 = DAT_00016814, DAT_00016814 != DAT_0001680c)) {
+    for (; puVar3 = puVar5, puVar2 < puVar1; puVar2 = puVar2 + 1) {
+      *puVar2 = *puVar5;
+      puVar5 = puVar5 + 1;
+    }
+  }
+  puVar5 = DAT_00016820;
+  if ((puVar4 != puVar1) && (puVar4 = DAT_0001681c, puVar3 != puVar2)) {
+    for (; puVar4 < puVar5; puVar4 = puVar4 + 1) {
+      *puVar4 = 0;
+    }
+  }
+  *(uint *)(DAT_00016818 + 0x88) = *(uint *)(DAT_00016818 + 0x88) | 0xf00000;
+  DataSynchronizationBarrier(0xf);
+  InstructionSynchronizationBarrier(0xf);
+  FUN_00016958();
+  FUN_00016910();
+  do {
+                    /* WARNING: Do nothing block with infinite loop */
+  } while( true );
+}
+
+
+
+

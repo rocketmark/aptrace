@@ -1,0 +1,73 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+  "entry": "0x00004561",
+  "instructions_executed": 8,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "registers": {
+    "r0": "0x00000001",
+    "r1": "0x00000000",
+    "r2": "0x00000000",
+    "r3": "0x20000159",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x2fff0011",
+    "pc": "0x2fff0010",
+    "cpsr": "0x20100033"
+  },
+  "memory": {},
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00004560",
+    "0x00004562",
+    "0x00004564",
+    "0x00004566",
+    "0x00004568",
+    "0x0000456a",
+    "0x0000456e",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20000159",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x00004560",
+    "args": [],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x00000001",
+      "r1": "0x00000000",
+      "r2": "0x00000000",
+      "r3": "0x20000159"
+    }
+  }
+}

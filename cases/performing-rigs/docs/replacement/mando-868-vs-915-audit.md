@@ -1,5 +1,12 @@
 # Mando 915 Differential Audit against Mando 868
 
+Current qualification (2026-10-20): the [A investigation](../investigations/a-radio-reconfiguration.md)
+resolves the frequency-configuration question left open below. Both reset
+copies use864000000;915 setup explicitly overwrites RAM0x20000000 with915000000
+at0xffc4 before bringup. Both variants then add `(A−19)*300000` Hz. This is
+targeted new static/concrete evidence, not a new all-functions equivalence audit
+or a change to the preserved machine-readable differential artifacts.
+
 **Purpose**: determine whether one common Remote behavioral contract can
 cover both `firmware_mando868.bin` and `firmware_mando915.bin`, with
 only RF-band-specific differences. Mando868 is the established baseline

@@ -1,0 +1,207 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "entry": "0x00008259",
+  "instructions_executed": 223,
+  "stop_reason": "reached stop address 0x0000612e",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x0000612e",
+    "0x00006fd8"
+  ],
+  "registers": {
+    "r0": "0x00000007",
+    "r1": "0x00001770",
+    "r2": "0x00000002",
+    "r3": "0x00000001",
+    "r4": "0x20004c84",
+    "r5": "0x00011080",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x2002fff0",
+    "lr": "0x00005d31",
+    "pc": "0x0000612e",
+    "cpsr": "0x60100033"
+  },
+  "memory": {
+    "0x20000069": "14",
+    "0x20000018": "01",
+    "0x20003145": "01000000000000000000000000000000000000000000000000000014000000000000000000000000000000000000000000000000000000000000000000000000",
+    "0x20004147": "01",
+    "0x20002318": "02000000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00009da0",
+    "0x00009da2",
+    "0x00009da4",
+    "0x00009da6",
+    "0x0000d300",
+    "0x00009daa",
+    "0x00009dac",
+    "0x00009dae",
+    "0x0000d388",
+    "0x00009db2",
+    "0x00009db4",
+    "0x0000cd50",
+    "0x00009db8",
+    "0x00009dba",
+    "0x00009dbc",
+    "0x0000d388",
+    "0x00009dc0",
+    "0x00009dc2",
+    "0x0000cd50",
+    "0x00009dc6",
+    "0x00009dc8",
+    "0x0000a1f4",
+    "0x00009dcc",
+    "0x00009dce",
+    "0x00009dd0",
+    "0x000099c2",
+    "0x00009dd4",
+    "0x00009dd6",
+    "0x00009e2e",
+    "0x00009e30",
+    "0x00009e2c",
+    "0x00006124",
+    "0x00006126",
+    "0x00005d24",
+    "0x00005d26",
+    "0x00005d2a",
+    "0x00005d2c",
+    "0x00005c00",
+    "0x00005c02",
+    "0x00005c04",
+    "0x00005c08",
+    "0x00005c0a",
+    "0x00005c38",
+    "0x00005c3a",
+    "0x00005c3c",
+    "0x00005c28",
+    "0x00005c2a",
+    "0x00005c2c",
+    "0x00005d02",
+    "0x00005d04",
+    "0x00005d06",
+    "0x00005c6c",
+    "0x00005c70",
+    "0x00005c84",
+    "0x00005d30",
+    "0x00005d32",
+    "0x00005d34",
+    "0x00005d36",
+    "0x00005d38",
+    "0x00005d3c",
+    "0x00005d3e",
+    "0x0000612a",
+    "0x0000612c",
+    "0x0000612e"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x2000232a",
+      "len": 6,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20003145",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000000",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000069",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000018",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20002318",
+      "len": 4,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [
+    {
+      "instruction": 154,
+      "address": "0x0000d300",
+      "lr": "0x00009d97"
+    },
+    {
+      "instruction": 158,
+      "address": "0x0000d388",
+      "lr": "0x00009d9f"
+    },
+    {
+      "instruction": 164,
+      "address": "0x0000d300",
+      "lr": "0x00009dab"
+    },
+    {
+      "instruction": 168,
+      "address": "0x0000d388",
+      "lr": "0x00009db3"
+    },
+    {
+      "instruction": 171,
+      "address": "0x0000cd50",
+      "lr": "0x00009db9"
+    },
+    {
+      "instruction": 175,
+      "address": "0x0000d388",
+      "lr": "0x00009dc1"
+    },
+    {
+      "instruction": 178,
+      "address": "0x0000cd50",
+      "lr": "0x00009dc7"
+    },
+    {
+      "instruction": 181,
+      "address": "0x0000a1f4",
+      "lr": "0x00009dcd"
+    },
+    {
+      "instruction": 185,
+      "address": "0x000099c2",
+      "lr": "0x00009dd5"
+    }
+  ],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [
+    {
+      "instruction": 185,
+      "address": "0x000099c2",
+      "set": [
+        {
+          "reg": "r0",
+          "value": "0x00000000"
+        }
+      ]
+    }
+  ],
+  "force_mem_hits": []
+}

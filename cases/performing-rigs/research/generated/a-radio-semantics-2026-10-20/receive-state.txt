@@ -1,0 +1,175 @@
+==================================================
+Function: FUN_00007ef4 @ 00007ef4  size=42  params=0  callingConvention=unknown
+
+
+undefined1 FUN_00007ef4(void)
+
+{
+  undefined1 uVar1;
+  
+  if (*DAT_00007f20 == '\0') {
+    if (*DAT_00007f28 == '\0') {
+      uVar1 = FUN_0000c74e(DAT_00007f34);
+    }
+    else {
+      uVar1 = *(undefined1 *)(DAT_00007f30 + *DAT_00007f2c);
+    }
+  }
+  else {
+    uVar1 = FUN_0000b754(DAT_00007f24);
+  }
+  return uVar1;
+}
+
+
+
+==================================================
+Function: FUN_00007f38 @ 00007f38  size=52  params=0  callingConvention=unknown
+
+
+undefined1 FUN_00007f38(void)
+
+{
+  undefined1 uVar1;
+  int iVar2;
+  
+  if (*DAT_00007f6c == '\0') {
+    if (*DAT_00007f74 == '\0') {
+      uVar1 = FUN_0000cb18(DAT_00007f80);
+    }
+    else {
+      iVar2 = *DAT_00007f78 + 1;
+      if (99 < iVar2) {
+        iVar2 = 0;
+      }
+      uVar1 = *(undefined1 *)(DAT_00007f7c + *DAT_00007f78);
+      *DAT_00007f78 = iVar2;
+    }
+  }
+  else {
+    uVar1 = FUN_0000b770(DAT_00007f70);
+  }
+  return uVar1;
+}
+
+
+
+==================================================
+Function: FUN_00007f84 @ 00007f84  size=248  params=0  callingConvention=unknown
+
+
+/* WARNING: Removing unreachable block (ram,0x00009a46) */
+/* WARNING: Removing unreachable block (ram,0x00009a58) */
+/* WARNING: Removing unreachable block (ram,0x00009a52) */
+
+undefined4 FUN_00007f84(undefined4 param_1)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  undefined4 uVar4;
+  int iVar5;
+  uint uVar6;
+  uint uVar7;
+  bool bVar8;
+  
+  iVar3 = DAT_00007fd8;
+  if (*DAT_00007fc8 != '\0') {
+    uVar4 = FUN_0000b242(DAT_00007fcc,param_1);
+    return uVar4;
+  }
+  if (*DAT_00007fd0 != '\0') {
+    FUN_00009e70(DAT_00007fd4);
+    FUN_0000b242(DAT_00007fd4,param_1);
+    radio_reg_readwrite__THIRD_PARTY(DAT_00007fd4,0x81,0x83);
+    FUN_0000cd34(0x96);
+    return 1;
+  }
+  iVar5 = FUN_0000b3f4(*(undefined4 *)(DAT_00007fd8 + 0x10));
+  iVar1 = DAT_0000cb14;
+  iVar2 = DAT_0000cb10;
+  if ((iVar5 == 0) ||
+     (iVar5 = FUN_0000c910(iVar3 + 0x17c), iVar1 = DAT_0000cb14, iVar2 = DAT_0000cb10, iVar5 != 0))
+  {
+LAB_0000ca72:
+    uVar7 = *(int *)(iVar3 + 0x2dc) + 1;
+    uVar6 = uVar7 / 0x15e;
+    if (uVar7 % 0x15e == *(uint *)(iVar3 + 0x2e0)) {
+      iVar5 = 0;
+      bVar8 = (bool)isCurrentModePrivileged();
+      if (bVar8) {
+        iVar5 = isIRQinterruptsEnabled();
+      }
+      uVar7 = iVar5 << 0x1f;
+      if (-1 < (int)uVar7) goto code_r0x0000ca90;
+      goto LAB_0000cab4;
+    }
+    uVar6 = (*(int *)(iVar3 + 0x2dc) + 1U) % 0x15e;
+    bVar8 = uVar6 != *(uint *)(iVar3 + 0x2e0);
+    if (bVar8) {
+      *(char *)(*(int *)(iVar3 + 0x2dc) + iVar3 + 0x17c) = (char)param_1;
+    }
+    if (bVar8) {
+      *(uint *)(iVar3 + 0x2dc) = uVar6;
+    }
+    FUN_0000b414(*(undefined4 *)(iVar3 + 0x10));
+  }
+  else {
+    FUN_0000b406(*(undefined4 *)(iVar3 + 0x10),param_1);
+  }
+  return 1;
+code_r0x0000ca90:
+  uVar7 = *(uint *)(iVar2 + 4) & 0x1ff;
+  if (uVar7 != 0) {
+    uVar7 = uVar7 - 0x10;
+    uVar6 = uVar7 & 0xffff;
+    if ((int)uVar7 < 0) {
+      uVar7 = (uint)*(byte *)((uVar7 & 0xf) + iVar2 + 0x14);
+    }
+    else {
+      uVar7 = (uint)*(byte *)(uVar7 + iVar1 + 0x300);
+    }
+LAB_0000cab4:
+    iVar5 = FUN_0000b3f4(*(undefined4 *)(iVar3 + 0x10),*(uint *)(iVar3 + 0x2e0),uVar6,uVar7);
+    if (iVar5 != 0) {
+      FUN_0000c980(iVar3);
+    }
+  }
+  goto LAB_0000ca72;
+}
+
+
+
+==================================================
+Function: FUN_0000801c @ 0000801c  size=54  params=0  callingConvention=unknown
+
+
+char FUN_0000801c(void)
+
+{
+  char cVar1;
+  int iVar2;
+  
+  if (*DAT_00008054 == '\0') {
+    if (*DAT_0000805c == '\0') {
+      cVar1 = FUN_0000c93e(DAT_00008068);
+    }
+    else {
+      radio_rx_drain__THIRD_PARTY();
+      iVar2 = *DAT_00008060;
+      if (iVar2 < *DAT_00008064) {
+        iVar2 = iVar2 + 100;
+      }
+      cVar1 = (char)iVar2 - (char)*DAT_00008064;
+    }
+  }
+  else {
+    cVar1 = FUN_0000b71a(DAT_00008058);
+  }
+  return cVar1;
+}
+
+
+
+

@@ -1,5 +1,11 @@
 # Four-Firmware Cross-Reconciliation
 
+Current RF qualification (2026-10-20): use the [A/channel contract](../investigations/a-radio-reconfiguration.md)
+for the newly resolved band-specific frequency arithmetic, common initialization
+requests and Remote retune sequence. The historical unresolved-frequency wording
+below is superseded for those paths; complete packet defaults, RF success and
+paired recovery remain unverified. The original consolidation artifacts are unchanged.
+
 **Purpose**: consolidate the four independent audits already completed
 this session into one normalized cross-firmware contract. **This is a
 consolidation pass only — no new reverse engineering, no Ghidra, no

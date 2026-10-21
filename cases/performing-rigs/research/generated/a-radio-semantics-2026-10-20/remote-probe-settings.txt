@@ -1,0 +1,95 @@
+==================================================
+Function: FUN_0001170c @ 0001170c  size=170  params=0  callingConvention=unknown
+
+
+bool FUN_0001170c(int param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  byte bVar1;
+  int iVar2;
+  
+  FUN_00017114(*(undefined4 *)(param_1 + 0x1c),1,param_3,param_4,param_4);
+  FUN_0001719c(*(undefined4 *)(param_1 + 0x1c),1);
+  if (*(int *)(param_1 + 0x20) != -1) {
+    FUN_00017114(*(int *)(param_1 + 0x20),1);
+    FUN_0001719c(*(undefined4 *)(param_1 + 0x20),0);
+    FUN_000168c0(10);
+    FUN_0001719c(*(undefined4 *)(param_1 + 0x20),1);
+    FUN_000168c0(10);
+  }
+  FUN_00011b98(*(undefined4 *)(param_1 + 0x18));
+  iVar2 = FUN_00011326(param_1,0x42);
+  if (iVar2 == 0x12) {
+    FUN_0001149c(param_1);
+    FUN_000114a4(param_1,param_2);
+    FUN_000112e8(param_1,0x8e,0);
+    FUN_000112e8(param_1,0x8f,0);
+    bVar1 = FUN_00011326(param_1,0xc);
+    FUN_000112e8(param_1,0x8c,bVar1 | 3);
+    FUN_000112e8(param_1,0xa6,4);
+    FUN_000116ae(param_1,0x11,1);
+    FUN_00011494(param_1);
+  }
+  return iVar2 == 0x12;
+}
+
+
+
+==================================================
+Function: FUN_000045cc @ 000045cc  size=44  params=0  callingConvention=unknown
+
+
+void FUN_000045cc(void)
+
+{
+  undefined4 *puVar1;
+  int iVar2;
+  undefined4 *puVar3;
+  undefined4 *puVar4;
+  
+  iVar2 = 5;
+  puVar1 = DAT_00004600;
+  puVar3 = DAT_000045f8;
+  puVar4 = DAT_000045fc;
+  do {
+    *puVar3 = 0;
+    iVar2 = iVar2 + -1;
+    *puVar4 = 0;
+    *puVar1 = 0;
+    puVar3[4] = 0;
+    puVar3[8] = 0;
+    puVar3[0xc] = 0;
+    puVar3[0x10] = 0;
+    puVar3[0x14] = 0;
+    puVar3[0x18] = 0;
+    puVar3[0x1c] = 0;
+    puVar1 = puVar1 + 1;
+    puVar3 = puVar3 + 1;
+    puVar4 = puVar4 + 1;
+  } while (iVar2 != 0);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00004560 @ 00004560  size=16  params=0  callingConvention=unknown
+
+
+char FUN_00004560(void)
+
+{
+  char cVar1;
+  
+  if (*DAT_00004570 < 0x14) {
+    cVar1 = '\x03';
+  }
+  else {
+    cVar1 = *DAT_00004570 - 0x13;
+  }
+  return cVar1;
+}
+
+
+
+

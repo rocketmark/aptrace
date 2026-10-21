@@ -11,7 +11,10 @@ First-package outcome: [motor-state ownership/reference findings](motor-state-ow
 now provide the semantic/lifetime matrix and bounded witnesses. Use that result
 before starting another motor-state investigation. The [X/trigger package](x-trigger-acceptance.md)
 now closes the bounded selector/reset/acceptance contract and qualifies the
-older repeated-accept/no-motion claims. A/D remain separate and unstarted.
+older repeated-accept/no-motion claims. The [A/radio package](a-radio-reconfiguration.md)
+now establishes the band/channel mapping, Remote retune sequence and invalid-value
+differences. Packet defaults, natural recovery and checkpoint timing remain
+bounded follow-ups; D remains unstarted.
 The priorities below retain the original planning rationale.
 
 The highest-value next work is a **field-to-behavior contract**, starting with
@@ -64,7 +67,7 @@ ranges plus matching default startups do not establish complete 915 equivalence.
 | Stored targets → motion request | E3's mode-98 plus witness computes delta/target 500, marks dirty, then G reaches a move-commit argument of 500. Interactive plus modes 0/20 and bulk mode 98 have different consequences. | Modeled commit is not timed STEP/DIR or motor rotation. Dirty is not proof that this plus record reached flash. Safe STOP/activation, reference validity and realistic Remote resync remain unresolved joins. |
 | Runtime motor setup | MC4 parses four fields per channel into arrays `0x2000006c`, `0x200000dc`, `0x200000f0`, `0x20000138`, and clears setup flag `0x20000060`. Tested handlers cause no additional config-setter calls or flash writes. | Desired values, serialized driver requests and electrically active state are different. E7 already shows current/microstep consumers: do not infer hardware irrelevance from “display refresh” names. When changed MC values take effect still warrants a focused check if legacy updates are required. |
 | Trigger state | PA02 chooses analog/digital mode at startup; PB05 is the trigger input. X's stored offset `0x33` loads `0x20000194`, consumed at `0x8e7e`; known preset bands are [200,580] and [250,750] in raw sample units. E4 also identifies filter/latch and reporting/acceptance gates. | X is a preset selector, not evidence of analog/digital mode selection. Stored offset 400 loads `0x20001b38`, which participates in trigger acceptance (`0x7b`). Reconcile these gates with program validity/arming before choosing replacement semantics. Do not inherit the first-sample-latch anomaly as a requirement. |
-| A | Offset `0x1a`, boot-valid range 20..25 with fallback 20, maps to `0x20000069`. A stages this setting and calls radio setup. E9 shows init input `base + (setting-19)*300000` at `0x610c`, not just a display update. | Frequency/channel interpretation and units need the callee/producer and radio evidence; arithmetic alone is not RF measurement. Determine Remote alignment, live reinit effects, range behavior and persistence before promising legacy link compatibility. It is not established as device calibration. |
+| A | Offset `0x1a`, boot-valid range20..25 with fallback20, maps to `0x20000069`. The [completed A package](a-radio-reconfiguration.md) establishes displayed channels1–6, `base+(A−19)*300000` Hz, common modem requests and Remote staging→five sends→local retune. | Packet defaults, interrupted/lost retune and paired durability remain open. Remote915's setup override is resolved; its stored19 lower-bound mismatch is demonstrated. Requested RF settings are not physical communication or device calibration. |
 | X | Handler changes runtime selector and stages offset `0x33`; boot defaults invalid selector to 1. E9 confirms shared boot/command destination and trigger read; E4 supplies preset interpretation. | End-to-end command → chosen band → accept/status → reset outcome has not been established by the D round trip. Physical threshold voltage and sensible debounce are separate product/hardware questions. |
 | D | u32 at logical `0x15..0x18`, DE marker at `0x19`; runtime `0x200029d4`. Proven modeled command/save/reload of 1234. Reporting function `0x8c70` uses this runtime value divided by 10; E9 retains the resolved references. | Numeric encoding and durability do not name the parameter. Trace its Remote producer and response-field/UI consumer before declaring units or a control function. Current resolved references do not prove telemetry is its only possible use. |
 | Factory/identity | Separate calibration words and silicon identity are read outside the app blob. E1 distinguishes them from command-controlled fields. | Real values and physical necessity were not measured. Preserve invariants; there is no justification to emulate or clone per-unit factory rows in a Noxon-style settings store. |
@@ -153,6 +156,11 @@ replacement requirements for sampling, debounce and arming. E4's no-motion
 observations must not be generalized into a safe physical trigger guarantee.
 
 ### 4. A and communications reconfiguration — high for legacy RF compatibility
+
+**Bounded result available:** [A radio reconfiguration](a-radio-reconfiguration.md).
+Reuse its selector/frequency table and native Remote915 base override. Do not
+repeat discovery or assume an acknowledged transition; prioritize only missing
+packet defaults and a selected loss/reset recovery sequence if legacy RF is retained.
 
 Follow the already identified init argument into the radio routine and the
 Remote A producer/peer receiver. Compare the lowest/highest valid selector and

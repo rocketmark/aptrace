@@ -1,5 +1,10 @@
 # AutoPilot 915 Differential Audit against AutoPilot 868
 
+Current qualification (2026-10-20): the [A investigation](../investigations/a-radio-reconfiguration.md)
+establishes that the864/915MHz constants below are radio **bases**. Normal
+A20–25 requests add300000–1800000Hz; the table is not a set of measured carriers.
+The original byte-differential result is preserved.
+
 **Purpose**: determine whether `firmware_autopilot915.bin` changes any
 behavior relevant to the replacement-firmware contract established in
 [`autopilot-gap-audit.md`](autopilot-gap-audit.md), beyond RF-band/

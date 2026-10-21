@@ -1,0 +1,3 @@
+Building 'mando915' (firmware_mando915.bin) -- this runs full auto-analysis once...
+Built 'mando915': 579 functions, 6225 basic blocks, cached at /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/mando915
+  (provenance labels not available for this image)
