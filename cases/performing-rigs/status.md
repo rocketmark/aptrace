@@ -12,6 +12,19 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
+The [bring-up Pass1 timeline](docs/investigations/autopilot-bring-up-pass1.md)
+integrates flashing, reset, initialization, local state, Remote setup and
+operational eligibility. Eleven historical startup/persistence/readiness
+replays match their saved state/counts with the corrected memory-hook backend.
+Defaults are dirty before first loop but not yet saved; a later PA22 checkpoint
+writes them while leaving stored X invalid. Radio initialization precedes
+stored-A loading: a retained-A25 fixture first requests A20 frequency, then
+loads25. Full reset initializes filter alpha0.05; a matched due-sample helper
+updates225→258.75 (returned259), contradicting a normally permanent-zero
+coefficient. Package6's software default/checkpoint/reset work is integrated
+here. Physical interruption recovery, product READY, USB service and natural
+motion authorization remain unproven. No apfw2 design or implementation follows.
+
 The [D serial-number investigation](docs/investigations/d-serial-number-and-compatibility.md)
 maps D unchanged through bulk-report field9 to the Remote's conditional six-digit
 SN display. The plan's D÷10 interpretation was incorrect; field1 scales another
@@ -20,7 +33,8 @@ bounded chain. Keep the report slot for Remote compatibility; stable nonzero
 identity/provisioning and its persistence are optional product requirements.
 The original D provisioning producer remains unresolved; the existing save
 witness used operator injection, not a demonstrated Remote UI writer. No
-durability/defaults package, implementation or hardware work was started.
+durability/defaults work was started in that D investigation. Subsequent
+bring-up Pass1 integrates selected default/checkpoint/reset evidence.
 
 The [A/radio reconfiguration investigation](docs/investigations/a-radio-reconfiguration.md)
 establishes normal channels1–6 / A20–25 at864.3–865.8MHz or915.3–916.8MHz,
@@ -36,14 +50,16 @@ isolates a native Unicorn Thumb/memory-hook interaction and adds automatic
 instruction-boundary execution for all memory-hook runs, with noninterference
 regressions. Original A20/A25 now agree watched/unwatched. Fifteen selected
 motor/MC4/X replays preserve final state and stops; two X instruction counts
-change76→75. Historical checkpoint/startup witnesses with memory hooks remain
-to be revalidated at the start of durability work; they were not silently
-recertified by this bounded audit. No firmware conclusion or gate is promoted.
+change76→75. The selected checkpoint/startup witnesses deferred by that audit
+are now revalidated in bring-up Pass1; this does not certify every historical
+hooked run. No release gate is promoted.
 
 The [X/trigger acceptance package](docs/investigations/x-trigger-acceptance.md)
 establishes selector/reset bands, reporting versus reload acceptance, record
-preparation and conditional reference resync. Analog acquisition can recur while
-alpha0 freezes its effective first sample; acquisition and telemetry use different
+preparation and conditional reference resync. Zero-alpha fixtures freeze the
+effective first sample, but Pass1's full reset initializes alpha0.05 and a
+matched helper responds to a new sample; permanent freezing after normal
+startup is no longer established. Acquisition and telemetry use different
 clock units. Accepted reload clears phase arms and changes idle/channel guards:
 a carried held-LOW follow-up does not reaccept. Independently armed valid state
 can reach commit before trigger processing. Natural arming/restoration, physical
@@ -326,9 +342,11 @@ check) already have independent level-3 confirmation.
   [`cases/performing-rigs/docs/investigations/manual-mode-and-limits.md`](docs/investigations/manual-mode-and-limits.md).
 - **Trigger software behavior is bounded, physical misfire cause unresolved.**
   Digital acceptance is level-based; repeated LOW acceptance in restored-gate
-  tests is not a natural uninterrupted reload/motion sequence. Analog alpha0
-  preserves the first effective sample despite later acquisition; X1/X2 can
-  reclassify it. T reporting is independent of program eligibility and disables
+  tests is not a natural uninterrupted reload/motion sequence. Zero-alpha
+  fixtures preserve the first effective sample and X1/X2 can reclassify it;
+  normal full reset instead supplies0.05, as established in
+  [bring-up Pass1](docs/investigations/autopilot-bring-up-pass1.md). Permanent
+  freezing after that startup is not established. T reporting is independent of program eligibility and disables
   normal reload acceptance. The tested reload clears motion arms; this is not
   a universal no-uncommanded-motion proof. Historical debounce prototypes are
   not replacement requirements and have not been deployed. See the current

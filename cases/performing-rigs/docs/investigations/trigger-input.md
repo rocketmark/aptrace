@@ -1,5 +1,13 @@
 # Trigger-Input Investigation — Current Model
 
+Startup correction (2026-10-21): [bring-up Pass1](autopilot-bring-up-pass1.md)
+observes a fully initialized coefficient0.05 at0x20000014, contradicting this
+older dossier's `.bss`/permanently-zero attribution. A matched original helper
+updates225→258.75 (returned259) with those bytes. Historical zero-alpha and
+boot-chain artifacts remain preserved, but permanent first-sample freezing is
+not established for normal full reset. Continuous analog-mode acquisition is
+the bounded next check; no physical misfire cause has been proven.
+
 Reported bug: connecting a certain chain to the AutoPilot's 3.5mm trigger
 input causes exactly one trigger, then normal operation continues. The
 [X/acceptance follow-up](x-trigger-acceptance.md) is the current behavioral

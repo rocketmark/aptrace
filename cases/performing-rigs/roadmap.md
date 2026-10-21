@@ -11,6 +11,30 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 # Harness Roadmap
 
+## Bring-up Pass 2
+
+Use the [Pass1 timeline and packet](docs/investigations/autopilot-bring-up-pass1.md)
+as the factual baseline. Selected exposed startup/checkpoint/reset and
+configured-response witnesses are revalidated; do not repeat the whole project.
+Prioritize these bounded joins before writing apfw2 bring-up specifications:
+
+1. Follow retained A25 through the first later radio/reconnect exchange. Initial
+   bring-up uses compiled A20 before the reader loads25; injected MC4 does not
+   prove a real pair connects under that mismatch.
+2. Preserve initialized RAM through one analog-mode reset and two due sample
+   acquisitions. Full reset supplies alpha0.05, contradicting the old normally
+   zero/first-sample-freeze premise; retain zero-alpha fixtures as conditional.
+3. Trace one natural program/session/arm→request path with STOP/reset controls
+   and driver-setting observations. Do not infer motion authorization from MC4,
+   a stored validity byte, a zero position counter or a composed helper trace.
+4. Select consequential checkpoint/interruption cut points only. Default-only
+   checkpoint and exact-byte restart now work in the model; NVM atomicity,
+   physical retention, bootloader recovery, USB and product READY remain open.
+
+Package6 defaults/durability is integrated into this bring-up work rather than
+a separate broad configuration survey. No replacement implementation, firmware
+modification or hardware action is authorized by these planning entries.
+
 ## Configuration-to-behavior investigation
 
 The [first motor-state/reference package](docs/investigations/motor-state-ownership-and-reference.md)
@@ -26,14 +50,15 @@ timing/pulse evidence before selecting debounce/re-arm behavior. The
 six channel requests, the Remote's five-send/local-retune sequence,915 setup
 override and invalid-value mismatch. Before claiming legacy RF compatibility,
 resolve remaining packet defaults and selected loss/reset/paired persistence
-behavior. Separately investigate its single-variable A25 write-watch discrepancy;
-do not use that instrumentation result as firmware behavior. The
+behavior. Its A25 write-watch discrepancy is isolated and worked around in the
+backend; the selected deferred startup/persistence witnesses now match in Pass1.
+Do not use the original instrumentation artifact as firmware behavior. The
 [D package](docs/investigations/d-serial-number-and-compatibility.md) now resolves
 unscaled field9 as the SN display. Decide whether stable displayed identity or
 legacy service provisioning is required; only then investigate the missing
 provisioning client or selected identity durability contract. No general
-durability/defaults investigation is implied by completing the [plan's](docs/investigations/configuration-behavior-investigation-plan.md)
-D package.
+durability/defaults investigation was implied by completing the [plan's](docs/investigations/configuration-behavior-investigation-plan.md)
+D package; selected package6 questions are now integrated into bring-up Pass1/2.
 No configuration implementation or physical validation has been performed.
 
 ## Production upgrade/downgrade release gates
@@ -143,35 +168,22 @@ but nothing has been flashed to real hardware. Before any patch is real:
 
 ## Open — hardware-bringup loose ends
 
-7. **A second, deeper NVM-erase-loop dependency**, found while reaching
-   the stable main loop, was reported but not chased (likely gated on a
-   zero-valued config field rather than a documented status bit) — see
-   [`cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md`](docs/investigations/boot-and-hardware-bringup.md).
-8. **`'+'`'s own dispatch is still not reachable from a genuinely fresh
-    boot** in a single concrete run — blocked by a real, finite (not
-    looping) SERCOM device-probe cost the project's boot-recipe
-    calibration doesn't yet budget for. See
-    [`cases/performing-rigs/docs/investigations/auto-mode-and-plus-command.md`](docs/investigations/auto-mode-and-plus-command.md).
+7. **Natural startup/session/program-transfer continuity** remains unproven.
+   Current full-reset MC4 and response runs reach the real application loop;
+   compose no fresh-boot plus/arming guarantee from older probe-budget failures
+   or isolated helper successes. Use the bounded Pass2 join above. The former
+   zero-stride NVM stall is localized to absent geometry in the old model,
+   with PA22 housekeeping causing the save; do not retain it as an unexplained
+   radio or firmware readiness blocker.
 
 ## Open — Feather M4 feasibility
 
-9. **Physical measurement needed before any Feather M4 bring-up**: no
-   physical Feather exists in this investigation yet. Once one does,
-   the first test should follow
-   [`cases/performing-rigs/docs/investigations/feather-m4-feasibility.md`](docs/investigations/feather-m4-feasibility.md)'s
-   §8 recommendation (continuity-check the QSPI pins, do not drive the
-   STEP0/1/3 and DIR0/1/3 outputs into the onboard flash chip, try a
-   D12→3V3 jumper for the confirmed PA22 blocker) rather than flashing
-   the unmodified image directly.
-10. **RESOLVED by simulation, still needs a real physical test.** A
-    D12→3V3 jumper's equivalent (re-adding only the PA22 seed to the
-    Feather profile, radio stand-in still dropped) was checked this
-    pass: it does clear `FUN_00006968`'s wait loop (reaches `0x69d8`)
-    and reaches the radio-ID probe (`0x9dd4`), then stalls there
-    instead (no device on those pins on a bare Feather either) — see
-    [`cases/performing-rigs/docs/investigations/feather-m4-feasibility.md`](docs/investigations/feather-m4-feasibility.md)'s
-    §7a. `CONFIRMED` in simulation; the real-hardware jumper test is
-    still open.
+9. **Physical feasibility remains unresolved:** isolate and validate all six
+   onboard-QSPI conflicts before considering any original-image execution.
+   Startup requests GPIO/pulses even without a motion command. The tested PA22
+   stimulus is HIGH then LOW, not a permanent3V3 strap; radio readbacks/routing,
+   device electrical responses and USB require independent evidence. No intact
+   Feather execution trial or hardware operation follows from the simulation.
 
 ## Tooling gaps (not firmware blockers)
 

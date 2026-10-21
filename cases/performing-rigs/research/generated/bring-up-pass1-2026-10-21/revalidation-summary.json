@@ -1,0 +1,248 @@
+[
+  {
+    "name": "mc4-default-startup868",
+    "instructions": 11880918,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 0,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "mc4-default-startup915",
+    "instructions": 11880918,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 0,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "configured-d-save868",
+    "instructions": 17983185,
+    "stop_reason": "reached stop address 0x000097e6",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 1025,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "actual-save-fresh-reader868",
+    "instructions": 50312,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "completed": true,
+    "execution_mode": "continuous",
+    "write_hits": 0,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "actual-save-fresh-startup868",
+    "instructions": 11864912,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 0,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "saved-record-reset-startup",
+    "instructions": 11864912,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 0,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "timeline-default",
+    "instructions": 11880918,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 0,
+    "write_dropped": 0
+  },
+  {
+    "name": "timeline-retained-a25",
+    "instructions": 11864917,
+    "stop_reason": "reached stop address 0x000093fc",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 0,
+    "write_dropped": 0
+  },
+  {
+    "name": "revalidated-neither",
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 4,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "revalidated-pa22",
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 4,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "revalidated-id",
+    "instructions": 1200000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 4,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "revalidated-preconfig-pending",
+    "instructions": 3000000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 19,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "revalidated-config-identity-operational",
+    "instructions": 17960240,
+    "stop_reason": "max watch hits (2000) reached at 0x000093fc",
+    "error": null,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 2,
+    "write_dropped": 0,
+    "old_equal": {
+      "memory": true,
+      "registers": true,
+      "stop_reason": true,
+      "instructions_executed": true
+    }
+  },
+  {
+    "name": "defaults-checkpoint",
+    "instructions": 17943185,
+    "stop_reason": "reached stop address 0x000097e6",
+    "error": null,
+    "completed": true,
+    "execution_mode": "memory-hook-single-step",
+    "write_hits": 1025,
+    "write_dropped": 0
+  },
+  {
+    "name": "filter-initialized-alpha",
+    "instructions": 63,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "completed": true,
+    "execution_mode": "continuous",
+    "write_hits": 0,
+    "write_dropped": 0
+  },
+  {
+    "name": "erased-reader",
+    "instructions": 50285,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "completed": true,
+    "execution_mode": "continuous",
+    "write_hits": 0,
+    "write_dropped": 0
+  },
+  {
+    "name": "invalid-fields-reader",
+    "instructions": 50277,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "completed": true,
+    "execution_mode": "continuous",
+    "write_hits": 0,
+    "write_dropped": 0
+  },
+  {
+    "name": "noncanonical-marker-reader",
+    "instructions": 50277,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "completed": true,
+    "execution_mode": "continuous",
+    "write_hits": 0,
+    "write_dropped": 0
+  }
+]

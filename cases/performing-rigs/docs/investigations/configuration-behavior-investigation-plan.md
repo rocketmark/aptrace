@@ -17,7 +17,11 @@ differences. Packet defaults, natural recovery and checkpoint timing remain
 bounded follow-ups. The [D package](d-serial-number-and-compatibility.md) identifies
 field9 as the Remote's displayed serial number; it is unscaled. Original
 provisioning remains unresolved, but no operating-feature persistence requirement
-is established. The separate durability/defaults package has not been started.
+is established. Package6's selected software defaults/checkpoint/reset questions
+are now integrated into [bring-up Pass1](autopilot-bring-up-pass1.md), including
+revalidation of affected witnesses. Its physical durability/recovery exit is
+not met. Pass1 also qualifies the old permanent-zero analog coefficient claim
+and the order of stored-A loading versus initial radio settings.
 The priorities below retain the original planning rationale.
 
 The highest-value next work is a **field-to-behavior contract**, starting with
@@ -200,11 +204,13 @@ has the strongest demonstration.
 
 ### 6. Durability/default contracts for the selected features — medium
 
-Prerequisite from the [memory-hook audit](write-watch-instrumentation.md): use
-the corrected backend and replay selected original checkpoint/fresh-restart
-witnesses into new artifacts. Their historical memory-hook runs remain exposed
-and were not recertified by the bounded motor/trigger audit. This is validation
-of the durability evidence before extending it, not a new configuration claim.
+The [bring-up Pass1](autopilot-bring-up-pass1.md) now revalidates selected
+checkpoint/fresh-restart witnesses with the corrected memory-hook backend,
+and integrates default staging, a later default checkpoint, unchanged dirty,
+selected invalid fields and marker validation into the timeline. Reuse those
+artifacts rather than starting another broad configuration investigation.
+Other historical hooked paths are not thereby recertified. Remaining questions
+are selected recovery cut points and physical durability boundaries below.
 
 After selecting meaningful fields, make a write → dirty → checkpoint → durable
 state → reset matrix for those fields, not the whole blob. E2's save sites

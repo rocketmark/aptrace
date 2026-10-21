@@ -140,6 +140,13 @@ write in such a trace cannot now establish a firmware prohibition.
 
 ## Remaining gaps and next work
 
+Follow-up (2026-10-21): [bring-up Pass1](autopilot-bring-up-pass1.md) now
+revalidates the selected startup/checkpoint/exact-byte reset witnesses deferred
+above, plus the selected readiness controls. All11 exact historical replays
+match their saved state and instruction counts. The historical audit boundary
+above remains accurate for that audit; the new packet supplies subsequent
+validation without rewriting those artifacts or certifying every old run.
+
 High priority correctness gap addressed: memory observation could silently
 alter guest execution. The workaround and noninterference regression now guard
 the demonstrated cases. Trust new supported write-watch results within their

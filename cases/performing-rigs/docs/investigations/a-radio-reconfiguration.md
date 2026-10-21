@@ -38,6 +38,13 @@ No full915 application equivalence beyond the cited ranges is asserted.
 
 ## Requested settings and units
 
+Startup qualification (2026-10-21): [bring-up Pass1](autopilot-bring-up-pass1.md)
+observes initial0x610c/0x9b20 before0x4c20 loads stored A. A full-reset
+provisioned-A25 fixture requests864300000Hz from compiled A20, then loads25
+into runtime RAM, without a second bring-up before first loop. The command
+mapping below remains supported; startup application of the retained channel
+and subsequent reconnect repair require a separate bounded follow-up.
+
 | A wire/stored value | Normal Remote channel |868 pair request, Hz |915 pair request, Hz |
 |---|---:|---:|---:|
 |20|1|864300000|915300000|

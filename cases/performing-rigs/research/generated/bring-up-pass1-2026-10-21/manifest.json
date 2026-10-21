@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-21",
+  "repository_revision": "95a0c4b0876a8be04e7e7f41442ab3bf0e5afd26",
+  "scope": "Operator investigation: existing evidence assembly and bounded original-code execution; no implementation/image/hardware change",
+  "firmware": {
+    "autopilot868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "bytes": 70768
+    },
+    "autopilot915": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+      "sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+      "bytes": 70768
+    },
+    "mando868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+      "sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc",
+      "bytes": 138304
+    },
+    "mando915": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando915.bin",
+      "sha256": "abb71190982793872f5752f620adeaa3b3516d6266fe9433d0e6e680a4e629b9",
+      "bytes": 138304
+    }
+  },
+  "environment": {
+    "interpreter": "tools/unicorn/.venv/bin/python3",
+    "python": "3.9.6",
+    "unicorn": "2.1.4",
+    "dependency_changes": false
+  },
+  "input_sha256": {
+    "tools/unicorn/concrete.py": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b",
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/unicorn/.venv/pyvenv.cfg": "0d96cc1b5736a0ecc270a68b24323826e1f368e6f62d6267569bb1b20776fa9a",
+    "cases/performing-rigs/test/test_concrete.py": "7686c1298399ee860ae21084d06f4fd93c77459edb9ff312989779295c8059ec",
+    "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json": "db9488072e5d2db33d1d80294d33fd34b591767c541d1ab57324a16d2e60ddbc",
+    "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json": "62a3e7598b2f13a3f25681df87ea188e9259b5a8115eb920a6c7c9ff09830f57",
+    "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/manifest.json": "7b15dd6ddd83a15ee379a57f899185028913b904dd980118f89c8f0cba269fe9",
+    "cases/performing-rigs/research/generated/feather-ready-resumed-2026-10-19/replay-manifest.json": "b37d241b7bc39eaee2728b9c0a8ccbe17b3a79465c70a5807dad58c494502a09",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json": "2de88b170d52fc909085574485a047180370d665b25a7c9c477358ec4f61eecc",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/manifest.json": "b8a53be7bf3d1f16f1113e360bdeecef70cae0f4fae11acdcadb72b9d855ff3e",
+    "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json": "0f8f697f414d19b4c200d033be10bc8ed32b267a01b98ee6373b8cc6d2830cbc",
+    "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/manifest.json": "0ca3afe98cdc974205bed2ce4a50d33016e902fb54321199775d423b0602ed32",
+    "cases/performing-rigs/research/generated/feather-ready-2026-10-19/startup-decompile.txt": "152f4553ed46060967cfcb58c89a78bf7e5b8bac2efdde2ec49016306eddb2a2",
+    "cases/performing-rigs/research/generated/feather-ready-2026-10-19/ready-loop-disasm.txt": "e96af3a4f14e37874c1f8423229eeffb6d23a7aa6b352c3a574b5d6495bb132c",
+    "cases/performing-rigs/research/generated/persistent-state-2026-10-19/save-disasm.txt": "baa55c349b933e29c6c4064321f1d8b784decf52d6bcf84884690253f0401b81",
+    "cases/performing-rigs/research/generated/persistent-state-2026-10-19/loader-disasm.txt": "ca59e8f3fbd67c243f6eb028157fb24da845a91153e5045d930ff7a32bf9107f",
+    "cases/performing-rigs/research/generated/persistent-state-2026-10-19/persistence-static.txt": "6a0a4859237be1992fba7fd943695700e59d260ec41deb6610e3e588b26420af",
+    "cases/performing-rigs/research/generated/persistent-state-2026-10-19/consumers-static.txt": "937fd06fa1bd9ebd61a74cac6a1fa4d141c83381a16ae7fcec56d1141759f780",
+    "cases/performing-rigs/research/generated/feather-ready-resumed-2026-10-19/operational-loop-static.txt": "a3815de3215d745f9f99f1468d0fb9f3a83ad0ac48b24b138c450ea0a0928d39",
+    "cases/performing-rigs/research/generated/feather-ready-resumed-2026-10-19/housekeeping-disasm.txt": "52a2501ebbb96c18b241de45a23bef6e655459a318da1a89775b3341fa04fd52",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/filter-native.txt": "6661c3b80e7776836b482b5a4ef160ad5fb1d7a08a2ffede5c4b2705d04a4452",
+    "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/autopilot-init-callers.txt": "d635cb7ebdb176a3f7e84c3200282c5ec1bb1e1b385634c45e329065a04118a4",
+    "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass1.md": "f74e6d5e879bdc2e2a0c577e56e2ce71c1c3d1ae98b7b52c00f56b9591e9df6c",
+    "cases/performing-rigs/docs/investigations/write-watch-instrumentation.md": "12151d437a5d78b9bdfec8580160091e26e7eb8e173f0bb7d3fcf0d26c82088e",
+    "cases/performing-rigs/docs/investigations/boot-and-hardware-bringup.md": "11d917e212c3ab621bd5ff9c322ab3ec358d53b80f81500ac84efe324ea7641a",
+    "cases/performing-rigs/docs/investigations/feather-ready-resumed.md": "7d196698f050f877f45178195f2f89a1f5a108e09078808bf059ab49d7a857f6",
+    "cases/performing-rigs/docs/investigations/persistent-state-release-assessment.md": "326b856b4fc07530bf0d52ce8e5e0c05c23ffc6678fdaff4e1b9b8f3c48461a8",
+    "cases/performing-rigs/docs/investigations/motor-state-ownership-and-reference.md": "d4ac62649f2705189cfb23b170551c92feb8e80d2932122c232c4d6f33c9c583",
+    "cases/performing-rigs/docs/investigations/x-trigger-acceptance.md": "75af28604d9c08c4ad5987b98d8f3ae2689956a08d72208d58dbf3377e0e64b1",
+    "cases/performing-rigs/docs/investigations/a-radio-reconfiguration.md": "f46d8527578ae663f42e4b6a3a70cefcfa9209ed254ce42acf9cffa347510f4d",
+    "cases/performing-rigs/docs/investigations/d-serial-number-and-compatibility.md": "e18ba141f8b171ed4543761e08aa7d8ec4fd1105342e26189b2e3d99e015970c",
+    "cases/performing-rigs/docs/investigations/vendor-bossac-behavior.md": "9959271ca8163006f1a6e450af75e5f45f25efc1e9f2a58d3e51e0d3993d97e0",
+    "cases/performing-rigs/docs/investigations/reversible-firmware-update.md": "4d2f580994be5b1d8f7ed52395d0320c6f63b5752f5552b9bc743f8fb4cb1ac4",
+    "cases/performing-rigs/docs/investigations/auto-mode-and-plus-command.md": "ef20fcca0a5a2f11847947e580cbb7dc5f29ae86e7d6f4138d8c0b3132724c40",
+    "cases/performing-rigs/docs/investigations/protocol-pipeline.md": "cee17f096567e62093bc895f10f4b642d2a02775a23990bb29fc31491fe8fe65"
+  },
+  "commands": 18,
+  "exact_historical_replays": 11,
+  "new_bounded_runs": 7,
+  "artifact_checks_passed": 54,
+  "limitations": [
+    "flat MMIO/NVM",
+    "forced radio ID",
+    "RAM-injected RX",
+    "calibration placeholder",
+    "instruction-paced timing",
+    "no bootloader or physical reset/RF/USB/motor observation",
+    "old zero-alpha fixture does not establish normal startup alpha"
+  ]
+}

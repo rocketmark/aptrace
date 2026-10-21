@@ -4,6 +4,10 @@
 **Result: the bounded X-to-trigger contract is established for AutoPilot868;
 physical misfire causation and a natural trigger-to-motion chain remain open.**
 
+Current qualification: [bring-up Pass1](autopilot-bring-up-pass1.md) supersedes
+the normally-zero coefficient/permanent-first-sample interpretation. Full reset
+initializes0.05; the historical zero-alpha experiments below are conditional.
+
 X selects an analog inactive band, independently of the boot-selected input
 mode. A recognized input, a reported input, an accepted reload, a prepared
 program and an armed motion request are different events. Noxon's reload gate
@@ -37,6 +41,14 @@ persistent Ghidra project; instruction ranges resolve material decompiler
 ambiguities. Existing solver guards were reused rather than reproved.
 
 ## Configuration and lifetime contract
+
+Startup qualification (2026-10-21): [bring-up Pass1](autopilot-bring-up-pass1.md)
+observes0.05 at0x20000014 after full reset, already at setup entry. A matched
+due-sample helper changes old225/new900 to258.75 (returned259). Zero-alpha
+fixtures below retain their conditional meaning, but do not establish permanent
+first-sample freezing after normal startup. A continuous analog-mode reset→two
+due acquisitions remains a targeted follow-up. Band, reporting, reload and
+arming distinctions do not depend on a normally zero coefficient.
 
 | State | Producer/lifetime | Observed consumer and meaning |
 |---|---|---|

@@ -3,6 +3,13 @@
 2026-10-19. **Partial investigation; production recommendation NO-GO.**
 Gate D changes **BLOCKED → PARTIAL**. A/B/C remain PARTIAL; E/F remain BLOCKED.
 
+Revalidation (2026-10-21): [bring-up Pass1](autopilot-bring-up-pass1.md) repeats
+selected full startups, D checkpoint and exact-byte fresh read/reset with the
+corrected memory-hook backend. Saved state and instruction counts match. It
+also demonstrates a later default-only checkpoint, retained dirty state and
+invalid stored X surviving runtime fallback. Physical durability and release
+grades are unchanged.
+
 Product-meaning qualification (2026-10-21): the [D investigation](d-serial-number-and-compatibility.md)
 identifies the tested value as the Remote's reported SN display identity,
 without a demonstrated control dependency. This does not change the storage/

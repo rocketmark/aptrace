@@ -1,0 +1,275 @@
+{
+  "confidence": "bounded observed original-code behavior, not newly admitted semantic claims or physical validation",
+  "checks": [
+    {
+      "check": "mc4-default-startup868 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "mc4-default-startup868 historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "mc4-default-startup915 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "mc4-default-startup915 historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "configured-d-save868 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "configured-d-save868 historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "actual-save-fresh-reader868 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "actual-save-fresh-reader868 historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "actual-save-fresh-startup868 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "actual-save-fresh-startup868 historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "saved-record-reset-startup error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "saved-record-reset-startup historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "timeline-default error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "timeline-retained-a25 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "revalidated-neither error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "revalidated-neither historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "revalidated-pa22 error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "revalidated-pa22 historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "revalidated-id error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "revalidated-id historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "revalidated-preconfig-pending error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "revalidated-preconfig-pending historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "revalidated-config-identity-operational error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "revalidated-config-identity-operational historical state/count equality",
+      "passed": true,
+      "scope": "Exact historical invocation except output path; native memory-hook workaround now active"
+    },
+    {
+      "check": "defaults-checkpoint error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "filter-initialized-alpha error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "erased-reader error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "invalid-fields-reader error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "noncanonical-marker-reader error-free",
+      "passed": true,
+      "scope": "No implied objective completion; see actual stop_reason/completed in snapshot"
+    },
+    {
+      "check": "actual-save-fresh-reader868 exact new-save carry",
+      "passed": true,
+      "scope": "4097 bytes from revalidated save; fresh machine, original file unchanged"
+    },
+    {
+      "check": "actual-save-fresh-startup868 exact new-save carry",
+      "passed": true,
+      "scope": "4097 bytes from revalidated save; fresh machine, original file unchanged"
+    },
+    {
+      "check": "mc4-default-startup868 no flash stores before loop",
+      "passed": true,
+      "scope": "Watched range and bounded first loop entry only"
+    },
+    {
+      "check": "mc4-default-startup915 no flash stores before loop",
+      "passed": true,
+      "scope": "Watched range and bounded first loop entry only"
+    },
+    {
+      "check": "default checkpoint actual stores",
+      "passed": true,
+      "scope": "Flat-memory program, not hardware erase/retention"
+    },
+    {
+      "check": "default checkpoint does not repair X",
+      "passed": true,
+      "scope": "Runtime X fallback1 is not automatically persisted as1"
+    },
+    {
+      "check": "save leaves dirty set",
+      "passed": true,
+      "scope": "At immediately after program return"
+    },
+    {
+      "check": "timeline-default one initial A20 frequency request",
+      "passed": true,
+      "scope": "No on-air settings/readback implied"
+    },
+    {
+      "check": "timeline-default initialized alpha",
+      "passed": true,
+      "scope": "Complete reset to setup/first loop under disclosed input mode"
+    },
+    {
+      "check": "timeline-retained-a25 one initial A20 frequency request",
+      "passed": true,
+      "scope": "No on-air settings/readback implied"
+    },
+    {
+      "check": "timeline-retained-a25 initialized alpha",
+      "passed": true,
+      "scope": "Complete reset to setup/first loop under disclosed input mode"
+    },
+    {
+      "check": "retained A25 loaded later",
+      "passed": true,
+      "scope": "No subsequent bringup observed before first loop"
+    },
+    {
+      "check": "initialized coefficient permits sample update",
+      "passed": true,
+      "scope": "Due helper fixture old225/new900, alpha copied from full reset; no physical ADC claim"
+    },
+    {
+      "check": "erased-reader selected defaults",
+      "passed": true,
+      "scope": "Direct reader fixture, not full boot or interruption proof"
+    },
+    {
+      "check": "erased-reader provision marker retained",
+      "passed": true,
+      "scope": "Loader rejects zero only; nonzero is not full-record integrity validation"
+    },
+    {
+      "check": "invalid-fields-reader selected defaults",
+      "passed": true,
+      "scope": "Direct reader fixture, not full boot or interruption proof"
+    },
+    {
+      "check": "invalid-fields-reader provision marker retained",
+      "passed": true,
+      "scope": "Loader rejects zero only; nonzero is not full-record integrity validation"
+    },
+    {
+      "check": "noncanonical-marker-reader selected defaults",
+      "passed": true,
+      "scope": "Direct reader fixture, not full boot or interruption proof"
+    },
+    {
+      "check": "noncanonical-marker-reader provision marker retained",
+      "passed": true,
+      "scope": "Loader rejects zero only; nonzero is not full-record integrity validation"
+    },
+    {
+      "check": "timeline-default chronological order",
+      "passed": true,
+      "scope": "Watched original-code entries; not a wall-clock or physical handoff trace"
+    },
+    {
+      "check": "timeline-default no move commit reached",
+      "passed": true,
+      "scope": "0x6fd8 stop guard remains unhit; startup GPIO/pulses are not excluded"
+    },
+    {
+      "check": "timeline-retained-a25 chronological order",
+      "passed": true,
+      "scope": "Watched original-code entries; not a wall-clock or physical handoff trace"
+    },
+    {
+      "check": "timeline-retained-a25 no move commit reached",
+      "passed": true,
+      "scope": "0x6fd8 stop guard remains unhit; startup GPIO/pulses are not excluded"
+    },
+    {
+      "check": "configured version response observed",
+      "passed": true,
+      "scope": "At wrapper entry; no RF/USB delivery claim"
+    },
+    {
+      "check": "continuing configured loop/outbound service",
+      "passed": true,
+      "scope": "Bounded watch-cap run, completed=false"
+    }
+  ]
+}
