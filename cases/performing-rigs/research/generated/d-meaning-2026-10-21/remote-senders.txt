@@ -1,0 +1,86 @@
+==================================================
+Function: FUN_00005970 @ 00005970  size=78  params=0  callingConvention=unknown
+
+
+void FUN_00005970(undefined4 param_1)
+
+{
+  undefined1 *puVar1;
+  undefined1 *puVar2;
+  byte *pbVar3;
+  undefined4 uVar4;
+  byte bVar5;
+  int iVar6;
+  
+  pbVar3 = DAT_000059c4;
+  puVar1 = DAT_000059c0;
+  iVar6 = 3;
+  do {
+    *pbVar3 = 1;
+    *puVar1 = 0x56;
+    FUN_000043b0(param_1);
+    puVar2 = DAT_000059c0;
+    bVar5 = *pbVar3 + 2;
+    puVar1[(byte)(*pbVar3 + 1)] = 0x7c;
+    puVar1[bVar5] = 0;
+    *pbVar3 = bVar5;
+    FUN_000058a8(puVar2);
+    FUN_000168c0(0x28);
+    iVar6 = iVar6 + -1;
+  } while (iVar6 != 0);
+  uVar4 = FUN_00016840();
+  *DAT_000059c8 = uVar4;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_000059cc @ 000059cc  size=64  params=0  callingConvention=unknown
+
+
+void FUN_000059cc(void)
+
+{
+  undefined1 *puVar1;
+  
+  puVar1 = DAT_00005a0c;
+  *DAT_00005a0c = 0x58;
+  puVar1[1] = *DAT_00005a10 + '0';
+  puVar1[2] = 0x7c;
+  puVar1[3] = 0;
+  FUN_000058a8(puVar1);
+  FUN_000168c0(0x32);
+  FUN_000058a8(puVar1);
+  FUN_000168c0(0x32);
+  FUN_000058a8(puVar1);
+  FUN_000168c0(0x32);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00005a50 @ 00005a50  size=44  params=0  callingConvention=unknown
+
+
+void FUN_00005a50(void)
+
+{
+  undefined4 uVar1;
+  
+  uVar1 = DAT_00005a80;
+  *DAT_00005a7c = 0;
+  FUN_000058a8(uVar1);
+  FUN_000058a8(DAT_00005a80);
+  FUN_000058a8(DAT_00005a80);
+  uVar1 = FUN_00016840();
+  *DAT_00005a84 = uVar1;
+  uVar1 = FUN_00016840();
+  *DAT_00005a88 = uVar1;
+  return;
+}
+
+
+
+

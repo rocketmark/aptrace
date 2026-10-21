@@ -1,0 +1,207 @@
+[
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x8d40 --count 13",
+    "output": "report-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x100f0 0x10698 0xc440",
+    "output": "remote-setting-consumer.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xca20 --count 17",
+    "output": "remote-report-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8cf8 0x8d10",
+    "output": "d-report-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x5970 0x59cc 0x5a50",
+    "output": "remote-senders.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0x10698 0x10ce0",
+    "output": "setting-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs mando868 0x200002f4",
+    "output": "remote-d-xrefs.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x200029d4",
+    "output": "autopilot-d-xrefs.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc852 0xc920",
+    "output": "remote-d-receive-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x71d0",
+    "output": "remote-load.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8780 0x87b2",
+    "output": "d-command-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xca60 --count 3",
+    "output": "d-cache-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x58ec 0x591c 0xb59c 0xb79c 0xb834 0x8f60",
+    "output": "sender-candidates.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py callers mando868 0x591c",
+    "output": "generic-sender-callers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0x753c --count 10",
+    "output": "loader-d-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs mando868 0x1cc03",
+    "output": "version-label-xrefs.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc250 0xc288",
+    "output": "bridge-forward-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py callers mando868 0x58a8",
+    "output": "tx-callers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x5a14 0x5a8c 0xba98",
+    "output": "remaining-compact-senders.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x799c",
+    "output": "decimal-parser.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0xfa10",
+    "output": "remote-info-screen.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xc32c --count 1",
+    "output": "bridge-buffer-pointer.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc2ba 0xc2c0",
+    "output": "bridge-send-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xfd34 --count 6",
+    "output": "info-value-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py dump mando868 0x1cc03 --length 105",
+    "output": "info-labels.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0xb51c 0xb4f8 0x583c",
+    "output": "remote-parser.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc854 0xc880",
+    "output": "remote-field-tail-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc6b4 0xc87c",
+    "output": "remote-report-parser-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xfad0 0xfb80",
+    "output": "serial-display-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs mando868 0x20001078",
+    "output": "serial-xrefs.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py xrefs mando868 0x20000fc9",
+    "output": "serial-visibility-xrefs.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0x10d24 0x10dac",
+    "output": "serial-visibility-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando915 0xc85e 0xc88c",
+    "output": "remote915-parser-tail.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando915 0xfae0 0xfb50",
+    "output": "remote915-serial-render.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x10ce4",
+    "output": "remote-identity-handler.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0x10fa4 --count 1",
+    "output": "connection-flag-pointer.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando915 0xfd34 --count 5",
+    "output": "remote915-info-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py dump mando915 0x1cc28 --length 4",
+    "output": "remote915-sn-label.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm mando868 0xc49c 0xc4a6",
+    "output": "parser-context-native.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xb584 --count 6",
+    "output": "parser-pointers.txt",
+    "exit_status": 0
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x8c70",
+    "output": "report-builder.txt",
+    "exit_status": 0
+  }
+]

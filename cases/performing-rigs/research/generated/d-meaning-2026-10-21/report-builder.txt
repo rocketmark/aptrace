@@ -1,0 +1,53 @@
+==================================================
+Function: FUN_00008c70 @ 00008c70  size=208  params=0  callingConvention=unknown
+
+
+void FUN_00008c70(void)
+
+{
+  byte bVar1;
+  byte *pbVar2;
+  char cVar3;
+  int iVar4;
+  
+  pbVar2 = DAT_00008d48;
+  *(bool *)DAT_00008d44 = *(char *)(DAT_00008d40 + 1) != '1';
+  iVar4 = *DAT_00008d4c;
+  *DAT_00008d50 = 8;
+  *DAT_00008d54 = DAT_00008d58;
+  *pbVar2 = 0;
+  FUN_00004644(iVar4 / 10 & 0xff);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(1);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(0x20);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(4);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(0x1e);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(2);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(1);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(*DAT_00008d5c);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(*DAT_00008d60);
+  *pbVar2 = *pbVar2 + 1;
+  FUN_00004644(*DAT_00008d64);
+  *pbVar2 = *pbVar2 + 1;
+  cVar3 = *DAT_00008d68;
+  if (cVar3 == '\0') {
+    cVar3 = *DAT_00008d70;
+  }
+  FUN_00004644(cVar3);
+  bVar1 = *pbVar2;
+  *(undefined1 *)(DAT_00008d6c + (uint)(byte)(bVar1 + 1)) = 0;
+  *pbVar2 = bVar1 + 1;
+  FUN_00008c10();
+  return;
+}
+
+
+
+

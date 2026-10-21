@@ -12,6 +12,16 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
+The [D serial-number investigation](docs/investigations/d-serial-number-and-compatibility.md)
+maps D unchanged through bulk-report field9 to the Remote's conditional six-digit
+SN display. The plan's D÷10 interpretation was incorrect; field1 scales another
+source. No motion/trigger/radio/calibration dependency was established in the
+bounded chain. Keep the report slot for Remote compatibility; stable nonzero
+identity/provisioning and its persistence are optional product requirements.
+The original D provisioning producer remains unresolved; the existing save
+witness used operator injection, not a demonstrated Remote UI writer. No
+durability/defaults package, implementation or hardware work was started.
+
 The [A/radio reconfiguration investigation](docs/investigations/a-radio-reconfiguration.md)
 establishes normal channels1–6 / A20–25 at864.3–865.8MHz or915.3–916.8MHz,
 in300kHz steps, with common modem-setting requests. Remote stages its selection,

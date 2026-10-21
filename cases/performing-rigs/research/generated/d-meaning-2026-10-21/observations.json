@@ -1,0 +1,1079 @@
+{
+  "scope": "Assertions over saved public APTrace artifacts, not new execution/reversing machinery. Failed fixture and diagnostic probes explicitly retained.",
+  "runs": 30,
+  "checks": [
+    {
+      "check": "d-command-0: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-0: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-0: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-0: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-0: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-0: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-12345: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-12345: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-12345: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-12345: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-12345: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-12345: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-minus1: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-minus1: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-minus1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-minus1: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-minus1: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-report-minus1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-0: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-0: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-0: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-12345: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-12345: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-12345: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-minus1: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-minus1: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-minus1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-0: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-0: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-0: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-12345: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-12345: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-12345: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-minus1: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-minus1: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-field9-context-minus1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-0: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-0: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-0: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-12345: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-12345: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-12345: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-minus1: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-minus1: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote-serial-field9-minus1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1234-visible1: exit status",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1234-visible1: error-free",
+      "actual": false,
+      "expected": false,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1234-visible1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-12345-visible1: exit status",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-12345-visible1: error-free",
+      "actual": false,
+      "expected": false,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-12345-visible1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-0-visible1: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-0-visible1: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-0-visible1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1234-visible0: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1234-visible0: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1234-visible0: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1000000-visible1: exit status",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1000000-visible1: error-free",
+      "actual": false,
+      "expected": false,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-1000000-visible1: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-12345: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-12345: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-12345: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-1000000: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-1000000: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "serial-render-frame-1000000: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "autopilot915-report-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "autopilot915-report-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "autopilot915-report-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote915-serial-render-1234: exit status",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote915-serial-render-1234: error-free",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "remote915-serial-render-1234: guest instructions",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "execution"
+    },
+    {
+      "check": "d-command-0: runtime bits",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-0: stage BE",
+      "actual": "00000000",
+      "expected": "00000000",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-0: marker",
+      "actual": 222,
+      "expected": 222,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-0: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-0: return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-0: eleven fields",
+      "actual": 11,
+      "expected": 11,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-0: independent first field",
+      "actual": "20",
+      "expected": "20",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-0: unscaled field9",
+      "actual": "0",
+      "expected": "0",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-0: serial field9",
+      "actual": 0,
+      "expected": 0,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-0: other field8 distinct",
+      "actual": 88,
+      "expected": 88,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-0: done",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-0: four sentinel bytes left",
+      "actual": 4,
+      "expected": 4,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-1234: runtime bits",
+      "actual": 1234,
+      "expected": 1234,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-1234: stage BE",
+      "actual": "000004d2",
+      "expected": "000004d2",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-1234: marker",
+      "actual": 222,
+      "expected": 222,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-1234: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-1234: return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-1234: eleven fields",
+      "actual": 11,
+      "expected": 11,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-1234: independent first field",
+      "actual": "20",
+      "expected": "20",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-1234: unscaled field9",
+      "actual": "1234",
+      "expected": "1234",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-1234: serial field9",
+      "actual": 1234,
+      "expected": 1234,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-1234: other field8 distinct",
+      "actual": 88,
+      "expected": 88,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-1234: done",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-1234: four sentinel bytes left",
+      "actual": 4,
+      "expected": 4,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-12345: runtime bits",
+      "actual": 12345,
+      "expected": 12345,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-12345: stage BE",
+      "actual": "00003039",
+      "expected": "00003039",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-12345: marker",
+      "actual": 222,
+      "expected": 222,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-12345: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-12345: return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-12345: eleven fields",
+      "actual": 11,
+      "expected": 11,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-12345: independent first field",
+      "actual": "20",
+      "expected": "20",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-12345: unscaled field9",
+      "actual": "12345",
+      "expected": "12345",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-12345: serial field9",
+      "actual": 12345,
+      "expected": 12345,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-12345: other field8 distinct",
+      "actual": 88,
+      "expected": 88,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-12345: done",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-12345: four sentinel bytes left",
+      "actual": 4,
+      "expected": 4,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-minus1: runtime bits",
+      "actual": 4294967295,
+      "expected": 4294967295,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-minus1: stage BE",
+      "actual": "ffffffff",
+      "expected": "ffffffff",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-minus1: marker",
+      "actual": 222,
+      "expected": 222,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-minus1: dirty",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-command-minus1: return",
+      "actual": "0x2fff0010",
+      "expected": "0x2fff0010",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-minus1: eleven fields",
+      "actual": 11,
+      "expected": 11,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-minus1: independent first field",
+      "actual": "20",
+      "expected": "20",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "d-report-minus1: unscaled field9",
+      "actual": "-1",
+      "expected": "-1",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-minus1: serial field9",
+      "actual": 1,
+      "expected": 1,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-minus1: other field8 distinct",
+      "actual": 88,
+      "expected": 88,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-minus1: done",
+      "actual": "01",
+      "expected": "01",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-serial-field9-minus1: four sentinel bytes left",
+      "actual": 4,
+      "expected": 4,
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-1234: render boundary",
+      "actual": "0x0000fb3c",
+      "expected": "0x0000fb3c",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-1234: original formatted string",
+      "actual": "001234",
+      "expected": "001234",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-1234: SN label selected",
+      "actual": "0x0001cc18",
+      "expected": "0x0001cc18",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-12345: render boundary",
+      "actual": "0x0000fb3c",
+      "expected": "0x0000fb3c",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-12345: original formatted string",
+      "actual": "012345",
+      "expected": "012345",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-12345: SN label selected",
+      "actual": "0x0001cc18",
+      "expected": "0x0001cc18",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-1000000: render boundary",
+      "actual": "0x0000fb3c",
+      "expected": "0x0000fb3c",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-1000000: original formatted string",
+      "actual": ":00000",
+      "expected": ":00000",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-frame-1000000: SN label selected",
+      "actual": "0x0001cc18",
+      "expected": "0x0001cc18",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-0-visible1: suppress SN",
+      "actual": "0x0000fb40",
+      "expected": "0x0000fb40",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "serial-render-1234-visible0: suppress SN",
+      "actual": "0x0000fb40",
+      "expected": "0x0000fb40",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "915 AutoPilot same report",
+      "actual": "32302c312c33322c342c33302c322c312c302c313233342c302c302c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "expected": "32302c312c33322c342c33302c322c312c302c313233342c302c302c000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "915 Remote same six digits",
+      "actual": "3030313233340000",
+      "expected": "3030313233340000",
+      "passed": true,
+      "scope": "behavior"
+    },
+    {
+      "check": "remote-field9-1234: diagnostic metadata present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "diagnostic only; superseded field positioning/context"
+    },
+    {
+      "check": "remote-field9-context-1234: diagnostic metadata present",
+      "actual": true,
+      "expected": true,
+      "passed": true,
+      "scope": "diagnostic only; superseded field positioning/context"
+    }
+  ],
+  "passed": 153,
+  "failed": 0
+}

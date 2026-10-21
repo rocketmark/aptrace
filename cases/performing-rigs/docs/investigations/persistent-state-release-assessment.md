@@ -3,6 +3,12 @@
 2026-10-19. **Partial investigation; production recommendation NO-GO.**
 Gate D changes **BLOCKED → PARTIAL**. A/B/C remain PARTIAL; E/F remain BLOCKED.
 
+Product-meaning qualification (2026-10-21): the [D investigation](d-serial-number-and-compatibility.md)
+identifies the tested value as the Remote's reported SN display identity,
+without a demonstrated control dependency. This does not change the storage/
+startup observations or release grades below. Stable nonzero identity and
+external provisioning compatibility remain optional product decisions.
+
 The original firmware has meaningful, command-controlled persistent local
 state. The product belief that it has no persistent user configuration is too
 strong: `D1234,|` changes a saved value that original firmware recovers after

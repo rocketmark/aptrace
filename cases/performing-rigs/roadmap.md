@@ -27,8 +27,13 @@ six channel requests, the Remote's five-send/local-retune sequence,915 setup
 override and invalid-value mismatch. Before claiming legacy RF compatibility,
 resolve remaining packet defaults and selected loss/reset/paired persistence
 behavior. Separately investigate its single-variable A25 write-watch discrepancy;
-do not use that instrumentation result as firmware behavior. D/reporting remains
-unstarted in the [plan](docs/investigations/configuration-behavior-investigation-plan.md).
+do not use that instrumentation result as firmware behavior. The
+[D package](docs/investigations/d-serial-number-and-compatibility.md) now resolves
+unscaled field9 as the SN display. Decide whether stable displayed identity or
+legacy service provisioning is required; only then investigate the missing
+provisioning client or selected identity durability contract. No general
+durability/defaults investigation is implied by completing the [plan's](docs/investigations/configuration-behavior-investigation-plan.md)
+D package.
 No configuration implementation or physical validation has been performed.
 
 ## Production upgrade/downgrade release gates

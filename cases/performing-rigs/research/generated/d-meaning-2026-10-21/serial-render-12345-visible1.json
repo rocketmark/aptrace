@@ -1,0 +1,76 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+  "entry": "0x0000fae9",
+  "instructions_executed": 11,
+  "stop_reason": "unmapped memory access (type=20) at 0x20030006 size=1",
+  "error": "Invalid memory write (UC_ERR_WRITE_UNMAPPED)",
+  "error_free": false,
+  "completed": false,
+  "requested_stop_at": [
+    "0x0000fb3c",
+    "0x0000fb40"
+  ],
+  "registers": {
+    "r0": "0x30303030",
+    "r1": "0x00003030",
+    "r2": "0x00000000",
+    "r3": "0x00003039",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x00000000",
+    "pc": "0x0000fafc",
+    "cpsr": "0x00100033"
+  },
+  "memory": {},
+  "reg_pointee": {
+    "r0": {
+      "pointer": "0x30303030",
+      "data": null
+    }
+  },
+  "recent_pcs": [
+    "0x0000fae8",
+    "0x0000faea",
+    "0x0000faec",
+    "0x0000faee",
+    "0x0000faf0",
+    "0x0000faf2",
+    "0x0000faf4",
+    "0x0000faf6",
+    "0x0000faf8",
+    "0x0000fafa",
+    "0x0000fafc"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20000fc9",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20001078",
+      "len": 4,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": []
+}

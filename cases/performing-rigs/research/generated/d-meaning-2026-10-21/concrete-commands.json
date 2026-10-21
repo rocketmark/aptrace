@@ -1,0 +1,152 @@
+[
+  {
+    "name": "d-command-0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 8258 --arg 4 --seed-mem 2000232a:44302c7c00 --seed-mem 20003145:01 --dump-mem 200029d4:4 --dump-mem 20003145:64 --dump-mem 20004147:1 --stop-at 6fd8 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-command-0.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-report-0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8c70 --seed-mem 2000232a:21307c00 --seed-mem 200000ec:c8000000 --seed-mem 200029d4:00000000 --stop-at 8c10 --dump-mem 20002548:100 --dump-mem 200025ac:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-report-0.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-command-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 8258 --arg 7 --seed-mem 2000232a:44313233342c7c00 --seed-mem 20003145:01 --dump-mem 200029d4:4 --dump-mem 20003145:64 --dump-mem 20004147:1 --stop-at 6fd8 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-command-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-report-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8c70 --seed-mem 2000232a:21307c00 --seed-mem 200000ec:c8000000 --seed-mem 200029d4:d2040000 --stop-at 8c10 --dump-mem 20002548:100 --dump-mem 200025ac:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-report-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-command-12345",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 8258 --arg 8 --seed-mem 2000232a:4431323334352c7c00 --seed-mem 20003145:01 --dump-mem 200029d4:4 --dump-mem 20003145:64 --dump-mem 20004147:1 --stop-at 6fd8 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-command-12345.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-report-12345",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8c70 --seed-mem 2000232a:21307c00 --seed-mem 200000ec:c8000000 --seed-mem 200029d4:39300000 --stop-at 8c10 --dump-mem 20002548:100 --dump-mem 200025ac:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-report-12345.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-command-minus1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 8258 --arg 5 --seed-mem 2000232a:442d312c7c00 --seed-mem 20003145:01 --dump-mem 200029d4:4 --dump-mem 20003145:64 --dump-mem 20004147:1 --stop-at 6fd8 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-command-minus1.json",
+    "exit_status": 0
+  },
+  {
+    "name": "d-report-minus1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8c70 --seed-mem 2000232a:21307c00 --seed-mem 200000ec:c8000000 --seed-mem 200029d4:ffffffff --stop-at 8c10 --dump-mem 20002548:100 --dump-mem 200025ac:1 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/d-report-minus1.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001773:312c302c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0a --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-0.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001773:312c313233342c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0d --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-12345",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001773:312c31323334352c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0e --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-12345.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-minus1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001773:312c2d312c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0b --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-minus1.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-context-0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c302c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0a --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-context-0.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-context-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c313233342c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0d --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-context-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-context-12345",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c31323334352c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0e --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-context-12345.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-field9-context-minus1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c2d312c302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0b --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-field9-context-minus1.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-serial-field9-0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c38382c302c31302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0e --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-serial-field9-0.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-serial-field9-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c38382c313233342c31302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:11 --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-serial-field9-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-serial-field9-12345",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c38382c31323334352c31302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:12 --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-serial-field9-12345.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote-serial-field9-minus1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry c854 --seed-mem 20001950:01 --seed-mem 20001773:312c38382c2d312c31302c3737372c --seed-mem 200017d7:00 --seed-mem 200017d8:0f --stub-call b440 --stop-at c87c --dump-mem 200002f4:4 --dump-mem 20001078:8 --dump-mem 200017d7:2 --dump-mem 2000195b:1 --max-instructions 100000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote-serial-field9-minus1.json",
+    "exit_status": 0
+  },
+  {
+    "name": "serial-render-1234-visible1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --seed-mem 20000fc9:01 --seed-mem 20001078:d2040000 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-1234-visible1.json",
+    "exit_status": 1
+  },
+  {
+    "name": "serial-render-12345-visible1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --seed-mem 20000fc9:01 --seed-mem 20001078:39300000 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-12345-visible1.json",
+    "exit_status": 1
+  },
+  {
+    "name": "serial-render-0-visible1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --seed-mem 20000fc9:01 --seed-mem 20001078:00000000 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-0-visible1.json",
+    "exit_status": 0
+  },
+  {
+    "name": "serial-render-1234-visible0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --seed-mem 20000fc9:00 --seed-mem 20001078:d2040000 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-1234-visible0.json",
+    "exit_status": 0
+  },
+  {
+    "name": "serial-render-1000000-visible1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --seed-mem 20000fc9:01 --seed-mem 20001078:40420f00 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-1000000-visible1.json",
+    "exit_status": 1
+  },
+  {
+    "name": "serial-render-frame-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --sp 2002ff00 --seed-mem 20000fc9:01 --seed-mem 20001078:d2040000 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-frame-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "serial-render-frame-12345",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --sp 2002ff00 --seed-mem 20000fc9:01 --seed-mem 20001078:39300000 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-frame-12345.json",
+    "exit_status": 0
+  },
+  {
+    "name": "serial-render-frame-1000000",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando868.bin --entry fae8 --sp 2002ff00 --seed-mem 20000fc9:01 --seed-mem 20001078:40420f00 --stub-call 5c44 --stop-at fb3c --stop-at fb40 --watch fb30 --dump-reg-pointee r0:8 --max-instructions 1000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/serial-render-frame-1000000.json",
+    "exit_status": 0
+  },
+  {
+    "name": "autopilot915-report-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin --entry 8c70 --seed-mem 2000232a:21307c00 --seed-mem 200000ec:c8000000 --seed-mem 200029d4:d2040000 --stop-at 8c10 --dump-mem 20002548:100 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/autopilot915-report-1234.json",
+    "exit_status": 0
+  },
+  {
+    "name": "remote915-serial-render-1234",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_mando915.bin --entry fae8 --sp 2002ff00 --seed-mem 20000fc9:01 --seed-mem 20001078:d2040000 --stub-call 5c44 --stop-at fb3c --dump-reg-pointee r0:8 --max-instructions 10000 --out cases/performing-rigs/research/generated/d-meaning-2026-10-21/remote915-serial-render-1234.json",
+    "exit_status": 0
+  }
+]

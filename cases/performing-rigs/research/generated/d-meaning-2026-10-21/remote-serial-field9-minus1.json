@@ -1,0 +1,249 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+  "entry": "0x0000c855",
+  "instructions_executed": 637,
+  "stop_reason": "reached stop address 0x0000c87c",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x0000c87c"
+  ],
+  "registers": {
+    "r0": "0x0000000a",
+    "r1": "0x00000001",
+    "r2": "0x2000195b",
+    "r3": "0x2000107c",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x200002f4",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x0000b4ff",
+    "pc": "0x0000c87c",
+    "cpsr": "0x20100033"
+  },
+  "memory": {
+    "0x200002f4": "58000000",
+    "0x20001078": "0100000001000000",
+    "0x200017d7": "0b0f",
+    "0x2000195b": "01"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x0000b50c",
+    "0x0000b50e",
+    "0x0000b510",
+    "0x0000b544",
+    "0x0000b546",
+    "0x0000b548",
+    "0x0000b54a",
+    "0x0000b54c",
+    "0x0000583c",
+    "0x0000583e",
+    "0x00005840",
+    "0x00005842",
+    "0x00005844",
+    "0x00005846",
+    "0x00005848",
+    "0x0000584a",
+    "0x0000584e",
+    "0x00005850",
+    "0x00005854",
+    "0x0000b550",
+    "0x0000b552",
+    "0x0000b554",
+    "0x0000b556",
+    "0x0000b540",
+    "0x0000b4f8",
+    "0x0000b4fa",
+    "0x0000b440",
+    "0x0000b4fe",
+    "0x0000b500",
+    "0x0000b502",
+    "0x0000b504",
+    "0x0000b506",
+    "0x0000b508",
+    "0x0000b50c",
+    "0x0000b50e",
+    "0x0000b510",
+    "0x0000b544",
+    "0x0000b546",
+    "0x0000b548",
+    "0x0000b54a",
+    "0x0000b562",
+    "0x0000b564",
+    "0x0000b566",
+    "0x0000b4f8",
+    "0x0000b4fa",
+    "0x0000b440",
+    "0x0000b4fe",
+    "0x0000b500",
+    "0x0000b502",
+    "0x0000b504",
+    "0x0000b506",
+    "0x0000b508",
+    "0x0000b50c",
+    "0x0000b50e",
+    "0x0000b510",
+    "0x0000b56a",
+    "0x0000b56c",
+    "0x0000b56e",
+    "0x0000b576",
+    "0x0000b578",
+    "0x0000c876",
+    "0x0000c878",
+    "0x0000c87a",
+    "0x0000c87c"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20001950",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20001773",
+      "len": 15,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200017d7",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200017d8",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [
+    {
+      "instruction": 7,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 33,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 70,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 103,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 122,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 145,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 171,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 208,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 245,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 278,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 297,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 318,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 356,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 393,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 426,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 445,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 467,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 493,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 530,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 567,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 600,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 619,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    }
+  ],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": []
+}

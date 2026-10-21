@@ -1,0 +1,36 @@
+==================================================
+Function: FUN_0000799c @ 0000799c  size=92  params=0  callingConvention=unknown
+
+
+int FUN_0000799c(void)
+
+{
+  byte *pbVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  bool bVar6;
+  
+  iVar2 = DAT_000079fc;
+  pbVar1 = DAT_000079f8;
+  iVar3 = millis__ADAFRUIT_CORE();
+  bVar6 = *(char *)(iVar2 + (uint)*pbVar1) == '-';
+  if (bVar6) {
+    *pbVar1 = *pbVar1 + 1;
+  }
+  iVar5 = 0;
+  while ((*(char *)(iVar2 + (uint)*pbVar1) != ',' &&
+         (iVar4 = millis__ADAFRUIT_CORE(), (uint)(iVar4 - iVar3) < 1000))) {
+    iVar5 = iVar5 * 10 + (uint)*(byte *)(iVar2 + (uint)*pbVar1) + -0x30;
+    *pbVar1 = *pbVar1 + 1;
+  }
+  if (bVar6) {
+    iVar5 = -iVar5;
+  }
+  return iVar5;
+}
+
+
+
+

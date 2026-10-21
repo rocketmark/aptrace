@@ -1,5 +1,11 @@
 # Command Inventory (curated)
 
+D qualification (2026-10-21): [D serial-number contract](../investigations/d-serial-number-and-compatibility.md)
+traces its value unchanged in report field9 to the Remote's SN display. The
+established write/save witness below is operator-injected; it does not establish
+a Remote UI writer. Direct-dispatch12345 succeeds in the bounded new probe,
+without resolving the older outer-RX eight-byte framing failure.
+
 **Authoritative source data**: `cases/performing-rigs/research/autopilot_static_inventory/commands.csv`
 (exhaustive) and `commands.md` (readable subset, high-confidence entries
 only). This file is a curated summary pointing at that data — for the full

@@ -14,16 +14,19 @@ now closes the bounded selector/reset/acceptance contract and qualifies the
 older repeated-accept/no-motion claims. The [A/radio package](a-radio-reconfiguration.md)
 now establishes the band/channel mapping, Remote retune sequence and invalid-value
 differences. Packet defaults, natural recovery and checkpoint timing remain
-bounded follow-ups; D remains unstarted.
+bounded follow-ups. The [D package](d-serial-number-and-compatibility.md) identifies
+field9 as the Remote's displayed serial number; it is unscaled. Original
+provisioning remains unresolved, but no operating-feature persistence requirement
+is established. The separate durability/defaults package has not been started.
 The priorities below retain the original planning rationale.
 
 The highest-value next work is a **field-to-behavior contract**, starting with
 motor targets/reference frames and runtime motor setup. The existence of NVM
 and the ability to reload D after reset are already established; repeating them
 would add little. X has a concrete trigger consumer and A has a radio-init
-consumer, so these deserve narrow behavioral investigations. D's stored value
-has a known reporting consumer, but its product meaning remains unresolved;
-it should not be called a distance, delay, calibration or identity field yet.
+consumer, with their bounded results linked above. D's now-demonstrated product
+role is the displayed SN identity; it is not established as a control parameter
+or immutable silicon identity.
 
 Preserving old bytes, reproducing useful behavior, and reproducing legacy bugs
 are separate requirements. Intentional settings reset removes a mandatory blob
@@ -69,7 +72,7 @@ ranges plus matching default startups do not establish complete 915 equivalence.
 | Trigger state | PA02 chooses analog/digital mode at startup; PB05 is the trigger input. X's stored offset `0x33` loads `0x20000194`, consumed at `0x8e7e`; known preset bands are [200,580] and [250,750] in raw sample units. E4 also identifies filter/latch and reporting/acceptance gates. | X is a preset selector, not evidence of analog/digital mode selection. Stored offset 400 loads `0x20001b38`, which participates in trigger acceptance (`0x7b`). Reconcile these gates with program validity/arming before choosing replacement semantics. Do not inherit the first-sample-latch anomaly as a requirement. |
 | A | Offset `0x1a`, boot-valid range20..25 with fallback20, maps to `0x20000069`. The [completed A package](a-radio-reconfiguration.md) establishes displayed channels1–6, `base+(A−19)*300000` Hz, common modem requests and Remote staging→five sends→local retune. | Packet defaults, interrupted/lost retune and paired durability remain open. Remote915's setup override is resolved; its stored19 lower-bound mismatch is demonstrated. Requested RF settings are not physical communication or device calibration. |
 | X | Handler changes runtime selector and stages offset `0x33`; boot defaults invalid selector to 1. E9 confirms shared boot/command destination and trigger read; E4 supplies preset interpretation. | End-to-end command → chosen band → accept/status → reset outcome has not been established by the D round trip. Physical threshold voltage and sensible debounce are separate product/hardware questions. |
-| D | u32 at logical `0x15..0x18`, DE marker at `0x19`; runtime `0x200029d4`. Proven modeled command/save/reload of 1234. Reporting function `0x8c70` uses this runtime value divided by 10; E9 retains the resolved references. | Numeric encoding and durability do not name the parameter. Trace its Remote producer and response-field/UI consumer before declaring units or a control function. Current resolved references do not prove telemetry is its only possible use. |
+| D | u32 at logical `0x15..0x18`, DE marker at `0x19`; runtime `0x200029d4`. Proven modeled save/reload. The [D result](d-serial-number-and-compatibility.md) traces unchanged field9→Remote0x20001078→six-digit SN display. **The earlier D÷10 inference was wrong:** field1 divides a different value at0x200000ec. | No control consumer or necessary operational persistence established in the bounded chain. Keep the report slot; optional stable/provisioned serial support is a product choice. Specific native UI/provisioning writer, serial allocation and external-client requirements remain open. |
 | Factory/identity | Separate calibration words and silicon identity are read outside the app blob. E1 distinguishes them from command-controlled fields. | Real values and physical necessity were not measured. Preserve invariants; there is no justification to emulate or clone per-unit factory rows in a Noxon-style settings store. |
 
 State ownership also crosses the radio boundary. E3 identifies Remote-local
@@ -178,9 +181,14 @@ legacy A emulation.
 
 ### 5. D meaning and reporting — medium, deliberately time-boxed
 
+**Bounded result available:** [D serial-number/compatibility contract](d-serial-number-and-compatibility.md).
+The product label and unscaled field9 mapping are established; the normal Remote
+UI writer is not. No new control-setting requirement or automatic durability
+investigation follows. The first-field hypothesis below is corrected accordingly.
+
 The save/restart proof is already enough. Inspect the exact Remote sender/UI
-origin and the first field parsed from the `0x8c70` response. Correlate two
-representative values with the observed divide-by-10 conversion; keep wire
+origin and the ninth field parsed from the `0x8c70` response. Correlate two
+representative values with unchanged decimal reporting; keep wire
 numbers, user units and storage units separate. Search additional consumer
 paths only when a concrete use or ambiguity warrants it.
 
