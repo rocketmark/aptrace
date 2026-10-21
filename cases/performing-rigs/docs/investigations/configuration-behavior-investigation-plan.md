@@ -200,6 +200,12 @@ has the strongest demonstration.
 
 ### 6. Durability/default contracts for the selected features — medium
 
+Prerequisite from the [memory-hook audit](write-watch-instrumentation.md): use
+the corrected backend and replay selected original checkpoint/fresh-restart
+witnesses into new artifacts. Their historical memory-hook runs remain exposed
+and were not recertified by the bounded motor/trigger audit. This is validation
+of the durability evidence before extending it, not a new configuration claim.
+
 After selecting meaningful fields, make a write → dirty → checkpoint → durable
 state → reset matrix for those fields, not the whole blob. E2's save sites
 include PA22 housekeeping and channel-0 completion; distinguish them from

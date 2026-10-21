@@ -1,0 +1,74 @@
+Wrote /var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/tmpyudme7vo/dec.json
+Wrote /var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/tmpyudme7vo/hex.json
+write-watch noninterference: 135 observer cases + reset/MMIO controls passed
+original A20/A25: tracked/untracked and watched/unwatched agree
+test_numeric_cli_semantics (28 != 0x28)
+  [ok] parse_value('28') == 28 (decimal)
+  [ok] parse_value('0x28') == 40 (hex)
+  [ok] 28 != 0x28
+  [ok] CLI --reg r0=28 -> r0=0x1c
+  [ok] CLI --reg r0=0x28 -> r0=0x28
+test_direct_call_with_stack_args (FUN_000049c4, a known Remote function)
+  [ok] call returned cleanly (no fabricated-return crash)
+  [ok] instructions executed is small/bounded
+  [ok] real frame bytes match the known-good result
+  [ok] second call on the same machine also returns cleanly
+  [ok] second call reflects channel=1's own seed, not leaked state from call 1
+test_structured_failure_snapshot (a failed run is still fully analyzable)
+  [ok] failed run reports error_free=False
+  [ok] failed run reports completed=False
+  [ok] failed run has a non-None stop_reason
+  [ok] failed run has a non-None error
+  [ok] failed run still has full registers
+  [ok] failed run still has recent_pcs (no second run needed to see the tail)
+  [ok] raise_on_error=True raised ConcreteExecutionError
+  [ok] exception carries the full RunResult
+test_carry_forward_is_explicit_and_tagged (priority 8)
+  [ok] carry() returns bytes matching the prior run's own output
+  [ok] carried state is tagged 'carried:...', distinct from a synthetic seed
+test_fresh_isolation_across_mutable_state (hardening: fresh=True must restore RAM, flash, MMIO, PPB -- not just RAM/registers)
+  [ok] dirty-page tracking recorded every mutated region (not just RAM)
+  [ok] RAM restored to pristine on fresh=True
+  [ok] flash restored to pristine on fresh=True
+  [ok] MMIO restored to pristine on fresh=True
+  [ok] PPB restored to pristine on fresh=True
+  [ok] fresh=False intentionally carries state forward (not isolated)
+test_real_default_sp_and_no_trampoline_in_ram (hardening: run() must use the real SAMD51 SP; call()'s trampoline must live outside real RAM)
+  [ok] ram_top is the real SAMD51 RAM top (0x20030000)
+  [ok] trampoline_addr is outside real device RAM
+  [ok] no injected trampoline bytes (0xfe 0xe7) appear anywhere in real device RAM
+  [ok] call() still returns cleanly with its trampoline moved out of real RAM
+  [ok] real RAM still carries no trampoline bytes after a call()
+test_error_free_vs_completed_semantics (hardening: error_free != completed -- an instruction-limit result is not a completed one)
+  [ok] expected-stop run: error_free
+  [ok] expected-stop run: completed
+  [ok] expected-stop run: stop_reason names the stop address
+  [ok] instruction-limit run (no stop requested): error_free
+  [ok] instruction-limit run (no stop requested): NOT completed
+  [ok] instruction-limit run: stop_reason is the instruction-limit message
+  [ok] Unicorn-error run: NOT error_free
+  [ok] Unicorn-error run: NOT completed
+  [ok] clean call() return: error_free
+  [ok] clean call() return: completed
+  [ok] clean call() return: returned
+test_virtual_link_scenario_order_independence (hardening: reused ConcreteMachine instances must not leak state across scenario order)
+  [ok] scenario 'plus' passes in order ['plus', 'g', 's', 'ampersand']
+  [ok] scenario 'g' passes in order ['plus', 'g', 's', 'ampersand']
+  [ok] scenario 's' passes in order ['plus', 'g', 's', 'ampersand']
+  [ok] scenario 'ampersand' passes in order ['plus', 'g', 's', 'ampersand']
+  [ok] scenario 'ampersand' passes in order ['ampersand', 's', 'g', 'plus']
+  [ok] scenario 's' passes in order ['ampersand', 's', 'g', 'plus']
+  [ok] scenario 'g' passes in order ['ampersand', 's', 'g', 'plus']
+  [ok] scenario 'plus' passes in order ['ampersand', 's', 'g', 'plus']
+test_ranges_excluding (log_ram's fake-tick/force-mem exclusion helper)
+  [ok] no exclusions -> the whole range, unsplit
+  [ok] one exclusion in the middle -> two sub-ranges
+  [ok] an exclusion at the very start -> one sub-range after it
+  [ok] an exclusion outside the range is ignored
+  [ok] two exclusions -> three sub-ranges, in order
+test_log_ram_does_not_corrupt_a_fake_tick_run (hardening: log_ram must not diverge a run that also uses --fake-tick)
+  [ok] same stop_reason with log_ram off vs on
+  [ok] same instruction count with log_ram off vs on
+  [ok] same final registers with log_ram off vs on
+
+All checks passed.

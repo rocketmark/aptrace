@@ -1,0 +1,92 @@
+[
+  {
+    "name": "fixed-ls-4-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ls-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=4 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ls-4-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ls-4-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ls-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=4 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ls-4-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ls-5-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ls-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=5 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ls-5-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ls-5-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ls-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=5 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ls-5-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ls-6-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ls-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=6 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ls-6-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ls-6-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ls-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=6 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ls-6-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-eq-4-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/eq-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=4 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-eq-4-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-eq-4-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/eq-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=4 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-eq-4-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-eq-5-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/eq-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=5 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-eq-5-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-eq-5-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/eq-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=5 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-eq-5-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-eq-6-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/eq-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=6 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-eq-6-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-eq-6-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/eq-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=6 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-eq-6-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ne-4-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ne-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=4 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ne-4-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ne-4-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ne-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=4 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ne-4-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ne-5-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ne-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=5 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ne-5-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ne-5-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ne-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=5 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ne-5-watch.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ne-6-plain",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ne-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=6 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100  --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ne-6-plain.json",
+    "exit_status": 0
+  },
+  {
+    "name": "fixed-ne-6-watch",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixtures/ne-1.bin --entry 4000 --reg r1=0x20000069 --reg r2=6 --stop-at 4030 --dump-mem 20000069:8 --collect-coverage --max-instructions 100 --watch-mem-write 20000069:8 --out cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/fixed-ne-6-watch.json",
+    "exit_status": 0
+  }
+]

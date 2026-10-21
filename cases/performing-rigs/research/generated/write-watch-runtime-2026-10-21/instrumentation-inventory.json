@@ -1,0 +1,957 @@
+[
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-20-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-21-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-22-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-23-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-24-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-25-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-19-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-26-request",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "boot-reader-a19",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "boot-reader-a20",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "boot-reader-a25",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "boot-reader-a26",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a20-no-write-watch",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a20-code-watch-only",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-20-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-21-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-22-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-23-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-24-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-25-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-19-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a-command-26-clean",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a20-radio-id-success",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a20-radio-id-failure",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "frequency-registers-864300000",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "frequency-registers-865800000",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a20-radio-id-failure-mapped",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-ui-a20",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-ui-a25",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "mando868-a20-bringup-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "mando868-a25-bringup-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "mando915-a20-bringup-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "mando915-a25-bringup-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "autopilot915-a20-bringup-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "autopilot915-a25-bringup-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-stored-a18-load",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-stored-a19-load",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-stored-a20-load",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-stored-a25-load",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-stored-a26-load",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "autopilot-a23-unchanged",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-reset-data",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote915-reset-data",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote915-setup-band-override",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote868-ui-a25-native-stage",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-display-a19",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-display-a20",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-display-a25",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "instrumentation-control-no-write-watch",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "instrumentation-control-write-watch",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a25-control-no-write-watch",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/concrete-commands.json",
+    "name": "a25-control-write-watch",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "chain",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "resync",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "resync-channel1",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode0-select",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode1-select",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode2-select",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode2-invalid-select",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode0-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode1-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode2-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "g-mode2-invalid-request",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "saved-record-reset-startup",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "mc4-driver-update",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "mc4-recent-config",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "reload-established-reference",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "reload-resync-enabled",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-build-two",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-count-two",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-count-leading-zero",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/concrete-commands.json",
+    "name": "remote-count-gap",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-command-1",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-command-2",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-command-0",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-command-3",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-dispatch-1",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-dispatch-2",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-dispatch-0",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "x-dispatch-3",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-199",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-200",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-249",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-250",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-580",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-581",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-750",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x1-751",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-199",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-200",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-249",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-250",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-580",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-581",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-750",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "band-x2-751",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "fresh-reader-x1",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "fresh-reader-x2",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "fresh-reader-x0",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "fresh-reader-x3",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "filter-latched-resample",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "filter-not-due",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "filter-new-session",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "filter-alpha-one-control",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "latched-x1",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "latched-x2",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-report-x1",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-report-x2",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-report-bad-program",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-report-window-spent",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-accept-window-spent",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-bad-program",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-busy-channel",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "analog-not-idle",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "digital-x1-low",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "digital-x2-low",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "digital-x2-high",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "digital-report-low",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "digital-report-bad-program",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "digital-report-window-spent",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "plus-predecessor",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "filter-clock-before-deadline",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "filter-clock-at-deadline",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "reload-valid-record",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "reload-invalid-record",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "held-low-followup",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "independent-arm-commit",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "reload-reference-preserved",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "reload-reference-resync",
+    "memory_hook_flags": [
+      "--watch-mem-write"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "report-then-reject",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+    "name": "independent-arm-invalid",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "default-reader868",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "mc4-default-startup868",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "default-reader915",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "mc4-default-startup915",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "seeded-reader868",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "d-command-save868",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "d-command-save868-complete",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "d-command-triggered-save868",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "d-command-save868-tick4000",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "configured-d-save868",
+    "memory_hook_flags": [
+      "--watch-mem-write",
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "unnamed",
+    "memory_hook_flags": [],
+    "command_available": true
+  },
+  {
+    "manifest": "cases/performing-rigs/research/generated/persistent-state-2026-10-19/execution-manifest.json",
+    "name": "unnamed",
+    "memory_hook_flags": [
+      "--mmio-force-bits",
+      "--mmio-clear-bits"
+    ],
+    "command_available": true
+  }
+]

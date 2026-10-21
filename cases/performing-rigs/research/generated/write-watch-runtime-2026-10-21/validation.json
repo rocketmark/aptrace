@@ -1,0 +1,40 @@
+{
+  "passed": [
+    {
+      "command": "tools/unicorn/.venv/bin/python3 cases/performing-rigs/test/test_concrete.py",
+      "exit_status": 0,
+      "final_run_includes_write_hit_content_assertions": true
+    },
+    {
+      "command": "PYTHONPYCACHEPREFIX=/tmp/aptrace-write-watch-pycache python3 -m py_compile tools/unicorn/concrete.py tools/unicorn/test_write_watch.py tools/unicorn/test_call_observation.py cases/performing-rigs/test/test_concrete.py",
+      "exit_status": 0
+    }
+  ],
+  "blocked": [
+    {
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/test_write_watch.py",
+      "exit_status": 132,
+      "boundary": "native initialization; separate execution-context limitation"
+    },
+    {
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/test_call_observation.py",
+      "exit_status": 132,
+      "boundary": "native initialization; separate execution-context limitation"
+    },
+    {
+      "command": "tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py all",
+      "exit_status": 132,
+      "boundary": "native initialization; separate execution-context limitation"
+    },
+    {
+      "command": "tools/unicorn/.venv/bin/python3 cases/performing-rigs/scripts/virtual_link.py plus",
+      "exit_status": 132,
+      "boundary": "native initialization; separate execution-context limitation"
+    },
+    {
+      "command": "tools/doctor.sh",
+      "exit_status": 1,
+      "diagnostics": "doctor-ghidra.log and doctor-unicorn.log"
+    }
+  ]
+}

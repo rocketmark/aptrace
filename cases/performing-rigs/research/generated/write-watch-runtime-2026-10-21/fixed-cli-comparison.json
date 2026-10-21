@@ -1,0 +1,92 @@
+[
+  {
+    "condition": "ls",
+    "value": 4,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "ls",
+    "value": 5,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "ls",
+    "value": 6,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "eq",
+    "value": 4,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "eq",
+    "value": 5,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "eq",
+    "value": 6,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "ne",
+    "value": 4,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "ne",
+    "value": 5,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  },
+  {
+    "condition": "ne",
+    "value": 6,
+    "equal": {
+      "registers": true,
+      "memory": true,
+      "visited_pcs": true,
+      "stop_reason": true
+    }
+  }
+]

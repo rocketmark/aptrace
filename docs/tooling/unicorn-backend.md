@@ -39,6 +39,28 @@ Concrete execution is authoritative for what a chosen input does in the modeled
 environment. It is not proof over all inputs, and a peripheral stand-in remains
 a harness assumption that must be disclosed.
 
+## Memory-hook execution boundaries
+
+Unicorn 2.1.4 continuous Thumb execution can diverge when a memory hook fires
+inside an IT block and later flags change; even a no-op callback reproduces a
+skipped later branch. `ConcreteMachine.run` automatically executes one
+instruction per engine invocation whenever memory hooks are active: dirty-page
+tracking (the reusable-machine default), write watches, RAM/MMIO logging or
+MMIO read force/clear hooks. One-shot CLI runs without these hooks retain
+continuous execution. Results expose `execution_mode` as
+`memory-hook-single-step` or `continuous`. Expect greater host overhead for long
+observed/tracked runs. Observers and log caps retain their normal meaning.
+
+The generic noninterference regression is `tools/unicorn/test_write_watch.py`;
+it is included in the existing call-observation and Performing Rigs concrete
+test runners. It compares registers, memory and executed-PC coverage with an
+unobserved oracle and checks write-hit contents and truncation. Run through an
+authorized documented test entry point; initialization restrictions below still
+apply. The [diagnosis and evidence audit](../../cases/performing-rigs/docs/investigations/write-watch-instrumentation.md)
+preserve the original failure and repaired A20/A25 controls. Older hooked
+snapshots, including implicit dirty-tracked library runs, are potentially exposed;
+replay relevant witnesses before strengthening conclusions based solely on them.
+
 ## Native initialization failures on sandboxed macOS ARM64
 
 An import/version check does not exercise native engine initialization.

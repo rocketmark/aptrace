@@ -315,6 +315,8 @@ def test_watched_writes():
 
 
 def main():
+    from test_write_watch import run_regressions
+    run_regressions()
     test_decoder()
     test_concrete_runs()
     test_unmapped_pointee_and_ordering()

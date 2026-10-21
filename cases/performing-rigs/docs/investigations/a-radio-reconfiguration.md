@@ -200,7 +200,7 @@ motion transition is established.
 
 | Gap/failure | Evidence, impact and next work |
 |---|---|
-| Write-watch instrumentation changes execution | The initial **A25** `a-command-25-request` probe skips native0x97a0/0x977c and enters0x97a4, yielding no staged change despite runtime25. The single-variable `a25-control-{no-write-watch,write-watch}` pair reproduces this by adding only a write watch on0x20000069: stage25/dirty1 becomes stage0/dirty0. A20 controls do not show the discrepancy. Clean replays reach the real setter as native instructions require; the initial watched matrix is retained as diagnostic, with only A25 contradicted. Cause is **not diagnosed** as APTrace versus Unicorn; high-priority separate observability investigation. No backend repair attempted. |
+| Write-watch instrumentation changes execution | The initial **A25** `a-command-25-request` probe skips native0x97a0/0x977c and enters0x97a4, yielding no staged change despite runtime25. The single-variable `a25-control-{no-write-watch,write-watch}` pair reproduces this by adding only a write watch on0x20000069: stage25/dirty1 becomes stage0/dirty0. A20 controls do not show the discrepancy. Clean replays reach the real setter; the initial watched matrix remains diagnostic. The [2026-10-21 tooling investigation](write-watch-instrumentation.md) isolates a native Thumb/memory-hook interaction, including with a no-op callback, and adds automatic instruction-boundary execution. Repaired A20/A25 agree across watch and dirty-tracking controls. This corrects observability; the historical failing packet is preserved. |
 | Incomplete MMIO map in first failure probe | `a20-radio-id-failure` faults at0x41018044 outside default mapping. Repeating with the documented0x4000000 MMIO span reaches the intended error-loop entry. Invocation/fixture correction, not a firmware failure. Both snapshots retained. |
 | No faithful radio/RF model | GPIO/SPI stand-ins and direct packet boundaries cannot show final hardware state, peer reception or loss/recovery. Existing documented model limit. Validated register/peripheral or transport modeling would require separate capability work; physical link evidence is a distinct dependency. High for hardware compatibility certification, not needed for the table of software requests. |
 | Missing packet defaults and natural recovery join | Selected init calls do not establish all untouched/default packet registers or a complete reconnection after retune/loss. Existing tools can trace the remaining bounded TX/RX/default paths and inject selected loss/duplicate sequences; actual RF reliability needs new evidence. High before claiming drop-in Remote compatibility. |
@@ -232,7 +232,8 @@ peer change; it has not been demonstrated by these software replays.
 
 The next **existing-capability** compatibility investigation should close only
 the retained packet defaults/TX-RX mode and a selected channel-change loss/reset
-sequence. Separately prioritize the observed write-watch discrepancy as an
-APTrace tooling task. Actual device readback/RF reliability and durable paired
+sequence. The separate [write-watch tooling task](write-watch-instrumentation.md)
+now supplies a tested execution workaround and bounded historical evidence audit.
+Actual device readback/RF reliability and durable paired
 recovery need new evidence. D remains unstarted; no broader radio census is
 needed to use this A contract.

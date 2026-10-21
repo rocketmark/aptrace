@@ -1,0 +1,13 @@
+java.io.FileNotFoundException: /Users/mstalzer/Library/ghidra/ghidra_12.1.3_PUBLIC/java_home.save (Operation not permitted)
+	at java.base/java.io.FileOutputStream.open0(Native Method)
+	at java.base/java.io.FileOutputStream.open(FileOutputStream.java:289)
+	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:230)
+	at java.base/java.io.FileOutputStream.<init>(FileOutputStream.java:179)
+	at java.base/java.io.FileWriter.<init>(FileWriter.java:98)
+	at ghidra.launch.AppConfig.saveJavaHome(AppConfig.java:148)
+	at LaunchSupport.findJavaHome(LaunchSupport.java:223)
+	at LaunchSupport.handleJavaHome(LaunchSupport.java:153)
+	at LaunchSupport.main(LaunchSupport.java:113)
+
+ERROR: Unable to prompt user for JDK path, no TTY detected.
+Please refer to the Getting Started document's Troubleshooting section.

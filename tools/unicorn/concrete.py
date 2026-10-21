@@ -275,6 +275,7 @@ class RunResult:
             "error_free": self.error_free,
             "completed": self.completed,
             "requested_stop_at": [f"0x{a:08x}" for a in self.requested_stop_at],
+            "execution_mode": self.execution_mode,
             "registers": {k: f"0x{v:08x}" for k, v in self.registers.items()},
             "memory": {f"0x{a:08x}": data.hex() for (a, _n), data in self.memory.items()},
             "reg_pointee": {
@@ -815,9 +816,25 @@ class ConcreteMachine:
             handles.append(uc.hook_add(UC_HOOK_MEM_READ, make_mmio_clear_hook(i, addr, mask),
                                         begin=addr, end=addr + 3))
 
+        # Unicorn 2.1.4 can leave Thumb IT execution state stale when a
+        # memory hook runs inside a conditional store. A later flag change
+        # can then skip an unrelated branch (even with a no-op callback).
+        # Returning to the engine boundary after each instruction avoids
+        # that defect. Include the persistent dirty-page hook: an apparently
+        # unwatched reusable machine still has a memory observer installed.
+        step_memory_hooks = bool(self.track_dirty or watch_mem_write or log_ram
+                                 or log_mmio or mmio_force_bits or mmio_clear_bits)
         error = None
         try:
-            uc.emu_start(entry_addr, 0, count=max_instructions)
+            if step_memory_hooks:
+                next_entry = entry_addr
+                while state["instructions"] < max_instructions:
+                    uc.emu_start(next_entry, 0, count=1)
+                    if state["stop_reason"] is not None:
+                        break
+                    next_entry = uc.reg_read(UC_ARM_REG_PC) | 1
+            else:
+                uc.emu_start(entry_addr, 0, count=max_instructions)
             if state["stop_reason"] is None:
                 state["stop_reason"] = (
                     "instruction limit reached" if state["instructions"] >= max_instructions
@@ -852,6 +869,7 @@ class ConcreteMachine:
 
         result = RunResult(
             firmware=self.firmware_path,
+            execution_mode="memory-hook-single-step" if step_memory_hooks else "continuous",
             entry=entry_addr,
             label=label,
             instructions_executed=state["instructions"],

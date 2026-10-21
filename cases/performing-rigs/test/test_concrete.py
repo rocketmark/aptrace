@@ -290,7 +290,35 @@ def test_log_ram_does_not_corrupt_a_fake_tick_run():
     check("same final registers with log_ram off vs on", r1.registers == r2.registers)
 
 
+def test_original_a_write_watch_noninterference():
+    """Pinned case reproducer: the upper-bound A25 IT store was divergent."""
+    firmware = REPO_ROOT / "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin"
+    for value in (20, 25):
+        options = dict(
+            reg_seed=[("lr", 0x2fff0011), ("r0", 5)],
+            seed_mem=[(0x2000232a, f"A{value},|\0".encode()),
+                      (0x20003145, b"\x01"), (0x20000000, bytes.fromhex("00987f33")),
+                      (0x20000069, b"\x17"), (0x20002329, b"\x09"),
+                      (0x20001fd4, b"\x00"), (0x20002318, b"\x02\0\0\0")],
+            stop_at=[0x9d88], dump_mem=[(0x20000069, 1), (0x20003145, 64), (0x20004147, 1)],
+            max_instructions=10000)
+        plain = ConcreteMachine(firmware, track_dirty=False).run(0x8258, **options)
+        assert plain.completed and plain.mem(0x20003145, 64)[27] == value
+        assert plain.mem(0x20004147, 1) == b"\x01"
+        for tracked in (False, True):
+            for watches in ((), [(0x20000069, 1)]):
+                run = ConcreteMachine(firmware, track_dirty=tracked).run(
+                    0x8258, **options, watch_mem_write=watches)
+                assert run.completed and run.registers == plain.registers
+                assert run.memory == plain.memory
+                assert run.instructions_executed == plain.instructions_executed
+    print("original A20/A25: tracked/untracked and watched/unwatched agree")
+
+
 def main():
+    from test_write_watch import run_regressions
+    run_regressions()
+    test_original_a_write_watch_noninterference()
     test_numeric_cli_semantics()
     test_direct_call_with_stack_args()
     test_structured_failure_snapshot()

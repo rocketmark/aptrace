@@ -1,0 +1,72 @@
+[
+  {
+    "name": "chain",
+    "changed": {}
+  },
+  {
+    "name": "resync",
+    "changed": {}
+  },
+  {
+    "name": "resync-channel1",
+    "changed": {}
+  },
+  {
+    "name": "mc4-driver-update",
+    "changed": {}
+  },
+  {
+    "name": "mc4-recent-config",
+    "changed": {}
+  },
+  {
+    "name": "x-dispatch-1",
+    "changed": {
+      "instructions_executed": {
+        "before": 76,
+        "after": 75
+      }
+    }
+  },
+  {
+    "name": "x-dispatch-2",
+    "changed": {
+      "instructions_executed": {
+        "before": 76,
+        "after": 75
+      }
+    }
+  },
+  {
+    "name": "x-dispatch-0",
+    "changed": {}
+  },
+  {
+    "name": "x-dispatch-3",
+    "changed": {}
+  },
+  {
+    "name": "reload-valid-record",
+    "changed": {}
+  },
+  {
+    "name": "reload-invalid-record",
+    "changed": {}
+  },
+  {
+    "name": "held-low-followup",
+    "changed": {}
+  },
+  {
+    "name": "independent-arm-commit",
+    "changed": {}
+  },
+  {
+    "name": "reload-reference-preserved",
+    "changed": {}
+  },
+  {
+    "name": "reload-reference-resync",
+    "changed": {}
+  }
+]

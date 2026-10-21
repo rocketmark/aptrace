@@ -20,6 +20,10 @@ belong in each case's status document.
   See [native executable analysis](tooling/executable-analysis.md).
 - Execute Thumb firmware concretely with Unicorn using explicit memory maps,
   hooks, state carry-forward, bounded traces, and structured failure snapshots.
+  Memory-hook runs automatically use instruction boundaries to avoid the
+  demonstrated Unicorn2.1.4 Thumb IT/hook divergence, with synthetic and
+  original-code noninterference regression coverage; see
+  [memory-hook diagnosis](../cases/performing-rigs/docs/investigations/write-watch-instrumentation.md).
 - Translate bounded Macaw regions into Crucible and ask What4/Z3 reachability
   and input-model questions.
 - Combine static and dynamic evidence in the census database, including CFG,

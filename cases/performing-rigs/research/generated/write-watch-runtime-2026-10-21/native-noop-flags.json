@@ -1,0 +1,71 @@
+{
+  "firmware": "cases/performing-rigs/research/generated/write-watch-runtime-2026-10-21/minimal-thumb-flags.bin",
+  "entry": "0x00004001",
+  "instructions_executed": 10,
+  "stop_reason": "reached stop address 0x00004030",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x00004030"
+  ],
+  "registers": {
+    "r0": "0x00000001",
+    "r1": "0x20000000",
+    "r2": "0x00000005",
+    "r3": "0x00000063",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x0000400d",
+    "pc": "0x00004030",
+    "cpsr": "0x20100033"
+  },
+  "memory": {
+    "0x20000000": "0500000063000000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00004000",
+    "0x00004002",
+    "0x00004004",
+    "0x00004006",
+    "0x00004008",
+    "0x00004024",
+    "0x00004026",
+    "0x00004028",
+    "0x0000400c",
+    "0x00004030"
+  ],
+  "visited_pcs": [
+    "0x00004000",
+    "0x00004002",
+    "0x00004004",
+    "0x00004006",
+    "0x00004008",
+    "0x0000400c",
+    "0x00004024",
+    "0x00004026",
+    "0x00004028",
+    "0x00004030"
+  ],
+  "ram_log": [],
+  "applied_seeds": [],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": []
+}
