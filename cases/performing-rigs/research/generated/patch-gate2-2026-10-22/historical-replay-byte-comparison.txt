@@ -1,0 +1,14 @@
+transient-original cmp_exit=0
+transient-patched cmp_exit=0
+intentional-original cmp_exit=0
+intentional-patched cmp_exit=0
+fresh-intentional-original cmp_exit=0
+fresh-intentional-patched cmp_exit=0
+G-to-enable-original cmp_exit=0
+G-to-enable-patched cmp_exit=0
+W1-nonzero-to-enable-original cmp_exit=0
+W1-nonzero-to-enable-patched cmp_exit=0
+B1-full-reset-original cmp_exit=0
+B1-full-reset-patched cmp_exit=0
+unacquired-original cmp_exit=0
+unacquired-patched cmp_exit=0

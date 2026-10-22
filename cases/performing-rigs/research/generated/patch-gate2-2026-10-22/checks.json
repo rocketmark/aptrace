@@ -1,0 +1,554 @@
+[
+  {
+    "check": "transient-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "transient-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "transient-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "transient-original: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "intentional-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "intentional-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "intentional-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "intentional-original: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "intentional-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "intentional-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "intentional-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "intentional-patched: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "unacquired-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "unacquired-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "unacquired-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "unacquired-original: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-original: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional-patched: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "analog-x1-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "analog-x1-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "analog-x1-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "analog-x2-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "analog-x2-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "analog-x2-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "held-w-original: no native error",
+    "pass": true
+  },
+  {
+    "check": "held-w-original: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "held-w-original: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "held-w-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "held-w-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "held-w-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "release-fresh-w-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "release-fresh-w-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "release-fresh-w-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "late-release-patched: no native error",
+    "pass": true
+  },
+  {
+    "check": "late-release-patched: corrected hook mode",
+    "pass": true
+  },
+  {
+    "check": "late-release-patched: below watch cap",
+    "pass": true
+  },
+  {
+    "check": "late-release-patched: no write-log truncation",
+    "pass": true
+  },
+  {
+    "check": "transient: original initiation reproduced",
+    "pass": true
+  },
+  {
+    "check": "intentional: original initiation reproduced",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: original initiation reproduced",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no initiation/service at0x8f98",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no initiation/service at0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no initiation/service at0x571c",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no initiation/service at0x5810",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no initiation/service at0x5898",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no initiation/service at0x607c",
+    "pass": true
+  },
+  {
+    "check": "transient-patched:14M bound",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no post-candidate STEP0x400",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no post-candidate STEP0x100",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no post-candidate STEP0x1000",
+    "pass": true
+  },
+  {
+    "check": "transient-patched: no post-candidate STEP0x400",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no initiation/service at0x8f98",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no initiation/service at0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no initiation/service at0x571c",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no initiation/service at0x5810",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no initiation/service at0x5898",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no initiation/service at0x607c",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched:14M bound",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no post-candidate STEP0x400",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no post-candidate STEP0x100",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no post-candidate STEP0x1000",
+    "pass": true
+  },
+  {
+    "check": "unacquired-patched: no post-candidate STEP0x400",
+    "pass": true
+  },
+  {
+    "check": "intentional: global write ordering comparison is characterized",
+    "pass": true
+  },
+  {
+    "check": "intentional: same peripheral stream 0x40003800:32",
+    "pass": true
+  },
+  {
+    "check": "intentional: same peripheral stream 0x43000428:4",
+    "pass": true
+  },
+  {
+    "check": "intentional: same motor/control GPIO stream 0x41008014",
+    "pass": true
+  },
+  {
+    "check": "intentional: same motor/control GPIO stream 0x41008094",
+    "pass": true
+  },
+  {
+    "check": "intentional: one patched acceptance/start",
+    "pass": true
+  },
+  {
+    "check": "intentional: expected acceptance instruction cost",
+    "pass": true
+  },
+  {
+    "check": "intentional: same motor record",
+    "pass": true
+  },
+  {
+    "check": "intentional: acceptance registers and SP preserved",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: global write ordering comparison is characterized",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: same peripheral stream 0x40003800:32",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: same peripheral stream 0x43000428:4",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: same motor/control GPIO stream 0x41008014",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: same motor/control GPIO stream 0x41008094",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: one patched acceptance/start",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: expected acceptance instruction cost",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: same motor record",
+    "pass": true
+  },
+  {
+    "check": "fresh-intentional: acceptance registers and SP preserved",
+    "pass": true
+  },
+  {
+    "check": "transient:230 observed fresh-HIGH rejections",
+    "pass": true
+  },
+  {
+    "check": "late release remains a counterexample",
+    "pass": true
+  },
+  {
+    "check": "held-w-original: two starts, release-to-rearm NOT implemented",
+    "pass": true
+  },
+  {
+    "check": "held-w-original:60M continuation",
+    "pass": true
+  },
+  {
+    "check": "held-w-patched: two starts, release-to-rearm NOT implemented",
+    "pass": true
+  },
+  {
+    "check": "held-w-patched:60M continuation",
+    "pass": true
+  },
+  {
+    "check": "release-fresh-w-patched: two starts, release-to-rearm NOT implemented",
+    "pass": true
+  },
+  {
+    "check": "release-fresh-w-patched:60M continuation",
+    "pass": true
+  },
+  {
+    "check": "analogx1: unchanged first initiation",
+    "pass": true
+  },
+  {
+    "check": "analogx1: digital extension never entered",
+    "pass": true
+  },
+  {
+    "check": "analogx2: unchanged first initiation",
+    "pass": true
+  },
+  {
+    "check": "analogx2: digital extension never entered",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset: both reach live-store boundary",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset: same enabled TC0 register state",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset: same final channel/live state",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable: both reach live-store boundary",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable: same enabled TC0 register state",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable: same final channel/live state",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable: both reach live-store boundary",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable: same enabled TC0 register state",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable: same final channel/live state",
+    "pass": true
+  },
+  {
+    "check": "original image hash unchanged",
+    "pass": true
+  },
+  {
+    "check": "patched image identity",
+    "pass": true
+  },
+  {
+    "check": "only intended six-byte original-region replacement",
+    "pass": true
+  },
+  {
+    "check": "28-byte extension only",
+    "pass": true
+  },
+  {
+    "check": "configuration flash preserved",
+    "pass": true
+  }
+]

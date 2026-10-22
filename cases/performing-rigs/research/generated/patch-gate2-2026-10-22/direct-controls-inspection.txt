@@ -1,0 +1,222 @@
+G-to-enable-original
+[
+  {
+    "range": "0x200025e0:2",
+    "instruction": 7600,
+    "pc": "0x0000cc82",
+    "lr": "0x00000000",
+    "address": "0x200025e0",
+    "size": 4,
+    "value": "0x0",
+    "previous": "00000000"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496100,
+    "pc": "0x000094a8",
+    "lr": "0x00004361",
+    "address": "0x200025e1",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496102,
+    "pc": "0x000094ac",
+    "lr": "0x00004361",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12128221,
+    "pc": "0x000083e0",
+    "lr": "0x00004ba3",
+    "address": "0x200025e1",
+    "size": 1,
+    "value": "0x2",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12128224,
+    "pc": "0x000083e6",
+    "lr": "0x00004ba3",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12134441,
+    "pc": "0x00007d56",
+    "lr": "0x0000b251",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x1",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12140665,
+    "pc": "0x00007ddc",
+    "lr": "0x00007ddb",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x2",
+    "previous": "01"
+  }
+]
+terminal registers {'r0': '0x00000000', 'r1': '0x00000001', 'r2': '0x00000001', 'r3': '0x20001b14', 'r4': '0x00000000', 'r5': '0x20002524', 'r6': '0x00000000', 'r7': '0x00000000', 'r8': '0x00000000', 'r9': '0x00000000', 'r10': '0x00000000', 'r11': '0x00000000', 'r12': '0x0185f29c', 'sp': '0x2002ffd8', 'lr': '0x00005fa1', 'pc': '0x00005fa6', 'cpsr': '0x00100033'}
+G-to-enable-patched
+[
+  {
+    "range": "0x200025e0:2",
+    "instruction": 7600,
+    "pc": "0x0000cc82",
+    "lr": "0x00000000",
+    "address": "0x200025e0",
+    "size": 4,
+    "value": "0x0",
+    "previous": "00000000"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496100,
+    "pc": "0x000094a8",
+    "lr": "0x00004361",
+    "address": "0x200025e1",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496102,
+    "pc": "0x000094ac",
+    "lr": "0x00004361",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12128223,
+    "pc": "0x000083e0",
+    "lr": "0x00004ba3",
+    "address": "0x200025e1",
+    "size": 1,
+    "value": "0x2",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12128226,
+    "pc": "0x000083e6",
+    "lr": "0x00004ba3",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12134443,
+    "pc": "0x00007d56",
+    "lr": "0x0000b251",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x1",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 12140667,
+    "pc": "0x00007ddc",
+    "lr": "0x00007ddb",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x2",
+    "previous": "01"
+  }
+]
+terminal registers {'r0': '0x00000000', 'r1': '0x00000001', 'r2': '0x00000001', 'r3': '0x20001b14', 'r4': '0x00000000', 'r5': '0x20002524', 'r6': '0x00000000', 'r7': '0x00000000', 'r8': '0x00000000', 'r9': '0x00000000', 'r10': '0x00000000', 'r11': '0x00000000', 'r12': '0x0185f29c', 'sp': '0x2002ffd8', 'lr': '0x00005fa1', 'pc': '0x00005fa6', 'cpsr': '0x00100033'}
+W1-nonzero-to-enable-original
+[
+  {
+    "range": "0x200025e0:2",
+    "instruction": 7600,
+    "pc": "0x0000cc82",
+    "lr": "0x00000000",
+    "address": "0x200025e0",
+    "size": 4,
+    "value": "0x0",
+    "previous": "00000000"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496100,
+    "pc": "0x000094a8",
+    "lr": "0x00004361",
+    "address": "0x200025e1",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496102,
+    "pc": "0x000094ac",
+    "lr": "0x00004361",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  }
+]
+terminal registers {'r0': '0x00000000', 'r1': '0x00005877', 'r2': '0x00000001', 'r3': '0x20001b14', 'r4': '0x00000000', 'r5': '0x20002524', 'r6': '0x00000000', 'r7': '0x00000000', 'r8': '0x00000000', 'r9': '0x00000000', 'r10': '0x00000000', 'r11': '0x00000000', 'r12': '0xfa096662', 'sp': '0x2002ffd8', 'lr': '0x00005fa1', 'pc': '0x00005fa6', 'cpsr': '0x00100033'}
+W1-nonzero-to-enable-patched
+[
+  {
+    "range": "0x200025e0:2",
+    "instruction": 7600,
+    "pc": "0x0000cc82",
+    "lr": "0x00000000",
+    "address": "0x200025e0",
+    "size": 4,
+    "value": "0x0",
+    "previous": "00000000"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496100,
+    "pc": "0x000094a8",
+    "lr": "0x00004361",
+    "address": "0x200025e1",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  },
+  {
+    "range": "0x200025e0:2",
+    "instruction": 9496102,
+    "pc": "0x000094ac",
+    "lr": "0x00004361",
+    "address": "0x200025e0",
+    "size": 1,
+    "value": "0x0",
+    "previous": "00"
+  }
+]
+terminal registers {'r0': '0x00000000', 'r1': '0x00005877', 'r2': '0x00000001', 'r3': '0x20001b14', 'r4': '0x00000000', 'r5': '0x20002524', 'r6': '0x00000000', 'r7': '0x00000000', 'r8': '0x00000000', 'r9': '0x00000000', 'r10': '0x00000000', 'r11': '0x00000000', 'r12': '0xfa096662', 'sp': '0x2002ffd8', 'lr': '0x00005fa1', 'pc': '0x00005fa6', 'cpsr': '0x00100033'}
+B1-full-reset-original
+[]
+terminal registers {'r0': '0x00000000', 'r1': '0x00003d09', 'r2': '0x00000001', 'r3': '0x20001b14', 'r4': '0x00000000', 'r5': '0x2000232a', 'r6': '0x00000003', 'r7': '0x20003098', 'r8': '0x2000209f', 'r9': '0x00000002', 'r10': '0x00000000', 'r11': '0x00000000', 'r12': '0x80000000', 'sp': '0x2002ffb8', 'lr': '0x00005fa1', 'pc': '0x00005fa6', 'cpsr': '0x00100033'}
+B1-full-reset-patched
+[]
+terminal registers {'r0': '0x00000000', 'r1': '0x00003d09', 'r2': '0x00000001', 'r3': '0x20001b14', 'r4': '0x00000000', 'r5': '0x2000232a', 'r6': '0x00000003', 'r7': '0x20003098', 'r8': '0x2000209f', 'r9': '0x00000002', 'r10': '0x00000000', 'r11': '0x00000000', 'r12': '0x80000000', 'sp': '0x2002ffb8', 'lr': '0x00005fa1', 'pc': '0x00005fa6', 'cpsr': '0x00100033'}

@@ -1,0 +1,28 @@
+Command: python3 cases/performing-rigs/research/generated/patch-gate2-2026-10-22/check-artifacts.py
+Exit status: 0
+Output: 138/138 artifact checks passed; partial policy status is NOT a full safety pass
+
+The unchanged existing checker was staged here because its ROOT is __file__.parent
+and its outputs have fixed names. Its SHA-256, before and after copying:
+bff7c6dc9d2fb98d75341b0028fae754aaab26705affc679dde60c02f478aaab
+
+Input selection: raw .json preferred; otherwise .json.gz.
+14 fresh raw replay records: transient, intentional, fresh-intentional, unacquired,
+G-to-enable, W1-nonzero-to-enable, B1-full-reset (original and patched each).
+6 historical gzip records only: analog-x1-patched, analog-x2-patched,
+held-w-original, held-w-patched, release-fresh-w-patched, late-release-patched.
+Thus 138 is a mixed-input artifact-check total, not a fresh 20-run campaign or
+138 independent Gate 2 requirements. The two no-write-watch runs are additional
+fresh CLI observations and are not inputs to this checker.
+
+All 16 direct native CLI processes exited 0 and emitted their named snapshots.
+All preserve error=null and execution_mode=memory-hook-single-step. Bounded
+14M histories return completed=false/instruction limit reached, as documented;
+direct G/W1/B1 controls return completed=true at requested stop 0x5fa6.
+No native initialization failure, watch-cap stop, or captured-write drop occurred.
+
+Inspection diagnostics retained: a request for nonexistent commands.txt returned
+ENOENT; the correct per-history command files were used. An initial command-diff
+loop used zsh's read-only history variable and failed before comparison; it was
+rerun with replay_case and produced paired-command-differences.txt. Neither
+inspection failure launched or changed a firmware run.

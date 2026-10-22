@@ -1,0 +1,36 @@
+{
+  "warning": "RESEARCH ONLY; NOT FOR HARDWARE DEPLOYMENT",
+  "scope": "Digital saved-active freshness recheck only; NOT timed qualification or release-to-rearm",
+  "original_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "original_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+  "patched_file": "RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+  "patched_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616",
+  "load_base": "0x4000",
+  "original_size": 70768,
+  "patched_size": 70796,
+  "modifications": [
+    {
+      "address": "0x922c",
+      "file_offset": "0x522c",
+      "before": "00283ff4b3ae",
+      "after": "0cf020b900bf"
+    },
+    {
+      "address": "0x15470",
+      "file_offset": "0x11470",
+      "before": "EOF",
+      "after": "002809d11fb53920f7f7b0ff0028bde81f4001d1f3f788bdf3f7d3be"
+    }
+  ],
+  "storage": "No code cave or fixed RAM reuse. Explicit28-byte executable image extension;24-byte temporary aligned stack frame.",
+  "flash_ownership": "No original-image byte outside922c..9231 changed; config12000..13000 unchanged. Extension is provisioned for simulation, NOT a claim about unowned physical flash.",
+  "persistent_state": null,
+  "limitations": [
+    "No stable-inactive arming",
+    "No active-duration qualification",
+    "No release-to-rearm",
+    "Analog unchanged",
+    "Input can change after final read",
+    "Physical flash ownership/bootloader integrity not qualified"
+  ]
+}

@@ -1,0 +1,119 @@
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -239,4 +239,4 @@
+ --watch
+ 571c
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/transient-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/transient-patched.json
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -237,4 +237,4 @@
+ --watch
+ 571c
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/intentional-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/intentional-patched.json
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -237,4 +237,4 @@
+ --force-mem
+ 922c:410080a0:00000000
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/fresh-intentional-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/fresh-intentional-patched.json
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -239,4 +239,4 @@
+ --watch
+ 571c
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/unacquired-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/unacquired-patched.json
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -175,4 +175,4 @@
+ --watch
+ 15470
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/G-to-enable-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/G-to-enable-patched.json
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -175,4 +175,4 @@
+ --watch
+ 15470
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/W1-nonzero-to-enable-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/W1-nonzero-to-enable-patched.json
+--- /dev/fd/12	2026-10-22 15:59:39
++++ /dev/fd/13	2026-10-22 15:59:39
+@@ -1,7 +1,7 @@
+ tools/unicorn/.venv/bin/python3
+ tools/unicorn/run_concrete.py
+ --firmware
+-cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
++cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+ --entry
+ cc24
+ --mmio-size
+@@ -113,4 +113,4 @@
+ --watch
+ 15470
+ --out
+-cases/performing-rigs/research/generated/patch-gate2-2026-10-22/B1-full-reset-original.json
++cases/performing-rigs/research/generated/patch-gate2-2026-10-22/B1-full-reset-patched.json
