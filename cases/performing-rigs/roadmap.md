@@ -23,6 +23,15 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
+The [matched motor-output comparison](docs/investigations/vvr-trigger-motor-output.md)
+now establishes equal observed original915 DIR/rate/TC0/driver requests for
+transient and held inputs. Next work beyond that boundary needs validated
+TC counting/CC/prescaler, pending/interrupt delivery and position progression.
+Do not count shared startup STEP pulses as trigger consequences or reuse the
+rejected repeated COUNT forces as a motor-fault reproduction. The first
+ENABLE-containing store can precede0x5810; observe actual register stores rather
+than treating that helper as the unique initiation sink.
+
 Use the [VVR correlation](docs/investigations/vvr-trigger-failure-correlation.md)
 as the physical-evidence starting point. The time-based profile-completion gap
 is now closed for the bounded868 scenario: idle2 follows completion; supplied W

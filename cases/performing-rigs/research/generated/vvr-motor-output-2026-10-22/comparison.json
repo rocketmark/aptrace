@@ -1,0 +1,4824 @@
+{
+  "transient": {
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "acceptances": 1,
+    "rate_start_entries": 1,
+    "step_emitter_entries": 0,
+    "tc0_handler_entries": 0,
+    "ch0_step_writes_total": 192,
+    "ch0_step_writes_after_boundary": 0,
+    "ch0_direction_after_boundary": [
+      {
+        "range": "0x41008094:12",
+        "instruction": 12128583,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00000040"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12145135,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12167593,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12187088,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12206563,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12226012,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12245495,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12265019,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12287356,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12306900,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12326390,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      }
+    ],
+    "driver_setters": [
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9501047,
+        "object": "0x200020a0",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9544041,
+        "object": "0x200020a0",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9551423,
+        "object": "0x200021d8",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9592041,
+        "object": "0x200021d8",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9599424,
+        "object": "0x2000213c",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9640042,
+        "object": "0x2000213c",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9647424,
+        "object": "0x20002274",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9651617,
+        "object": "0x20002274",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11878184,
+        "object": "0x200020a0",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11920035,
+        "object": "0x200020a0",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11933959,
+        "object": "0x200021d8",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11976041,
+        "object": "0x200021d8",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11989964,
+        "object": "0x2000213c",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12032037,
+        "object": "0x2000213c",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 12045957,
+        "object": "0x20002274",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12049952,
+        "object": "0x20002274",
+        "input": 0
+      }
+    ],
+    "spi_datagrams": 3258,
+    "spi_register_writes_after_boundary": 0,
+    "period_arguments": [
+      {
+        "instruction": 7499346,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 8696044,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 12327105,
+        "channel": 0,
+        "period": 21859
+      },
+      {
+        "instruction": 12347961,
+        "channel": 0,
+        "period": 18476
+      },
+      {
+        "instruction": 12367562,
+        "channel": 0,
+        "period": 15821
+      },
+      {
+        "instruction": 12387173,
+        "channel": 0,
+        "period": 13700
+      },
+      {
+        "instruction": 12406765,
+        "channel": 0,
+        "period": 11978
+      },
+      {
+        "instruction": 12426376,
+        "channel": 0,
+        "period": 10562
+      },
+      {
+        "instruction": 12445996,
+        "channel": 0,
+        "period": 9383
+      },
+      {
+        "instruction": 12465637,
+        "channel": 0,
+        "period": 8391
+      },
+      {
+        "instruction": 12488195,
+        "channel": 0,
+        "period": 7548
+      },
+      {
+        "instruction": 12507812,
+        "channel": 0,
+        "period": 6826
+      },
+      {
+        "instruction": 12527426,
+        "channel": 0,
+        "period": 6203
+      },
+      {
+        "instruction": 12548576,
+        "channel": 0,
+        "period": 5661
+      },
+      {
+        "instruction": 12568165,
+        "channel": 0,
+        "period": 5188
+      },
+      {
+        "instruction": 12587776,
+        "channel": 0,
+        "period": 4771
+      },
+      {
+        "instruction": 12607411,
+        "channel": 0,
+        "period": 4403
+      },
+      {
+        "instruction": 12627061,
+        "channel": 0,
+        "period": 4076
+      },
+      {
+        "instruction": 12646686,
+        "channel": 0,
+        "period": 3784
+      },
+      {
+        "instruction": 12666315,
+        "channel": 0,
+        "period": 3522
+      },
+      {
+        "instruction": 12685926,
+        "channel": 0,
+        "period": 3286
+      },
+      {
+        "instruction": 12705549,
+        "channel": 0,
+        "period": 3074
+      },
+      {
+        "instruction": 12728105,
+        "channel": 0,
+        "period": 2881
+      },
+      {
+        "instruction": 12747731,
+        "channel": 0,
+        "period": 2706
+      },
+      {
+        "instruction": 12765641,
+        "channel": 0,
+        "period": 2546
+      },
+      {
+        "instruction": 12788219,
+        "channel": 0,
+        "period": 2400
+      },
+      {
+        "instruction": 12807845,
+        "channel": 0,
+        "period": 2266
+      },
+      {
+        "instruction": 12827462,
+        "channel": 0,
+        "period": 2144
+      },
+      {
+        "instruction": 12847105,
+        "channel": 0,
+        "period": 2031
+      },
+      {
+        "instruction": 12866742,
+        "channel": 0,
+        "period": 1926
+      },
+      {
+        "instruction": 12886343,
+        "channel": 0,
+        "period": 1830
+      },
+      {
+        "instruction": 12905966,
+        "channel": 0,
+        "period": 1740
+      },
+      {
+        "instruction": 12925592,
+        "channel": 0,
+        "period": 1657
+      },
+      {
+        "instruction": 12948076,
+        "channel": 0,
+        "period": 1580
+      },
+      {
+        "instruction": 12969311,
+        "channel": 0,
+        "period": 1508
+      },
+      {
+        "instruction": 12986171,
+        "channel": 0,
+        "period": 1441
+      },
+      {
+        "instruction": 13005986,
+        "channel": 0,
+        "period": 1378
+      },
+      {
+        "instruction": 13025801,
+        "channel": 0,
+        "period": 1319
+      },
+      {
+        "instruction": 13045585,
+        "channel": 0,
+        "period": 1264
+      },
+      {
+        "instruction": 13068349,
+        "channel": 0,
+        "period": 1212
+      },
+      {
+        "instruction": 13088152,
+        "channel": 0,
+        "period": 1164
+      },
+      {
+        "instruction": 13107982,
+        "channel": 0,
+        "period": 1118
+      },
+      {
+        "instruction": 13127813,
+        "channel": 0,
+        "period": 1075
+      },
+      {
+        "instruction": 13147617,
+        "channel": 0,
+        "period": 1034
+      },
+      {
+        "instruction": 13167438,
+        "channel": 0,
+        "period": 996
+      },
+      {
+        "instruction": 13185880,
+        "channel": 0,
+        "period": 959
+      },
+      {
+        "instruction": 13205739,
+        "channel": 0,
+        "period": 925
+      },
+      {
+        "instruction": 13225611,
+        "channel": 0,
+        "period": 893
+      },
+      {
+        "instruction": 13248435,
+        "channel": 0,
+        "period": 862
+      },
+      {
+        "instruction": 13268301,
+        "channel": 0,
+        "period": 832
+      },
+      {
+        "instruction": 13288161,
+        "channel": 0,
+        "period": 805
+      },
+      {
+        "instruction": 13308024,
+        "channel": 0,
+        "period": 778
+      },
+      {
+        "instruction": 13327899,
+        "channel": 0,
+        "period": 753
+      },
+      {
+        "instruction": 13347765,
+        "channel": 0,
+        "period": 729
+      },
+      {
+        "instruction": 13367634,
+        "channel": 0,
+        "period": 706
+      },
+      {
+        "instruction": 13387524,
+        "channel": 0,
+        "period": 684
+      },
+      {
+        "instruction": 13407393,
+        "channel": 0,
+        "period": 664
+      },
+      {
+        "instruction": 13427265,
+        "channel": 0,
+        "period": 644
+      },
+      {
+        "instruction": 13447149,
+        "channel": 0,
+        "period": 625
+      },
+      {
+        "instruction": 13467033,
+        "channel": 0,
+        "period": 607
+      },
+      {
+        "instruction": 13486899,
+        "channel": 0,
+        "period": 589
+      },
+      {
+        "instruction": 13506762,
+        "channel": 0,
+        "period": 573
+      },
+      {
+        "instruction": 13526591,
+        "channel": 0,
+        "period": 557
+      },
+      {
+        "instruction": 13546487,
+        "channel": 0,
+        "period": 541
+      },
+      {
+        "instruction": 13566371,
+        "channel": 0,
+        "period": 527
+      },
+      {
+        "instruction": 13586237,
+        "channel": 0,
+        "period": 513
+      },
+      {
+        "instruction": 13606093,
+        "channel": 0,
+        "period": 499
+      },
+      {
+        "instruction": 13625976,
+        "channel": 0,
+        "period": 486
+      },
+      {
+        "instruction": 13645862,
+        "channel": 0,
+        "period": 474
+      },
+      {
+        "instruction": 13665742,
+        "channel": 0,
+        "period": 59160
+      },
+      {
+        "instruction": 13685640,
+        "channel": 0,
+        "period": 57680
+      },
+      {
+        "instruction": 13708385,
+        "channel": 0,
+        "period": 56254
+      },
+      {
+        "instruction": 13728227,
+        "channel": 0,
+        "period": 54880
+      },
+      {
+        "instruction": 13748102,
+        "channel": 0,
+        "period": 53556
+      },
+      {
+        "instruction": 13767983,
+        "channel": 0,
+        "period": 52279
+      },
+      {
+        "instruction": 13787846,
+        "channel": 0,
+        "period": 51048
+      },
+      {
+        "instruction": 13807712,
+        "channel": 0,
+        "period": 49859
+      },
+      {
+        "instruction": 13827590,
+        "channel": 0,
+        "period": 48712
+      },
+      {
+        "instruction": 13847422,
+        "channel": 0,
+        "period": 47604
+      },
+      {
+        "instruction": 13867300,
+        "channel": 0,
+        "period": 46533
+      },
+      {
+        "instruction": 13887184,
+        "channel": 0,
+        "period": 45497
+      },
+      {
+        "instruction": 13907065,
+        "channel": 0,
+        "period": 44496
+      },
+      {
+        "instruction": 13926910,
+        "channel": 0,
+        "period": 43528
+      },
+      {
+        "instruction": 13946767,
+        "channel": 0,
+        "period": 42591
+      },
+      {
+        "instruction": 13966636,
+        "channel": 0,
+        "period": 41684
+      },
+      {
+        "instruction": 13986520,
+        "channel": 0,
+        "period": 40805
+      }
+    ],
+    "counter_forces": [],
+    "final": {
+      "0x20001b40": "f40100005200000052000000f401000000000000320000008096980080969800a0252600a02526000000000042000000c394922fb2aefb3e0000000000ffffff0100000001ffffff0000000000000000",
+      "0x20001b38": "7b000000",
+      "0x20002064": "00000000",
+      "0x2000201c": "00000000",
+      "0x200025e0": "0000",
+      "0x20002524": "01000000",
+      "0x20002318": "00000000",
+      "0x20004147": "01",
+      "0x20000060": "00",
+      "0x40003800": "02010000000000000010000001000000000000000000000000000000659f0000",
+      "0x20002329": "00",
+      "0x2000006c": "40060000400600004006000040060000",
+      "0x200000f0": "00000000000000000000000000000000",
+      "0x20000190": "0a02000001000000",
+      "0x200000d8": "00",
+      "0x20001b14": "01000000",
+      "0x2000007c": "659f0000",
+      "0x200030e8": "659f0000",
+      "0x2000310c": "01000000",
+      "0x20000094": "01000000010000000100000001000000",
+      "0x20003098": "0010101010000000",
+      "0x20000164": "292b072d421a0000",
+      "0x200025e2": "000000000000a0252600404b4c00a025260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "0x200030cc": "4f2c2e00000000000000000000000000"
+    }
+  },
+  "intentional": {
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "acceptances": 1,
+    "rate_start_entries": 1,
+    "step_emitter_entries": 0,
+    "tc0_handler_entries": 0,
+    "ch0_step_writes_total": 192,
+    "ch0_step_writes_after_boundary": 0,
+    "ch0_direction_after_boundary": [
+      {
+        "range": "0x41008094:12",
+        "instruction": 12128583,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00000040"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12145135,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12167593,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12187088,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12206563,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12226012,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12245495,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12265019,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12287356,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12306900,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12326390,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      }
+    ],
+    "driver_setters": [
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9501047,
+        "object": "0x200020a0",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9544041,
+        "object": "0x200020a0",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9551423,
+        "object": "0x200021d8",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9592041,
+        "object": "0x200021d8",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9599424,
+        "object": "0x2000213c",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9640042,
+        "object": "0x2000213c",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9647424,
+        "object": "0x20002274",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9651617,
+        "object": "0x20002274",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11878184,
+        "object": "0x200020a0",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11920035,
+        "object": "0x200020a0",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11933959,
+        "object": "0x200021d8",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11976041,
+        "object": "0x200021d8",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11989964,
+        "object": "0x2000213c",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12032037,
+        "object": "0x2000213c",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 12045957,
+        "object": "0x20002274",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12049952,
+        "object": "0x20002274",
+        "input": 0
+      }
+    ],
+    "spi_datagrams": 3258,
+    "spi_register_writes_after_boundary": 0,
+    "period_arguments": [
+      {
+        "instruction": 7499346,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 8696044,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 12327105,
+        "channel": 0,
+        "period": 21859
+      },
+      {
+        "instruction": 12347961,
+        "channel": 0,
+        "period": 18476
+      },
+      {
+        "instruction": 12367562,
+        "channel": 0,
+        "period": 15821
+      },
+      {
+        "instruction": 12387173,
+        "channel": 0,
+        "period": 13700
+      },
+      {
+        "instruction": 12406765,
+        "channel": 0,
+        "period": 11978
+      },
+      {
+        "instruction": 12426376,
+        "channel": 0,
+        "period": 10562
+      },
+      {
+        "instruction": 12445996,
+        "channel": 0,
+        "period": 9383
+      },
+      {
+        "instruction": 12465637,
+        "channel": 0,
+        "period": 8391
+      },
+      {
+        "instruction": 12488195,
+        "channel": 0,
+        "period": 7548
+      },
+      {
+        "instruction": 12507812,
+        "channel": 0,
+        "period": 6826
+      },
+      {
+        "instruction": 12527426,
+        "channel": 0,
+        "period": 6203
+      },
+      {
+        "instruction": 12548576,
+        "channel": 0,
+        "period": 5661
+      },
+      {
+        "instruction": 12568165,
+        "channel": 0,
+        "period": 5188
+      },
+      {
+        "instruction": 12587776,
+        "channel": 0,
+        "period": 4771
+      },
+      {
+        "instruction": 12607411,
+        "channel": 0,
+        "period": 4403
+      },
+      {
+        "instruction": 12627061,
+        "channel": 0,
+        "period": 4076
+      },
+      {
+        "instruction": 12646686,
+        "channel": 0,
+        "period": 3784
+      },
+      {
+        "instruction": 12666315,
+        "channel": 0,
+        "period": 3522
+      },
+      {
+        "instruction": 12685926,
+        "channel": 0,
+        "period": 3286
+      },
+      {
+        "instruction": 12705549,
+        "channel": 0,
+        "period": 3074
+      },
+      {
+        "instruction": 12728105,
+        "channel": 0,
+        "period": 2881
+      },
+      {
+        "instruction": 12747731,
+        "channel": 0,
+        "period": 2706
+      },
+      {
+        "instruction": 12765641,
+        "channel": 0,
+        "period": 2546
+      },
+      {
+        "instruction": 12788219,
+        "channel": 0,
+        "period": 2400
+      },
+      {
+        "instruction": 12807845,
+        "channel": 0,
+        "period": 2266
+      },
+      {
+        "instruction": 12827462,
+        "channel": 0,
+        "period": 2144
+      },
+      {
+        "instruction": 12847105,
+        "channel": 0,
+        "period": 2031
+      },
+      {
+        "instruction": 12866742,
+        "channel": 0,
+        "period": 1926
+      },
+      {
+        "instruction": 12886343,
+        "channel": 0,
+        "period": 1830
+      },
+      {
+        "instruction": 12905966,
+        "channel": 0,
+        "period": 1740
+      },
+      {
+        "instruction": 12925592,
+        "channel": 0,
+        "period": 1657
+      },
+      {
+        "instruction": 12948076,
+        "channel": 0,
+        "period": 1580
+      },
+      {
+        "instruction": 12969311,
+        "channel": 0,
+        "period": 1508
+      },
+      {
+        "instruction": 12986171,
+        "channel": 0,
+        "period": 1441
+      },
+      {
+        "instruction": 13005986,
+        "channel": 0,
+        "period": 1378
+      },
+      {
+        "instruction": 13025801,
+        "channel": 0,
+        "period": 1319
+      },
+      {
+        "instruction": 13045585,
+        "channel": 0,
+        "period": 1264
+      },
+      {
+        "instruction": 13068349,
+        "channel": 0,
+        "period": 1212
+      },
+      {
+        "instruction": 13088152,
+        "channel": 0,
+        "period": 1164
+      },
+      {
+        "instruction": 13107982,
+        "channel": 0,
+        "period": 1118
+      },
+      {
+        "instruction": 13127813,
+        "channel": 0,
+        "period": 1075
+      },
+      {
+        "instruction": 13147617,
+        "channel": 0,
+        "period": 1034
+      },
+      {
+        "instruction": 13167438,
+        "channel": 0,
+        "period": 996
+      },
+      {
+        "instruction": 13185880,
+        "channel": 0,
+        "period": 959
+      },
+      {
+        "instruction": 13205739,
+        "channel": 0,
+        "period": 925
+      },
+      {
+        "instruction": 13225611,
+        "channel": 0,
+        "period": 893
+      },
+      {
+        "instruction": 13248435,
+        "channel": 0,
+        "period": 862
+      },
+      {
+        "instruction": 13268301,
+        "channel": 0,
+        "period": 832
+      },
+      {
+        "instruction": 13288161,
+        "channel": 0,
+        "period": 805
+      },
+      {
+        "instruction": 13308024,
+        "channel": 0,
+        "period": 778
+      },
+      {
+        "instruction": 13327899,
+        "channel": 0,
+        "period": 753
+      },
+      {
+        "instruction": 13347765,
+        "channel": 0,
+        "period": 729
+      },
+      {
+        "instruction": 13367634,
+        "channel": 0,
+        "period": 706
+      },
+      {
+        "instruction": 13387524,
+        "channel": 0,
+        "period": 684
+      },
+      {
+        "instruction": 13407393,
+        "channel": 0,
+        "period": 664
+      },
+      {
+        "instruction": 13427265,
+        "channel": 0,
+        "period": 644
+      },
+      {
+        "instruction": 13447149,
+        "channel": 0,
+        "period": 625
+      },
+      {
+        "instruction": 13467033,
+        "channel": 0,
+        "period": 607
+      },
+      {
+        "instruction": 13486899,
+        "channel": 0,
+        "period": 589
+      },
+      {
+        "instruction": 13506762,
+        "channel": 0,
+        "period": 573
+      },
+      {
+        "instruction": 13526591,
+        "channel": 0,
+        "period": 557
+      },
+      {
+        "instruction": 13546487,
+        "channel": 0,
+        "period": 541
+      },
+      {
+        "instruction": 13566371,
+        "channel": 0,
+        "period": 527
+      },
+      {
+        "instruction": 13586237,
+        "channel": 0,
+        "period": 513
+      },
+      {
+        "instruction": 13606093,
+        "channel": 0,
+        "period": 499
+      },
+      {
+        "instruction": 13625976,
+        "channel": 0,
+        "period": 486
+      },
+      {
+        "instruction": 13645862,
+        "channel": 0,
+        "period": 474
+      },
+      {
+        "instruction": 13665742,
+        "channel": 0,
+        "period": 59160
+      },
+      {
+        "instruction": 13685640,
+        "channel": 0,
+        "period": 57680
+      },
+      {
+        "instruction": 13708385,
+        "channel": 0,
+        "period": 56254
+      },
+      {
+        "instruction": 13728227,
+        "channel": 0,
+        "period": 54880
+      },
+      {
+        "instruction": 13748102,
+        "channel": 0,
+        "period": 53556
+      },
+      {
+        "instruction": 13767983,
+        "channel": 0,
+        "period": 52279
+      },
+      {
+        "instruction": 13787846,
+        "channel": 0,
+        "period": 51048
+      },
+      {
+        "instruction": 13807712,
+        "channel": 0,
+        "period": 49859
+      },
+      {
+        "instruction": 13827590,
+        "channel": 0,
+        "period": 48712
+      },
+      {
+        "instruction": 13847422,
+        "channel": 0,
+        "period": 47604
+      },
+      {
+        "instruction": 13867300,
+        "channel": 0,
+        "period": 46533
+      },
+      {
+        "instruction": 13887184,
+        "channel": 0,
+        "period": 45497
+      },
+      {
+        "instruction": 13907065,
+        "channel": 0,
+        "period": 44496
+      },
+      {
+        "instruction": 13926910,
+        "channel": 0,
+        "period": 43528
+      },
+      {
+        "instruction": 13946767,
+        "channel": 0,
+        "period": 42591
+      },
+      {
+        "instruction": 13966636,
+        "channel": 0,
+        "period": 41684
+      },
+      {
+        "instruction": 13986520,
+        "channel": 0,
+        "period": 40805
+      }
+    ],
+    "counter_forces": [],
+    "final": {
+      "0x20001b40": "f40100005200000052000000f401000000000000320000008096980080969800a0252600a02526000000000042000000c394922fb2aefb3e0000000000ffffff0100000001ffffff0000000000000000",
+      "0x20001b38": "7b000000",
+      "0x20002064": "00000000",
+      "0x2000201c": "00000000",
+      "0x200025e0": "0000",
+      "0x20002524": "01000000",
+      "0x20002318": "00000000",
+      "0x20004147": "01",
+      "0x20000060": "00",
+      "0x40003800": "02010000000000000010000001000000000000000000000000000000659f0000",
+      "0x20002329": "00",
+      "0x2000006c": "40060000400600004006000040060000",
+      "0x200000f0": "00000000000000000000000000000000",
+      "0x20000190": "0a02000001000000",
+      "0x200000d8": "00",
+      "0x20001b14": "01000000",
+      "0x2000007c": "659f0000",
+      "0x200030e8": "659f0000",
+      "0x2000310c": "01000000",
+      "0x20000094": "01000000010000000100000001000000",
+      "0x20003098": "0010101010000000",
+      "0x20000164": "292b072d421a0000",
+      "0x200025e2": "000000000000a0252600404b4c00a025260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "0x200030cc": "4f2c2e00000000000000000000000000"
+    }
+  },
+  "unacquired": {
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "acceptances": 0,
+    "rate_start_entries": 0,
+    "step_emitter_entries": 0,
+    "tc0_handler_entries": 0,
+    "ch0_step_writes_total": 192,
+    "ch0_step_writes_after_boundary": 0,
+    "ch0_direction_after_boundary": [],
+    "driver_setters": [
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9501047,
+        "object": "0x200020a0",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9544041,
+        "object": "0x200020a0",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9551423,
+        "object": "0x200021d8",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9592041,
+        "object": "0x200021d8",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9599424,
+        "object": "0x2000213c",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9640042,
+        "object": "0x2000213c",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9647424,
+        "object": "0x20002274",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9651617,
+        "object": "0x20002274",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11878184,
+        "object": "0x200020a0",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11920035,
+        "object": "0x200020a0",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11933959,
+        "object": "0x200021d8",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11976041,
+        "object": "0x200021d8",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11989964,
+        "object": "0x2000213c",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12032037,
+        "object": "0x2000213c",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 12045957,
+        "object": "0x20002274",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12049952,
+        "object": "0x20002274",
+        "input": 0
+      }
+    ],
+    "spi_datagrams": 3387,
+    "spi_register_writes_after_boundary": 0,
+    "period_arguments": [
+      {
+        "instruction": 7499346,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 8696044,
+        "channel": 7,
+        "period": 6000
+      }
+    ],
+    "counter_forces": [],
+    "final": {
+      "0x20001b40": "f40100005200000052000000f401000000000000320000008096980080969800a0252600a02526000000000042000000c394922fb2aefb3e00ffff0000ffffff0100000001ffffff0000000000000000",
+      "0x20001b38": "7b000000",
+      "0x20002064": "00000000",
+      "0x2000201c": "00000000",
+      "0x200025e0": "0000",
+      "0x20002524": "00000000",
+      "0x20002318": "00000000",
+      "0x20004147": "01",
+      "0x20000060": "00",
+      "0x40003800": "0006000000020000001000000100000000000000000000000000000000000000",
+      "0x20002329": "00",
+      "0x2000006c": "40060000400600004006000040060000",
+      "0x200000f0": "00000000000000000000000000000000",
+      "0x20000190": "0a02000001000000",
+      "0x200000d8": "09",
+      "0x20001b14": "00000000",
+      "0x2000007c": "80841e00",
+      "0x200030e8": "00000000",
+      "0x2000310c": "00000000",
+      "0x20000094": "01000000010000000100000001000000",
+      "0x20003098": "0010101010000000",
+      "0x20000164": "292b072d421a0000",
+      "0x200025e2": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "0x200030cc": "00000000000000000000000000000000"
+    }
+  },
+  "transient-count-observation": {
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "acceptances": 1,
+    "rate_start_entries": 38,
+    "step_emitter_entries": 0,
+    "tc0_handler_entries": 0,
+    "ch0_step_writes_total": 192,
+    "ch0_step_writes_after_boundary": 0,
+    "ch0_direction_after_boundary": [
+      {
+        "range": "0x41008094:12",
+        "instruction": 12128583,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00000040"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12145135,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12167593,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12187088,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12206563,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12226012,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12245495,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12265019,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12287356,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12306900,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12326390,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12348006,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12367598,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12387946,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12407506,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12427861,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12447438,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12467825,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12487400,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12507756,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12527347,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12549345,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12565947,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12586313,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12605914,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12626289,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12645877,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12666253,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12685857,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12706242,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12725818,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12746208,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12767432,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12787793,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12807388,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12827767,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12847362,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12867726,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12887281,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12907680,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12927280,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12947673,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12968790,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12986539,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13006352,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13026889,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13046624,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13067187,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13086956,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13127917,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13147696,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13168302,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13186735,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13227772,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13247609,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13268224,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13288044,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13326287,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13346148,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13366772,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13386626,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13427690,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13447528,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13468145,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13487992,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13526107,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13545948,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13566562,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13586403,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13627477,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13647324,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13667945,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13687766,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13725996,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13745837,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13766446,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13786276,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13827347,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13847168,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13867762,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13887585,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13925650,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13948414,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13966090,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13985931,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      }
+    ],
+    "driver_setters": [
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9501047,
+        "object": "0x200020a0",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9544041,
+        "object": "0x200020a0",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9551423,
+        "object": "0x200021d8",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9592041,
+        "object": "0x200021d8",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9599424,
+        "object": "0x2000213c",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9640042,
+        "object": "0x2000213c",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9647424,
+        "object": "0x20002274",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9651617,
+        "object": "0x20002274",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11878184,
+        "object": "0x200020a0",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11920035,
+        "object": "0x200020a0",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11933959,
+        "object": "0x200021d8",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11976041,
+        "object": "0x200021d8",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11989964,
+        "object": "0x2000213c",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12032037,
+        "object": "0x2000213c",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 12045957,
+        "object": "0x20002274",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12049952,
+        "object": "0x20002274",
+        "input": 0
+      }
+    ],
+    "spi_datagrams": 3162,
+    "spi_register_writes_after_boundary": 0,
+    "period_arguments": [
+      {
+        "instruction": 7499346,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 8696044,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 12327105,
+        "channel": 0,
+        "period": 21859
+      },
+      {
+        "instruction": 12368277,
+        "channel": 0,
+        "period": 885
+      },
+      {
+        "instruction": 12408171,
+        "channel": 0,
+        "period": 4843
+      },
+      {
+        "instruction": 12448109,
+        "channel": 0,
+        "period": 26012
+      },
+      {
+        "instruction": 12488090,
+        "channel": 0,
+        "period": 972
+      },
+      {
+        "instruction": 12528018,
+        "channel": 0,
+        "period": 5300
+      },
+      {
+        "instruction": 12566603,
+        "channel": 0,
+        "period": 27875
+      },
+      {
+        "instruction": 12606601,
+        "channel": 0,
+        "period": 940
+      },
+      {
+        "instruction": 12646542,
+        "channel": 0,
+        "period": 5106
+      },
+      {
+        "instruction": 12686531,
+        "channel": 0,
+        "period": 26280
+      },
+      {
+        "instruction": 12726524,
+        "channel": 0,
+        "period": 810
+      },
+      {
+        "instruction": 12768085,
+        "channel": 0,
+        "period": 4387
+      },
+      {
+        "instruction": 12808071,
+        "channel": 0,
+        "period": 22238
+      },
+      {
+        "instruction": 12848050,
+        "channel": 0,
+        "period": 649
+      },
+      {
+        "instruction": 12887967,
+        "channel": 0,
+        "period": 3509
+      },
+      {
+        "instruction": 12927957,
+        "channel": 0,
+        "period": 17660
+      },
+      {
+        "instruction": 12969501,
+        "channel": 0,
+        "period": 504
+      },
+      {
+        "instruction": 13007008,
+        "channel": 0,
+        "period": 2724
+      },
+      {
+        "instruction": 13047307,
+        "channel": 0,
+        "period": 13689
+      },
+      {
+        "instruction": 13087627,
+        "channel": 0,
+        "period": 49956
+      },
+      {
+        "instruction": 13108019,
+        "channel": 0,
+        "period": 2339
+      },
+      {
+        "instruction": 13148379,
+        "channel": 0,
+        "period": 11706
+      },
+      {
+        "instruction": 13187403,
+        "channel": 0,
+        "period": 42196
+      },
+      {
+        "instruction": 13207837,
+        "channel": 0,
+        "period": 1894
+      },
+      {
+        "instruction": 13248280,
+        "channel": 0,
+        "period": 9502
+      },
+      {
+        "instruction": 13288712,
+        "channel": 0,
+        "period": 34634
+      },
+      {
+        "instruction": 13306328,
+        "channel": 0,
+        "period": 1636
+      },
+      {
+        "instruction": 13346816,
+        "channel": 0,
+        "period": 8193
+      },
+      {
+        "instruction": 13387297,
+        "channel": 0,
+        "period": 29728
+      },
+      {
+        "instruction": 13407758,
+        "channel": 0,
+        "period": 1386
+      },
+      {
+        "instruction": 13448193,
+        "channel": 0,
+        "period": 6948
+      },
+      {
+        "instruction": 13488678,
+        "channel": 0,
+        "period": 25341
+      },
+      {
+        "instruction": 13506202,
+        "channel": 0,
+        "period": 1212
+      },
+      {
+        "instruction": 13546619,
+        "channel": 0,
+        "period": 6071
+      },
+      {
+        "instruction": 13587080,
+        "channel": 0,
+        "period": 22111
+      },
+      {
+        "instruction": 13607535,
+        "channel": 0,
+        "period": 1056
+      },
+      {
+        "instruction": 13648007,
+        "channel": 0,
+        "period": 5291
+      },
+      {
+        "instruction": 13688446,
+        "channel": 0,
+        "period": 19318
+      },
+      {
+        "instruction": 13708914,
+        "channel": 0,
+        "period": 935
+      },
+      {
+        "instruction": 13746499,
+        "channel": 0,
+        "period": 4684
+      },
+      {
+        "instruction": 13786938,
+        "channel": 0,
+        "period": 17100
+      },
+      {
+        "instruction": 13807394,
+        "channel": 0,
+        "period": 830
+      },
+      {
+        "instruction": 13847824,
+        "channel": 0,
+        "period": 4158
+      },
+      {
+        "instruction": 13888261,
+        "channel": 0,
+        "period": 15200
+      },
+      {
+        "instruction": 13908704,
+        "channel": 0,
+        "period": 744
+      },
+      {
+        "instruction": 13949094,
+        "channel": 0,
+        "period": 3727
+      },
+      {
+        "instruction": 13986599,
+        "channel": 0,
+        "period": 13627
+      }
+    ],
+    "counter_forces": [
+      {
+        "instruction": 12327153,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12368325,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12408251,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12448189,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12488138,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12528098,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12566683,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12606649,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12646622,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12686611,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12726572,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12768165,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12808151,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12848098,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12888047,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12928037,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12969549,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13007088,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13047387,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13087707,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13148459,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13187483,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13248360,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13288792,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13346896,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13387377,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13448273,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13488758,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13546699,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13587160,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13648087,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13688526,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13746579,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13787018,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13847904,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13888341,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13949174,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13986679,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      }
+    ],
+    "final": {
+      "0x20001b40": "f40100005200000052000000f401000000000000320000008096980080969800a0252600a02526000000000042000000c394922fb2aefb3e0000000000ffffff0100000001ffffff0000000000000000",
+      "0x20001b38": "7b000000",
+      "0x20002064": "00000000",
+      "0x2000201c": "00000000",
+      "0x200025e0": "0000",
+      "0x20002524": "01000000",
+      "0x20002318": "00000000",
+      "0x20004147": "01",
+      "0x20000060": "00",
+      "0x40003800": "020100000000000000100000010000000000000062550000000000003b350000",
+      "0x20002329": "00",
+      "0x2000006c": "40060000400600004006000040060000",
+      "0x200000f0": "00000000000000000000000000000000",
+      "0x20000190": "0a02000001000000",
+      "0x200000d8": "00",
+      "0x20001b14": "01000000",
+      "0x2000007c": "3b350000",
+      "0x200030e8": "3b350000",
+      "0x2000310c": "01000000",
+      "0x20000094": "01000000010000000100000001000000",
+      "0x20003098": "0010101010000000",
+      "0x20000164": "292b072d421a0000",
+      "0x200025e2": "000000000000a0252600404b4c00a025260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "0x200030cc": "4f2c2e00000000000000000000000000"
+    }
+  },
+  "intentional-count-observation": {
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "acceptances": 1,
+    "rate_start_entries": 38,
+    "step_emitter_entries": 0,
+    "tc0_handler_entries": 0,
+    "ch0_step_writes_total": 192,
+    "ch0_step_writes_after_boundary": 0,
+    "ch0_direction_after_boundary": [
+      {
+        "range": "0x41008094:12",
+        "instruction": 12128583,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00000040"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12145135,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12167593,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12187088,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12206563,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12226012,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12245495,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12265019,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12287356,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12306900,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12326390,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12348006,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12367598,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12387946,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12407506,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12427861,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12447438,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12467825,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12487400,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12507756,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12527347,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12549345,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12565947,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12586313,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12605914,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12626289,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12645877,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12666253,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12685857,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12706242,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12725818,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12746208,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12767432,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12787793,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12807388,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12827767,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12847362,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12867726,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12887281,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12907680,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12927280,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12947673,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12968790,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 12986539,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13006352,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13026889,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13046624,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13067187,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13086956,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13127917,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13147696,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13168302,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13186735,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13227772,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13247609,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13268224,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13288044,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13326287,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13346148,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13366772,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13386626,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13427690,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13447528,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13468145,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13487992,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00010000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13526107,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13545948,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13566562,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13586403,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13627477,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13647324,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13667945,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13687766,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13725996,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13745837,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13766446,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13786276,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13827347,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13847168,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13867762,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13887585,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13925650,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13948414,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13966090,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000692f",
+        "address": "0x41008094",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      },
+      {
+        "range": "0x41008094:12",
+        "instruction": 13985931,
+        "pc": "0x0000d3d0",
+        "lr": "0x000066c3",
+        "address": "0x41008098",
+        "size": 4,
+        "value": "0x800",
+        "previous": "00020000"
+      }
+    ],
+    "driver_setters": [
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9501047,
+        "object": "0x200020a0",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9544041,
+        "object": "0x200020a0",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9551423,
+        "object": "0x200021d8",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9592041,
+        "object": "0x200021d8",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9599424,
+        "object": "0x2000213c",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9640042,
+        "object": "0x2000213c",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 9647424,
+        "object": "0x20002274",
+        "input": 400
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 9651617,
+        "object": "0x20002274",
+        "input": 16
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11878184,
+        "object": "0x200020a0",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11920035,
+        "object": "0x200020a0",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11933959,
+        "object": "0x200021d8",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 11976041,
+        "object": "0x200021d8",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 11989964,
+        "object": "0x2000213c",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12032037,
+        "object": "0x2000213c",
+        "input": 0
+      },
+      {
+        "pc": "0x0000ae60",
+        "instruction": 12045957,
+        "object": "0x20002274",
+        "input": 1600
+      },
+      {
+        "pc": "0x0000b070",
+        "instruction": 12049952,
+        "object": "0x20002274",
+        "input": 0
+      }
+    ],
+    "spi_datagrams": 3162,
+    "spi_register_writes_after_boundary": 0,
+    "period_arguments": [
+      {
+        "instruction": 7499346,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 8696044,
+        "channel": 7,
+        "period": 6000
+      },
+      {
+        "instruction": 12327105,
+        "channel": 0,
+        "period": 21859
+      },
+      {
+        "instruction": 12368277,
+        "channel": 0,
+        "period": 885
+      },
+      {
+        "instruction": 12408171,
+        "channel": 0,
+        "period": 4843
+      },
+      {
+        "instruction": 12448109,
+        "channel": 0,
+        "period": 26012
+      },
+      {
+        "instruction": 12488090,
+        "channel": 0,
+        "period": 972
+      },
+      {
+        "instruction": 12528018,
+        "channel": 0,
+        "period": 5300
+      },
+      {
+        "instruction": 12566603,
+        "channel": 0,
+        "period": 27875
+      },
+      {
+        "instruction": 12606601,
+        "channel": 0,
+        "period": 940
+      },
+      {
+        "instruction": 12646542,
+        "channel": 0,
+        "period": 5106
+      },
+      {
+        "instruction": 12686531,
+        "channel": 0,
+        "period": 26280
+      },
+      {
+        "instruction": 12726524,
+        "channel": 0,
+        "period": 810
+      },
+      {
+        "instruction": 12768085,
+        "channel": 0,
+        "period": 4387
+      },
+      {
+        "instruction": 12808071,
+        "channel": 0,
+        "period": 22238
+      },
+      {
+        "instruction": 12848050,
+        "channel": 0,
+        "period": 649
+      },
+      {
+        "instruction": 12887967,
+        "channel": 0,
+        "period": 3509
+      },
+      {
+        "instruction": 12927957,
+        "channel": 0,
+        "period": 17660
+      },
+      {
+        "instruction": 12969501,
+        "channel": 0,
+        "period": 504
+      },
+      {
+        "instruction": 13007008,
+        "channel": 0,
+        "period": 2724
+      },
+      {
+        "instruction": 13047307,
+        "channel": 0,
+        "period": 13689
+      },
+      {
+        "instruction": 13087627,
+        "channel": 0,
+        "period": 49956
+      },
+      {
+        "instruction": 13108019,
+        "channel": 0,
+        "period": 2339
+      },
+      {
+        "instruction": 13148379,
+        "channel": 0,
+        "period": 11706
+      },
+      {
+        "instruction": 13187403,
+        "channel": 0,
+        "period": 42196
+      },
+      {
+        "instruction": 13207837,
+        "channel": 0,
+        "period": 1894
+      },
+      {
+        "instruction": 13248280,
+        "channel": 0,
+        "period": 9502
+      },
+      {
+        "instruction": 13288712,
+        "channel": 0,
+        "period": 34634
+      },
+      {
+        "instruction": 13306328,
+        "channel": 0,
+        "period": 1636
+      },
+      {
+        "instruction": 13346816,
+        "channel": 0,
+        "period": 8193
+      },
+      {
+        "instruction": 13387297,
+        "channel": 0,
+        "period": 29728
+      },
+      {
+        "instruction": 13407758,
+        "channel": 0,
+        "period": 1386
+      },
+      {
+        "instruction": 13448193,
+        "channel": 0,
+        "period": 6948
+      },
+      {
+        "instruction": 13488678,
+        "channel": 0,
+        "period": 25341
+      },
+      {
+        "instruction": 13506202,
+        "channel": 0,
+        "period": 1212
+      },
+      {
+        "instruction": 13546619,
+        "channel": 0,
+        "period": 6071
+      },
+      {
+        "instruction": 13587080,
+        "channel": 0,
+        "period": 22111
+      },
+      {
+        "instruction": 13607535,
+        "channel": 0,
+        "period": 1056
+      },
+      {
+        "instruction": 13648007,
+        "channel": 0,
+        "period": 5291
+      },
+      {
+        "instruction": 13688446,
+        "channel": 0,
+        "period": 19318
+      },
+      {
+        "instruction": 13708914,
+        "channel": 0,
+        "period": 935
+      },
+      {
+        "instruction": 13746499,
+        "channel": 0,
+        "period": 4684
+      },
+      {
+        "instruction": 13786938,
+        "channel": 0,
+        "period": 17100
+      },
+      {
+        "instruction": 13807394,
+        "channel": 0,
+        "period": 830
+      },
+      {
+        "instruction": 13847824,
+        "channel": 0,
+        "period": 4158
+      },
+      {
+        "instruction": 13888261,
+        "channel": 0,
+        "period": 15200
+      },
+      {
+        "instruction": 13908704,
+        "channel": 0,
+        "period": 744
+      },
+      {
+        "instruction": 13949094,
+        "channel": 0,
+        "period": 3727
+      },
+      {
+        "instruction": 13986599,
+        "channel": 0,
+        "period": 13627
+      }
+    ],
+    "counter_forces": [
+      {
+        "instruction": 12327153,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12368325,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12408251,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12448189,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12488138,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12528098,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12566683,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12606649,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12646622,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12686611,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12726572,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12768165,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12808151,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12848098,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12888047,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12928037,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 12969549,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13007088,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13047387,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13087707,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13148459,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13187483,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13248360,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13288792,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13346896,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13387377,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13448273,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13488758,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13546699,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13587160,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13648087,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13688526,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13746579,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13787018,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13847904,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13888341,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13949174,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      },
+      {
+        "instruction": 13986679,
+        "address": "0x00005fa6",
+        "writes": [
+          {
+            "addr": "0x40003814",
+            "bytes": "6255",
+            "len": 2
+          }
+        ]
+      }
+    ],
+    "final": {
+      "0x20001b40": "f40100005200000052000000f401000000000000320000008096980080969800a0252600a02526000000000042000000c394922fb2aefb3e0000000000ffffff0100000001ffffff0000000000000000",
+      "0x20001b38": "7b000000",
+      "0x20002064": "00000000",
+      "0x2000201c": "00000000",
+      "0x200025e0": "0000",
+      "0x20002524": "01000000",
+      "0x20002318": "00000000",
+      "0x20004147": "01",
+      "0x20000060": "00",
+      "0x40003800": "020100000000000000100000010000000000000062550000000000003b350000",
+      "0x20002329": "00",
+      "0x2000006c": "40060000400600004006000040060000",
+      "0x200000f0": "00000000000000000000000000000000",
+      "0x20000190": "0a02000001000000",
+      "0x200000d8": "00",
+      "0x20001b14": "01000000",
+      "0x2000007c": "3b350000",
+      "0x200030e8": "3b350000",
+      "0x2000310c": "01000000",
+      "0x20000094": "01000000010000000100000001000000",
+      "0x20003098": "0010101010000000",
+      "0x20000164": "292b072d421a0000",
+      "0x200025e2": "000000000000a0252600404b4c00a025260000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "0x200030cc": "4f2c2e00000000000000000000000000"
+    }
+  }
+}

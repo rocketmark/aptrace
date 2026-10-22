@@ -1,0 +1,83 @@
+[
+  {
+    "logical_name": "transient.json",
+    "stored_name": "transient.json.gz",
+    "uncompressed_sha256": "795180347c0549d9f87c2f574c14dcd8b654119b5a526e2e4bf054a1e3c7dcc3",
+    "compressed_sha256": "62bd8535f2a806b02ab4241b819f3e4035947ee79f5aeb2f8e8756b48407100e",
+    "bytes": 7428691,
+    "compressed_bytes": 182389,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "intentional.json",
+    "stored_name": "intentional.json.gz",
+    "uncompressed_sha256": "a5ec4cf6f544d81966ca76e3192f813037c5a35076cd475bec08d641006b9569",
+    "compressed_sha256": "8978e82c8f05b7e85d140e3c3abf9f47704ca9087cacff873f94a7747fa25a8c",
+    "bytes": 7428488,
+    "compressed_bytes": 182377,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "unacquired.json",
+    "stored_name": "unacquired.json.gz",
+    "uncompressed_sha256": "9f63604174855fc23108f816756a3955e1c6e84080a56149e7d936514dccbbc7",
+    "compressed_sha256": "5eca720b539c7f0d75304520fa50e57e2efe36c84ec0c834c39a016b695c3d2a",
+    "bytes": 7639637,
+    "compressed_bytes": 178675,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "transient-count-observation.json",
+    "stored_name": "transient-count-observation.json.gz",
+    "uncompressed_sha256": "edb07da531e13ac0b21ef2c27ae599626f504b01abafc84fcf99eb8b9bba2da9",
+    "compressed_sha256": "d6759da9211a8a02c5fa226c9b1041c8935cdde63dd60e8a51f07a5022c4a04a",
+    "bytes": 7740762,
+    "compressed_bytes": 193987,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "intentional-count-observation.json",
+    "stored_name": "intentional-count-observation.json.gz",
+    "uncompressed_sha256": "748df5b7c53aab3b4d881bf624ef11612dc3c371b3bce9c69233b778bc88afcf",
+    "compressed_sha256": "67f9449f65c5643658b6889a774abe2f5b0844a4073af9400c82c484cde04d65",
+    "bytes": 7740559,
+    "compressed_bytes": 193979,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "transient-watch-cap.json",
+    "stored_name": "transient-watch-cap.json.gz",
+    "uncompressed_sha256": "ada3fcd953b4f6cc2e013a7ebd44b83bda8b9f9a44874b34e6798c3bebcc7a49",
+    "compressed_sha256": "b059cf87c5791c11961fb4292e1856d7c607a8f90be5d89ba5b4e649846ca9e5",
+    "bytes": 29900572,
+    "compressed_bytes": 376226,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "intentional-watch-cap.json",
+    "stored_name": "intentional-watch-cap.json.gz",
+    "uncompressed_sha256": "28be60eaced569fefdf23d5c05a330117ad3236feca5209a2c0778442b347945",
+    "compressed_sha256": "c843b2146cf7d35fcfb42237ed7db8ae2df178744960ce22140210c549bb7fe9",
+    "bytes": 29900369,
+    "compressed_bytes": 376212,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "unacquired-watch-cap.json",
+    "stored_name": "unacquired-watch-cap.json.gz",
+    "uncompressed_sha256": "3109dec8ccdcf3d134414b0c34ef0edad48c48a1d33a67a2a982bbf2228cf852",
+    "compressed_sha256": "1c63d5c37e008bb20c8f4c226e6d0c737ce23fa1f1752f4bde8ff2459204ecd8",
+    "bytes": 29935592,
+    "compressed_bytes": 379035,
+    "process_exit_status": 0
+  },
+  {
+    "logical_name": "unacquired-write-cap.json",
+    "stored_name": "unacquired-write-cap.json.gz",
+    "uncompressed_sha256": "b4b5c9add1ce8f860b3db0837e9d376235faa8d5d910471eb05edfd8e9b29437",
+    "compressed_sha256": "3ffc8bcc6caa28a531aa67572218ea89c43932064c629801f5c49ec0d714c653",
+    "bytes": 7566337,
+    "compressed_bytes": 176876,
+    "process_exit_status": 0
+  }
+]

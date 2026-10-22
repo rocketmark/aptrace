@@ -1,0 +1,270 @@
+==================================================
+Function: FUN_00005c00 @ 00005c00  size=256  params=0  callingConvention=unknown
+
+
+void FUN_00005c00(int param_1,int param_2,int param_3)
+
+{
+  undefined2 uVar1;
+  int iVar2;
+  int iVar3;
+  int iVar4;
+  int iVar5;
+  undefined4 uVar6;
+  int iVar7;
+  int iVar8;
+  bool bVar9;
+  
+  iVar5 = DAT_00005d1c;
+  iVar4 = DAT_00005d18;
+  iVar3 = DAT_00005d14;
+  iVar8 = DAT_00005d10;
+  iVar2 = DAT_00005d08;
+  if (*(char *)(DAT_00005d08 + param_1 * 2) == '\0') {
+    param_3 = 1;
+    iVar7 = param_3;
+  }
+  else {
+    bVar9 = *(char *)(DAT_00005d0c + param_1) == '\0';
+    if (bVar9) {
+      param_3 = 1;
+    }
+    if (!bVar9) {
+      param_3 = 0x81;
+    }
+    if (*(char *)(DAT_00005d08 + param_1 * 2 + 1) == '@') {
+      iVar7 = 0x7f;
+    }
+    else {
+      iVar7 = 1;
+    }
+  }
+  uVar1 = (undefined2)param_2;
+  switch(param_1) {
+  case 0:
+    *(undefined2 *)(DAT_00005d10 + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar3 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar8 + 5) = 0x80;
+    iVar8 = DAT_00005d10;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d10 + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d10 + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    tc0_isr_completion__CUSTOM();
+    goto LAB_00005c68;
+  case 1:
+    *(undefined2 *)(DAT_00005d14 + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar3 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar3 + 5) = 0x80;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d14 + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d14 + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    uVar6 = 1;
+    iVar8 = DAT_00005d14;
+    break;
+  case 2:
+    *(undefined2 *)(DAT_00005d18 + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar4 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar4 + 5) = 0x80;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d18 + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d18 + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    uVar6 = 2;
+    iVar8 = DAT_00005d18;
+    break;
+  case 3:
+    *(undefined2 *)(DAT_00005d1c + 0x1c) = uVar1;
+    do {
+    } while (*(int *)(iVar5 + 0x10) << 0x19 < 0);
+    *(undefined1 *)(iVar5 + 5) = 0x80;
+    do {
+    } while ((int)((uint)*(byte *)(DAT_00005d1c + 5) << 0x18) < 0);
+    param_3 = (uint)*(ushort *)(DAT_00005d1c + 0x14) * param_3;
+    if (param_3 - iVar7 * param_2 == 0 || param_3 < iVar7 * param_2) goto switchD_00005c2c_caseD_4;
+    uVar6 = 3;
+    iVar8 = DAT_00005d1c;
+    break;
+  default:
+    goto switchD_00005c2c_caseD_4;
+  case 7:
+    *(int *)(DAT_00005d20 + 0x44) = param_2;
+    goto switchD_00005c2c_caseD_4;
+  }
+  digitalWrite_pulse__STANDARD_LIBRARY(uVar6);
+LAB_00005c68:
+  *(undefined2 *)(iVar8 + 0x14) = 0;
+switchD_00005c2c_caseD_4:
+  if (*(char *)(iVar2 + param_1 * 2) != '\0') {
+    FUN_000056e8(param_1,*(undefined1 *)(iVar2 + param_1 * 2 + 1));
+    *(undefined1 *)(iVar2 + param_1 * 2) = 0;
+  }
+  return;
+}
+
+
+
+==================================================
+Function: FUN_000054b8 @ 000054b8  size=30  params=0  callingConvention=unknown
+
+
+void FUN_000054b8(int param_1,int param_2)
+
+{
+  undefined4 uVar1;
+  
+  param_2 = *(int *)(DAT_000054d8 + param_1 * 4) * param_2;
+  uVar1 = 1;
+  if (param_2 != 1) {
+    if (param_2 != -1) {
+      return;
+    }
+    uVar1 = 0;
+  }
+  digitalWrite_pulse_shared__STANDARD_LIBRARY(*(undefined1 *)(DAT_000054dc + param_1),uVar1);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00005570 @ 00005570  size=332  params=0  callingConvention=unknown
+
+
+void FUN_00005570(int param_1)
+
+{
+  undefined4 *puVar1;
+  undefined4 uVar2;
+  int iVar3;
+  ushort uVar4;
+  int iVar5;
+  uint *puVar6;
+  
+  *(undefined1 *)(DAT_000056c4 + param_1) = 1;
+  switch(param_1) {
+  case 0:
+    *(uint *)(DAT_000056c8 + 0x14) = *(uint *)(DAT_000056c8 + 0x14) | 0x4000;
+    puVar6 = DAT_000056cc;
+    *DAT_000056cc = *DAT_000056cc & 0xfffffffd;
+    puVar6[-0x6f1] = 0x306;
+    do {
+      iVar5 = puVar6[-0x6ff] << 0x16;
+      uVar4 = (ushort)((uint)iVar5 >> 0x1f);
+    } while ((int)(puVar6[-0x6ff] << 0x16) < 0);
+    puVar6[-0x6d7] = 0x47;
+    puVar6 = DAT_000056cc;
+    *DAT_000056cc = 0x600;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    iVar3 = DAT_000056d0;
+    uVar2 = 0x800;
+    *(byte *)(DAT_000056d0 + 0x36b) = (byte)((uint)iVar5 >> 0x1f);
+    break;
+  case 1:
+    *(uint *)(DAT_000056c8 + 0x14) = *(uint *)(DAT_000056c8 + 0x14) | 0x8000;
+    puVar6 = DAT_000056d4;
+    *DAT_000056d4 = *DAT_000056d4 & 0xfffffffd;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xa4) = 0x47;
+    *puVar6 = 0x600;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    uVar4 = 0;
+    *(undefined1 *)(iVar3 + 0x36c) = 0;
+    uVar2 = 0x1000;
+    break;
+  case 2:
+    *(uint *)(DAT_000056c8 + 0x18) = *(uint *)(DAT_000056c8 + 0x18) | 0x2000;
+    puVar6 = DAT_000056dc;
+    *DAT_000056dc = *DAT_000056dc & 0xfffffffd;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xe8) = 0x47;
+    *puVar6 = 0x600;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    uVar4 = 0;
+    *(undefined1 *)(iVar3 + 0x36d) = 0;
+    uVar2 = 0x2000;
+    break;
+  case 3:
+    *(uint *)(DAT_000056c8 + 0x18) = *(uint *)(DAT_000056c8 + 0x18) | 0x4000;
+    puVar6 = DAT_000056e0;
+    *DAT_000056e0 = *DAT_000056e0 & 0xfffffffd;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xe8) = 0x47;
+    *puVar6 = 0x600;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(puVar6 + 3) = 1;
+    uVar4 = 0;
+    *(undefined1 *)(iVar3 + 0x36e) = 0;
+    uVar2 = 0x4000;
+    break;
+  default:
+    return;
+  case 7:
+    *(uint *)(DAT_000056c8 + 0x18) = *(uint *)(DAT_000056c8 + 0x18) | 0x1000;
+    iVar3 = DAT_000056d8;
+    *(undefined4 *)(DAT_000056d8 + 0x3c) = 0x306;
+    *(undefined4 *)(iVar3 + 0xe4) = 0x47;
+    puVar1 = DAT_000056e4;
+    *DAT_000056e4 = 0x100;
+    puVar1[0xf] = 1;
+    iVar3 = DAT_000056d0;
+    *(undefined1 *)(DAT_000056d0 + 0x35d) = 0x40;
+    *(undefined4 *)(iVar3 + 8) = 0x20000000;
+    puVar1[10] = 0x10000;
+    return;
+  }
+  *(undefined4 *)(iVar3 + 0xc) = uVar2;
+  *(undefined1 *)((int)puVar6 + 5) = 2;
+  *(char *)((int)puVar6 + 9) = (char)uVar4;
+  *(undefined1 *)((int)puVar6 + 9) = 0x10;
+  *(ushort *)(puVar6 + 5) = uVar4;
+  return;
+}
+
+
+
+==================================================
+Function: digitalWrite_pulse__STANDARD_LIBRARY @ 00005898  size=130  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: LIKELY_STANDARD_LIBRARY -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void digitalWrite_pulse__STANDARD_LIBRARY
+               (int param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  uint uVar4;
+  
+  iVar1 = DAT_00005920;
+  *(int *)(DAT_00005920 + param_1 * 4) =
+       *(int *)(DAT_00005920 + param_1 * 4) + *(int *)(DAT_0000591c + param_1 * 4);
+  iVar2 = DAT_00005928;
+  iVar3 = *(int *)(iVar1 + param_1 * 4);
+  if (iVar3 == (uint)*(byte *)(DAT_00005924 + param_1) *
+               (iVar3 / (int)(uint)*(byte *)(DAT_00005924 + param_1))) {
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*(undefined1 *)(DAT_00005928 + param_1),1);
+    digitalWrite_pulse_shared__STANDARD_LIBRARY(*(undefined1 *)(iVar2 + param_1),0);
+  }
+  uVar4 = (uint)*(byte *)(DAT_0000592c + param_1 * 0x120 + 0x3c);
+  if (((*(int *)(DAT_0000592c + uVar4 * 0x48 + param_1 * 0x120 + 0xc) ==
+        *(int *)(iVar1 + param_1 * 4)) && (*(char *)(DAT_00005930 + param_1) == '\x01')) &&
+     (*(int *)(DAT_00005938 + (param_1 * 0x32 + *(byte *)(DAT_00005934 + param_1) + 1) * 4) == 0)) {
+    FUN_00005858(param_1,uVar4,DAT_00005938,param_4);
+    return;
+  }
+  return;
+}

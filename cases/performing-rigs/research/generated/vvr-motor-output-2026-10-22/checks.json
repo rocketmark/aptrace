@@ -1,0 +1,382 @@
+[
+  {
+    "check": "transient: no native error",
+    "pass": true
+  },
+  {
+    "check": "transient: corrected memory-hook execution",
+    "pass": true
+  },
+  {
+    "check": "transient: full14M bound",
+    "pass": true
+  },
+  {
+    "check": "transient: no output log truncation",
+    "pass": true
+  },
+  {
+    "check": "transient: no code-watch cap",
+    "pass": true
+  },
+  {
+    "check": "transient: no delivered TC0 handler",
+    "pass": true
+  },
+  {
+    "check": "transient: no STEP emitter invocation",
+    "pass": true
+  },
+  {
+    "check": "transient: complete unambiguous SPI framing",
+    "pass": true
+  },
+  {
+    "check": "transient: startup STEP requests exist",
+    "pass": true
+  },
+  {
+    "check": "transient: no post-boundary ch0 STEP request",
+    "pass": true
+  },
+  {
+    "check": "transient: ch0 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient: ch1 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient: ch2 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient: ch3 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient: no trigger-specific driver register writes",
+    "pass": true
+  },
+  {
+    "check": "transient: boot400/16 then MC41600/0",
+    "pass": true
+  },
+  {
+    "check": "intentional: no native error",
+    "pass": true
+  },
+  {
+    "check": "intentional: corrected memory-hook execution",
+    "pass": true
+  },
+  {
+    "check": "intentional: full14M bound",
+    "pass": true
+  },
+  {
+    "check": "intentional: no output log truncation",
+    "pass": true
+  },
+  {
+    "check": "intentional: no code-watch cap",
+    "pass": true
+  },
+  {
+    "check": "intentional: no delivered TC0 handler",
+    "pass": true
+  },
+  {
+    "check": "intentional: no STEP emitter invocation",
+    "pass": true
+  },
+  {
+    "check": "intentional: complete unambiguous SPI framing",
+    "pass": true
+  },
+  {
+    "check": "intentional: startup STEP requests exist",
+    "pass": true
+  },
+  {
+    "check": "intentional: no post-boundary ch0 STEP request",
+    "pass": true
+  },
+  {
+    "check": "intentional: ch0 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional: ch1 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional: ch2 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional: ch3 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional: no trigger-specific driver register writes",
+    "pass": true
+  },
+  {
+    "check": "intentional: boot400/16 then MC41600/0",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no native error",
+    "pass": true
+  },
+  {
+    "check": "unacquired: corrected memory-hook execution",
+    "pass": true
+  },
+  {
+    "check": "unacquired: full14M bound",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no output log truncation",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no code-watch cap",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no delivered TC0 handler",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no STEP emitter invocation",
+    "pass": true
+  },
+  {
+    "check": "unacquired: complete unambiguous SPI framing",
+    "pass": true
+  },
+  {
+    "check": "unacquired: startup STEP requests exist",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no post-boundary ch0 STEP request",
+    "pass": true
+  },
+  {
+    "check": "unacquired: ch0 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "unacquired: ch1 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "unacquired: ch2 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "unacquired: ch3 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "unacquired: no trigger-specific driver register writes",
+    "pass": true
+  },
+  {
+    "check": "unacquired: boot400/16 then MC41600/0",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: no native error",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: corrected memory-hook execution",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: full14M bound",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: no output log truncation",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: no code-watch cap",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: no delivered TC0 handler",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: no STEP emitter invocation",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: complete unambiguous SPI framing",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: startup STEP requests exist",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: no post-boundary ch0 STEP request",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: ch0 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: ch1 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: ch2 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: ch3 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: no native error",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: corrected memory-hook execution",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: full14M bound",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: no output log truncation",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: no code-watch cap",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: no delivered TC0 handler",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: no STEP emitter invocation",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: complete unambiguous SPI framing",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: startup STEP requests exist",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: no post-boundary ch0 STEP request",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: ch0 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: ch1 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: ch2 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: ch3 startup96 HIGH/LOW pairs only",
+    "pass": true
+  },
+  {
+    "check": "matched positives: all captured CPU writes identical including ordinal/PC/old value",
+    "pass": true
+  },
+  {
+    "check": "matched positives: all recorded periods identical",
+    "pass": true
+  },
+  {
+    "check": "matched positives: same record bytes",
+    "pass": true
+  },
+  {
+    "check": "transient: savedLOW/currentHIGH",
+    "pass": true
+  },
+  {
+    "check": "intentional: savedLOW/currentLOW",
+    "pass": true
+  },
+  {
+    "check": "different input levels persist at initiation",
+    "pass": true
+  },
+  {
+    "check": "transient: one normal acceptance/start",
+    "pass": true
+  },
+  {
+    "check": "transient: positive distance500 start0 end500",
+    "pass": true
+  },
+  {
+    "check": "transient: eleven post-accept DIR HIGH requests",
+    "pass": true
+  },
+  {
+    "check": "intentional: one normal acceptance/start",
+    "pass": true
+  },
+  {
+    "check": "intentional: positive distance500 start0 end500",
+    "pass": true
+  },
+  {
+    "check": "intentional: eleven post-accept DIR HIGH requests",
+    "pass": true
+  },
+  {
+    "check": "negative: HIGH acquired on every observed read",
+    "pass": true
+  },
+  {
+    "check": "negative: no acceptance or profile start",
+    "pass": true
+  },
+  {
+    "check": "negative: no post-boundary motor DIR",
+    "pass": true
+  },
+  {
+    "check": "negative: no post-boundary TC0 writes",
+    "pass": true
+  },
+  {
+    "check": "counter attempts agree with each other",
+    "pass": true
+  },
+  {
+    "check": "transient-count-observation: not a valid single counter event",
+    "pass": true
+  },
+  {
+    "check": "intentional-count-observation: not a valid single counter event",
+    "pass": true
+  }
+]

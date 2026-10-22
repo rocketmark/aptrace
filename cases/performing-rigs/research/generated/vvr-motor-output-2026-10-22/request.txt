@@ -1,0 +1,127 @@
+Let's extend the completed VVR trigger-failure correlation investigation into the original Noxon firmware's motor-output behavior.
+
+Our objective is to determine what motor-control signals the original firmware attempts to produce following a reproduced unintended trigger, and whether those signals are equivalent to those produced by an intentional trigger.
+
+This is a continuation of our evidence-gathering work for Nathan's documented VVR-003, VVR-004, and VVR-005 failures, not a general motor-control verification campaign.
+
+Start with:
+
+- `docs/investigations/vvr-trigger-failure-correlation.md`
+- `docs/investigations/motion-initiation-route-coverage.md`
+- `docs/investigations/trigger-symbolic-reachability-target2.md`
+- The existing motor-state, startup, and trigger investigations.
+- The original firmware execution harnesses and relevant driver/timer research.
+
+## Primary experiment: VVR-005 unintended connection trigger
+
+Reuse the strongest original-firmware witness from the VVR correlation investigation: a temporary active input that returns inactive before the firmware initiates motion.
+
+Use the same valid programmed move and initial motor configuration for two executions:
+
+1. **Unintended connection-like input:** Briefly active MCU input, followed by a return to inactive before motion initiation.
+2. **Intentional trigger control:** A deliberately active input of sufficient duration to initiate the same programmed move.
+
+The connection-like waveform is a modeled MCU-side history, not a measured waveform from Nathan's hardware. Preserve that qualification throughout.
+
+Follow both executions from trigger acquisition through motion authorization, profile evaluation, timer configuration, and actual motor-output requests.
+
+I'd like to learn whether the original firmware produces the same motor-control behavior regardless of whether the trigger input remains active when motion begins.
+
+## Recover the motor-output sequence
+
+Build on the recovered motion-initiation routines rather than starting another broad call-graph investigation.
+
+Follow the original firmware through the relevant TC0 timer operation, interrupt handlers, motor channel service, and STEP/DIR GPIO operations.
+
+Capture, wherever supported:
+
+- Motor channel and requested direction.
+- Programmed movement distance and target position.
+- Motor step period, rate, and acceleration-related updates.
+- Timer configuration and enable operations.
+- Requested STEP HIGH/LOW transitions.
+- DIR output changes.
+- Motor-driver enable and configuration transactions.
+- Relevant motor-driver current and microstepping settings.
+- Completion behavior and any subsequent re-arming.
+
+Distinguish software-requested STEP transitions from verified physical pin transitions, and driver configuration requests from confirmed driver application.
+
+Do not assume that TC0 enable alone demonstrates that STEP pulses were generated.
+
+## Timer and interrupt continuation
+
+The previous investigation identified a critical limitation: APTrace has not yet established continuous timer/NVIC interrupt execution sufficient to demonstrate a complete STEP pulse sequence.
+
+Investigate whether our existing original-firmware execution infrastructure can provide a credible continuation through timer counting, interrupt delivery, and motor-output servicing.
+
+Use the actual original-firmware interrupt handlers and motion-control instructions.
+
+Where peripheral simulation is necessary, specify the modeled hardware behavior and validate its consistency with the available firmware evidence.
+
+Do not substitute direct calls to STEP helpers or fabricated interrupt sequences for natural execution without explicitly identifying them as isolated or modeled tests.
+
+If trustworthy continuous execution cannot be established, stop at the strongest defensible boundary and explain what prevents further progress.
+
+Do not build a broad new emulator or unrelated APTrace infrastructure merely to complete the experiment.
+
+## Compare unintended and intentional triggering
+
+Use matched initial conditions, motor program, driver state, and execution environment.
+
+Compare the two executions at progressively deeper boundaries:
+
+1. Trigger acceptance.
+2. Motion request and profile selection.
+3. Timer setup and enable.
+4. Timer interrupt servicing.
+5. STEP/DIR output requests.
+6. Driver configuration activity.
+7. Motion completion, where supported.
+
+Determine whether the unintended-trigger history produces the same requested motor behavior as an intentional trigger, and identify the earliest meaningful divergence if it does not.
+
+Include a negative control in which the transient is not acquired or accepted and confirm that the corresponding motion-output activity does not occur.
+
+Where possible, use the existing VVR-003 analog fault-band witness as a secondary control, but prioritize completing the VVR-005 comparison.
+
+## Evidence quality
+
+Use APTrace's existing concrete execution and binary-analysis capabilities. Apply Macaw, Crucible, What4, and SMT only where they strengthen a specific reachability or output claim.
+
+For every consequential output, distinguish:
+
+- Directly observed original-firmware instruction execution.
+- Original-firmware execution under an explicitly modeled peripheral continuation.
+- Isolated helper execution.
+- Static or symbolic reachability.
+- Predicted behavior derived from reconstructed arithmetic.
+
+Preserve the firmware-version qualification from the VVR investigation. Do not claim exact correspondence with Nathan's tested `Autopilot_firm05-08` release unless the binary identity is established.
+
+Likewise, do not claim physical motor movement or actual motor-driver electrical output from simulated software activity.
+
+## Deliverables
+
+Create a focused APTrace investigation report containing:
+
+- The original-firmware execution path from the VVR-005 input history to the deepest verified motor-output boundary.
+- A chronological trace of timer, GPIO, STEP/DIR, and motor-driver operations.
+- A comparison with the intentional-trigger control.
+- Reproducible execution commands, fixtures, and evidence artifacts.
+- An explanation of any timer/NVIC/peripheral modeling assumptions.
+- A clear account of what is demonstrated, inferred, or still blocked.
+
+The primary question to answer is:
+
+**Does a reproduced unintended trigger cause Noxon's original firmware to request the same motor-driver activity as a legitimate trigger executing the same programmed move?**
+
+If we can demonstrate actual original-firmware STEP/DIR write requests, that is a meaningful advance beyond our existing timer-enable evidence.
+
+If we can only demonstrate timer initiation or selected STEP-helper behavior, report that limitation rather than presenting a predicted pulse train as observed execution.
+
+Keep the work focused on producing evidence relevant to Nathan's real misfire incidents.
+
+Do not modify apfw2, either firmware image, the existing formal models, or physical hardware. Do not introduce or evaluate new analysis frameworks.
+
+When finished, summarize the motor-output behavior observed, how closely the unintended and intentional executions match, which findings we can responsibly share with Nathan, and what remains necessary to establish an end-to-end physical causal explanation.

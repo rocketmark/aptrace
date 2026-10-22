@@ -1,0 +1,91 @@
+==================================================
+Function: FUN_00006260 @ 00006260  size=178  params=0  callingConvention=unknown
+
+
+void FUN_00006260(undefined4 param_1)
+
+{
+  int *piVar1;
+  int iVar2;
+  uint *puVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  uint *puVar7;
+  int iVar8;
+  uint uVar9;
+  uint uVar10;
+  int iVar11;
+  
+  iVar6 = DAT_00006334;
+  iVar5 = DAT_00006330;
+  iVar4 = DAT_0000632c;
+  iVar2 = DAT_00006320;
+  piVar1 = DAT_00006318;
+  switch(param_1) {
+  case 0:
+    iVar11 = *DAT_00006318;
+    *DAT_0000631c = iVar11;
+    *(undefined1 *)(iVar2 + 5) = 0x80;
+    puVar3 = DAT_00006328;
+    puVar7 = DAT_00006324;
+    do {
+    } while ((int)((uint)*(byte *)(iVar2 + 5) << 0x18) < 0);
+    uVar10 = (uint)*(ushort *)(iVar2 + 0x14);
+    *DAT_00006324 = uVar10;
+    iVar8 = *piVar1;
+    uVar9 = (uint)*(ushort *)(iVar2 + 0x1c);
+    *puVar3 = uVar9;
+    break;
+  case 1:
+    iVar11 = DAT_00006318[1];
+    *DAT_0000631c = iVar11;
+    *(undefined1 *)(iVar4 + 5) = 0x80;
+    puVar3 = DAT_00006328;
+    puVar7 = DAT_00006324;
+    do {
+    } while ((int)((uint)*(byte *)(iVar4 + 5) << 0x18) < 0);
+    uVar10 = (uint)*(ushort *)(iVar4 + 0x14);
+    *DAT_00006324 = uVar10;
+    iVar8 = piVar1[1];
+    uVar9 = (uint)*(ushort *)(iVar4 + 0x1c);
+    *puVar3 = uVar9;
+    break;
+  case 2:
+    iVar11 = DAT_00006318[2];
+    *DAT_0000631c = iVar11;
+    *(undefined1 *)(iVar5 + 5) = 0x80;
+    puVar3 = DAT_00006328;
+    puVar7 = DAT_00006324;
+    do {
+    } while ((int)((uint)*(byte *)(iVar5 + 5) << 0x18) < 0);
+    uVar10 = (uint)*(ushort *)(iVar5 + 0x14);
+    *DAT_00006324 = uVar10;
+    iVar8 = piVar1[2];
+    uVar9 = (uint)*(ushort *)(iVar5 + 0x1c);
+    *puVar3 = uVar9;
+    break;
+  case 3:
+    iVar11 = DAT_00006318[3];
+    *DAT_0000631c = iVar11;
+    *(undefined1 *)(iVar6 + 5) = 0x80;
+    puVar3 = DAT_00006328;
+    puVar7 = DAT_00006324;
+    do {
+    } while ((int)((uint)*(byte *)(iVar6 + 5) << 0x18) < 0);
+    uVar10 = (uint)*(ushort *)(iVar6 + 0x14);
+    *DAT_00006324 = uVar10;
+    iVar8 = piVar1[3];
+    uVar9 = (uint)*(ushort *)(iVar6 + 0x1c);
+    *puVar3 = uVar9;
+    break;
+  default:
+    goto switchD_00006266_default;
+  }
+  if (iVar11 != iVar8) {
+    uVar10 = uVar9;
+  }
+  *puVar7 = uVar10;
+switchD_00006266_default:
+  return;
+}

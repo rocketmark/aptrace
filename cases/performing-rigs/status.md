@@ -26,6 +26,20 @@ nonzero physical return, insertion waveform and the July30s/10min fault remain
 unresolved. Seven native runs and64/64 saved-artifact checks pass; no physical
 failure or release gate is closed and neither formal model changed.
 
+## Matched VVR motor-output requests
+
+The [motor-output continuation](docs/investigations/vvr-trigger-motor-output.md)
+compares original915 transient and held-trigger histories with the same program
+and MC4. All29,236 captured CPU stores match through14M: positive ch0 DIR,
+profile/rate/TC0 configuration and driver serial requests. Driver register writes
+precede acceptance. Each channel's96 startup STEP HIGH/LOW pairs also occur in
+the negative control; no post-trigger STEP-emitter/TC0-handler entry or observed
+STEP SET/CLR request occurs. Initial TC0 ENABLE-containing store0x571c precedes
+the explicit0x5810 helper. Forced-COUNT attempts alter feedback/restart repeatedly
+and are rejected as trustworthy continuation or physical-misfire evidence.
+Continuous TC/NVIC/position service remains a capability gap;95/95 saved-artifact
+checks pass, and no physical-output or tested-release equivalence is asserted.
+
 ## Reference trigger contract
 
 The [TLA+/TLC package](specifications/trigger-acceptance/README.md) and

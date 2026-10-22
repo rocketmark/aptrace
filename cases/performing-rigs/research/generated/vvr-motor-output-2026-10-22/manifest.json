@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-22",
+  "repository_head_before_work": "230c642e8ac75a80426926963caa020af7b46f95",
+  "python": "3.9.6",
+  "unicorn": "2.1.4",
+  "original_firmware": "firmware_autopilot915.bin",
+  "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+  "release_identity": "Not hash-linked to Nathan firm05-08; previous qualification preserved",
+  "native_executions": 9,
+  "main_captures": 3,
+  "rejected_counter_attempts": 2,
+  "preserved_cap_diagnostics": 4,
+  "original_inputs_unchanged": true,
+  "formal_models_unchanged": true,
+  "framework_unchanged": true,
+  "hardware_operations": false,
+  "ledger_or_gate_changes": false,
+  "source_hashes": {
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/unicorn/concrete.py": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b",
+    "docs/tooling/unicorn-backend.md": "0021374bf1b3cf58b8ff0012fe4359dc39137b4af6047a01e8bcecc8c40bbede",
+    "cases/performing-rigs/research/generated/vvr-trigger-correlation-2026-10-22/replay-915-command.txt": "a1ec655dcc9bdbaa8f85f87c20afb8a4e131321d4ee1c5f2291ca25d50a76a40",
+    "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/interpret-recorded-transactions.py": "bb8e40ae93ec6cdb6c3b6e48e5505b07db252bc35ea9c26d67f33bc09ade6e2a",
+    "cases/performing-rigs/specifications/trigger-acceptance/NoxonWitness.tla": "2c891def64385cf1aa8add499cc5fa5b728a61939ced419b8acf89f0525daaa3",
+    "cases/performing-rigs/specifications/trigger-acceptance/TriggerAcceptance.tla": "2e1f4bdd64f374ce9959ed3234f621fcd1913de8cf6b387494a4dd77c82ed28b",
+    "cases/performing-rigs/specifications/noxon-trigger/DirectFixtures.tla": "faf37c9b2e49a0ad8868be1f8949c7d48f560648aa8721e0dab9703145c1442e",
+    "cases/performing-rigs/specifications/noxon-trigger/DirectG.tla": "ea9aae1545427d52585c0d5bb57932a0cc0c861a953cd5f659d1d2a4c720d53b",
+    "cases/performing-rigs/specifications/noxon-trigger/NativeFixtures.tla": "7cda262283ba9be45d0042f7cc8095f97459afa0d56a6c2f503235f599024b07",
+    "cases/performing-rigs/specifications/noxon-trigger/NoxonTrigger.tla": "f5b0cbe5b5d2960b6dd1b568404bfc45de6aab3329d47bc1d6ff4a702e3b5ade",
+    "cases/performing-rigs/specifications/noxon-trigger/ReferenceReplay.tla": "2cf18a3873f6f9a0762a162e92c274557a2801a0619f600bbfac976359af7485"
+  }
+}
