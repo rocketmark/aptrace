@@ -1,0 +1,18 @@
+[
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x84d0 --end 0x8520",
+    "exit_status": 2,
+    "diagnostic": "unrecognized arguments: --end"
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py disasm --help",
+    "exit_status": 0,
+    "diagnostic": "Syntax is firmware start end"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x84d0 0x8520",
+    "exit_status": 0,
+    "output": "tr-handler-native.txt",
+    "scope": "Selected TR branch transcribed from native output, not full query output"
+  }
+]

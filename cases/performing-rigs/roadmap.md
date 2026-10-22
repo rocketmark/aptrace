@@ -11,6 +11,18 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 # Harness Roadmap
 
+## Trigger reliability follow-up
+
+Use the [failure-mode matrix](docs/investigations/trigger-misfire-failure-modes.md)
+and preserved original-code pulse/X/startup controls. Do not repeat the normal
+alpha or constant-input reclassification work. Highest-value software follow-up:
+one natural Remote auto/arm→trigger→request sequence, then held input/release,
+STOP and reload controls to establish re-arm/event ownership. Highest-value new
+physical evidence: revision-paired jack/PB05 waveforms and startup PA02/mode with
+the same source, firmware and configuration, only at confirmed safe nodes and
+under separate authorization. Keep diagnostics in separate TR1/TR0 runs.
+No physical misfire cause or V1/V2 direction is currently established.
+
 ## Bring-up contract follow-up
 
 Use the [integrated timeline](docs/investigations/autopilot-bring-up-pass1.md) and

@@ -346,18 +346,18 @@ check) already have independent level-3 confirmation.
   bookkeeping with **no path to a real physical position anywhere in the
   firmware** — a negative result confirmed three independent ways. See
   [`cases/performing-rigs/docs/investigations/manual-mode-and-limits.md`](docs/investigations/manual-mode-and-limits.md).
-- **Trigger software behavior is bounded, physical misfire cause unresolved.**
-  Digital acceptance is level-based; repeated LOW acceptance in restored-gate
-  tests is not a natural uninterrupted reload/motion sequence. Zero-alpha
-  fixtures preserve the first effective sample and X1/X2 can reclassify it;
-  normal full reset instead supplies0.05, as established in
-  [bring-up Pass1](docs/investigations/autopilot-bring-up-pass1.md). Permanent
-  freezing after that startup is not established. T reporting is independent of program eligibility and disables
-  normal reload acceptance. The tested reload clears motion arms; this is not
-  a universal no-uncommanded-motion proof. Historical debounce prototypes are
-  not replacement requirements and have not been deployed. See the current
-  [X/acceptance report](docs/investigations/x-trigger-acceptance.md) and underlying
-  [trigger dossier](docs/investigations/trigger-input.md).
+- **Trigger misfire mechanisms are evidence-ranked; physical causation remains open.**
+  The [failure-mode investigation](docs/investigations/trigger-misfire-failure-modes.md)
+  uses continuous original reset/program/MC4 runs: a one-acquisition225→900→225
+  pulse is attenuated without acceptance;225→0 accepts below the X1 band;
+  constant225 accepts after native X2 but not X1; constant900 since startup
+  accepts on eligibility without a new input edge. TR1 suppresses acceptance,
+  but a packet delivered at setup return can arrive after the first service.
+  A pre-MC4 TR1/TR0 pair also accepts filtered866 after raw returns225;
+  TR1 control does not. Normal alpha0.05 updates; old zero-alpha fixtures are conditional.
+  Reload acceptance, program/reference/arm state, motion requests and physical
+  movement remain distinct. Repeated physical firing, natural trigger-phase
+  re-arm and V1/V2 electrical differences are not established. No gate promotion.
 - **The EIC/EXTINT interrupt-callback dispatch mechanism is identified;
   its registration path is not.** Vector-table indices 28-43 correspond
   exactly to the ATSAMD51's `EIC_0_IRQn`…`EIC_15_IRQn`, all 16 sharing one

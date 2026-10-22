@@ -1,0 +1,551 @@
+{
+  "scope": "Artifact checks, not framework tests or exhaustive proofs; failed initial tail isolation retained",
+  "checks": [
+    {
+      "check": "inactive-control:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "inactive-control:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "inactive-control:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "inactive-control:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "inactive-control:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "inactive-control:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "inactive-control:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "low-excursion:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "startup-active:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "startup-active:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "startup-active:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "startup-active:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "startup-active:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "startup-active:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "startup-active:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:boundary",
+      "observed": 14000000,
+      "expected": 14000000,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:request_entries",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:native_loop",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:normal_alpha",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:watch_capacity",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "inactive-control:accept_count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "one-acquisition-pulse:accept_count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "low-excursion:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "constant-input-x2-repeat:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "startup-active:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr1-release-control:accept_count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "pre-mc4-tr0-released-tail:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr1-control:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "released-tail-tr0:accept_count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "pulse:first_samples",
+      "observed": [
+        259,
+        257,
+        255
+      ],
+      "expected": [
+        259,
+        257,
+        255
+      ],
+      "passed": true
+    },
+    {
+      "check": "low:first_samples",
+      "observed": [
+        214,
+        203,
+        193
+      ],
+      "expected": [
+        214,
+        203,
+        193
+      ],
+      "passed": true
+    },
+    {
+      "check": "x2:constant_sample",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "startup:constant_sample",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "tail:raw_inactive",
+      "observed": "e100",
+      "expected": "e100",
+      "passed": true
+    },
+    {
+      "check": "tail:effective_active",
+      "observed": 866,
+      "expected": 866,
+      "passed": true
+    },
+    {
+      "check": "tail:tr0",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "x2:independent_snapshot_equal",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    }
+  ],
+  "passed": 88,
+  "total": 88
+}

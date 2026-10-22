@@ -1,0 +1,19 @@
+{
+  "README.md": "813478e93d43e05ed985839693282348f3ee5756c7b17005e9991a81de8999d3",
+  "commands.json": "1748db5eba39e5bc5e0b2204b4fe7da69490fcbfa716812250bf78f2b6c6bb29",
+  "constant-input-x2-repeat.json": "4cc2b427c8df7ea7cf1b124b922357ba36088b8c22572084a6e9d40b82e5e02c",
+  "constant-input-x2.json": "4cc2b427c8df7ea7cf1b124b922357ba36088b8c22572084a6e9d40b82e5e02c",
+  "inactive-control.json": "fd2e695615a770825a603341d66b705e7ee335b16d6fd2039552c5cd154663c1",
+  "low-excursion.json": "80d50bb1e78e13a3ab8630f4446c30bbe668d29f0ec11f355444b75aba1c29ba",
+  "manifest.json": "e6e4a317be786056e599bcabb8bdccefe55e0e741753c935a8139b07c3231785",
+  "observations.json": "571ceda29235d8356118055ad156b5ea373e9d62ac9027da132409b96381190b",
+  "one-acquisition-pulse.json": "debb33f19ffdabaaa62238ab32741cea52fe3241cb30a648cbb6e72d95e5e69b",
+  "pre-mc4-tr0-released-tail.json": "c7cef68bdf6698999f157997d5b33fe6d723e2bef9170eca531aa8e117d101a8",
+  "pre-mc4-tr1-release-control.json": "6b06a4cadc465a55ae0a4b3c4451f12e62b1053914945f1e94f0583b6c230e26",
+  "released-tail-tr0.json": "f42be7613e319478c6204dff67d1639274e1a63b1897e7c1b91ab3d06cfac03b",
+  "released-tail-tr1-control.json": "fc7cd41df72d157d56f540f8bf0539a9d21ecd4b8d7fe3dc02e7ea1a689c6877",
+  "sampling-and-events.json": "edfb12d415eefe00b483be75b40ea56f5d52f99aa89764785fa7f8aabd8f1ad1",
+  "startup-active.json": "06ee3dea930c005bf1dfc5cd97fd8a83cf94e2b7f966e18a634f12afdd640c17",
+  "static-commands.json": "78ad6fa0a0515608baf063266024dc1014b147f17c119318466f487ac2e6c824",
+  "tr-handler-native.txt": "6f5686742c7233631509b2307191921332a325cb2e80664835e19371fbddf5a6"
+}

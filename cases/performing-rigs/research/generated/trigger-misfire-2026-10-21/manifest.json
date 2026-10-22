@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-21",
+  "repository_base_revision": "6ef1542fc7a5791d10f138b1efdb9a295894828a",
+  "scope": "Operator investigation; no framework, original image, apfw2 or hardware change; no new ledger admission or release-gate promotion",
+  "runtime": "Documented tools/unicorn/.venv Python3.9.6 / Unicorn2.1.4; memory-hook-single-step",
+  "sources": [
+    {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735"
+    },
+    {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b"
+    },
+    {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2"
+    },
+    {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/commands.json",
+      "sha256": "550669aa54a8c7fc1e5f7b793a39f78177ccd40f949d1608dabf79a366a37148"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/concrete-commands.json",
+      "sha256": "2de88b170d52fc909085574485a047180370d665b25a7c9c477358ec4f61eecc"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass1.md",
+      "sha256": "fa9f044f81bfcafcb92ef139bdf54076ecc96b2794728ae3ca4bfab58461e906"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass2.md",
+      "sha256": "c2d61c4575ae555a76a46620ff2b591a0a0082445e26983f0d728e2b2c5bd7e6"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/trigger-input.md",
+      "sha256": "da44bd2733eaaac663cb9f29987d5c518fe479d83166e0e6cc335a5bdfeb2628"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/x-trigger-acceptance.md",
+      "sha256": "f685100f9e4980090c00782c913d3df389d085293bbe3192dfbeca6baed8fe42"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/motor-state-ownership-and-reference.md",
+      "sha256": "2d18d6854a06054bf9312eea1296040fa32b6e00831b2a861a2f76557a115abf"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/write-watch-instrumentation.md",
+      "sha256": "12151d437a5d78b9bdfec8580160091e26e7eb8e173f0bb7d3fcf0d26c82088e"
+    },
+    {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5"
+    },
+    {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "47ef5fa9f927027f8c8547b8150fa78464cbfb63151031db9f1f833dbf7904a2"
+    }
+  ],
+  "limitations": [
+    "Original868 only; ADC counts are modeled external inputs, not voltages",
+    "PC-scheduled RX delivery and MMIO completions are explicit assumptions",
+    "Initial tail-isolation pair accepted before TR1 processing and remains preserved",
+    "Corrected TR0 treatment queues another MC4 after TR0 at the common TR post-store PC",
+    "No simulated motion-request entry, physical movement, revision-specific frontend or timing proof"
+  ]
+}

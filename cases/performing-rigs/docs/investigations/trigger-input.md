@@ -1,5 +1,11 @@
 # Trigger-Input Investigation — Current Model
 
+Current failure-mode synthesis: [trigger-misfire-failure-modes.md](trigger-misfire-failure-modes.md)
+reconciles this dossier with full-reset bring-up, tests pulse attenuation,
+constant-input X reclassification and active-at-startup acceptance, and separates
+physical hypotheses from software counterexamples. Older zero-alpha narrative
+below is conditional historical evidence, not normal startup behavior.
+
 Startup correction (2026-10-21): [bring-up Pass1](autopilot-bring-up-pass1.md)
 observes a fully initialized coefficient0.05 at0x20000014, contradicting this
 older dossier's `.bss`/permanently-zero attribution. A matched original helper
