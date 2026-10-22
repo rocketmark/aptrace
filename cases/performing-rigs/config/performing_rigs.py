@@ -47,6 +47,8 @@ NUM_EXTERNAL_IRQ = _svd_num_external_irq(TARGET_SVD)
 
 # firmware key -> (path relative to repo root, load base, provenance TSV or None)
 FIRMWARE_REGISTRY = {
+    # Research-only derived image. Never substitute for either original key.
+    "autopilot915_freshness_research": ("cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin", "0x4000", None),
     "autopilot868": ("cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin", "0x4000",
                       "cases/performing-rigs/research/provenance/ghidra_labels.tsv"),
     "autopilot915": ("cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin", "0x4000", None),

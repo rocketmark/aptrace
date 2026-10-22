@@ -1,0 +1,75 @@
+{
+  "note": "Initial global-order equality hypothesis failed. Per-stream comparisons pass; full global ordering is NOT preserved in this fresh-input case. Assertions now distinguish these properties.",
+  "different_indices": 357,
+  "first_differences": [
+    {
+      "index": 9705,
+      "original": {
+        "range": "0x41008014:12",
+        "instruction": 12476413,
+        "pc": "0x0000d3cc",
+        "lr": "0x0000ac3b",
+        "address": "0x41008014",
+        "size": 4,
+        "value": "0x80000",
+        "previous": "00000400"
+      },
+      "patched": {
+        "range": "0x40003800:32",
+        "instruction": 12476687,
+        "pc": "0x0000627a",
+        "lr": "0x0000642b",
+        "address": "0x40003805",
+        "size": 1,
+        "value": "0x80",
+        "previous": "00"
+      }
+    },
+    {
+      "index": 9706,
+      "original": {
+        "range": "0x43000428:4",
+        "instruction": 12476425,
+        "pc": "0x0000b46a",
+        "lr": "0x0000ac43",
+        "address": "0x43000428",
+        "size": 4,
+        "value": "0x6f",
+        "previous": "00000000"
+      },
+      "patched": {
+        "range": "0x40003800:32",
+        "instruction": 12477577,
+        "pc": "0x00005c44",
+        "lr": "0x0000692f",
+        "address": "0x4000381c",
+        "size": 2,
+        "value": "0x2180",
+        "previous": "8225"
+      }
+    },
+    {
+      "index": 9707,
+      "original": {
+        "range": "0x43000428:4",
+        "instruction": 12476452,
+        "pc": "0x0000b46a",
+        "lr": "0x0000ac21",
+        "address": "0x43000428",
+        "size": 4,
+        "value": "0x0",
+        "previous": "6f000000"
+      },
+      "patched": {
+        "range": "0x40003800:32",
+        "instruction": 12477582,
+        "pc": "0x00005c4e",
+        "lr": "0x0000692f",
+        "address": "0x40003805",
+        "size": 1,
+        "value": "0x80",
+        "previous": "00"
+      }
+    }
+  ]
+}

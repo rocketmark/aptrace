@@ -40,6 +40,22 @@ and are rejected as trustworthy continuation or physical-misfire evidence.
 Continuous TC/NVIC/position service remains a capability gap;95/95 saved-artifact
 checks pass, and no physical-output or tested-release equivalence is asserted.
 
+## Experimental binary freshness subset
+
+The [research patch](docs/investigations/experimental-trigger-freshness-patch.md)
+is a real derived915 image, NOT FOR HARDWARE DEPLOYMENT: six original-region
+bytes replaced and28 executable bytes appended, with no permanent RAM use.
+Native original/patched comparison rejects the savedLOW/currentHIGH history
+before acceptance or0x571c while preserving the intentional control's29,236
+captured requests after timestamp removal. A fresh-input control starts too,
+with equal named streams but changed global housekeeping interleaving. This
+meets the minimum experimental criterion only: timed qualification, initial
+release arming, release-to-rearm and analog protection remain unimplemented.
+Late-release, held/W repeated initiation and analog X1 remain counterexamples.
+Twenty native runs and138/138 artifact checks document both improvement and
+limits; direct B1/G/W1 controls still start. Physical flash ownership, exact
+tested-release identity and continuous STEP execution remain unqualified.
+
 ## Reference trigger contract
 
 The [TLA+/TLC package](specifications/trigger-acceptance/README.md) and

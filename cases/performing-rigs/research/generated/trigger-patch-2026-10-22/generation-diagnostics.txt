@@ -1,0 +1,1 @@
+Initial generator expected-byte guard failed before output: expected00283ff44baf; actual hash-verified source00283ff4b3ae. Expected constant corrected to actual source and independently checked against Ghidra; guard retained. Successful image regenerated deterministically after native tests. No original image modified.

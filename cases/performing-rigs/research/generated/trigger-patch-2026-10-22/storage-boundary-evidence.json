@@ -1,0 +1,9 @@
+{
+  "source": "Public Ghidra autopilot915 reset decompile0xcc24 and literal0xcc8c count6",
+  "data_start": "0x20000000",
+  "data_end": "0x20000430",
+  "rom_data_source": "0x14c40",
+  "bss_start": "0x20000830",
+  "bss_end": "0x2000531c",
+  "caution": "No-reference RAM0x200052f0 is inside original BSS, not a verified free slot. The data/BSS gap and heap/stack space are NOT certified free. No new permanent RAM is selected by this patch. No impossibility of a larger patch is proved."
+}

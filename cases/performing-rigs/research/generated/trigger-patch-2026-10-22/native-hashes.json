@@ -1,0 +1,182 @@
+[
+  {
+    "logical_name": "B1-full-reset-original.json",
+    "stored_name": "B1-full-reset-original.json.gz",
+    "raw_sha256": "c6a5a8f09e5faf698f06bc367527f92ff3e4fe23f130684e22ec4210c1b791c1",
+    "gzip_sha256": "0fa433333313eee90efa3c31619fa2d8683229df2fc8ca4cb7096b0976b2eaf5",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "B1-full-reset-patched.json",
+    "stored_name": "B1-full-reset-patched.json.gz",
+    "raw_sha256": "0ab014b45e6f4e288b032a07504638538d2b142045426be5292dec315b12b7df",
+    "gzip_sha256": "2e2bab1a4a612f8b7672391f2261f90ebbf160086a254cf276b7a16caf0f9f6f",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "G-to-enable-original.json",
+    "stored_name": "G-to-enable-original.json.gz",
+    "raw_sha256": "526f9ac8215475e0d5749c7ac653d42e118d80c2adecbb644d6ae9782eb34a0a",
+    "gzip_sha256": "ec7f486d3292623d036df7a3dad61316e555e53ec62b6fa36c7adcff786fac0a",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "G-to-enable-patched.json",
+    "stored_name": "G-to-enable-patched.json.gz",
+    "raw_sha256": "914f50293e8d0feb4a828b2802a3d20e76918b930174029fcdd7dc2e73a097f0",
+    "gzip_sha256": "f7eb17c446cc01918bcd666284b49f4c56dd07b96dc513babdaf436edd95d7c8",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "W1-nonzero-to-enable-original.json",
+    "stored_name": "W1-nonzero-to-enable-original.json.gz",
+    "raw_sha256": "611153c800ee7a4065197dabfc481ade15ff68edbe7c7674b8915319b937904f",
+    "gzip_sha256": "8e5c989da3fd7ef4d1f3683d801dd73b45be80c1c820146ef83884fd9d06eec3",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "W1-nonzero-to-enable-patched.json",
+    "stored_name": "W1-nonzero-to-enable-patched.json.gz",
+    "raw_sha256": "03045846f0dcba38bd0567aad4a48450d86212200acff1dbd696d6c7b251ff35",
+    "gzip_sha256": "06cb88f74e4403019f375621f277a90592cd07b1a3b6c27955e37193dd040639",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "analog-x1-patched.json",
+    "stored_name": "analog-x1-patched.json.gz",
+    "raw_sha256": "2ea9bf583bd21f08e084837ba787f302de5e1e2a679ee794b32a8e98137e0bde",
+    "gzip_sha256": "2fd2d832b72226536470e753c40819e70f9823ee5461274c17527fdb35c211b1",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "analog-x2-patched.json",
+    "stored_name": "analog-x2-patched.json.gz",
+    "raw_sha256": "33d0b390ffe5f5a8d47670aac091753cbb294a4231b962ad5618d415480107fa",
+    "gzip_sha256": "4a52371ca0d34e788a53b376a22f12b485b0bbec3a579a9e26fabde283bce880",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "fresh-intentional-original.json",
+    "stored_name": "fresh-intentional-original.json.gz",
+    "raw_sha256": "7c226e2bce42b68aeb438da283a9a4174985d2d21cd1f4f3aab90c12d19400f7",
+    "gzip_sha256": "d2aaef4f513a0b19ce28b97c2c61018ddc3f49a95c3e4e60d7f95807f7427e35",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "fresh-intentional-patched.json",
+    "stored_name": "fresh-intentional-patched.json.gz",
+    "raw_sha256": "8fa873658416a1ef48d11443beb97b8c5a3e1f45d5fa77bcfb666bf9ba76dfbc",
+    "gzip_sha256": "ac35f9d2fe6ced26bb3409ebcdc8ea566e201bd9fe71f1e01e1820fbd021eb8b",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "held-w-original.json",
+    "stored_name": "held-w-original.json.gz",
+    "raw_sha256": "40d7dd0dff8355efbe9f2f5e364f44a0082736dcc928006b023ba4332c5b4dc3",
+    "gzip_sha256": "e06e1cb361944bd6ef8f48b086c73b70385415c92df07b9d4fef511b692f905c",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "held-w-patched.json",
+    "stored_name": "held-w-patched.json.gz",
+    "raw_sha256": "4892eaeea3bcc9f4b783568e7219e7cc4abaa8915690552628a1797ee3ae3b7c",
+    "gzip_sha256": "48590c3c1e5e7767c11b5ae2df4064da553ed4bb2c2fa9ad7529b50634b728f5",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "intentional-original.json",
+    "stored_name": "intentional-original.json.gz",
+    "raw_sha256": "8d9167423fe6280de1ebd522b5b76394a31e8ab24ca2fb93942fc63e996bfb10",
+    "gzip_sha256": "ad1299adfbb5d17d7b4ab4e0bda2e9f1a3b40436fc55d889d639906ae37400a7",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "intentional-patched.json",
+    "stored_name": "intentional-patched.json.gz",
+    "raw_sha256": "a691328a7a12262e36413cf244ed25fbe15a88e68b6705e7c012d3fcd2cf8c15",
+    "gzip_sha256": "8953d05f836dee585a53bf0bc5c0c6751df9b50c2995efb60b2b222f65ddbbc0",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "late-release-patched.json",
+    "stored_name": "late-release-patched.json.gz",
+    "raw_sha256": "d1a0de5070f4a7462a48af0e14de506b82e1a2e8a574b2a39b374764020fabe4",
+    "gzip_sha256": "2119217c034558e1c4bfe4c0cb3a53d20e2910ca11dbd115fe0bba9f827b2e57",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "release-fresh-w-patched.json",
+    "stored_name": "release-fresh-w-patched.json.gz",
+    "raw_sha256": "ca5dcc31db42b65a50a863383e3bedbf47cb12cc0c4b8c247d51399b11b6f68c",
+    "gzip_sha256": "b703b559422bae283a5270cca1c1df52652a5078bde30949d99570d8ce0f6501",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "transient-original.json",
+    "stored_name": "transient-original.json.gz",
+    "raw_sha256": "501b51cb60e7895b0066ee976154344cdf2904fdb6753180f5a1a0737568dbae",
+    "gzip_sha256": "be11c87b1e87f263a2dbb46c6a9e0b12742a367bddd0d4e1a907c13ab48cf5b8",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "transient-patched.json",
+    "stored_name": "transient-patched.json.gz",
+    "raw_sha256": "693f6985cc4a46f5670fdc591951bf4035e6f525bd22c34d910c8d2fe74668f4",
+    "gzip_sha256": "a6b5bb80c23f4b432977fe15d2650bd3005bd46c870ac712f872d3e5f0316eca",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  },
+  {
+    "logical_name": "unacquired-original.json",
+    "stored_name": "unacquired-original.json.gz",
+    "raw_sha256": "9f63604174855fc23108f816756a3955e1c6e84080a56149e7d936514dccbbc7",
+    "gzip_sha256": "5eca720b539c7f0d75304520fa50e57e2efe36c84ec0c834c39a016b695c3d2a",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+    "firmware_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  {
+    "logical_name": "unacquired-patched.json",
+    "stored_name": "unacquired-patched.json.gz",
+    "raw_sha256": "a9b4df67d3da90b890cd8a6d6673fd7e6794d26f46662f60c4a38cddcf9f5811",
+    "gzip_sha256": "cb5c282ea1c57962040a13a588f4c5d25fa512f3bb7dfbd93dc3e830d6f78b4b",
+    "process_exit_status": 0,
+    "firmware": "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin",
+    "firmware_sha256": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616"
+  }
+]

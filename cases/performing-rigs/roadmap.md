@@ -23,6 +23,15 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
+The [experimental binary subset](docs/investigations/experimental-trigger-freshness-patch.md)
+now proves one firmware-only stale-read mitigation without changing motor code.
+Do not treat it as a deployable fix or the complete proposed policy. Further
+stateful work must establish owned/reset-initialized storage, fresh acquisition
+and inactive/active timing, session invalidation and release-to-rearm for both
+paths. Retain the late-release and held/W counterexamples; preserve direct
+producers. No permanent RAM reservation or full-policy binary implementation
+has been established, and no larger-patch impossibility is asserted.
+
 The [matched motor-output comparison](docs/investigations/vvr-trigger-motor-output.md)
 now establishes equal observed original915 DIR/rate/TC0/driver requests for
 transient and held inputs. Next work beyond that boundary needs validated

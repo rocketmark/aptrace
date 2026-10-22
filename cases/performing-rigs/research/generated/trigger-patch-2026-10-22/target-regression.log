@@ -1,0 +1,30 @@
+test_irq_count_is_target_configuration
+  [PASS] NUM_EXTERNAL_IRQ is the SVD's highest interrupt number + 1
+  [PASS] ATSAMD51J19A SVD defines IRQ0..135 (136 external IRQs), not the old 40
+  [PASS] Haskell APTrace.Case.PerformingRigs.numIrq agrees with the SVD-derived count
+  [PASS] Ghidra seeding covers 15 system + NUM_EXTERNAL_IRQ words after the initial SP
+test_high_irq_vectors_in_image_scan
+  [PASS] scan covers all 16 + 136 vector words (not capped at IRQ40)
+  [PASS] USB IRQ80 -> 0xcc14 (canonical, Thumb bit cleared), is_irq
+  [PASS] USB IRQ81 -> 0xccb6 (canonical, Thumb bit cleared), is_irq
+  [PASS] USB IRQ82 -> 0xccba (canonical, Thumb bit cleared), is_irq
+  [PASS] USB IRQ83 -> 0xccbe (canonical, Thumb bit cleared), is_irq
+  [PASS] SERCOM IRQ50 -> 0xb114 (canonical, Thumb bit cleared), is_irq
+  [PASS] SERCOM IRQ65 -> 0xb140 (canonical, Thumb bit cleared), is_irq
+  [PASS] TC/TCC IRQ93 -> 0x60ec (canonical, Thumb bit cleared), is_irq
+  [PASS] TC/TCC IRQ110 -> 0x60d0 (canonical, Thumb bit cleared), is_irq
+  [PASS] 21 populated non-default IRQ handlers at IRQ40+ (beyond old coverage) are now scanned
+test_reachability_accepts_high_irq_roots (synthetic database)
+  [PASS] USB IRQ80-83 handlers are irq-vector roots with function ids
+  [PASS] root justification names the high IRQ number
+test_built_census_has_high_irq_vectors (real census database)
+  [PASS] census USB IRQ80 vector -> 0xcc14 and is a reachability root
+  [PASS] census USB IRQ81 vector -> 0xccb6 and is a reachability root
+  [PASS] census USB IRQ82 vector -> 0xccba and is a reachability root
+  [PASS] census USB IRQ83 vector -> 0xccbe and is a reachability root
+  [PASS] census SERCOM IRQ50 vector -> 0xb114 and is a reachability root
+  [PASS] census SERCOM IRQ65 vector -> 0xb140 and is a reachability root
+  [PASS] census TC/TCC IRQ93 vector -> 0x60ec and is a reachability root
+  [PASS] census TC/TCC IRQ110 vector -> 0x60d0 and is a reachability root
+
+All checks passed.
