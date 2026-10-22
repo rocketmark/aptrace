@@ -33,9 +33,17 @@ INCONCLUSIVE: targeted veto, ordered29,236-write intentional control and G/W1/B1
 initiation reproduce, but cross-peripheral ordering changes and sparse side-effect
 coverage prevent a behavioral PASS. Next verification work should establish
 event-aligned comparison and complete boundary-state/write coverage; retain
-fresh-input ordering and unacquired-polling differences explicitly. Gates3–5 have
-not been run. Any later adversarial exploration must carry both gates' unresolved
-obligations and the existing held/W and post-read-release counterexamples.
+fresh-input ordering and unacquired-polling differences explicitly.
+
+The [Gate 3 assessment](docs/investigations/trigger-patch-gate3.md) is FAIL within
+modeled scope: held/W repetition and post-read release reproduce. Preserve its
+before-read rejection, after-comparison initiation and no-W completion controls.
+Next define W authorization versus physical release-to-rearm, initial arming and
+analog-history policy; investigate selected retained-filter histories and the
+TC0-service idle writer's feasible interleavings using existing capabilities.
+Validated IRQ/peripheral scenarios and framed/event-aligned verification remain
+framework gaps, not permission to create replacement harnesses. Gates4–5 remain
+NOT RUN; this work does not authorize Gate4 or hardware deployment.
 
 The [experimental binary subset](docs/investigations/experimental-trigger-freshness-patch.md)
 now proves one firmware-only stale-read mitigation without changing motor code.

@@ -58,7 +58,21 @@ Fresh-input global ordering and unacquired-input polling/write differences
 remain unresolved; direct controls lack ordered peripheral-store coverage and
 most RAM/stack writes are unobserved. The unchanged artifact checker passes
 138/138 using14 fresh and6 historical records; this is not a fresh20-run campaign.
-Gates3–5 were not run; full safety and hardware deployment remain unapproved.
+Gate3 now reports FAIL within modeled scope as described below; Gates4–5 were
+not run. Full safety and hardware deployment remain unapproved.
+
+The [Gate 3 adversarial assessment](docs/investigations/trigger-patch-gate3.md)
+is **FAIL within modeled scope**: post-read release still permits acceptance
+and an executed TC0 ENABLE-containing store, and held LOW plus completion-time W
+still yields a second initiation without release. Nine fresh firmware runs
+include six byte-identical historical replays and three boundary/command controls.
+Release before the new read rejects; release after comparison still initiates.
+Held LOW without W completes and remains at one start through60M instructions.
+Analog X1/X2 controls reproduce; startup policy, analog-history safeguards and
+execution/interrupt robustness remain INCONCLUSIVE. Static TC0-service idle
+writer evidence does not establish a feasible concurrent bypass. Gate1/2
+obligations and global ordering differences remain unresolved; no physical
+activation or hardware safety claim follows. Gates4–5 are NOT RUN.
 
 The [research patch](docs/investigations/experimental-trigger-freshness-patch.md)
 is a real derived915 image, NOT FOR HARDWARE DEPLOYMENT: six original-region
