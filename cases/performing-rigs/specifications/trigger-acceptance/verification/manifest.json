@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-22",
+  "repository_base_revision": "00a3bca1bb5f38e8960adcab0dc474540ee86503",
+  "authorization": "Explicit user TLA+/TLC specification assignment; no executable reference controller/framework development",
+  "sources": [
+    {
+      "path": "cases/performing-rigs/docs/investigations/trigger-misfire-failure-modes.md",
+      "sha256": "0a1c240037d8939efe6690d9bdf9d352c0220bbad3e9dbc8763c26f062cd8be4"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/powered-trigger-connection.md",
+      "sha256": "2f720f77af101ae947a8856ab38c69db88fef926fcde6204682cf9e1dfd03aeb"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/x-trigger-acceptance.md",
+      "sha256": "f685100f9e4980090c00782c913d3df389d085293bbe3192dfbeca6baed8fe42"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass1.md",
+      "sha256": "fa9f044f81bfcafcb92ef139bdf54076ecc96b2794728ae3ca4bfab58461e906"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass2.md",
+      "sha256": "c2d61c4575ae555a76a46620ff2b591a0a0082445e26983f0d728e2b2c5bd7e6"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/motor-state-ownership-and-reference.md",
+      "sha256": "2d18d6854a06054bf9312eea1296040fa32b6e00831b2a861a2f76557a115abf"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/remote-to-motor-causal-trace.md",
+      "sha256": "b891b128cc1b724c447da7bb7fbdd6f35149bb0b308cf2aa878b8a895e366815"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/write-watch-instrumentation.md",
+      "sha256": "12151d437a5d78b9bdfec8580160091e26e7eb8e173f0bb7d3fcf0d26c82088e"
+    }
+  ],
+  "limits": [
+    "Exhaustive finite TLC scopes, not an unbounded theorem",
+    "New-observation/history/clock and honest completion/readiness adapters assumed",
+    "No numerical production timing/filter/defaults selected",
+    "No original firmware execution rerun, physical validation, future implementation refinement or gate promotion"
+  ],
+  "outputs": [
+    "TriggerAcceptance.tla",
+    "NoxonWitness.tla",
+    "HANDOFF.md",
+    "VERIFICATION.md",
+    "behavioral-tests.json",
+    "original-fixtures.json",
+    "verification/results.json"
+  ]
+}

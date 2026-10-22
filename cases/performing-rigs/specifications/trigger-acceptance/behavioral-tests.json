@@ -1,0 +1,576 @@
+{
+  "status": "Declarative future implementation conformance suite; not an executable state machine or claim these cases ran against implementation",
+  "defaults": {
+    "ReleaseSamples": 1,
+    "ActiveSamples": 1,
+    "MaxAge": 1,
+    "TokenTTL": 1,
+    "MaxEvents": 2,
+    "EnvMode": "hostile",
+    "UnsafeStartup": false,
+    "UnsafeDuplicate": false,
+    "UnsafeCancel": false
+  },
+  "macros": {
+    "Ready": "Invalidate(TRUE,TRUE,TRUE); configuration barrier, no event",
+    "I": "Acquire(I,I,TRUE,0); Process",
+    "A": "Acquire(A,A,TRUE,0); Process",
+    "Accept": "Accept",
+    "P": "Start(profile)",
+    "D": "Start(direct)",
+    "Stop": "Stop; reference becomes false",
+    "Reset": "Reset; all readiness false",
+    "Tick": "Tick",
+    "Resume": "Resume",
+    "Complete1": "CompleteEvent(1)",
+    "Ack1": "AckStopEvent(1)",
+    "Replay": "Replay, rejected duplicate/out-of-generation frame",
+    "Tail": "Acquire(I,A,TRUE,0); Process when enabled",
+    "BadHistory": "Acquire(A,A,FALSE,0); immediate invalidation; no Process",
+    "Expired": "Acquire(A,A,TRUE,MaxAge+1); immediate invalidation; no Process",
+    "RawI": "Acquire(I,I,TRUE,0); pending token cancellation is immediate",
+    "RefreshA": "Acquire(A,A,TRUE,0); do not reset token lifetime",
+    "StaleCompletion": "StaleCompletion; wrong active identity, ignored"
+  },
+  "semantics": "Each test starts at Init. Macro operations are sequential TLA actions. Guard-false attempts are rejected without state change. All omitted expected fields are unconstrained by that test, not defaults. Frame/ID adapter rejection maps to Replay.",
+  "cases": [
+    {
+      "id": "T01",
+      "sequence": [
+        "Ready",
+        "A"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "eventNo": 0,
+        "startCount": 0
+      },
+      "purpose": "Preexisting active input cannot arm."
+    },
+    {
+      "id": "T02",
+      "sequence": [
+        "Ready",
+        "Tail"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "eventNo": 0
+      },
+      "purpose": "Stale filtered activity with inactive raw is not an event."
+    },
+    {
+      "id": "T03",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P"
+      ],
+      "expect": {
+        "phase": "Running",
+        "activeEvent": 1,
+        "starts": [
+          {
+            "id": 1,
+            "route": "profile"
+          }
+        ]
+      },
+      "purpose": "Qualified profile route."
+    },
+    {
+      "id": "T04",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "D"
+      ],
+      "expect": {
+        "phase": "Running",
+        "activeEvent": 1,
+        "starts": [
+          {
+            "id": 1,
+            "route": "direct"
+          }
+        ]
+      },
+      "purpose": "Same authorization for direct route."
+    },
+    {
+      "id": "T05",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        {
+          "attempt": "D",
+          "enabled": false
+        }
+      ],
+      "expect": {
+        "startCount": 1,
+        "activeEvent": 1
+      },
+      "purpose": "Second route cannot reuse event."
+    },
+    {
+      "id": "T06",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "RawI"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "token": 0,
+        "canceledContains": 1,
+        "startCount": 0
+      },
+      "purpose": "Release before commitment cancels accepted work."
+    },
+    {
+      "id": "T07",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "Tick",
+        "RefreshA",
+        "Tick"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "token": 0,
+        "startCount": 0
+      },
+      "purpose": "New active data does not extend original token TTL."
+    },
+    {
+      "id": "T08",
+      "sequence": [
+        "Ready",
+        "I",
+        "Expired"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "token": 0,
+        "qualified": false
+      },
+      "purpose": "Expired arrival is not retimestamped as new."
+    },
+    {
+      "id": "T09",
+      "sequence": [
+        "Ready",
+        "I",
+        "BadHistory"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "token": 0,
+        "qualified": false
+      },
+      "purpose": "History-generation failure disarms."
+    },
+    {
+      "id": "T10",
+      "sequence": [
+        "Ready",
+        "I",
+        "Replay",
+        {
+          "attempt": "Process",
+          "enabled": false
+        }
+      ],
+      "expect": {
+        "phase": "Armed",
+        "eventNo": 0
+      },
+      "purpose": "Duplicate/cache replay cannot create a new measurement."
+    },
+    {
+      "id": "T11",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "Ready"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "token": 0,
+        "canceledContains": 1
+      },
+      "purpose": "Even same-valued configuration changes cancel pending work."
+    },
+    {
+      "id": "T12",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Stop",
+        {
+          "attempt": "Accept",
+          "enabled": false
+        }
+      ],
+      "expect": {
+        "phase": "Stopped",
+        "token": 0,
+        "reference": false,
+        "startCount": 0
+      },
+      "purpose": "STOP invalidates before acceptance."
+    },
+    {
+      "id": "T13",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "Stop",
+        {
+          "attempt": "P",
+          "enabled": false
+        }
+      ],
+      "expect": {
+        "phase": "Stopped",
+        "token": 0,
+        "reference": false,
+        "startCount": 0
+      },
+      "purpose": "STOP invalidates accepted but unstarted work."
+    },
+    {
+      "id": "T14",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "Reset"
+      ],
+      "expect": {
+        "phase": "Stopped",
+        "token": 0,
+        "program": false,
+        "reference": false,
+        "driver": false,
+        "startCount": 0
+      },
+      "purpose": "Reset does not persist pending authorization."
+    },
+    {
+      "id": "T15",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "A",
+        "A"
+      ],
+      "expect": {
+        "phase": "Running",
+        "startCount": 1,
+        "eventNo": 1
+      },
+      "purpose": "Busy pulses/held input do not queue."
+    },
+    {
+      "id": "T16",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "Complete1",
+        "A"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "eventNo": 1,
+        "startCount": 1
+      },
+      "purpose": "Held input cannot re-arm after completion."
+    },
+    {
+      "id": "T17",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "I",
+        "Complete1",
+        "A"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "eventNo": 1,
+        "startCount": 1
+      },
+      "purpose": "Release observed while busy is not carried across completion."
+    },
+    {
+      "id": "T18",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "Complete1",
+        "I",
+        "A",
+        "Accept",
+        "D"
+      ],
+      "expect": {
+        "phase": "Running",
+        "activeEvent": 2,
+        "starts": [
+          {
+            "id": 1,
+            "route": "profile"
+          },
+          {
+            "id": 2,
+            "route": "direct"
+          }
+        ]
+      },
+      "purpose": "Fresh post-completion release allows second event."
+    },
+    {
+      "id": "T19",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "Stop",
+        {
+          "attempt": "Resume",
+          "enabled": false
+        },
+        "Ack1",
+        "Ready",
+        "Resume"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "motion": "idle",
+        "token": 0,
+        "startCount": 1
+      },
+      "purpose": "Stop acknowledgement and readiness revalidation precede Resume."
+    },
+    {
+      "id": "T20",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "Reset",
+        "Ack1",
+        "Ready",
+        "Resume",
+        "Replay",
+        "A"
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "eventNo": 1,
+        "startCount": 1
+      },
+      "purpose": "Reset cannot replay previous event."
+    },
+    {
+      "id": "T21",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "P",
+        "Complete1",
+        "I",
+        "A",
+        "Accept",
+        "D",
+        {
+          "attempt": "CompleteEvent(1)",
+          "enabled": false
+        },
+        "StaleCompletion"
+      ],
+      "expect": {
+        "phase": "Running",
+        "activeEvent": 2,
+        "startCount": 2
+      },
+      "purpose": "Old completion cannot end the new move."
+    },
+    {
+      "id": "T22",
+      "sequence": [
+        "Ready",
+        "I",
+        "I",
+        "A",
+        "A",
+        "Accept",
+        "P"
+      ],
+      "expect": {
+        "phase": "Running",
+        "startCount": 1
+      },
+      "purpose": "Two-sample qualification",
+      "parameters": {
+        "ReleaseSamples": 2,
+        "ActiveSamples": 2,
+        "MaxAge": 2,
+        "TokenTTL": 2,
+        "MaxEvents": 2
+      }
+    },
+    {
+      "id": "T23",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        {
+          "attempt": "P",
+          "enabled": false
+        },
+        "Accept",
+        "P"
+      ],
+      "expect": {
+        "phase": "Running",
+        "startCount": 1
+      },
+      "purpose": "Recognition alone is not authorization."
+    },
+    {
+      "id": "T24",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        "Tick",
+        "Tick",
+        {
+          "attempt": "P",
+          "enabled": false
+        }
+      ],
+      "expect": {
+        "phase": "Qualify",
+        "startCount": 0
+      },
+      "purpose": "Expired pending event cannot start later."
+    },
+    {
+      "id": "T25",
+      "parameters": {
+        "ActiveSamples": 2
+      },
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "I"
+      ],
+      "expect": {
+        "phase": "Armed",
+        "eventNo": 0,
+        "startCount": 0
+      },
+      "purpose": "N=2 rejects one-sample active episode, including an otherwise identical legitimate short pulse."
+    },
+    {
+      "id": "T26",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        {
+          "do": "Invalidate(FALSE,TRUE,TRUE)"
+        }
+      ],
+      "expect": {
+        "phase": "Disabled",
+        "token": 0,
+        "program": false,
+        "startCount": 0
+      },
+      "purpose": "Loss of program readiness cancels pending authorization."
+    },
+    {
+      "id": "T27",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        {
+          "do": "Invalidate(TRUE,FALSE,TRUE)"
+        }
+      ],
+      "expect": {
+        "phase": "Disabled",
+        "token": 0,
+        "reference": false,
+        "startCount": 0
+      },
+      "purpose": "Loss of reference readiness cancels pending authorization."
+    },
+    {
+      "id": "T28",
+      "sequence": [
+        "Ready",
+        "I",
+        "A",
+        "Accept",
+        {
+          "do": "Invalidate(TRUE,TRUE,FALSE)"
+        }
+      ],
+      "expect": {
+        "phase": "Disabled",
+        "token": 0,
+        "driver": false,
+        "startCount": 0
+      },
+      "purpose": "Loss of driver readiness cancels pending authorization."
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+I'd like APTrace to define and formally verify a reference trigger-acceptance state machine that Claude Code can subsequently implement and compare against the original Noxon firmware.
+
+The objective is to establish a precise, testable behavioral contract for improved trigger reliability on existing AutoPilot hardware. We want to determine which demonstrated Noxon failure mechanisms can be prevented through software, while preserving legitimate trigger operation.
+
+This is a specification and verification assignment, not an implementation task.
+
+Start with the existing APTrace investigations, particularly:
+
+- `trigger-misfire-failure-modes.md`
+- `powered-trigger-connection.md`
+- `x-trigger-acceptance.md`
+- `autopilot-bring-up-pass1.md` and `autopilot-bring-up-pass2.md`
+- The motor-state, reference, and motion-initiation investigations
+
+Use the current evidence to distinguish observed Noxon behavior from the behavior we intentionally want in a replacement implementation.
+
+## Formal behavioral specification
+
+Use TLA+ to define a reference model of trigger acceptance and motion authorization.
+
+I'd like the specification to address startup qualification, trigger detection, input freshness, release-to-rearm, filtering history, configuration changes, program and reference validity, motion authorization, completion, STOP, and reset.
+
+The model should distinguish input observation, trigger recognition, trigger acceptance, and motion initiation. In particular, authorization should apply consistently to both profile-playback timer starts and direct motion requests.
+
+The proposed behavior should prevent the demonstrated unwanted starts caused by preexisting inputs, stale filtered history, and configuration-induced reclassification, while permitting legitimate trigger sequences.
+
+Don't assume Noxon's existing state transitions are desirable. We're recovering its behavior to understand compatibility and failure mechanisms, not to replicate its implementation.
+
+Use your judgment about the appropriate TLA+ abstractions. I don't expect the entire analog input circuit or continuous filtering mathematics to be represented directly in TLA+. Those can be modeled as input events or abstract observations, with assumptions clearly documented.
+
+## Verification
+
+Use TLC, and other suitable tools if helpful, to check the proposed model.
+
+I'm particularly interested in establishing that:
+
+- Motion cannot start without valid authorization.
+- Startup or configuration changes cannot manufacture a new trigger event.
+- A stale or previously consumed input cannot independently authorize movement.
+- A single trigger event cannot produce multiple starts.
+- STOP and reset invalidate pending authorization appropriately.
+- Valid new trigger events can produce movement once the required conditions are satisfied.
+- The state machine does not become permanently unable to accept legitimate triggers.
+
+Define appropriate safety and liveness properties, including the assumptions under which each holds.
+
+Use model checking to find counterexamples and refine the proposed design. Preserve meaningful counterexamples and explicitly distinguish verified properties from properties that remain conditional or unresolved.
+
+Where useful, model the relevant Noxon acceptance behavior separately to demonstrate why the original implementation admits failure sequences that the reference design excludes.
+
+Do not claim that formal verification proves physical trigger reliability.
+
+## Claude Code implementation handoff
+
+The primary deliverable should be a specification package that Claude Code can implement without having to invent additional state-machine behavior.
+
+Alongside the TLA+ model, provide:
+
+- A clear description of the states, events, transitions, guards, and outputs.
+- The intended interface between sampled inputs, filtering, trigger acceptance, and motion authorization.
+- Explicit startup, completion, cancellation, reset, and re-arming semantics.
+- Parameterized timing and qualification rules, with unresolved values identified.
+- A behavioral test suite describing input sequences and expected outcomes.
+- Relevant original-firmware fixtures for subsequent side-by-side comparison.
+- Traceability from each important requirement to APTrace evidence or an explicit design decision.
+
+I want the handoff to make clear which decisions are established by original-firmware behavior, which are proposed improvements, and which require further input or testing.
+
+If an important policy decision cannot be justified yet, identify the alternatives and tradeoffs rather than silently selecting an arbitrary behavior.
+
+## Scope and deliverables
+
+Keep the work focused on the trigger acceptance and motion authorization contract. This should not become a general reconstruction of Noxon's firmware or a broader apfw2 architecture exercise.
+
+Use your judgment about the organization of the TLA+ specification, model-checking configurations, documentation, and test fixtures.
+
+Save the specification, verification results, and Claude Code implementation handoff in the APTrace repository.
+
+Do not implement the executable reference state machine, modify apfw2, change the original firmware, or perform hardware operations.
+
+When complete, summarize:
+
+1. The proposed state-machine behavior and how it differs from Noxon's.
+2. Which safety and progress properties were formally checked.
+3. Which demonstrated misfire mechanisms the model is designed to prevent.
+4. Which legitimate trigger behaviors remain supported.
+5. Which timing, electrical, or compatibility questions remain unresolved.
+6. Whether the specification is sufficiently complete to hand directly to Claude Code for implementation.
+
+The intended outcome is **a formally checked, evidence-backed trigger behavioral contract and an unambiguous implementation handoff**, not another open-ended reverse-engineering investigation.

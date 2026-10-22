@@ -1,0 +1,37 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 67 and seed 8806350542263811197 with 1 worker on 12 cores with 2048MB heap and 64MB offheap memory [pid: 85702] (Mac OS X 26.6.2 aarch64, Homebrew 21.0.12.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/mstalzer/github/aptrace/cases/performing-rigs/specifications/trigger-acceptance/TriggerAcceptance.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/Naturals.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/Sequences.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/FiniteSets.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/TLC.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TriggerAcceptance
+Semantic errors:
+
+*** Errors: 3
+
+line 155, col 38 to line 157, col 64 of module TriggerAcceptance
+
+[] followed by action not of form [A]_v.
+
+
+line 158, col 30 to line 162, col 41 of module TriggerAcceptance
+
+[] followed by action not of form [A]_v.
+
+
+line 163, col 28 to line 164, col 42 of module TriggerAcceptance
+
+[] followed by action not of form [A]_v.
+
+
+
+Starting... (2026-10-22 08:57:53)
+Error: Parsing or semantic analysis failed.
+Finished in 00s at (2026-10-22 08:57:53)

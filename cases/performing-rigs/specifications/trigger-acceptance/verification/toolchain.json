@@ -1,0 +1,13 @@
+{
+  "source": "https://github.com/tlaplus/tlaplus/releases/download/v1.7.4/tla2tools.jar",
+  "upstream_release": "https://github.com/tlaplus/tlaplus/releases/tag/v1.7.4",
+  "local_jar": "/private/tmp/aptrace-tla-2026-10-22/tla2tools.jar",
+  "sha1": "bee4a54f3ee3d4afc347c3240ec2d9e93b075104",
+  "sha256": "936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88",
+  "tlc_banner": "TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)",
+  "java_command": "/opt/homebrew/opt/openjdk@21/bin/java",
+  "java_version": "openjdk version \"21.0.12.1\" 2026-08-18\nOpenJDK Runtime Environment Homebrew (build 21.0.12.1)\nOpenJDK 64-Bit Server VM Homebrew (build 21.0.12.1, mixed mode, sharing)",
+  "workers": 1,
+  "heap": "2g",
+  "installed_in_aptrace": false
+}

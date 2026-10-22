@@ -1,0 +1,249 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 35 and seed 3156629322902871674 with 1 worker on 12 cores with 2048MB heap and 64MB offheap memory [pid: 85818] (Mac OS X 26.6.2 aarch64, Homebrew 21.0.12.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/mstalzer/github/aptrace/cases/performing-rigs/specifications/trigger-acceptance/TriggerAcceptance.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/Naturals.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/Sequences.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/FiniteSets.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/TLC.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TriggerAcceptance
+Starting... (2026-10-22 08:59:09)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-10-22 08:59:09.
+Error: Invariant UniqueStarts is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+s = [ program |-> FALSE,
+  reference |-> FALSE,
+  driver |-> FALSE,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> FALSE,
+  age |-> 2,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Disabled",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Boot",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 2: <Invalidate line 98, col 2 to line 102, col 52 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> FALSE,
+  age |-> 2,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Qualify",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Invalidate",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 3: <Acquire line 35, col 2 to line 44, col 68 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Qualify",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> TRUE,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Observe",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 4: <Process line 48, col 2 to line 72, col 12 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Armed",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Classify",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 5: <Acquire line 35, col 2 to line 44, col 68 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Armed",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> TRUE,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Observe",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 6: <Process line 48, col 2 to line 72, col 12 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 1,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Recognized",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Recognized",
+  eventNo |-> 1,
+  recognized |-> {1},
+  accepted |-> {},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 7: <Accept line 73, col 11 to line 75, col 74 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 1,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Authorized",
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Accepted",
+  eventNo |-> 1,
+  recognized |-> {1},
+  accepted |-> {1},
+  starts |-> <<>>,
+  startOK |-> TRUE ]
+
+State 8: <Start line 77, col 2 to line 83, col 63 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Running",
+  motion |-> "profile",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Start",
+  eventNo |-> 1,
+  recognized |-> {1},
+  accepted |-> {1},
+  starts |-> <<[route |-> "profile", id |-> 1]>>,
+  startOK |-> TRUE ]
+
+State 9: <DuplicateStart line 121, col 2 to line 122, col 84 of module TriggerAcceptance>
+s = [ program |-> TRUE,
+  reference |-> TRUE,
+  driver |-> TRUE,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  phase |-> "Running",
+  motion |-> "profile",
+  canceled |-> {},
+  fresh |-> FALSE,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Start",
+  eventNo |-> 1,
+  recognized |-> {1},
+  accepted |-> {1},
+  starts |->
+      <<[route |-> "profile", id |-> 1], [route |-> "profile", id |-> 1]>>,
+  startOK |-> TRUE ]
+
+36102 states generated, 2409 distinct states found, 331 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 19 and the 95th percentile is 3).
+Finished in 00s at (2026-10-22 08:59:09)

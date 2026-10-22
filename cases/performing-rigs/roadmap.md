@@ -11,6 +11,16 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 # Harness Roadmap
 
+## Reference trigger implementation handoff
+
+Use the [formally checked contract](specifications/trigger-acceptance/README.md)
+and declarative tests for a subsequent implementation task. Review the explicit
+policy choices and provide timing/filter parameters and readiness-provider
+contracts; do not copy model event-budget or unsafe switches into runtime code.
+Require conformance/refinement evidence for profile and direct start paths,
+callbacks, STOP/reset and ISR races. Model checking is finite/conditional and
+has not established physical reliability or deployed behavior.
+
 ## Trigger reliability follow-up
 
 The [request campaign](docs/investigations/trigger-misfire-failure-modes.md#targeted-request-campaign-an-overlooked-motion-initiation-path)

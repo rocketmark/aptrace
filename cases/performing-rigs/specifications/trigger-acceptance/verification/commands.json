@@ -1,0 +1,80 @@
+[
+  {
+    "configuration": "Safety",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/Safety-checked -config Safety.cfg TriggerAcceptance.tla > verification/Safety-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 0
+  },
+  {
+    "configuration": "SafetyTwoEvents",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/SafetyTwoEvents-checked -config SafetyTwoEvents.cfg TriggerAcceptance.tla > verification/SafetyTwoEvents-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 0
+  },
+  {
+    "configuration": "SafetyZeroAge",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/SafetyZeroAge-checked -config SafetyZeroAge.cfg TriggerAcceptance.tla > verification/SafetyZeroAge-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 0
+  },
+  {
+    "configuration": "Progress",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/Progress-checked -config Progress.cfg TriggerAcceptance.tla > verification/Progress-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 0
+  },
+  {
+    "configuration": "Cooperative",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/Cooperative-checked -config Cooperative.cfg TriggerAcceptance.tla > verification/Cooperative-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 0
+  },
+  {
+    "configuration": "StartupCounterexample",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/StartupCounterexample-checked -config StartupCounterexample.cfg TriggerAcceptance.tla > verification/StartupCounterexample-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 12
+  },
+  {
+    "configuration": "DuplicateCounterexample",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/DuplicateCounterexample-checked -config DuplicateCounterexample.cfg TriggerAcceptance.tla > verification/DuplicateCounterexample-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 12
+  },
+  {
+    "configuration": "StopCounterexample",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/StopCounterexample-checked -config StopCounterexample.cfg TriggerAcceptance.tla > verification/StopCounterexample-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 12
+  },
+  {
+    "configuration": "UnconditionalProgressCounterexample",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/UnconditionalProgressCounterexample-checked -config UnconditionalProgressCounterexample.cfg TriggerAcceptance.tla > verification/UnconditionalProgressCounterexample-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 13
+  },
+  {
+    "configuration": "FairnessCounterexample",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/FairnessCounterexample-checked -config FairnessCounterexample.cfg TriggerAcceptance.tla > verification/FairnessCounterexample-checked.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 13
+  },
+  {
+    "configuration": "NoxonStartup",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/NoxonStartup -config NoxonStartup.cfg NoxonWitness.tla > verification/NoxonStartup.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 12
+  },
+  {
+    "configuration": "NoxonReclassification",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/NoxonReclassification -config NoxonReclassification.cfg NoxonWitness.tla > verification/NoxonReclassification.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 12
+  },
+  {
+    "configuration": "NoxonFilterTail",
+    "command": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-tla-2026-10-22/NoxonFilterTail -config NoxonFilterTail.cfg NoxonWitness.tla > verification/NoxonFilterTail.log 2>&1",
+    "working_directory": "cases/performing-rigs/specifications/trigger-acceptance",
+    "observed_exit": 12
+  }
+]

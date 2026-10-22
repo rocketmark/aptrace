@@ -1,0 +1,63 @@
+{
+  "scope": "Reused original-firmware evidence, not new runs or implementation refinement. Paths relative to repository root.",
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "rows": [
+    {
+      "scenario": "profile-startup-active",
+      "snapshot": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-startup-active.json",
+      "sha256": "db0f21326d3f69cbf451038692a6d28601caeed875ccafd982086f15f44e5821",
+      "commands": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json",
+      "comparison": "Original starts with preexisting active input; reference requires a new post-readiness inactive window."
+    },
+    {
+      "scenario": "profile-x2",
+      "snapshot": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-x2.json",
+      "sha256": "77e8e9c7406f7c5e3b70e7cd403636b1e7627f4c03364c50c7a3cdc478140173",
+      "commands": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json",
+      "comparison": "Original X2 reclassifies constant225 into a timer start; reference configuration barrier disarms."
+    },
+    {
+      "scenario": "profile-tail",
+      "snapshot": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-tail.json",
+      "sha256": "db058ed8e0ed124c34009f9aac88c86943a6848f2c9e3fe3431e21d0449999af",
+      "commands": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json",
+      "comparison": "Original filtered866/raw225 reaches start; reference cannot recognize/commit inconsistent inactive raw history."
+    },
+    {
+      "scenario": "profile-single-pulse",
+      "snapshot": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-single-pulse.json",
+      "sha256": "4d96fcc429c4d040c37c64d944af3c555577fecdfdffb9c53f9537aa7c9e5e12",
+      "commands": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json",
+      "comparison": "Original one-acquisition pulse is filtered away; reference guarantees only contract-qualified acquisitions, not all physical pulses."
+    },
+    {
+      "scenario": "profile-held",
+      "snapshot": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-held.json",
+      "sha256": "5e292f25e7b7e74b3e8357cbaabb778bb77ea517a0571f706476a3b890261c60",
+      "commands": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json",
+      "comparison": "Original natural profile path starts; reference needs post-readiness inactive qualification, which this original fixture must not be assumed to provide."
+    },
+    {
+      "scenario": "program-causal-repeat",
+      "snapshot": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-causal-repeat.json",
+      "sha256": "f47d56ad4ab60ef49ef017bcb22b2a107ce746d549562afb37aed96941b54d9b",
+      "commands": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/commands.json",
+      "comparison": "Original separate G/6fd8 request route; reference downstream direct trigger route uses the same consumed grant as profile. Not an independent manual-command authorization specification."
+    },
+    {
+      "scenario": "digital-acquired-transient",
+      "snapshot": "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-acquired-transient.json",
+      "sha256": "62e3cbd2f38967fe36fd4a7d9cbd60f880860d600ce7836bc7d01552dc9a7de7",
+      "commands": "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/commands.json",
+      "comparison": "Original one sampled LOW can start after raw returns HIGH. Reference cancels known release before Start, but indistinguishable short pulses after arm still require a declared N/pulse contract."
+    },
+    {
+      "scenario": "analog-startup-transient-tail",
+      "snapshot": "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/analog-startup-transient-tail.json",
+      "sha256": "f0154ace461f9bf9d8a146b902e10c1c6edadfc47ba1e25e5bc29d393272c8c3",
+      "commands": "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/commands.json",
+      "comparison": "Original startup filter history starts after raw225; reference fresh post-readiness inactive/history rule blocks inherited startup activity."
+    }
+  ]
+}

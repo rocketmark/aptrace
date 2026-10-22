@@ -10,6 +10,19 @@ here — do not append "previous update" logs to this file; when a slice of
 work closes, fold its durable finding into the relevant section below (or
 into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and move on.
 
+## Reference trigger contract
+
+The [TLA+/TLC package](specifications/trigger-acceptance/README.md) and
+[assessment](docs/investigations/reference-trigger-contract.md) define a proposed
+parameterized trigger/authorization contract and Claude Code handoff. Five finite
+positive configurations pass; deliberate negative checks retain counterexamples.
+Both profile timer starts and direct routes use one consumed authorization in the
+model. Startup qualification, freshness, cancellation and re-arm semantics are
+explicit improvements, not recovered Noxon behavior. No executable controller or
+apfw2 implementation exists in this package. Physical reliability, numerical
+policy, hardware validators and future implementation refinement remain unproven;
+release grades do not change.
+
 ## Analysis capabilities exercised by this case
 
 The [integrated bring-up timeline](docs/investigations/autopilot-bring-up-pass1.md)

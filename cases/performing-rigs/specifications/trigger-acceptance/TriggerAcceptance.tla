@@ -1,0 +1,187 @@
+------------------------ MODULE TriggerAcceptance ------------------------
+EXTENDS Naturals, Sequences, FiniteSets, TLC
+CONSTANTS ReleaseSamples, ActiveSamples, MaxAge, TokenTTL, MaxEvents,
+          EnvMode, UnsafeStartup, UnsafeDuplicate, UnsafeCancel
+ASSUME /\ ReleaseSamples > 0 /\ ActiveSamples > 0 /\ MaxAge >= 0
+       /\ TokenTTL >= 0 /\ MaxEvents > 0
+       /\ EnvMode \in {"hostile", "cooperative"}
+       /\ UnsafeStartup \in BOOLEAN /\ UnsafeDuplicate \in BOOLEAN
+       /\ UnsafeCancel \in BOOLEAN
+VARIABLE s
+vars == <<s>>
+IDs == 1..MaxEvents
+Routes == {"profile", "direct"}
+Ready == s.program /\ s.reference /\ s.driver
+Evidence == s.raw = "A" /\ s.filtered = "A" /\ s.history
+            /\ s.age <= MaxAge
+LiveToken == s.token # 0 /\ s.qualified /\ Ready /\ ~s.stopped
+             /\ Evidence /\ s.pendingAge <= TokenTTL
+Min(a,b) == IF a < b THEN a ELSE b
+PhaseAfter(p,r,d,stop) == IF stop THEN "Stopped"
+                         ELSE IF p /\ r /\ d THEN "Qualify" ELSE "Disabled"
+Discard(b, phase, stop, motion) ==
+ [b EXCEPT !.phase = phase, !.stopped = stop, !.motion = motion,
+  !.canceled = IF b.token = 0 THEN b.canceled ELSE b.canceled \cup {b.token},
+  !.token = 0, !.qualified = FALSE, !.fresh = FALSE, !.history = FALSE,
+  !.activeEvent = IF motion="idle" THEN 0 ELSE b.activeEvent,
+  !.inact = 0, !.act = 0, !.pendingAge = 0, !.output = "Invalidate"]
+Init == s = [phase |-> "Disabled", program |-> FALSE, reference |-> FALSE,
+ driver |-> FALSE, stopped |-> FALSE, motion |-> "idle", activeEvent |-> 0, raw |-> "I",
+ filtered |-> "I", history |-> FALSE, fresh |-> FALSE,
+ age |-> MaxAge+1, pendingAge |-> 0, inact |-> 0, act |-> 0,
+ qualified |-> FALSE, eventNo |-> 0, token |-> 0,
+ recognized |-> {}, accepted |-> {}, canceled |-> {}, starts |-> <<>>,
+ output |-> "Boot", startOK |-> TRUE]
+Acquire(raw, filtered, history, arrivalAge) ==
+ /\ ~s.fresh
+ /\ IF EnvMode = "cooperative"
+       THEN /\ Ready /\ ~s.stopped
+            /\ raw = (IF s.phase = "Qualify" THEN "I" ELSE "A")
+            /\ filtered = raw /\ history /\ arrivalAge=0
+       ELSE TRUE
+ /\ LET b == [s EXCEPT !.raw = raw, !.filtered = filtered, !.history = history,
+                       !.fresh = TRUE, !.age = arrivalAge, !.output = "Observe"]
+    IN s' = IF (s.phase \in {"Qualify","Armed","Recognized","Authorized"}
+                    /\ (~history \/ arrivalAge > MaxAge))
+                 \/ (s.token # 0 /\ ~(raw="A" /\ filtered="A"))
+              THEN Discard(b, PhaseAfter(s.program,s.reference,s.driver,s.stopped),
+                           s.stopped,s.motion) ELSE b
+Observe == \E raw, filtered \in {"I","A"}, history \in BOOLEAN,
+               arrivalAge \in 0..(MaxAge+1):
+              Acquire(raw, filtered, history, arrivalAge)
+Process ==
+ /\ s.fresh
+ /\ LET b == [s EXCEPT !.fresh = FALSE, !.output = "Classify"]
+        good == s.history /\ s.age <= MaxAge
+        inactive == good /\ s.raw = "I" /\ s.filtered = "I"
+        active == good /\ s.raw = "A" /\ s.filtered = "A"
+    IN s' =
+      IF s.phase = "Qualify" /\ Ready /\ ~s.stopped THEN
+        IF inactive THEN
+          [b EXCEPT !.inact = Min(s.inact+1,ReleaseSamples),
+             !.qualified = s.inact+1 >= ReleaseSamples,
+             !.phase = IF s.inact+1 >= ReleaseSamples THEN "Armed" ELSE "Qualify"]
+        ELSE IF UnsafeStartup /\ active /\ s.eventNo < MaxEvents THEN
+          [b EXCEPT !.phase = "Recognized", !.eventNo = s.eventNo+1,
+             !.token = s.eventNo+1, !.recognized = s.recognized \cup {s.eventNo+1},
+             !.pendingAge = 0, !.output = "Recognized"]
+        ELSE [b EXCEPT !.inact = 0]
+      ELSE IF s.phase = "Armed" /\ Ready /\ ~s.stopped THEN
+        IF active /\ s.eventNo < MaxEvents THEN
+          IF s.act+1 >= ActiveSamples THEN
+            [b EXCEPT !.phase = "Recognized", !.eventNo = s.eventNo+1,
+               !.token = s.eventNo+1, !.recognized = s.recognized \cup {s.eventNo+1},
+               !.act = 0, !.pendingAge = 0, !.output = "Recognized"]
+          ELSE [b EXCEPT !.act = s.act+1]
+        ELSE [b EXCEPT !.act = 0]
+      ELSE b
+Accept == /\ s.phase = "Recognized" /\ LiveToken
+          /\ s' = [s EXCEPT !.phase = "Authorized",
+                     !.accepted = @ \cup {s.token}, !.output = "Accepted"]
+Start(route) ==
+ /\ s.phase = "Authorized" /\ LiveToken /\ s.motion = "idle"
+ /\ s.token \in s.accepted /\ s.token \notin s.canceled
+ /\ \A i \in 1..Len(s.starts): s.starts[i].id # s.token
+ /\ s' = [s EXCEPT !.phase = "Running", !.motion = route,
+    !.starts = Append(@,[id |-> s.token, route |-> route]),
+    !.token = 0, !.activeEvent = s.token, !.qualified = FALSE, !.inact = 0, !.act = 0,
+    !.fresh = FALSE, !.startOK = LiveToken, !.output = "Start"]
+StartAny == \E route \in Routes: Start(route)
+CompleteEvent(e) == /\ s.phase = "Running" /\ s.motion \in Routes
+                    /\ e = s.activeEvent
+                    /\ s' = Discard(s,"Qualify",s.stopped,"idle")
+Complete == \E e \in IDs: CompleteEvent(e)
+Tick ==
+ /\ EnvMode = "hostile"
+ /\ LET a == Min(s.age+1,MaxAge+1)
+        p == IF s.token = 0 THEN 0 ELSE Min(s.pendingAge+1,TokenTTL+1)
+        b == [s EXCEPT !.age = a, !.pendingAge = p, !.output = "Tick"]
+    IN s' = IF s.phase \in {"Qualify","Armed","Recognized","Authorized"}
+                  /\ (a > MaxAge \/ p > TokenTTL)
+              THEN Discard(b,PhaseAfter(s.program,s.reference,s.driver,s.stopped),
+                           s.stopped,s.motion)
+              ELSE b
+Invalidate(p,r,d) ==
+ /\ IF EnvMode = "cooperative" THEN ~Ready /\ p /\ r /\ d ELSE TRUE
+ /\ LET stop == s.stopped \/ s.motion # "idle"
+        m == IF s.motion = "idle" THEN "idle" ELSE "stopping"
+        b == [s EXCEPT !.program = p, !.reference = r, !.driver = d]
+    IN s' = Discard(b,PhaseAfter(p,r,d,stop),stop,m)
+Reconfigure == \E p,r,d \in BOOLEAN: Invalidate(p,r,d)
+Stop ==
+ /\ EnvMode = "hostile"
+ /\ LET b == Discard([s EXCEPT !.reference=FALSE],"Stopped",TRUE,
+                        IF s.motion = "idle" THEN "idle" ELSE "stopping")
+    IN s' = IF UnsafeCancel THEN [b EXCEPT !.token = s.token] ELSE b
+Reset ==
+ /\ EnvMode = "hostile"
+ /\ LET b == [s EXCEPT !.program = FALSE, !.reference = FALSE, !.driver = FALSE]
+    IN s' = Discard(b,"Stopped",TRUE,
+                    IF s.motion = "idle" THEN "idle" ELSE "stopping")
+AckStopEvent(e) == /\ s.motion = "stopping" /\ e = s.activeEvent
+                  /\ s' = [s EXCEPT !.motion = "idle", !.activeEvent=0, !.output = "StoppedAck"]
+AckStop == \E e \in IDs: AckStopEvent(e)
+StaleCompletion == /\ EnvMode="hostile"
+                   /\ \E e \in 0..MaxEvents: e # s.activeEvent
+                   /\ s' = [s EXCEPT !.output="IgnoredCompletion"]
+Resume == /\ EnvMode = "hostile" /\ s.stopped /\ s.motion = "idle" /\ Ready
+          /\ s' = Discard(s,"Qualify",FALSE,"idle")
+Replay == /\ EnvMode = "hostile"
+          /\ s' = [s EXCEPT !.output = "IgnoredReplay"]
+DuplicateStart ==
+ /\ UnsafeDuplicate /\ s.phase = "Running" /\ Len(s.starts) > 0
+ /\ s' = [s EXCEPT !.starts = Append(@,s.starts[Len(s.starts)]), !.output = "Start"]
+Next == Observe \/ Process \/ Accept \/ StartAny \/ Complete \/ Tick
+        \/ Reconfigure \/ Stop \/ Reset \/ AckStop \/ Resume \/ Replay \/ StaleCompletion \/ DuplicateStart
+Spec == Init /\ [][Next]_vars /\ WF_vars(Process) /\ WF_vars(Accept)
+        /\ WF_vars(StartAny) /\ WF_vars(Complete) /\ WF_vars(AckStop)
+CooperativeSpec == Spec /\ WF_vars(Reconfigure) /\ WF_vars(Observe)
+UnfairSpec == Init /\ [][Next]_vars
+TypeOK ==
+ /\ s.phase \in {"Disabled","Qualify","Armed","Recognized","Authorized","Running","Stopped"}
+ /\ s.motion \in Routes \cup {"idle","stopping"}
+ /\ s.activeEvent \in 0..MaxEvents
+ /\ (s.motion="idle" => s.activeEvent=0)
+ /\ (s.motion # "idle" => s.activeEvent \in IDs)
+ /\ s.program \in BOOLEAN /\ s.reference \in BOOLEAN /\ s.driver \in BOOLEAN
+ /\ s.raw \in {"I","A"} /\ s.filtered \in {"I","A"}
+ /\ s.history \in BOOLEAN /\ s.fresh \in BOOLEAN /\ s.stopped \in BOOLEAN
+ /\ s.qualified \in BOOLEAN /\ s.startOK \in BOOLEAN
+ /\ s.age \in 0..(MaxAge+1) /\ s.pendingAge \in 0..(TokenTTL+1)
+ /\ s.inact \in 0..ReleaseSamples /\ s.act \in 0..ActiveSamples
+ /\ s.eventNo \in 0..MaxEvents /\ s.token \in 0..MaxEvents
+ /\ s.recognized \subseteq IDs /\ s.accepted \subseteq s.recognized
+ /\ s.canceled \subseteq s.recognized
+ /\ s.starts \in Seq([id: IDs, route: Routes])
+PendingQualified == s.token # 0 => s.qualified
+StoppedInvalidates == s.stopped => s.token = 0
+AuthorizedStarts == \A i \in 1..Len(s.starts): s.starts[i].id \in s.accepted
+UniqueStarts == \A i,j \in 1..Len(s.starts): i # j => s.starts[i].id # s.starts[j].id
+StartGuarded == s.startOK
+PendingValid == s.phase \in {"Recognized","Authorized"} => LiveToken
+RecognizedResolves == \A e \in IDs:
+ (e \in s.recognized) ~> (e \in s.accepted \/ e \in s.canceled)
+AuthorizationResolves == \A e \in IDs:
+ (e \in s.accepted) ~> (e \in s.canceled \/ \E i \in 1..Len(s.starts): s.starts[i].id=e)
+MotionResolves == (s.motion \in Routes) ~> (s.motion \in {"idle","stopping"})
+AllEventsServed == <> (\A e \in IDs: \E i \in 1..Len(s.starts): s.starts[i].id=e)
+CompletionRearms == (s.phase="Running") ~> (s.phase="Armed")
+RecognitionStep == (s'.eventNo > s.eventNo) =>
+ /\ s.phase = "Armed" /\ s.fresh /\ s.qualified /\ Ready /\ ~s.stopped
+ /\ s.history /\ s.age <= MaxAge /\ s.raw="A" /\ s.filtered="A"
+RecognitionHasFreshQualifiedInput == [][RecognitionStep]_vars
+StartStep == (Len(s'.starts) > Len(s.starts)) =>
+ /\ s.phase="Authorized" /\ LiveToken /\ s.motion="idle"
+ /\ s.token \in s.accepted /\ s.token \notin s.canceled
+ /\ Len(s'.starts)=Len(s.starts)+1
+ /\ s'.starts[Len(s'.starts)].id=s.token
+StartTransitionAuthorized == [][StartStep]_vars
+CancellationStep == s'.output="Invalidate" =>
+ s'.token=0 /\ ~s'.qualified /\ ~s'.fresh
+CancellationInvalidates == [][CancellationStep]_vars
+StaleCompletionStep == s'.output="IgnoredCompletion" =>
+ s' = [s EXCEPT !.output="IgnoredCompletion"]
+StaleCompletionIgnored == [][StaleCompletionStep]_vars
+EveryRecognizedStarts == \A e \in IDs:
+ (e \in s.recognized) ~> (\E i \in 1..Len(s.starts): s.starts[i].id=e)
+=============================================================================
