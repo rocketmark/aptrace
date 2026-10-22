@@ -47,8 +47,18 @@ Independent [Gate 1 verification](docs/investigations/trigger-patch-gate1.md) is
 and local routing; no instruction defect was demonstrated. Integrated framed
 state/write preservation, exhaustive incoming control flow and hardware-read
 timing remain unverified. Fragment effects aborted all paths and cannot certify
-absence of writes. Gate 2 was not executed; the earlier behavioral results below
-remain authoring-stage evidence, not a Gate 1 PASS.
+absence of writes. Gate 2 cannot promote these findings to a Gate 1 PASS.
+
+Independent [Gate 2 verification](docs/investigations/trigger-patch-gate2.md) is
+also **INCONCLUSIVE**. Fourteen fresh replays exactly reproduce the historical
+snapshots: transient veto before acceptance/enable, the intentional control's
+ordered29,236 selected write requests, and G/W1/B1 initiation. Two additional
+write-watch-disabled controls preserve the inspected per-image terminal state.
+Fresh-input global ordering and unacquired-input polling/write differences
+remain unresolved; direct controls lack ordered peripheral-store coverage and
+most RAM/stack writes are unobserved. The unchanged artifact checker passes
+138/138 using14 fresh and6 historical records; this is not a fresh20-run campaign.
+Gates3–5 were not run; full safety and hardware deployment remain unapproved.
 
 The [research patch](docs/investigations/experimental-trigger-freshness-patch.md)
 is a real derived915 image, NOT FOR HARDWARE DEPLOYMENT: six original-region

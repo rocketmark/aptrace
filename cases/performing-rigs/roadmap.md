@@ -26,9 +26,16 @@ has not established physical reliability or deployed behavior.
 The independent [Gate 1 assessment](docs/investigations/trigger-patch-gate1.md)
 is INCONCLUSIVE, with no demonstrated local decode/branch defect. Before claiming
 structural certification, obtain non-vacuous caller-frame-aware state/write
-verification and address CFG coverage and PORT-read modeling limits. Gate 2 has
-not been run; further behavioral testing needs an explicit bounded scope carrying
-these obligations.
+verification and address CFG coverage and PORT-read modeling limits.
+
+The [Gate 2 assessment](docs/investigations/trigger-patch-gate2.md) is also
+INCONCLUSIVE: targeted veto, ordered29,236-write intentional control and G/W1/B1
+initiation reproduce, but cross-peripheral ordering changes and sparse side-effect
+coverage prevent a behavioral PASS. Next verification work should establish
+event-aligned comparison and complete boundary-state/write coverage; retain
+fresh-input ordering and unacquired-polling differences explicitly. Gates3–5 have
+not been run. Any later adversarial exploration must carry both gates' unresolved
+obligations and the existing held/W and post-read-release counterexamples.
 
 The [experimental binary subset](docs/investigations/experimental-trigger-freshness-patch.md)
 now proves one firmware-only stale-read mitigation without changing motor code.
