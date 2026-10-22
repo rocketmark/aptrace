@@ -119,28 +119,3 @@ qualification times or deciding circuit changes needs physical source/jack and
 PB05/PA02 waveforms, mode/arming state, and synchronized output observations on
 the exact hash-identified release. These are evidence needs for discussion,
 not scheduled measurements or authorized follow-on work.
-
-## Verification disposition and handoff scope
-
-| Preserved report | Verdict |
-|---|---|
-| [Gate 1](trigger-patch-gate1.md) | **INCONCLUSIVE** |
-| [Gate 2](trigger-patch-gate2.md) | **INCONCLUSIVE** |
-| [Gate 3](trigger-patch-gate3.md) | **FAIL within modeled scope** |
-| [Gate 4](trigger-patch-gate4.md) | **INCONCLUSIVE**; residual behaviors confirmed, policy unresolved |
-
-Package completion does not promote these verdicts. Full safety policy remains
-unestablished; Gate 5 is **NOT RUN**. Integrated frame/write preservation,
-whole-route coverage, interrupt/read timing and global ordering remain unresolved.
-
-This handoff used repository/document inspection and existing APTrace evidence;
-no new firmware execution or verification gate was performed. No firmware,
-apfw2, formal model or hardware changed. APTrace gaps include validated continuous
-timer/IRQ/position execution and native temporal-property evaluation/admission;
-the existing reports document their evidence, impact and needed capabilities.
-Their impact is high for certification or physical-output claims, but does not
-prevent this bounded engineering handoff. Release identity, waveforms and policy
-are separate missing evidence/decisions, not tool defects. No new capability gap
-was encountered in consolidation. Noxon's source review and policy decisions are
-the recommended discussion next steps; further APTrace development or experiments
-require a separately chosen scope. **No additional gates or research are scheduled.**
