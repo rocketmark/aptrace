@@ -1,0 +1,1154 @@
+{
+  "scope": "Scoped evidence checks, not framework tests or physical reliability qualification",
+  "passed": 191,
+  "total": 191,
+  "checks": [
+    {
+      "check": "remote-nonzero-profile:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "remote-nonzero-profile:backend",
+      "observed": "continuous",
+      "expected": "continuous",
+      "passed": true
+    },
+    {
+      "check": "trigger-held-no-w:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "trigger-held-no-w:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "trigger-held-no-w:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "trigger-held-no-w:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "trigger-held-no-w:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w-without-trigger:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "w-without-trigger:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "w-without-trigger:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "w-without-trigger:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w-without-trigger:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w1-then-w-without-trigger:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "w1-then-w-without-trigger:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "w1-then-w-without-trigger:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "w1-then-w-without-trigger:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w1-then-w-without-trigger:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger-gate-audit:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger-gate-audit:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger-gate-audit:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger-gate-audit:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "w-after-trigger-gate-audit:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "busy-producer-audit:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "busy-producer-audit:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "busy-producer-audit:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "busy-producer-audit:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "busy-producer-audit:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-inactive:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "rate-inactive:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "rate-inactive:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "rate-inactive:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-inactive:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-held:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "rate-held:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "rate-held:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "rate-held:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-held:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-pulse:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "rate-pulse:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "rate-pulse:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "rate-pulse:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-pulse:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-low-excursion:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "rate-low-excursion:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "rate-low-excursion:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "rate-low-excursion:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-low-excursion:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-x2:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "rate-x2:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "rate-x2:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "rate-x2:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-x2:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-tail:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "rate-tail:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "rate-tail:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "rate-tail:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "rate-tail:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-held:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-held:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-held:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-held:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:accept-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:start-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:enable-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-inactive:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:accept-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:start-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:enable-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-single-pulse:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-sample-aligned-pulses:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:accept-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:start-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:enable-count",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-opposite-phase-pulses:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-held-continuation:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-release-continuation:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-startup-active:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-x2:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-x2:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-x2:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-tail:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-tail:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-tail:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-held-repeat:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-held-extended:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:backend",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:below-watch-cap",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:no-6fd8",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:write-log-not-dropped",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:accept-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:start-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:enable-count",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "profile-low-excursion:TC0-enable",
+      "observed": 2,
+      "expected": 2,
+      "passed": true
+    },
+    {
+      "check": "profile-held:replay-identical",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "profile-held:start-follows-accept",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    }
+  ],
+  "initial_check_diagnostic": "Initial analysis incorrectly expected memory-hook-single-step for the hook-free Remote builder call. Its observed continuous mode is documented and appropriate; all observed AP runs use memory-hook-single-step. No execution or assertion was suppressed."
+}

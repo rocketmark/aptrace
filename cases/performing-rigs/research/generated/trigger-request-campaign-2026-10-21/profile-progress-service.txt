@@ -1,0 +1,54 @@
+==================================================
+Function: FUN_00005fac @ 00005fac  size=172  params=0  callingConvention=unknown
+
+
+void FUN_00005fac(void)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  uint uVar4;
+  uint uVar5;
+  int iVar6;
+  int *piVar7;
+  byte *pbVar8;
+  undefined8 uVar9;
+  
+  iVar2 = DAT_00006078;
+  iVar1 = DAT_00006058;
+  uVar5 = 0;
+  piVar7 = DAT_0000605c;
+  pbVar8 = DAT_00006074;
+  do {
+    if ((*(char *)(iVar1 + uVar5) != '\0') &&
+       (iVar6 = uVar5 * 0x32, *(int *)(iVar2 + ((uint)*pbVar8 + iVar6) * 4) != 0)) {
+      iVar3 = FUN_0000ccdc();
+      if (*(uint *)(iVar2 + (iVar6 + (uint)*pbVar8) * 4) <= (uint)(iVar3 - *piVar7)) {
+        uVar4 = *pbVar8 + 1;
+        *pbVar8 = (byte)uVar4;
+        if (*(int *)(iVar2 + ((uVar4 & 0xff) + iVar6) * 4) == 0) {
+          if (*(char *)(iVar1 + uVar5) == '\x01') {
+            if (*(byte *)(uVar5 * 0x120 + DAT_00006068 + 0x3a) == uVar5) {
+              *DAT_0000606c = 1;
+            }
+            *(undefined1 *)(DAT_00006070 + uVar5) = 1;
+            FUN_00005958(uVar5 & 0xff);
+            *(undefined1 *)(iVar1 + uVar5) = 0;
+          }
+        }
+        else {
+          iVar3 = FUN_0000ccdc();
+          iVar6 = DAT_00006060;
+          *piVar7 = iVar3;
+          uVar9 = aeabi_fixed_math__STANDARD_LIBRARY(*(undefined4 *)(iVar6 + uVar5 * 4));
+          *(undefined8 *)(DAT_00006064 + uVar5 * 8) = uVar9;
+        }
+      }
+    }
+    uVar5 = uVar5 + 1;
+    piVar7 = piVar7 + 1;
+    pbVar8 = pbVar8 + 1;
+  } while (uVar5 != 4);
+  return;
+}

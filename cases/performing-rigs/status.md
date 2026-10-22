@@ -24,7 +24,8 @@ X bands. With accepted program data, TR0 admits one reload while TR1 reports an
 active input without accepting it. A continuous original reset/program/MC4/G
 path reaches request0x6fd8 with `(0,30,500,8119)`, with no AP program/reference/
 validity/target/arm seeds; two runs are byte-identical. No-G and duplicate-G
-controls do not request; trigger-HIGH G does. TC0 READSYNC completion is a
+controls do not reach0x6fd8; trigger-HIGH G does. The trigger/profile path
+can separately request timer start without0x6fd8, as established below. TC0 READSYNC completion is a
 disclosed additional MMIO assumption. Execution stops before commit code.
 Complete paired Remote handshake, physical reference, confirmed driver/RF state,
 STOP/reset while moving, USB, product READY and interruption recovery remain
@@ -346,18 +347,19 @@ check) already have independent level-3 confirmation.
   bookkeeping with **no path to a real physical position anywhere in the
   firmware** — a negative result confirmed three independent ways. See
   [`cases/performing-rigs/docs/investigations/manual-mode-and-limits.md`](docs/investigations/manual-mode-and-limits.md).
-- **Trigger misfire mechanisms are evidence-ranked; physical causation remains open.**
-  The [failure-mode investigation](docs/investigations/trigger-misfire-failure-modes.md)
-  uses continuous original reset/program/MC4 runs: a one-acquisition225→900→225
-  pulse is attenuated without acceptance;225→0 accepts below the X1 band;
-  constant225 accepts after native X2 but not X1; constant900 since startup
-  accepts on eligibility without a new input edge. TR1 suppresses acceptance,
-  but a packet delivered at setup return can arrive after the first service.
-  A pre-MC4 TR1/TR0 pair also accepts filtered866 after raw returns225;
-  TR1 control does not. Normal alpha0.05 updates; old zero-alpha fixtures are conditional.
-  Reload acceptance, program/reference/arm state, motion requests and physical
-  movement remain distinct. Repeated physical firing, natural trigger-phase
-  re-arm and V1/V2 electrical differences are not established. No gate promotion.
+- **External triggers reach the original profile/timer-start path without G/W.**
+  The [request campaign](docs/investigations/trigger-misfire-failure-modes.md#targeted-request-campaign-an-overlooked-motion-initiation-path)
+  corrects the earlier inference from no0x6fd8/phase-arm0: native accepted reload
+  sets channel state1 and profile mode1; the main-loop scheduled0x6338 path
+  reaches0x5f8c→0x5810, requests TC0 enable and sets live flag1 at0x5fa4.
+  A Remote-built nonzero ramp/timing program reaches that boundary with held
+  input, input active since boot, X reclassification and filter-tail history.
+  Single acquired pulses and opposite-phase pulses do not; sample-aligned
+  repeated excursions can accumulate into one start. Held/released continuation
+  has one start in bounded runs; continuous completion/re-arm, duplicate-after-
+  completion behavior and physical V1/V2 causation remain open. No0x6fd8 is
+  observed in these runs, which does not mean no pulse-generation request.
+  Original images, apfw2, tool implementation and hardware are unchanged.
 - **The EIC/EXTINT interrupt-callback dispatch mechanism is identified;
   its registration path is not.** Vector-table indices 28-43 correspond
   exactly to the ATSAMD51's `EIC_0_IRQn`…`EIC_15_IRQn`, all 16 sharing one

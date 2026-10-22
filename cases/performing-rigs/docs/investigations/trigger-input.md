@@ -1,5 +1,10 @@
 # Trigger-Input Investigation — Current Model
 
+Request-path correction: the [targeted campaign](trigger-misfire-failure-modes.md#targeted-request-campaign-an-overlooked-motion-initiation-path)
+finds the additional state1→scheduled0x6338→0x5f8c/timer-enable path. The older
+closure over0x5fac and absence of0x6fd8 was incomplete; phase-arm0 does not
+exclude pulse-generation requests. Historical artifacts below remain preserved.
+
 Current failure-mode synthesis: [trigger-misfire-failure-modes.md](trigger-misfire-failure-modes.md)
 reconciles this dossier with full-reset bring-up, tests pulse attenuation,
 constant-input X reclassification and active-at-startup acceptance, and separates

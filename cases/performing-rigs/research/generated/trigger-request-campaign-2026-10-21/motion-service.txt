@@ -1,0 +1,64 @@
+==================================================
+Function: FUN_00007b8c @ 00007b8c  size=278  params=0  callingConvention=unknown
+
+
+void FUN_00007b8c(void)
+
+{
+  byte *pbVar1;
+  undefined4 uVar2;
+  int iVar3;
+  byte bVar4;
+  
+  pbVar1 = DAT_00007ca8;
+  if (*(char *)(DAT_00007cac + (uint)*DAT_00007ca8) != '\0') {
+    switch((uint)*DAT_00007ca8) {
+    case 0:
+      iVar3 = FUN_0000a95e(DAT_00007cb0);
+      if ((((iVar3 == 0) && (iVar3 = FUN_0000a94c(DAT_00007cb0), iVar3 == 0)) &&
+          (iVar3 = FUN_0000a9a6(DAT_00007cb0), iVar3 == 0)) &&
+         (iVar3 = FUN_0000a994(DAT_00007cb0), iVar3 == 0)) goto switchD_00007b9c_default;
+      FUN_0000a84a(DAT_00007cb0,0);
+      delay__STANDARD_LIBRARY(3);
+      uVar2 = DAT_00007cb0;
+      break;
+    case 1:
+      iVar3 = FUN_0000a95e(DAT_00007cb4);
+      if (((iVar3 == 0) && (iVar3 = FUN_0000a94c(DAT_00007cb4), iVar3 == 0)) &&
+         ((iVar3 = FUN_0000a9a6(DAT_00007cb4), iVar3 == 0 &&
+          (iVar3 = FUN_0000a994(DAT_00007cb4), iVar3 == 0)))) goto switchD_00007b9c_default;
+      FUN_0000a84a(DAT_00007cb4,0);
+      delay__STANDARD_LIBRARY(3);
+      uVar2 = DAT_00007cb4;
+      break;
+    case 2:
+      iVar3 = FUN_0000a95e(DAT_00007cb8);
+      if (((iVar3 == 0) && (iVar3 = FUN_0000a94c(DAT_00007cb8), iVar3 == 0)) &&
+         ((iVar3 = FUN_0000a9a6(DAT_00007cb8), iVar3 == 0 &&
+          (iVar3 = FUN_0000a994(DAT_00007cb8), iVar3 == 0)))) goto switchD_00007b9c_default;
+      FUN_0000a84a(DAT_00007cb8,0);
+      delay__STANDARD_LIBRARY(3);
+      uVar2 = DAT_00007cb8;
+      break;
+    case 3:
+      iVar3 = FUN_0000a95e(DAT_00007cbc);
+      if ((((iVar3 == 0) && (iVar3 = FUN_0000a94c(DAT_00007cbc), iVar3 == 0)) &&
+          (iVar3 = FUN_0000a9a6(DAT_00007cbc), iVar3 == 0)) &&
+         (iVar3 = FUN_0000a994(DAT_00007cbc), iVar3 == 0)) goto switchD_00007b9c_default;
+      FUN_0000a84a(DAT_00007cbc,0);
+      delay__STANDARD_LIBRARY(3);
+      uVar2 = DAT_00007cbc;
+      break;
+    default:
+      goto switchD_00007b9c_default;
+    }
+    FUN_0000a84a(uVar2,5);
+  }
+switchD_00007b9c_default:
+  bVar4 = *pbVar1 + 1;
+  if (bVar4 == 4) {
+    bVar4 = 0;
+  }
+  *pbVar1 = bVar4;
+  return;
+}

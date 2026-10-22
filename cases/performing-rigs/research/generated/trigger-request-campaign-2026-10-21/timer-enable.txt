@@ -1,0 +1,35 @@
+==================================================
+Function: FUN_00005810 @ 00005810  size=44  params=0  callingConvention=unknown
+
+
+void FUN_00005810(undefined4 param_1)
+
+{
+  uint *puVar1;
+  
+  puVar1 = DAT_00005854;
+  switch(param_1) {
+  case 0:
+    puVar1 = DAT_00005844;
+    break;
+  case 1:
+    puVar1 = DAT_00005848;
+    break;
+  case 2:
+    puVar1 = DAT_0000584c;
+    break;
+  case 3:
+    puVar1 = DAT_00005850;
+    break;
+  default:
+    goto switchD_00005814_caseD_4;
+  case 7:
+    DAT_00005854[0xd] = 0;
+    goto LAB_00005826;
+  }
+  *(undefined2 *)(puVar1 + 5) = 0;
+LAB_00005826:
+  *puVar1 = *puVar1 | 2;
+switchD_00005814_caseD_4:
+  return;
+}

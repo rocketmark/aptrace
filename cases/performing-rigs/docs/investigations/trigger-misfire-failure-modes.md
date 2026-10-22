@@ -1,6 +1,14 @@
 # AutoPilot trigger misfires: failure mechanisms and discriminating tests
 
-2026-10-21. **Partial answer: several software mechanisms can suppress, delay,
+2026-10-21. **Campaign correction:** the continuation below establishes a
+second motion-initiation path: accepted reload → channel profile service
+`0x6338` → rate start `0x5f8c` → timer enable `0x5810`. It does not require
+`0x6fd8` or the separate phase arm. Historical “no motion request” language
+in the initial pass means only no observed `0x6fd8` call and must not be read
+as absence of software pulse-generation authorization. See the campaign matrix
+for new request outcomes and remaining completion/re-arm limits.
+
+**Initial pass — partial answer: several software mechanisms can suppress, delay,
 or admit an input without a new edge. None establishes the cause of a physical
 misfire or a V1/V2 reliability difference.** This investigation follows the
 signal through sampled input, classification, reload acceptance and request
@@ -252,3 +260,153 @@ disarm before interpreting it as a spurious trigger. No broad reconstruction,
 915 equivalence, physical movement or release-gate promotion follows from this
 investigation. Physical noise/revision causation requires new evidence, not
 further confidence language about the current software traces.
+
+## Targeted request campaign: an overlooked motion-initiation path
+
+**Result:** a continuous original Remote-built program → AutoPilot reset/program/
+MC4 → external analog trigger → original pulse-generation request is now
+established. It uses the profile/rate-start route, **not** the G/phase-command
+route through `0x6fd8`. No downstream arm, eligibility, position, filter, channel
+state or timer-start value was seeded. No W or G is supplied in the successful
+trigger cases. This materially corrects the initial pass's interpretation.
+
+The [campaign packet](../../research/generated/trigger-request-campaign-2026-10-21/README.md)
+contains commands, snapshots, native static queries, event extraction, checks
+and hashes. The firmware remains the original868 image. These are software
+requests and modeled register writes, not actual motor movement or measured
+V1/V2 waveforms.
+
+### Natural path and the mistaken boundary
+
+The previous negative reasoning followed `0x5fac` and `0x8e18`, and treated
+`phase_arm=0` / no `0x6fd8` as the decisive absence of motion authorization.
+It missed the other scheduled branch of `sketch_loop`:
+
+| Stage | Original behavior and observable state |
+|---|---|
+| Remote program | Original builder `0x49c4` constructs `+2,1,1,0,98,1,0,50,1000,500,0,0\|` from representative Remote record0. Only Remote delta500, ramp field50, timing source10000 and time-mode flag1 are seeded. These represent prior recorded UI state, not a full Remote boot or a newly traced physical gesture. The original builder divides the timing source by10. Units and full trajectory validation are not newly certified. |
+| Native AutoPilot load | Full original reset receives those exact bytes in the RX ring at `0x94b8`, then MC4 at the original plus tail `0x81ca`. Marker becomes7b, record valid, idle byte9, channel state0. Radio delivery/completion assumptions are inherited from Pass2. |
+| Input recognition and acceptance | With ADC225→900 at setup return and X1/TR0, effective587 reaches `0x8f98` at12,227,578 instructions. This is the actual input path, not a replacement command. |
+| Profile preparation / eligibility | Accepted reload `0x6e4c→0x4b64→0x6b50` prepares coefficients and writes channel state `0x20002524[0]=1` and profile mode `0x2000310c[0]=1`; phase arm `0x20002318[0]` remains0 and idle becomes0. Both state cells matter. |
+| Scheduled motion evaluation | The timed branch of `sketch_loop` selects channel states1/2/5 and calls `0x6338`. Its own switch reads **profile mode `0x2000310c`**, not the phase-arm byte. Mode1 evaluates the stored profile against elapsed time, derives signed rate/period and can initiate the channel when live flag `0x20001b14[ch]` is0. |
+| Request / start boundary | In `profile-held`, the eleventh observed profile-service call reaches `0x5f8c(0)` at12,451,024. It executes `0x5570`, `0x5ee8(0)` (rate/timer setup) and `0x5810(0)` (timer enable), then writes live flag1 at PC`0x5fa4`. Stop at`0x5fa6`, instruction12,451,171, is **after** these original operations. Phase arms remain0; no `0x6fd8` is called. |
+| Requested peripheral state | Channel0 timer pointer resolves to TC0 `0x40003800`; `0x5810` clears its interrupt flags and ORs ENABLE mask0x2 into CTRLA. At the stop, aligned CTRLA is`0x602`, period-like RAM `0x2000007c=0x2c3bc6`, converted period `0x200030e8=0x5877`, and captured timer CC word at`0x4000381c=0x5877`. These are requested register values, not measured timer frequency, pulse count or speed. |
+
+The separate G/phase route remains real: Pass2's `0x6fd8(0,30,500,8119)`
+request is not invalidated. It is simply not the only motion-initiation route.
+The initial campaign's requests below mean a channel-specific entry to
+`0x5f8c`, followed through the actual timer-enable/live-state write; they do not
+rename a trigger report or a prepared profile as a motor request.
+
+**Superseded conclusions:** the initial report's F6/F7 and state-map rows must
+not imply that a separate G/phase arm is necessary after accepted reload.
+Likewise the old trigger dossier's closure over state1's `0x5fac` consumer was
+incomplete: `sketch_loop` has another consumer, `0x6338`, selected in a different
+timing branch. “No commit” in earlier no-G witnesses means no `0x6fd8` entry,
+not no timer start. `0x20001b14` is a live motor/rate flag, not a dead baseline;
+new write watches identify a nonzero writer at`0x5fa4`. Broad historical negative
+claims are withdrawn; their raw snapshots are preserved unchanged.
+
+### Failure-mode matrix through the request boundary
+
+All rows have native program validity/marker7b unless specified. “One start”
+means one `0x5f8c`/timer-enable sequence in the stated bounded run. A start is
+not proof of displacement500, correct direction, physical reference, or actual
+movement. ADC counts and PC-timed changes are hypothetical external inputs.
+
+| Input scenario / command name | Classification / acceptance | Eligibility and resulting request | Timing / scope |
+|---|---|---|---|
+| `profile-held`: baseline225 then held900 | Filter crosses X1 at587; one acceptance | Native state1/profile1, phase arms0; **one timer-start request** | Natural baseline; first start after11 profile-service calls. Independent replay byte-identical. |
+| `profile-inactive`: constant225 | Inactive; no acceptance | Marker7b/idle9/state0 retained; **no start** |14M instructions, same program/MMIO setup. |
+| `profile-single-pulse`: one acquired900 then225 | Peak259, then decay; inactive | No acceptance, no state1, **no start** |14M; a sampled pulse can be lost before motion authorization. Not a physical minimum-pulse measurement. |
+| `profile-startup-active`:900 throughout startup | Active on first runtime processing; no runtime edge | Acceptance then **one start**, without W/G | Demonstrates level-at-eligibility can initiate requested pulse generation. |
+| `profile-x2`: unchanged225, native X2 |225 is inactive under X1, active under X2; one acceptance | **One start** without an input edge | Same nonzero timing/ramp program as baseline. Configuration-induced reclassification propagates beyond reload. |
+| `profile-low-excursion`:225→0 |214,203,193; accepts193 | **One start** | Same nonzero timing/ramp program as baseline. The earlier delta-only `rate-low-excursion` also starts, but its period clamps to20; it is not the principal trajectory control. |
+| `profile-tail`: raw900→225 at first T send; real TR0 later | Filter still866 when accepted, raw225 | **One start** after inactive raw input | TR1 is processed before MC4. Common post-TR injection queues another MC4 after TR0; preserved/disclosed as in the original tail test. |
+| `profile-sample-aligned-pulses`:900 before filter call,225 after its return on every visit | Acquisitions see high samples and integrate like held900 | **One start**, same instruction boundary/register outcome as held control | Repeated short modeled excursions can accumulate. Exact sampling correlation is adversarial/hypothetical, not measured contact bounce or a waveform assigned to either board revision. |
+| `profile-opposite-phase-pulses`:225 before filter call,900 after return on every visit | Acquisitions stay225 despite between-call highs | No acceptance, **no start** | Same two levels and program, different phase.14M. Poll-relative event placement, not equal-duration/equal-energy physical pulses. |
+| `profile-held-continuation` | One accepted event; sustained active input | One start through14M, no repeated acceptance/start | Period updates are not counted as duplicate requests. State1/idle0 continue to block reload. |
+| `profile-release-continuation`: input returns225 at acceptance | Filter later returns inactive | One start through14M, same requested timer-state outcome as held continuation | Release does not cancel an already accepted profile. No automatic physical-stop conclusion follows. |
+| TR1 active control from prior pass | Active T reporting, no accepted reload | No prepared state1 on this path | Prior concrete evidence retained; not represented as a newly rerun nonzero-profile request control. |
+
+The two-phase pulse experiment is a bounded surrogate for plausible narrow
+pulses/chatter at the **sampled-input** boundary. It demonstrates phase sensitivity
+and accumulation, not a quantified susceptibility to actual electrical bounce.
+It does not justify assigning “aligned” to V1 or “opposite-phase” to V2.
+
+### W controls, completion and re-arm boundary
+
+The initial search for the missing arm used only original command processing:
+
+- Original Remote `0x591c(0)` uses flash string `W|`; Remote `0xb79c` uses
+  `W1|`. Native AP disassembly resolves bare-W dispatch to`0x8628..0x866a` and
+  W1 to the shared reload at`0x8624`. Flash string extraction and builder paths
+  are static evidence; a paired Remote send/ACK exchange was not simulated.
+- `w-without-trigger`: bare W at idle9 does not arm or reach0x6fd8. Its
+  idle guard takes a different branch; a W packet is not a universal arm.
+- `w-after-trigger`: queued W after natural acceptance sets phase arm1 at
+  `0x865a`, then phase2. Profile processing has meanwhile set live flag1 at
+  `0x5fa4`; phase1 calls stop helper`0x5274(0,4)`, which writes stop-request1
+  at`0x2000309d`, and phase2 waits at`0x8fae` because `0x20001b14[0]=1`.
+  The final live/stop flags are1/1 and no `0x6fd8` occurs. This does **not**
+  block the earlier profile-rate start; it blocks the separate phase request.
+- `w1-then-w-without-trigger` reaches phase arm2 without an
+  external trigger, because W1 itself invokes the profile preparation path.
+  This prevents misattributing all later activity to an external event.
+
+A complete release→completion→natural re-arm→second trigger sequence is not
+established by these runs. Held/released continuations demonstrate no duplicate
+start only within their observed eligibility state; an absence of duplicates
+before re-arm is not a debounce proof. The22M held extension still has one
+acceptance/start, channel/profile mode1, live flag1, idle0 and phase arms0;
+7,823 watch hits remain below its8,000 cap. The exact missing transition is
+profile/channel1→completed/idle9→new-event eligibility. Its cause is not yet
+isolated: the actual profile-stage duration/deadline and completion predicates
+must be checked before attributing the lack of completion to missing IRQs.
+No automatic timer IRQ, actual counted
+STEP pulse or motor-position progression is supplied by the direct CLI fixtures.
+The backend has a documented narrow `deliver_interrupt()` facility, but the
+CLI does not expose a validated autonomous timer schedule for this continuous
+scenario. A separate cold ISR witness or clearing busy/idle by force would not
+supply the missing continuous completion evidence. No such state seeding or
+custom interrupt/waveform runner was introduced.
+
+### Practical implications and remaining work
+
+The campaign now promotes startup-active input, X reclassification, filtered
+history after release, and sample-aligned repeated excursions from mere reload
+hypotheses to **demonstrated software timer-start mechanisms**. A single acquired
+short pulse and opposite-phase pulses do not reach that boundary under their
+controls. No duplicate start or physical V1/V2 cause is established.
+
+For apfw2, guard every pulse-generation route, not only an explicit distance
+command. Apply the same event ownership, arm/program/reference checks and
+cancellation policy to profile playback and direct moves. Diagnostics and X
+changes must have an explicit relationship to already-filtered input and arming.
+Specify whether release cancels, consumes, or merely rearms an event. Distinguish
+rate updates of one move from duplicate authorizations. Never derive physical
+reference validity from a software counter or timer-enable write. These are
+requirements candidates; no implementation changes were made.
+
+Execution comprised26 direct native commands, all exit0/error-free, with191/191
+scoped artifact checks. The Remote builder is a hook-free continuous run;
+observed AutoPilot runs use memory-hook-single-step. A first analysis check
+incorrectly expected the Remote mode to match AP and was corrected against the
+documented hook-selection behavior, without changing execution. Exact snapshots
+and request-boundary outcomes are preserved; no new ledger admission or release
+grade is asserted.
+
+Highest-value remaining evidence is continuous profile completion and natural
+eligibility restoration with original timer/stop processing, followed by a second
+clean pulse, held input, and release-before-rearm controls. Existing APTrace
+static queries can identify the exact busy-clear/idle-restoration path; an
+existing supported scenario must also expose reproducible state-preserving
+interrupt/time delivery before claiming repeat-event coverage. **Capability gap
+(priority high for duplicate/re-arm conclusions):** the selected direct-CLI
+workflow provides PC-timed external changes and register completion assumptions,
+not a validated continuous motor timer/IRQ/completion environment. The reusable
+backend's narrow interrupt API exists; this is a scenario/interface and validation
+gap, not evidence Unicorn cannot execute the handler. New waveform scheduling or
+peripheral implementation would require a separate APTrace development task.
+Physical revision timing/bias still needs new measurements, but boards were not
+needed to establish the first software request path and these input counterexamples.

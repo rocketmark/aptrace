@@ -1,0 +1,148 @@
+==================================================
+Function: FUN_0000b79c @ 0000b79c  size=134  params=0  callingConvention=unknown
+
+
+undefined4 FUN_0000b79c(void)
+
+{
+  byte *pbVar1;
+  int *piVar2;
+  undefined4 uVar3;
+  int iVar4;
+  int iVar5;
+  int iVar6;
+  
+  while (iVar4 = FUN_0000b4f8(), uVar3 = DAT_0000b828, piVar2 = DAT_0000b824, iVar4 != 0) {
+    FUN_0000583c();
+  }
+  iVar4 = 3;
+  do {
+    while (iVar5 = FUN_0000b4f8(), iVar5 != 0) {
+      FUN_0000583c();
+    }
+    FUN_000058a8(uVar3);
+    FUN_000168c0(0x37);
+    FUN_000058a8(uVar3);
+    iVar5 = FUN_00016840();
+    *piVar2 = iVar5;
+    do {
+      iVar6 = FUN_0000b4f8();
+      pbVar1 = DAT_0000b830;
+      iVar5 = DAT_0000b82c;
+      if (iVar6 != 0) break;
+      iVar6 = FUN_00016840();
+      pbVar1 = DAT_0000b830;
+      iVar5 = DAT_0000b82c;
+    } while ((uint)(iVar6 - *piVar2) < 0x88);
+    while (iVar6 = FUN_0000b4f8(), iVar6 != 0) {
+      if (*(char *)(iVar5 + (uint)*pbVar1) == '#') {
+        FUN_0000583c();
+        return 1;
+      }
+      FUN_0000583c();
+      FUN_000168c0(2);
+    }
+    iVar4 = iVar4 + -1;
+    if (iVar4 == 0) {
+      return 0;
+    }
+  } while( true );
+}
+
+
+
+==================================================
+Function: FUN_0000cfc8 @ 0000cfc8  size=200  params=0  callingConvention=unknown
+
+
+void FUN_0000cfc8(void)
+
+{
+  byte bVar1;
+  int *piVar2;
+  undefined1 *puVar3;
+  undefined4 *puVar4;
+  undefined4 uVar5;
+  byte *pbVar6;
+  int *piVar7;
+  int iVar8;
+  
+  FUN_00005a50();
+  puVar4 = DAT_0000d098;
+  puVar3 = DAT_0000d094;
+  FUN_00012764(DAT_0000d090,0);
+  FUN_0001350e(DAT_0000d090,1);
+  *DAT_0000d09c = 1;
+  FUN_00005d8c(0xffff);
+  *DAT_0000d0a0 = 2;
+  *puVar3 = 0;
+  FUN_0000a798();
+  FUN_0000a43c();
+  uVar5 = DAT_0000d0a4;
+  *puVar3 = 1;
+  FUN_00005b94(uVar5,0x78,0x50,4);
+  FUN_00005d8c(0x94b2);
+  pbVar6 = DAT_0000d0a8;
+  FUN_00005c1c();
+  puVar3 = DAT_0000d0ac;
+  *pbVar6 = 1;
+  *puVar3 = 1;
+  piVar7 = DAT_0000d0b0;
+  piVar2 = DAT_0000d0b4;
+  while( true ) {
+    FUN_0000c340();
+    *puVar4 = 0;
+    iVar8 = FUN_000171f0(0x2d);
+    if (*piVar2 != 0 || iVar8 != 0) break;
+    iVar8 = FUN_00016840();
+    if (1000 < (uint)(iVar8 - *piVar7)) {
+      iVar8 = FUN_00016840();
+      *piVar7 = iVar8;
+      bVar1 = *pbVar6;
+      *pbVar6 = bVar1 ^ 1;
+      if ((bVar1 ^ 1) == 0) {
+        FUN_00005d8c();
+        *piVar7 = *piVar7 + 400;
+      }
+      else {
+        FUN_00005d8c(0x94b2);
+      }
+      FUN_00005c1c();
+      piVar2 = DAT_0000d0b4;
+    }
+  }
+  *piVar2 = 0;
+  FUN_0000591c(0);
+  FUN_000168c0(10);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00008aa0 @ 00008aa0  size=54  params=0  callingConvention=unknown
+
+
+void FUN_00008aa0(undefined4 param_1,undefined4 param_2,undefined4 param_3)
+
+{
+  FUN_000141ea(DAT_00008ae0,0,
+               (int)(short)((short)((int)((*DAT_00008adc - 1) * 0x11e) / (int)(uint)*DAT_00008ad8) +
+                           0x22),7,0x11e / *DAT_00008ad8,0xbb41,param_3);
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00008ae4 @ 00008ae4  size=54  params=0  callingConvention=unknown
+
+
+void FUN_00008ae4(undefined4 param_1,undefined4 param_2,undefined4 param_3)
+
+{
+  FUN_000141ea(DAT_00008b24,0,
+               (int)(short)((short)((int)((*DAT_00008b20 - 1) * 0x11e) / (int)(uint)*DAT_00008b1c) +
+                           0x22),7,0x11e / *DAT_00008b1c,0xffff,param_3);
+  return;
+}

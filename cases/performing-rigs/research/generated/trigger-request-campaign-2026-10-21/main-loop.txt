@@ -1,0 +1,102 @@
+==================================================
+Function: sketch_loop__CUSTOM @ 000093fc  size=286  params=0  callingConvention=unknown
+
+
+/* APTrace provenance: CUSTOM_APPLICATION -- see
+   cases/performing-rigs/docs/investigations/standard-library-provenance.md and
+   cases/performing-rigs/research/provenance/function_classification.csv */
+
+void sketch_loop__CUSTOM(void)
+
+{
+  char *pcVar1;
+  char *pcVar2;
+  char *pcVar3;
+  char *pcVar4;
+  int *piVar5;
+  int iVar6;
+  int iVar7;
+  char cVar8;
+  uint uVar9;
+  undefined1 *puVar10;
+  undefined1 *puVar11;
+  
+  piVar5 = DAT_00009458;
+  FUN_00007b8c();
+  FUN_00007e2c();
+  FUN_00005fac();
+  iVar7 = FUN_0000ccdc();
+  if (*DAT_0000945c <= (uint)(iVar7 - *piVar5)) {
+    iVar7 = FUN_0000ccdc();
+    *piVar5 = iVar7;
+    iVar7 = DAT_00006938;
+    uVar9 = 0;
+    do {
+      if (((*(char *)(iVar7 + uVar9) == '\x01') || (*(char *)(iVar7 + uVar9) == '\x02')) ||
+         (*(char *)(iVar7 + uVar9) == '\x05')) {
+        FUN_00006338(uVar9 & 0xff);
+      }
+      uVar9 = uVar9 + 1;
+    } while (uVar9 != 4);
+    return;
+  }
+  iVar7 = FUN_0000ccdc();
+  if (*DAT_00009460 <= (uint)(iVar7 - *piVar5)) {
+    return;
+  }
+  phase_ramp_state_machine__CUSTOM();
+  FUN_00009268();
+  FUN_00008960();
+  loop_housekeeping_save_trigger__CUSTOM();
+  channel_event_monitor__CUSTOM();
+  puVar10 = DAT_00007998;
+  puVar11 = DAT_00007994;
+  pcVar2 = DAT_00007978;
+  pcVar1 = DAT_00007974;
+  iVar7 = 0;
+  *DAT_00007974 = '\0';
+  *pcVar2 = '\0';
+  do {
+    iVar6 = FUN_0000d3dc(*puVar11);
+    if (iVar6 != 0) {
+      *pcVar1 = '\x01';
+      cVar8 = '\0';
+LAB_00007900:
+      *pcVar2 = cVar8;
+      break;
+    }
+    iVar6 = FUN_0000d3dc(*puVar10);
+    if (iVar6 != 0) {
+      *pcVar1 = '\0';
+      cVar8 = '\x01';
+      goto LAB_00007900;
+    }
+    iVar7 = iVar7 + 1;
+    puVar10 = puVar10 + 1;
+    puVar11 = puVar11 + 1;
+  } while (iVar7 != 4);
+  pcVar4 = DAT_00007980;
+  pcVar3 = DAT_0000797c;
+  if ((*DAT_0000797c != *pcVar2) || (*pcVar1 != *DAT_00007980)) {
+    if (*pcVar2 == '\0') {
+      if (*pcVar1 != '\0') {
+        FUN_00007868();
+        *pcVar3 = '\0';
+        *pcVar4 = '\x01';
+        FUN_0000b258(DAT_00007988,DAT_0000798c);
+        return;
+      }
+      FUN_000077a0();
+      FUN_0000b258(DAT_00007988,DAT_00007990);
+      *pcVar3 = '\0';
+      *pcVar4 = '\0';
+    }
+    else {
+      FUN_000077f8();
+      FUN_0000b258(DAT_00007988,DAT_00007984);
+      *pcVar3 = '\x01';
+      *pcVar4 = '\0';
+    }
+  }
+  return;
+}

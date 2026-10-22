@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-21",
+  "repository_base_revision": "79f8e4ac70e5e02703d2e7695ec4b7974b02c9fe",
+  "role": "APTrace operator; existing direct concrete and native Ghidra interfaces",
+  "native_commands": 26,
+  "scope": "Original868 software-level trigger/profile/timer-start campaign. No new VERIFIED claim or release-gate promotion.",
+  "sources": [
+    {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b"
+    },
+    {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735"
+    },
+    {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2"
+    },
+    {
+      "path": "docs/tooling/unicorn-backend.md",
+      "sha256": "0021374bf1b3cf58b8ff0012fe4359dc39137b4af6047a01e8bcecc8c40bbede"
+    },
+    {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+    },
+    {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+      "sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/commands.json",
+      "sha256": "550669aa54a8c7fc1e5f7b793a39f78177ccd40f949d1608dabf79a366a37148"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/trigger-misfire-2026-10-21/commands.json",
+      "sha256": "1748db5eba39e5bc5e0b2204b4fe7da69490fcbfa716812250bf78f2b6c6bb29"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/phase-native.txt",
+      "sha256": "d6d907d79bd3da170d8686a5bb4f9ad51f0cb0ef5ce968b04ee6c7aa51a50a31"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/phase-pointers.txt",
+      "sha256": "51a8001c556b481475aaf76f562d5eb3563138561e904b1f6a543cbb6f39bc61"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/trigger-misfire-failure-modes.md",
+      "sha256": "0a1c240037d8939efe6690d9bdf9d352c0220bbad3e9dbc8763c26f062cd8be4"
+    }
+  ],
+  "limits": [
+    "No autonomous hardware timer/IRQ/STEP/counting or physical movement",
+    "Hypothetical PC-timed ADC pulses, not measured or equal-duration/equal-energy V1/V2 waveforms",
+    "Profile completion and natural re-arm not observed by22M; cause not isolated",
+    "Remote record seeds represent prior UI state; no complete paired UI/RF handshake",
+    "Initial6 phase-arm probes do not observe rate-start calls; null is not absence",
+    "First delta-only rate fixtures have zero timing and clamp period20; principal controls use native nonzero timing/ramp Remote frame",
+    "AP memory-hook-single-step; Remote hook-free continuous, documented context"
+  ]
+}

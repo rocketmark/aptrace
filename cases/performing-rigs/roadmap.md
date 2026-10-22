@@ -13,15 +13,17 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 ## Trigger reliability follow-up
 
-Use the [failure-mode matrix](docs/investigations/trigger-misfire-failure-modes.md)
-and preserved original-code pulse/X/startup controls. Do not repeat the normal
-alpha or constant-input reclassification work. Highest-value software follow-up:
-one natural Remote auto/arm→trigger→request sequence, then held input/release,
-STOP and reload controls to establish re-arm/event ownership. Highest-value new
-physical evidence: revision-paired jack/PB05 waveforms and startup PA02/mode with
-the same source, firmware and configuration, only at confirmed safe nodes and
-under separate authorization. Keep diagnostics in separate TR1/TR0 runs.
-No physical misfire cause or V1/V2 direction is currently established.
+The [request campaign](docs/investigations/trigger-misfire-failure-modes.md#targeted-request-campaign-an-overlooked-motion-initiation-path)
+establishes natural program/MC4→external-trigger→profile service0x6338→rate start
+0x5f8c/timer enable0x5810. Do not repeat the search for a required G/phase arm;
+that is a separate path. Next resolve the current profile-stage duration and
+completion predicates, then a continuous completion→eligibility restoration→
+second-pulse sequence with held/released and duplicate-request controls. Use a
+supported state-preserving timer/IRQ scenario where required; separate cold ISR
+runs or forced busy/idle clears do not establish this lifecycle. Distinguish
+one profile's rate updates from repeated event authorizations. No physical
+V1/V2 waveform attribution is established. Boards were not required for the
+first request boundary; revision-specific electrical timing still needs evidence.
 
 ## Bring-up contract follow-up
 

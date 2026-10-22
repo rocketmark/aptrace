@@ -1,0 +1,169 @@
+==================================================
+Function: FUN_00006b50 @ 00006b50  size=686  params=0  callingConvention=unknown
+
+
+void FUN_00006b50(void)
+
+{
+  byte bVar1;
+  byte bVar2;
+  undefined8 uVar3;
+  undefined1 *puVar4;
+  int iVar5;
+  int iVar6;
+  undefined4 uVar7;
+  int iVar8;
+  int iVar9;
+  int iVar10;
+  undefined4 *puVar11;
+  int iVar12;
+  int iVar13;
+  int *piVar14;
+  uint uVar15;
+  int iVar16;
+  undefined8 *puVar17;
+  int iVar18;
+  byte *pbVar19;
+  int iVar20;
+  undefined8 uVar21;
+  undefined8 uVar22;
+  int *local_78;
+  int *local_70;
+  undefined1 *local_6c;
+  int local_5c;
+  undefined1 *local_54;
+  byte local_3c [8];
+  
+  iVar5 = DAT_00006e48;
+  iVar13 = 0;
+  *DAT_00006e08 = 0;
+  puVar4 = DAT_00006e0c;
+  *DAT_00006e0c = 0;
+  puVar4[1] = 0;
+  puVar4[2] = 0;
+  puVar4[3] = 0;
+  uVar3 = DAT_00006e00;
+  local_54 = DAT_00006e10;
+  local_70 = DAT_00006e14;
+  local_6c = DAT_00006e18;
+  local_3c[0] = 0;
+  local_3c[1] = 0;
+  local_3c[2] = 0;
+  local_3c[3] = 0;
+  pbVar19 = local_3c;
+  local_78 = DAT_00006e14;
+  do {
+    *local_54 = 1;
+    uVar21 = aeabi_fixed_math__STANDARD_LIBRARY(*(undefined4 *)(DAT_00006e1c + iVar13 * 4));
+    *(undefined8 *)(DAT_00006e20 + iVar13 * 8) = uVar21;
+    if ((char)local_78[0x11] == '\0') {
+      *(undefined4 *)(iVar13 * 200 + DAT_00006e34) = 0;
+      iVar9 = iVar13 * 400;
+      *(undefined8 *)(iVar5 + iVar9) = uVar3;
+      *(undefined8 *)(DAT_00006e24 + iVar9) = uVar3;
+      *(undefined8 *)(iVar9 + DAT_00006e2c) = uVar3;
+      *(undefined1 *)(DAT_00006e38 + iVar13) = 0;
+      *local_6c = 0;
+    }
+    else {
+      bVar1 = *(byte *)(local_78 + 0xf);
+      iVar9 = iVar13 * 0x32;
+      piVar14 = local_78;
+      for (local_5c = 0; local_5c <= (int)(uint)bVar1; local_5c = local_5c + 1) {
+        if (*piVar14 != 0) {
+          bVar2 = *pbVar19;
+          uVar15 = (uint)bVar2;
+          iVar10 = iVar9 + uVar15;
+          uVar21 = *(undefined8 *)(piVar14 + 0xc);
+          *(undefined8 *)(iVar5 + iVar10 * 8) = uVar3;
+          iVar8 = (int)((ulonglong)uVar21 >> 0x20);
+          uVar7 = (undefined4)uVar21;
+          puVar17 = (undefined8 *)(DAT_00006e24 + iVar10 * 8);
+          uVar21 = aeabi_fixed_math__STANDARD_LIBRARY(uVar7,iVar8,0,DAT_00006e28);
+          *puVar17 = uVar21;
+          iVar12 = DAT_00006e2c;
+          iVar6 = piVar14[0xb];
+          iVar18 = uVar15 + 1 + iVar9;
+          *(undefined8 *)(iVar5 + iVar18 * 8) = uVar3;
+          puVar17 = (undefined8 *)(DAT_00006e24 + iVar18 * 8);
+          *(undefined8 *)(iVar10 * 8 + iVar12) = uVar3;
+          *puVar17 = uVar3;
+          uVar21 = aeabi_fixed_math__STANDARD_LIBRARY(iVar6);
+          uVar21 = aeabi_fixed_math__STANDARD_LIBRARY
+                             ((int)uVar21,(int)((ulonglong)uVar21 >> 0x20),0,DAT_00006e30);
+          *(undefined8 *)(iVar18 * 8 + DAT_00006e2c) = uVar21;
+          iVar16 = uVar15 + 2 + iVar9;
+          *(undefined8 *)(iVar5 + iVar16 * 8) = uVar3;
+          puVar17 = (undefined8 *)(DAT_00006e24 + iVar16 * 8);
+          uVar22 = aeabi_fixed_math__STANDARD_LIBRARY(uVar7,iVar8 + -0x80000000,0,DAT_00006e28);
+          *(undefined8 *)(iVar16 * 8 + DAT_00006e2c) = uVar21;
+          iVar12 = DAT_00006e34;
+          *puVar17 = uVar22;
+          iVar6 = piVar14[9];
+          iVar8 = piVar14[8];
+          *(int *)(iVar12 + iVar10 * 4) = iVar8;
+          *(int *)(iVar12 + iVar18 * 4) = piVar14[7] - (iVar8 + iVar6);
+          *(int *)(iVar12 + iVar16 * 4) = iVar6;
+          iVar6 = uVar15 + 3 + iVar9;
+          *(undefined4 *)(iVar12 + iVar6 * 4) = 0;
+          uVar21 = aeabi_fixed_math__STANDARD_LIBRARY((uint)bVar1);
+          iVar8 = piVar14[10];
+          *(undefined8 *)(iVar5 + iVar6 * 8) = uVar21;
+          if (iVar8 != 0) {
+            iVar18 = uVar15 + iVar9;
+            iVar10 = DAT_00006e24 + iVar18 * 8;
+            iVar6 = iVar5 + iVar18 * 8;
+            iVar16 = DAT_00006e2c + iVar18 * 8;
+            iVar20 = 4;
+            puVar11 = (undefined4 *)(iVar12 + (iVar18 + 4) * 4);
+            do {
+              *(undefined8 *)(iVar6 + 0x20) = *(undefined8 *)(iVar6 + 0x18);
+              *(undefined8 *)(iVar10 + 0x20) = *(undefined8 *)(iVar10 + 0x18);
+              uVar21 = *(undefined8 *)(iVar16 + 0x18);
+              *puVar11 = puVar11[-1];
+              iVar20 = iVar20 + -1;
+              *(undefined8 *)(iVar16 + 0x20) = uVar21;
+              iVar6 = iVar6 + -8;
+              iVar10 = iVar10 + -8;
+              iVar16 = iVar16 + -8;
+              puVar11 = puVar11 + -1;
+            } while (iVar20 != 0);
+            iVar12 = iVar9 + uVar15;
+            *(int *)(DAT_00006e34 + iVar12 * 4) = iVar8 * 1000;
+            *(undefined8 *)(iVar5 + iVar12 * 8) = uVar3;
+            *(undefined8 *)(DAT_00006e24 + iVar12 * 8) = uVar3;
+            *(undefined8 *)(DAT_00006e2c + iVar12 * 8) = uVar3;
+            *pbVar19 = bVar2 + 1;
+          }
+          *(undefined1 *)(DAT_00006e38 + iVar13) = 1;
+          *local_6c = 1;
+          *pbVar19 = *pbVar19 + 3;
+        }
+        *(char *)((int)piVar14 + 0x39) = (char)piVar14[0xe];
+        piVar14 = piVar14 + 0x12;
+      }
+    }
+    local_78 = local_78 + 0x48;
+    iVar13 = iVar13 + 1;
+    local_6c = local_6c + 1;
+    pbVar19 = pbVar19 + 1;
+    local_54 = local_54 + 1;
+  } while (iVar13 != 4);
+  uVar7 = FUN_0000ccdc();
+  iVar9 = DAT_00006e44;
+  iVar13 = DAT_00006e40;
+  iVar5 = DAT_00006e3c;
+  iVar12 = 0;
+  do {
+    if ((char)local_70[0x11] != '\0') {
+      *(undefined4 *)(iVar13 + iVar12 * 4) = uVar7;
+      *(undefined1 *)(iVar12 + iVar5) = 0;
+      *(undefined1 *)(iVar12 + iVar9) = 0;
+    }
+    *(char *)((int)local_70 + 0x3a) = (char)iVar12;
+    iVar12 = iVar12 + 1;
+    local_70 = local_70 + 0x48;
+  } while (iVar12 != 4);
+  FUN_00006952();
+  return;
+}

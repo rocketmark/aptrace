@@ -1,0 +1,147 @@
+[
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x6e4c",
+    "exit_status": 0,
+    "output": "reload.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x6b50",
+    "exit_status": 0,
+    "output": "profile-prepare.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x85d8 0x8690",
+    "exit_status": 0,
+    "output": "w-dispatch-native.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x5fac",
+    "exit_status": 0,
+    "output": "profile-progress-service.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x7b8c",
+    "exit_status": 0,
+    "output": "motion-service.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0xe670",
+    "exit_status": 0,
+    "output": "remote-auto.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0xb79c 0xcfc8 0x8aa0 0x8ae4",
+    "exit_status": 0,
+    "output": "remote-controls.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x7e2c 0x5958",
+    "exit_status": 0,
+    "output": "g-and-terminal-service.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x591c 0x5a50 0xb59c",
+    "exit_status": 0,
+    "output": "remote-command-builders.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x6e68",
+    "exit_status": 0,
+    "output": "profile-rebuild-helper.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x5274 0x6952 0x5f8c",
+    "exit_status": 0,
+    "output": "busy-stop-producers.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x6338",
+    "exit_status": 0,
+    "output": "profile-evaluator.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x93fc",
+    "exit_status": 0,
+    "output": "main-loop.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x5810",
+    "exit_status": 0,
+    "output": "timer-enable.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x49c4",
+    "exit_status": 0,
+    "output": "remote-program-builder.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x20002318",
+    "exit_status": 1,
+    "selected_observation": "Wrong literal-query use: RAM address outside mapped firmware file; corrected to xrefs"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20002318",
+    "exit_status": 0,
+    "selected_observation": "Writes at6dda,865a,8e5a; reads8656,8e26; DATA6f5e. Search-relative, not a whole-image completeness proof."
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20001b14",
+    "exit_status": 0,
+    "selected_observation": "Includes phase reads8e4c and event/dispatch readers plus DATA references; later dynamic write identifies5fa4."
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x2000309d",
+    "exit_status": 0,
+    "selected_observation": "Write52a2 and DATA65a8/65b4"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xb828",
+    "exit_status": 0,
+    "selected_observation": "Pointer1c7e0"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py dump mando868 0x1c7e0 --length 16",
+    "exit_status": 0,
+    "selected_observation": "57317c00 begins W1| NUL"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal mando868 0x5964 0x596c 0x5a80",
+    "exit_status": 2,
+    "selected_observation": "literal accepts one address, not multiple"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal mando868 0x5964",
+    "exit_status": 0,
+    "selected_observation": "Pointer1c588"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py dump mando868 0x1c588 --length 16",
+    "exit_status": 0,
+    "selected_observation": "577c00 begins W| NUL"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x6938",
+    "exit_status": 0,
+    "selected_observation": "20002524"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x6650",
+    "exit_status": 0,
+    "selected_observation": "2000310c"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x6694",
+    "exit_status": 0,
+    "selected_observation": "20001b14"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal mando868 0x4ca8",
+    "exit_status": 0,
+    "selected_observation": "200002d0"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x5844",
+    "exit_status": 0,
+    "selected_observation": "40003800"
+  }
+]
