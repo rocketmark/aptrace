@@ -44,6 +44,12 @@ provisioned-A25 fixture requests864300000Hz from compiled A20, then loads25
 into runtime RAM, without a second bring-up before first loop. The command
 mapping below remains supported; startup application of the retained channel
 and subsequent reconnect repair require a separate bounded follow-up.
+That [Pass2 follow-up](autopilot-bring-up-pass2.md) now shows no further radio
+request during extended setup or4985 configured loop entries; runtime25 can
+remain requested at864300000Hz. Explicit A25 input requests865800000Hz. The
+examined Remote silence/reconnect exchange does not demonstrate channel scan or
+cross-channel recovery. Applied settings and actual peer communication remain
+unverified; RAM-injected input is not proof that mismatched peers communicate.
 
 | A wire/stored value | Normal Remote channel |868 pair request, Hz |915 pair request, Hz |
 |---|---:|---:|---:|

@@ -22,6 +22,12 @@ are now integrated into [bring-up Pass1](autopilot-bring-up-pass1.md), including
 revalidation of affected witnesses. Its physical durability/recovery exit is
 not met. Pass1 also qualifies the old permanent-zero analog coefficient claim
 and the order of stored-A loading versus initial radio settings.
+The [Pass2 continuation](autopilot-bring-up-pass2.md) now establishes continuous
+normal-alpha analog sampling and program/diagnostic acceptance, persistent
+requested-channel mismatch without an explicit A command in tested runs, and
+the original G-arm producer through a full-reset program/MC4/request path.
+Use its condition matrix for staged software contract tests; full paired
+Remote exchange, physical reference and confirmed peripheral state remain gaps.
 The priorities below retain the original planning rationale.
 
 The highest-value next work is a **field-to-behavior contract**, starting with

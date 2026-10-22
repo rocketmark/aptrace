@@ -1,0 +1,81 @@
+==================================================
+Function: FUN_0000d1b4 @ 0000d1b4  size=302  params=0  callingConvention=unknown
+
+
+uint FUN_0000d1b4(uint param_1)
+
+{
+  uint uVar1;
+  uint uVar2;
+  ushort *puVar3;
+  uint uVar4;
+  
+  if (param_1 == 6) {
+    param_1 = 0x14;
+  }
+  else if (param_1 == 7) {
+    param_1 = 0x15;
+  }
+  else if (param_1 < 6) {
+    param_1 = param_1 + 0xe;
+  }
+  FUN_0000d40c(param_1,1);
+  if (param_1 - 0xe < 2) {
+    uVar1 = (uint)(param_1 != 0xe);
+    if (*(char *)(DAT_0000d2e4 + uVar1) != '\0') {
+      *(undefined1 *)(DAT_0000d2e4 + uVar1) = 0;
+      do {
+        do {
+        } while (*(int *)(DAT_0000d2e8 + 8) << 0x1e < 0);
+      } while ((*(uint *)(DAT_0000d2e8 + 8) & 1) != 0);
+      *DAT_0000d2e8 = *DAT_0000d2e8 & 0xfd;
+      do {
+        do {
+        } while (*(int *)(DAT_0000d2e8 + 8) << 0x1e < 0);
+      } while ((*(uint *)(DAT_0000d2e8 + 8) & 1) != 0);
+      *(ushort *)(DAT_0000d2e8 + (uVar1 + 4) * 2 + 4) =
+           *(ushort *)(DAT_0000d2e8 + (uVar1 + 4) * 2 + 4) & 0xfffd;
+      do {
+        do {
+        } while (*(int *)(DAT_0000d2e8 + 8) << 0x1e < 0);
+      } while (*(int *)(DAT_0000d2e8 + 8) << 0x1f < 0);
+      *DAT_0000d2e8 = *DAT_0000d2e8 | 2;
+    }
+    do {
+    } while (*(int *)(DAT_0000d2e8 + 8) << 0x1e < 0);
+  }
+  uVar1 = *(uint *)(param_1 * 0x18 + DAT_0000d2ec + 0xc);
+  puVar3 = DAT_0000d2fc;
+  if (((uVar1 & 2) != 0) || (uVar2 = 0, puVar3 = DAT_0000d2f0, (uVar1 & 0x80) != 0)) {
+    do {
+    } while (*(int *)(puVar3 + 0x18) << 0x1d < 0);
+    puVar3[2] = puVar3[2] & 0xffe0 | *(byte *)(param_1 * 0x18 + DAT_0000d2ec + 0x10) & 0x1f;
+    do {
+    } while (*(int *)(puVar3 + 0x18) << 0x1e < 0);
+    *puVar3 = *puVar3 | 2;
+    do {
+    } while (*(int *)(puVar3 + 0x18) << 0x1e < 0);
+    *(byte *)(puVar3 + 10) = (byte)puVar3[10] | 2;
+    *(undefined1 *)(puVar3 + 0x17) = 1;
+    *(byte *)(puVar3 + 10) = (byte)puVar3[10] | 2;
+    do {
+    } while (-1 < (int)((uint)(byte)puVar3[0x17] << 0x1f));
+    uVar2 = (uint)puVar3[0x20];
+    do {
+    } while ((*(uint *)(puVar3 + 0x18) & 2) != 0);
+    *puVar3 = *puVar3 & 0xfffd;
+    do {
+    } while (*(int *)(puVar3 + 0x18) << 0x1e < 0);
+    uVar1 = *DAT_0000d2f4;
+    uVar4 = *DAT_0000d2f8;
+    if (uVar1 != uVar4) {
+      if (uVar1 < uVar4) {
+        uVar2 = uVar2 << (uVar4 - uVar1 & 0xff);
+      }
+      else {
+        uVar2 = (uint)(puVar3[0x20] >> (uVar1 - uVar4 & 0xff));
+      }
+    }
+  }
+  return uVar2;
+}

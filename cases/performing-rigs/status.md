@@ -12,18 +12,23 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Analysis capabilities exercised by this case
 
-The [bring-up Pass1 timeline](docs/investigations/autopilot-bring-up-pass1.md)
-integrates flashing, reset, initialization, local state, Remote setup and
-operational eligibility. Eleven historical startup/persistence/readiness
-replays match their saved state/counts with the corrected memory-hook backend.
-Defaults are dirty before first loop but not yet saved; a later PA22 checkpoint
-writes them while leaving stored X invalid. Radio initialization precedes
-stored-A loading: a retained-A25 fixture first requests A20 frequency, then
-loads25. Full reset initializes filter alpha0.05; a matched due-sample helper
-updates225→258.75 (returned259), contradicting a normally permanent-zero
-coefficient. Package6's software default/checkpoint/reset work is integrated
-here. Physical interruption recovery, product READY, USB service and natural
-motion authorization remain unproven. No apfw2 design or implementation follows.
+The [integrated bring-up timeline](docs/investigations/autopilot-bring-up-pass1.md)
+and [Pass2 conditions/controls](docs/investigations/autopilot-bring-up-pass2.md)
+support a staged, testable application software contract. Selected historical
+startup/save/reset witnesses match with the corrected memory-hook backend.
+Defaults are dirty before first loop, with a later checkpoint required. Retained
+A25 remains paired with an A20 frequency request in extended setup/operational
+runs; explicit A25 input causes retuning. No cross-channel recovery is established.
+Continuous analog reset preserves alpha0.05, updates samples and crosses native
+X bands. With accepted program data, TR0 admits one reload while TR1 reports an
+active input without accepting it. A continuous original reset/program/MC4/G
+path reaches request0x6fd8 with `(0,30,500,8119)`, with no AP program/reference/
+validity/target/arm seeds; two runs are byte-identical. No-G and duplicate-G
+controls do not request; trigger-HIGH G does. TC0 READSYNC completion is a
+disclosed additional MMIO assumption. Execution stops before commit code.
+Complete paired Remote handshake, physical reference, confirmed driver/RF state,
+STOP/reset while moving, USB, product READY and interruption recovery remain
+unproven. No apfw2 implementation or physical readiness claim follows.
 
 The [D serial-number investigation](docs/investigations/d-serial-number-and-compatibility.md)
 maps D unchanged through bulk-report field9 to the Remote's conditional six-digit
@@ -57,13 +62,14 @@ hooked run. No release gate is promoted.
 The [X/trigger acceptance package](docs/investigations/x-trigger-acceptance.md)
 establishes selector/reset bands, reporting versus reload acceptance, record
 preparation and conditional reference resync. Zero-alpha fixtures freeze the
-effective first sample, but Pass1's full reset initializes alpha0.05 and a
-matched helper responds to a new sample; permanent freezing after normal
-startup is no longer established. Acquisition and telemetry use different
+effective first sample, but continuous Pass2 reset/sampling preserves alpha0.05
+and updates readings; normal permanent freezing is contradicted by that path.
+Acquisition and telemetry use different
 clock units. Accepted reload clears phase arms and changes idle/channel guards:
 a carried held-LOW follow-up does not reaccept. Independently armed valid state
-can reach commit before trigger processing. Natural arming/restoration, physical
-reference and physical misfire causation remain unresolved; no gate promotion.
+can reach commit before trigger processing. Pass2 closes a natural G-arm producer
+and scheduler→request join; trigger-phase arming/restoration, physical reference
+and physical misfire causation remain unresolved; no gate promotion.
 
 The [motor-state ownership/reference investigation](docs/investigations/motor-state-ownership-and-reference.md)
 completes the first configuration-plan package: Remote-authored programs have

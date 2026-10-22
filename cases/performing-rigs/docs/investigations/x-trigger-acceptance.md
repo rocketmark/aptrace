@@ -7,6 +7,11 @@ physical misfire causation and a natural trigger-to-motion chain remain open.**
 Current qualification: [bring-up Pass1](autopilot-bring-up-pass1.md) supersedes
 the normally-zero coefficient/permanent-first-sample interpretation. Full reset
 initializes0.05; the historical zero-alpha experiments below are conditional.
+The [Pass2 continuation](autopilot-bring-up-pass2.md) now preserves full-reset
+state through native ADC/filter sampling and program acceptance: X1's filtered
+active input causes one reload, while native TR1 reports `T900,1,\|` without
+acceptance. Normal permanent freezing is contradicted by that continuous path.
+This does not demonstrate physical reliability or trigger-to-motion arming.
 
 X selects an analog inactive band, independently of the boot-selected input
 mode. A recognized input, a reported input, an accepted reload, a prepared

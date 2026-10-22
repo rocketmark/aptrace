@@ -1,0 +1,2 @@
+0x40003805  TC0.COUNT16.CTRLBSET/COUNT32.CTRLBSET/COUNT8.CTRLBSET (+0x5)
+Local ATSAMD51J19A.svd: CTRLBSET CMD bitOffset5, bitWidth3, READSYNC value4; native write0x80 and wait on bit7. Read-clear mask0x8000 in aligned containing word0x40003804.

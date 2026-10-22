@@ -1,0 +1,218 @@
+[
+  {
+    "name": "radio-retained-a25-extended",
+    "exit_status": 0,
+    "instructions": 20000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "radio-explicit-a25",
+    "exit_status": 0,
+    "instructions": 20000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-continuous",
+    "exit_status": 0,
+    "instructions": 13334671,
+    "stop_reason": "max watch hits (1000) reached at 0x00008f48",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-band-transition",
+    "exit_status": 0,
+    "instructions": 13334645,
+    "stop_reason": "max watch hits (1000) reached at 0x00008e7a",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-reporting",
+    "exit_status": 0,
+    "instructions": 13354779,
+    "stop_reason": "max watch hits (1000) reached at 0x000042fe",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "remote-plus-build",
+    "exit_status": 0,
+    "instructions": 375,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "completed": true,
+    "error": null,
+    "execution_mode": "continuous"
+  },
+  {
+    "name": "program-natural-sequence",
+    "exit_status": 0,
+    "instructions": 20000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "remote-plus-sequence",
+    "exit_status": 0,
+    "instructions": 375,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "completed": true,
+    "error": null,
+    "execution_mode": "continuous"
+  },
+  {
+    "name": "analog-x2",
+    "exit_status": 0,
+    "instructions": 14531004,
+    "stop_reason": "max watch hits (1600) reached at 0x000042fe",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-reporting-tx",
+    "exit_status": 0,
+    "instructions": 14535778,
+    "stop_reason": "max watch hits (1600) reached at 0x000042a4",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "remote-g-after-plus",
+    "exit_status": 1,
+    "instructions": 117,
+    "stop_reason": "unmapped memory access (type=19) at 0x41008008 size=4",
+    "completed": false,
+    "error": "Invalid memory read (UC_ERR_READ_UNMAPPED)",
+    "execution_mode": "continuous"
+  },
+  {
+    "name": "program-with-readsync-completion",
+    "exit_status": 0,
+    "instructions": 12178974,
+    "stop_reason": "reached stop address 0x00006fd8",
+    "completed": true,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "remote-g-buffer-boundary",
+    "exit_status": 1,
+    "instructions": 117,
+    "stop_reason": "unmapped memory access (type=19) at 0x41008008 size=4",
+    "completed": false,
+    "error": "Invalid memory read (UC_ERR_READ_UNMAPPED)",
+    "execution_mode": "continuous"
+  },
+  {
+    "name": "remote-g-entry-boundary",
+    "exit_status": 0,
+    "instructions": 31,
+    "stop_reason": "reached stop address 0x0000b59c",
+    "completed": true,
+    "error": null,
+    "execution_mode": "continuous"
+  },
+  {
+    "name": "program-causal-observed",
+    "exit_status": 0,
+    "instructions": 12178974,
+    "stop_reason": "reached stop address 0x00006fd8",
+    "completed": true,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "program-without-g",
+    "exit_status": 0,
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "program-g-duplicate-sequence",
+    "exit_status": 0,
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "program-g-trigger-high",
+    "exit_status": 0,
+    "instructions": 12138041,
+    "stop_reason": "reached stop address 0x00006fd8",
+    "completed": true,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-program-acceptance",
+    "exit_status": 0,
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-program-reporting",
+    "exit_status": 0,
+    "instructions": 14000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "radio-retained-a25-silence-window",
+    "exit_status": 0,
+    "instructions": 35000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "analog-program-reporting-active",
+    "exit_status": 0,
+    "instructions": 15000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "program-causal-repeat",
+    "exit_status": 0,
+    "instructions": 12178974,
+    "stop_reason": "reached stop address 0x00006fd8",
+    "completed": true,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  },
+  {
+    "name": "radio-retained-a25-waiting-peer",
+    "exit_status": 0,
+    "instructions": 30000000,
+    "stop_reason": "instruction limit reached",
+    "completed": false,
+    "error": null,
+    "execution_mode": "memory-hook-single-step"
+  }
+]

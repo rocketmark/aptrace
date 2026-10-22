@@ -14,6 +14,11 @@ a completed flash save. Its native review also narrows the handshake claim:
 normal mode-zero `0xc440` includes additional configuration-response validation;
 a P prefix alone does not guarantee the transfer tail for all invocation modes.
 These are current interpretations; historical generated evidence is unchanged.
+The [Pass2 bring-up continuation](autopilot-bring-up-pass2.md) now supplies a
+continuous original AutoPilot reset/program/MC4/G request witness, including
+native G-arm production and no-G/duplicate-sequence controls. Original Remote
+builders provide the input bytes with explicit counter carry. It stops before
+commit execution and asserts neither physical motion nor a full paired session.
 
 ## Current model
 

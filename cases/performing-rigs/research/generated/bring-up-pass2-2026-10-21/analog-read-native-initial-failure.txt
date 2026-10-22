@@ -1,0 +1,53 @@
+error: disasm 0xd230-0xd2c0 in 'autopilot868' failed (exit 1):
+oints (20 false positives) (ClassSearcher)  
+INFO  HEADLESS Script Paths:
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Processors/8051/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Debug/Debugger-rmi-trace/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/FileFormats/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/Decompiler/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/PDB/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Processors/JVM/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/SystemEmulation/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Processors/PIC/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Debug/Debugger/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/GnuDemangler/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/MicrosoftCodeAnalyzer/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/PyGhidra/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/SwiftDemangler/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/WildcardAssembler/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/VersionTracking/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/BSim/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/BytePatterns/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Processors/Atmel/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/DecompilerDependent/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Processors/DATA/ghidra_scripts
+    /Users/mstalzer/github/aptrace/tools/ghidra/scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/Base/ghidra_scripts
+    /opt/homebrew/Cellar/ghidra/12.1.3/libexec/Ghidra/Features/FunctionID/ghidra_scripts (HeadlessAnalyzer)  
+INFO  HEADLESS: execution starts (HeadlessAnalyzer)  
+INFO  Opening existing project: /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/autopilot868/aptrace (HeadlessAnalyzer)  
+INFO  Opening project: /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/autopilot868/aptrace (HeadlessProject)  
+ERROR Abort due to Headless analyzer error: ghidra.framework.store.LockException: Unable to lock project! /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/autopilot868/aptrace (HeadlessAnalyzer) java.io.IOException: ghidra.framework.store.LockException: Unable to lock project! /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/autopilot868/aptrace
+	at ghidra.app.util.headless.HeadlessAnalyzer.openProject(HeadlessAnalyzer.java:1811)
+	at ghidra.app.util.headless.HeadlessAnalyzer.processLocal(HeadlessAnalyzer.java:423)
+	at ghidra.app.util.headless.AnalyzeHeadless.launch(AnalyzeHeadless.java:199)
+	at ghidra.GhidraLauncher.launch(GhidraLauncher.java:81)
+	at ghidra.Ghidra.main(Ghidra.java:54)
+Caused by: ghidra.framework.store.LockException: Unable to lock project! /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/autopilot868/aptrace
+	at ghidra.framework.data.DefaultProjectData.getProjectLock(DefaultProjectData.java:353)
+	at ghidra.framework.data.DefaultProjectData.initLock(DefaultProjectData.java:323)
+	at ghidra.framework.data.DefaultProjectData.init(DefaultProjectData.java:315)
+	at ghidra.framework.data.DefaultProjectData.<init>(DefaultProjectData.java:120)
+	at ghidra.framework.project.DefaultProject.<init>(DefaultProject.java:119)
+	at ghidra.app.util.headless.HeadlessAnalyzer$HeadlessProject.<init>(HeadlessAnalyzer.java:1852)
+	at ghidra.app.util.headless.HeadlessAnalyzer.openProject(HeadlessAnalyzer.java:1808)
+	... 4 more
+ 
+
+Picked up JAVA_TOOL_OPTIONS: -Duser.home=/tmp/aptrace-ghidra-home
+Picked up JAVA_TOOL_OPTIONS: -Duser.home=/tmp/aptrace-ghidra-home
+Picked up JAVA_TOOL_OPTIONS: -Duser.home=/tmp/aptrace-ghidra-home
+Picked up JAVA_TOOL_OPTIONS: -Duser.home=/tmp/aptrace-ghidra-home
+openjdk version "21.0.12.1" 2026-08-18
+OpenJDK Runtime Environment Homebrew (build 21.0.12.1)
+OpenJDK 64-Bit Server VM Homebrew (build 21.0.12.1, mixed mode)

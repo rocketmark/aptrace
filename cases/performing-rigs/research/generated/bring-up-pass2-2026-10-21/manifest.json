@@ -1,0 +1,100 @@
+{
+  "date": "2026-10-21",
+  "repository_revision": "7c38071177b79a7d32c1dd0b7455325f2c4b8532",
+  "scope": "Operator-only bounded bring-up Pass2, three requested priorities; no original image, APTrace implementation, apfw2 or hardware changes",
+  "environment": {
+    "interpreter": "tools/unicorn/.venv/bin/python3",
+    "python": "3.9.6",
+    "unicorn": "2.1.4",
+    "ghidra": "12.1.3",
+    "JAVA_HOME": "/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home",
+    "JAVA_TOOL_OPTIONS": "-Duser.home=/tmp/aptrace-ghidra-home",
+    "dependency_changes": false
+  },
+  "firmware": {
+    "autopilot868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+      "bytes": 70768,
+      "new_execution": true
+    },
+    "autopilot915": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+      "sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+      "bytes": 70768,
+      "new_execution": false
+    },
+    "mando868": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+      "sha256": "cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc",
+      "bytes": 138304,
+      "new_execution": true
+    },
+    "mando915": {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_mando915.bin",
+      "sha256": "abb71190982793872f5752f620adeaa3b3516d6266fe9433d0e6e680a4e629b9",
+      "bytes": 138304,
+      "new_execution": false
+    }
+  },
+  "native_commands": 24,
+  "exit0_commands": 22,
+  "passed_artifact_checks": 70,
+  "inputs_sha256": {
+    "tools/unicorn/concrete.py": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b",
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/ghidra/aptrace_ghidra.py": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2",
+    "tools/unicorn/.venv/pyvenv.cfg": "0d96cc1b5736a0ecc270a68b24323826e1f368e6f62d6267569bb1b20776fa9a",
+    "cases/performing-rigs/scripts/virtual_link.py": "72ad6a2fd5e05067effc7af66ef3ab3e86715b12364e92399a08424c1da1283f",
+    "cases/performing-rigs/scripts/trigger_transient_propagation.py": "d36aeea0b8f03cd65d84808bc0ead86c2513b04606d429e0f866b29061276499",
+    "cases/performing-rigs/config/svd/ATSAMD51J19A.svd": "58f95eb5c3a7fd2854244bdcc82f99d0e7e33f5d31c341886df6298064c5bb77",
+    "cases/performing-rigs/config/svd/resolve_mmio.py": "5b53410c292b50a2db2f9249b847ec3fd93e0e398a000c2ecd1269f8170589a3",
+    "cases/performing-rigs/research/generated/bring-up-pass1-2026-10-21/targeted-commands.json": "143cafe71e35d88cf101d44814e57a51ac87d142c8225370327d12c927a547c5",
+    "cases/performing-rigs/research/generated/bring-up-pass1-2026-10-21/manifest.json": "d64e53fa5a7fdf047fa82cfa2ec879e98aa6830cc4c92356f558cf62e03064f2",
+    "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/manifest.json": "0ca3afe98cdc974205bed2ce4a50d33016e902fb54321199775d423b0602ed32",
+    "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote-startup-menu.txt": "7e5fc10bba3f788c02db8ea8342ac562f73fb30df4e03aa5bdc50f937b0994b2",
+    "cases/performing-rigs/research/generated/a-radio-semantics-2026-10-20/remote-init-callers.txt": "404cb7737e7e9bf04db67091840461f7ea011d5fa4afae11537202a522911aaa",
+    "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/manifest.json": "7b15dd6ddd83a15ee379a57f899185028913b904dd980118f89c8f0cba269fe9",
+    "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/plus-mode-tail.txt": "8a50c64b82af3f3135f71ef40feda4c3c8a0dc898127afe324580604fd47841e",
+    "cases/performing-rigs/research/generated/motor-state-semantics-2026-10-20/remote-ownership.txt": "6cbc2bcd54f75edaa88348c24a9e7457edaaf86940618a287bb2b05928617d00",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/manifest.json": "b8a53be7bf3d1f16f1113e360bdeecef70cae0f4fae11acdcadb72b9d855ff3e",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/filter-native.txt": "6661c3b80e7776836b482b5a4ef160ad5fb1d7a08a2ffede5c4b2705d04a4452",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/phase-native.txt": "d6d907d79bd3da170d8686a5bb4f9ad51f0cb0ef5ce968b04ee6c7aa51a50a31",
+    "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/reload-entry-native.txt": "558f67d67de6ffd993bec4c86fe7259a0533f0a457f7dda04a0033dd4f313041",
+    "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass1.md": "fa9f044f81bfcafcb92ef139bdf54076ecc96b2794728ae3ca4bfab58461e906",
+    "cases/performing-rigs/docs/investigations/autopilot-bring-up-pass2.md": "c2d61c4575ae555a76a46620ff2b591a0a0082445e26983f0d728e2b2c5bd7e6",
+    "cases/performing-rigs/docs/investigations/write-watch-instrumentation.md": "12151d437a5d78b9bdfec8580160091e26e7eb8e173f0bb7d3fcf0d26c82088e",
+    "cases/performing-rigs/docs/investigations/a-radio-reconfiguration.md": "6c79127b2af0b4bd7794ab980bb8d9fcb3f1b02969963db0bcdfae9002201d81",
+    "cases/performing-rigs/docs/investigations/x-trigger-acceptance.md": "f685100f9e4980090c00782c913d3df389d085293bbe3192dfbeca6baed8fe42",
+    "cases/performing-rigs/docs/investigations/motor-state-ownership-and-reference.md": "2d18d6854a06054bf9312eea1296040fa32b6e00831b2a861a2f76557a115abf",
+    "cases/performing-rigs/docs/investigations/auto-mode-and-plus-command.md": "628dfcab4b3e99cc5b76127171acc81902b6aa4574a41b5dbdd47ad2a1e768ba",
+    "cases/performing-rigs/docs/investigations/remote-to-motor-causal-trace.md": "b891b128cc1b724c447da7bb7fbdd6f35149bb0b308cf2aa878b8a895e366815",
+    "cases/performing-rigs/docs/replacement/tmc5160-interface-reconciliation.md": "b1c96c1e066fa2799f74a6d6e89ebfd59ba97a5be5af47bd29fa70c1a470affb",
+    "/Users/mstalzer/.codex/attachments/6ae90a61-4eed-4a2c-b662-1f1544472bc2/Pasted text.txt": "b74c027f01e05e0c7fae6e405816c9433b30044c499d02a0b08530bd63f9903f",
+    "tools/ghidra/scripts/APTraceExportCensus.java": "3b05b0964a62a00de81659ce0cb485e4f67f1599b564795e321253472ac6aa36",
+    "tools/ghidra/scripts/APTraceDisassembleRange.java": "df8236aa7065ecb2d40d09db59624ba1249f518e42622e23a93136f877951bbc",
+    "tools/ghidra/scripts/APTracePcodeForwardUse.java": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c",
+    "tools/ghidra/scripts/APTraceApplyProvenance.java": "7ea1f9f89f749fa8f8fa1e026c3b18f255c2ecc630403a3f216599867a47ce74",
+    "tools/ghidra/scripts/APTraceSeedVectorTable.java": "a3128c9ee96aacefdc7dce2781785bbd96bd202d9e8d62f83ec3d313905508be",
+    "tools/ghidra/scripts/APTraceExportStaticAnalysis.java": "3e56ce32e4944dc7ddc47994d8f691794035042e9410ea08828efa01bc9af4c5",
+    "tools/ghidra/scripts/APTraceDecompileFunctions.java": "5a55c2ee9653446b3277d423bae3244d25b31bdc0a4f7b3af49b76f0f9411e43",
+    "tools/ghidra/scripts/APTraceExecutableQuery.java": "19a4e8f81c6b42e12f3b04468ec6cee218840ba59ce61bdec82d3b6450056550",
+    "tools/ghidra/fixtures/pcode_forward_use/APTracePcodeForwardUseTestSeed.java": "6edf0247b7e871fd3286519a26c95851ddbb3163b4b27a68b902725d1a254e3e"
+  },
+  "evidence_levels": [
+    "native original-code observation under declared inputs/peripheral stand-ins",
+    "static native/Ghidra relationship",
+    "conditional software interpretation",
+    "no new admitted/VERIFIED or physical claim"
+  ],
+  "stop_boundary": "0x6fd8 BEFORE commit instructions; all AP scenarios have this stop guard",
+  "limitations": [
+    "radio-ID override and RAM-ring injection, no RF/ACK proof",
+    "ADC RESULT supplied, no electrical fidelity",
+    "TC0 READSYNC clear, no timer/IRQ progression",
+    "Remote prior record seed, not full UI/paired session",
+    "software reference0 and truthy validity are not physical position or trajectory integrity",
+    "USB/bootloader/STOP/reset while moving outside scope"
+  ],
+  "retained_exploratory_faults": 2
+}

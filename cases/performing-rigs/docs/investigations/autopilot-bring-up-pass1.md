@@ -4,6 +4,25 @@
 physical bootloader handoff, product READY and motion authorization remain
 partially unresolved.** This is a factual foundation, not an apfw2 design.
 
+## Integrated timeline update from Pass 2
+
+[Pass2](autopilot-bring-up-pass2.md) extends stages5 and9–12 with continuous
+original-code witnesses. The tables below retain Pass1's source trace indices;
+the new packet has its own exact indices and oracles.
+
+| Timeline join | Current evidence |
+|---|---|
+| Retained A after stage7 | Setup without peer input and extended configured execution keep runtime25/requested864300000Hz. Explicit A25 input requests865800000Hz. No cross-channel scan/recovery is demonstrated. |
+| Stage9 baseline → stage12 analog polling | True analog-mode reset preserves alpha0.05;128 baseline filter calls make3 acquisitions in the model. Runtime225→900 inputs yield259,291,… and cross X1/X2 bands; the initialization flag does not freeze samples. |
+| Stage10 program input → stage11 MC4 → stage12 G | Remote-built mode98 program bytes pass real RX, resync/chain/stage and set marker7b. MC4 releases setup. Nonduplicate G writes its own arm and main-loop phase logic requests `(0,30,500,8119)` at0x6fd8. Two full runs are byte-identical. No AP program/position/validity/arm seed is used. |
+| Trigger acceptance versus request | With an accepted program, filtered active input/TR0 causes one reload and leaves arms0. TR1 reports `T900,1,\|` while preventing that acceptance. G can request independently with the trigger HIGH; no-G and duplicate-G controls do not reach request. |
+| Additional peripheral progression | TC0 READSYNC at0x40003805 must complete for the selected scheduler path. Existing read-clear instrumentation supplies that disclosed assumption; no counting/IRQ/motor operation is modeled. |
+
+There is now enough evidence for staged, testable application bring-up
+predicates. Physical reference, confirmed radio/driver state, a full paired
+Remote handshake, USB, STOP/reset while moving and vendor-specific READY remain
+distinct gaps. The new request witness stops before commit code executes.
+
 The application initializes outputs and devices before it has loaded its local
 configuration. It then waits inside setup for Remote session configuration.
 Defaults, retained programs, requested driver settings, a working link and an
@@ -152,8 +171,9 @@ itself freeze samples. Prior zero-alpha fixtures still demonstrate their
 conditional software behavior; they do not establish that normal startup
 produces zero alpha or that a physical misfire was caused by that condition.
 The cause of every older boot-chain fixture's lost initialization is not traced
-in Pass1. A continuous analog-mode reset→two due acquisitions is the focused
-Pass2 check; no new universal reliability conclusion is substituted.
+in Pass1. Pass2 now demonstrates continuous analog-mode reset, acquisition,
+filtering and native program/trigger guards; no physical reliability conclusion
+is substituted.
 
 ## Readiness and motion state transitions
 
@@ -167,6 +187,8 @@ flowchart TD
   Q -->|modeled ID success| C[Load and normalize local config / program]
   C --> B[Baseline and boot driver / pulse requests]
   B --> W[Setup receive / MT / housekeeping loop]
+  W -->|bulk plus98 input| PG[Accept program / resync / stage]
+  PG --> W
   W -->|MC4 accepted| L[Application loop and outbound service]
   W -->|conditional PA22 event| S[Checkpoint if dirty]
   L -->|conditional checkpoint event| S
@@ -190,10 +212,11 @@ that all loops or failures are drawn. In particular:
   marker7b, idle9 and four idle channels reaches reload0x8f98→0x6e4c.
   Reload can prepare valid records but clears the examined arms. An already
   armed valid record can reach commit earlier in0x8e18, before trigger polling.
-- **Motion authorized:** the full natural reset/Remote/arming/STOP chain has
-  not been established. G's composed request witnesses and independent phase-arm
-  fixtures reach0x6fd8; that is not proof of actual motor activation or a unified
-  safe permission policy. Startup pulses also occur outside that boundary.
+- **Motion authorized:** Pass2 closes a selected continuous AutoPilot
+  reset/program/MC4/nonduplicate-G→request chain, using captured Remote frame
+  bytes and disclosed peripheral/input assumptions. The full Remote session,
+  STOP/reset while moving, physical activation and a unified safe permission
+  policy remain unproven. Startup pulses also occur outside that boundary.
 
 No separately grounded vendor READY predicate was found. The strongest
 revalidated operational milestone is configured loop execution plus original

@@ -1,0 +1,303 @@
+[
+  {
+    "name": "analog-continuous",
+    "first_runtime_values": [
+      1035,
+      1163,
+      1285,
+      1401,
+      1511,
+      1615,
+      1714,
+      1809,
+      1898,
+      1983,
+      2064,
+      2141,
+      2214,
+      2283,
+      2349,
+      2412
+    ],
+    "last_runtime_values": [
+      3598,
+      3599,
+      3599
+    ],
+    "first_active": [
+      {
+        "gate_index": 1,
+        "instruction": 11891169,
+        "value": 1035,
+        "lower": 200,
+        "upper": 580
+      }
+    ],
+    "accept_instructions": [],
+    "adc_count": 151,
+    "filter_calls": 276,
+    "TX": []
+  },
+  {
+    "name": "analog-band-transition",
+    "first_runtime_values": [
+      259,
+      291,
+      321,
+      350,
+      378,
+      404,
+      429,
+      452,
+      475,
+      496,
+      516,
+      535,
+      553,
+      571,
+      587,
+      603
+    ],
+    "last_runtime_values": [
+      900,
+      900,
+      900
+    ],
+    "first_active": [
+      {
+        "gate_index": 15,
+        "instruction": 12034831,
+        "value": 587,
+        "lower": 200,
+        "upper": 580
+      }
+    ],
+    "accept_instructions": [],
+    "adc_count": 151,
+    "filter_calls": 276,
+    "TX": [
+      {
+        "instruction": 11891362,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": ""
+      }
+    ]
+  },
+  {
+    "name": "analog-x2",
+    "first_runtime_values": [
+      259,
+      291,
+      321,
+      350,
+      378,
+      404,
+      429,
+      452,
+      475,
+      496,
+      516,
+      535,
+      553,
+      571,
+      587,
+      603
+    ],
+    "last_runtime_values": [
+      900,
+      900,
+      900
+    ],
+    "first_active": [
+      {
+        "gate_index": 30,
+        "instruction": 12205992,
+        "value": 755,
+        "lower": 250,
+        "upper": 750
+      }
+    ],
+    "accept_instructions": [],
+    "adc_count": 271,
+    "filter_calls": 396,
+    "TX": [
+      {
+        "instruction": 11891362,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "MT11111|"
+      },
+      {
+        "instruction": 14103437,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "MT11111|"
+      }
+    ]
+  },
+  {
+    "name": "analog-reporting-tx",
+    "first_runtime_values": [
+      259,
+      291,
+      321,
+      350,
+      378,
+      404,
+      429,
+      452,
+      475,
+      496,
+      516,
+      535,
+      553,
+      571,
+      587,
+      603
+    ],
+    "last_runtime_values": [
+      900,
+      900,
+      900
+    ],
+    "first_active": [
+      {
+        "gate_index": 15,
+        "instruction": 12068170,
+        "value": 587,
+        "lower": 200,
+        "upper": 580
+      }
+    ],
+    "accept_instructions": [],
+    "adc_count": 270,
+    "filter_calls": 395,
+    "TX": [
+      {
+        "instruction": 11891362,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "MT11111|"
+      },
+      {
+        "instruction": 11931247,
+        "pointer": "0x20002548",
+        "buffer_at_20002548": "T291,0,|"
+      },
+      {
+        "instruction": 13930267,
+        "pointer": "0x20002548",
+        "buffer_at_20002548": "T900,1,|"
+      },
+      {
+        "instruction": 14095240,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "T900,1,|"
+      }
+    ]
+  },
+  {
+    "name": "analog-program-acceptance",
+    "first_runtime_values": [
+      259,
+      291,
+      321,
+      350,
+      378,
+      404,
+      429,
+      452,
+      475,
+      496,
+      516,
+      535,
+      553,
+      571,
+      587,
+      603
+    ],
+    "last_runtime_values": [
+      900,
+      900,
+      900
+    ],
+    "first_active": [
+      {
+        "gate_index": 15,
+        "instruction": 12203548,
+        "value": 587,
+        "lower": 200,
+        "upper": 580
+      }
+    ],
+    "accept_instructions": [
+      12203576
+    ],
+    "adc_count": 195,
+    "filter_calls": 0,
+    "TX": [
+      {
+        "instruction": 13128734,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "MT11111|"
+      }
+    ]
+  },
+  {
+    "name": "analog-program-reporting-active",
+    "first_runtime_values": [
+      259,
+      291,
+      321,
+      350,
+      378,
+      404,
+      429,
+      452,
+      475,
+      496,
+      516,
+      535,
+      553,
+      571,
+      587,
+      603
+    ],
+    "last_runtime_values": [
+      900,
+      900,
+      900
+    ],
+    "first_active": [
+      {
+        "gate_index": 15,
+        "instruction": 12228079,
+        "value": 587,
+        "lower": 200,
+        "upper": 580
+      }
+    ],
+    "accept_instructions": [],
+    "adc_count": 303,
+    "filter_calls": 0,
+    "TX": [
+      {
+        "instruction": 12118734,
+        "pointer": "0x20002548",
+        "buffer_at_20002548": "T291,0,|"
+      },
+      {
+        "instruction": 12497689,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "T291,0,|"
+      },
+      {
+        "instruction": 14122227,
+        "pointer": "0x20002548",
+        "buffer_at_20002548": "T900,1,|"
+      },
+      {
+        "instruction": 14284512,
+        "pointer": "0x20001fcc",
+        "buffer_at_20002548": "T900,1,|"
+      }
+    ]
+  }
+]

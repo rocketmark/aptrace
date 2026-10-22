@@ -11,25 +11,26 @@ PARTIAL; E/F BLOCKED; production NO-GO. See the
 
 # Harness Roadmap
 
-## Bring-up Pass 2
+## Bring-up contract follow-up
 
-Use the [Pass1 timeline and packet](docs/investigations/autopilot-bring-up-pass1.md)
-as the factual baseline. Selected exposed startup/checkpoint/reset and
-configured-response witnesses are revalidated; do not repeat the whole project.
-Prioritize these bounded joins before writing apfw2 bring-up specifications:
+Use the [integrated timeline](docs/investigations/autopilot-bring-up-pass1.md) and
+[Pass2 condition matrix/vectors](docs/investigations/autopilot-bring-up-pass2.md)
+to define staged application software predicates. The selected continuous
+analog and program/MC4/G-request joins are established; do not repeat them.
+Remaining decisions/evidence before a complete readiness specification:
 
-1. Follow retained A25 through the first later radio/reconnect exchange. Initial
-   bring-up uses compiled A20 before the reader loads25; injected MC4 does not
-   prove a real pair connects under that mismatch.
-2. Preserve initialized RAM through one analog-mode reset and two due sample
-   acquisitions. Full reset supplies alpha0.05, contradicting the old normally
-   zero/first-sample-freeze premise; retain zero-alpha fixtures as conditional.
-3. Trace one natural program/session/arm→request path with STOP/reset controls
-   and driver-setting observations. Do not infer motion authorization from MC4,
-   a stored validity byte, a zero position counter or a composed helper trace.
-4. Select consequential checkpoint/interruption cut points only. Default-only
-   checkpoint and exact-byte restart now work in the model; NVM atomicity,
-   physical retention, bootloader recovery, USB and product READY remain open.
+1. Resolve or explicitly scope out the full paired Remote S/P/!/program/ACK/MC4
+   handshake and retained-channel recovery policy. No automatic repair of the
+   retained-A25/requested-A20 mismatch is established; RF confirmation is separate.
+2. Resolve only required program units/profile bounds, reference-establishment
+   policy and a selected STOP/reset/trigger-phase arming lifecycle. A demonstrated
+   software0 reference and G request are not physical position or a safety policy.
+3. Validate actual radio/driver configuration, ADC/input behavior and physical
+   timing under a separately authorized plan. Continuous alpha0.05/filtering and
+   diagnostic suppression are software facts, not physical trigger reliability.
+4. Keep NVM interruption, retention, bootloader recovery, USB and product READY
+   as separate gaps. Do not expand software bring-up into a broad interruption
+   or D-provisioning investigation without a selected consequential question.
 
 Package6 defaults/durability is integrated into this bring-up work rather than
 a separate broad configuration survey. No replacement implementation, firmware
@@ -168,13 +169,12 @@ but nothing has been flashed to real hardware. Before any patch is real:
 
 ## Open — hardware-bringup loose ends
 
-7. **Natural startup/session/program-transfer continuity** remains unproven.
-   Current full-reset MC4 and response runs reach the real application loop;
-   compose no fresh-boot plus/arming guarantee from older probe-budget failures
-   or isolated helper successes. Use the bounded Pass2 join above. The former
-   zero-stride NVM stall is localized to absent geometry in the old model,
-   with PA22 housekeeping causing the save; do not retain it as an unexplained
-   radio or firmware readiness blocker.
+7. **Full paired Remote-session continuity** remains unproven. Pass2 establishes
+   the continuous AutoPilot reset/program/MC4/G→request segment with actual
+   builder bytes and no application-state seeds. The remaining join is the
+   Remote's natural UI/session/handshake/ACK and physical delivery, not the
+   former boot/probe-budget issue. Do not substitute that request witness for
+   STOP/reset, physical reference or confirmed driver behavior.
 
 ## Open — Feather M4 feasibility
 

@@ -1,0 +1,152 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+  "entry": "0x0000b681",
+  "instructions_executed": 117,
+  "stop_reason": "unmapped memory access (type=19) at 0x41008008 size=4",
+  "error": "Invalid memory read (UC_ERR_READ_UNMAPPED)",
+  "error_free": false,
+  "completed": false,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "execution_mode": "continuous",
+  "registers": {
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "r2": "0x00000001",
+    "r3": "0x41008000",
+    "r4": "0x00000017",
+    "r5": "0x00024860",
+    "r6": "0x00000001",
+    "r7": "0x2000183c",
+    "r8": "0x00000002",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x2002ff84",
+    "lr": "0x000112f9",
+    "pc": "0x000171be",
+    "cpsr": "0x00100033"
+  },
+  "memory": {
+    "0x2000183c": "473031317c0000000000000000000000",
+    "0x20001820": "63"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x0000b4f8",
+    "0x0000b4fa",
+    "0x0000b440",
+    "0x0000b4fe",
+    "0x0000b500",
+    "0x0000b502",
+    "0x0000b504",
+    "0x0000b506",
+    "0x0000b508",
+    "0x0000b50c",
+    "0x0000b50e",
+    "0x0000b510",
+    "0x0000b5c2",
+    "0x0000b5ca",
+    "0x0000b5cc",
+    "0x000058a8",
+    "0x000058aa",
+    "0x000058ac",
+    "0x000058ae",
+    "0x000058b0",
+    "0x00016840",
+    "0x00016842",
+    "0x00016844",
+    "0x000058b4",
+    "0x000058b6",
+    "0x000058b8",
+    "0x000058ba",
+    "0x000058bc",
+    "0x000058be",
+    "0x000058c0",
+    "0x000058c2",
+    "0x000117f4",
+    "0x000117f6",
+    "0x000117f8",
+    "0x000117fa",
+    "0x000113e8",
+    "0x000113ea",
+    "0x000113ec",
+    "0x000113ee",
+    "0x00011326",
+    "0x00011328",
+    "0x0001132c",
+    "0x000112e8",
+    "0x000112ea",
+    "0x000112ec",
+    "0x000112ee",
+    "0x000112f0",
+    "0x000112f2",
+    "0x000112f4",
+    "0x0001719c",
+    "0x0001719e",
+    "0x000171a0",
+    "0x000171a2",
+    "0x000171a4",
+    "0x000171a6",
+    "0x000171aa",
+    "0x000171ac",
+    "0x000171ae",
+    "0x000171b0",
+    "0x000171b2",
+    "0x000171b4",
+    "0x000171b8",
+    "0x000171bc",
+    "0x000171be"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20001820",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000fc8",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [
+    {
+      "instruction": 38,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 56,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    }
+  ],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x0000b680",
+    "args": [
+      "0x00000001",
+      "0x00000000"
+    ],
+    "returned": false,
+    "return_registers": {
+      "r0": "0x00000000",
+      "r1": "0x00000000",
+      "r2": "0x00000001",
+      "r3": "0x41008000"
+    }
+  }
+}

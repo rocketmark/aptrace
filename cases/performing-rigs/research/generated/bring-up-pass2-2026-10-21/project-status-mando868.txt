@@ -1,0 +1,4 @@
+mando868: fresh
+    firmware_sha256: cf74cf03b375eaed1f48ff2ab0852a2cbbca4ece1ea8eb0989ec938af5e431bc
+    ghidra_version: 12.1.3
+    analysis_version: 1

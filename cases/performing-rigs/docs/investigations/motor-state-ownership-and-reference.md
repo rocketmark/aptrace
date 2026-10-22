@@ -18,6 +18,15 @@ PARTIAL; E/F BLOCKED; production NO-GO.
 
 ## Evidence and confidence
 
+Continuation: [bring-up Pass2](autopilot-bring-up-pass2.md) closes a selected
+continuous original AutoPilot reset→Remote-built program→MC4→nonduplicate-G→
+request chain, with no AP program/reference/validity/target/arm seeds. Original
+G dispatch supplies arm2; the main loop requests `(0,30,500,8119)` at0x6fd8.
+No-G and duplicate-sequence controls do not request; trigger-HIGH G does.
+TC0 READSYNC completion is an explicit MMIO assumption. Full Remote UI/RF/ACK,
+physical reference, trajectory validity and actual driver/motor state remain
+outside that witness. The older composed helper runs retain their own scope.
+
 “Demonstrated” below means the stated original-code execution in a disclosed
 model, or the specifically identified native instruction relationship. It is
 not a new admitted/VERIFIED claim. Interpretations and missing joins are named

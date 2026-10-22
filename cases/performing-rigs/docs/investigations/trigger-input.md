@@ -6,7 +6,10 @@ older dossier's `.bss`/permanently-zero attribution. A matched original helper
 updates225→258.75 (returned259) with those bytes. Historical zero-alpha and
 boot-chain artifacts remain preserved, but permanent first-sample freezing is
 not established for normal full reset. Continuous analog-mode acquisition is
-the bounded next check; no physical misfire cause has been proven.
+the bounded next check in Pass1. [Pass2](autopilot-bring-up-pass2.md) now
+demonstrates continuous original analog initialization/acquisition/filtering and
+program/diagnostic acceptance controls. The first-sample initialization flag
+does not freeze the normal0.05 filter. No physical misfire cause is proven.
 
 Reported bug: connecting a certain chain to the AutoPilot's 3.5mm trigger
 input causes exactly one trigger, then normal operation continues. The

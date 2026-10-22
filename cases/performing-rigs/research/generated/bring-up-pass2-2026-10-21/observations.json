@@ -1,0 +1,355 @@
+{
+  "scope": "Bounded original-code observations, not new admitted/VERIFIED or physical claims",
+  "checks": [
+    {
+      "check": "radio-retained-a25-extended expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "radio-explicit-a25 expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-continuous expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-band-transition expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-reporting expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "remote-plus-build expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-natural-sequence expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "remote-plus-sequence expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-x2 expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-reporting-tx expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "remote-g-after-plus expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-with-readsync-completion expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "remote-g-buffer-boundary expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "remote-g-entry-boundary expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-causal-observed expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-without-g expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-g-duplicate-sequence expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-g-trigger-high expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-program-acceptance expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-program-reporting expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "radio-retained-a25-silence-window expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "analog-program-reporting-active expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "program-causal-repeat expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "radio-retained-a25-waiting-peer expected native status",
+      "passed": true,
+      "scope": "Failed cold Remote driver runs retained; others may end at an observation cap or budget"
+    },
+    {
+      "check": "radio-retained-a25-extended retains requested/runtime split",
+      "passed": true,
+      "scope": "Requested shadow only, not confirmed physical tuning or communication"
+    },
+    {
+      "check": "radio-retained-a25-silence-window retains requested/runtime split",
+      "passed": true,
+      "scope": "Requested shadow only, not confirmed physical tuning or communication"
+    },
+    {
+      "check": "radio-retained-a25-waiting-peer retains requested/runtime split",
+      "passed": true,
+      "scope": "Requested shadow only, not confirmed physical tuning or communication"
+    },
+    {
+      "check": "A packet causes native retune",
+      "passed": true,
+      "scope": "Same stored/runtime A25; added external packet, radio ID still modeled"
+    },
+    {
+      "check": "no peer stays in setup",
+      "passed": true,
+      "scope": "30M instructions/7500 nominal fake-tick milliseconds total, no peer packets"
+    },
+    {
+      "check": "retained split beyond nominal silence interval",
+      "passed": true,
+      "scope": "Instruction-paced time, not measured RF link-loss timing"
+    },
+    {
+      "check": "analog-continuous initialized analog path",
+      "passed": true,
+      "scope": "Full AP reset, no filter/mode/latch state seeds"
+    },
+    {
+      "check": "analog-continuous samples change",
+      "passed": true,
+      "scope": "Original ADC/filter code; ADC1.RESULT is a disclosed input, not physical conversion evidence"
+    },
+    {
+      "check": "analog-band-transition initialized analog path",
+      "passed": true,
+      "scope": "Full AP reset, no filter/mode/latch state seeds"
+    },
+    {
+      "check": "analog-band-transition samples change",
+      "passed": true,
+      "scope": "Original ADC/filter code; ADC1.RESULT is a disclosed input, not physical conversion evidence"
+    },
+    {
+      "check": "X1 filter threshold crossing",
+      "passed": true,
+      "scope": "Ordinal poll in this injected225\u2192900 step; not a fixed real delay"
+    },
+    {
+      "check": "analog-x2 initialized analog path",
+      "passed": true,
+      "scope": "Full AP reset, no filter/mode/latch state seeds"
+    },
+    {
+      "check": "analog-x2 samples change",
+      "passed": true,
+      "scope": "Original ADC/filter code; ADC1.RESULT is a disclosed input, not physical conversion evidence"
+    },
+    {
+      "check": "native X2 changes threshold crossing",
+      "passed": true,
+      "scope": "One initial X1 poll precedes arrival of X2 command"
+    },
+    {
+      "check": "analog-reporting-tx initialized analog path",
+      "passed": true,
+      "scope": "Full AP reset, no filter/mode/latch state seeds"
+    },
+    {
+      "check": "analog-reporting-tx samples change",
+      "passed": true,
+      "scope": "Original ADC/filter code; ADC1.RESULT is a disclosed input, not physical conversion evidence"
+    },
+    {
+      "check": "analog-program-acceptance initialized analog path",
+      "passed": true,
+      "scope": "Full AP reset, no filter/mode/latch state seeds"
+    },
+    {
+      "check": "analog-program-acceptance samples change",
+      "passed": true,
+      "scope": "Original ADC/filter code; ADC1.RESULT is a disclosed input, not physical conversion evidence"
+    },
+    {
+      "check": "analog program accepts once",
+      "passed": true,
+      "scope": "Natural reload, then prepared/unarmed; no G provided"
+    },
+    {
+      "check": "analog-program-reporting-active initialized analog path",
+      "passed": true,
+      "scope": "Full AP reset, no filter/mode/latch state seeds"
+    },
+    {
+      "check": "analog-program-reporting-active samples change",
+      "passed": true,
+      "scope": "Original ADC/filter code; ADC1.RESULT is a disclosed input, not physical conversion evidence"
+    },
+    {
+      "check": "report active valid program without accept",
+      "passed": true,
+      "scope": "TR1 is an acceptance guard as well as reporting control"
+    },
+    {
+      "check": "Remote builder bytes",
+      "passed": true,
+      "scope": "Representative pre-existing Remote record seed; no full Remote UI/RF/ACK sequence"
+    },
+    {
+      "check": "exact Remote sequence carry",
+      "passed": true,
+      "scope": "G entry fixture carries this byte, native builder holds temporary0x63 at ACK boundary"
+    },
+    {
+      "check": "program-causal-observed request boundary",
+      "passed": true,
+      "scope": "Stop BEFORE original commit routine executes"
+    },
+    {
+      "check": "program-causal-observed native arm producer",
+      "passed": true,
+      "scope": "Original G dispatcher writes arm2, no application arm seed"
+    },
+    {
+      "check": "program-causal-observed original program/reference state",
+      "passed": true,
+      "scope": "Software reference0, not homing; record validity does not certify trajectory integrity"
+    },
+    {
+      "check": "program-causal-observed no AP application state seeds",
+      "passed": true,
+      "scope": "External pin values only; fake tick and original baseline peripheral assumptions remain disclosed"
+    },
+    {
+      "check": "program-causal-observed exact producer frame inputs",
+      "passed": true,
+      "scope": "Byte correspondence across modeled RF boundary, not actual over-air delivery"
+    },
+    {
+      "check": "program-causal-repeat request boundary",
+      "passed": true,
+      "scope": "Stop BEFORE original commit routine executes"
+    },
+    {
+      "check": "program-causal-repeat native arm producer",
+      "passed": true,
+      "scope": "Original G dispatcher writes arm2, no application arm seed"
+    },
+    {
+      "check": "program-causal-repeat original program/reference state",
+      "passed": true,
+      "scope": "Software reference0, not homing; record validity does not certify trajectory integrity"
+    },
+    {
+      "check": "program-causal-repeat no AP application state seeds",
+      "passed": true,
+      "scope": "External pin values only; fake tick and original baseline peripheral assumptions remain disclosed"
+    },
+    {
+      "check": "program-causal-repeat exact producer frame inputs",
+      "passed": true,
+      "scope": "Byte correspondence across modeled RF boundary, not actual over-air delivery"
+    },
+    {
+      "check": "program-g-trigger-high request boundary",
+      "passed": true,
+      "scope": "Stop BEFORE original commit routine executes"
+    },
+    {
+      "check": "program-g-trigger-high native arm producer",
+      "passed": true,
+      "scope": "Original G dispatcher writes arm2, no application arm seed"
+    },
+    {
+      "check": "program-g-trigger-high original program/reference state",
+      "passed": true,
+      "scope": "Software reference0, not homing; record validity does not certify trajectory integrity"
+    },
+    {
+      "check": "program-g-trigger-high no AP application state seeds",
+      "passed": true,
+      "scope": "External pin values only; fake tick and original baseline peripheral assumptions remain disclosed"
+    },
+    {
+      "check": "program-g-trigger-high exact producer frame inputs",
+      "passed": true,
+      "scope": "Byte correspondence across modeled RF boundary, not actual over-air delivery"
+    },
+    {
+      "check": "program-without-g reload without move",
+      "passed": true,
+      "scope": "14M-instruction bound; no global absence or physical safety proof"
+    },
+    {
+      "check": "program-g-duplicate-sequence reload without move",
+      "passed": true,
+      "scope": "14M-instruction bound; no global absence or physical safety proof"
+    },
+    {
+      "check": "G independent of active trigger",
+      "passed": true,
+      "scope": "PB05 HIGH seed prevents trigger accept while G reaches request"
+    },
+    {
+      "check": "positive repeat byte-identical",
+      "passed": true,
+      "scope": "Independent direct invocations, only output file differs"
+    },
+    {
+      "check": "unmodeled READSYNC stalls",
+      "passed": true,
+      "scope": "Old flat-memory completion limitation, not rejected firmware program"
+    },
+    {
+      "check": "READSYNC completion exercised",
+      "passed": true,
+      "scope": "TC0 command completion only; no timer counting, interrupt or step execution supplied"
+    },
+    {
+      "check": "driver request progression",
+      "passed": true,
+      "scope": "Native setters, not confirmed electrical current or microstep state"
+    }
+  ]
+}

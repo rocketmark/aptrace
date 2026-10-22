@@ -1,0 +1,113 @@
+[
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0x610c",
+    "exit_status": 0,
+    "output": "initialization-callers.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0x9b20",
+    "exit_status": 0,
+    "output": "frequency-callers.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0xd1b4",
+    "exit_status": 0,
+    "output": "analog-read.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0xd230 0xd2c0",
+    "exit_status": 1,
+    "output": "analog-read-native-initial-failure.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x71d0",
+    "exit_status": 0,
+    "output": "remote-config-loader.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x10ce4",
+    "exit_status": 1,
+    "output": "remote-rx-initial-failure.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0xd230 0xd300",
+    "exit_status": 0,
+    "output": "analog-read-native.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0x10ce4 0x7664",
+    "exit_status": 0,
+    "output": "remote-reconnect-and-defaults.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x8258",
+    "exit_status": 0,
+    "output": "dispatcher.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8190 0x8258",
+    "exit_status": 0,
+    "output": "plus-tail-native.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile mando868 0xb680 0x49c4",
+    "exit_status": 0,
+    "output": "remote-builders.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py dump mando868 0xb6c0 0x30",
+    "exit_status": 2,
+    "output": null,
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal mando868 0xb6e0 --count 4",
+    "exit_status": 0,
+    "output": "remote-sequence-literals.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x7e2c",
+    "exit_status": 0,
+    "output": "g-state-machine.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x6240 0x62b0",
+    "exit_status": 0,
+    "output": "timer-readsync-native.txt",
+    "scope": "native APTrace query; errors are invocation/project-lock diagnostics"
+  },
+  {
+    "command": "python3 cases/performing-rigs/config/svd/resolve_mmio.py --help",
+    "exit_status": 1,
+    "output": null,
+    "reason": "address-only tool; unsupported option ValueError"
+  },
+  {
+    "command": "python3 cases/performing-rigs/config/svd/resolve_mmio.py 0x40003805",
+    "exit_status": 0,
+    "output": "readsync-svd.txt"
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py status autopilot868",
+    "exit_status": 0,
+    "output": "project-status-autopilot868.txt"
+  },
+  {
+    "command": "python3 tools/ghidra/aptrace_ghidra.py status mando868",
+    "exit_status": 0,
+    "output": "project-status-mando868.txt"
+  }
+]

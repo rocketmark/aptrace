@@ -1,0 +1,2 @@
+0x00008914  ascii_dispatcher__CUSTOM  -> 0x0000610c  radio_bringup__THIRD_PARTY
+0x0000948c  sketch_setup__CUSTOM  -> 0x0000610c  radio_bringup__THIRD_PARTY
