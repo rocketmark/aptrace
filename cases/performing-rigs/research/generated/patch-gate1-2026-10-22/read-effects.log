@@ -1,0 +1,74 @@
+[effects-spike] discovery: start
+[effects-spike] discovery: done in 0.051444s
+[effects-spike] mkFunCFG: start
+[effects-spike] mkFunCFG: done in 0.0012s
+[effects-spike] crucible setup: global memory: start
+[effects-spike] crucible setup: global memory: done in 0.080431s
+[effects-spike] base path-condition conjuncts excluded from guards: 70796
+[effects-spike] crucible simulation: start
+[effects-spike] crucible simulation: done in 0.261777s
+[effects-spike] observed: reads=5 writes=0 calls=0 crucible_steps=22 backend_assumptions=1
+[effects-spike] raw-effect serialization: start
+[effects-spike] raw-effect serialization: done in 0.002538s
+[effects-spike] raw effects written to cases/performing-rigs/research/generated/patch-gate1-2026-10-22/read-effects.raw.json
+[effects-spike] solver initialization: start
+[effects-spike] solver initialization: done in 0.007717s
+[effects-spike] z3 smoke test: start
+[effects-spike] solver query #1 [smoke | x==1] -> SAT in 1.503e-2s
+[effects-spike] solver query #2 [smoke | x==1 && x==2] -> UNSAT in 9.1e-5s
+[effects-spike] z3 smoke test: done in 0.01583s
+[effects-spike] z3 smoke test: PASS
+[effects-spike] assert common assumptions once: start
+[effects-spike] assert common assumptions once: done in 3.153907s
+[effects-spike] solver enrichment: start
+[effects-spike] solver query #3 [region: proven member? | access 2 read @0xd3e4 address in FLASH 0x4000+0x1148c] -> SAT in 7.216775s
+[effects-spike] solver query #4 [region: possible member? | access 2 read @0xd3e4 address in FLASH 0x4000+0x1148c] -> SAT in 9.2082e-2s
+[effects-spike] solver query #5 [region: proven member? | access 2 read @0xd3e4 address in RAM 0x20000000+0x30000] -> SAT in 9.1885e-2s
+[effects-spike] solver query #6 [region: possible member? | access 2 read @0xd3e4 address in RAM 0x20000000+0x30000] -> SAT in 9.2469e-2s
+[effects-spike] solver query #7 [region: proven member? | access 2 read @0xd3e4 address in MMIO 0x40000000+0x4000000] -> SAT in 9.114e-2s
+[effects-spike] solver query #8 [region: possible member? | access 2 read @0xd3e4 address in MMIO 0x40000000+0x4000000] -> SAT in 9.1658e-2s
+[effects-spike] solver query #9 [uniqueness: model | access 2 read @0xd3e4 address | assuming arg_r0 == 0x39] -> SAT in 25.639514s
+[effects-spike] solver query #10 [uniqueness: other value? | access 2 read @0xd3e4 address | assuming arg_r0 == 0x39] -> UNSAT in 8.7077e-2s
+[effects-spike] solver query #11 [region: proven member? | access 3 read @0xd3ec address in FLASH 0x4000+0x1148c] -> SAT in 9.8022e-2s
+[effects-spike] solver query #12 [region: possible member? | access 3 read @0xd3ec address in FLASH 0x4000+0x1148c] -> SAT in 9.0685e-2s
+[effects-spike] solver query #13 [region: proven member? | access 3 read @0xd3ec address in RAM 0x20000000+0x30000] -> SAT in 9.0222e-2s
+[effects-spike] solver query #14 [region: possible member? | access 3 read @0xd3ec address in RAM 0x20000000+0x30000] -> SAT in 9.1294e-2s
+[effects-spike] solver query #15 [region: proven member? | access 3 read @0xd3ec address in MMIO 0x40000000+0x4000000] -> SAT in 9.1488e-2s
+[effects-spike] solver query #16 [region: possible member? | access 3 read @0xd3ec address in MMIO 0x40000000+0x4000000] -> SAT in 9.1051e-2s
+[effects-spike] solver query #17 [guard: satisfiable? | access 3 read @0xd3ec guard] -> SAT in 9.8754e-2s
+[effects-spike] solver query #18 [guard: refutable? | access 3 read @0xd3ec guard] -> SAT in 9.4011e-2s
+[effects-spike] solver query #19 [uniqueness: model | access 3 read @0xd3ec address | assuming arg_r0 == 0x39] -> SAT in 25.130805s
+[effects-spike] solver query #20 [uniqueness: other value? | access 3 read @0xd3ec address | assuming arg_r0 == 0x39] -> UNSAT in 8.6794e-2s
+[effects-spike] solver query #21 [guard: satisfiable? | access 3 read @0xd3ec guard | assuming arg_r0 == 0x39] -> SAT in 9.7034e-2s
+[effects-spike] solver query #22 [guard: refutable? | access 3 read @0xd3ec guard | assuming arg_r0 == 0x39] -> UNSAT in 8.5082e-2s
+[effects-spike] solver query #23 [region: proven member? | access 4 read @0xd3f8 address in FLASH 0x4000+0x1148c] -> SAT in 9.0246e-2s
+[effects-spike] solver query #24 [region: possible member? | access 4 read @0xd3f8 address in FLASH 0x4000+0x1148c] -> UNSAT in 8.6528e-2s
+[effects-spike] solver query #25 [region: proven member? | access 4 read @0xd3f8 address in RAM 0x20000000+0x30000] -> SAT in 9.0151e-2s
+[effects-spike] solver query #26 [region: possible member? | access 4 read @0xd3f8 address in RAM 0x20000000+0x30000] -> UNSAT in 8.6378e-2s
+[effects-spike] solver query #27 [region: proven member? | access 4 read @0xd3f8 address in MMIO 0x40000000+0x4000000] -> UNSAT in 8.4994e-2s
+[effects-spike] solver query #28 [guard: satisfiable? | access 4 read @0xd3f8 guard] -> SAT in 8.8627e-2s
+[effects-spike] solver query #29 [guard: refutable? | access 4 read @0xd3f8 guard] -> SAT in 9.2606e-2s
+[effects-spike] solver query #30 [uniqueness: model | access 4 read @0xd3f8 address | assuming arg_r0 == 0x39] -> SAT in 24.64947s
+[effects-spike] solver query #31 [uniqueness: other value? | access 4 read @0xd3f8 address | assuming arg_r0 == 0x39] -> UNSAT in 8.5507e-2s
+[effects-spike] solver query #32 [guard: satisfiable? | access 4 read @0xd3f8 guard | assuming arg_r0 == 0x39] -> SAT in 9.6942e-2s
+[effects-spike] solver query #33 [guard: refutable? | access 4 read @0xd3f8 guard | assuming arg_r0 == 0x39] -> UNSAT in 8.5996e-2s
+[effects-spike] solver query #34 [region: proven member? | access 5 read @0xd3fa address in FLASH 0x4000+0x1148c] -> SAT in 9.204e-2s
+[effects-spike] solver query #35 [region: possible member? | access 5 read @0xd3fa address in FLASH 0x4000+0x1148c] -> SAT in 9.1124e-2s
+[effects-spike] solver query #36 [region: proven member? | access 5 read @0xd3fa address in RAM 0x20000000+0x30000] -> SAT in 9.1228e-2s
+[effects-spike] solver query #37 [region: possible member? | access 5 read @0xd3fa address in RAM 0x20000000+0x30000] -> SAT in 9.1742e-2s
+[effects-spike] solver query #38 [region: proven member? | access 5 read @0xd3fa address in MMIO 0x40000000+0x4000000] -> SAT in 9.1647e-2s
+[effects-spike] solver query #39 [region: possible member? | access 5 read @0xd3fa address in MMIO 0x40000000+0x4000000] -> SAT in 9.0668e-2s
+[effects-spike] solver query #40 [guard: satisfiable? | access 5 read @0xd3fa guard] -> SAT in 9.3652e-2s
+[effects-spike] solver query #41 [guard: refutable? | access 5 read @0xd3fa guard] -> SAT in 9.0776e-2s
+[effects-spike] solver query #42 [uniqueness: model | access 5 read @0xd3fa address | assuming arg_r0 == 0x39] -> SAT in 25.621809s
+[effects-spike] solver query #43 [uniqueness: other value? | access 5 read @0xd3fa address | assuming arg_r0 == 0x39] -> UNSAT in 8.8022e-2s
+[effects-spike] solver query #44 [guard: satisfiable? | access 5 read @0xd3fa guard | assuming arg_r0 == 0x39] -> SAT in 9.7764e-2s
+[effects-spike] solver query #45 [guard: refutable? | access 5 read @0xd3fa guard | assuming arg_r0 == 0x39] -> UNSAT in 8.6844e-2s
+[effects-spike] solver query #46 [range: return above 1? | return r0] -> UNSAT in 8.7241e-2s
+[effects-spike] solver query #47 [uniqueness: model | return r0 | assuming arg_r0 == 0x39] -> SAT in 25.256748s
+[effects-spike] solver query #48 [uniqueness: other value? | return r0 | assuming arg_r0 == 0x39] -> SAT in 25.304172s
+[effects-spike] solver enrichment: done in 162.375259s
+[effects-spike] z3 session shutdown: ExitSuccess
+[effects-spike] final enrichment serialization: start
+[effects-spike] final enrichment serialization: done in 0.00048s
+[effects-spike] solver queries: 48; enriched effects written to cases/performing-rigs/research/generated/patch-gate1-2026-10-22/read-effects.enriched.json

@@ -42,6 +42,14 @@ checks pass, and no physical-output or tested-release equivalence is asserted.
 
 ## Experimental binary freshness subset
 
+Independent [Gate 1 verification](docs/investigations/trigger-patch-gate1.md) is
+**INCONCLUSIVE**. Ghidra and Macaw corroborate byte confinement, Thumb decoding
+and local routing; no instruction defect was demonstrated. Integrated framed
+state/write preservation, exhaustive incoming control flow and hardware-read
+timing remain unverified. Fragment effects aborted all paths and cannot certify
+absence of writes. Gate 2 was not executed; the earlier behavioral results below
+remain authoring-stage evidence, not a Gate 1 PASS.
+
 The [research patch](docs/investigations/experimental-trigger-freshness-patch.md)
 is a real derived915 image, NOT FOR HARDWARE DEPLOYMENT: six original-region
 bytes replaced and28 executable bytes appended, with no permanent RAM use.

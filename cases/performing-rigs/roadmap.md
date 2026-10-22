@@ -23,6 +23,13 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
+The independent [Gate 1 assessment](docs/investigations/trigger-patch-gate1.md)
+is INCONCLUSIVE, with no demonstrated local decode/branch defect. Before claiming
+structural certification, obtain non-vacuous caller-frame-aware state/write
+verification and address CFG coverage and PORT-read modeling limits. Gate 2 has
+not been run; further behavioral testing needs an explicit bounded scope carrying
+these obligations.
+
 The [experimental binary subset](docs/investigations/experimental-trigger-freshness-patch.md)
 now proves one firmware-only stale-read mitigation without changing motor code.
 Do not treat it as a deployable fix or the complete proposed policy. Further

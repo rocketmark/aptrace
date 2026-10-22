@@ -1,0 +1,33 @@
+32.8.9. Data Input Value
+Name: IN
+Offset: 0x20
+Reset: 0x00000000
+Property: -
+Tip: The I/O pins are assembled in pin groups (”PORT groups”) with up to 32 pins.
+Group 0 consists of the PA pins, group 1 is for the PB pins, etc. Each pin group
+has its own PORT registers, with a 0x80 address spacing. For example, the register
+address offset for the Data Direction (DIR) register for group 0 (PA00 to PA31) is
+0x00, and the register address offset for the DIR register for group 1 (PB00 to
+PB31) is 0x80.
+Bit 31 30 29 28 27 26 25 24
+IN[31:24]
+Access R R R R R R R R
+Reset 0 0 0 0 0 0 0 0
+Bit 23 22 21 20 19 18 17 16
+IN[23:16]
+Access R R R R R R R R
+Reset 0 0 0 0 0 0 0 0
+Bit 15 14 13 12 11 10 9 8
+IN[15:8]
+Access R R R R R R R R
+Reset 0 0 0 0 0 0 0 0
+Bit 7 6 5 4 3 2 1 0
+IN[7:0]
+Access R R R R R R R R
+Reset 0 0 0 0 0 0 0 0
+Bits 31:0 – IN[31:0] PORT Data Input Value
+These bits are cleared when the corresponding I/O pin input sampler detects a logical low level on
+the input pin.
+These bits are set when the corresponding I/O pin input sampler detects a logical high level on the
+input pin.
+Complete Data Sheet

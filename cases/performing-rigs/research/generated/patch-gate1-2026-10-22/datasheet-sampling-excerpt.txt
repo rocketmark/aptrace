@@ -1,0 +1,24 @@
+Each I/O pin Pxy can be controlled by the registers in PORT. Each PORT group x has its own set of
+PORT registers, with a base address at byte address (PORT + 0x80 * group index) (A corresponds to
+group index 0, B to 1, etc...). Within that set of registers, the pin index is y, from 0 to 31.
+Refer to I/O Multiplexing and Considerations for details on available pin configuration and PORT
+groups.
+Configuring Pins as Output
+To use pin Pxy as an output, write bit y of the DIR register to '1'. This can also be done by writing bit
+y in the DIRSET register to '1' - this will avoid disturbing the configuration of other pins in that group.
+The y bit in the OUT register must be written to the desired output value.
+Similarly, writing an OUTSET bit to '1' will set the corresponding bit in the OUT register to '1'. Writing
+a bit in OUTCLR to '1' will set that bit in OUT to zero. Writing a bit in OUTTGL to '1' will toggle that bit
+in OUT.
+Configuring Pins as Input
+To use pin Pxy as an input, bit y in the DIR register must be written to '0'. This can also be done by
+writing bit y in the DIRCLR register to '1' - this will avoid disturbing the configuration of other pins in
+that group. The input value can be read from bit y in register IN as soon as the INEN bit in the Pin
+Configuration register (PINCFGy.INEN) is written to '1' to enable the pin's input buffer.
+By default, the input synchronizer is clocked only when an input read is requested. This will delay
+the read operation by two cycles of the PORT clock. To remove the delay, the input synchronizers
+for each PORT group of eight pins can be configured to be always active, but this will increase power
+consumption. This is enabled by writing '1' to the corresponding SAMPLINGn bit field of the CTRL
+register, see CTRL.SAMPLING for details.
+Using Alternative Peripheral Functions
+To use pin Pxy as one of the available peripheral functions, the corresponding PMUXEN bit of the

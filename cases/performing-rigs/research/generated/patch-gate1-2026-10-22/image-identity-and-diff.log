@@ -1,0 +1,12 @@
+0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920  cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
+ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616  cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+   70768 cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin
+   70796 cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin
+  141564 total
+ 21037   0  14
+ 21038  50 360
+ 21039  77  40
+ 21040 364 271
+ 21041 263   0
+ 21042 256 277
+cmp: EOF on cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin

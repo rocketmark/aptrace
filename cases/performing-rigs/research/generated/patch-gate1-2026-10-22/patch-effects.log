@@ -1,0 +1,40 @@
+[effects-spike] discovery: start
+[effects-spike] discovery: done in 1.217913s
+[effects-spike] mkFunCFG: start
+[effects-spike] mkFunCFG: done in 0.00746s
+[effects-spike] crucible setup: global memory: start
+[effects-spike] crucible setup: global memory: done in 0.093013s
+[effects-spike] base path-condition conjuncts excluded from guards: 70796
+[effects-spike] crucible simulation: start
+[effects-spike] crucible simulation: done in 0.514102s
+[effects-spike] observed: reads=10 writes=7 calls=1 crucible_steps=51 backend_assumptions=2
+[effects-spike] raw-effect serialization: start
+[effects-spike] raw-effect serialization: done in 0.001277s
+[effects-spike] raw effects written to cases/performing-rigs/research/generated/patch-gate1-2026-10-22/patch-effects.raw.json
+[effects-spike] solver initialization: start
+[effects-spike] solver initialization: done in 0.002935s
+[effects-spike] z3 smoke test: start
+[effects-spike] solver query #1 [smoke | x==1] -> SAT in 2.818e-3s
+[effects-spike] solver query #2 [smoke | x==1 && x==2] -> UNSAT in 1.34e-4s
+[effects-spike] z3 smoke test: done in 0.00342s
+[effects-spike] z3 smoke test: PASS
+[effects-spike] assert common assumptions once: start
+[effects-spike] assert common assumptions once: done in 3.214685s
+[effects-spike] solver enrichment: start
+[effects-spike] solver query #3 [guard: satisfiable? | access 1 write @0x15474 guard] -> UNSAT in 6.598344s
+[effects-spike] solver query #4 [guard: refutable? | access 1 write @0x15474 guard] -> SAT in 9.323e-3s
+[effects-spike] solver query #5 [guard: satisfiable? | access 7 read @0x1547e guard] -> UNSAT in 9.1859e-2s
+[effects-spike] solver query #6 [guard: refutable? | access 7 read @0x1547e guard] -> SAT in 9.6418e-2s
+[effects-spike] solver query #7 [guard: satisfiable? | access 13 read @0x8f98 guard] -> UNSAT in 9.2748e-2s
+[effects-spike] solver query #8 [guard: refutable? | access 13 read @0x8f98 guard] -> SAT in 9.561e-2s
+[effects-spike] solver query #9 [guard: satisfiable? | access 14 write @0x8f9c guard] -> UNSAT in 9.2579e-2s
+[effects-spike] solver query #10 [guard: refutable? | access 14 write @0x8f9c guard] -> SAT in 9.5619e-2s
+[effects-spike] solver query #11 [guard: satisfiable? | access 15 read @0x8fa0 guard] -> UNSAT in 9.0707e-2s
+[effects-spike] solver query #12 [guard: refutable? | access 15 read @0x8fa0 guard] -> SAT in 9.6231e-2s
+[effects-spike] solver query #13 [guard: satisfiable? | access 16 read @0x9234 guard] -> UNSAT in 9.2256e-2s
+[effects-spike] solver query #14 [guard: refutable? | access 16 read @0x9234 guard] -> SAT in 9.4948e-2s
+[effects-spike] solver enrichment: done in 7.551553s
+[effects-spike] z3 session shutdown: ExitSuccess
+[effects-spike] final enrichment serialization: start
+[effects-spike] final enrichment serialization: done in 0.000519s
+[effects-spike] solver queries: 14; enriched effects written to cases/performing-rigs/research/generated/patch-gate1-2026-10-22/patch-effects.enriched.json

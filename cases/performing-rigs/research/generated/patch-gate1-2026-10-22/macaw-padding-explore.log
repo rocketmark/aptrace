@@ -1,0 +1,100 @@
+Discovered 1 function(s) from 0x9230:
+
+function target @ 0x9231
+0x9231:
+  ;  _R13 = stack_frame + 0
+  # 0x9231 0x9230: NOP_T1(00000000.10111111) 
+  # 0x9230: NOP_T1(00000000.10111111) 
+  # 0x9230: {PSTATE_IT => 0x0 :: [8]
+            ;_PC => 0x9233
+            ;__AssertionFailure => false
+            ;__UndefinedBehavior => false
+            ;__UnpredictableBehavior => false}
+  # 0x9233 0x9232: ADD_SP_i_T2(0xxxxxxx.10110000) imm7 3
+  # 0x9232: ADD_SP_i_T2(0xxxxxxx.10110000) imm7 3
+  r96 := (bv_add _R13_0 (0xc :: [32]))
+  # 0x9232: {PSTATE_IT => 0x0 :: [8]
+            ;_PC => 0x9234
+            ;_R13 => r96
+            ;__AssertionFailure => false
+            ;__UndefinedBehavior => false
+            ;__UnpredictableBehavior => false
+            ;() => ()_0}
+  # 0x9235 0x9234: LDM_T2(10x1xxxx.11101000.xxxxxxxx.xxxxxxxx) M 0, P 1, Rn 13, W 1, register_list 4080
+  # 0x9234: LDM_T2(10x1xxxx.11101000.xxxxxxxx.xxxxxxxx) M 0, P 1, Rn 13, W 1, register_list 4080
+  r131 := (bv_add _R13_0 (0x10 :: [32]))
+  r132 := (bv_add _R13_0 (0x14 :: [32]))
+  r133 := (bv_add _R13_0 (0x18 :: [32]))
+  r134 := (bv_add _R13_0 (0x1c :: [32]))
+  r135 := (bv_add _R13_0 (0x20 :: [32]))
+  r136 := (bv_add _R13_0 (0x24 :: [32]))
+  r137 := (bv_add _R13_0 (0x28 :: [32]))
+  r138 := (bv_add _R13_0 (0x2c :: [32]))
+  r140 := read_mem r138 (bvle4)
+  r141 := (bv_shl r140 (0x1f :: [32]))
+  r143 := (bv_shr r141 (0x1f :: [32]))
+  r144 := (trunc r143 1)
+  r145 := (eq r144 (0x1 :: [1]))
+  r146 := (mux r145 (0x1 :: [1]) (0x0 :: [1]))
+  r147 := read_mem r138 (bvle4)
+  r160 := (bv_add _R13_0 (0x30 :: [32]))
+  r162 := read_mem r96 (bvle4)
+  r163 := read_mem r131 (bvle4)
+  r164 := read_mem r132 (bvle4)
+  r165 := read_mem r133 (bvle4)
+  r166 := read_mem r134 (bvle4)
+  r167 := read_mem r135 (bvle4)
+  r168 := read_mem r136 (bvle4)
+  r169 := read_mem r137 (bvle4)
+  # 0x9234: {PSTATE_T => r146
+            ;_PC => r147
+            ;_R10 => r168
+            ;_R11 => r169
+            ;_R13 => r160
+            ;_R4 => r162
+            ;_R5 => r163
+            ;_R6 => r164
+            ;_R7 => r165
+            ;_R8 => r166
+            ;_R9 => r167
+            ;__AssertionFailure => false
+            ;__BranchTaken => true
+            ;__UndefinedBehavior => false
+            ;__UnpredictableBehavior => false
+            ;() => ()_0}
+  classify failure
+    { PSTATE_IT = 0x0 :: [8]
+    , PSTATE_T = r146
+    , PSTATE_nRW = 0x1 :: [1]
+    , _PC = r147
+    , _R10 = r168
+    , _R11 = r169
+    , _R13 = r160
+    , _R4 = r162
+    , _R5 = r163
+    , _R6 = r164
+    , _R7 = r165
+    , _R8 = r166
+    , _R9 = r167
+    , __AssertionFailure = false
+    , __BranchTaken = true
+    , __PendingInterrupt = false
+    , __PendingPhysicalSError = false
+    , __Sleeping = false
+    , __UndefinedBehavior = false
+    , __UnpredictableBehavior = false
+    }
+    IP is not a mux
+    IP is not a mux
+    Branch: IP is not an mux:
+    let r138 := (bv_add _R13_0 (0x2c :: [32]))
+        r147 := read_mem r138 (bvle4)
+     in r147
+    No return call: Noreturn target r147 is not a valid address.
+    Call: Call classifier failed.
+    Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18
+    Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:280:3-21
+    Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18
+    PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:121:5-18
+    Jump: Jump value r147 is not a valid address.
+    Tail call: Expected stack height of 0
