@@ -1,0 +1,89 @@
+I'd like to conduct a targeted APTrace investigation into Noxon's explanation for unintended AutoPilot triggering when connecting an externally powered trigger source.
+
+Noxon reports reproducing a misfire when using a bench power supply. Their hypothesis is that output capacitance temporarily presents a low-impedance condition resembling a closed relay contact. They believe reliably distinguishing dry-contact and 12/24 V trigger sources requires a hardware mode selector, and that firmware changes alone cannot fully resolve the problem.
+
+I want to test that explanation against what we've recovered from the original firmware, rather than accepting or rejecting it prematurely.
+
+**The main question is: What electrical input conditions during connection can cause the AutoPilot to initiate unintended motion, and which of those conditions could be prevented through better firmware?**
+
+Start with the existing trigger-input, X/acceptance, trigger failure-mode, motor timer-start, hardware pin, and bring-up investigations. Reuse the natural trigger-to-profile-timer path established in the latest simulation campaign.
+
+### Investigate the connection scenarios
+
+Consider a powered 12/24 V trigger source being connected to an AutoPilot in several states:
+
+- AutoPilot already initialized, with a valid program and trigger eligibility.
+- AutoPilot still initializing or waiting for Remote configuration.
+- External trigger source powered but nominally inactive.
+- External source already asserting its trigger output.
+- Trigger input undergoing a transient during connector insertion.
+- Input briefly appearing to be a closed relay contact before settling to its powered state.
+
+Also investigate the equivalent dry-contact cases so we can compare how the firmware distinguishes intentional relay closure from powered-source connection behavior.
+
+Use realistic, parameterized input models where possible, including connection transients, finite rise/fall times, short low-impedance intervals, repeated contact transitions, and changes in source voltage.
+
+Do not assume a particular capacitor value, connection waveform, bias voltage, or MCU input level unless supported by recovered circuit evidence. Treat proposed waveforms as hypotheses and clearly state their electrical assumptions.
+
+Where the analog front-end is insufficiently characterized, distinguish behavior at the external jack from the modeled ADC/GPIO values presented to the firmware.
+
+### Investigate firmware interpretation
+
+For each relevant scenario, follow the behavior from sampled input through classification, filtering, trigger acceptance, program eligibility, and the actual profile timer-start path.
+
+Determine how the outcomes depend on:
+
+- Input mode and hardware selection.
+- The internal detection bias or relay-sensing mechanism.
+- Analog X threshold selection and filtering.
+- Digital LOW detection and polling.
+- Whether the signal was active before the system became eligible.
+- Whether the electrical condition has already ended.
+- Sample timing, signal duration, and accumulated filter history.
+
+We have already demonstrated several timer-start mechanisms, including startup-active input, X reclassification, filtered activity after release, and repeated sample-aligned excursions. Use those findings as established starting points, but test whether they can explain a plausible cable-connection event.
+
+### Challenge the firmware-only versus hardware conclusion
+
+I'd like to determine which unintended starts could be prevented by alternative firmware event-handling policies without changing the physical input circuit.
+
+Consider potential behaviors such as requiring a stable inactive input before arming, explicit release-to-rearm, sample freshness, separating configuration changes from new events, passive diagnostics, and rejecting connection-like transients.
+
+These should be evaluated as candidate policies, not assumed fixes.
+
+Where practical, compare the original firmware behavior with a conceptual alternative acceptance policy using the same simulated input sequence. This does not require implementing apfw2.
+
+Evaluate both false-start rejection and legitimate-trigger preservation. A proposed mitigation that suppresses misfires but also loses legitimate short triggers or introduces unacceptable timing changes is not necessarily a solution.
+
+Most importantly, identify cases where a connection transient and a legitimate trigger are indistinguishable to firmware given the same observable input history. We need to know where a firmware-only solution has a genuine information limitation.
+
+### Include path coverage
+
+Our earlier investigations missed a real motion-initiation path because they focused on the direct G request boundary rather than profile playback.
+
+Use the available APTrace static analysis, including Macaw or other appropriate tooling, to review relevant trigger-to-motion-initiation paths and identify whether the simulation is overlooking additional initiation mechanisms.
+
+Focus on the paths relevant to this investigation rather than undertaking unrestricted whole-firmware verification.
+
+Clearly distinguish demonstrated reachability, bounded exclusions, unresolved indirect control flow, and incomplete coverage. Do not claim exhaustive path coverage unless the evidence justifies it.
+
+### Expected outcome
+
+Produce an evidence-backed assessment answering:
+
+1. Can Noxon's proposed powered-source connection transient cause unintended timer start in the original firmware?
+2. Under which input conditions, timing relationships, and startup or eligibility states does that occur?
+3. Can firmware distinguish those conditions from legitimate triggers?
+4. Which alternative firmware policies prevent demonstrated false starts, and what legitimate-trigger behavior do they sacrifice?
+5. Which remaining failure mechanisms depend on electrical behavior that APTrace cannot establish without physical measurements?
+6. Is Noxon's claim that hardware changes are required supported, contradicted, or still unresolved?
+
+Capture the simulations, input assumptions, control cases, evidence, and conclusions in the APTrace repository.
+
+I'd especially like a comparison matrix linking each electrical scenario to its firmware classification, acceptance result, timer-start outcome, and potential software mitigation.
+
+Use your judgment about simulation methods, experiment selection, and artifact organization. Don't expand into unrelated firmware reversing.
+
+Do not modify apfw2, original firmware images, or physical hardware.
+
+When complete, give us a concise engineering assessment of whether replacement firmware could eliminate or substantially reduce connection-related misfires on existing V1 and V2 boards, and identify the minimum physical evidence needed to resolve any remaining uncertainty.

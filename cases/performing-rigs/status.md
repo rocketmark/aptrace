@@ -360,6 +360,17 @@ check) already have independent level-3 confirmation.
   completion behavior and physical V1/V2 causation remain open. No0x6fd8 is
   observed in these runs, which does not mean no pulse-generation request.
   Original images, apfw2, tool implementation and hardware are unchanged.
+- **Powered-source connection explanation is conditionally consistent, not electrically proven.**
+  The [connection assessment](docs/investigations/powered-trigger-connection.md)
+  demonstrates original timer start from a sampled digital LOW already ended
+  by comparison and from analog startup history after raw input settles inactive.
+  Setup-only/unsampled controls do not start. Equal contact/connection observable
+  histories replay identically; source intent is not encoded. Qualification and
+  fresh-history policies can prevent selected classes with explicit legitimate-
+  trigger costs. Supply capacitance,12/24V transfer, internal jack bias and the
+  necessity of a physical mode selector remain unresolved. Fresh independent
+  Macaw discovery corroborates both initiation paths with residuals preserved;
+  no exhaustive coverage or V1/V2 electrical attribution is claimed.
 - **The EIC/EXTINT interrupt-callback dispatch mechanism is identified;
   its registration path is not.** Vector-table indices 28-43 correspond
   exactly to the ATSAMD51's `EIC_0_IRQn`…`EIC_15_IRQn`, all 16 sharing one

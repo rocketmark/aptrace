@@ -1,0 +1,625 @@
+{
+  "scope": "Original-firmware artifact checks only; conceptual policies not executed",
+  "passed": 103,
+  "total": 103,
+  "checks": [
+    {
+      "check": "digital-idle:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-idle:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-idle:acceptance",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-idle:rate-start",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-idle:timer-enable",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-idle:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-idle:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-idle:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-idle:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-low-at-eligibility:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-low-before-eligibility:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-acquired-transient:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:acceptance",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:rate-start",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:timer-enable",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-unsampled-transient:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:acceptance",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:rate-start",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:timer-enable",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-setup-only-transient:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:acceptance",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:rate-start",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:timer-enable",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-setup-only-low:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-startup-transient-tail:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "analog-marginal600:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "same-history-contact-control:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:error",
+      "observed": null,
+      "expected": null,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:mode",
+      "observed": "memory-hook-single-step",
+      "expected": "memory-hook-single-step",
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:acceptance",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:rate-start",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:timer-enable",
+      "observed": 1,
+      "expected": 1,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:phase-commit",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:no-phase-arm",
+      "observed": "00000000",
+      "expected": "00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:no-watch-overflow",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-connection-after-inactive-sample:no-write-drop",
+      "observed": 0,
+      "expected": 0,
+      "passed": true
+    },
+    {
+      "check": "identical-history:independent-replay",
+      "observed": true,
+      "expected": true,
+      "passed": true
+    },
+    {
+      "check": "digital-transient:saved-low",
+      "observed": "0x00000000",
+      "expected": "0x00000000",
+      "passed": true
+    },
+    {
+      "check": "digital-transient:now-high",
+      "observed": "20000000",
+      "expected": "20000000",
+      "passed": true
+    },
+    {
+      "check": "startup-filter:first-effective",
+      "observed": 11,
+      "expected": 11,
+      "passed": true
+    }
+  ]
+}

@@ -25,6 +25,15 @@ one profile's rate updates from repeated event authorizations. No physical
 V1/V2 waveform attribution is established. Boards were not required for the
 first request boundary; revision-specific electrical timing still needs evidence.
 
+The [powered-source connection assessment](docs/investigations/powered-trigger-connection.md)
+adds MCU-level transient/startup controls and same-history source ambiguity.
+Before assigning Noxon's reported bench-supply effect to capacitance or choosing
+an electrical selector, obtain a minimal source/jack/confirmed-sense-node capture
+with PA02/mode and firmware identity recorded for each compared revision. Test
+nominally inactive insertion, already-asserted insertion and intentional closure.
+Conceptual qualification/persistence policies have documented trigger-preservation
+costs; do not treat them as implemented or timing-qualified fixes.
+
 ## Bring-up contract follow-up
 
 Use the [integrated timeline](docs/investigations/autopilot-bring-up-pass1.md) and

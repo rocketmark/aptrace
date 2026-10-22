@@ -1,0 +1,23 @@
+[
+  {
+    "command": "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace macaw-census-expand cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin 4000 > cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/macaw-expanded.json",
+    "exit_status": 0,
+    "output": "macaw-expanded.json",
+    "scope": "Independent vector roots; existing binary as selected by normal structural wiring"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0x5f8c",
+    "exit_status": 0,
+    "selected_observation": "Direct references663a/6722 from6338;84e2 from8258. Search-relative."
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x661c 0x6644",
+    "exit_status": 0,
+    "output": "profile-start-native.txt"
+  },
+  {
+    "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py callers autopilot868 0x6fd8",
+    "exit_status": 0,
+    "selected_observation": "72de/7312 unattributed;7dd6 G;8fee/9050 phase. Not an indirect-call exclusion."
+  }
+]

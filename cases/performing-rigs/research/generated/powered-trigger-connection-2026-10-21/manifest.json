@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-21",
+  "base_revision": "80f7de83d9d0054edbf24f2fc64cb07af01d79b2",
+  "role": "APTrace operator; native interfaces only",
+  "native_concrete_commands": 11,
+  "concrete_checks": 103,
+  "source_report": "request.txt (user reports Noxon explanation; not independent physical verification)",
+  "sources": [
+    {
+      "path": "tools/unicorn/run_concrete.py",
+      "sha256": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735"
+    },
+    {
+      "path": "tools/unicorn/concrete.py",
+      "sha256": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b"
+    },
+    {
+      "path": "tools/ghidra/aptrace_ghidra.py",
+      "sha256": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2"
+    },
+    {
+      "path": "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace",
+      "sha256": "30ee4e92cbb5a0be039ad4e9208132d936e0258ef768beef782f9489168cf7ff"
+    },
+    {
+      "path": "docs/tooling/macaw-analysis.md",
+      "sha256": "208f89da594e13601ced306f3527f8bf7377312d488a2ca0df3bcb1adcaea17d"
+    },
+    {
+      "path": "docs/tooling/tool-selection.md",
+      "sha256": "eb80021833be866c60c690ec74d36005836937764f7d964c1e68bec8fb21e9e7"
+    },
+    {
+      "path": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json",
+      "sha256": "d1598f8334c4b6902dbd3144ecff4d9f4cc0dc4a391881e9ce7bc727ed1566d7"
+    },
+    {
+      "path": "cases/performing-rigs/research/generated/trigger-x-semantics-2026-10-20/phase-native.txt",
+      "sha256": "d6d907d79bd3da170d8686a5bb4f9ad51f0cb0ef5ce968b04ee6c7aa51a50a31"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/trigger-misfire-failure-modes.md",
+      "sha256": "0a1c240037d8939efe6690d9bdf9d352c0220bbad3e9dbc8763c26f062cd8be4"
+    },
+    {
+      "path": "cases/performing-rigs/docs/investigations/powered-trigger-connection.md",
+      "sha256": "2f720f77af101ae947a8856ab38c69db88fef926fcde6204682cf9e1dfd03aeb"
+    },
+    {
+      "path": "cases/performing-rigs/docs/hardware/firmware-pin-function-map.md",
+      "sha256": "1cf93c0e4e7ca377a81d82350e13d704aeb09676872698ec3ad2089e96b28ff5"
+    },
+    {
+      "path": "cases/performing-rigs/docs/hardware/hardware-reference.md",
+      "sha256": "47ef5fa9f927027f8c8547b8150fa78464cbfb63151031db9f1f833dbf7904a2"
+    }
+  ],
+  "assumptions": [
+    "Original868; hypothetical PB05/ADC/PA02 histories, no jack transfer or source capacitance model",
+    "Natural original reset/nonzero program/MC4/profile timer path reused",
+    "Original alpha0.05; fake tick4000 and disclosed peripheral/MMIO completion inputs",
+    "PC hooks fire on each encounter, not a calibrated time-domain waveform",
+    "Same-history origin labels provide no extra firmware input",
+    "Alternative policies are conceptual defined-history comparisons, not executed firmware or model",
+    "No physical V1/V2 assignment, no exhaustive path exclusion, no new claim admission/gate promotion"
+  ]
+}
