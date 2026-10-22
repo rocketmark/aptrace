@@ -1,0 +1,110 @@
+[
+  {
+    "check": "prior reference package unchanged",
+    "passed": true,
+    "files": 86,
+    "failures": []
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-held",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-inactive",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-single-pulse",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-sample-aligned-pulses",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-opposite-phase-pulses",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-startup-active",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-x2",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-tail",
+    "passed": true,
+    "adc": 12126888,
+    "first_return": 12126906
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-release-continuation",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-held-extended",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "profile-low-excursion",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "analog-setup-only-low",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "analog-startup-transient-tail",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "first runtime analog acquisition follows MC4 boundary",
+    "fixture": "analog-marginal600",
+    "passed": true,
+    "adc": 12102884,
+    "first_return": 12102902
+  },
+  {
+    "check": "existing pinned TLC jar SHA256",
+    "passed": true
+  }
+]

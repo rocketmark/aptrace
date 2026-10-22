@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-22",
+  "role": "APTrace operator; explicit user-authorized case-owned formal specification",
+  "scope": "bounded descriptive trace model; no firmware execution this pass; no general framework implementation",
+  "repository_head": "0cc2f50d0511c494898757cdf0e4d7fa419442e5",
+  "native_inputs": {
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-held.json": "5e292f25e7b7e74b3e8357cbaabb778bb77ea517a0571f706476a3b890261c60",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-inactive.json": "a39726b7f32bfa27a75ff8dfe856db52ee4b9ed2db6be27cf1cb15dba1899cc1",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-single-pulse.json": "4d96fcc429c4d040c37c64d944af3c555577fecdfdffb9c53f9537aa7c9e5e12",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-sample-aligned-pulses.json": "2eeca2e2bf2f635129fd8982f1e0b87fd83ffd85f1df16c7a726752ccb6da43c",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-opposite-phase-pulses.json": "b3908f5eba95b0ae73e5dc76a48666fc6bf5e10543ae0ef181381365a2263706",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-startup-active.json": "db0f21326d3f69cbf451038692a6d28601caeed875ccafd982086f15f44e5821",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-x2.json": "77e8e9c7406f7c5e3b70e7cd403636b1e7627f4c03364c50c7a3cdc478140173",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-tail.json": "db058ed8e0ed124c34009f9aac88c86943a6848f2c9e3fe3431e21d0449999af",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-release-continuation.json": "eba395fb8416671d245b3a4eab563db59dd958ac5e4acb566879600e1b03ce2d",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-held-extended.json": "265cee1de35670043eaaad4459413f8d6e7b61ff8a3dc5659935e84337b711de",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-low-excursion.json": "62dd327e2f0e743addf22814250a9cca609b987c0e9623f09905e9b3d97e00a0",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-idle.json": "aa97a2e4d02cf99b8a2129a71ad2667618bae718977c2895cdb306f6b5e08a73",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-low-before-eligibility.json": "029072008f60a097320ce5952e2181e13869d8dad9b597e005675675ced1de2e",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-acquired-transient.json": "62e3cbd2f38967fe36fd4a7d9cbd60f880860d600ce7836bc7d01552dc9a7de7",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-unsampled-transient.json": "c42f2a681cf3ad1aeea2a9191f12dff72c419ff4db1da74f8f4795fa7d20b195",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-setup-only-transient.json": "f8eb38ca6c49799734f7580770b1b90d75645891be9b6af1abbde488b28b21df",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-connection-after-inactive-sample.json": "9a251caff6f523f0a603b79759682bcf13a8297b5cdc95283ac5d836ea33b35b",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/analog-setup-only-low.json": "7cb027b5118ce31596833289eb2acd5f769c13e20cdd738b6635bcd1d9979a7a",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/analog-startup-transient-tail.json": "f0154ace461f9bf9d8a146b902e10c1c6edadfc47ba1e25e5bc29d393272c8c3",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/analog-marginal600.json": "b79f29098a91543f57bbf21ae8d5cba51b086309e594b7c8c9d0de1e19b16417",
+    "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-causal-repeat.json": "f47d56ad4ab60ef49ef017bcb22b2a107ce746d549562afb37aed96941b54d9b",
+    "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-g-trigger-high.json": "fa7ff9ce4a926a26502f690cb6e42b8f7d1335dc15a6d65d7cb0f58af152316c",
+    "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-without-g.json": "e0d059dd9ba38bbf6b7643de7869388178265c498acea2e1ef525c14ce370661",
+    "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-g-duplicate-sequence.json": "6305edb8849feff98fcee75314f908942452072f3691571080f4fcffd561dcf0"
+  },
+  "prior_reference_files_verified_unchanged": 86,
+  "report": "cases/performing-rigs/docs/investigations/noxon-trigger-state-machine.md",
+  "report_sha256": "ae903e2c8c02a0aecc0c18ab67050be3badf017aa03b397eb7b7bde8e81830cd",
+  "limitations": [
+    "native numerical filter returns and profile evaluator opportunities are oracles",
+    "finite fixed histories, not binary refinement or arbitrary interleavings",
+    "physical reference/driver health and RF delivery unproved",
+    "completion/STOP/reset/re-arm excluded and unresolved"
+  ]
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "program-causal-repeat",
+    "path": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-causal-repeat.json",
+    "sha256": "f47d56ad4ab60ef49ef017bcb22b2a107ce746d549562afb37aed96941b54d9b",
+    "expected": [
+      0,
+      30,
+      500,
+      8119
+    ],
+    "instructions": 12178974,
+    "stop": "reached stop address 0x00006fd8"
+  },
+  {
+    "name": "program-g-trigger-high",
+    "path": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-g-trigger-high.json",
+    "sha256": "fa7ff9ce4a926a26502f690cb6e42b8f7d1335dc15a6d65d7cb0f58af152316c",
+    "expected": [
+      0,
+      30,
+      500,
+      8119
+    ],
+    "instructions": 12138041,
+    "stop": "reached stop address 0x00006fd8"
+  },
+  {
+    "name": "program-without-g",
+    "path": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-without-g.json",
+    "sha256": "e0d059dd9ba38bbf6b7643de7869388178265c498acea2e1ef525c14ce370661",
+    "expected": [],
+    "instructions": 14000000,
+    "stop": "instruction limit reached"
+  },
+  {
+    "name": "program-g-duplicate-sequence",
+    "path": "cases/performing-rigs/research/generated/bring-up-pass2-2026-10-21/program-g-duplicate-sequence.json",
+    "sha256": "6305edb8849feff98fcee75314f908942452072f3691571080f4fcffd561dcf0",
+    "expected": [],
+    "instructions": 14000000,
+    "stop": "instruction limit reached"
+  }
+]

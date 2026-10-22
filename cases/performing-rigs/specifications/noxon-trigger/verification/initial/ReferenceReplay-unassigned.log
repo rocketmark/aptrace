@@ -1,0 +1,423 @@
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802)
+Warning: Please run the Java VM which executes TLC with a throughput optimized garbage collector by passing the "-XX:+UseParallelGC" property.
+(Use the -nowarning option to disable this warning.)
+Running breadth-first search Model-Checking with fp 24 and seed -6396900093053287444 with 1 worker on 12 cores with 2048MB heap and 64MB offheap memory [pid: 87235] (Mac OS X 26.6.2 aarch64, Homebrew 21.0.12.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/mstalzer/github/aptrace/cases/performing-rigs/specifications/noxon-trigger/ReferenceReplay.tla
+Parsing file /Users/mstalzer/github/aptrace/cases/performing-rigs/specifications/trigger-acceptance/TriggerAcceptance.tla
+Parsing file /Users/mstalzer/github/aptrace/cases/performing-rigs/specifications/noxon-trigger/NativeFixtures.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/Naturals.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/Sequences.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/FiniteSets.tla
+Parsing file /private/var/folders/0r/c4wjncrd0slbkk0nrnss704m0000gn/T/TLC.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module TriggerAcceptance
+Semantic processing of module NativeFixtures
+Semantic processing of module ReferenceReplay
+Starting... (2026-10-22 09:36:06)
+Implied-temporal checking--satisfiability problem has 1 branches.
+Computing initial states...
+Computed 2 initial states...
+Computed 4 initial states...
+Computed 8 initial states...
+Computed 16 initial states...
+Finished computing initial states: 20 distinct states generated at 2026-10-22 09:36:07.
+Error: Successor state is not completely specified by action Grant of the next-state relation. The following variables are not assigned: cursor, n, rr, stage.
+
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> FALSE,
+  driver |-> FALSE,
+  program |-> FALSE,
+  phase |-> "Disabled",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> FALSE,
+  age |-> 2,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Boot",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 1
+
+State 2: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> FALSE,
+  driver |-> FALSE,
+  program |-> TRUE,
+  phase |-> "Disabled",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> FALSE,
+  age |-> 2,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Invalidate",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 2
+
+State 3: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Qualify",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> FALSE,
+  age |-> 2,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Invalidate",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 3
+
+State 4: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Qualify",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> FALSE,
+  age |-> 2,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Invalidate",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 4
+
+State 5: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 1
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Qualify",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> FALSE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> TRUE,
+  activeEvent |-> 0,
+  inact |-> 0,
+  act |-> 0,
+  output |-> "Observe",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 4
+
+State 6: <Consume line 31, col 12 to line 31, col 73 of module ReferenceReplay>
+/\ stage = 2
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Armed",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Classify",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 4
+
+State 7: <Grant line 32, col 10 to line 34, col 41 of module ReferenceReplay>
+/\ stage = 3
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Armed",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Classify",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 4
+
+State 8: <Launch line 35, col 11 to line 37, col 54 of module ReferenceReplay>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Armed",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Classify",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 5
+
+State 9: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Armed",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Classify",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 6
+
+State 10: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 0
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Armed",
+  starts |-> <<>>,
+  raw |-> "I",
+  filtered |-> "I",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Classify",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 7
+
+State 11: <Feed line 13, col 9 to line 30, col 15 of module ReferenceReplay>
+/\ stage = 1
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Armed",
+  starts |-> <<>>,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 0,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> TRUE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Observe",
+  eventNo |-> 0,
+  recognized |-> {},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 7
+
+State 12: <Consume line 31, col 12 to line 31, col 73 of module ReferenceReplay>
+/\ stage = 2
+/\ n = "digital-connection-after-inactive-sample"
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Recognized",
+  starts |-> <<>>,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 1,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Recognized",
+  eventNo |-> 1,
+  recognized |-> {1},
+  accepted |-> {},
+  startOK |-> TRUE ]
+/\ rr = [x |-> 1, acquired |-> 0, serial |-> 0, used |-> 0]
+/\ cursor = 7
+
+State 13: <Grant line 32, col 10 to line 34, col 41 of module ReferenceReplay>
+/\ stage = null
+/\ n = null
+/\ s = [ reference |-> TRUE,
+  driver |-> TRUE,
+  program |-> TRUE,
+  phase |-> "Authorized",
+  starts |-> <<>>,
+  raw |-> "A",
+  filtered |-> "A",
+  history |-> TRUE,
+  age |-> 0,
+  token |-> 1,
+  qualified |-> TRUE,
+  stopped |-> FALSE,
+  pendingAge |-> 0,
+  motion |-> "idle",
+  canceled |-> {},
+  fresh |-> FALSE,
+  activeEvent |-> 0,
+  inact |-> 1,
+  act |-> 0,
+  output |-> "Accepted",
+  eventNo |-> 1,
+  recognized |-> {1},
+  accepted |-> {1},
+  startOK |-> TRUE ]
+/\ rr = null
+/\ cursor = null
+
+257 states generated, 256 distinct states found, 19 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 1, the maximum 1 and the 95th percentile is 1).
+Finished in 01s at (2026-10-22 09:36:08)

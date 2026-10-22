@@ -1,0 +1,172 @@
+[
+  {
+    "configuration": "Correspondence",
+    "expected_exit": 0,
+    "actual_exit": 0,
+    "experiment_matches_expectation": true,
+    "meaning": "native correspondence / bounded reference comparison passed",
+    "distinct_states": 10046,
+    "failed_invariant": [],
+    "log": "verification/Correspondence.log"
+  },
+  {
+    "configuration": "Startup",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 88,
+    "failed_invariant": [
+      "FreshQualifiedInitiation"
+    ],
+    "log": "verification/Startup.log"
+  },
+  {
+    "configuration": "Reclassification",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 92,
+    "failed_invariant": [
+      "FreshQualifiedInitiation"
+    ],
+    "log": "verification/Reclassification.log"
+  },
+  {
+    "configuration": "FilterTail",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 94,
+    "failed_invariant": [
+      "ActiveRawAtInitiation"
+    ],
+    "log": "verification/FilterTail.log"
+  },
+  {
+    "configuration": "StartupTail",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 88,
+    "failed_invariant": [
+      "ActiveRawAtInitiation"
+    ],
+    "log": "verification/StartupTail.log"
+  },
+  {
+    "configuration": "SampledRelease",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 25,
+    "failed_invariant": [
+      "ActiveRawAtInitiation"
+    ],
+    "log": "verification/SampledRelease.log"
+  },
+  {
+    "configuration": "AcceptedRelease",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 131,
+    "failed_invariant": [
+      "ActiveRawAtInitiation"
+    ],
+    "log": "verification/AcceptedRelease.log"
+  },
+  {
+    "configuration": "DecayedClassification",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 94,
+    "failed_invariant": [
+      "ActiveClassificationAtInitiation"
+    ],
+    "log": "verification/DecayedClassification.log"
+  },
+  {
+    "configuration": "ShortPulse",
+    "expected_exit": 13,
+    "actual_exit": 13,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 792,
+    "failed_invariant": [],
+    "log": "verification/ShortPulse.log"
+  },
+  {
+    "configuration": "UnsampledPulse",
+    "expected_exit": 13,
+    "actual_exit": 13,
+    "experiment_matches_expectation": true,
+    "meaning": "desired property counterexample",
+    "distinct_states": 900,
+    "failed_invariant": [],
+    "log": "verification/UnsampledPulse.log"
+  },
+  {
+    "configuration": "WrongRawGuard",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "deliberately incorrect model rejected by correspondence",
+    "distinct_states": 8,
+    "failed_invariant": [
+      "Correspondence"
+    ],
+    "log": "verification/WrongRawGuard.log"
+  },
+  {
+    "configuration": "WrongFrozenFilter",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "deliberately incorrect model rejected by correspondence",
+    "distinct_states": 53,
+    "failed_invariant": [
+      "Correspondence"
+    ],
+    "log": "verification/WrongFrozenFilter.log"
+  },
+  {
+    "configuration": "WrongRawAnalogGuard",
+    "expected_exit": 12,
+    "actual_exit": 12,
+    "experiment_matches_expectation": true,
+    "meaning": "deliberately incorrect model rejected by correspondence",
+    "distinct_states": 17,
+    "failed_invariant": [
+      "Correspondence"
+    ],
+    "log": "verification/WrongRawAnalogGuard.log"
+  },
+  {
+    "configuration": "DirectG",
+    "expected_exit": 0,
+    "actual_exit": 0,
+    "experiment_matches_expectation": true,
+    "meaning": "native correspondence / bounded reference comparison passed",
+    "distinct_states": 20,
+    "failed_invariant": [],
+    "log": "verification/DirectG.log"
+  },
+  {
+    "configuration": "ReferenceReplay",
+    "expected_exit": 0,
+    "actual_exit": 0,
+    "experiment_matches_expectation": true,
+    "meaning": "native correspondence / bounded reference comparison passed",
+    "distinct_states": 18725,
+    "failed_invariant": [],
+    "log": "verification/ReferenceReplay.log"
+  }
+]

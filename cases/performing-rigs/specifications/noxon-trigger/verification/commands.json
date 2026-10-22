@@ -1,0 +1,8 @@
+{
+  "cwd": "/Users/mstalzer/github/aptrace/cases/performing-rigs/specifications/noxon-trigger",
+  "projection": "python3 project-fixtures.py",
+  "model_checks": "./check-models.sh > verification/check-results.txt",
+  "comparisons": "./check-comparisons.sh > verification/comparison-results.txt",
+  "java_model_template": "/opt/homebrew/opt/openjdk@21/bin/java -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-noxon-NAME-PID -config NAME.cfg NoxonTrigger.tla",
+  "java_comparison_template": "/opt/homebrew/opt/openjdk@21/bin/java -DTLA-Library=../trigger-acceptance -Xmx2g -cp /private/tmp/aptrace-tla-2026-10-22/tla2tools.jar tlc2.TLC -workers 1 -metadir /private/tmp/aptrace-comparison-NAME-PID -config NAME.cfg NAME.tla"
+}

@@ -23,6 +23,19 @@ apfw2 implementation exists in this package. Physical reliability, numerical
 policy, hardware validators and future implementation refinement remain unproven;
 release grades do not change.
 
+## Original trigger state-machine verification
+
+The [separate descriptive model](specifications/noxon-trigger/README.md) and
+[assessment](docs/investigations/noxon-trigger-state-machine.md) match20 native
+trigger histories and four direct-G endpoint controls. Seven proposed safety
+checks and two short-pulse progress checks have native-grounded counterexamples;
+three incorrect abstractions fail correspondence. The unchanged reference
+controller was replayed against the same acquired histories with explicit
+validator/adapter assumptions. These are finite trace-conditioned models, with
+native filter/evaluator oracles, not binary refinement or physical reliability
+proofs. Completion/re-arm, duplicate-after-completion and continuous STOP/reset
+remain unresolved. No release grade or implementation status changes.
+
 ## Analysis capabilities exercised by this case
 
 The [integrated bring-up timeline](docs/investigations/autopilot-bring-up-pass1.md)

@@ -23,6 +23,16 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
+The [recovered Noxon formal package](specifications/noxon-trigger/README.md)
+now supplies native-backed counterexamples and a same-acquisition-history
+reference comparison. Preserve its oracle/boundary qualifications; do not treat
+replay correspondence as exhaustive binary verification. Extend it with a
+continuous completion/re-arm or accepted/running STOP/reset witness only after
+that transition is established through supported APTrace execution. Resolve the
+post-readiness qualification compatibility cost and sampling-adapter contract
+before claiming the proposed controller fixes all connection transients.
+
+
 The [request campaign](docs/investigations/trigger-misfire-failure-modes.md#targeted-request-campaign-an-overlooked-motion-initiation-path)
 establishes natural program/MC4→external-trigger→profile service0x6338→rate start
 0x5f8c/timer enable0x5810. Do not repeat the search for a required G/phase arm;

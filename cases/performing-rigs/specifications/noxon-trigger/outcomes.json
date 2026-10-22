@@ -1,0 +1,627 @@
+[
+  {
+    "name": "profile-held",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      259,
+      291,
+      321,
+      350
+    ],
+    "polls": 35,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12227578,
+        "value": 587
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12451024,
+        "value": 788
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12451158,
+        "value": 788
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12451170,
+        "value": 788
+      }
+    ],
+    "bound": 12451171
+  },
+  {
+    "name": "profile-inactive",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 1,
+    "first_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "polls": 196,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "profile-single-pulse",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 1,
+    "first_returns": [
+      259,
+      257,
+      255,
+      254
+    ],
+    "polls": 196,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "profile-sample-aligned-pulses",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      259,
+      291,
+      321,
+      350
+    ],
+    "polls": 35,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12227578,
+        "value": 587
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12451024,
+        "value": 788
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12451158,
+        "value": 788
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12451170,
+        "value": 788
+      }
+    ],
+    "bound": 12451171
+  },
+  {
+    "name": "profile-opposite-phase-pulses",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 1,
+    "first_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "polls": 196,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "profile-startup-active",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      900,
+      900,
+      900,
+      900
+    ],
+    "polls": 21,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12103180,
+        "value": 900
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12336878,
+        "value": 900
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12337012,
+        "value": 900
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12337024,
+        "value": 900
+      }
+    ],
+    "bound": 12337025
+  },
+  {
+    "name": "profile-x2",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "polls": 22,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12136945,
+        "value": 225
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12363383,
+        "value": 225
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12363517,
+        "value": 225
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12363529,
+        "value": 225
+      }
+    ],
+    "bound": 12363530
+  },
+  {
+    "name": "profile-tail",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      900,
+      866,
+      834,
+      804
+    ],
+    "polls": 22,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12523334,
+        "value": 866
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12757349,
+        "value": 455
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12757483,
+        "value": 455
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12757495,
+        "value": 455
+      }
+    ],
+    "bound": 12757496
+  },
+  {
+    "name": "profile-release-continuation",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      259,
+      291,
+      321,
+      350
+    ],
+    "polls": 190,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12227578,
+        "value": 587
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12451024,
+        "value": 355
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12451158,
+        "value": 355
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12451170,
+        "value": 355
+      }
+    ],
+    "bound": 14000000
+  },
+  {
+    "name": "profile-held-extended",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      259,
+      291,
+      321,
+      350
+    ],
+    "polls": 988,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12227578,
+        "value": 587
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12451024,
+        "value": 788
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12451158,
+        "value": 788
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12451170,
+        "value": 788
+      }
+    ],
+    "bound": 22000000
+  },
+  {
+    "name": "profile-low-excursion",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      214,
+      203,
+      193,
+      183
+    ],
+    "polls": 22,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12126027,
+        "value": 193
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12351806,
+        "value": 73
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12351940,
+        "value": 73
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12351952,
+        "value": 73
+      }
+    ],
+    "bound": 12351953
+  },
+  {
+    "name": "digital-idle",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 2,
+    "first_returns": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "polls": 224,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "digital-low-before-eligibility",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 2,
+    "first_returns": [
+      0
+    ],
+    "polls": 1,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12098773,
+        "value": 522
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12327006,
+        "value": 522
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12327140,
+        "value": 522
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12327152,
+        "value": 522
+      }
+    ],
+    "bound": 12327153
+  },
+  {
+    "name": "digital-acquired-transient",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 2,
+    "first_returns": [
+      0
+    ],
+    "polls": 1,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12098773,
+        "value": 522
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12327006,
+        "value": 522
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12327140,
+        "value": 522
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12327152,
+        "value": 522
+      }
+    ],
+    "bound": 12327153
+  },
+  {
+    "name": "digital-unsampled-transient",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 2,
+    "first_returns": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "polls": 224,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "digital-setup-only-transient",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 2,
+    "first_returns": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "polls": 224,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "digital-connection-after-inactive-sample",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 2,
+    "first_returns": [
+      1,
+      0
+    ],
+    "polls": 2,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12115174,
+        "value": 522
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12340135,
+        "value": 522
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12340269,
+        "value": 522
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12340281,
+        "value": 522
+      }
+    ],
+    "bound": 12340282
+  },
+  {
+    "name": "analog-setup-only-low",
+    "expected": {
+      "accepts": 0,
+      "requests": 0,
+      "starts": 0
+    },
+    "mode": 1,
+    "first_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "polls": 196,
+    "events": [],
+    "bound": 14000000
+  },
+  {
+    "name": "analog-startup-transient-tail",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      11,
+      22,
+      32,
+      42
+    ],
+    "polls": 21,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12103173,
+        "value": 11
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12336871,
+        "value": 148
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12337005,
+        "value": 148
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12337017,
+        "value": 148
+      }
+    ],
+    "bound": 12337018
+  },
+  {
+    "name": "analog-marginal600",
+    "expected": {
+      "accepts": 1,
+      "requests": 1,
+      "starts": 1
+    },
+    "mode": 1,
+    "first_returns": [
+      244,
+      262,
+      278,
+      295
+    ],
+    "polls": 77,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12661315,
+        "value": 581
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12887473,
+        "value": 593
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12887607,
+        "value": 593
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12887619,
+        "value": 593
+      }
+    ],
+    "bound": 12887620
+  }
+]
