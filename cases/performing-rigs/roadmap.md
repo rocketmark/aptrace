@@ -42,8 +42,24 @@ Next define W authorization versus physical release-to-rearm, initial arming and
 analog-history policy; investigate selected retained-filter histories and the
 TC0-service idle writer's feasible interleavings using existing capabilities.
 Validated IRQ/peripheral scenarios and framed/event-aligned verification remain
-framework gaps, not permission to create replacement harnesses. Gates4–5 remain
-NOT RUN; this work does not authorize Gate4 or hardware deployment.
+framework gaps, not permission to create replacement harnesses. Gate4 is
+INCONCLUSIVE; Gate5 remains NOT RUN and hardware deployment NOT APPROVED.
+
+The [Gate 4 catalog and assessment](docs/investigations/trigger-patch-gate4.md)
+defines reusable proposed SAFE-001–010 properties, inferred firmware predicates
+and unresolved policy parameters. Obtain product decisions on W authorization,
+release-to-rearm, cancellation commitment/latency, startup readiness, sustained/
+analog qualification and required output ordering before mandatory evaluation.
+Preserve CE-1/CE-2 as confirmed behaviors with policy unresolved; retain Gate3's
+FAIL within modeled scope and Gate1/2's INCONCLUSIVE verdicts. Existing-capability
+follow-up can inspect specific ISR-writer prerequisites, retained-filter histories
+or natural command lifecycles once a property question is selected. Development
+priorities are first-class property/event definitions, native trace evaluation
+and CE linkage, scoped behavioral admission, reachable framed proofs and route/
+observer coverage. A separately authorized Gate5 must validate peripheral reads,
+interrupt scheduling, instruction-count versus physical time, initialization,
+cross-peripheral order and instrumentation noninterference. Gate4 did not execute
+Gate5 or authorize implementation/hardware work; full safety is NOT ESTABLISHED.
 
 The [experimental binary subset](docs/investigations/experimental-trigger-freshness-patch.md)
 now proves one firmware-only stale-read mitigation without changing motor code.

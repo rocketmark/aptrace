@@ -58,8 +58,9 @@ Fresh-input global ordering and unacquired-input polling/write differences
 remain unresolved; direct controls lack ordered peripheral-store coverage and
 most RAM/stack writes are unobserved. The unchanged artifact checker passes
 138/138 using14 fresh and6 historical records; this is not a fresh20-run campaign.
-Gate3 now reports FAIL within modeled scope as described below; Gates4–5 were
-not run. Full safety and hardware deployment remain unapproved.
+Gate3 reports FAIL within modeled scope as described below; Gate4 is
+INCONCLUSIVE and Gate5 is NOT RUN. Full safety and hardware deployment remain
+unapproved.
 
 The [Gate 3 adversarial assessment](docs/investigations/trigger-patch-gate3.md)
 is **FAIL within modeled scope**: post-read release still permits acceptance
@@ -72,7 +73,25 @@ Analog X1/X2 controls reproduce; startup policy, analog-history safeguards and
 execution/interrupt robustness remain INCONCLUSIVE. Static TC0-service idle
 writer evidence does not establish a feasible concurrent bypass. Gate1/2
 obligations and global ordering differences remain unresolved; no physical
-activation or hardware safety claim follows. Gates4–5 are NOT RUN.
+activation or hardware safety claim follows. Gate4 is INCONCLUSIVE; Gate5 is NOT RUN.
+
+The [Gate 4 safety-property assessment](docs/investigations/trigger-patch-gate4.md)
+is **INCONCLUSIVE**. Its reusable G4-v1 SAFE-001–010 catalog separates proposed
+policy from inferred software predicates and unknown parameters; no complete
+mandatory product authorization policy was established. CE-1 and CE-2 remain
+confirmed bounded behaviors contradicting candidate cancellation/rearming rules,
+with Gate4 disposition BEHAVIOR CONFIRMED — POLICY UNRESOLVED. Gate3's FAIL
+within modeled scope is unchanged. W restores eligibility in the witness;
+independent W authorization versus required physical release remains a product
+decision. Cancellation commitment/latency, startup arming, sustained/analog
+qualification and valid-output ordering also remain unspecified. Framed state/
+write preservation, whole-route coverage, IRQ/peripheral models and Gate2 global
+ordering differences remain open. Native property definitions, trace evaluation,
+counterexample linkage and behavioral evidence admission are capability gaps;
+Gate4 reused existing evidence without new firmware runs or ledger promotion.
+Gate5 inputs are identified for read semantics, scheduling, physical time,
+initialization, cross-peripheral order and instrumentation validation; Gate5 is
+NOT RUN. Full safety policy is NOT ESTABLISHED; hardware deployment NOT APPROVED.
 
 The [research patch](docs/investigations/experimental-trigger-freshness-patch.md)
 is a real derived915 image, NOT FOR HARDWARE DEPLOYMENT: six original-region
