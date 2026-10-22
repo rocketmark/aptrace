@@ -1,0 +1,52 @@
+==================================================
+Function: FUN_000054e0 @ 000054e0  size=112  params=0  callingConvention=unknown
+
+
+void FUN_000054e0(void)
+
+{
+  char cVar1;
+  int iVar2;
+  int *piVar3;
+  int iVar4;
+  
+  piVar3 = DAT_00005564;
+  if (*(char *)(DAT_00005550 + 1) == 'H') {
+    cVar1 = *(char *)(DAT_00005550 + 2);
+    piVar3 = DAT_00005554;
+    if ((((cVar1 == '1') || (piVar3 = DAT_00005558, cVar1 == '2')) ||
+        (piVar3 = DAT_0000555c, cVar1 == '3')) || (piVar3 = DAT_00005560, cVar1 == '4')) {
+      *piVar3 = 0;
+    }
+  }
+  else {
+    if (*(char *)(DAT_00005550 + 1) != 'L') {
+      return;
+    }
+    if (*(char *)(DAT_00005550 + 2) == '1') {
+      *DAT_00005554 = 0;
+      *DAT_00005564 = 0;
+      *DAT_00005568 = 0;
+    }
+    else if (*(char *)(DAT_00005550 + 2) == '2') {
+      iVar2 = *DAT_00005564;
+      iVar4 = *DAT_00005554;
+      if (iVar2 < iVar4) {
+        *DAT_0000556c = iVar2;
+      }
+      else {
+        piVar3 = DAT_0000556c;
+        if (iVar2 <= iVar4) goto LAB_000054f4;
+      }
+      *piVar3 = iVar4;
+      *DAT_00005568 = 1;
+    }
+  }
+LAB_000054f4:
+  FUN_00004480();
+  return;
+}
+
+
+
+

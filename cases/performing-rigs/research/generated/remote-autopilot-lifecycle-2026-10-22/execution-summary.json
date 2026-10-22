@@ -1,0 +1,279 @@
+{
+  "remote-w-six": {
+    "instructions_executed": 104,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x0000002d",
+    "r1": "0x00000000",
+    "watch_count": 0
+  },
+  "remote-w-six-arguments": {
+    "instructions_executed": 104,
+    "stop_reason": "reached stop address 0x2fff0010",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x0000002d",
+    "r1": "0x00000000",
+    "watch_count": 6
+  },
+  "remote-w-flag": {
+    "instructions_executed": 15,
+    "stop_reason": "reached stop address 0x0000591c",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "watch_count": 0
+  },
+  "remote-w-wait": {
+    "instructions_executed": 12,
+    "stop_reason": "reached stop address 0x0000d042",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "watch_count": 0
+  },
+  "remote-w-button": {
+    "instructions_executed": 15,
+    "stop_reason": "reached stop address 0x0000591c",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "watch_count": 0
+  },
+  "remote-x-exit-flag": {
+    "instructions_executed": 15,
+    "stop_reason": "reached stop address 0x00010e42",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "watch_count": 0
+  },
+  "phase-one-stop-request": {
+    "instructions_executed": 24,
+    "stop_reason": "reached stop address 0x00005274",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000000",
+    "r1": "0x00000004",
+    "watch_count": 0
+  },
+  "autopilot-queued-at": {
+    "instructions_executed": 53,
+    "stop_reason": "reached stop address 0x00007f84",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000040",
+    "r1": "0x00000001",
+    "watch_count": 0
+  },
+  "autopilot-queued-x": {
+    "instructions_executed": 52,
+    "stop_reason": "reached stop address 0x00007f84",
+    "error": null,
+    "error_free": true,
+    "completed": true,
+    "execution_mode": "continuous",
+    "r0": "0x00000058",
+    "r1": "0x00000001",
+    "watch_count": 0
+  },
+  "original-release-repress-w": {
+    "instructions_executed": 60000000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "error_free": true,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "mem_write_dropped": 0,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12098773,
+        "idle": "09",
+        "gpio": "20000000"
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12327152,
+        "idle": "00",
+        "gpio": "20000000"
+      },
+      {
+        "pc": "0x00006056",
+        "instruction": 52125562,
+        "idle": "01",
+        "gpio": "20000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52167621,
+        "idle": "02",
+        "gpio": "00000000"
+      },
+      {
+        "pc": "0x00008f98",
+        "instruction": 52167777,
+        "idle": "09",
+        "gpio": "20000000"
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 52400358,
+        "idle": "00",
+        "gpio": "20000000"
+      }
+    ]
+  },
+  "original868-release-repress-w": {
+    "instructions_executed": 60000000,
+    "stop_reason": "instruction limit reached",
+    "error": null,
+    "error_free": true,
+    "completed": false,
+    "execution_mode": "memory-hook-single-step",
+    "mem_write_dropped": 0,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12227578,
+        "idle": "09",
+        "effective_sample": "4b02000001000000"
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12451170,
+        "idle": "00",
+        "effective_sample": "6301000001000000"
+      },
+      {
+        "pc": "0x00006056",
+        "instruction": 52246833,
+        "idle": "01",
+        "effective_sample": "e100000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52289719,
+        "idle": "02",
+        "effective_sample": "e100000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52296230,
+        "idle": "09",
+        "effective_sample": "0301000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52308613,
+        "idle": "09",
+        "effective_sample": "2301000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52315124,
+        "idle": "09",
+        "effective_sample": "4101000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52327506,
+        "idle": "09",
+        "effective_sample": "5e01000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52334017,
+        "idle": "09",
+        "effective_sample": "7a01000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52349208,
+        "idle": "09",
+        "effective_sample": "9401000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52355823,
+        "idle": "09",
+        "effective_sample": "ad01000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52368101,
+        "idle": "09",
+        "effective_sample": "c401000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52374716,
+        "idle": "09",
+        "effective_sample": "db01000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52386994,
+        "idle": "09",
+        "effective_sample": "f001000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52393609,
+        "idle": "09",
+        "effective_sample": "0402000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52408800,
+        "idle": "09",
+        "effective_sample": "1702000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52415312,
+        "idle": "09",
+        "effective_sample": "2902000001000000"
+      },
+      {
+        "pc": "0x00009088",
+        "instruction": 52427693,
+        "idle": "09",
+        "effective_sample": "3b02000001000000"
+      },
+      {
+        "pc": "0x00008f98",
+        "instruction": 52428031,
+        "idle": "09",
+        "effective_sample": "4b02000001000000"
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 52660283,
+        "idle": "00",
+        "effective_sample": "6301000001000000"
+      }
+    ]
+  }
+}

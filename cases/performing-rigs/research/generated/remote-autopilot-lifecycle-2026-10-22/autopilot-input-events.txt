@@ -1,0 +1,50 @@
+==================================================
+Function: FUN_00004480 @ 00004480  size=18  params=0  callingConvention=unknown
+
+
+void FUN_00004480(void)
+
+{
+  undefined4 uVar1;
+  
+  *DAT_00004494 = 0;
+  uVar1 = FUN_0000ccd0();
+  *DAT_00004498 = uVar1;
+  return;
+}
+
+
+
+==================================================
+Function: FUN_00004440 @ 00004440  size=44  params=0  callingConvention=unknown
+
+
+void FUN_00004440(void)
+
+{
+  undefined1 *puVar1;
+  undefined1 uVar2;
+  
+  puVar1 = DAT_0000446c;
+  *DAT_0000446c = 0x61;
+  if (*DAT_00004470 == '\0') {
+    if (*DAT_0000447c == '\0') {
+      uVar2 = 0x30;
+    }
+    else {
+      uVar2 = 0x32;
+    }
+  }
+  else {
+    uVar2 = 0x31;
+  }
+  puVar1[1] = uVar2;
+  if (*DAT_00004474 == '\0') {
+    *(undefined1 *)(DAT_00004478 + 0xd) = 1;
+  }
+  return;
+}
+
+
+
+

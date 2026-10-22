@@ -1,0 +1,6 @@
+References TO 0x20000ff4:
+  0x0000d03a (FUN_0000cfc8)  [READ]  label=DAT_20000ff4
+  0x0000d070 (FUN_0000cfc8)  [WRITE]  label=DAT_20000ff4
+  0x00010e28 (FUN_00010ce4)  [PARAM]  label=DAT_20000ff4
+  0x00010e2e (FUN_00010ce4)  [WRITE]  label=DAT_20000ff4
+  0x00010e46 (FUN_00010ce4)  [WRITE]  label=DAT_20000ff4

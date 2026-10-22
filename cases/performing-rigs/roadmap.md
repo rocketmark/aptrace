@@ -21,6 +21,18 @@ Require conformance/refinement evidence for profile and direct start paths,
 callbacks, STOP/reset and ISR races. Model checking is finite/conditional and
 has not established physical reliability or deployed behavior.
 
+## Original Remote / AutoPilot lifecycle follow-up
+
+The [Phase 1 dossier](docs/investigations/remote-autopilot-execution-lifecycle-phase1.md)
+identifies the next bounded questions: resolve every feasible producer of
+outbound queue index0 (X) and its relationship to natural completion; execute
+the RUNNING-screen button/X exit through actual Remote transport; follow running
+W stop/deceleration through nonzero return and idle9 without forced activity
+clears; close multi-record continuation/repeated-W and ISR-linked idle-writer
+feasibility. A coupled peer/peripheral workflow, if needed, is separate framework
+development. No second patch or formal-model change is authorized by these
+recommendations.
+
 ## Trigger reliability follow-up
 
 The independent [Gate 1 assessment](docs/investigations/trigger-patch-gate1.md)

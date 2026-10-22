@@ -1,0 +1,103 @@
+==================================================
+Function: FUN_00008a80 @ 00008a80  size=324  params=0  callingConvention=unknown
+
+
+void FUN_00008a80(void)
+
+{
+  undefined1 *puVar1;
+  char *pcVar2;
+  char *pcVar3;
+  int *piVar4;
+  char *pcVar5;
+  int iVar6;
+  uint uVar7;
+  char *pcVar8;
+  
+  pcVar5 = DAT_00008c08;
+  puVar1 = DAT_00008bcc;
+  uVar7 = 0;
+  pcVar8 = DAT_00008bd0;
+  do {
+    piVar4 = DAT_00008c0c;
+    iVar6 = DAT_00008bf0;
+    pcVar3 = DAT_00008be8;
+    pcVar2 = DAT_00008be4;
+    switch(puVar1[uVar7]) {
+    case 2:
+    case 3:
+      iVar6 = FUN_0000ccd0();
+      if (((uint)(iVar6 - *(int *)(DAT_00008bd4 + uVar7 * 4)) <= *DAT_00008bd8) ||
+         (*(char *)(DAT_00008bdc + uVar7) != '\0')) {
+        if ((*pcVar8 == '\0') ||
+           (iVar6 = FUN_0000ccd0(), (uint)(iVar6 - *(int *)(DAT_00008be0 + uVar7 * 4)) < 0x12d))
+        break;
+        *pcVar8 = '\0';
+      }
+      FUN_00005274(uVar7 & 0xff,4);
+      break;
+    case 4:
+      if (*DAT_00008be4 == '\x02') {
+        if (*DAT_00008be8 != '\x03') {
+          *DAT_00008be4 = '\x01';
+          iVar6 = FUN_0000ccd0();
+          piVar4 = DAT_00008bec;
+          *DAT_00008bec = iVar6;
+          while (iVar6 = FUN_0000ccd0(), (uint)(iVar6 - *piVar4) < 200) {
+            iVar6 = FUN_0000801c();
+            if (iVar6 != 0) {
+              FUN_00007f38();
+            }
+            FUN_00005dd0();
+          }
+        }
+      }
+      else if ((*DAT_00008be4 == '\x01') && (iVar6 = FUN_0000ccd0(), 400 < (uint)(iVar6 - *piVar4)))
+      {
+        *(undefined1 *)(DAT_00008bf0 + 10) = 1;
+        iVar6 = FUN_0000ccd0();
+        *piVar4 = iVar6;
+      }
+      break;
+    case 5:
+      if (DAT_00008bf4[uVar7] == '\0') {
+        puVar1[uVar7] = 0;
+        pcVar2 = DAT_00008bf8;
+        *(undefined1 *)(iVar6 + 0xf) = 1;
+        *pcVar2 = (char)uVar7 + '\x01';
+        if (*(char *)(uVar7 + DAT_00008bfc) == '\x01') {
+          *(undefined4 *)(uVar7 * 0x120 + DAT_00008c04 + 0x10) =
+               *(undefined4 *)(DAT_00008c00 + uVar7 * 4);
+        }
+      }
+      break;
+    case 6:
+      if (*DAT_00008bf4 == '\0') {
+        FUN_000054e0();
+      }
+      break;
+    case 8:
+      if (*DAT_00008bf4 == '\0') {
+LAB_00008ba8:
+        FUN_00004480();
+      }
+      break;
+    case 9:
+      if (*pcVar5 != '\0') {
+        if (*DAT_00008be8 == '\0') goto LAB_00008ba8;
+        *puVar1 = 4;
+        *pcVar2 = '\0';
+        *pcVar3 = '\x04';
+      }
+    }
+    uVar7 = uVar7 + 1;
+    pcVar8 = pcVar8 + 1;
+    if (uVar7 == 4) {
+      return;
+    }
+  } while( true );
+}
+
+
+
+

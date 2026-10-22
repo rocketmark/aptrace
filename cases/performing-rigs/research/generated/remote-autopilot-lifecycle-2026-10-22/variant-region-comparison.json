@@ -1,0 +1,26 @@
+[
+  {
+    "region": "W-consumer-region",
+    "start": "0x85a0",
+    "end_exclusive": "0x8670",
+    "identical": true,
+    "sha256_868": "06cf4083eb1013e977e276c0b7ed8c427d287401997c24ef911ed9862888dbb1",
+    "sha256_915": "06cf4083eb1013e977e276c0b7ed8c427d287401997c24ef911ed9862888dbb1"
+  },
+  {
+    "region": "phase-trigger-service",
+    "start": "0x8e18",
+    "end_exclusive": "0x9238",
+    "identical": true,
+    "sha256_868": "61cf9549a8cbe3dd9b4d153b6590dc5265ba5ab7b3e23d21a26fce629f6e9df8",
+    "sha256_915": "61cf9549a8cbe3dd9b4d153b6590dc5265ba5ab7b3e23d21a26fce629f6e9df8"
+  },
+  {
+    "region": "timed-completion",
+    "start": "0x5fac",
+    "end_exclusive": "0x6058",
+    "identical": true,
+    "sha256_868": "7b4f8417b454c0f44f7067d8b5d79c0ec7fb643a59255daf0aacd33cfe66e1a4",
+    "sha256_915": "7b4f8417b454c0f44f7067d8b5d79c0ec7fb643a59255daf0aacd33cfe66e1a4"
+  }
+]

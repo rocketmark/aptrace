@@ -10,6 +10,25 @@ here — do not append "previous update" logs to this file; when a slice of
 work closes, fold its durable finding into the relevant section below (or
 into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and move on.
 
+## Original Remote / AutoPilot execution lifecycle
+
+[Phase 1 reconstruction](docs/investigations/remote-autopilot-execution-lifecycle-phase1.md)
+separates natural profile completion (idle2) from bare-W phase/return-driven
+eligibility restoration (idle9). The original Remote's RUNNING-screen exit
+calls591c(0), requesting W six times; the screen exits on button input or an
+inbound-X-derived local flag. Fresh bounded original915 instruction controls
+confirm those guards, X flag setting and phase1 stop-request entry. The natural
+completion→outbound X→Remote exit/W join remains unresolved; seeded queue controls
+are not evidence of that join. Original held/completion/W second initiation
+remains conditional on supplied W and the zero-position return model. No patch,
+formal model or Gate1–4 verdict changed. Running STOP, nonzero return, complete
+queue-writer closure and coupled Remote/UI/transport execution remain open.
+Two fresh original full-reset release/repress continuations (915 digital,
+868 analog) each reach a second initiation with supplied W. The analog run
+completes the original868 three-history comparison against reused held/W and
+released/W controls; phase3 can repeatedly write idle9 while waiting for the
+effective input to become active. Natural Remote W provenance remains unresolved.
+
 ## Physical trigger failure correlation
 
 The [VVR assessment](docs/investigations/vvr-trigger-failure-correlation.md)

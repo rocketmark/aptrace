@@ -1,0 +1,91 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "entry": "0x00008e19",
+  "instructions_executed": 24,
+  "stop_reason": "reached stop address 0x00005274",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x00005274"
+  ],
+  "execution_mode": "continuous",
+  "registers": {
+    "r0": "0x00000000",
+    "r1": "0x00000004",
+    "r2": "0x00000001",
+    "r3": "0x00000001",
+    "r4": "0x00000000",
+    "r5": "0x20001b40",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x20002319",
+    "r9": "0x20001b40",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x2002ffd0",
+    "lr": "0x00008e59",
+    "pc": "0x00005274",
+    "cpsr": "0x20100033"
+  },
+  "memory": {
+    "0x20002318": "01000000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00008e18",
+    "0x00008e1c",
+    "0x00008e1e",
+    "0x00008e22",
+    "0x00008e24",
+    "0x00008e26",
+    "0x00008e2a",
+    "0x00008e2c",
+    "0x00008e30",
+    "0x00008e34",
+    "0x00008e36",
+    "0x00008e3a",
+    "0x00008e3c",
+    "0x00008e40",
+    "0x00008e42",
+    "0x00008e46",
+    "0x00008e48",
+    "0x00008e4a",
+    "0x00008e4c",
+    "0x00008e4e",
+    "0x00008e50",
+    "0x00008e52",
+    "0x00008e54",
+    "0x00005274"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20002318",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20001b84",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20001b14",
+      "len": 4,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": []
+}
