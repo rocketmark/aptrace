@@ -23,12 +23,14 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
-Target1 [startup learning](docs/investigations/startup-voltage-learning.md) is
-closed at its bounded result: shared filter history matters; stored average/flag
-have no observed effect in causal crossover controls. Next user-selected work is
-Target2, with symbolic path feasibility and alias/callee assumptions explicit.
-Do not repeat the average-versus-filter distinction or treat partial effects
-UNSAT as universal nondependence. Target3 motion coverage stays separate.
+Target1 [startup learning](docs/investigations/startup-voltage-learning.md) and
+[Target2 digital reachability](docs/investigations/trigger-symbolic-reachability-target2.md)
+are closed at their bounded results: shared filter history matters, stored
+average/flag crossover has no observed effect, and digital gate/sample exclusions
+have feasible SAT anchors. Next user-selected work is Target3 motion-route
+coverage. Preserve analog symbolic/progress limits and the pre-read gate timing
+qualification; do not treat earlier partial effects UNSAT as nondependence or
+assume a natural eligibility race from injected post-read states.
 
 
 The [recovered Noxon formal package](specifications/noxon-trigger/README.md)

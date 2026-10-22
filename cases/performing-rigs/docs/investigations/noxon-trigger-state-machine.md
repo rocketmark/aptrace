@@ -1,5 +1,13 @@
 # Original Noxon trigger state machine and formal counterexamples
 
+Target2 qualification: [bounded binary reachability](trigger-symbolic-reachability-target2.md)
+now supports digital pre-read guards and captured-R0 branching with feasible
+SAT/UNSAT companions. The original gate precedes digitalRead, while this model's
+classification/gate action is atomic. Existing projections assume no intervening
+state writer; asynchronous correspondence would require a demonstrated producer
+and finer gate/acquire/decide states. No new analog-history or profile-progress
+symbolic theorem is claimed. The TLA+ sources and proposed controller are unchanged.
+
 2026-10-22. **Result: a separate, bounded descriptive TLA+ package matches 20
 original-firmware trigger histories and four direct-G endpoint controls.** It
 exposes native-backed starts from preexisting active input, X reclassification,

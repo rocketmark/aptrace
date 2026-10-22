@@ -23,6 +23,18 @@ apfw2 implementation exists in this package. Physical reliability, numerical
 policy, hardware validators and future implementation refinement remain unproven;
 release grades do not change.
 
+## Bounded symbolic trigger verification
+
+[Target2](docs/investigations/trigger-symbolic-reachability-target2.md) establishes
+feasible instruction-level digital-gate queries: two SAT anchors and eight
+UNSAT exclusions, with22 native fragment controls. The seven software fields are
+necessary at pre-read checks; captured32-bit R0=0 alone selects acceptance after
+the read. Current GPIO is not rechecked. No natural concurrent state mutation
+was shown; the descriptive model's atomic guard/decision assumes stable state
+across acquisition. Analog history, startup/X producers and profile initiation
+remain concrete/static rather than universally symbolically verified. Target3
+may proceed; no physical reliability or release-grade change follows.
+
 ## Startup voltage-learning dependency
 
 [Target1](docs/investigations/startup-voltage-learning.md) distinguishes derived
@@ -32,7 +44,7 @@ later acceptance/timer initiation, whereas crossing over the stored average and
 flag leaves the recorded execution identical. Both868/915 natural pairs agree.
 No adaptive standby-threshold consumer was found; global alias nondependence is
 not proved. Partial/bounded symbolic effects are not accepted as exclusion proofs.
-Target2 may proceed with this distinction and validated symbolic feasibility;
+Target2 now supplies bounded digital results with positive feasibility anchors;
 Target3 and physical misfire causation remain separate.
 
 ## Original trigger state-machine verification

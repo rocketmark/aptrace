@@ -1,0 +1,178 @@
+[
+  {
+    "name": "gate-sat-model",
+    "passed": true,
+    "pc": "0x00009226",
+    "expected": "0x00009226",
+    "instructions": 19,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-channel0",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 3,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-channel1",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 5,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-channel2",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 7,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-channel3",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 9,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-marker",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 13,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-idle",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 17,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-bad-TR",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 19,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "gate-idle-upper-word",
+    "passed": true,
+    "pc": "0x00009226",
+    "expected": "0x00009226",
+    "instructions": 19,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "captured-low-current-high",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 3,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "captured-high-current-low",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 3,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "captured-word256",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 3,
+    "scope": "local fragment; not startup/motion execution"
+  },
+  {
+    "name": "analog-X1-199",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 33,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-200",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 33,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-580",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 33,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-581",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 29,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-866",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 29,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-249",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 33,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-250",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 33,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-750",
+    "passed": true,
+    "pc": "0x00009232",
+    "expected": "0x00009232",
+    "instructions": 33,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-751",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 29,
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "post-read-guards-invalid",
+    "passed": true,
+    "pc": "0x00008f98",
+    "expected": "0x00008f98",
+    "instructions": 3,
+    "scope": "injected entry, no natural concurrent writer established"
+  }
+]

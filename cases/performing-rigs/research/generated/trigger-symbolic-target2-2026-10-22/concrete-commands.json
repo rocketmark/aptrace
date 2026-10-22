@@ -1,0 +1,234 @@
+{
+  "runs": [
+    {
+      "name": "gate-sat-model",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-sat-model.json",
+      "expected": "0x00009226"
+    },
+    {
+      "name": "gate-bad-channel0",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:01000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel0.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-bad-channel1",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00010000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel1.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-bad-channel2",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000100 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel2.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-bad-channel3",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000001 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel3.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-bad-marker",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7a000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-marker.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-bad-idle",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:08 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-idle.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-bad-TR",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:01 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-TR.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "gate-idle-upper-word",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09140000 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-idle-upper-word.json",
+      "expected": "0x00009226"
+    },
+    {
+      "name": "captured-low-current-high",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --mmio-size 0x4000000 --entry 922c --reg r0=0 --seed-mem 410080a0:20000000 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/captured-low-current-high.json",
+      "expected": "0x00008f98"
+    },
+    {
+      "name": "captured-high-current-low",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --mmio-size 0x4000000 --entry 922c --reg r0=1 --seed-mem 410080a0:00000000 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/captured-high-current-low.json",
+      "expected": "0x00009232"
+    },
+    {
+      "name": "captured-word256",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --mmio-size 0x4000000 --entry 922c --reg r0=256 --seed-mem 410080a0:00000000 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/captured-word256.json",
+      "expected": "0x00009232"
+    }
+  ],
+  "initial": [
+    {
+      "name": "gate-sat-model",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-sat-model.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "256e29",
+          "wall_time_seconds": 0.000007875,
+          "exit_code": 0,
+          "original_token_count": 26,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-sat-model.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-channel0",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:01000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel0.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "c05c09",
+          "wall_time_seconds": 0.000004833,
+          "exit_code": 0,
+          "original_token_count": 27,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel0.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-channel1",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00010000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel1.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "4f2d6e",
+          "wall_time_seconds": 0.000005792,
+          "exit_code": 0,
+          "original_token_count": 27,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel1.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-channel2",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000100 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel2.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "2a71a7",
+          "wall_time_seconds": 0.0000045,
+          "exit_code": 0,
+          "original_token_count": 27,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel2.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-channel3",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000001 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel3.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "35300f",
+          "wall_time_seconds": 0.0000035,
+          "exit_code": 0,
+          "original_token_count": 27,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-channel3.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-marker",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7a000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-marker.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "fcc210",
+          "wall_time_seconds": 0.000005708,
+          "exit_code": 0,
+          "original_token_count": 26,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-marker.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-idle",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:08 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-idle.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "197a89",
+          "wall_time_seconds": 0.000024167,
+          "exit_code": 0,
+          "original_token_count": 26,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-idle.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-bad-TR",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:01 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-TR.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "9e6890",
+          "wall_time_seconds": 0.000007416,
+          "exit_code": 0,
+          "original_token_count": 25,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-bad-TR.json\n"
+        }
+      }
+    },
+    {
+      "name": "gate-idle-upper-word",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 9202 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09140000 --seed-mem 20003120:00 --stop-at 9226 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-idle-upper-word.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "7e014e",
+          "wall_time_seconds": 0.00001925,
+          "exit_code": 0,
+          "original_token_count": 28,
+          "output": "Wrote cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/gate-idle-upper-word.json\n"
+        }
+      }
+    },
+    {
+      "name": "captured-low-current-high",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 922c --reg r0=0 --seed-mem 410080a0:20000000 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/captured-low-current-high.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "49eaaf",
+          "wall_time_seconds": 0.000005,
+          "exit_code": 1,
+          "original_token_count": 181,
+          "output": "Warning: truncated output (original token count: 181)\nTotal output lines: 10\n\nTraceback (most recent call last):\n  File \"/Users/mstalzer/github/aptrace/tools/unicorn/run_concrete.py\", line 247, in <module>\n    sys.exit(main(sys.argv[1:]))\n  File \"/Users/mstalzer/github/aptrace/tools/unicorn/run_concrete.py\", line 231…61 tokens truncated…thub/aptrace/tools/unicorn/.venv/lib/python3.9/site-packages/unicorn/unicorn_py3/unicorn.py\", line 998, in mem_write\n    raise UcError(status, address, size)\nunicorn.unicorn_py3.unicorn.UcError: Invalid memory write (UC_ERR_WRITE_UNMAPPED)\n"
+        }
+      }
+    },
+    {
+      "name": "captured-high-current-low",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 922c --reg r0=1 --seed-mem 410080a0:00000000 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/captured-high-current-low.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "2e8476",
+          "wall_time_seconds": 0.000026958,
+          "exit_code": 1,
+          "original_token_count": 181,
+          "output": "Warning: truncated output (original token count: 181)\nTotal output lines: 10\n\nTraceback (most recent call last):\n  File \"/Users/mstalzer/github/aptrace/tools/unicorn/run_concrete.py\", line 247, in <module>\n    sys.exit(main(sys.argv[1:]))\n  File \"/Users/mstalzer/github/aptrace/tools/unicorn/run_concrete.py\", line 231…61 tokens truncated…thub/aptrace/tools/unicorn/.venv/lib/python3.9/site-packages/unicorn/unicorn_py3/unicorn.py\", line 998, in mem_write\n    raise UcError(status, address, size)\nunicorn.unicorn_py3.unicorn.UcError: Invalid memory write (UC_ERR_WRITE_UNMAPPED)\n"
+        }
+      }
+    },
+    {
+      "name": "captured-word256",
+      "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 922c --reg r0=256 --seed-mem 410080a0:00000000 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/captured-word256.json",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "b2a9e5",
+          "wall_time_seconds": 0.000008667,
+          "exit_code": 1,
+          "original_token_count": 181,
+          "output": "Warning: truncated output (original token count: 181)\nTotal output lines: 10\n\nTraceback (most recent call last):\n  File \"/Users/mstalzer/github/aptrace/tools/unicorn/run_concrete.py\", line 247, in <module>\n    sys.exit(main(sys.argv[1:]))\n  File \"/Users/mstalzer/github/aptrace/tools/unicorn/run_concrete.py\", line 231…61 tokens truncated…thub/aptrace/tools/unicorn/.venv/lib/python3.9/site-packages/unicorn/unicorn_py3/unicorn.py\", line 998, in mem_write\n    raise UcError(status, address, size)\nunicorn.unicorn_py3.unicorn.UcError: Invalid memory write (UC_ERR_WRITE_UNMAPPED)\n"
+        }
+      }
+    }
+  ]
+}

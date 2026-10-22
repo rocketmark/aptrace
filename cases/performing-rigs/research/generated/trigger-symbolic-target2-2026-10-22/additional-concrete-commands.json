@@ -1,0 +1,62 @@
+[
+  {
+    "name": "analog-X1-199",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:c8000000 --seed-mem 200000a8:44020000 --seed-mem 20000190:c7000000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X1-199.json",
+    "expected": "0x00008f98",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-200",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:c8000000 --seed-mem 200000a8:44020000 --seed-mem 20000190:c8000000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X1-200.json",
+    "expected": "0x00009232",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-580",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:c8000000 --seed-mem 200000a8:44020000 --seed-mem 20000190:44020000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X1-580.json",
+    "expected": "0x00009232",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-581",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:c8000000 --seed-mem 200000a8:44020000 --seed-mem 20000190:45020000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X1-581.json",
+    "expected": "0x00008f98",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X1-866",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:c8000000 --seed-mem 200000a8:44020000 --seed-mem 20000190:62030000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X1-866.json",
+    "expected": "0x00008f98",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-249",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:fa000000 --seed-mem 200000a8:ee020000 --seed-mem 20000190:f9000000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X2-249.json",
+    "expected": "0x00008f98",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-250",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:fa000000 --seed-mem 200000a8:ee020000 --seed-mem 20000190:fa000000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X2-250.json",
+    "expected": "0x00009232",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-750",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:fa000000 --seed-mem 200000a8:ee020000 --seed-mem 20000190:ee020000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X2-750.json",
+    "expected": "0x00009232",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "analog-X2-751",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 8f48 --reg r4=0x20000190 --reg r5=0x20002524 --reg r6=0x20003120 --seed-mem 20002524:00000000 --seed-mem 20001b38:7b000000 --seed-mem 200000d8:09 --seed-mem 20003120:00 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --seed-mem 200000c0:fa000000 --seed-mem 200000a8:ee020000 --seed-mem 20000190:ef020000 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/analog-X2-751.json",
+    "expected": "0x00008f98",
+    "scope": "thresholds seeded from native X writers; filter and clock not executed"
+  },
+  {
+    "name": "post-read-guards-invalid",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --mmio-size 0x4000000 --entry 922c --reg r0=0 --seed-mem 410080a0:20000000 --seed-mem 20002524:01010101 --seed-mem 20001b38:7a000000 --seed-mem 200000d8:00 --seed-mem 20003120:01 --stop-at 8f98 --stop-at 9232 --max-instructions 100 --out cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/post-read-guards-invalid.json",
+    "expected": "0x00008f98",
+    "scope": "injected entry, no natural concurrent writer established"
+  }
+]

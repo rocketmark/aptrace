@@ -1,0 +1,104 @@
+[
+  {
+    "id": "A",
+    "entry": "0x9202 (Thumb seed0x9203)",
+    "exit": "0x9226",
+    "result": "SAT",
+    "predicate": "ReachReadBoundary",
+    "modeled": "actual lifted instructions, seven symbolic guard cells, fixed r5/r6",
+    "model": {
+      "channels": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "marker": 123,
+      "idle_byte": 9,
+      "TR": 0
+    }
+  },
+  {
+    "id": "B-r5[0]",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND r5[0] != 0",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "B-r5[1]",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND r5[1] != 0",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "B-r5[2]",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND r5[2] != 0",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "B-r5[3]",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND r5[3] != 0",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "B-state32",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND state32 != 123",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "B-state8",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND state8 != 9",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "B-r6[0]",
+    "entry": "0x9202",
+    "exit": "0x9226",
+    "result": "UNSAT",
+    "predicate": "ReachReadBoundary AND r6[0] != 0",
+    "positive_control": "A SAT",
+    "meaning": "exclusion at local pre-read boundary, not whole-program exclusion"
+  },
+  {
+    "id": "C-positive",
+    "entry": "0x922c",
+    "exit": "0x8f98",
+    "result": "SAT",
+    "predicate": "finalPC == 0x8f98",
+    "model": {
+      "R0": 0
+    },
+    "modeled": "actual single-block cmp/beq; digitalRead not executed"
+  },
+  {
+    "id": "C-negative",
+    "entry": "0x922c",
+    "exit": "0x8f98",
+    "result": "UNSAT",
+    "predicate": "finalPC == 0x8f98 AND R0 != 0",
+    "positive_control": "C-positive SAT",
+    "meaning": "nonzero captured register cannot take this branch; no GPIO/current-state premise"
+  }
+]

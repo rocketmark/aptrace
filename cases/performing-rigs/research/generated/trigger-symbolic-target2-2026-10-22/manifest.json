@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-22",
+  "repository_head": "05d63946c91d98215e5faba17a8b1adaa779b39c",
+  "role": "APTrace operator",
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "firmware_sha256": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+  "report": "cases/performing-rigs/docs/investigations/trigger-symbolic-reachability-target2.md",
+  "report_sha256": "64586d63bb61b2795247b08edff703dbb463d9126c8dd44b4b366c3d9460c965",
+  "sources": {
+    "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace": "30ee4e92cbb5a0be039ad4e9208132d936e0258ef768beef782f9489168cf7ff",
+    "cases/performing-rigs/src/APTrace/Case/PerformingRigsScenarios.hs": "4666c38bcbf2ae528b50bf29e527d9b254f4446f21756d5e443377a48c2c0d4f",
+    "src/APTrace/ProtocolHarness.hs": "05c031902c3b377baa479043423ed012479eb5914bb3f3d9bfb5ea67f3a2e03c",
+    "src/APTrace/SymbolicRunner.hs": "34122c717af9cda3a7c81b5752b3c40d0b3a3d751eabe7fc41b23f53493abb14",
+    "src/APTrace/FirmwareLoader.hs": "e325ccdadd844d0831be75e0e1cbaf0ca418d84cd94cc61bc8226c09b43614be",
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/ghidra/aptrace_ghidra.py": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2"
+  },
+  "symbolic_queries": 10,
+  "results": {
+    "SAT": 2,
+    "UNSAT": 8
+  },
+  "native_fragments": 22,
+  "checks": 53,
+  "proposed_reference_package_unchanged": true,
+  "descriptive_model_package_unchanged": true,
+  "limits": [
+    "digital instruction fragments only; no symbolic digitalRead or profile evaluator",
+    "analog static/concrete, not arbitrary-history SMT proof",
+    "stable-state/acquisition assumptions; no natural concurrent guard mutation shown",
+    "no full binary refinement, physical motion, Target3 audit or new framework"
+  ]
+}

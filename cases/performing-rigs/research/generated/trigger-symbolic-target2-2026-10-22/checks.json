@@ -1,0 +1,214 @@
+[
+  {
+    "check": "gate-sat-model",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-channel0",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-channel1",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-channel2",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-channel3",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-marker",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-idle",
+    "passed": true
+  },
+  {
+    "check": "gate-bad-TR",
+    "passed": true
+  },
+  {
+    "check": "gate-idle-upper-word",
+    "passed": true
+  },
+  {
+    "check": "captured-low-current-high",
+    "passed": true
+  },
+  {
+    "check": "captured-high-current-low",
+    "passed": true
+  },
+  {
+    "check": "captured-word256",
+    "passed": true
+  },
+  {
+    "check": "analog-X1-199",
+    "passed": true
+  },
+  {
+    "check": "analog-X1-200",
+    "passed": true
+  },
+  {
+    "check": "analog-X1-580",
+    "passed": true
+  },
+  {
+    "check": "analog-X1-581",
+    "passed": true
+  },
+  {
+    "check": "analog-X1-866",
+    "passed": true
+  },
+  {
+    "check": "analog-X2-249",
+    "passed": true
+  },
+  {
+    "check": "analog-X2-250",
+    "passed": true
+  },
+  {
+    "check": "analog-X2-750",
+    "passed": true
+  },
+  {
+    "check": "analog-X2-751",
+    "passed": true
+  },
+  {
+    "check": "post-read-guards-invalid",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_A.gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_A.gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[0].gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[0].gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[1].gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[1].gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[2].gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[2].gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[3].gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r5[3].gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r6[0].gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_r6[0].gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_state32.gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_state32.gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_state8.gate.interaction.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "solver archive aptrace_crosscheck_B_state8.gate.standalone.smt2.gz",
+    "passed": true
+  },
+  {
+    "check": "standalone positive SAT",
+    "passed": true
+  },
+  {
+    "check": "standalone TR exclusion UNSAT",
+    "passed": true
+  },
+  {
+    "check": "query results 2 SAT 8 UNSAT",
+    "passed": true
+  },
+  {
+    "check": "unchanged proposed reference package",
+    "passed": true
+  },
+  {
+    "check": "unchanged descriptive model package",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-acquired-transient.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-unsampled-transient.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-low-before-eligibility.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-x2.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-single-pulse.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-startup-active.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-held-extended.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/startup-baseline-2026-10-22/natural900.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/startup-baseline-2026-10-22/filter-control.json",
+    "passed": true
+  },
+  {
+    "check": "native original cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/analog-startup-transient-tail.json",
+    "passed": true
+  }
+]

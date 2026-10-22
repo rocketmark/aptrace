@@ -1,0 +1,40 @@
+=== Query A: positive reachability, entry 0x9202 -> stop 0x9226 (all seven guards free) ===
+  regOverrides: r5=0x20002524 (device-state array), r6=0x20003120 (TR-enable byte address)
+  symbolic: r5[0..3], state32 (0x20001b38 via the 0x9260 literal), state8 (0x200000d8 via the 0x9264 literal), r6[0]
+  Query A (positive): SAT. Model:
+    r5[0] = 0x0
+    r5[1] = 0x0
+    r5[2] = 0x0
+    r5[3] = 0x0
+    state32 = 0x7b
+    state8 = 0x9
+    r6[0] = 0x0
+
+=== Query B: one negative check per guard (each expected UNSAT) ===
+
+  -- r5[0] != 0x0 (all other guards still free)
+  Query B (r5[0] violated): UNSAT.
+
+  -- r5[1] != 0x0 (all other guards still free)
+  Query B (r5[1] violated): UNSAT.
+
+  -- r5[2] != 0x0 (all other guards still free)
+  Query B (r5[2] violated): UNSAT.
+
+  -- r5[3] != 0x0 (all other guards still free)
+  Query B (r5[3] violated): UNSAT.
+
+  -- state32 != 0x7b (all other guards still free)
+  Query B (state32 violated): UNSAT.
+
+  -- state8 != 0x9 (all other guards still free)
+  Query B (state8 violated): UNSAT.
+
+  -- r6[0] != 0x0 (all other guards still free)
+  Query B (r6[0] violated): UNSAT.
+
+=== Query C: single-block check at 0x922c (post-digitalRead continuation), R0 symbolic ===
+  0x8f98 (config-reload write) reachable from 0x922c:   SAT: reachable when R0 = 0x0
+
+  -- control: R0 != 0x0 (R0 still fully symbolic otherwise) -- is 0x8f98 still reachable?
+  UNSAT: no model -- this branch is not reachable.

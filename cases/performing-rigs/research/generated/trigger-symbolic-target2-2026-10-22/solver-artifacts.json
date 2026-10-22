@@ -1,0 +1,98 @@
+[
+  {
+    "source": "/tmp/aptrace_crosscheck_A.gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_A.gate.interaction.smt2.gz",
+    "uncompressed_sha256": "e6602d9278fab7c1f1cb64dc134983b7a6fcec6591365d2cf0a5d024a83237d4",
+    "bytes": 15156205
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_A.gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_A.gate.standalone.smt2.gz",
+    "uncompressed_sha256": "a2ad00bfd85fb3fc54425ba9d635e6c178287f7ae85e9b2db8a132382d5085ae",
+    "bytes": 10534871
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[0].gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_r5[0].gate.interaction.smt2.gz",
+    "uncompressed_sha256": "0bf4174bb898c321e6778d68663312d83b2e4a3d58ef2278b71ba7579fcd7585",
+    "bytes": 11314212
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[0].gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_r5[0].gate.standalone.smt2.gz",
+    "uncompressed_sha256": "7d3c0726cd37b669d557461068e7aafb7c44e6e0a68d49a37e7830afd03f63dd",
+    "bytes": 10535095
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[1].gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_r5[1].gate.interaction.smt2.gz",
+    "uncompressed_sha256": "7beb853d1d432f564abb94db5b191a45d00cea70ce9346bc61a98fd65777558b",
+    "bytes": 11314212
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[1].gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_r5[1].gate.standalone.smt2.gz",
+    "uncompressed_sha256": "ab21ecde834ded064dc96a45fe00825e876071428ec7c140e0c22085bc82ca92",
+    "bytes": 10535095
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[2].gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_r5[2].gate.interaction.smt2.gz",
+    "uncompressed_sha256": "199589ea3f93fdc1b9bf0f69947302d8e0590dda8590fa077dc9347ee2af58f6",
+    "bytes": 11314212
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[2].gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_r5[2].gate.standalone.smt2.gz",
+    "uncompressed_sha256": "2d9e53c7dfe65c27bee7f207809a1ba66671ac8479a85b61f78b29d5f0d2e709",
+    "bytes": 10535095
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[3].gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_r5[3].gate.interaction.smt2.gz",
+    "uncompressed_sha256": "9bddb61943ada7ecb08e3dcd07b842d52cf277546662e694a3992e7870f18c88",
+    "bytes": 11314212
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r5[3].gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_r5[3].gate.standalone.smt2.gz",
+    "uncompressed_sha256": "ee2a206ee8c55004c43bfb921d48889d11ad79c49148a315339ecb059fe2cc10",
+    "bytes": 10535095
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r6[0].gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_r6[0].gate.interaction.smt2.gz",
+    "uncompressed_sha256": "94a17ba2373feb5dc4f39e13a0a3904027b1d2f4b057749d528c582f1eb5778a",
+    "bytes": 11314212
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_r6[0].gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_r6[0].gate.standalone.smt2.gz",
+    "uncompressed_sha256": "c9ac133112f6abf9ad277f569b7cf6fcf68d347a75454b1a32dc3f68acdfe783",
+    "bytes": 10535095
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_state32.gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_state32.gate.interaction.smt2.gz",
+    "uncompressed_sha256": "18b3b7cfbb10a688ec995d5d3c55b0d32f235b5547f253127683895fbdd1794b",
+    "bytes": 11314725
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_state32.gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_state32.gate.standalone.smt2.gz",
+    "uncompressed_sha256": "1906b0b4c37169e0e8cef4ac3de0f6a975ecb26319a57ca2a9ca4dff9a945069",
+    "bytes": 10535548
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_state8.gate.interaction.smt2",
+    "archive": "aptrace_crosscheck_B_state8.gate.interaction.smt2.gz",
+    "uncompressed_sha256": "b516b8f6a9c3a08ca8dd3446e723f40de5a9e0918f7d0dc371add082f88b26c7",
+    "bytes": 11314212
+  },
+  {
+    "source": "/tmp/aptrace_crosscheck_B_state8.gate.standalone.smt2",
+    "archive": "aptrace_crosscheck_B_state8.gate.standalone.smt2.gz",
+    "uncompressed_sha256": "fb5c52022036b1d247083215cc61ade4b57be65bcd7c056caba9004870e8e0bf",
+    "bytes": 10535095
+  }
+]

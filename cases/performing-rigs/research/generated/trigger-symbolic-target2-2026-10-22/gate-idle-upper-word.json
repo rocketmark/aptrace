@@ -1,0 +1,90 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+  "entry": "0x00009203",
+  "instructions_executed": 19,
+  "stop_reason": "reached stop address 0x00009226",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x00009226",
+    "0x00009232"
+  ],
+  "execution_mode": "continuous",
+  "registers": {
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "r2": "0x00000000",
+    "r3": "0x00000000",
+    "r4": "0x00000000",
+    "r5": "0x20002524",
+    "r6": "0x20003120",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x00000000",
+    "pc": "0x00009226",
+    "cpsr": "0x60100033"
+  },
+  "memory": {},
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00009202",
+    "0x00009204",
+    "0x00009206",
+    "0x00009208",
+    "0x0000920a",
+    "0x0000920c",
+    "0x0000920e",
+    "0x00009210",
+    "0x00009212",
+    "0x00009214",
+    "0x00009216",
+    "0x00009218",
+    "0x0000921a",
+    "0x0000921c",
+    "0x0000921e",
+    "0x00009220",
+    "0x00009222",
+    "0x00009224",
+    "0x00009226"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20002524",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20001b38",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200000d8",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20003120",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": []
+}

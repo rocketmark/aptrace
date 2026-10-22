@@ -1,0 +1,81 @@
+{
+  "cwd": "/Users/mstalzer/github/aptrace",
+  "queries": [
+    {
+      "command": "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace trigger-crosscheck cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin",
+      "output": "crosscheck-868.log",
+      "exit_status": 0,
+      "scope": "preset A/B/C; fixed temporary output names"
+    },
+    {
+      "command": "/opt/homebrew/bin/z3 -T:30 /tmp/aptrace_crosscheck_A.gate.standalone.smt2",
+      "output": "z3-positive-replay.log",
+      "exit_status": 0
+    },
+    {
+      "command": "/opt/homebrew/bin/z3 -T:30 '/tmp/aptrace_crosscheck_B_r6[0].gate.standalone.smt2'",
+      "output": "z3-TR-exclusion-replay.log",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x9202 0x9268",
+      "output": "digital-native.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0xd3dc",
+      "output": "digitalRead.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x8f48 0x8fa8",
+      "output": "analog-native.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x9178 0x919e",
+      "output": "X-writers-native.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0xd3dc 0xd408",
+      "output": "digitalRead-native.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x9128 --count 2",
+      "output": "analog-pointers.txt",
+      "exit_status": 0
+    }
+  ],
+  "concrete_command_files": [
+    "concrete-commands.json",
+    "additional-concrete-commands.json"
+  ],
+  "native_instruction_budget_per_fragment": 100,
+  "final_concrete_runs": 22,
+  "final_concrete_exit_statuses": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ]
+}
