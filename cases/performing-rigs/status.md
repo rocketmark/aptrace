@@ -42,6 +42,14 @@ checks pass, and no physical-output or tested-release equivalence is asserted.
 
 ## Experimental binary freshness subset
 
+**Negotiation-oriented patch evidence package COMPLETE (2026-10-22).** The
+[engineering handoff for Nathan and Noxon](docs/investigations/noxon-trigger-engineering-handoff.md)
+consolidates the VVR, motor-output, experimental patch and Gate 1–4 evidence.
+The original objective is achieved within the tested execution conditions;
+package completion does not certify the patch or promote any gate verdict.
+No certification or deployment is intended. Gate 5 remains NOT RUN, and no
+additional verification gates or follow-on research are scheduled by this handoff.
+
 Independent [Gate 1 verification](docs/investigations/trigger-patch-gate1.md) is
 **INCONCLUSIVE**. Ghidra and Macaw corroborate byte confinement, Thumb decoding
 and local routing; no instruction defect was demonstrated. Integrated framed
