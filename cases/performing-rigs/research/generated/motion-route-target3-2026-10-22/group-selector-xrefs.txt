@@ -1,0 +1,14 @@
+References TO 0x20003098:
+  0x00005466 (FUN_00005448)  [READ]  label=DAT_20003098
+  0x0000546e (FUN_00005448)  [WRITE]  label=DAT_20003098
+  0x00005bea (tc0_isr_completion__CUSTOM)  [READ]  label=DAT_20003098
+  0x00007a22 (None)  [READ]  label=DAT_20003098
+  0x00007a2a (None)  [WRITE]  label=DAT_20003098
+  0x00008082 (None)  [WRITE]  label=DAT_20003098
+  0x000085ce (ascii_dispatcher__CUSTOM)  [WRITE]  label=DAT_20003098
+  0x00008994 (FUN_00008960)  [READ]  label=DAT_20003098
+  0x000089a2 (FUN_00008960)  [READ]  label=DAT_20003098
+  0x00008b00 (channel_event_monitor__CUSTOM)  [READ]  label=DAT_20003098
+  0x00008bb6 (channel_event_monitor__CUSTOM)  [PARAM]  label=DAT_20003098
+  0x00008bb8 (channel_event_monitor__CUSTOM)  [READ]  label=DAT_20003098
+  0x00008bc8 (channel_event_monitor__CUSTOM)  [WRITE]  label=DAT_20003098

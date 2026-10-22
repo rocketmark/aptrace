@@ -1,0 +1,47 @@
+[
+  {
+    "path": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-held.json",
+    "sha256": "5e292f25e7b7e74b3e8357cbaabb778bb77ea517a0571f706476a3b890261c60",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/w-after-trigger.json",
+    "sha256": "ac380ee6b7cdf9706594bb0ca72aead52a5defb9e6254bf7bd8683cc13758f16",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/w-dispatch-native.txt",
+    "sha256": "47ba6b02afdf42c42d3e313a61bf4c8db3b1a2bb51dbc6d5dbb9091eeb6181a6",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/remote-nonzero-profile.json",
+    "sha256": "73ab7b2c97b6b26243d14eeb693bb98c69b30ce7835273b05558d218ca45d42b",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/research/generated/trigger-symbolic-target2-2026-10-22/solver-results.json",
+    "sha256": "2904a61e610d1c6780f8abbfee069d1a6a81dd6056edc2cc5010be5c6f11d6f0",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/research/runs/remote-to-motor/f0-captured-value-to-planner.json",
+    "sha256": "854a7b2df42306d0116a3715e3b99b0e675fb2852ad36a05a829cb08f15ba671",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/docs/replacement/mapped-pin-causal-gap-audit.md",
+    "sha256": "307541b4f197a63ceffbc94a8e1ac07cb15bf64b10e385e6514d903986985a24",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/docs/replacement/tmc5160-datasheet-reconciliation.md",
+    "sha256": "e130e65c23a110da2ea1c3bfda02997b9d2eec30ca0d15c4e2c3272778b8b8f0",
+    "scope": "reused scoped evidence; see report for limits"
+  },
+  {
+    "path": "cases/performing-rigs/research/runs/tmc5160-datasheet-reconstruction/startup-transaction-table.md",
+    "sha256": "fc373ee6ebdbdd8f58ded912699d392ce766713c17f0754dc0b89d39f90d4c23",
+    "scope": "reused scoped evidence; see report for limits"
+  }
+]

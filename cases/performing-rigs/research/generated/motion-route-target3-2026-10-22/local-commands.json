@@ -1,0 +1,47 @@
+[
+  {
+    "name": "enable-ch0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 0 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch0.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing"
+  },
+  {
+    "name": "enable-ch1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 1 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch1.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing"
+  },
+  {
+    "name": "enable-ch2",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 2 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch2.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing"
+  },
+  {
+    "name": "enable-ch3",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 3 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch3.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing"
+  },
+  {
+    "name": "enable-ch7",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 7 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch7.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing"
+  },
+  {
+    "name": "enable-ch4",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 4 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch4.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing"
+  },
+  {
+    "name": "period-catchup",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5c00 --arg 0 --arg 100 --mmio-size 0x4000000 --mmio-clear-bits 40003804:8000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000 --seed-mem 20003099:01 --seed-mem 20003098:00 --log-mmio --max-mmio-log 2000 --watch 5898 --dump-mem 20002064:4 --dump-mem 40003800:32 --max-instructions 20000 --seed-mem 40003814:c800 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/period-catchup.json",
+    "scope": "isolated original period update with COUNT200/100/99, period100; synthetic READSYNC completion"
+  },
+  {
+    "name": "period-equal",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5c00 --arg 0 --arg 100 --mmio-size 0x4000000 --mmio-clear-bits 40003804:8000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000 --seed-mem 20003099:01 --seed-mem 20003098:00 --log-mmio --max-mmio-log 2000 --watch 5898 --dump-mem 20002064:4 --dump-mem 40003800:32 --max-instructions 20000 --seed-mem 40003814:6400 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/period-equal.json",
+    "scope": "isolated original period update with COUNT200/100/99, period100; synthetic READSYNC completion"
+  },
+  {
+    "name": "period-below",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5c00 --arg 0 --arg 100 --mmio-size 0x4000000 --mmio-clear-bits 40003804:8000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000 --seed-mem 20003099:01 --seed-mem 20003098:00 --log-mmio --max-mmio-log 2000 --watch 5898 --dump-mem 20002064:4 --dump-mem 40003800:32 --max-instructions 20000 --seed-mem 40003814:6300 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/period-below.json",
+    "scope": "isolated original period update with COUNT200/100/99, period100; synthetic READSYNC completion"
+  }
+]

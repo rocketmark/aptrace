@@ -1,5 +1,13 @@
 # Original Noxon trigger state machine and formal counterexamples
 
+Target3 qualification: [motion route coverage](motion-initiation-route-coverage.md)
+now demonstrates B1 before MC4, W1 without trigger acceptance, and G continuing
+through the common evaluator to timer enable. Local catch-up and group-service
+runs also emit STEP writes outside a new timer-start action. The model is a
+selected trigger-history model, not a complete initiation graph. Recommended
+producer/output and concurrency corrections are documented separately; no TLA+
+source or proposed controller was silently changed.
+
 Target2 qualification: [bounded binary reachability](trigger-symbolic-reachability-target2.md)
 now supports digital pre-read guards and captured-R0 branching with feasible
 SAT/UNSAT companions. The original gate precedes digitalRead, while this model's

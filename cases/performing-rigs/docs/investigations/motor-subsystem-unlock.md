@@ -1,5 +1,12 @@
 # Motor Subsystem Unlock and Commands — Current Model
 
+Current qualification: [Target3 motion-route coverage](motion-initiation-route-coverage.md)
+and the [request campaign](trigger-misfire-failure-modes.md) supersede historical
+claims below that no writer sets live1 or that phase-arm0 excludes motion.
+Original0x5f8c writes live1, including B1 before MC4 and evaluator-driven
+trigger/G/W1 starts. Historical evidence remains preserved with that scope.
+
+
 From a cold boot, the AutoPilot's motor-phase/ramp/monitor subsystem is
 not merely idle — it is structurally unreachable: the function long
 assumed to be a straight-line `setup()` (`FUN_00009464`) actually

@@ -1,0 +1,140 @@
+[
+  {
+    "name": "B1-full-reset",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:42317c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:03000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:e100 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --watch 8258 --watch 8452 --watch 84d4 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20001b38:4 --dump-mem 20001b38:4 --watch-mem 20000060:1 --dump-mem 20000060:1 --watch-mem 2000312d:1 --dump-mem 2000312d:1 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 2000012c:4 --dump-mem 2000012c:4 --watch-mem 20000164:4 --dump-mem 20000164:4 --watch-mem 20000094:4 --dump-mem 20000094:4 --watch-mem 20003099:1 --dump-mem 20003099:1 --watch-mem 40003800:32 --dump-mem 40003800:32 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/B1-full-reset.json",
+    "scope": "full original reset, B1 RX injection, no program or MC4; inactive external ADC225",
+    "exit_status": 0
+  },
+  {
+    "name": "B1-latch-blocked",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:42317c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:03000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:e100 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --watch 8258 --watch 8452 --watch 84d4 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20001b38:4 --dump-mem 20001b38:4 --watch-mem 20000060:1 --dump-mem 20000060:1 --watch-mem 2000312d:1 --dump-mem 2000312d:1 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 2000012c:4 --dump-mem 2000012c:4 --watch-mem 20000164:4 --dump-mem 20000164:4 --watch-mem 20000094:4 --dump-mem 20000094:4 --watch-mem 20003099:1 --dump-mem 20003099:1 --watch-mem 40003800:32 --dump-mem 40003800:32 --force-mem 94b8:2000312d:01 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/B1-latch-blocked.json",
+    "scope": "same reset/RX command, one guard injected at RX boundary",
+    "exit_status": 0
+  },
+  {
+    "name": "B1-busy-blocked",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:42317c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:03000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:e100 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --watch 8258 --watch 8452 --watch 84d4 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20001b38:4 --dump-mem 20001b38:4 --watch-mem 20000060:1 --dump-mem 20000060:1 --watch-mem 2000312d:1 --dump-mem 2000312d:1 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 2000012c:4 --dump-mem 2000012c:4 --watch-mem 20000164:4 --dump-mem 20000164:4 --watch-mem 20000094:4 --dump-mem 20000094:4 --watch-mem 20003099:1 --dump-mem 20003099:1 --watch-mem 40003800:32 --dump-mem 40003800:32 --force-mem 94b8:20001b14:01 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/B1-busy-blocked.json",
+    "scope": "same reset/RX command, one guard injected at RX boundary",
+    "exit_status": 0
+  },
+  {
+    "name": "G-to-enable",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:00004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --force-mem 94b8:2000245c:2b312c312c312c302c39382c312c302c302c302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:1c000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --force-mem 94e4:2000245c:473031317c --force-mem 94e4:200024c0:00000000 --force-mem 94e4:200024c4:05000000 --watch 8258 --watch 8146 --watch 817e --watch 81ca --watch 83de --watch 8718 --watch 93fc --watch 7e2c --watch 4b24 --watch 4ca8 --watch 6e4c --watch 6fd8 --watch ae60 --watch b070 --watch-mem 20001b40:80 --dump-mem 20001b40:80 --watch-mem 20001b38:4 --dump-mem 20001b38:4 --watch-mem 20002064:4 --dump-mem 20002064:4 --watch-mem 2000201c:4 --dump-mem 2000201c:4 --watch-mem 200025e0:2 --dump-mem 200025e0:2 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20002318:4 --dump-mem 20002318:4 --watch-mem 20004147:1 --dump-mem 20004147:1 --watch-mem 20000060:1 --dump-mem 20000060:1 --watch-mem 2000232a:64 --watch-mem-write 200025e0:2 --max-mem-write-log 100 --max-watch-hits 3000 --max-instructions 14000000 --dump-mem 40003800:32 --mmio-clear-bits 40003804:8000 --seed-mem 410080a0:20000000 --watch 8f98 --watch-mem 20001fc0:1 --watch-mem 20003120:1 --watch-mem 200000d8:1 --watch-mem 410080a0:4 --watch-mem 20002329:1 --dump-mem 20002329:1 --dump-mem 2000006c:16 --dump-mem 200000f0:16 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 2000310c:4 --dump-mem 2000310c:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --stop-at 5fa6 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/G-to-enable.json",
+    "scope": "continued original full-reset G trigger-HIGH witness through timer-enable boundary",
+    "exit_status": 0
+  },
+  {
+    "name": "W1-to-enable",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:00004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --force-mem 94b8:2000245c:2b312c312c312c302c39382c312c302c302c302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:1c000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --force-mem 94e4:2000245c:57317c --force-mem 94e4:200024c0:00000000 --force-mem 94e4:200024c4:03000000 --watch 8258 --watch 8146 --watch 817e --watch 81ca --watch 83de --watch 8718 --watch 93fc --watch 7e2c --watch 4b24 --watch 4ca8 --watch 6e4c --watch 6fd8 --watch ae60 --watch b070 --watch-mem 20001b40:80 --dump-mem 20001b40:80 --watch-mem 20001b38:4 --dump-mem 20001b38:4 --watch-mem 20002064:4 --dump-mem 20002064:4 --watch-mem 2000201c:4 --dump-mem 2000201c:4 --watch-mem 200025e0:2 --dump-mem 200025e0:2 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20002318:4 --dump-mem 20002318:4 --watch-mem 20004147:1 --dump-mem 20004147:1 --watch-mem 20000060:1 --dump-mem 20000060:1 --watch-mem 2000232a:64 --watch-mem-write 200025e0:2 --max-mem-write-log 100 --max-watch-hits 3000 --max-instructions 14000000 --dump-mem 40003800:32 --mmio-clear-bits 40003804:8000 --seed-mem 410080a0:20000000 --watch 8f98 --watch-mem 20001fc0:1 --watch-mem 20003120:1 --watch-mem 200000d8:1 --watch-mem 410080a0:4 --watch-mem 20002329:1 --dump-mem 20002329:1 --dump-mem 2000006c:16 --dump-mem 200000f0:16 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 2000310c:4 --dump-mem 2000310c:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --stop-at 5fa6 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/W1-to-enable.json",
+    "scope": "continuous original reset/program/MC4/W1, digital trigger HIGH, no G",
+    "exit_status": 0
+  },
+  {
+    "name": "enable-ch0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 0 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch0.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing",
+    "exit_status": 0
+  },
+  {
+    "name": "enable-ch1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 1 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch1.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing",
+    "exit_status": 0
+  },
+  {
+    "name": "enable-ch2",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 2 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch2.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing",
+    "exit_status": 0
+  },
+  {
+    "name": "enable-ch3",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 3 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch3.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing",
+    "exit_status": 0
+  },
+  {
+    "name": "enable-ch7",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 7 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch7.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing",
+    "exit_status": 0
+  },
+  {
+    "name": "enable-ch4",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5810 --arg 4 --mmio-size 0x4000000 --log-mmio --max-instructions 1000 --dump-mem 40003800:32 --dump-mem 40003c00:32 --dump-mem 4101a000:32 --dump-mem 4101c000:32 --dump-mem 41018000:68 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-ch4.json",
+    "scope": "isolated original timer-enable helper; no startup or physical timing",
+    "exit_status": 0
+  },
+  {
+    "name": "period-catchup",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5c00 --arg 0 --arg 100 --mmio-size 0x4000000 --mmio-clear-bits 40003804:8000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000 --seed-mem 20003099:01 --seed-mem 20003098:00 --log-mmio --max-mmio-log 2000 --watch 5898 --dump-mem 20002064:4 --dump-mem 40003800:32 --max-instructions 20000 --seed-mem 40003814:c800 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/period-catchup.json",
+    "scope": "isolated original period update with COUNT200/100/99, period100; synthetic READSYNC completion",
+    "exit_status": 0
+  },
+  {
+    "name": "period-equal",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5c00 --arg 0 --arg 100 --mmio-size 0x4000000 --mmio-clear-bits 40003804:8000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000 --seed-mem 20003099:01 --seed-mem 20003098:00 --log-mmio --max-mmio-log 2000 --watch 5898 --dump-mem 20002064:4 --dump-mem 40003800:32 --max-instructions 20000 --seed-mem 40003814:6400 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/period-equal.json",
+    "scope": "isolated original period update with COUNT200/100/99, period100; synthetic READSYNC completion",
+    "exit_status": 0
+  },
+  {
+    "name": "period-below",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 5c00 --arg 0 --arg 100 --mmio-size 0x4000000 --mmio-clear-bits 40003804:8000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000 --seed-mem 20003099:01 --seed-mem 20003098:00 --log-mmio --max-mmio-log 2000 --watch 5898 --dump-mem 20002064:4 --dump-mem 40003800:32 --max-instructions 20000 --seed-mem 40003814:6300 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/period-below.json",
+    "scope": "isolated original period update with COUNT200/100/99, period100; synthetic READSYNC completion",
+    "exit_status": 0
+  },
+  {
+    "name": "group-two-channels",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 5994 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:0100000001000000 --seed-mem 20003099:0101 --seed-mem 20003130:00 --seed-mem 2000250c:01000000 --seed-mem 2000252f:02 --seed-mem 200029ec:0000803f --seed-mem 200029fc:00000000 --seed-mem 20002a0c:01000000 --seed-mem 200029dc:01000000 --seed-mem 20003098:01 --stop-at 5a08 --stop-at 5a26 --watch 5898 --dump-mem 20002064:8 --dump-mem 40003c00:4 --log-mmio --max-instructions 10000 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/group-two-channels.json",
+    "scope": "seeded original group fragment; no natural group arming or interrupt delivery; stops after secondary pulse or at loop exit",
+    "exit_status": 0
+  },
+  {
+    "name": "group-zero-ratio",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 5994 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:0100000001000000 --seed-mem 20003099:0101 --seed-mem 20003130:00 --seed-mem 2000250c:01000000 --seed-mem 2000252f:02 --seed-mem 200029ec:00000000 --seed-mem 200029fc:00000000 --seed-mem 20002a0c:01000000 --seed-mem 200029dc:01000000 --seed-mem 20003098:01 --stop-at 5a08 --stop-at 5a26 --watch 5898 --dump-mem 20002064:8 --dump-mem 40003c00:4 --log-mmio --max-instructions 10000 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/group-zero-ratio.json",
+    "scope": "seeded original group fragment; no natural group arming or interrupt delivery; stops after secondary pulse or at loop exit",
+    "exit_status": 0
+  },
+  {
+    "name": "group-threshold-control",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 5994 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:0100000001000000 --seed-mem 20003099:0101 --seed-mem 20003130:00 --seed-mem 2000250c:01000000 --seed-mem 2000252f:02 --seed-mem 200029ec:0000803f --seed-mem 200029fc:02000000 --seed-mem 20002a0c:01000000 --seed-mem 200029dc:01000000 --seed-mem 20003098:01 --stop-at 5a08 --stop-at 5a26 --watch 5898 --dump-mem 20002064:8 --dump-mem 40003c00:4 --log-mmio --max-instructions 10000 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/group-threshold-control.json",
+    "scope": "seeded original group fragment; no natural group arming or interrupt delivery; stops after secondary pulse or at loop exit",
+    "exit_status": 0
+  },
+  {
+    "name": "handler-ch0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 607c --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch0.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded",
+    "exit_status": 0
+  },
+  {
+    "name": "handler-ch1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 6098 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch1.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded",
+    "exit_status": 0
+  },
+  {
+    "name": "handler-ch2",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 60b4 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch2.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded",
+    "exit_status": 0
+  },
+  {
+    "name": "handler-ch3",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 60d0 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch3.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded",
+    "exit_status": 0
+  },
+  {
+    "name": "handler-ch7",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 60ec --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch7.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded",
+    "exit_status": 0
+  },
+  {
+    "name": "W1-nonzero-to-enable",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:00004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --force-mem 94e4:2000245c:57317c --force-mem 94e4:200024c0:00000000 --force-mem 94e4:200024c4:03000000 --watch 8258 --watch 8146 --watch 817e --watch 81ca --watch 83de --watch 8718 --watch 93fc --watch 7e2c --watch 4b24 --watch 4ca8 --watch 6e4c --watch 6fd8 --watch ae60 --watch b070 --watch-mem 20001b40:80 --dump-mem 20001b40:80 --watch-mem 20001b38:4 --dump-mem 20001b38:4 --watch-mem 20002064:4 --dump-mem 20002064:4 --watch-mem 2000201c:4 --dump-mem 2000201c:4 --watch-mem 200025e0:2 --dump-mem 200025e0:2 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20002318:4 --dump-mem 20002318:4 --watch-mem 20004147:1 --dump-mem 20004147:1 --watch-mem 20000060:1 --dump-mem 20000060:1 --watch-mem 2000232a:64 --watch-mem-write 200025e0:2 --max-mem-write-log 100 --max-watch-hits 3000 --max-instructions 14000000 --dump-mem 40003800:32 --mmio-clear-bits 40003804:8000 --seed-mem 410080a0:20000000 --watch 8f98 --watch-mem 20001fc0:1 --watch-mem 20003120:1 --watch-mem 200000d8:1 --watch-mem 410080a0:4 --watch-mem 20002329:1 --dump-mem 20002329:1 --dump-mem 2000006c:16 --dump-mem 200000f0:16 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 2000310c:4 --dump-mem 2000310c:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --stop-at 5fa6 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/W1-nonzero-to-enable.json",
+    "scope": "continuous reset/original Remote-built nonzero profile/MC4/W1; trigger HIGH, no G",
+    "exit_status": 0
+  }
+]

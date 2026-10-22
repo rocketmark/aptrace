@@ -1,0 +1,17 @@
+[
+  {
+    "name": "group-two-channels",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 5994 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:0100000001000000 --seed-mem 20003099:0101 --seed-mem 20003130:00 --seed-mem 2000250c:01000000 --seed-mem 2000252f:02 --seed-mem 200029ec:0000803f --seed-mem 200029fc:00000000 --seed-mem 20002a0c:01000000 --seed-mem 200029dc:01000000 --seed-mem 20003098:01 --stop-at 5a08 --stop-at 5a26 --watch 5898 --dump-mem 20002064:8 --dump-mem 40003c00:4 --log-mmio --max-instructions 10000 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/group-two-channels.json",
+    "scope": "seeded original group fragment; no natural group arming or interrupt delivery; stops after secondary pulse or at loop exit"
+  },
+  {
+    "name": "group-zero-ratio",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 5994 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:0100000001000000 --seed-mem 20003099:0101 --seed-mem 20003130:00 --seed-mem 2000250c:01000000 --seed-mem 2000252f:02 --seed-mem 200029ec:00000000 --seed-mem 200029fc:00000000 --seed-mem 20002a0c:01000000 --seed-mem 200029dc:01000000 --seed-mem 20003098:01 --stop-at 5a08 --stop-at 5a26 --watch 5898 --dump-mem 20002064:8 --dump-mem 40003c00:4 --log-mmio --max-instructions 10000 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/group-zero-ratio.json",
+    "scope": "seeded original group fragment; no natural group arming or interrupt delivery; stops after secondary pulse or at loop exit"
+  },
+  {
+    "name": "group-threshold-control",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry 5994 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:0100000001000000 --seed-mem 20003099:0101 --seed-mem 20003130:00 --seed-mem 2000250c:01000000 --seed-mem 2000252f:02 --seed-mem 200029ec:0000803f --seed-mem 200029fc:02000000 --seed-mem 20002a0c:01000000 --seed-mem 200029dc:01000000 --seed-mem 20003098:01 --stop-at 5a08 --stop-at 5a26 --watch 5898 --dump-mem 20002064:8 --dump-mem 40003c00:4 --log-mmio --max-instructions 10000 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/group-threshold-control.json",
+    "scope": "seeded original group fragment; no natural group arming or interrupt delivery; stops after secondary pulse or at loop exit"
+  }
+]

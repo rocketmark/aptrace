@@ -1,0 +1,442 @@
+[
+  {
+    "check": "B1-full-reset error-free",
+    "passed": true
+  },
+  {
+    "check": "B1-full-reset bounded termination",
+    "passed": true
+  },
+  {
+    "check": "B1-full-reset watch cap",
+    "passed": true
+  },
+  {
+    "check": "B1-latch-blocked error-free",
+    "passed": true
+  },
+  {
+    "check": "B1-latch-blocked bounded termination",
+    "passed": true
+  },
+  {
+    "check": "B1-latch-blocked watch cap",
+    "passed": true
+  },
+  {
+    "check": "B1-busy-blocked error-free",
+    "passed": true
+  },
+  {
+    "check": "B1-busy-blocked bounded termination",
+    "passed": true
+  },
+  {
+    "check": "B1-busy-blocked watch cap",
+    "passed": true
+  },
+  {
+    "check": "G-to-enable error-free",
+    "passed": true
+  },
+  {
+    "check": "G-to-enable bounded termination",
+    "passed": true
+  },
+  {
+    "check": "G-to-enable watch cap",
+    "passed": true
+  },
+  {
+    "check": "W1-to-enable error-free",
+    "passed": true
+  },
+  {
+    "check": "W1-to-enable bounded termination",
+    "passed": true
+  },
+  {
+    "check": "W1-to-enable watch cap",
+    "passed": true
+  },
+  {
+    "check": "enable-ch0 error-free",
+    "passed": true
+  },
+  {
+    "check": "enable-ch0 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "enable-ch0 watch cap",
+    "passed": true
+  },
+  {
+    "check": "enable-ch1 error-free",
+    "passed": true
+  },
+  {
+    "check": "enable-ch1 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "enable-ch1 watch cap",
+    "passed": true
+  },
+  {
+    "check": "enable-ch2 error-free",
+    "passed": true
+  },
+  {
+    "check": "enable-ch2 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "enable-ch2 watch cap",
+    "passed": true
+  },
+  {
+    "check": "enable-ch3 error-free",
+    "passed": true
+  },
+  {
+    "check": "enable-ch3 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "enable-ch3 watch cap",
+    "passed": true
+  },
+  {
+    "check": "enable-ch7 error-free",
+    "passed": true
+  },
+  {
+    "check": "enable-ch7 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "enable-ch7 watch cap",
+    "passed": true
+  },
+  {
+    "check": "enable-ch4 error-free",
+    "passed": true
+  },
+  {
+    "check": "enable-ch4 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "enable-ch4 watch cap",
+    "passed": true
+  },
+  {
+    "check": "period-catchup error-free",
+    "passed": true
+  },
+  {
+    "check": "period-catchup bounded termination",
+    "passed": true
+  },
+  {
+    "check": "period-catchup watch cap",
+    "passed": true
+  },
+  {
+    "check": "period-equal error-free",
+    "passed": true
+  },
+  {
+    "check": "period-equal bounded termination",
+    "passed": true
+  },
+  {
+    "check": "period-equal watch cap",
+    "passed": true
+  },
+  {
+    "check": "period-below error-free",
+    "passed": true
+  },
+  {
+    "check": "period-below bounded termination",
+    "passed": true
+  },
+  {
+    "check": "period-below watch cap",
+    "passed": true
+  },
+  {
+    "check": "group-two-channels error-free",
+    "passed": true
+  },
+  {
+    "check": "group-two-channels bounded termination",
+    "passed": true
+  },
+  {
+    "check": "group-two-channels watch cap",
+    "passed": true
+  },
+  {
+    "check": "group-zero-ratio error-free",
+    "passed": true
+  },
+  {
+    "check": "group-zero-ratio bounded termination",
+    "passed": true
+  },
+  {
+    "check": "group-zero-ratio watch cap",
+    "passed": true
+  },
+  {
+    "check": "group-threshold-control error-free",
+    "passed": true
+  },
+  {
+    "check": "group-threshold-control bounded termination",
+    "passed": true
+  },
+  {
+    "check": "group-threshold-control watch cap",
+    "passed": true
+  },
+  {
+    "check": "handler-ch0 error-free",
+    "passed": true
+  },
+  {
+    "check": "handler-ch0 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "handler-ch0 watch cap",
+    "passed": true
+  },
+  {
+    "check": "handler-ch1 error-free",
+    "passed": true
+  },
+  {
+    "check": "handler-ch1 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "handler-ch1 watch cap",
+    "passed": true
+  },
+  {
+    "check": "handler-ch2 error-free",
+    "passed": true
+  },
+  {
+    "check": "handler-ch2 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "handler-ch2 watch cap",
+    "passed": true
+  },
+  {
+    "check": "handler-ch3 error-free",
+    "passed": true
+  },
+  {
+    "check": "handler-ch3 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "handler-ch3 watch cap",
+    "passed": true
+  },
+  {
+    "check": "handler-ch7 error-free",
+    "passed": true
+  },
+  {
+    "check": "handler-ch7 bounded termination",
+    "passed": true
+  },
+  {
+    "check": "handler-ch7 watch cap",
+    "passed": true
+  },
+  {
+    "check": "W1-nonzero-to-enable error-free",
+    "passed": true
+  },
+  {
+    "check": "W1-nonzero-to-enable bounded termination",
+    "passed": true
+  },
+  {
+    "check": "W1-nonzero-to-enable watch cap",
+    "passed": true
+  },
+  {
+    "check": "B1-full-reset original enable/live boundary",
+    "passed": true
+  },
+  {
+    "check": "G-to-enable original enable/live boundary",
+    "passed": true
+  },
+  {
+    "check": "W1-to-enable original enable/live boundary",
+    "passed": true
+  },
+  {
+    "check": "W1-nonzero-to-enable original enable/live boundary",
+    "passed": true
+  },
+  {
+    "check": "B1 before MC4 with invalid marker",
+    "passed": true
+  },
+  {
+    "check": "B1-latch-blocked no rate/enable",
+    "passed": true
+  },
+  {
+    "check": "B1-busy-blocked no rate/enable",
+    "passed": true
+  },
+  {
+    "check": "G-to-enable no external trigger acceptance",
+    "passed": true
+  },
+  {
+    "check": "W1-to-enable no external trigger acceptance",
+    "passed": true
+  },
+  {
+    "check": "W1-nonzero-to-enable no external trigger acceptance",
+    "passed": true
+  },
+  {
+    "check": "G reaches request",
+    "passed": true
+  },
+  {
+    "check": "W1 uses reload, no G request",
+    "passed": true
+  },
+  {
+    "check": "enable dispatch ch0",
+    "passed": true
+  },
+  {
+    "check": "enable dispatch ch1",
+    "passed": true
+  },
+  {
+    "check": "enable dispatch ch2",
+    "passed": true
+  },
+  {
+    "check": "enable dispatch ch3",
+    "passed": true
+  },
+  {
+    "check": "enable dispatch ch7",
+    "passed": true
+  },
+  {
+    "check": "enable dispatch ch4",
+    "passed": true
+  },
+  {
+    "check": "period-catchup position",
+    "passed": true
+  },
+  {
+    "check": "period-catchup timer remains disabled",
+    "passed": true
+  },
+  {
+    "check": "period-catchup pulse writes",
+    "passed": true
+  },
+  {
+    "check": "period-equal position",
+    "passed": true
+  },
+  {
+    "check": "period-equal timer remains disabled",
+    "passed": true
+  },
+  {
+    "check": "period-equal pulse writes",
+    "passed": true
+  },
+  {
+    "check": "period-below position",
+    "passed": true
+  },
+  {
+    "check": "period-below timer remains disabled",
+    "passed": true
+  },
+  {
+    "check": "period-below pulse writes",
+    "passed": true
+  },
+  {
+    "check": "group-two-channels positions",
+    "passed": true
+  },
+  {
+    "check": "group-two-channels pulse selection",
+    "passed": true
+  },
+  {
+    "check": "group-two-channels slave TC1 disabled",
+    "passed": true
+  },
+  {
+    "check": "group-zero-ratio positions",
+    "passed": true
+  },
+  {
+    "check": "group-zero-ratio pulse selection",
+    "passed": true
+  },
+  {
+    "check": "group-zero-ratio slave TC1 disabled",
+    "passed": true
+  },
+  {
+    "check": "group-threshold-control positions",
+    "passed": true
+  },
+  {
+    "check": "group-threshold-control pulse selection",
+    "passed": true
+  },
+  {
+    "check": "group-threshold-control slave TC1 disabled",
+    "passed": true
+  },
+  {
+    "check": "handler channel0 position",
+    "passed": true
+  },
+  {
+    "check": "handler channel1 position",
+    "passed": true
+  },
+  {
+    "check": "handler channel2 position",
+    "passed": true
+  },
+  {
+    "check": "handler channel3 position",
+    "passed": true
+  },
+  {
+    "check": "auxiliary handler toggles PB22",
+    "passed": true
+  }
+]

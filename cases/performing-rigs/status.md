@@ -23,6 +23,19 @@ apfw2 implementation exists in this package. Physical reliability, numerical
 policy, hardware validators and future implementation refinement remain unproven;
 release grades do not change.
 
+## Motion-initiation route coverage
+
+[Target3](docs/investigations/motion-initiation-route-coverage.md) expands the
+bounded graph: original B1 starts TC0 before MC4 with markerff; G and W1 now
+have continuous timer-enable witnesses with the external trigger inactive.
+Period maintenance can emit a software catch-up STEP, and a seeded TC0 group
+service can pulse a secondary channel whose timer is disabled.23 native runs
+and110 artifact checks support the inventory. The descriptive model omits these
+producer/output distinctions; neither TLA+ package was modified. Fresh Macaw
+coverage remains incomplete, and natural group/jog/W0/phase lifecycle, autonomous
+IRQ delivery, STOP quiescence and physical behavior remain open. No exhaustive
+sink coverage or release-grade change is claimed.
+
 ## Bounded symbolic trigger verification
 
 [Target2](docs/investigations/trigger-symbolic-reachability-target2.md) establishes
@@ -32,8 +45,8 @@ necessary at pre-read checks; captured32-bit R0=0 alone selects acceptance after
 the read. Current GPIO is not rechecked. No natural concurrent state mutation
 was shown; the descriptive model's atomic guard/decision assumes stable state
 across acquisition. Analog history, startup/X producers and profile initiation
-remain concrete/static rather than universally symbolically verified. Target3
-may proceed; no physical reliability or release-grade change follows.
+remain concrete/static rather than universally symbolically verified. Target3 now extends route coverage at its documented bounded exit; no physical
+reliability or release-grade change follows.
 
 ## Startup voltage-learning dependency
 

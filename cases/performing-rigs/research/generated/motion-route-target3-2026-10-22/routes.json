@@ -1,0 +1,98 @@
+[
+  {
+    "id": "trigger",
+    "producer": "external trigger",
+    "conditions": "normal pre-read G then capturedLOW or filtered outside-band",
+    "path": "reload ->6338->5f8c->5810",
+    "evidence_class": "continuous_prior_and_local_symbolic",
+    "limit": "pre-read guards not rechecked; no IRQ/waveform proof"
+  },
+  {
+    "id": "W1",
+    "producer": "W1 command",
+    "conditions": "channel bytes0 and marker7b; valid record/evaluator downstream",
+    "path": "6e4c->6b50->6338->5f8c",
+    "evidence_class": "continuous_new",
+    "limit": "trigger HIGH; nonzero and zero-timing frames distinguished"
+  },
+  {
+    "id": "G",
+    "producer": "fresh G sequence",
+    "conditions": "G producer guards, target-current, usable constructed profile",
+    "path": "7e2c->6fd8->6338->5f8c",
+    "evidence_class": "continuous_new",
+    "limit": "request boundary now continued to enable; physical reference unproved"
+  },
+  {
+    "id": "B1",
+    "producer": "B1 command",
+    "conditions": "latch2000312d=0 and channel0 live=0, rechecked live before tail",
+    "path": "84e2->5f8c",
+    "evidence_class": "continuous_new",
+    "limit": "before MC4 with markerff; manual product contract not assumed defective"
+  },
+  {
+    "id": "W0",
+    "producer": "W0 command",
+    "conditions": "mode20 chooses alternate target, otherwise record start; per-channel target-current and rate table",
+    "path": "72ac->6fd8->scheduler",
+    "evidence_class": "static_only",
+    "limit": "unattributed tail target recovered; natural nonzero session not shown"
+  },
+  {
+    "id": "W_phase",
+    "producer": "bare W / phase service",
+    "conditions": "record/phase/idle/live/stop and target conditions",
+    "path": "8fee or9050->6fd8",
+    "evidence_class": "static_plus_partial_native",
+    "limit": "earlier profile may already start; no completed phase re-arm proof"
+  },
+  {
+    "id": "jog",
+    "producer": "F0/E0",
+    "conditions": "RX state producers set channel/profile mode2, target and direction",
+    "path": "5448/4d18 ->6338 possible ->5f8c",
+    "evidence_class": "state_native_and_static_join",
+    "limit": "natural jog activation/STOP continuity unproved"
+  },
+  {
+    "id": "catchup",
+    "producer": "period maintenance",
+    "conditions": "COUNT above scaled period and read completion",
+    "path": "5c00->5be8/5898->STEP",
+    "evidence_class": "local_native",
+    "limit": "no ENABLE required in synthetic entry; not proof of natural unauthorized motion"
+  },
+  {
+    "id": "IRQ",
+    "producer": "timer event / handler invocation",
+    "conditions": "peripheral/NVIC environment plus delta/divisor state",
+    "path": "607c/6098/60b4/60d0->STEP",
+    "evidence_class": "local_native",
+    "limit": "direct handler calls, not delivered interrupts"
+  },
+  {
+    "id": "group",
+    "producer": "TC0 group selector",
+    "conditions": "selector nonzero, primary selection, group count/ratio/threshold",
+    "path": "5be8->5994->593c and5898",
+    "evidence_class": "local_native_fragment",
+    "limit": "secondary timer can remain disabled; natural arming unresolved"
+  },
+  {
+    "id": "aux",
+    "producer": "startup/internal TCC",
+    "conditions": "5d24 callers and eventual TCC handler delivery",
+    "path": "TCC1->60ec->PB22",
+    "evidence_class": "startup_reused_and_local_native",
+    "limit": "unassigned purpose; no fifth motor assertion"
+  },
+  {
+    "id": "control",
+    "producer": "startup/config/connector/manual control",
+    "conditions": "control sequence and serial setting-specific",
+    "path": "77a0/77f8/7868/driver setters",
+    "evidence_class": "native_reused",
+    "limit": "energization/control requests distinct from STEP"
+  }
+]

@@ -1,0 +1,38 @@
+[effects-spike] discovery: start
+[effects-spike] discovery: done in 0.100946s
+[effects-spike] mkFunCFG: start
+[effects-spike] mkFunCFG: done in 0.000962s
+[effects-spike] crucible setup: global memory: start
+[effects-spike] crucible setup: global memory: done in 0.081388s
+[effects-spike] base path-condition conjuncts excluded from guards: 70768
+[effects-spike] crucible simulation: start
+[effects-spike] crucible simulation: done in 0.072212s
+[effects-spike] observed: reads=1 writes=0 calls=1 crucible_steps=26 backend_assumptions=3
+[effects-spike] raw-effect serialization: start
+[effects-spike] raw-effect serialization: done in 0.0013s
+[effects-spike] raw effects written to cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-effects-ch0.raw.json
+[effects-spike] solver initialization: start
+[effects-spike] solver initialization: done in 0.006975s
+[effects-spike] z3 smoke test: start
+[effects-spike] solver query #1 [smoke | x==1] -> SAT in 1.5645e-2s
+[effects-spike] solver query #2 [smoke | x==1 && x==2] -> UNSAT in 7.9e-5s
+[effects-spike] z3 smoke test: done in 0.016358s
+[effects-spike] z3 smoke test: PASS
+[effects-spike] assert common assumptions once: start
+[effects-spike] assert common assumptions once: done in 2.822508s
+[effects-spike] solver enrichment: start
+[effects-spike] solver query #3 [region: proven member? | access 1 read @0x5814 address in FLASH 0x4000+0x11470] -> UNSAT in 6.39634s
+[effects-spike] solver query #4 [guard: satisfiable? | access 1 read @0x5814 guard] -> SAT in 9.2424e-2s
+[effects-spike] solver query #5 [guard: refutable? | access 1 read @0x5814 guard] -> SAT in 9.0582e-2s
+[effects-spike] solver query #6 [uniqueness: model | access 1 read @0x5814 address | assuming arg_r0 == 0x0] -> SAT in 26.94685s
+[effects-spike] solver query #7 [uniqueness: other value? | access 1 read @0x5814 address | assuming arg_r0 == 0x0] -> UNSAT in 8.8761e-2s
+[effects-spike] solver query #8 [guard: satisfiable? | access 1 read @0x5814 guard | assuming arg_r0 == 0x0] -> SAT in 0.100424s
+[effects-spike] solver query #9 [guard: refutable? | access 1 read @0x5814 guard | assuming arg_r0 == 0x0] -> UNSAT in 8.9816e-2s
+[effects-spike] solver query #10 [range: return above 1? | return r0] -> SAT in 9.4274e-2s
+[effects-spike] solver query #11 [uniqueness: model | return r0 | assuming arg_r0 == 0x0] -> SAT in 25.816718s
+[effects-spike] solver query #12 [uniqueness: other value? | return r0 | assuming arg_r0 == 0x0] -> SAT in 25.527215s
+[effects-spike] solver enrichment: done in 85.247434s
+[effects-spike] z3 session shutdown: ExitSuccess
+[effects-spike] final enrichment serialization: start
+[effects-spike] final enrichment serialization: done in 0.000417s
+[effects-spike] solver queries: 12; enriched effects written to cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-effects-ch0.enriched.json

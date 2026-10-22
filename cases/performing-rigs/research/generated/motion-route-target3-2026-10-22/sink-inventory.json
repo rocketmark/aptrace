@@ -1,0 +1,98 @@
+[
+  {
+    "id": "timer_enable",
+    "entry": "0x5810",
+    "writes": [
+      "TC0/1/2/3 CTRLA.ENABLE",
+      "TCC1 CTRLA.ENABLE for selector7"
+    ],
+    "guards": "selector0..3 or7; no local trigger/program/ref/driver gate",
+    "evidence": "isolated native dispatch controls; complete selected-arm symbolic effects0x5820",
+    "caller": "0x5f8c"
+  },
+  {
+    "id": "rate_start",
+    "entry": "0x5f8c",
+    "writes": [
+      "init/period helpers",
+      "timer enable",
+      "live[channel]=1"
+    ],
+    "guards": "caller-specific; no local program/trigger requirement",
+    "evidence": "continuous trigger (prior), B1/G/W1 (new)",
+    "callers": [
+      "0x663a",
+      "0x6722",
+      "0x84e2"
+    ]
+  },
+  {
+    "id": "step_output",
+    "entry": "0x5898",
+    "writes": [
+      "software position increment",
+      "d388 HIGH/LOW requests using channel pin table"
+    ],
+    "guards": "delta/divisor state; optional post-pulse target stop",
+    "evidence": "isolated handlers, period catch-up, group fragment",
+    "pins": {
+      "0": "PB10",
+      "1": "PA08",
+      "2": "PB12",
+      "3": "PA10"
+    }
+  },
+  {
+    "id": "catch_up",
+    "entry": "0x5c00",
+    "writes": [
+      "CC0",
+      "READSYNC",
+      "possible direct STEP service",
+      "COUNT reset"
+    ],
+    "guards": "count*factor versus period*scale; READSYNC completion",
+    "evidence": "isolated COUNT200>100 positive,100/99 controls"
+  },
+  {
+    "id": "group_service",
+    "entry": "0x5994",
+    "writes": [
+      "primary callback pulse",
+      "selected secondary pulses",
+      "progress/threshold state"
+    ],
+    "guards": "TC0 selector20003098, group count, ratios, direction and thresholds",
+    "evidence": "seeded two-channel native fragment and two controls; natural group arming unproved"
+  },
+  {
+    "id": "auxiliary",
+    "entries": [
+      "0x5d24",
+      "0x60ec"
+    ],
+    "writes": [
+      "TCC1 ENABLE",
+      "PB22 OUTTGL mask400000"
+    ],
+    "guards": "startup/internal callers; handler execution",
+    "evidence": "reused startup trace and isolated handler; purpose unassigned, not established motor channel"
+  },
+  {
+    "id": "driver_control",
+    "entries": [
+      "0x77a0",
+      "0x77f8",
+      "0x7868",
+      "0x6968",
+      "TMC SPI configuration"
+    ],
+    "writes": [
+      "control GPIO states",
+      "chopper/current/microstep requests"
+    ],
+    "guards": "startup, connector, command and timestamp-specific",
+    "evidence": "existing control and driver investigations",
+    "warning": "not a demonstrated STEP sink, MCU DRV_ENN control or physical safety gate"
+  }
+]

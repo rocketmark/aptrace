@@ -1,0 +1,29 @@
+[effects-spike] discovery: start
+[effects-spike] discovery: done in 0.001258s
+[effects-spike] mkFunCFG: start
+[effects-spike] mkFunCFG: done in 0.000296s
+[effects-spike] crucible setup: global memory: start
+[effects-spike] crucible setup: global memory: done in 0.095195s
+[effects-spike] base path-condition conjuncts excluded from guards: 70768
+[effects-spike] crucible simulation: start
+[effects-spike] crucible simulation: done in 0.274767s
+[effects-spike] observed: reads=2 writes=2 calls=0 crucible_steps=13 backend_assumptions=1
+[effects-spike] raw-effect serialization: start
+[effects-spike] raw-effect serialization: done in 0.000952s
+[effects-spike] raw effects written to cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-arm-effects.raw.json
+[effects-spike] solver initialization: start
+[effects-spike] solver initialization: done in 0.003412s
+[effects-spike] z3 smoke test: start
+[effects-spike] solver query #1 [smoke | x==1] -> SAT in 2.401e-3s
+[effects-spike] solver query #2 [smoke | x==1 && x==2] -> UNSAT in 1.15e-4s
+[effects-spike] z3 smoke test: done in 0.00305s
+[effects-spike] z3 smoke test: PASS
+[effects-spike] assert common assumptions once: start
+[effects-spike] assert common assumptions once: done in 3.403992s
+[effects-spike] solver enrichment: start
+[effects-spike] solver query #3 [range: return above 1? | return r0] -> SAT in 6.408062s
+[effects-spike] solver enrichment: done in 6.408322s
+[effects-spike] z3 session shutdown: ExitSuccess
+[effects-spike] final enrichment serialization: start
+[effects-spike] final enrichment serialization: done in 0.000269s
+[effects-spike] solver queries: 3; enriched effects written to cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/enable-arm-effects.enriched.json

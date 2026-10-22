@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-22",
+  "repository_head": "697547b1cb637500346c08475628027ef6d7417a",
+  "role": "APTrace operator",
+  "firmware": {
+    "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3"
+  },
+  "report": "cases/performing-rigs/docs/investigations/motion-initiation-route-coverage.md",
+  "report_sha256": "e1a1aa0ac86d6c1d7c08ee2c6556b70550df5fcb3bf52f362742ab8ecd094599",
+  "native_commands": 23,
+  "native_all_exit0": true,
+  "checks_passed": 110,
+  "checks_total": 110,
+  "independent_macaw": {
+    "functions": 263,
+    "blocks": 3521,
+    "incomplete_terminators": 199,
+    "residual_failures": 48
+  },
+  "source_hashes": {
+    "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace": "30ee4e92cbb5a0be039ad4e9208132d936e0258ef768beef782f9489168cf7ff",
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/ghidra/aptrace_ghidra.py": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2",
+    "src/APTrace/EffectsSpike.hs": "2a09e5266a15435cfdcbb30da7e700227e5f602bb5041990dab0fc760df9aef2",
+    "agent/src/aptrace_agent/function_effects.py": "d99844923f79672dd3b09e161752e305a4869076fba1d2533d7e7903f86e45fe"
+  },
+  "proposed_reference_package_unchanged": 86,
+  "descriptive_package_unchanged": 53,
+  "limitations": [
+    "no exhaustive sink/route proof",
+    "no timer-driven NVIC delivery or physical motion",
+    "no natural group/W0/phase/jog completion/STOP lifecycle",
+    "symbolic effect suffix only, whole-helper switch abstracted as opaque computed call"
+  ],
+  "framework_changes": false,
+  "hardware_operations": false
+}

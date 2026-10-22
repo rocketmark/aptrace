@@ -23,14 +23,14 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
-Target1 [startup learning](docs/investigations/startup-voltage-learning.md) and
-[Target2 digital reachability](docs/investigations/trigger-symbolic-reachability-target2.md)
-are closed at their bounded results: shared filter history matters, stored
-average/flag crossover has no observed effect, and digital gate/sample exclusions
-have feasible SAT anchors. Next user-selected work is Target3 motion-route
-coverage. Preserve analog symbolic/progress limits and the pre-read gate timing
-qualification; do not treat earlier partial effects UNSAT as nondependence or
-assume a natural eligibility race from injected post-read states.
+Targets1/2 and [Target3 route coverage](docs/investigations/motion-initiation-route-coverage.md)
+are closed at their bounded exits. Preserve the filter-history/average distinction,
+feasible digital SAT anchors and pre-read gate timing. Next valuable evidence is a
+natural group/jog/W0/phase operation with exact arming, continuous timer/IRQ
+service and completion/STOP quiescence. Do not repeat the missing-G/profile-start
+search or assume timer ENABLE counts every STEP emission: B1, W1, catch-up and
+group producers are now inventoried. Formal-model corrections need explicit
+scope/authority decisions before implementation; neither controller was changed.
 
 
 The [recovered Noxon formal package](specifications/noxon-trigger/README.md)

@@ -1,0 +1,8 @@
+No callers of 0x000072ac found in the cached static export for 'autopilot868'.
+0x00005d46  FUN_00005d44  -> 0x00005d24  FUN_00005d24
+0x00005d5a  FUN_00005d44  -> 0x00005d24  FUN_00005d24
+0x00005e34  loop_housekeeping_save_trigger__CUSTOM  -> 0x00005d24  FUN_00005d24
+0x00006126  radio_bringup__THIRD_PARTY  -> 0x00005d24  FUN_00005d24
+0x000059a6  tc0_isr_completion__CUSTOM  -> 0x0000593c  FUN_0000593c
+0x00007918  sketch_loop__CUSTOM  -> 0x000077f8  FUN_000077f8
+0x000088e2  ascii_dispatcher__CUSTOM  -> 0x000077f8  FUN_000077f8

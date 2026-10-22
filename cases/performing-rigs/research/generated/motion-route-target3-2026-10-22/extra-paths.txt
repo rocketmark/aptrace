@@ -1,0 +1,21 @@
+==================================================
+No function at 000072bc (seed it first via APTraceSeedVectorTable.java)
+
+==================================================
+No function at 00005980 (seed it first via APTraceSeedVectorTable.java)
+
+==================================================
+Function: FUN_000060ec @ 000060ec  size=22  params=0  callingConvention=unknown
+
+
+void FUN_000060ec(void)
+
+{
+  *(uint *)(DAT_00006104 + 0x2c) = *(uint *)(DAT_00006104 + 0x2c) | 0x10000;
+  *(undefined4 *)(DAT_00006108 + 0x9c) = 0x400000;
+  return;
+}
+
+
+
+

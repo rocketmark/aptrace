@@ -1,0 +1,27 @@
+[
+  {
+    "name": "handler-ch0",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 607c --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch0.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded"
+  },
+  {
+    "name": "handler-ch1",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 6098 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch1.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded"
+  },
+  {
+    "name": "handler-ch2",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 60b4 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch2.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded"
+  },
+  {
+    "name": "handler-ch3",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 60d0 --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch3.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded"
+  },
+  {
+    "name": "handler-ch7",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --call 60ec --mmio-size 0x4000000 --seed-mem 20000164:292b072d --seed-mem 20000094:01000000010000000100000001000000 --seed-mem 20003099:01010101 --log-mmio --max-instructions 20000 --dump-mem 20002064:16 --dump-mem 40003800:4 --dump-mem 41018000:48 --out cases/performing-rigs/research/generated/motion-route-target3-2026-10-22/handler-ch7.json",
+    "scope": "isolated original handler body, no NVIC delivery, timer enable not seeded; position/pulse prerequisites seeded"
+  }
+]
