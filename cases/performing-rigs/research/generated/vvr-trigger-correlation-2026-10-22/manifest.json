@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-22",
+  "repository_head_before_work": "090588e37b1c928c3016978bd631aae9b4ee9e29",
+  "operator_method": "docs/codex-operator.md; existing direct concrete CLI and persistent Ghidra; artifact-only checks",
+  "python": "3.9.6; Clang21.0.0",
+  "unicorn": "2.1.4",
+  "native_runs": 7,
+  "process_exit_statuses": "all0",
+  "physical_operations": false,
+  "firmware_modified": false,
+  "framework_modified": false,
+  "formal_models_modified": false,
+  "release_gate_change": false,
+  "correspondence": "User confirms separate correspondence unavailable; VVR004 appendix summary retained",
+  "source_dependencies": {
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/unicorn/concrete.py": "fcf4529322de345b3f6dd7f4c373084b1957348ade2bb4c1d6acf285d6266f3b",
+    "tools/ghidra/aptrace_ghidra.py": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/commands.json": "3848ea124661dc8a5a2abed5bcf0a92c69fc87ace9637fbb3fb6cba3d07713db",
+    "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/digital-acquired-transient.json": "62e3cbd2f38967fe36fd4a7d9cbd60f880860d600ce7836bc7d01552dc9a7de7",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/commands.json": "d1598f8334c4b6902dbd3144ecff4d9f4cc0dc4a391881e9ce7bc727ed1566d7",
+    "cases/performing-rigs/research/generated/trigger-request-campaign-2026-10-21/profile-evaluator.txt": "cf03ed8e478abc37ae2514db59919b610d65af0ca7394ba5477a417e1a530659",
+    "cases/performing-rigs/research/generated/startup-baseline-2026-10-22/variant-region-identity.json": "8b92916e89c4b9d4619addb014f77eeeceade1940d2bccc85d07b53a6e29146c",
+    "cases/performing-rigs/specifications/trigger-acceptance/NoxonWitness.tla": "2c891def64385cf1aa8add499cc5fa5b728a61939ced419b8acf89f0525daaa3",
+    "cases/performing-rigs/specifications/trigger-acceptance/TriggerAcceptance.tla": "2e1f4bdd64f374ce9959ed3234f621fcd1913de8cf6b387494a4dd77c82ed28b",
+    "cases/performing-rigs/specifications/noxon-trigger/DirectFixtures.tla": "faf37c9b2e49a0ad8868be1f8949c7d48f560648aa8721e0dab9703145c1442e",
+    "cases/performing-rigs/specifications/noxon-trigger/DirectG.tla": "ea9aae1545427d52585c0d5bb57932a0cc0c861a953cd5f659d1d2a4c720d53b",
+    "cases/performing-rigs/specifications/noxon-trigger/NativeFixtures.tla": "7cda262283ba9be45d0042f7cc8095f97459afa0d56a6c2f503235f599024b07",
+    "cases/performing-rigs/specifications/noxon-trigger/NoxonTrigger.tla": "f5b0cbe5b5d2960b6dd1b568404bfc45de6aab3329d47bc1d6ff4a702e3b5ade",
+    "cases/performing-rigs/specifications/noxon-trigger/ReferenceReplay.tla": "2cf18a3873f6f9a0762a162e92c274557a2801a0619f600bbfac976359af7485"
+  }
+}

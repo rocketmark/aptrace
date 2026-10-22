@@ -1,0 +1,181 @@
+
+--- PDF page 1 ---
+PERFORMING RIGS
+AutoPilot Firmware Validation Report
+Document AP-VVR-002
+Revision Rev A
+Product AutoPilot
+Hardware Revision Current Production Hardware
+Firmware Revision Trigger Mitigation Beta (July 2026)
+Validation Date July 22, 2026
+Prepared By Nathan Destro, Performing Rigs
+Location Off-Site Commercial Studio
+Validation Summary
+Validation Status OPEN
+Functional Result CONDITIONAL PASS
+Validation Status — Validation remains open pending identification, corrective action, and successful
+revalidation of the intermittent false-trigger condition. Unexpected machine motion is unacceptable for
+production use. The inability to reproduce the behavior after a power cycle does not reduce its severity
+or close the issue.
+Functional Result — Relay Contact mode and 12/24V Trigger mode successfully recognized repeated
+intentional trigger events following reconnection, with no missed trigger events observed. Functional
+objectives under the validated intentional-test conditions were met; this does not constitute release
+approval.
+1. Executive Summary
+Additional validation of the AutoPilot Trigger Input was performed using a Mark Roberts Motion Control
+(MRMC) robot in a commercial production environment.
+During the validation session, AutoPilot initially failed to respond to several expected trigger sources,
+including MRMC relay contacts, a 9V signal routed through a relay, and an independent 24V source.
+Following reconnection of the system, these failures could not be reproduced, and both Relay Contact
+mode and 12/24V Trigger mode subsequently demonstrated reliable operation through repeated
+intentional trigger testing.
+However, AutoPilot also exhibited unintended trigger events without any intentional input early in the
+validation session. Although this behavior disappeared after approximately ten minutes of operation
+and could not be reproduced following a complete power cycle, unexpected machine motion
+represents a critical safety concern. Because the root cause remains unknown, the issue cannot be
+considered resolved despite the inability to reproduce it.
+The objective of this report is to document both the successful intentional-trigger validation results and
+the remaining open engineering and safety concerns.
+2. Evidence Summary
+Validation Item Result
+Performing Rigs Engineering AP-VVR-002 Rev A Page 1
+
+--- PDF page 2 ---
+Relay Contact Mode PASS
+12/24V Trigger Mode PASS
+Intentional Trigger Misses NONE
+False Triggering OBSERVED
+False Triggering After Power Cycle NOT OBSERVED
+Relay Contact Mode
+• MRMC dry-contact relay successfully triggered AutoPilot.
+• Approximately 10–15 intentional trigger events were performed.
+• Every trigger was recognized successfully.
+• No missed trigger events were observed.
+12/24V Trigger Mode
+• Direct 9V trigger signal successfully activated AutoPilot while configured for 12/24V Trigger Mode.
+• Approximately 10–12 intentional trigger events were performed.
+• Every trigger was recognized successfully.
+• No missed trigger events were observed.
+System Stability After Power Cycle
+Following a complete power cycle:
+• No additional false triggers were observed.
+• No unintended trigger events occurred while the MRMC robot performed unrelated motion.
+• No false trigger events were observed during continued 12/24V testing.
+These observations demonstrate that the previously observed intermittent false-trigger behavior could
+not be reproduced under the subsequent validation conditions. Non-reproduction does not close F-002.
+3. Findings
+F-001 — Initial Trigger Failures Were Not Repeatable
+Early in testing, AutoPilot did not respond to several expected trigger sources (MRMC dry contact; 9V
+routed through a relay to dry contact; independent 24V). A Dragonframe DMC-32 positive control
+confirmed the studio trigger plant could fire other equipment.
+Following reconnection of the system, these failures could not be reproduced despite repeated testing.
+Because the initial failure mechanism remains unknown, additional investigation is recommended. EMS:
+AP-010 (closed as not reproduced; chronology retained).
+Severity: Medium
+Status: Open Investigation
+Performing Rigs Engineering AP-VVR-002 Rev A Page 2
+
+--- PDF page 3 ---
+F-002 — Critical Intermittent False Triggering
+Early in the validation session, AutoPilot initiated stored moves without any intentional trigger input.
+The unintended trigger events occurred approximately every thirty seconds following an early system
+reset.
+The behavior gradually ceased after approximately ten minutes of operation and could not be
+reproduced following a complete power cycle.
+Although the condition became non-repeatable, unexpected machine motion represents a critical
+safety concern. The inability to reproduce the issue does not reduce its severity or eliminate the need for
+root-cause analysis. AutoPilot simply cannot false-trigger in production use.
+Engineering Impact
+• Unexpected machine motion presents an unacceptable operating condition.
+• The root cause has not yet been identified (firmware, hardware, electrical noise, initialization, or
+other).
+• The issue should remain classified as unresolved until corrective action has been verified through
+additional validation.
+EMS: AP-001
+Severity: Critical
+Status: OPEN — Critical Safety Issue
+F-003 — Reliable Trigger Recognition Confirmed
+Following reconnection and power cycling:
+• Relay Contact mode operated reliably.
+• 12/24V Trigger mode operated reliably.
+• Approximately 20–27 consecutive intentional trigger events were successfully recognized.
+• No missed trigger events were observed.
+These results demonstrate that the Trigger Input is capable of reliable operation under the tested
+intentional-trigger conditions.
+Severity: Info
+Status: Validation Passed
+F-004 — 9V Signal Accepted in Both Trigger Modes
+A direct 9V trigger signal successfully activated AutoPilot while configured for:
+• Relay Contact Mode
+• 12/24V Trigger Mode
+This behavior was repeatable throughout testing.
+Clarification is requested regarding whether this behavior is intentional or represents an unintended
+characteristic of the Trigger Input circuitry.
+Severity: Low
+Status: Awaiting Design Clarification
+Performing Rigs Engineering AP-VVR-002 Rev A Page 3
+
+--- PDF page 4 ---
+F-005 — Diagnostic Display Limitation
+During successful trigger events, the INFO page immediately transitions to the execution screen.
+Because of this behavior, trigger voltage and diagnostic information cannot be observed at the
+moment a successful trigger is accepted.
+This limited the ability to capture trigger diagnostic information during validation and to distinguish
+“signal not seen” from “signal seen but not executed” on future sessions.
+EMS: AP-007 / AP-008
+Severity: Low
+Status: Enhancement Opportunity
+4. Questions for Noxon
+Q-001 Can the initial trigger failures be explained, given that they could not be reproduced after
+reconnecting the system?
+Q-002 What mechanism could explain the intermittent false-trigger behavior observed early in the
+validation session (approximately every 30 seconds after reset, self-clearing after ~10 minutes, not
+reproduced after power cycle)?
+Q-003 Is operation from a direct 9V signal intentionally supported in both Relay Contact mode and
+12/24V Trigger mode?
+Q-004 Would it be possible for the INFO page to retain (latch) the most recent trigger diagnostics after
+a successful trigger event for troubleshooting purposes?
+5. Recommendations
+R-001 The intermittent false-trigger condition (F-002 / AP-001) should remain an active critical safety
+investigation until its root cause has been identified and corrective action has been verified. Do not treat
+non-reproduction as closure.
+R-002 Clarify the intended trigger-voltage thresholds and operating characteristics for each Trigger
+Input mode (including F-004 / 9V cross-mode behavior).
+R-003 Consider implementing a diagnostic mode that preserves trigger voltage and trigger-state
+information immediately after a successful trigger event (F-005 / AP-007 / AP-008).
+6. Remaining Validation
+The following validation activities remain planned:
+• Extended-duration stability testing
+• Additional trigger-source compatibility testing (including known-good 24V path re-test after
+recovery discipline)
+• Long-duration idle monitoring
+• Continued validation using MRMC production equipment
+• Validation of any future firmware revisions intended to address the intermittent false-trigger
+condition
+• Capture of INFO idle / active readings where workflow allows
+Engineering Assessment
+This validation session produced two independent conclusions.
+Performing Rigs Engineering AP-VVR-002 Rev A Page 4
+
+--- PDF page 5 ---
+First — functional performance. Following reconnection of the system, AutoPilot successfully
+demonstrated reliable Trigger Input operation in both Relay Contact mode and 12/24V Trigger mode.
+Approximately 20–27 consecutive intentional trigger events were successfully recognized without any
+missed triggers.
+Second — safety / validation readiness. AutoPilot also exhibited an intermittent false-trigger condition
+that resulted in unintended machine motion early in the validation session. Although the behavior could
+not be reproduced following a power cycle, its occurrence represents a critical safety concern because
+unexpected machine motion is unacceptable during production operation. Likelihood is uncertain;
+severity remains Critical.
+Accordingly:
+Dimension Conclusion
+Functional Result CONDITIONAL PASS
+Validation Status OPEN
+Trigger Input functionality has demonstrated reliable performance under repeated intentional testing,
+but overall Trigger Input validation cannot be considered complete until the source of the intermittent
+false-trigger behavior has been identified, corrective action implemented, and the system successfully
+revalidated.
+Revision History
+Rev Date Description
+A 2026-07-22 Initial issue — off-site MRMC studio validation (final session conclusions)
+Performing Rigs Engineering AP-VVR-002 Rev A Page 5

@@ -1,0 +1,219 @@
+
+--- PDF page 1 ---
+PERFORMING RIGS
+AutoPilot Firmware Validation Report
+Document AP-VVR-003
+Revision Rev A
+Product AutoPilot
+Hardware Revision Hardware Revision 1 (bench / field generation) — only HW available for this session
+Firmware Revision Autopilot_firm05-08 · 915 MHz · UI AutoPilot V01 R39 · Remote V01 R42
+Validation Date August 6, 2026
+Prepared By Nathan Destro, Performing Rigs
+Location Bench / shop
+Validation Summary
+Validation Status OPEN
+Functional Result CONDITIONAL PASS
+Validation Status — Validation remains open. Intentional trigger recognition on this firmware is strong,
+and the AP-VVR-002 idle / post-reset false-trigger pattern was not observed during dedicated idle
+watches. However, Relay Contact mode produced continuous unintended triggering under specific
+connected-but-inactive / floating bench-supply conditions. In addition, this session used Hardware
+Revision 1 only; it does not by itself clear Hardware Revision 2 production units.
+Functional Result — Relay Contact and 12 V / 24 V intentional triggers met count targets with zero misses
+under intentional-fire tests. Diagnostic monitoring no longer jumps immediately to RUNNING. These
+functional results do not constitute Batch-2 engineering release approval.
+1. Executive Summary
+Firmware package Autopilot_firm05-08 (Americas 915 MHz) was flashed and validated against the
+AP-VVR-003 test matrix derived from AP-VVR-002 remaining work and Noxon’s latest trigger-mitigation
+claims.
+Positive results. Cold-start, soft-reset, and power-cycle idle watches (T-01–T-03) and extended soak
+(T-13) passed with no spontaneous false triggers. Intentional Relay Contact (18/18), 12 V (12/12), and 24 V
+(12/12) fires all succeeded with zero misses. INFO / monitoring remained usable during signaling
+(standby and live mV readouts captured). Cross-mode discipline improved versus AP-VVR-002 F-004:
+a dry-contact pulse while in 12/24 V mode produced no action; 9 V in 12/24 V mode also produced no
+activation.
+Critical concern. In Relay Contact mode, with a bench supply attached to the trigger input but not
+commanding an intentional voltage (and again with a 12 V supply connected but not activated),
+AutoPilot continuously false-triggered. Observed trigger-input readout during the fault was
+approximately 1909–1958 mV, with occasional brief ~16 mV readings. Applying 9 V raised the readout to
+approximately 2696–2719 mV. The same 0 V / 9 V conditions in 12/24 V mode did not false-trigger and
+did not activate on 9 V.
+Hardware scope limit. Only Revision 1 hardware was available. Batch-2 units use revised trigger circuitry.
+Firmware behavior on Rev 1 is necessary evidence for field Rev 1 support, but is insufficient alone to close
+engineering release for Rev 2 shipment.
+Performing Rigs Engineering AP-VVR-003 Rev A Page 1
+
+--- PDF page 2 ---
+2. Evidence Summary
+Validation Item Result
+T-01 Cold power-on idle (false-trigger watch) PASS
+T-02 Soft reset / reboot idle watch PASS
+T-03 Full power-cycle idle watch PASS
+T-04 Idle with nearby motion / noise NOT TESTED (no setup)
+T-05 Relay Contact intentional fires PASS (18/18, 0 misses)
+T-06 12 V intentional fires PASS (12/12, 0 misses)
+T-07 24 V intentional fires PASS (12/12, 0 misses)
+T-08 9 V / mode cross-check FAIL (Relay Contact false trigger) —
+see F-001
+T-09 Monitoring / INFO during signal PASS (no forced jump to RUNNING)
+T-10 Startup / minimum current NOT TESTED (no measurement
+means)
+T-11 Threshold / noise discrimination (operator judgment) PASS
+T-12 Rev 1 vs Rev 2 same firmware NOT TESTED (Rev 1 only)
+T-13 Long idle soak PASS
+T-14 Mixed intentional + idle PASS (combined with session)
+Relay pulse while in 12/24 V mode NO ACTION (expected / improved
+isolation)
+False trigger — Relay mode + inactive connected supply OBSERVED (continuous)
+Trigger-input voltage observations (INFO / monitor)
+Condition Approximate readout
+Standby 1664–1670 mV
+Dry contact (active) 1922–1990 mV
+Fault window (Relay mode, supply connected / not activated) 1909–1958 mV (continuous false
+triggers); occasional ~16 mV
+9 V applied 2696–2719 mV
+12 V applied 2806–2819 mV
+24 V applied 3045–3051 mV
+Noxon thresholds (Iker, 2026-08-06): Relay trip ≈ 1850 mV (clean contact ≈ 1950 mV); 12/24 INFO ≈ 2400
+mV and 800 mV; applied ~6–8 V polarity-dependent for voltage modes; line pre-energized ~3 V for
+relay sense. Bench fault band 1909–1958 mV sits above the relay trip — aligned with F-001. Full
+comparison: Iker-Trigger-Thresholds-2026-08.md.
+Performing Rigs Engineering AP-VVR-003 Rev A Page 2
+
+--- PDF page 3 ---
+3. Findings
+F-001 — Continuous false trigger in Relay Contact mode with inactive / floating bench
+supply
+While configured for Relay Contact mode, with a bench power supply connected to the trigger input but
+not sending an intentional commanded voltage (and similarly with a 12 V supply connected but not
+activated), AutoPilot continuously initiated triggers. Resetting the unit did not clear the condition: it
+re-activated immediately.
+During the fault, the trigger-input readout remained near 1.91–1.96 V, overlapping the same band
+observed for intentional dry-contact (~1.92–1.99 V). That suggests the input was sitting in the “contact
+closed / active” voltage region without an intentional closure.
+Aligned with Iker’s thresholds (2026-08-06): relay trip ≈ 1850 mV, clean contact ≈ 1950 mV. The fault
+window sits above the trip — continuous fire is expected for that INFO band. Raising the relay trip slightly
+is Noxon’s suggested mitigation, with long-cable margin caution.
+The same electrical conditions in 12/24 V mode did not produce false triggers.
+Engineering Impact
+• Unexpected motion from Relay Contact mode under a connected-but-idle voltage source is a
+critical production hazard if that wiring state can occur on set.
+• May indicate insufficient discrimination between open / floating / leakage and true dry contact, or
+unsafe behavior when a voltage source is paralleled onto the relay input.
+• Requires Noxon root-cause analysis and corrective action before Relay Contact can be considered
+validated on this firmware.
+EMS: AP-001 (related / expanded)
+Severity: Critical
+Status: OPEN
+F-002 — Idle / post-reset spontaneous false triggers not observed (this session)
+Dedicated idle watches after cold start, soft reset, and full power cycle, plus extended soak, showed no
+spontaneous false triggers of the AP-VVR-002 F-002 pattern (~30 s post-reset).
+Severity: Info
+Status: Not reproduced this session — does not close F-001; does not by itself close historical AP-001 for
+all environments
+F-003 — Intentional trigger recognition met targets
+Mode Count Misses
+Relay C
+ontact
+18 0
+12 V 12 0
+24 V 12 0
+Severity: Info
+Status: Validation Passed (intentional-fire scope)
+Performing Rigs Engineering AP-VVR-003 Rev A Page 3
+
+--- PDF page 4 ---
+F-004 — Mode isolation improved vs AP-VVR-002 F-004
+• Relay / dry-contact pulse while in 12/24 V mode: no action.
+• 9 V while in 12/24 V mode: no activation (contrast with AP-VVR-002, where 9 V fired in both modes).
+• 9 V in Relay Contact mode: input rises to ~2.7 V (see voltage table); interaction with F-001 wiring
+must be interpreted carefully.
+Severity: Info / Low
+Status: Behavior change documented — confirm with Noxon whether intentional
+F-005 — Monitoring / INFO usable during signaling
+The UI no longer forced an immediate jump to RUNNING during these tests. Standby and live mV values
+were readable while signals were present (addresses AP-VVR-002 F-005 / AP-007 / AP-008
+enhancement).
+Severity: Info
+Status: Improved — closed for this firmware on Rev 1 bench conditions
+F-006 — Hardware Revision 2 not validated
+Only Hardware Revision 1 was available. Batch-2 production uses revised trigger hardware. This report
+cannot claim Rev 2 trigger validation.
+Severity: Medium (release scope)
+Status: OPEN — blocking for Rev 2 engineering sign-off
+Performing Rigs Engineering AP-VVR-003 Rev A Page 4
+
+--- PDF page 5 ---
+4. Questions for Noxon
+Q-001
+In Relay Contact mode, why does a connected but inactive / floating bench supply (readout ~1.91–1.96
+V) cause continuous triggering? What is the intended open-circuit and maximum leakage voltage for
+“no trigger”?
+Q-002
+Is attaching a voltage supply to the trigger input while the unit is in Relay Contact mode a supported
+configuration, an unsupported misuse, or a condition firmware should reject / ignore?
+Q-003
+Please confirm intended thresholds (mV or V) for Relay Contact vs 12/24 V modes, and whether 9 V
+must not fire 12/24 V mode on firm05-08 (observed). *(Partial answer received — see
+Iker-Trigger-Thresholds-2026-08.md: relay ≈1850 mV / clean ≈1950 mV; 12/24 INFO ≈2400 & 800 mV;
+applied ~6–8 V polarity-dependent. Open: why 9 V @ ~2700 mV INFO did not fire 12/24 this session —
+polarity?)*
+Q-003a
+Given clean contact ≈1950 mV and trip ≈1850 mV, what raised relay threshold do you recommend for
+short studio cables without losing long-cable detection?
+Q-004
+Does the “driver management” change in firm05-08 affect Hardware Revision 1, Revision 2, or both?
+(Asked separately to Iker; still needed for the revision log.)
+Q-005
+What minimum validation on Hardware Revision 2 does Noxon recommend before Batch-2 shipment,
+given this session was Rev 1 only?
+Performing Rigs Engineering AP-VVR-003 Rev A Page 5
+
+--- PDF page 6 ---
+5. Recommendations
+R-001
+Treat F-001 as an open critical issue. Do not declare Relay Contact validation complete on firm05-08
+until Noxon explains and, if needed, corrects the inactive-supply false-trigger behavior.
+R-002
+Do not grant unconditional engineering release for Hardware Revision 2 Batch-2 units based solely on
+this Rev 1 session. Plan a short Rev 2 smoke of T-01–T-03, T-05–T-07, and the F-001 wiring case when a
+Rev 2 unit is available (or require Noxon’s factory evidence).
+R-003
+Document operator guidance: until F-001 is resolved, avoid leaving a voltage supply connected to the
+trigger input while AutoPilot is in Relay Contact mode.
+R-004
+Send this report (and voltage table) to Iker with emphasis on Q-001 / Q-002.
+6. Remaining Validation
+• Reproduce F-001 with defined open / short / pull-down / disconnected reference setups
+• Hardware Revision 2 repeat of critical matrix (T-01–T-03, T-05–T-07, F-001 case)
+• T-04 studio noise / nearby motion (not available this session)
+• T-10 startup current measurement (instrumentation)
+• Iker written note on driver-management change (Rev 1 vs Rev 2)
+• Alfredo / Noxon Rev 1 field-support policy (firmware vs board replacement)
+Engineering Assessment
+Dimension Conclusion
+Intentional trigger
+function (Rev 1, firm05-08)
+PASS under tested fire counts
+Idle spontaneous
+false-trigger watch (Rev 1)
+PASS this session
+Relay Contact electrical
+robustness
+FAIL / OPEN (F-001 continuous false trigger)
+Diagnostics / monitoring IMPROVED (F-005)
+Hardware Revision 2
+Batch-2 release
+NOT CLEARED by this report
+Overall Validation Status OPEN
+Overall Functional Result CONDITIONAL PASS
+Shipment posture: Manufacturing may continue preparing the batch, but engineering approval to ship
+should remain conditional on (1) Noxon response / disposition of F-001, and (2) Rev 2 evidence or an
+explicit accepted risk decision by Performing Rigs that Rev 1 bench results plus Noxon factory test are
+sufficient.
+Performing Rigs Engineering AP-VVR-003 Rev A Page 6
+
+--- PDF page 7 ---
+Revision History
+Rev Date Description
+A 2026-08-06 Initial issue — firm05-08 / V01 R39 + R42 on Hardware Rev 1
+Performing Rigs Engineering AP-VVR-003 Rev A Page 7

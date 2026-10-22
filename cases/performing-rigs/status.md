@@ -10,6 +10,22 @@ here — do not append "previous update" logs to this file; when a slice of
 work closes, fold its durable finding into the relevant section below (or
 into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and move on.
 
+## Physical trigger failure correlation
+
+The [VVR assessment](docs/investigations/vvr-trigger-failure-correlation.md)
+preserves Nathan's five original reports with hashes. New915 execution confirms
+sampled-LOW/current-HIGH profile initiation and a517→600-count X1-positive /
+X2-negative comparison consistent with Rev1 diagnostic fault values. Exact
+June/July/August package identity remains unestablished despite the R39 label.
+The extended868 run now reaches natural time-based profile completion and idle2;
+held input alone does not re-arm. Supplying native Remote W after completion
+reaches idle9 and a second original timer initiation without a new input edge;
+the matched release control re-arms without a second start. W delivery is modeled,
+and software position stays0, making return distance0. Actual Remote exchange,
+nonzero physical return, insertion waveform and the July30s/10min fault remain
+unresolved. Seven native runs and64/64 saved-artifact checks pass; no physical
+failure or release gate is closed and neither formal model changed.
+
 ## Reference trigger contract
 
 The [TLA+/TLC package](specifications/trigger-acceptance/README.md) and

@@ -354,8 +354,18 @@ The initial search for the missing arm used only original command processing:
   external trigger, because W1 itself invokes the profile preparation path.
   This prevents misattributing all later activity to an external event.
 
-A complete release→completion→natural re-arm→second trigger sequence is not
-established by these runs. Held/released continuations demonstrate no duplicate
+A later [VVR correlation](vvr-trigger-failure-correlation.md) now extends the
+same profile past natural completion: stage transitions finish near52.25M,
+channel/live clear, idle2. Supplying native W at completion reaches idle9 and a
+second timer initiation under held active input; the matched released-input
+control reaches idle9 with no second initiation. This closes time-based profile
+completion and conditional command-driven re-arm for the simulated zero-position
+case. A natural Remote exchange and nonzero physical return remain unproved.
+No phase/busy/idle cells were forced. The22M outcome below was an insufficient
+duration bound, not proof that completion required an unmodeled IRQ.
+
+A complete release→completion→natural re-arm→second trigger sequence was not
+established by the original runs below. Held/released continuations demonstrate no duplicate
 start only within their observed eligibility state; an absence of duplicates
 before re-arm is not a debounce proof. The22M held extension still has one
 acceptance/start, channel/profile mode1, live flag1, idle0 and phase arms0;

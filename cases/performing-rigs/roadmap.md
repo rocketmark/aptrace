@@ -23,6 +23,17 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
+Use the [VVR correlation](docs/investigations/vvr-trigger-failure-correlation.md)
+as the physical-evidence starting point. The time-based profile-completion gap
+is now closed for the bounded868 scenario: idle2 follows completion; supplied W
+re-arms to idle9, and a held active input starts again without another edge.
+Next isolate the natural Remote/M3 completion exchange and a nonzero return with
+validated timer/STEP/position progression. Do not repeat the22M duration mistake
+or force busy/idle to claim completion. Obtain hash-linked tested release archives
+and a minimal insertion/PB05/mode/output capture; preserve VVR-003/004 differences
+in reported Rev1 mode. Separate correspondence is unavailable. The July30s/10min
+episode still needs exact reset, program duration/repeat and input history.
+
 Targets1/2 and [Target3 route coverage](docs/investigations/motion-initiation-route-coverage.md)
 are closed at their bounded exits. Preserve the filter-history/average distinction,
 feasible digital SAT anchors and pre-read gate timing. Next valuable evidence is a

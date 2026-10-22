@@ -1,0 +1,144 @@
+Let's conduct a targeted APTrace investigation into the physical AutoPilot trigger failures documented in Nathan's engineering validation reports, AP-VVR-001 through AP-VVR-005.
+
+Our objective is to connect Nathan's observed failure conditions with the trigger acquisition, classification, acceptance, and motion-initiation behavior we've recovered from Noxon's original firmware.
+
+We've already demonstrated several firmware mechanisms capable of initiating movement without a fresh intentional trigger. We now have detailed field evidence that should allow us to investigate specific failures rather than continuing broad hypothetical misfire research.
+
+Use the five validation reports and the recent Nathan/Noxon engineering correspondence as primary evidence. Start with the existing APTrace trigger, powered-connection, startup-voltage-learning, symbolic-reachability, motion-initiation, and formal-model investigations.
+
+## Establish firmware and hardware correspondence
+
+Before interpreting the physical failures, reconcile the firmware versions used in Nathan's tests with the binaries available to APTrace.
+
+The reports identify several releases, including `Autopilot_firm29-06`, the July trigger-mitigation beta, and `Autopilot_firm05-08` (AutoPilot V01 R39 / Remote V01 R42).
+
+Determine which binaries we possess, which versions we've actually analyzed, and whether the recovered trigger behavior can legitimately be applied to the tested revisions.
+
+Also distinguish Rev 1 and Rev 2 input hardware. Nathan's reports establish that the revisions can present different MCU-side input conditions even when connected to the same external device.
+
+Do not assume that all firmware versions or hardware revisions implement identical trigger behavior.
+
+If exact firmware correspondence cannot be established, identify that limitation before drawing causal conclusions.
+
+## Primary investigation: VVR-005 connection-induced activation
+
+The most important failure is VVR-005 F-002.
+
+With corrected Pilot Input Adapter polarity, Nathan demonstrated that connecting an inactive bench supply through the XLR cable could initiate one unintended movement. Once the connection settled, the AutoPilot reported approximately 3300 mV and remained quiet.
+
+The failure was repeatable on first connection, despite no intentional trigger command.
+
+Investigate which firmware-observable input histories could reproduce this behavior through natural original-firmware execution.
+
+Consider transient LOW acquisition, input settling, analog filter history, sampling phase, startup or session eligibility, and the time between acquisition and motor initiation.
+
+Follow the resulting execution through the recovered profile-playback, timer, and relevant STEP-generation paths.
+
+I'd particularly like to establish whether a temporary input condition can produce one motor initiation after the input has returned to its normal inactive state.
+
+Use bounded experiments and controls to determine which conditions are necessary for that behavior and which prevent it.
+
+Do not assume Noxon's capacitor hypothesis is correct. It is one plausible electrical explanation, not an established MCU waveform.
+
+## Secondary investigation: sustained false triggering
+
+VVR-003 and VVR-004 document continuous unintended triggering when nominally inactive external sources were connected.
+
+In VVR-004, the Rev 2 Spark+ output configuration produced an INFO reading of 0 mV, indistinguishable on the display from an intentional dry-contact closure.
+
+VVR-005 then established that reversing Pilot Input Adapter polarity caused that same inactive connection to read approximately 3300 mV and remain quiet, while intentional dry-contact triggering continued to work.
+
+Noxon attributes the difference to directional leakage through asymmetric external output circuitry.
+
+Investigate what the original firmware does when its input remains continuously classified as active, including how program completion, eligibility, and re-arming affect additional motion initiation.
+
+Determine whether the observed sustained false-trigger pattern requires repeated electrical transitions or whether the firmware can initiate successive movements from a continuously active condition.
+
+Where natural completion or re-arming remains unresolved, pursue bounded analysis specifically to answer that question rather than expanding into a general motion-safety audit.
+
+Keep external voltage, current direction, MCU observations, and firmware decisions distinct. The original firmware cannot establish the physical transfer characteristics of the V1/V2 input circuits.
+
+## Tertiary investigation: VVR-002 periodic triggering
+
+VVR-002 documents unintended movement approximately every 30 seconds following an early reset, gradually disappearing after approximately ten minutes and not recurring after a full power cycle.
+
+Investigate whether any recovered firmware lifecycle could plausibly produce this behavior.
+
+Consider motion completion, automatic re-arming, retained input history, Remote program execution, scheduled callbacks, and relevant reset or initialization state.
+
+Do not assume the interval is firmware-generated. It may relate to the programmed movement duration, external equipment, or another uncontrolled condition.
+
+If the existing evidence cannot reproduce the timing, identify what additional information would be required.
+
+## Incorporate the recorded electrical observations
+
+Use Nathan's documented measurements and wiring configurations as constraints on the investigation.
+
+In particular:
+
+- Rev 1 standby around 1667 mV and intentional contact around 1922–1990 mV in the documented tests.
+- Rev 1 connected-inactive fault readings around 1909–1958 mV.
+- Rev 2 quiet input around 3300 mV and active dry-contact input at 0 mV.
+- Rev 2 Spark+ output appearing active at 0 mV before polarity reversal, then quiet at 3300 mV afterward.
+- Rev 2 inactive bench supply producing one connection-induced activation even after polarity reversal.
+- Reported commanded triggering near 10 V in the polarity-corrected bench setup.
+- Nathan's approximately 500 ms intentional external trigger duration.
+
+Treat the INFO readings as reported diagnostic values, not automatically as direct measurements of the physical MCU pin.
+
+Where firmware version and acquisition-path correspondence can be established, use the measured values to construct realistic software-level test cases.
+
+Where the electrical transfer function is unknown, parameterize the MCU-side inputs and state the assumptions explicitly.
+
+## Use existing APTrace verification capabilities
+
+Use the existing concrete execution infrastructure, Macaw, Crucible, What4, SMT, and recovered TLA+ models where they materially strengthen the analysis.
+
+Build on the evidence from Targets 1–3 rather than repeating those investigations.
+
+I'm interested in causal comparisons: changing one input history, configuration state, or eligibility condition and determining whether the unintended motor initiation still occurs.
+
+Where feasible, strengthen findings through bounded symbolic reasoning over actual firmware instructions.
+
+Keep the distinction between firmware-observed behavior, formal-model behavior, and physical electrical hypotheses explicit.
+
+Do not modify the existing formal models merely to make them agree with a new interpretation. Document any corrections or extensions they need.
+
+## Expected outcome
+
+I want an evidence-ranked assessment answering:
+
+1. Which of Nathan's documented misfires can be reproduced through original-firmware execution under explicitly modeled input conditions?
+2. Which firmware states and transitions are necessary for the reproduced failures?
+3. Can a connection transient cause motor initiation after the input has settled inactive?
+4. Can sustained false triggering occur without repeated electrical input transitions?
+5. Is there a plausible firmware mechanism for VVR-002's approximately 30-second repeated triggering?
+6. Which conditions could be prevented through different firmware qualification, freshness, release-to-rearm, or authorization policies?
+7. Which questions still require hardware measurements, and what is the minimum measurement needed to distinguish the competing explanations?
+
+In particular, distinguish cases where the electrical input itself is indistinguishable from a legitimate trigger from cases where the firmware unnecessarily preserves or reaccepts an old event.
+
+## Deliverables and scope
+
+Capture the investigation in the APTrace repository with reproducible experiments, original-firmware evidence, relevant symbolic results, and a matrix connecting each VVR failure to its possible firmware mechanism.
+
+The matrix should distinguish:
+
+- Physical symptom and exact test conditions.
+- Matching firmware-observable input scenario.
+- Reproduced motor-initiation outcome.
+- Evidence strength and limitations.
+- Potential software mitigation.
+- Remaining electrical uncertainty.
+
+Preserve the original VVR findings without reinterpreting physical measurements as confirmed internal firmware states.
+
+The final assessment should be useful both for our apfw2 design and for a technical discussion with Nathan and Noxon.
+
+Use your judgment about the most productive analysis methods and investigation boundaries. Prioritize VVR-005's repeatable connection failure, then the sustained false-trigger condition, then the VVR-002 periodic behavior.
+
+Do not introduce new analysis frameworks, modify apfw2, original firmware, or physical hardware.
+
+When complete, summarize what we can now explain, what we still cannot establish, and whether the evidence materially strengthens the case for firmware changes on the existing V1/V2 hardware.
+
+Our goal is not to prove that firmware alone can solve every electrical problem. It is to determine exactly where the original firmware contributes to Nathan's observed failures, and which of those contributions can be eliminated through a better implementation.

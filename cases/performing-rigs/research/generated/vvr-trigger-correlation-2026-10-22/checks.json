@@ -1,0 +1,258 @@
+[
+  {
+    "check": "digital-acquired-transient: no native error",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: no native error",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "analog-517-to600-x1-915: no native error",
+    "pass": true
+  },
+  {
+    "check": "analog-517-to600-x1-915: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "analog-517-to600-x1-915: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "analog-517-to600-x2-915: no native error",
+    "pass": true
+  },
+  {
+    "check": "analog-517-to600-x2-915: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "analog-517-to600-x2-915: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "held-completion: no native error",
+    "pass": true
+  },
+  {
+    "check": "held-completion: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "held-completion: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: no native error",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: no native error",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: corrected write-hook path",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: watches below cap",
+    "pass": true
+  },
+  {
+    "check": "868 replay byte-for-byte decoded result equals historical witness",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient: saved LOW / current HIGH",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient: acceptance after release",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient: native initiation after release",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient: requested boundary",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: saved LOW / current HIGH",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: acceptance after release",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: native initiation after release",
+    "pass": true
+  },
+  {
+    "check": "digital-acquired-transient-915: requested boundary",
+    "pass": true
+  },
+  {
+    "check": "fault-band X1 starts",
+    "pass": true
+  },
+  {
+    "check": "fault-band X1 filtered581 at acceptance",
+    "pass": true
+  },
+  {
+    "check": "fault-band X2 no acceptance or initiation",
+    "pass": true
+  },
+  {
+    "check": "fault-band X2 acquired600 selector2",
+    "pass": true
+  },
+  {
+    "check": "fault-band X2 remains eligible",
+    "pass": true
+  },
+  {
+    "check": "held-completion: natural terminal stage",
+    "pass": true
+  },
+  {
+    "check": "held-completion: instruction-bound stop, no watch-cap stop",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: natural terminal stage",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: instruction-bound stop, no watch-cap stop",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: natural terminal stage",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: instruction-bound stop, no watch-cap stop",
+    "pass": true
+  },
+  {
+    "check": "no W: one initiation and idle2",
+    "pass": true
+  },
+  {
+    "check": "no W: stopped channel and timer",
+    "pass": true
+  },
+  {
+    "check": "stage durations2.5M/5M/2.5M/0",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: W consumed after completion",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: zero-distance return limitation",
+    "pass": true
+  },
+  {
+    "check": "held-completion-w: native idle9 reached",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: W consumed after completion",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: zero-distance return limitation",
+    "pass": true
+  },
+  {
+    "check": "released-completion-w: native idle9 reached",
+    "pass": true
+  },
+  {
+    "check": "held with W: two acceptances and native starts",
+    "pass": true
+  },
+  {
+    "check": "held with W: second start index",
+    "pass": true
+  },
+  {
+    "check": "release with W: only one start despite re-arm",
+    "pass": true
+  },
+  {
+    "check": "release with W: inactive final input and stopped",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-001-RevA.pdf: preserved hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-001-RevA.pdf: extraction hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-002-RevA.pdf: preserved hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-002-RevA.pdf: extraction hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-003-RevA.pdf: preserved hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-003-RevA.pdf: extraction hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-004-RevA.pdf: preserved hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-004-RevA.pdf: extraction hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-005-RevA.pdf: preserved hash",
+    "pass": true
+  },
+  {
+    "check": "AP-VVR-005-RevA.pdf: extraction hash",
+    "pass": true
+  }
+]

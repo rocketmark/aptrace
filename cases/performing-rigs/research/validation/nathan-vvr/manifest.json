@@ -1,0 +1,51 @@
+{
+  "received": "2026-10-22",
+  "extraction": "macOS PDFKit via osascript JavaScript ObjC bridge; page-numbered text; originals unchanged",
+  "files": [
+    {
+      "file": "AP-VVR-001-RevA.pdf",
+      "source": "/Users/mstalzer/Downloads/AutoPilot_VVRs_1-5/AP-VVR-001-RevA.pdf",
+      "sha256": "7b9b8b85111d9ddc75421505f5e873af0bfbd49446137325efab1769f4f871c3",
+      "bytes": 44017,
+      "source_equal": true,
+      "text": "AP-VVR-001-RevA.pdf.txt",
+      "text_sha256": "8aa4610604a600598e8d2ff4fddc44fad027926ad296c609096a77f1c86f0271"
+    },
+    {
+      "file": "AP-VVR-002-RevA.pdf",
+      "source": "/Users/mstalzer/Downloads/AutoPilot_VVRs_1-5/AP-VVR-002-RevA.pdf",
+      "sha256": "0e06e8e33da2ad7b89de829aa22e8cd68a6eb31d188e39a21dde9a3ac42d1bad",
+      "bytes": 45523,
+      "source_equal": true,
+      "text": "AP-VVR-002-RevA.pdf.txt",
+      "text_sha256": "44c17eb5a18ec14b3a952d067c9e59d30d02c501df1f1718f7e37df2dc58bc21"
+    },
+    {
+      "file": "AP-VVR-003-RevA.pdf",
+      "source": "/Users/mstalzer/Downloads/AutoPilot_VVRs_1-5/AP-VVR-003-RevA.pdf",
+      "sha256": "d89c7d79f8adba3968f68bfa8fc7a0926dbb5374d46219306dcd5c902a0fa678",
+      "bytes": 49163,
+      "source_equal": true,
+      "text": "AP-VVR-003-RevA.pdf.txt",
+      "text_sha256": "5f523918c1d9c5bbb9a8ee40ab1f88473eb8d1749696ed27647588f840670b0a"
+    },
+    {
+      "file": "AP-VVR-004-RevA.pdf",
+      "source": "/Users/mstalzer/Downloads/AutoPilot_VVRs_1-5/AP-VVR-004-RevA.pdf",
+      "sha256": "2733c7d1d2f472ae76ae3eeeea228625b77b264793fc53a6c538e1a66340a827",
+      "bytes": 55231,
+      "source_equal": true,
+      "text": "AP-VVR-004-RevA.pdf.txt",
+      "text_sha256": "6f6d8aace8548b331a95598203f143c47f3b885ea572c8741fefce6b9703af5e"
+    },
+    {
+      "file": "AP-VVR-005-RevA.pdf",
+      "source": "/Users/mstalzer/Downloads/AutoPilot_VVRs_1-5/AP-VVR-005-RevA.pdf",
+      "sha256": "2c37e1038c6ec2adaee665059f51a47605bd2aff84722fd8c7edbfca926e7a4b",
+      "bytes": 48696,
+      "source_equal": true,
+      "text": "AP-VVR-005-RevA.pdf.txt",
+      "text_sha256": "ea27cd04428d5f4fbecb17381ced02c1fea828caf7b6fb2836a7fae6f8e48a38"
+    }
+  ]
+}
