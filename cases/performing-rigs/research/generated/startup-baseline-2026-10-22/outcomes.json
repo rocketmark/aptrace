@@ -1,0 +1,480 @@
+[
+  {
+    "name": "natural225",
+    "variant": "868",
+    "startup_ADC": 225,
+    "post_baseline_ADC": 225,
+    "average": 225,
+    "low_flag": -100,
+    "baseline_return_instruction": 9502240,
+    "filter_float_at_baseline_return": 225.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "accepts": 0,
+    "starts": 0,
+    "stop": "instruction limit reached",
+    "instructions": 14000000,
+    "events": [],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0xe1",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x200023c0:4",
+        "instruction": 9502239,
+        "pc": "0x00005dae",
+        "lr": "0x000042ab",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0xffffff9c",
+        "previous": "00000000"
+      }
+    ]
+  },
+  {
+    "name": "natural900",
+    "variant": "868",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "average": 900,
+    "low_flag": 0,
+    "baseline_return_instruction": 9502237,
+    "filter_float_at_baseline_return": 900.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      866,
+      834,
+      804,
+      775
+    ],
+    "accepts": 1,
+    "starts": 1,
+    "stop": "reached stop address 0x00005fa6",
+    "instructions": 12337025,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12103180,
+        "filtered": 866
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12336878,
+        "filtered": 455
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12337012,
+        "filtered": 455
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12337024,
+        "filtered": 455
+      }
+    ],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x384",
+        "previous": "00000000"
+      }
+    ]
+  },
+  {
+    "name": "average-injected",
+    "variant": "868",
+    "startup_ADC": 225,
+    "post_baseline_ADC": 225,
+    "average": 900,
+    "low_flag": 0,
+    "baseline_return_instruction": 9502240,
+    "filter_float_at_baseline_return": 225.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "accepts": 0,
+    "starts": 0,
+    "stop": "instruction limit reached",
+    "instructions": 14000000,
+    "events": [],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0xe1",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x200023c0:4",
+        "instruction": 9502239,
+        "pc": "0x00005dae",
+        "lr": "0x000042ab",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0xffffff9c",
+        "previous": "00000000"
+      }
+    ]
+  },
+  {
+    "name": "average-reversed",
+    "variant": "868",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "average": 225,
+    "low_flag": -100,
+    "baseline_return_instruction": 9502237,
+    "filter_float_at_baseline_return": 900.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      866,
+      834,
+      804,
+      775
+    ],
+    "accepts": 1,
+    "starts": 1,
+    "stop": "reached stop address 0x00005fa6",
+    "instructions": 12337025,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12103180,
+        "filtered": 866
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12336878,
+        "filtered": 455
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12337012,
+        "filtered": 455
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12337024,
+        "filtered": 455
+      }
+    ],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x384",
+        "previous": "00000000"
+      }
+    ]
+  },
+  {
+    "name": "filter-control",
+    "variant": "868",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "average": 900,
+    "low_flag": 0,
+    "baseline_return_instruction": 9502237,
+    "filter_float_at_baseline_return": 225.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "accepts": 0,
+    "starts": 0,
+    "stop": "instruction limit reached",
+    "instructions": 14000000,
+    "events": [],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x384",
+        "previous": "00000000"
+      }
+    ]
+  },
+  {
+    "name": "natural225-915",
+    "variant": "915",
+    "startup_ADC": 225,
+    "post_baseline_ADC": 225,
+    "average": 225,
+    "low_flag": -100,
+    "baseline_return_instruction": 9502240,
+    "filter_float_at_baseline_return": 225.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      225,
+      225,
+      225,
+      225
+    ],
+    "accepts": 0,
+    "starts": 0,
+    "stop": "instruction limit reached",
+    "instructions": 14000000,
+    "events": [],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0xe1",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x200023c0:4",
+        "instruction": 9502239,
+        "pc": "0x00005dae",
+        "lr": "0x000042ab",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0xffffff9c",
+        "previous": "00000000"
+      }
+    ]
+  },
+  {
+    "name": "natural900-915",
+    "variant": "915",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "average": 900,
+    "low_flag": 0,
+    "baseline_return_instruction": 9502237,
+    "filter_float_at_baseline_return": 900.0,
+    "filter_call_count": 128,
+    "baseline_acquisitions": 3,
+    "first_runtime_returns": [
+      866,
+      834,
+      804,
+      775
+    ],
+    "accepts": 1,
+    "starts": 1,
+    "stop": "reached stop address 0x00005fa6",
+    "instructions": 12337025,
+    "events": [
+      {
+        "pc": "0x00008f98",
+        "instruction": 12103180,
+        "filtered": 866
+      },
+      {
+        "pc": "0x00005f8c",
+        "instruction": 12336878,
+        "filtered": 455
+      },
+      {
+        "pc": "0x00005810",
+        "instruction": 12337012,
+        "filtered": 455
+      },
+      {
+        "pc": "0x00005fa4",
+        "instruction": 12337024,
+        "filtered": 455
+      }
+    ],
+    "CPU_writes_to_baseline": [
+      {
+        "range": "0x200023c0:4",
+        "instruction": 7192,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x200023c0",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9766,
+        "pc": "0x0000cc82",
+        "lr": "0x00000000",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x0",
+        "previous": "00000000"
+      },
+      {
+        "range": "0x20003128:4",
+        "instruction": 9502235,
+        "pc": "0x00005da4",
+        "lr": "0x000042ab",
+        "address": "0x20003128",
+        "size": 4,
+        "value": "0x384",
+        "previous": "00000000"
+      }
+    ]
+  }
+]

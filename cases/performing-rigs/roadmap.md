@@ -23,6 +23,14 @@ has not established physical reliability or deployed behavior.
 
 ## Trigger reliability follow-up
 
+Target1 [startup learning](docs/investigations/startup-voltage-learning.md) is
+closed at its bounded result: shared filter history matters; stored average/flag
+have no observed effect in causal crossover controls. Next user-selected work is
+Target2, with symbolic path feasibility and alias/callee assumptions explicit.
+Do not repeat the average-versus-filter distinction or treat partial effects
+UNSAT as universal nondependence. Target3 motion coverage stays separate.
+
+
 The [recovered Noxon formal package](specifications/noxon-trigger/README.md)
 now supplies native-backed counterexamples and a same-acquisition-history
 reference comparison. Preserve its oracle/boundary qualifications; do not treat

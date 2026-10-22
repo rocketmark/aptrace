@@ -1,0 +1,207 @@
+{
+  "source": "cases/performing-rigs/research/generated/powered-trigger-connection-2026-10-21/macaw-expanded.json",
+  "sha256": "9799722cfd678d803d6dc72af7662be517e94f8e73b2c69d7c6952c59d7d4dcd",
+  "functions": 263,
+  "basic_blocks": 3521,
+  "incomplete_or_unresolved_terminators": 199,
+  "residual_classify_failures": 48,
+  "selected_functions": [
+    {
+      "block_count": 7,
+      "entry": "0x42a4",
+      "is_root": false
+    },
+    {
+      "block_count": 43,
+      "entry": "0x5d44",
+      "is_root": false
+    },
+    {
+      "block_count": 136,
+      "entry": "0x8e18",
+      "is_root": false
+    }
+  ],
+  "selected_incomplete": [
+    {
+      "block_start": "0x5e1a",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r3512 is not a valid address.",
+        "No return call: Noreturn target r3513 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r3513 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x5d44",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x5e2e",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r3863 is not a valid address.",
+        "No return call: Noreturn target r3864 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r3864 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x5d44",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x5e92",
+      "detail": [
+        "IP is not a mux",
+        "IP is not a mux",
+        "Branch: IP is not an mux:\nlet r5541 := (bv_add _R13_0 (0x14 :: [32]))\n    r5550 := read_mem r5541 (bvle4)\n in r5550",
+        "No return call: Noreturn target r5550 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:280:3-21",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:121:5-18",
+        "Jump: Jump value r5550 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x5d44",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x5e96",
+      "detail": [
+        "IP is not a mux",
+        "IP is not a mux",
+        "Branch: IP is not an mux:\nlet r5452 := (bv_add _R13_0 (0x14 :: [32]))\n    r5461 := read_mem r5452 (bvle4)\n in r5461",
+        "No return call: Noreturn target r5461 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:280:3-21",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:121:5-18",
+        "Jump: Jump value r5461 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x5d44",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x5e98",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r4910 is not a valid address.",
+        "No return call: Noreturn target r4911 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r4911 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x5d44",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x6dc4",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r117926 is not a valid address.",
+        "No return call: Noreturn target r117927 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r117927 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x8e18",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x6dce",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r117817 is not a valid address.",
+        "No return call: Noreturn target r117818 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r117818 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x8e18",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x8e4a",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r5114 is not a valid address.",
+        "No return call: Noreturn target r5115 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r5115 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x8e18",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x90a4",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r132343 is not a valid address.",
+        "No return call: Noreturn target r132344 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r132344 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x8e18",
+      "kind": "classify_failure"
+    },
+    {
+      "block_start": "0x919e",
+      "detail": [
+        "IP is not a mux",
+        "Pattern match failure in 'do' block at src/Data/Macaw/ARM/Identify.hs:141:3-15",
+        "Branch: True branch value r134304 is not a valid address.",
+        "No return call: Noreturn target r134305 is not a valid address.",
+        "Call: Call classifier failed.",
+        "Return: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier.hs:280:5-18",
+        "Jump table: Absolute jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:279:3-48",
+        "Jump table: Relative jump table: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/JumpTable.hs:358:3-18",
+        "PLT stub: Pattern match failure in 'do' block at src/Data/Macaw/Discovery/Classifier/PLT.hs:120:5-24",
+        "Jump: Jump value r134305 is not a valid address.",
+        "Tail call: Expected stack height of 0"
+      ],
+      "function_entry": "0x8e18",
+      "kind": "classify_failure"
+    }
+  ]
+}

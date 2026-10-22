@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/mstalzer/github/aptrace/tools/ghidra/pcode_forward_use.py", line 416, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/Users/mstalzer/github/aptrace/tools/ghidra/pcode_forward_use.py", line 407, in main
+    doc, m = run_forward_use(target, [_parse_origin(o) for o in a.origin], max_steps=a.max_steps, scratch_root=a.scratch)
+  File "/Users/mstalzer/github/aptrace/tools/ghidra/pcode_forward_use.py", line 246, in run_forward_use
+    with tempfile.TemporaryDirectory(prefix="aptrace-pcode-", dir=scratch_root) as tmp:
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 779, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+  File "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/tempfile.py", line 359, in mkdtemp
+    _os.mkdir(file, 0o700)
+FileNotFoundError: [Errno 2] No such file or directory: '/private/tmp/aptrace-baseline-pcode/aptrace-pcode-a6eoh5ql'

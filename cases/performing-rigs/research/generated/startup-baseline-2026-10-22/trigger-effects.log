@@ -1,0 +1,71 @@
+[effects-spike] discovery: start
+[effects-spike] discovery: done in 1.31489s
+[effects-spike] mkFunCFG: start
+[effects-spike] mkFunCFG: done in 0.02866s
+[effects-spike] crucible setup: global memory: start
+[effects-spike] crucible setup: global memory: done in 0.078587s
+[effects-spike] base path-condition conjuncts excluded from guards: 70768
+[effects-spike] crucible simulation: start
+[effects-spike] crucible simulation: done in 16.465153s
+[effects-spike] observed: reads=1243 writes=12 calls=244 crucible_steps=3001 backend_assumptions=11
+[effects-spike] raw-effect serialization: start
+[effects-spike] raw-effect serialization: done in 0.223468s
+[effects-spike] raw effects written to cases/performing-rigs/research/generated/startup-baseline-2026-10-22/trigger-effects.raw.json
+[effects-spike] solver initialization: start
+[effects-spike] solver initialization: done in 0.131793s
+[effects-spike] z3 smoke test: start
+[effects-spike] solver query #1 [smoke | x==1] -> SAT in 5.978e-3s
+[effects-spike] solver query #2 [smoke | x==1 && x==2] -> UNSAT in 1.67e-4s
+[effects-spike] z3 smoke test: done in 0.006777s
+[effects-spike] z3 smoke test: PASS
+[effects-spike] assert common assumptions once: start
+[effects-spike] assert common assumptions once: done in 2.883827s
+[effects-spike] solver enrichment: start
+[effects-spike] solver query #3 [guard: satisfiable? | access 16 read @0x9090 guard] -> UNSAT in 6.0277e-2s
+[effects-spike] solver query #4 [guard: refutable? | access 16 read @0x9090 guard] -> UNSAT in 1.61e-4s
+[effects-spike] solver query #5 [guard: satisfiable? | access 17 read @0x9092 guard] -> UNSAT in 5.6e-5s
+[effects-spike] solver query #6 [guard: refutable? | access 17 read @0x9092 guard] -> UNSAT in 6.1e-5s
+[effects-spike] solver query #7 [guard: satisfiable? | access 18 read @0x909a guard] -> UNSAT in 1.04e-4s
+[effects-spike] solver query #8 [guard: refutable? | access 18 read @0x909a guard] -> UNSAT in 1.1e-4s
+[effects-spike] solver query #9 [guard: satisfiable? | access 19 read @0x90a4 guard] -> UNSAT in 2.61e-4s
+[effects-spike] solver query #10 [guard: refutable? | access 19 read @0x90a4 guard] -> UNSAT in 2.4e-4s
+[effects-spike] solver query #11 [region: proven member? | access 20 read @0x90b6 address in FLASH 0x4000+0x11470] -> UNSAT in 2.36e-4s
+[effects-spike] solver query #12 [guard: satisfiable? | access 20 read @0x90b6 guard] -> UNSAT in 2.4e-4s
+[effects-spike] solver query #13 [guard: refutable? | access 20 read @0x90b6 guard] -> UNSAT in 2.4e-4s
+[effects-spike] solver query #14 [guard: satisfiable? | access 21 read @0x8e30 guard] -> UNSAT in 5.4e-5s
+[effects-spike] solver query #15 [guard: refutable? | access 21 read @0x8e30 guard] -> UNSAT in 4.1e-5s
+[effects-spike] solver query #16 [guard: satisfiable? | access 27 read @0x8fa8 guard] -> UNSAT in 6.5e-5s
+[effects-spike] solver query #17 [guard: refutable? | access 27 read @0x8fa8 guard] -> UNSAT in 1.04e-4s
+[effects-spike] solver query #18 [guard: satisfiable? | access 28 read @0x8faa guard] -> UNSAT in 6.5e-5s
+[effects-spike] solver query #19 [guard: refutable? | access 28 read @0x8faa guard] -> UNSAT in 7.5e-5s
+[effects-spike] solver query #20 [guard: satisfiable? | access 29 read @0x8fb2 guard] -> UNSAT in 7.6e-5s
+[effects-spike] solver query #21 [guard: refutable? | access 29 read @0x8fb2 guard] -> UNSAT in 7.4e-5s
+[effects-spike] solver query #22 [guard: satisfiable? | access 30 read @0x8fb4 guard] -> UNSAT in 7.0e-5s
+[effects-spike] solver query #23 [guard: refutable? | access 30 read @0x8fb4 guard] -> UNSAT in 7.2e-5s
+[effects-spike] solver query #24 [guard: satisfiable? | access 31 read @0x8fc0 guard] -> UNSAT in 8.3e-5s
+[effects-spike] solver query #25 [guard: refutable? | access 31 read @0x8fc0 guard] -> UNSAT in 7.0e-5s
+[effects-spike] solver query #26 [guard: satisfiable? | access 32 read @0x8fc2 guard] -> UNSAT in 8.3e-5s
+[effects-spike] solver query #27 [guard: refutable? | access 32 read @0x8fc2 guard] -> UNSAT in 7.1e-5s
+[effects-spike] solver query #28 [guard: satisfiable? | access 33 read @0x8fc4 guard] -> UNSAT in 8.7e-5s
+[effects-spike] solver query #29 [guard: refutable? | access 33 read @0x8fc4 guard] -> UNSAT in 7.8e-5s
+[effects-spike] solver query #30 [guard: satisfiable? | access 34 read @0x8fc6 guard] -> UNSAT in 8.2e-5s
+[effects-spike] solver query #31 [guard: refutable? | access 34 read @0x8fc6 guard] -> UNSAT in 7.4e-5s
+[effects-spike] solver query #32 [guard: satisfiable? | access 35 read @0x902e guard] -> UNSAT in 9.1e-5s
+[effects-spike] solver query #33 [guard: refutable? | access 35 read @0x902e guard] -> UNSAT in 7.4e-5s
+[effects-spike] solver query #34 [guard: satisfiable? | access 36 read @0x9032 guard] -> UNSAT in 1.15e-4s
+[effects-spike] solver query #35 [guard: refutable? | access 36 read @0x9032 guard] -> UNSAT in 7.7e-5s
+[effects-spike] solver query #36 [guard: satisfiable? | access 37 read @0x9036 guard] -> UNSAT in 1.14e-4s
+[effects-spike] solver query #37 [guard: refutable? | access 37 read @0x9036 guard] -> UNSAT in 7.0e-5s
+[effects-spike] solver query #38 [region: proven member? | access 38 read @0x903a address in FLASH 0x4000+0x11470] -> UNSAT in 9.2e-5s
+[effects-spike] solver query #39 [guard: satisfiable? | access 38 read @0x903a guard] -> UNSAT in 9.4e-5s
+[effects-spike] solver query #40 [guard: refutable? | access 38 read @0x903a guard] -> UNSAT in 7.3e-5s
+[effects-spike] solver query #41 [guard: satisfiable? | access 39 read @0x903e guard] -> UNSAT in 9.0e-5s
+[effects-spike] solver query #42 [guard: refutable? | access 39 read @0x903e guard] -> UNSAT in 7.0e-5s
+[effects-spike] solver query #43 [region: proven member? | access 40 read @0x9046 address in FLASH 0x4000+0x11470] -> UNSAT in 4.18e-4s
+[effects-spike] solver query #44 [guard: satisfiable? | access 40 read @0x9046 guard] -> UNSAT in 9.1e-5s
+[effects-spike] solver query #45 [guard: refutable? | access 40 read @0x9046 guard] -> UNSAT in 7.3e-5s
+[effects-spike] solver enrichment: done in 0.073341s
+[effects-spike] z3 session shutdown: ExitSuccess
+[effects-spike] final enrichment serialization: start
+[effects-spike] final enrichment serialization: done in 0.006263s
+[effects-spike] solver queries: 45; enriched effects written to cases/performing-rigs/research/generated/startup-baseline-2026-10-22/trigger-effects.enriched.json

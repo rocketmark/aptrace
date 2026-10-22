@@ -1,0 +1,85 @@
+{
+  "commands": [
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x5d44",
+      "output": "baseline-868.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py disasm autopilot868 0x5d44 0x5dd0",
+      "output": "baseline-native-868.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x20003128",
+      "output": "xrefs-average.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot868 0x200023c0",
+      "output": "xrefs-low.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot915 0x20003128",
+      "output": "xrefs-average-915.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot915 0x200023c0",
+      "output": "xrefs-low-915.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0x5d44",
+      "output": "baseline-915.txt",
+      "exit_status": 1
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py build autopilot915",
+      "output": "build-915.log",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0x5d44 0x42a4 0x8e18",
+      "output": "baseline-path-915.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py decompile autopilot868 0x42a4 0x6968 0x8e18",
+      "output": "input-path-868.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/aptrace_ghidra.py literal autopilot868 0x5db4 --count 7",
+      "output": "baseline-pointers.txt",
+      "exit_status": 0
+    },
+    {
+      "command": "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace function-effects cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin 8e18 out=cases/performing-rigs/research/generated/startup-baseline-2026-10-22/trigger-effects",
+      "output": "trigger-effects.log",
+      "exit_status": 0
+    },
+    {
+      "command": "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace function-effects cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin 5d44 out=cases/performing-rigs/research/generated/startup-baseline-2026-10-22/baseline-effects",
+      "output": "baseline-effects.log",
+      "exit_status": 0
+    },
+    {
+      "command": "JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home python3 tools/ghidra/pcode_forward_use.py project cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --sha256 6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3 --language ARM:LE:32:Cortex --cspec default --base 0x4000 --project-dir cases/performing-rigs/research/runs/ghidra_cache/autopilot868 --project-name aptrace --program firmware_autopilot868.bin --project-identity startup-baseline-2026-10-22 --origin 0x5d9e --origin 0x5daa --scratch /private/tmp/aptrace-baseline-pcode",
+      "output": "baseline-forward-use.json",
+      "exit_status": 0
+    }
+  ],
+  "preconditions": [
+    "create scratch directory /private/tmp/aptrace-baseline-pcode before p-code query",
+    "run from repository root",
+    "redirect outputs into new evidence packet to preserve originals"
+  ],
+  "invocation_failures": [
+    "initial915 query before project build",
+    "p-code scratch directory initially missing; baseline-forward-use-initial.log preserved",
+    "literal addresses missing0x prefix in initial batch; corrected with count7 query",
+    "optional process-list/interrupt diagnostic unavailable in sandbox; no bypass; solver later completed normally"
+  ]
+}

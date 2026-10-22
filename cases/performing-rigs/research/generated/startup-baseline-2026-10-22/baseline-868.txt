@@ -1,0 +1,45 @@
+==================================================
+Function: FUN_00005d44 @ 00005d44  size=110  params=0  callingConvention=unknown
+
+
+void FUN_00005d44(void)
+
+{
+  int iVar1;
+  int iVar2;
+  int iVar3;
+  
+  FUN_00005d24();
+  delay__STANDARD_LIBRARY(200);
+  FUN_0000434c();
+  delay__STANDARD_LIBRARY(100);
+  FUN_00005d24();
+  delay__STANDARD_LIBRARY(200);
+  FUN_0000434c();
+  *DAT_00005db4 = 0x578;
+  iVar2 = 0;
+  *DAT_00005db8 = 0;
+  *DAT_00005dbc = 0;
+  *DAT_00005dc0 = 0;
+  if (*DAT_00005dc4 != '\x02') {
+    iVar3 = 0x80;
+    do {
+      iVar1 = FUN_000042a4();
+      iVar3 = iVar3 + -1;
+      iVar2 = iVar2 + iVar1;
+    } while (iVar3 != 0);
+    iVar3 = iVar2;
+    if (iVar2 < 0) {
+      iVar3 = iVar2 + 0x7f;
+    }
+    *DAT_00005dc8 = iVar3 >> 7;
+    if (iVar2 < 0xaf00) {
+      *DAT_00005dcc = 0xffffff9c;
+    }
+  }
+  return;
+}
+
+
+
+

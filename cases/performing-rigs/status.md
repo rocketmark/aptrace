@@ -23,6 +23,18 @@ apfw2 implementation exists in this package. Physical reliability, numerical
 policy, hardware validators and future implementation refinement remain unproven;
 release grades do not change.
 
+## Startup voltage-learning dependency
+
+[Target1](docs/investigations/startup-voltage-learning.md) distinguishes derived
+average/low-flag state from retained filter history. Seven direct original-image
+runs and44 artifact checks show that the routine's shared filter history changes
+later acceptance/timer initiation, whereas crossing over the stored average and
+flag leaves the recorded execution identical. Both868/915 natural pairs agree.
+No adaptive standby-threshold consumer was found; global alias nondependence is
+not proved. Partial/bounded symbolic effects are not accepted as exclusion proofs.
+Target2 may proceed with this distinction and validated symbolic feasibility;
+Target3 and physical misfire causation remain separate.
+
 ## Original trigger state-machine verification
 
 The [separate descriptive model](specifications/noxon-trigger/README.md) and

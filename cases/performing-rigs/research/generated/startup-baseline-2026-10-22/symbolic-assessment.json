@@ -1,0 +1,76 @@
+[
+  {
+    "name": "baseline-effects",
+    "status": "partial (some paths aborted)",
+    "counts": {
+      "backend_assumptions": 2,
+      "calls": 141,
+      "reads": 36,
+      "writes": 19
+    },
+    "macaw_blocks": 22,
+    "assumptions": [
+      "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+      "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+      "non-GPR (ASL bookkeeping) registers concrete zero",
+      "generic step bound 3000"
+    ],
+    "queries": 33,
+    "query_outcomes": {
+      "SAT": 20,
+      "UNSAT": 12,
+      "UNKNOWN": 1
+    },
+    "symbolic_nonstack_addresses": 2,
+    "reads_at_baseline_cell_literals": [
+      {
+        "pc": "0x5da4",
+        "address": "0x20003128",
+        "kind": "write"
+      }
+    ],
+    "queries_about_average_store": [
+      {
+        "additional_assumptions": [],
+        "n": 7,
+        "result": "SAT",
+        "runtime_s": 0.104129,
+        "source": "access 21 write @0x5da4 guard",
+        "type": "guard: satisfiable?"
+      },
+      {
+        "additional_assumptions": [],
+        "n": 8,
+        "result": "SAT",
+        "runtime_s": 0.104945,
+        "source": "access 21 write @0x5da4 guard",
+        "type": "guard: refutable?"
+      }
+    ]
+  },
+  {
+    "name": "trigger-effects",
+    "status": "bounded: step limit 3000",
+    "counts": {
+      "backend_assumptions": 11,
+      "calls": 244,
+      "reads": 1243,
+      "writes": 12
+    },
+    "macaw_blocks": 90,
+    "assumptions": [
+      "Cortex-M Thumb, AAPCS opaque calls (clobber r0-r3/r12, no memory effects)",
+      "read-only segments concrete; RAM and MMIO ranges unconstrained symbolic",
+      "non-GPR (ASL bookkeeping) registers concrete zero",
+      "generic step bound 3000"
+    ],
+    "queries": 45,
+    "query_outcomes": {
+      "SAT": 1,
+      "UNSAT": 44
+    },
+    "symbolic_nonstack_addresses": 490,
+    "reads_at_baseline_cell_literals": [],
+    "queries_about_average_store": []
+  }
+]

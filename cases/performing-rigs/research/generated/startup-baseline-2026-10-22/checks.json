@@ -1,0 +1,178 @@
+[
+  {
+    "check": "natural225: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "natural225: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "natural225: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "natural225: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "natural225: start expectation",
+    "passed": true
+  },
+  {
+    "check": "natural225: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "natural900: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "natural900: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "natural900: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "natural900: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "natural900: start expectation",
+    "passed": true
+  },
+  {
+    "check": "natural900: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "average-injected: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "average-injected: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "average-injected: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "average-injected: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "average-injected: start expectation",
+    "passed": true
+  },
+  {
+    "check": "average-injected: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "average-reversed: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "average-reversed: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "average-reversed: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "average-reversed: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "average-reversed: start expectation",
+    "passed": true
+  },
+  {
+    "check": "average-reversed: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "filter-control: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "filter-control: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "filter-control: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "filter-control: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "filter-control: start expectation",
+    "passed": true
+  },
+  {
+    "check": "filter-control: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "natural225-915: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "natural225-915: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "natural225-915: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "natural225-915: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "natural225-915: start expectation",
+    "passed": true
+  },
+  {
+    "check": "natural225-915: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "natural900-915: error-free corrected hooks",
+    "passed": true
+  },
+  {
+    "check": "natural900-915: 128 filter calls",
+    "passed": true
+  },
+  {
+    "check": "natural900-915: three actual baseline acquisitions",
+    "passed": true
+  },
+  {
+    "check": "natural900-915: acceptance expectation",
+    "passed": true
+  },
+  {
+    "check": "natural900-915: start expectation",
+    "passed": true
+  },
+  {
+    "check": "natural900-915: no dropped logs",
+    "passed": true
+  },
+  {
+    "check": "natural225 versus average-injected: identical recorded execution except mean/flag",
+    "passed": true
+  },
+  {
+    "check": "natural900 versus average-reversed: identical recorded execution except mean/flag",
+    "passed": true
+  }
+]

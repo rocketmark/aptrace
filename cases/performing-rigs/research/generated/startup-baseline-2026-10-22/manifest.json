@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-22",
+  "repository_head": "74b8270c5404d5955cd5dae2871c5b9809a72a85",
+  "images": {
+    "cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin": "6dcdb4c1cbe5cae08704d5ff5d9db33173bc2c69c563b4b694fe0c28492c52e3",
+    "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+  },
+  "report": "cases/performing-rigs/docs/investigations/startup-voltage-learning.md",
+  "report_sha256": "8bbf77b4be68afc2fb936e6597600208d4e412c4631d09f62be0b20039f2047f",
+  "scope": "Target1 only; original startup-baseline dependency and bounded causal controls",
+  "native_runs": 7,
+  "native_exit_statuses": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "checks_passed": 44,
+  "checks_total": 44,
+  "symbolic_conclusion": "No accepted relational nondependence proof; baseline partial, trigger step-bounded; exact assumptions in artifacts",
+  "framework_or_hardware_changes": false,
+  "execution": "documented direct CLI using tools/unicorn/.venv; memory-hook-single-step",
+  "tools": {
+    "tools/unicorn/run_concrete.py": "e91dce33ec855c883dd9ba8ca7c1976020c096552e3300649399b682c3256735",
+    "tools/ghidra/aptrace_ghidra.py": "ecab987e38020d8000d3b01f836cf829f9741dc675c444349df7bea0e82d84a2",
+    "tools/ghidra/pcode_forward_use.py": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+    "external/macaw/dist-newstyle/build/aarch64-osx/ghc-9.6.7/aptrace-0.1.0.0/x/aptrace/build/aptrace/aptrace": "30ee4e92cbb5a0be039ad4e9208132d936e0258ef768beef782f9489168cf7ff"
+  }
+}

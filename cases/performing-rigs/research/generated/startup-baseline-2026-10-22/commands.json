@@ -1,0 +1,85 @@
+[
+  {
+    "name": "natural225",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:e100 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/natural225.json",
+    "startup_ADC": 225,
+    "post_baseline_ADC": 225,
+    "variant": "868",
+    "intervention": [],
+    "exit_status": 0,
+    "sha256": "d35a5b2ae42635d4ba1fae6fae392e3389c77e4d545062c3435c6610865d555d"
+  },
+  {
+    "name": "natural900",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:8403 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/natural900.json",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "variant": "868",
+    "intervention": [],
+    "exit_status": 0,
+    "sha256": "6ab0a6d7b03a7777ab2b5b17e1bacdb8431ab3b71cddbc721fe47c81b4485305"
+  },
+  {
+    "name": "average-injected",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:e100 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --force-mem 5db0:20003128:84030000 --force-mem 5db0:200023c0:00000000 --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/average-injected.json",
+    "startup_ADC": 225,
+    "post_baseline_ADC": 225,
+    "variant": "868",
+    "intervention": [
+      "--force-mem",
+      "5db0:20003128:84030000",
+      "--force-mem",
+      "5db0:200023c0:00000000"
+    ],
+    "exit_status": 0,
+    "sha256": "7757371010ffb09bd50c87f6f28e1e113ce8395822e2559df1294176cf42ade4"
+  },
+  {
+    "name": "average-reversed",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:8403 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --force-mem 5db0:20003128:e1000000 --force-mem 5db0:200023c0:9cffffff --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/average-reversed.json",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "variant": "868",
+    "intervention": [
+      "--force-mem",
+      "5db0:20003128:e1000000",
+      "--force-mem",
+      "5db0:200023c0:9cffffff"
+    ],
+    "exit_status": 0,
+    "sha256": "7431b8f509508556d11cb6c9f120cbd35af98bdefc38845b51e4f1e2f5bd0266"
+  },
+  {
+    "name": "filter-control",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot868.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:8403 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --force-mem 5db0:2000311c:00006143 --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/filter-control.json",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "variant": "868",
+    "intervention": [
+      "--force-mem",
+      "5db0:2000311c:00006143"
+    ],
+    "exit_status": 0,
+    "sha256": "cdb1925862712e0c5573df4ea56ca3c3091d2980b42f3541b9ad5309929d36e4"
+  },
+  {
+    "name": "natural225-915",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:e100 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/natural225-915.json",
+    "startup_ADC": 225,
+    "post_baseline_ADC": 225,
+    "variant": "915",
+    "intervention": [],
+    "exit_status": 0,
+    "sha256": "72fb2f26c7ef76385b688cd4b1fba335e005a52ad4dfe3abc3f0dd2b87a6aee3"
+  },
+  {
+    "name": "natural900-915",
+    "command": "tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin --entry cc24 --mmio-size 0x4000000 --map-page 800080:0x40 --fake-tick 200052ec:4000 --stub-call cd34 --mmio-force-bits 4000140c:1 --mmio-force-bits 40001010:100 --mmio-force-bits 40001040:3 --mmio-force-bits 40001054:3 --mmio-force-bits 43000418:4 --mmio-force-bits 41012018:4 --mmio-force-bits 41004010:1 --mmio-clear-bits 43000400:1 --mmio-clear-bits 41012000:1 --seed-mem 41008020:04004000 --force-reg 9dd4:r0:12 --force-mem 69d8:41008020:00000000 --stop-at 6fd8 --force-mem 94b8:2000245c:2b322c312c312c302c39382c312c302c35302c313030302c3530302c302c307c --force-mem 94b8:200024c0:00000000 --force-mem 94b8:200024c4:20000000 --force-mem 81ca:2000245c:4d433432302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c32302c323430302c312c32352c7c --force-mem 81ca:200024c0:00000000 --force-mem 81ca:200024c4:38000000 --max-mem-write-log 100 --max-instructions 14000000 --mmio-clear-bits 40003804:8000 --seed-mem 43002040:8403 --force-mem 94e4:43002040:e100 --stop-at 5fa6 --watch 5d44 --watch 5d8c --watch 5db0 --watch 94e4 --watch 42d4 --watch 8e7a --watch 8f98 --watch 6338 --watch 5f8c --watch 5810 --watch 5fa4 --watch-mem 20003128:4 --dump-mem 20003128:4 --watch-mem 200023c0:4 --dump-mem 200023c0:4 --watch-mem 20003118:16 --dump-mem 20003118:16 --watch-mem 20000190:8 --dump-mem 20000190:8 --watch-mem 20001fc0:1 --dump-mem 20001fc0:1 --watch-mem 200000d8:1 --dump-mem 200000d8:1 --watch-mem 20002524:4 --dump-mem 20002524:4 --watch-mem 20001b14:4 --dump-mem 20001b14:4 --watch-mem 40003800:32 --dump-mem 40003800:32 --watch-mem-write 20003128:4 --watch-mem-write 200023c0:4 --max-watch-hits 4000 --force-mem 5db0:43002040:e100 --out cases/performing-rigs/research/generated/startup-baseline-2026-10-22/natural900-915.json",
+    "startup_ADC": 900,
+    "post_baseline_ADC": 225,
+    "variant": "915",
+    "intervention": [],
+    "exit_status": 0,
+    "sha256": "0723e23f2ab5a9be38ec0534c8eac0c9d282ed3f2f01514eda99c88c48ca1705"
+  }
+]

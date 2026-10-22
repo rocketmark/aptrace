@@ -1,5 +1,12 @@
 # Trigger-Input Investigation — Current Model
 
+Target1 qualification: [startup voltage learning](startup-voltage-learning.md)
+finds no downstream effect from the stored average/low flag in matched causal
+controls, but the averaging routine initializes shared filter history that
+**does** affect later acceptance and timer initiation. Historical “dead baseline”
+wording below must not be applied to the whole stateful routine. Both variants
+reproduce the natural startup-input dependence; no global alias proof is claimed.
+
 Request-path correction: the [targeted campaign](trigger-misfire-failure-modes.md#targeted-request-campaign-an-overlooked-motion-initiation-path)
 finds the additional state1→scheduled0x6338→0x5f8c/timer-enable path. The older
 closure over0x5fac and absence of0x6fd8 was incomplete; phase-arm0 does not
