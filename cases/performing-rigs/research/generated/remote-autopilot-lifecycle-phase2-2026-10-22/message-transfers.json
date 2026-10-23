@@ -1,0 +1,44 @@
+{
+  "at": {
+    "producer": "held-no-command-queue.json",
+    "producer_pc": "0x7f84",
+    "instruction": 12520776,
+    "payload_hex": "40",
+    "consumers": [
+      "remote-captured-at-entry.json",
+      "remote-captured-at-no-button.json",
+      "remote-captured-at-button.json"
+    ],
+    "delivery": "RX-ring injection; captured byte unchanged; not physical RF"
+  },
+  "w": {
+    "producer": "remote-captured-at-button.json",
+    "producer_pc": "0x5930",
+    "producer_pointer": "0x1c598",
+    "observed_calls": 6,
+    "nul_terminated_hex": "577c00",
+    "transferred_hex": "577c",
+    "consumers": [
+      "operator-w-held-return.json",
+      "operator-w-single-stop-prefix.json"
+    ],
+    "delivery": "One matching request delivered at completion or first-live PC; explicit operator GPIO condition; remaining five request deliveries not modeled"
+  },
+  "x": {
+    "payload_hex": "58",
+    "consumers": [
+      "remote915-x-parser-control.json",
+      "remote868-x-parser-control.json"
+    ],
+    "delivery": "Explicit positive-control input; no natural producer identified"
+  },
+  "status": {
+    "producer": "first-natural-string-message.json",
+    "producer_pc": "0x8c10",
+    "producer_pointer": "0x20001fcc",
+    "instruction": 13155568,
+    "payload_hex": "613000",
+    "consumers": [],
+    "delivery": "Captured only; not replayed as an initialized Remote session"
+  }
+}

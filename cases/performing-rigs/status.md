@@ -12,22 +12,27 @@ into a canonical dossier under `cases/performing-rigs/docs/investigations/`) and
 
 ## Original Remote / AutoPilot execution lifecycle
 
-[Phase 1 reconstruction](docs/investigations/remote-autopilot-execution-lifecycle-phase1.md)
-separates natural profile completion (idle2) from bare-W phase/return-driven
-eligibility restoration (idle9). The original Remote's RUNNING-screen exit
-calls591c(0), requesting W six times; the screen exits on button input or an
-inbound-X-derived local flag. Fresh bounded original915 instruction controls
-confirm those guards, X flag setting and phase1 stop-request entry. The natural
-completion→outbound X→Remote exit/W join remains unresolved; seeded queue controls
-are not evidence of that join. Original held/completion/W second initiation
-remains conditional on supplied W and the zero-position return model. No patch,
-formal model or Gate1–4 verdict changed. Running STOP, nonzero return, complete
-queue-writer closure and coupled Remote/UI/transport execution remain open.
-Two fresh original full-reset release/repress continuations (915 digital,
-868 analog) each reach a second initiation with supplied W. The analog run
-completes the original868 three-history comparison against reused held/W and
-released/W controls; phase3 can repeatedly write idle9 while waiting for the
-effective input to become active. Natural Remote W provenance remains unresolved.
+[Phase 2](docs/investigations/remote-autopilot-execution-lifecycle-phase2.md)
+extends the [Phase 1 state map](docs/investigations/remote-autopilot-execution-lifecycle-phase1.md).
+Four original no-W histories (868 held/released/reactivated and915 held) each
+complete one profile and remain at idle2 through65M instructions. Full queue
+write watches record no positive X-counter write or X send request. Three @
+requests occur near initiation, not completion; native a0 status is also captured.
+The proposed completion→X→Remote W loop is excluded in these histories, not for
+all programs/peripheral schedules or the unhash-linked field releases.
+
+Captured @ processed by the original915 Remote enters RUNNING with exit flag0;
+actual button-read instructions against supplied PA10HIGH produce six W requests.
+Actual X parsing sets the exit flag in both868/915 positive controls, but X is
+explicitly supplied there. One captured W payload delivered at completion causes
+zero-distance return, idle9 and held-input second initiation. A running-W prefix
+with exactly one command delivery follows stop/return and reaches a second TC0
+ENABLE request. Longer recurring-PC W cycles are harness-driven, not autonomous.
+Phase1's matched supplied-W input histories remain valid; phase3 can repeatedly
+write9 while waiting for effective activation. Natural no-button field W
+provenance, initialized coupled Remote service, nonzero return, multi-record/
+full-W-burst behavior and universal writer/IRQ closure remain open. No firmware,
+model, framework or Gate1–5 verdict changed; VVR recurrence is not explained.
 
 ## Physical trigger failure correlation
 

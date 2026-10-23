@@ -23,15 +23,17 @@ has not established physical reliability or deployed behavior.
 
 ## Original Remote / AutoPilot lifecycle follow-up
 
-The [Phase 1 dossier](docs/investigations/remote-autopilot-execution-lifecycle-phase1.md)
-identifies the next bounded questions: resolve every feasible producer of
-outbound queue index0 (X) and its relationship to natural completion; execute
-the RUNNING-screen button/X exit through actual Remote transport; follow running
-W stop/deceleration through nonzero return and idle9 without forced activity
-clears; close multi-record continuation/repeated-W and ISR-linked idle-writer
-feasibility. A coupled peer/peripheral workflow, if needed, is separate framework
-development. No second patch or formal-model change is authorized by these
-recommendations.
+The [Phase 2 dossier](docs/investigations/remote-autopilot-execution-lifecycle-phase2.md)
+excludes completion→X in four representative original no-W histories and follows
+a supplied single W through running stop/zero-return to second initiation.
+Next obtain the actual field M3 program/release/traffic history; trace any first
+positive writer of queue0 or another no-button Remote W predecessor. Preserve
+naturally initialized Remote session/RX state while replaying captured @/status
+traffic through its general service, then close nonzero return, multi-record,
+full six-W arrival timing and feasible ISR interleavings. Existing bounded
+APTrace operations should be used first; validated coupled/peripheral workflows
+or complete alias closure are separate development if needed. No second patch,
+model change or physical experiment is authorized by these recommendations.
 
 ## Trigger reliability follow-up
 

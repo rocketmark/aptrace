@@ -1,0 +1,160 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_mando868.bin",
+  "entry": "0x00010ce5",
+  "instructions_executed": 92,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "execution_mode": "continuous",
+  "registers": {
+    "r0": "0x00000000",
+    "r1": "0x00000000",
+    "r2": "0x00000001",
+    "r3": "0x00000000",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x00010e37",
+    "pc": "0x2fff0010",
+    "cpsr": "0x20100033"
+  },
+  "memory": {
+    "0x200017d7": "0101",
+    "0x20000ff4": "01000000",
+    "0x200017f0": "00000000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00010da8",
+    "0x00010daa",
+    "0x00010de4",
+    "0x00010de6",
+    "0x00010e12",
+    "0x00010e14",
+    "0x00010e16",
+    "0x0000b4f8",
+    "0x0000b4fa",
+    "0x0000b440",
+    "0x0000b4fe",
+    "0x0000b500",
+    "0x0000b502",
+    "0x0000b504",
+    "0x0000b506",
+    "0x0000b508",
+    "0x0000b50c",
+    "0x0000b50e",
+    "0x0000b510",
+    "0x00010e1a",
+    "0x00010e1c",
+    "0x0000583c",
+    "0x0000583e",
+    "0x00005840",
+    "0x00005842",
+    "0x00005844",
+    "0x00005846",
+    "0x00005848",
+    "0x0000584a",
+    "0x0000584e",
+    "0x00005850",
+    "0x00005854",
+    "0x00010e20",
+    "0x00010e16",
+    "0x0000b4f8",
+    "0x0000b4fa",
+    "0x0000b440",
+    "0x0000b4fe",
+    "0x0000b500",
+    "0x0000b502",
+    "0x0000b504",
+    "0x0000b506",
+    "0x0000b508",
+    "0x0000b50c",
+    "0x0000b50e",
+    "0x0000b510",
+    "0x00010e1a",
+    "0x00010e22",
+    "0x00010e24",
+    "0x00010e26",
+    "0x00010e28",
+    "0x00010e2a",
+    "0x00010e3c",
+    "0x00010e44",
+    "0x00010e46",
+    "0x00010e48",
+    "0x00010e32",
+    "0x00016840",
+    "0x00016842",
+    "0x00016844",
+    "0x00010e36",
+    "0x00010e38",
+    "0x00010e3a",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x20001773",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200017d7",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200017d8",
+      "len": 1,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [
+    {
+      "instruction": 5,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 38,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    },
+    {
+      "instruction": 65,
+      "address": "0x0000b440",
+      "lr": "0x0000b4ff"
+    }
+  ],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x00010ce4",
+    "args": [],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x00000000",
+      "r1": "0x00000000",
+      "r2": "0x00000001",
+      "r3": "0x00000000"
+    }
+  }
+}

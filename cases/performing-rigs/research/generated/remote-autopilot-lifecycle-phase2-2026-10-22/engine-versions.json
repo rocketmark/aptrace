@@ -1,0 +1,7 @@
+{
+  "python": "3.9.6",
+  "unicorn": "2.1.4",
+  "interface": "tools/unicorn/run_concrete.py",
+  "guest_mode": "Cortex-M4 Thumb/M-class",
+  "no_new_dependency": true
+}

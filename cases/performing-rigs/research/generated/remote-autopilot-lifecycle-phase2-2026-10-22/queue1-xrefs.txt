@@ -1,0 +1,2 @@
+References TO 0x200025bd:
+  0x00008f9c (FUN_00008e18)  [WRITE]  label=DAT_200025bd
