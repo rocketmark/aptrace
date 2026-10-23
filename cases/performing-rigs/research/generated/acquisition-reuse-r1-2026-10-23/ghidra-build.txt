@@ -1,0 +1,3 @@
+Building 'autopilot915_reuse_r1_research' (RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse_r1.bin) -- this runs full auto-analysis once...
+Built 'autopilot915_reuse_r1_research': 444 functions, 3633 basic blocks, cached at /Users/mstalzer/github/aptrace/cases/performing-rigs/research/runs/ghidra_cache/autopilot915_reuse_r1_research
+  (provenance labels not available for this image)

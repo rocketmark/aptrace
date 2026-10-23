@@ -43,10 +43,13 @@ its binary/evidence. Existing APTrace operations can probe W during qualificatio
 additional pulse phases, mode/filter transitions and selected manual/internal paths.
 The [timing investigation](docs/investigations/stateful-patch-motor-timing-preservation.md)
 now explains the initial periods as different sampled ages of the same prepared
-profile law under instruction-paced time. Next assess native-acquisition reuse,
-independent release sampling and scheduler budget before a separately authorized
-patch change; compare equivalent elapsed/feedback states as well as start-aligned
-streams. Physical timing and whole-motion preservation remain unproven. Validated continuous TC/NVIC service and stronger frame/writer
+profile law under instruction-paced time. The [acquisition-reuse experiment](docs/investigations/stateful-patch-acquisition-reuse.md)
+now delivers R2 with preserved safeguards in the bounded matrix and two rejected
+iterations retained. Analog live poll work improves18.4%; digital costs32.9% more
+and analog recognition is10 modeled ticks later. Next assess digital bookkeeping,
+additional W/acquisition phases and calibrated latency while preserving independent
+release observations. Compare equivalent elapsed/feedback states as well as
+start-aligned streams. Physical timing and whole-motion preservation remain unproven. Validated continuous TC/NVIC service and stronger frame/writer
 closure require separate framework work; physical timing, exact field firmware and
 flash/update ownership require new evidence. Sustained false-active after arming
 needs electrical discrimination or a changed product contract, not another claim

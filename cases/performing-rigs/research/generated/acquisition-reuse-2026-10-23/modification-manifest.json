@@ -1,0 +1,115 @@
+{
+  "warning": "SIMULATION RESEARCH ONLY; NOT FOR HARDWARE DEPLOYMENT",
+  "source_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "source_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+  "original_size": 70768,
+  "patched_file": "RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse.bin",
+  "patched_size": 71764,
+  "patched_sha256": "7a0824437f9620321632f141fdca6d755f13396da00a219e9b2d8f43c24f4e96",
+  "load_base": "0x4000",
+  "extension": {
+    "address": "0x15470",
+    "size": 996,
+    "bytes": "2de9f74f03b429484ff00001416203bcdff89cf02de90f5024480021016081604162bde80f50dff88cf02de9f0501f4f21480078022827d0012833d144f2a52ce04705463b204df2b51ce04704461b480068012806d0022824d140f2fa0240f2ee2303e040f2c80240f244230020944201db9c4201dd40f00100954201db9d420cdd40f0020009e039204df2dd3ce0470446054600280cbf03200020bc61fd61bde8f0900420bde8f09000001c5300201d8e0000ffb20000c01f0020940100202de90f50eff3008c09498861094a1268ca62094a12680a634ff001024a628cf30088bde80f50054b07ee900adff810f01c530020ec5200209401002018310020db42000010b544f2a52ce0472de90f50eff300840549c86100f0b0f884f30088bde80f50bde81040704700001c53002010b54df2dd3ce0472de90f50eff3008400f009f800f09af884f30088bde80f50bde81040704706498861c861054a1268ca62054a12680a6302224a62704700001c530020ec520020940100202de90f50eff300840b48007802280bd10a48406a022807d039204df2dd3ce047fff7dbff00f06cf884f30088bde80f5003b0bde8f08f0000c01f00201c5300202de9f0501a4f786a012808d002287ff46baf1849097802297ff466af04e01549097801297ff460af134909683a6b91427ff45aaf11490968fa6a891a14293ff653afbc69fd6902280cd00b48006801283ff42aaf02287ff447af40f2fa0240f2ee2325e7002c0cbf03200020bde8f0901c530020c01f002094010020ec5200200a48006878b90a4800687b280bd109480078092807d10848007820b90748007808b90120704700207047000024250020381b0020d800002020310020600000202de9f041314ce56a216a691a142913d82f490978a26891420ed12e490968e268914209d12c4909682269914204d12b4909786269914202d0002121606560256223490978a16023490968e16022490968216122490978616199bb2668042e30d8fff76eff002808d0032815d0012828d1022e26d30221216025e0022e23d0012e06d16168691a32291dd3022121601ae001212160656016e0022e12d3fff790ff00280ed0042e0ed0032e06d16168691a322908d30421216005e003212160656001e000212160bde8f08100001c530020c01f002094010020381b0020203100202de9ff5f1a4c206804282cd1fff75ffe032826d14cf6d14ce047216a401a14281fd8eff3108672b6fff75aff002816d010480078a168884211d10f480068e16888420cd100202060a06a0130a06286f31088bde8ff5f094b0322dff824f086f3108800202060bde8ff5fdff818f000001c530020c01f002094010020bc2500209d8f000033920000"
+  },
+  "modifications": [
+    {
+      "address": "0x8e18",
+      "file_offset": "0x4e18",
+      "before": "2de9f74f",
+      "after": "0cf02abb"
+    },
+    {
+      "address": "0x8f98",
+      "file_offset": "0x4f98",
+      "before": "6b4b0322",
+      "after": "0cf018bc"
+    },
+    {
+      "address": "0x81d0",
+      "file_offset": "0x41d0",
+      "before": "03f095b8",
+      "after": "0df058b9"
+    },
+    {
+      "address": "0x8e76",
+      "file_offset": "0x4e76",
+      "before": "fbf715fa",
+      "after": "0cf07dfb"
+    },
+    {
+      "address": "0x9228",
+      "file_offset": "0x5228",
+      "before": "04f0d8f8",
+      "after": "0cf0baf9"
+    },
+    {
+      "address": "0x42d4",
+      "file_offset": "0x2d4",
+      "before": "124b07ee900a",
+      "after": "11f02cb900bf"
+    },
+    {
+      "address": "0x9232",
+      "file_offset": "0x5232",
+      "before": "03b0bde8f08f",
+      "after": "0cf0dbb900bf"
+    },
+    {
+      "address": "0xcca0",
+      "file_offset": "0x8ca0",
+      "before": "1c530020",
+      "after": "5c530020"
+    },
+    {
+      "address": "0x11050",
+      "file_offset": "0xd050",
+      "before": "1c530020",
+      "after": "5c530020"
+    }
+  ],
+  "symbols": {
+    "$t": "0x157cc",
+    "$d": "0x1583c",
+    "poll_hook": "0x15470",
+    "accept_hook": "0x157cc",
+    "program_hook": "0x15484",
+    "armed": "0x15776",
+    "qualified": "0x157a0",
+    "commit": "0x15810",
+    "raw_hook": "0x15530",
+    "analog_hook": "0x15574",
+    "digital_hook": "0x155a0",
+    "busy_hook": "0x155ec",
+    "observation_update": "0x156ec"
+  },
+  "new_state": {
+    "start": "0x2000531c",
+    "end_exclusive": "0x2000535c",
+    "bytes": 64,
+    "reservation": "Extend reset BSS end at cca0 AND allocator initial-break literal at11050; preserve existing heap cursor20005308"
+  },
+  "observation_metadata": {
+    "type_offset": 36,
+    "actual_acquisition_tick_offset": 44,
+    "X_at_acquisition_offset": 48,
+    "type": "0 invalid,1 native filtered ADC,2 native/fallback digital; reset each poll"
+  },
+  "policy": {
+    "inactive_ticks": 50,
+    "active_ticks": 50,
+    "maximum_poll_gap_ticks": 20,
+    "states": {
+      "0": "need inactive",
+      "1": "qualifying inactive",
+      "2": "armed",
+      "3": "qualifying active",
+      "4": "qualified"
+    },
+    "analog": "Current-poll native raw AND result of same native filter invocation; X1/X2 only; unchanged fresh reacquisition at grant",
+    "commit": "fresh classification, stable context/eligibility and atomic consume before original queue1 store"
+  },
+  "compatibility": "Exact original915 only. Appended executable extent allocated for simulation; no physical flash ownership/bootloader claim.",
+  "assembly_sha256": "52e896fa640960e0ca1a2fb818b8f386abd0d5823a87d0f31d961a3534f17547",
+  "object_sha256": "955adf98290b9f95349a723a5fbdd8cc786054d73d30b1bd13f968e2030bb7de"
+}

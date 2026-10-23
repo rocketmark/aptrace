@@ -1,0 +1,852 @@
+{
+  "verdict": "BOUNDED ANALOG IMPROVEMENT; final bounded regressions pass; digital workload increases; NOT FOR HARDWARE DEPLOYMENT",
+  "candidate_sha256": "f20e2004830c1daad818bdfd6155917fe2ab05205fb7c688be1a5358c7ea128a",
+  "rebuild_reproduced_identical_image": true,
+  "matrix_records": 73,
+  "fresh_candidate_matrix_histories": 31,
+  "reused_original_controls": 11,
+  "reused_phase3_controls": 31,
+  "native_snapshots": 64,
+  "support_controls": 32,
+  "prefix_frame_witnesses": 1,
+  "checks": 3979,
+  "failed_checks": 0,
+  "pending_cases": 0,
+  "protected_baseline_files_verified": 518,
+  "rejected_iterations": {
+    "initial": {
+      "sha256": "7a0824437f9620321632f141fdca6d755f13396da00a219e9b2d8f43c24f4e96",
+      "counterexample": "Early LOW before idle9 restoration: Phase3 1 start, candidate 2"
+    },
+    "R1": {
+      "sha256": "8ce441ec3f5d3315d41ff1360da26dcba8accf6543c8fbf67be0fae35682b77b",
+      "counterexample": "Fresh500 LOW just after idle9 store: Phase3 2 starts, candidate 1"
+    }
+  },
+  "report": {
+    "path": "cases/performing-rigs/docs/investigations/stateful-patch-acquisition-reuse.md",
+    "sha256": "7b911721713df6bd52710323f256671ed333a515b99d6c9626be37c5b9f0b095"
+  },
+  "artifacts": {
+    "B1-full-reset-optimized-command.txt": {
+      "bytes": 1645,
+      "sha256": "948847b409f84afb973652eddf39f91cd11279174bb30b0aa58a0aa31bf64f47"
+    },
+    "B1-full-reset-optimized.json": {
+      "bytes": 88503,
+      "sha256": "832aef3ab8700289243e6bb3164c971be950f6c0b4484895c30a152bc9e6bc09",
+      "native": {
+        "instructions_executed": 11357618,
+        "stop_reason": "reached stop address 0x00005fa6",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "G-to-enable-optimized-command.txt": {
+      "bytes": 2454,
+      "sha256": "aa1316423d67957fd101ea20b9d0271de282ecfefb1edd48cae716ec1594c330"
+    },
+    "G-to-enable-optimized.json": {
+      "bytes": 166380,
+      "sha256": "c59f93b77be7c83532d704f3aab4ccaebbf16971fd2684e5957355575dc7da28",
+      "native": {
+        "instructions_executed": 12155051,
+        "stop_reason": "reached stop address 0x00005fa6",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "README.md": {
+      "bytes": 6272,
+      "sha256": "d9a0695f34276fb98779e2f94f7ddfa05c4eabc1fa9c90c124489740ff20fb48"
+    },
+    "RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse_r2.bin": {
+      "bytes": 71904,
+      "sha256": "f20e2004830c1daad818bdfd6155917fe2ab05205fb7c688be1a5358c7ea128a"
+    },
+    "RESEARCH_ONLY_NOT_FOR_HARDWARE_reuse.o": {
+      "bytes": 2324,
+      "sha256": "c250246882e608f268ebb396f1fef912444fc04d5b1b72f0b0a02f017f62d79c"
+    },
+    "W1-nonzero-to-enable-optimized-command.txt": {
+      "bytes": 2467,
+      "sha256": "8a211d6a32769abdd6266c4f3db286111bcb89b8dae8121ebbfe35640d7fa80f"
+    },
+    "W1-nonzero-to-enable-optimized.json": {
+      "bytes": 309362,
+      "sha256": "0cf0f0b0842cbe362e23c91211f687e28b5435dc46e2d417b2c46f98772e8f39",
+      "native": {
+        "instructions_executed": 12348503,
+        "stop_reason": "reached stop address 0x00005fa6",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "allocator-command.txt": {
+      "bytes": 364,
+      "sha256": "6a8cff70b8e9bdd488ddfebb90fe130391e2bacd741a60bb79171db116e2bceb"
+    },
+    "allocator.json": {
+      "bytes": 1678,
+      "sha256": "1b2bcd3ba779e892325bfb267ec2e499b36203d2c6992a3f881479591283eaed",
+      "native": {
+        "instructions_executed": 11,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "batches.json": {
+      "bytes": 2213,
+      "sha256": "fe3f42d1ff42a49e46beb50d294168547009ad84ec9623148d1a74ca0fc370da"
+    },
+    "check-artifacts.py": {
+      "bytes": 17876,
+      "sha256": "f0c43016262cb04db2b71fed217cb7cbe27733b9998d5169e587415ab9e6ad1c"
+    },
+    "checks.json": {
+      "bytes": 374041,
+      "sha256": "37ae27739443691795c689062efe8cbe1c2fc170c9a5961e74b30abe844b2f0b"
+    },
+    "direct-commands.json": {
+      "bytes": 9981,
+      "sha256": "e75c6a3fb6963c0aac7cf601e84a41491dbbd42dc148b614618a866090ca9e0f"
+    },
+    "extra-controls.py": {
+      "bytes": 13850,
+      "sha256": "cb179bc32e2397c16946b96d58605914fe3d322f87a351d06a708da00cdc25b3"
+    },
+    "fragment-classify-X2-fault-inactive.json": {
+      "bytes": 2787,
+      "sha256": "8e95e4b5a68d2e6708bf324296b7435fda5e7c646fc50dc9bcad1563c1f17451",
+      "native": {
+        "instructions_executed": 50,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-age20.json": {
+      "bytes": 2787,
+      "sha256": "12f8db0e398aee84950d93ceeb90ef7b367940cba4e55e7ad2bdbd57ab0b13f3",
+      "native": {
+        "instructions_executed": 50,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-age21.json": {
+      "bytes": 2337,
+      "sha256": "4efac06b285b9cd5240ee851f8419ba44f9d64621655464f725a16de93d90ed2",
+      "native": {
+        "instructions_executed": 25,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-digital-high.json": {
+      "bytes": 2535,
+      "sha256": "ddd008fe3444b4a3d8e1e98af35b418d8f9f9d84479e3c83e5ffe48ebc4689df",
+      "native": {
+        "instructions_executed": 36,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-digital-low.json": {
+      "bytes": 2535,
+      "sha256": "5ab4724504316a3751db6e25ac59c050b7a10decf0419f6c15726c5289b63731",
+      "native": {
+        "instructions_executed": 36,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-filter-only-active.json": {
+      "bytes": 2769,
+      "sha256": "2e617ca9e420c2eb11b948700aa5a2ff1fe4df88a7cbe449bfab0320e3d80052",
+      "native": {
+        "instructions_executed": 49,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-missing.json": {
+      "bytes": 2103,
+      "sha256": "bee659aed5c4767935255c04b04af89e706234c0fea2f96f05200b88e8e8828b",
+      "native": {
+        "instructions_executed": 12,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-prefix-X-mismatch.json": {
+      "bytes": 2260,
+      "sha256": "f1525a58081902abd618c7718a4581ee0e8d89f2233a88d92e95190948140f22",
+      "native": {
+        "instructions_executed": 19,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-prefix-active.json": {
+      "bytes": 2440,
+      "sha256": "aadbded93517c6801e15d205e52077997627d3b07d83e4315352e5ffdeafbed1",
+      "native": {
+        "instructions_executed": 29,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-prefix-age21.json": {
+      "bytes": 2368,
+      "sha256": "b15996f0f865807936cd4849482b8c4d4fc46a2626173916325c0dd3ff36a9f0",
+      "native": {
+        "instructions_executed": 25,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-prefix-bad-class.json": {
+      "bytes": 2458,
+      "sha256": "d70397e7fe607057c1aef9f5264207f96c0d743fccda425f50e731a942c0ed80",
+      "native": {
+        "instructions_executed": 30,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-prefix-inactive.json": {
+      "bytes": 2440,
+      "sha256": "6eb5f2531b494d5f10f6aa00db4825f22c16ea43cbf2508cccb910dc475071c5",
+      "native": {
+        "instructions_executed": 29,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-prefix-mode-mismatch.json": {
+      "bytes": 2152,
+      "sha256": "e3d76541a9ffaa90abd76c1c8f469377de17b0a8d29c6978b1361e9b2474f0c3",
+      "native": {
+        "instructions_executed": 13,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-raw-only-active.json": {
+      "bytes": 2751,
+      "sha256": "0de63a1c3340bf9b96f67300000b8446f653818a84a656d41a443691e9a25789",
+      "native": {
+        "instructions_executed": 48,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-classify-wrong-mode.json": {
+      "bytes": 2139,
+      "sha256": "a3c84422d328fa22516f70ff808e0d482f46f06da48f073adc9d0b67cfac00e1",
+      "native": {
+        "instructions_executed": 14,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-commands.json": {
+      "bytes": 20750,
+      "sha256": "30d03b2afd15d98ca89c39b931087b45a50facf3d6c2d38e824d08f006f3f7e4"
+    },
+    "fragment-policy-busy-inactive-arms.json": {
+      "bytes": 3193,
+      "sha256": "aff273e1e571229b3fe74871717a73257612fbfe5512515b7685e51424013d85",
+      "native": {
+        "instructions_executed": 95,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-policy-gap21.json": {
+      "bytes": 3193,
+      "sha256": "80571e3d347d202942c20dc43cc14c4a44c167f58a4ae6688049a3dd3d8ec74f",
+      "native": {
+        "instructions_executed": 87,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-policy-ineligible-active-clears.json": {
+      "bytes": 3194,
+      "sha256": "f10892737d7e8831ff459cd366d3854fc45f539f1975788f82a667c132371e9e",
+      "native": {
+        "instructions_executed": 120,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-policy-interval49.json": {
+      "bytes": 3194,
+      "sha256": "a75829f84e02419fee2efad8c4e8d6ce76c904bc41a84fbd02e82d1d462acb26",
+      "native": {
+        "instructions_executed": 132,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-policy-interval50.json": {
+      "bytes": 3194,
+      "sha256": "c66130c94aa656bc06361d1371b973bb9541281fa41ae8f1a9b0a6291efa38fc",
+      "native": {
+        "instructions_executed": 135,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-policy-missing.json": {
+      "bytes": 3193,
+      "sha256": "a5aa64bf5ddf6aa33ed6e1c1547271c064baef33de28883f39b2dcb9c6e5f884",
+      "native": {
+        "instructions_executed": 66,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "fragment-policy-stale21.json": {
+      "bytes": 3193,
+      "sha256": "6a93454e1c651c913cbfa89cd4b5f2fdd51585825b2d2a2eedf23a003d812602",
+      "native": {
+        "instructions_executed": 79,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "frame-analog-command.txt": {
+      "bytes": 3436,
+      "sha256": "5da4d7b6896ae659146ce6552ccfc4b71dc86992d3275739783b60180bd66c15"
+    },
+    "frame-analog.json": {
+      "bytes": 10591251,
+      "sha256": "988e1176ec9712a6d4638ea0524b38190ccc060e07512f43a3896c67b801a779",
+      "native": {
+        "instructions_executed": 14000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "frame-digital-command.txt": {
+      "bytes": 3441,
+      "sha256": "43fd75ef2e3624dfb525ba27d5865ace4845382fc93596e0ef3d7057f8c97e62"
+    },
+    "frame-digital.json": {
+      "bytes": 8721898,
+      "sha256": "82a6cbd9224ec11ac0c6b97da1ce234c62221ef351a26c1668931deb11d0e53e",
+      "native": {
+        "instructions_executed": 14000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "frozen-commands.json": {
+      "bytes": 133860,
+      "sha256": "f146c29a2a6e9349c67c3313bdb0cffd4e691568c072bcc1608482fade61a0dc"
+    },
+    "frozen-optimized-elapsed51-command.txt": {
+      "bytes": 44135,
+      "sha256": "6fcd500a293ab5c1eca48229581af11fe70bf7354b22fd5ea4f9aa81a8231e63"
+    },
+    "frozen-optimized-elapsed51.json": {
+      "bytes": 11276,
+      "sha256": "d0e4ac2e0d8f21d6c695c5a5e6f2610f7d59af0b414eaff35a2f3f25dcc1d80a",
+      "native": {
+        "instructions_executed": 1605,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "frozen-optimized-elapsed52-command.txt": {
+      "bytes": 44135,
+      "sha256": "5881bd19d8fa721e3dda6379cdf1347ee5c3d1a3426b64367f76d13d80840653"
+    },
+    "frozen-optimized-elapsed52.json": {
+      "bytes": 11276,
+      "sha256": "207e1b42adc96b36a733e4c8c39f0326f8840162e64600ca3e8b2b9dadffcbd4",
+      "native": {
+        "instructions_executed": 1589,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "frozen-optimized-elapsed53-command.txt": {
+      "bytes": 44135,
+      "sha256": "2709b6dfff09bb5a7e4b9ff6cbd8069e40a5e24d1557cb189292cc5326989d9e"
+    },
+    "frozen-optimized-elapsed53.json": {
+      "bytes": 11276,
+      "sha256": "556307af685378300019b06d39b323481ea3fa98dbae0bfb7d866d18f46c1dea",
+      "native": {
+        "instructions_executed": 1599,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "generate-patch.py": {
+      "bytes": 5330,
+      "sha256": "469372de988728097a725471b0346769b208c2746f6f597e9b2149ed4958eb0c"
+    },
+    "ghidra-build.txt": {
+      "bytes": 387,
+      "sha256": "88c8f236695f2acb14562f90c2a7bab2e2119dcc9c783b4c5f90b60a737da40d"
+    },
+    "ghidra-meta.json": {
+      "bytes": 955,
+      "sha256": "d2ce17561c7864c4410f49f5cec887b811b908f7a7e67a43ec4fabbea0e4d58f"
+    },
+    "inserted-disassembly.txt": {
+      "bytes": 11240,
+      "sha256": "56750aa06c5af790f5e372908c93697f173081c5103dbc8f4acb92d0c2a766b1"
+    },
+    "integrity-commands.json": {
+      "bytes": 11897,
+      "sha256": "e3be65e401a35a29df313dfeea71b21936ec9c4501a5d02851005846426e303c"
+    },
+    "modification-manifest.json": {
+      "bytes": 6196,
+      "sha256": "a68b23f5ca0204aeaaa48ca0c95ad85bad6e0f383c20910ea6c78f3ff817f021"
+    },
+    "optimized-after-commit.json.gz": {
+      "bytes": 36930,
+      "sha256": "fd303eb677f27f0e0255355a6f4c8137de6c0f086df51ef23235897e8f01d9e7",
+      "decompressed_sha256": "9b44c67c77068d9692d049ff158a9025849197f6e3a31fd43788940e214fb751",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-10.json.gz": {
+      "bytes": 39856,
+      "sha256": "514a623646c998353fb0707cf6a6c91eaf08659572c4ffe001df658e9ce98e9e",
+      "decompressed_sha256": "59817853bc581def9871aa754cb880c8dd4495d8f9a0fdd552463964b1481603",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-500.json.gz": {
+      "bytes": 491829,
+      "sha256": "370908c184e7fa0d9ee708fa09ff4784cac60aa1e32fa02e714080f4585c83d7",
+      "decompressed_sha256": "5b8a82cc5fc96e861b64f8b450e3f9522b74fde82d25821b742e03e4743102d4",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-fault-after-arm.json.gz": {
+      "bytes": 40642,
+      "sha256": "87107c14a20cdd7e69252071f91e2a71975328e68654349f8a63c63c2afcfdfa",
+      "decompressed_sha256": "7ba6e1582c91f794414d79f2358fbe70b8f0a1032ba3df129978289e474ebfdb",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-startup-fault.json.gz": {
+      "bytes": 39583,
+      "sha256": "14ebe1ac0fe1d6e99267c19eedcac3ca17bbd243bef3b5c2263c4e9ff1c54c70",
+      "decompressed_sha256": "863905f120fa6ce75ad92daaf3b9270410c9efc72fdb66310fda48e2b869e6e3",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-x-change.json.gz": {
+      "bytes": 41772,
+      "sha256": "976392a091f62f6bb7dc5aa45f386e1b79ed9f6d434cb51d600da43d504c98a9",
+      "decompressed_sha256": "c94d477de942e33380de63390fccc13803b02e83ed3af70e0a14194864b89a5d",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-x2-500.json.gz": {
+      "bytes": 42736,
+      "sha256": "140ff06769a950dbe9b820a6d19ebf25fe5a22b1a583bc61daf4b109c111b61b",
+      "decompressed_sha256": "a5f3e3297e28eaa64b1b1d160abdc1e29782b018714be109d369c44299a8a06f",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-analog-x2-fault.json.gz": {
+      "bytes": 40765,
+      "sha256": "72da780501bf81d018cc2008d67a6b814c99fe12815d3d770870cd15171766c9",
+      "decompressed_sha256": "d1b92a0412d4f66644c04dd2dbd6b94cb6542c85c135a3c067866f1cf4be9138",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-before-commit.json.gz": {
+      "bytes": 39850,
+      "sha256": "f82af7e716a40a376bb6d6721ebf198edfff2ab3f2613752e9645c9766d9cd38",
+      "decompressed_sha256": "81eef76fe571954d3bc9d7bf47b22348dda73c7a0e3489ad87e5463e7d79226e",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-cache-forged-filter.json.gz": {
+      "bytes": 38179,
+      "sha256": "0ae6f0589a03fc263a002603bbed87ed1c63157e4fa8ed432f56e4b773db6e91",
+      "decompressed_sha256": "3ef361a2219523a65cee16f3e4557689a6fa5406c0d18659527eb63dfff8a47a",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-cached-no-raw.json.gz": {
+      "bytes": 38163,
+      "sha256": "76326748cf2daf44fe5e3c1431b9e7671c331a1e386c7af0ebcb4d8d68f9a8f4",
+      "decompressed_sha256": "4e180ea2530cfa20367a03d297a5789885ad443520345aa5f09aae9c0e9625df",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-digital-10.json.gz": {
+      "bytes": 36409,
+      "sha256": "2cbe0af2bec7d672c3886c2ed10f776f58c967a8a40b4c6aefec26bddb899f1d",
+      "decompressed_sha256": "5aa1113294544b192ca6e805c54b1b12e1080fe02f3534f15cae1861ce2c6c20",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-digital-49.json.gz": {
+      "bytes": 36264,
+      "sha256": "4e0a214403e8b09967ecf964ca21d33fa90cad0a8fbd0278210b21ab2e21c1e0",
+      "decompressed_sha256": "3a0fbda96ec479af9f079fb032bc1a3d8030b2833edec9f5ffe2a9175fc40b0d",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-digital-500.json.gz": {
+      "bytes": 463132,
+      "sha256": "a329b004eb5cafbd3bd9dab2cd3382494df12a8ced8be951e57b577c5f5245d4",
+      "decompressed_sha256": "b6ade7b36b83f729d1206ba7f66b9a864a2a11cb11187692f87bc34e35fac36a",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-digital-51.json.gz": {
+      "bytes": 36264,
+      "sha256": "fb90ad4fd724354f53a8ff22406da2a2c88d68f220a6fe77d82580c3ccbd3388",
+      "decompressed_sha256": "3f699b5fbfc309837a8cb2aecabb8c7997930d44bea5cc7f42b063932da9bccc",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-digital-to-analog-active.json.gz": {
+      "bytes": 38552,
+      "sha256": "0a60b3aa2b49a626838d26086c81d1e8a19801a032fc43cdc99b4caa7e8d1ace",
+      "decompressed_sha256": "f28a16cfc56beeea5fe9b3c1f7e34962af671a599658bc74deecba7308c907b3",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-gap20.json.gz": {
+      "bytes": 37043,
+      "sha256": "f3968b7288296f86189bf433a04f5f1c0e748bb6c0fc96f725e1db9962773464",
+      "decompressed_sha256": "33ff6d7b9d410a0bfa8c33c0fe2ec34be5083571d95a5643ed26cd4c1b62ac9c",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-gap21.json.gz": {
+      "bytes": 35909,
+      "sha256": "47ef863df0054d48522f296aefbeedbe62611022dafada4bf44468d344579d55",
+      "decompressed_sha256": "0333cbc55a6ee34aa37665c0e598844bc9ecc577c08c51e848e14c17607c2a57",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-gate-age20.json.gz": {
+      "bytes": 37121,
+      "sha256": "be1e5076649d4509542e3ac44c1a63754c69839eb4ef14f1be84bedd85abf099",
+      "decompressed_sha256": "a45d50ee308e027c4a70c3b594337e6321cab944aaed35e9c9b95898ba0852cb",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-gate-age21.json.gz": {
+      "bytes": 36226,
+      "sha256": "03c06aa9310fee61ed3576ae7db34c014f5e1b60daa9d0275fbb383fb5ab90c0",
+      "decompressed_sha256": "9d8cf308008b0bcf5a8e3fb18d0be5d663eaedaae7430779ce62f4ec91c4b253",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-held-w.json.gz": {
+      "bytes": 410560,
+      "sha256": "25df2a32f78560f7e39eec936de9653df5e276836ab62499269557384029d4d5",
+      "decompressed_sha256": "6008f14d5b7ebfc9b9bbff5df68f6aa4b9a9e35d2ad5430c9aa0b3330f45eadb",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-invalid-state.json.gz": {
+      "bytes": 36095,
+      "sha256": "f0ada80aa91c0b5724cb9eeec5efe0fa25cf3c8f0dc6f0d06d6d5a7c7d797438",
+      "decompressed_sha256": "dfadb9227bfe06e360da5aed24a8c99b09dc1df9aa9e78ed53cc5a18a861c3bd",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-mode-flip-active.json.gz": {
+      "bytes": 35552,
+      "sha256": "c45a88e744de0ea930cc6987e8717577c3a141ace838780aa9f45016439cc260",
+      "decompressed_sha256": "cafef5abf9bb0ba6e09aaa48378f6ebbaca92c42389a222675040abbbdc05190",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-pc-transient.json.gz": {
+      "bytes": 40990,
+      "sha256": "47ee5f95f2efd3f2ac04120c8ac9e398b3a2d1fc224e318e97e23de43010df8a",
+      "decompressed_sha256": "097504dc54081e7b26fbba61ce1fef5f16c431791d30898dc9e7f0bd1d874ae2",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-release-during-motion.json.gz": {
+      "bytes": 407262,
+      "sha256": "9d2857ff4c119c5901a14ad5dfc9a8fd3ecef1edcdd11891aaeee8d9da7bf08e",
+      "decompressed_sha256": "5581abba31b33b825afe182389a59986ac83a41e74175302100e8ae8adccbe89",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-repress-w.json.gz": {
+      "bytes": 406914,
+      "sha256": "d5d93982c795f355c1315789c87a5283225b3740d37e53317467a56446024d0b",
+      "decompressed_sha256": "a585dacdff5ce40bec59374dce55a948973cec56fc7a4f5278c5deffa85b1806",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-return-edge-late.json.gz": {
+      "bytes": 68970,
+      "sha256": "25e2a3c322a9922d927359ea0f61a44b2093f84d97283f8057173224098d2d6a",
+      "decompressed_sha256": "fb0c805389ec4bb91ec2631f975bce4a334513e6132cd346548e46cee07e6866",
+      "native": {
+        "instructions_executed": 20000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-return-edge.json.gz": {
+      "bytes": 71350,
+      "sha256": "f6f166b3eedd7b8871e439908c38b4ad15267ccd078d0bf763067b4b289c45e6",
+      "decompressed_sha256": "6072eccf8a053fab058df5e6fca42ba372a6768d98530e428c26c950569a371e",
+      "native": {
+        "instructions_executed": 20000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-running-w.json.gz": {
+      "bytes": 38973,
+      "sha256": "7ada6993eb9e83f5cb2ff79a3b2b5f934ecc30d5752d0c2fe5442f00f6d1b9ab",
+      "decompressed_sha256": "00b2ebf374debf04d4db5be0c8dc53fba3b294e2b29a74b6ab27af92b8207d07",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-stale-observation.json.gz": {
+      "bytes": 41732,
+      "sha256": "e1f34843777756215b0e3be83d5ace2e7b754ec60a377a9209fa45074efe944c",
+      "decompressed_sha256": "c1706a597498732dce513eb97851f589d44502e5c0c65b51ba32065e153d742b",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "optimized-startup-active.json.gz": {
+      "bytes": 35583,
+      "sha256": "a3c5550d37c5665cfee89093ec144cea60ed4c8d2e3b1c82a33d060757a47ccb",
+      "decompressed_sha256": "1899edd07f105cebfb30e83680e0f578cd7c6174e3bebfb765dd4b922df94f3c",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "outcomes.json": {
+      "bytes": 1623210,
+      "sha256": "6e5a7070f91e45960e4aeb8c3eae9b3d896377dea0cacc0f5acc08baf37d6c56"
+    },
+    "prefix-frame-digital.json.gz": {
+      "bytes": 103137,
+      "sha256": "baa0ddd0504eb3cc7fb2404948936dfa2666610c7c015ae18f8d1b242fafe988",
+      "decompressed_sha256": "fa42cf6182cf9a4d73f74623bf3b6092d23732f9390c11381c28a7fccba921d9",
+      "native": {
+        "instructions_executed": 20000000,
+        "stop_reason": "instruction limit reached",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "prefix-frame.py": {
+      "bytes": 14331,
+      "sha256": "a8a478a6d20906f69c56d777b1cec234ef3eda31942b24df7dcdbc9fdfcee05f"
+    },
+    "protected-baselines.json": {
+      "bytes": 95037,
+      "sha256": "28bd8746c1fec30f18e6256677ac386a36c80b9c32d639218d159eab70576bca"
+    },
+    "reset-state-clear-command.txt": {
+      "bytes": 561,
+      "sha256": "c68deaf1d399328f6a056224911e7bbfb9317fa94e3307f6c8d866cbef2169f3"
+    },
+    "reset-state-clear.json": {
+      "bytes": 6190,
+      "sha256": "4f1efab6774fda10de1d64a843f44136b7dbd28d85e7c57a3ea39bb8e2e4993f",
+      "native": {
+        "instructions_executed": 16334,
+        "stop_reason": "reached stop address 0x0000cc42",
+        "error": null,
+        "mem_write_dropped": 0
+      }
+    },
+    "return-edge-late.py": {
+      "bytes": 14896,
+      "sha256": "d0edf0d91190f8ebd18c71671eeceb20bac1c30eee9872125341863fa9a16e80"
+    },
+    "return-edge.py": {
+      "bytes": 14321,
+      "sha256": "36a2de1824a4754bccb1dc6af69b36b3f1cb47fed657f053fb1a4a3a64fc17c5"
+    },
+    "reuse.S": {
+      "bytes": 9045,
+      "sha256": "c1a0093e6a6b593f23a8e814b59fcaf0a9193ae8fa085315d6eb9574871c8c4a"
+    },
+    "run-batch.py": {
+      "bytes": 426,
+      "sha256": "7bdd84662dde381e7646e99666aa73b7a7d2c9b52edcd9cce1781ed76dc01fdc"
+    },
+    "run-experiments.py": {
+      "bytes": 13440,
+      "sha256": "97c5c05394204278a9d0cd4088676f814391c291610c45a079cc6d75f8e15909"
+    },
+    "run-support.py": {
+      "bytes": 308,
+      "sha256": "7be87766272dadef9f7f5b11bf2f41e72b5fda0da2f76160cc71102a814961f7"
+    },
+    "static-commands.txt": {
+      "bytes": 962,
+      "sha256": "b80f99aafd429dd8196130b01bd9788cef4702bbc8606042922cc1a5786d83b9"
+    },
+    "support-commands.json": {
+      "bytes": 173398,
+      "sha256": "80ab8084059560b0a63a8ca0887ceeee5ef7acf0b3215b051b9e5544ebe12f37"
+    }
+  }
+}

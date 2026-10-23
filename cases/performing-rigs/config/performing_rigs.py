@@ -47,6 +47,9 @@ NUM_EXTERNAL_IRQ = _svd_num_external_irq(TARGET_SVD)
 
 # firmware key -> (path relative to repo root, load base, provenance TSV or None)
 FIRMWARE_REGISTRY = {
+    "autopilot915_reuse_r2_research": ("cases/performing-rigs/research/generated/acquisition-reuse-r2-2026-10-23/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse_r2.bin", "0x4000", None),
+    "autopilot915_reuse_r1_research": ("cases/performing-rigs/research/generated/acquisition-reuse-r1-2026-10-23/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse_r1.bin", "0x4000", None),
+    "autopilot915_reuse_research": ("cases/performing-rigs/research/generated/acquisition-reuse-2026-10-23/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse.bin", "0x4000", None),
     "autopilot915_stateful_research": ("cases/performing-rigs/research/generated/stateful-trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_stateful.bin", "0x4000", None),
     # Research-only derived image. Never substitute for either original key.
     "autopilot915_freshness_research": ("cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin", "0x4000", None),

@@ -1,0 +1,123 @@
+{
+  "warning": "SIMULATION RESEARCH ONLY; NOT FOR HARDWARE DEPLOYMENT",
+  "source_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "source_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+  "original_size": 70768,
+  "patched_file": "RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse_r2.bin",
+  "patched_size": 71904,
+  "patched_sha256": "f20e2004830c1daad818bdfd6155917fe2ab05205fb7c688be1a5358c7ea128a",
+  "load_base": "0x4000",
+  "extension": {
+    "address": "0x15470",
+    "size": 1136,
+    "bytes": "2de9f74f2de90f502e484ff00001416241632d48006828b100f056f9002801d100f032f9bde80f50dff8a0f02de90f50244800210160816041624163bde80f50dff88cf02de9f0501e4f22480078022827d0012833d144f2a52ce04705463b204df2b51ce04704461b480068012806d0022824d140f2fa0240f2ee2303e040f2c80240f244230020944201db9c4201dd40f00100954201db9d420cdd40f0020009e039204df2dd3ce0470446054600280cbf03200020bc61fd61bde8f0900420bde8f0901c530020182300201d8e0000ffb20000c01f0020940100202de90f50eff3008c09498861094a1268ca62094a12680a634ff001024a628cf30088bde80f50054b07ee900adff810f01c530020ec5200209401002018310020db42000010b544f2a52ce0472de90f50eff300840649c8614a6b0ab900f0e6f884f30088bde80f50bde81040704700001c53002010b54df2dd3ce0472de90f50eff3008400f00cf80b494a6b0ab900f0cdf884f30088bde80f50bde81040704705498861c861054a1268ca62044a12680a6302224a6270471c530020ec520020940100202de90f50eff300840c48406b78b90c48007802280bd10948406a022807d039204df2dd3ce047fff7d9ff00f09df884f30088bde80f5003b0bde8f08f1c530020c01f00202de9f050234f786a03280ad001280fd002287ff462af2049097802297ff45daf0be01d490978fa6b91427ff456af04e01949097801297ff450af184909683a6b91427ff44aaf16490968fa6a891a14293ff643af032810d0bc69fd69022812d00e48006801283ff418af02287ff435af40f2fa0240f2ee2313e7b86b04283ff62cafbde8f090002c0cbf03200020bde8f09000001c530020c01f002094010020ec5200202de9f0410a4c0b4d2d780b4e3668fff7d5fea063e563266308480068e0620320606200f02df801206063bde8f08100001c530020c01f002094010020ec5200200a48006878b90a4800687b280bd109480078092807d10848007820b90748007808b90120704700207047000024250020381b0020d800002020310020600000202de9f041314ce56a216a691a142913d82f490978a26891420ed12e490968e268914209d12c4909682269914204d12b4909786269914202d0002121606560256223490978a16023490968e16022490968216122490978616199bb2668042e30d8fff73cff002808d0032815d0012828d1022e26d30221216025e0022e23d0012e06d16168691a32291dd3022121601ae001212160656016e0022e12d3fff790ff00280ed0042e0ed0032e06d16168691a322908d30421216005e003212160656001e000212160bde8f08100001c530020c01f002094010020381b0020203100202de9ff5f1a4c206804282cd1fff726fe032826d14cf6d14ce047216a401a14281fd8eff3108672b6fff75aff002816d010480078a168884211d10f480068e16888420cd100202060a06a0130a06286f31088bde8ff5f094b0322dff824f086f3108800202060bde8ff5fdff818f000001c530020c01f002094010020bc2500209d8f000033920000"
+  },
+  "modifications": [
+    {
+      "address": "0x8e18",
+      "file_offset": "0x4e18",
+      "before": "2de9f74f",
+      "after": "0cf02abb"
+    },
+    {
+      "address": "0x8f98",
+      "file_offset": "0x4f98",
+      "before": "6b4b0322",
+      "after": "0cf05ebc"
+    },
+    {
+      "address": "0x81d0",
+      "file_offset": "0x41d0",
+      "before": "03f095b8",
+      "after": "0df064b9"
+    },
+    {
+      "address": "0x8e76",
+      "file_offset": "0x4e76",
+      "before": "fbf715fa",
+      "after": "0cf08bfb"
+    },
+    {
+      "address": "0x9228",
+      "file_offset": "0x5228",
+      "before": "04f0d8f8",
+      "after": "0cf0caf9"
+    },
+    {
+      "address": "0x42d4",
+      "file_offset": "0x2d4",
+      "before": "124b07ee900a",
+      "after": "11f03ab900bf"
+    },
+    {
+      "address": "0x9232",
+      "file_offset": "0x5232",
+      "before": "03b0bde8f08f",
+      "after": "0cf0edb900bf"
+    },
+    {
+      "address": "0xcca0",
+      "file_offset": "0x8ca0",
+      "before": "1c530020",
+      "after": "5c530020"
+    },
+    {
+      "address": "0x11050",
+      "file_offset": "0xd050",
+      "before": "1c530020",
+      "after": "5c530020"
+    }
+  ],
+  "symbols": {
+    "$t": "0x15858",
+    "$d": "0x158c8",
+    "poll_hook": "0x15470",
+    "accept_hook": "0x15858",
+    "program_hook": "0x1549c",
+    "armed": "0x15802",
+    "qualified": "0x1582c",
+    "commit": "0x1589c",
+    "raw_hook": "0x1554c",
+    "analog_hook": "0x15590",
+    "digital_hook": "0x155c0",
+    "busy_hook": "0x15610",
+    "observation_update": "0x15778",
+    "observation_classify": "0x15654",
+    "analog_native_return": "0x15598",
+    "digital_native_return": "0x155c8",
+    "prefix_observe": "0x156f8"
+  },
+  "new_state": {
+    "start": "0x2000531c",
+    "end_exclusive": "0x2000535c",
+    "bytes": 64,
+    "reservation": "Extend reset BSS end at cca0 AND allocator initial-break literal at11050; preserve existing heap cursor20005308"
+  },
+  "observation_metadata": {
+    "type_offset": 36,
+    "actual_acquisition_tick_offset": 44,
+    "X_at_acquisition_offset": 48,
+    "prefix_observed_offset": 52,
+    "prefix_classification_offset": 56,
+    "prefix_mode_offset": 60,
+    "type": "0 invalid,1 native filtered ADC,2 native/fallback digital,3 fresh pre-phase fallback; reset each poll"
+  },
+  "policy": {
+    "inactive_ticks": 50,
+    "active_ticks": 50,
+    "maximum_poll_gap_ticks": 20,
+    "states": {
+      "0": "need inactive",
+      "1": "qualifying inactive",
+      "2": "armed",
+      "3": "qualifying active",
+      "4": "qualified"
+    },
+    "analog": "Current-poll native raw AND result of same native filter invocation; X1/X2 only; unchanged fresh reacquisition at grant",
+    "lifecycle_epoch": "While W/return phase bytes are nonzero and entry ineligible, preserve Phase3 fresh pre-phase observation and skip a second policy update; no extra eligibility predicate",
+    "commit": "fresh classification, stable context/eligibility and atomic consume before original queue1 store"
+  },
+  "compatibility": "Exact original915 only. Appended executable extent allocated for simulation; no physical flash ownership/bootloader claim.",
+  "assembly_sha256": "c1a0093e6a6b593f23a8e814b59fcaf0a9193ae8fa085315d6eb9574871c8c4a",
+  "object_sha256": "c250246882e608f268ebb396f1fef912444fc04d5b1b72f0b0a02f017f62d79c"
+}

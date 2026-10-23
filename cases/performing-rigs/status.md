@@ -34,6 +34,26 @@ provenance, initialized coupled Remote service, nonzero return, multi-record/
 full-W-burst behavior and universal writer/IRQ closure remain open. No firmware,
 model, framework or Gate1–5 verdict changed; VVR recurrence is not explained.
 
+## Stateful acquisition-reuse experiment
+
+The [acquisition-reuse report](docs/investigations/stateful-patch-acquisition-reuse.md)
+provides a separate simulation-only R2 image and reproducible packet. Native raw
+ADC plus paired filtered results feed qualification; cached-only/stale observations
+invalidate it. Digital release continues during motion. Fresh pre-phase acquisition
+preserves W/return ordering where eligibility changes. Two earlier iterations are
+rejected with preserved counterexamples; R2 passes3,979 checks across73 records,
+including31 fresh candidate histories, plus32 support controls and a frame witness.
+All demonstrated Phase3 mitigations and tested intentional500-tick/G/W1/B1/W
+operations remain effective in this bounded matrix. No newly demonstrated final
+regression was found. The50/50/20 policy and common fresh gate are retained.
+Median analog live poll work drops501→409 guest instructions (18.4%); digital
+rises158→210 (32.9%) and analog recognition occurs10 modeled ticks later. This is
+a bounded analog improvement, not a generally faster replacement. Equivalent-age
+native evaluator/timer results match prior images; absolute scheduling still differs.
+Physical timing, continuous STEP/NVIC, writer/IRQ/flash ownership remain unqualified.
+Previous images, apfw2, models and gates are unchanged. Next assess digital
+bookkeeping and more acquisition/W phases; no deployment or framework work is implied.
+
 ## Stateful patch motor-timing cause
 
 The [timing investigation](docs/investigations/stateful-patch-motor-timing-preservation.md)
@@ -46,8 +66,8 @@ instructions digital /373 analog beyond the original prologue, including while
 live. Profile origin and shared5ms scheduler phase differ, so start alignment
 alone does not make streams equal. Guest instruction time is not physical CPU
 cost, and COUNT/position feedback remains unvalidated. Whole-motion preservation
-is still unproven. Next test native-acquisition reuse and bounded background work;
-no third patch, hardware work, model or gate change was performed.
+is still unproven. The separate acquisition-reuse experiment above now measures that optimization;
+this timing investigation changed no firmware, model, gate or hardware.
 
 ## Stateful external-trigger qualification experiment
 

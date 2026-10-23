@@ -1,0 +1,13 @@
+# Repository root. Run serially against each Ghidra project.
+# RESEARCH ONLY — NOT FOR HARDWARE DEPLOYMENT.
+export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+export JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home
+python3 tools/ghidra/aptrace_ghidra.py build autopilot915_reuse_r2_research
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915_reuse_r2_research 0x15470 0x158e0
+# Original acquisition provenance queries; results retained in immutable initial packet.
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x42a4 0x4318
+python3 tools/ghidra/aptrace_ghidra.py callers autopilot915 0x42a4
+python3 tools/ghidra/aptrace_ghidra.py xrefs autopilot915 0x2000311c
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x8e18 0x8ea0
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x9200 0x9240
+# The binary's detours and original literals are exhaustively listed in modification-manifest.json.

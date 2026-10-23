@@ -1,0 +1,116 @@
+[
+  [
+    {
+      "script": "run-experiments.py",
+      "case": "held-w"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "digital-10"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "before-commit"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "running-w"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "after-commit"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "analog-x-change"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "cache-forged-filter"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "gap21"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "mode-flip-active"
+    }
+  ],
+  [
+    {
+      "script": "run-experiments.py",
+      "case": "repress-w"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "startup-active"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "analog-startup-fault"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "digital-49"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "analog-10"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "invalid-state"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "stale-observation"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "gate-age20"
+    },
+    {
+      "script": "extra-controls.py",
+      "case": "analog-x2-fault"
+    }
+  ],
+  [
+    {
+      "script": "run-experiments.py",
+      "case": "release-during-motion"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "pc-transient"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "analog-fault-after-arm"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "digital-51"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "analog-x2-500"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "cached-no-raw"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "gap20"
+    },
+    {
+      "script": "run-experiments.py",
+      "case": "gate-age21"
+    },
+    {
+      "script": "extra-controls.py",
+      "case": "digital-to-analog-active"
+    }
+  ]
+]

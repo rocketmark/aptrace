@@ -1,0 +1,1 @@
+tools/unicorn/.venv/bin/python3 tools/unicorn/run_concrete.py --firmware cases/performing-rigs/research/generated/acquisition-reuse-2026-10-23/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse.bin --call 11038 --arg 64 --dump-mem 20005308:4 --max-instructions 100 --out cases/performing-rigs/research/generated/acquisition-reuse-2026-10-23/allocator.json

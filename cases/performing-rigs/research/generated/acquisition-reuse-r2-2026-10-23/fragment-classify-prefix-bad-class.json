@@ -1,0 +1,113 @@
+{
+  "firmware": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/generated/acquisition-reuse-r2-2026-10-23/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse_r2.bin",
+  "entry": "0x00015655",
+  "instructions_executed": 30,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "execution_mode": "continuous",
+  "registers": {
+    "r0": "0x00000004",
+    "r1": "0x00000000",
+    "r2": "0x00000064",
+    "r3": "0x00000000",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x2fff0011",
+    "pc": "0x2fff0010",
+    "cpsr": "0x20100033"
+  },
+  "memory": {
+    "0x2000531c": "0000000000000000000000000000000000000000000000000000000000000000000000000300000000000000640000000100000000000000ff00000001000000"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00015654",
+    "0x00015658",
+    "0x0001565a",
+    "0x0001565c",
+    "0x0001565e",
+    "0x00015676",
+    "0x00015678",
+    "0x0001567a",
+    "0x0001567c",
+    "0x0001567e",
+    "0x00015682",
+    "0x0001568e",
+    "0x00015690",
+    "0x00015692",
+    "0x00015694",
+    "0x00015696",
+    "0x0001569a",
+    "0x0001569c",
+    "0x0001569e",
+    "0x000156a0",
+    "0x000156a2",
+    "0x000156a4",
+    "0x000156a8",
+    "0x000156aa",
+    "0x000156ce",
+    "0x000156d0",
+    "0x000156d2",
+    "0x0001552e",
+    "0x00015530",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [
+    {
+      "addr": "0x2000531c",
+      "len": 64,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x200052ec",
+      "len": 4,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20001fc0",
+      "len": 1,
+      "tag": "seed"
+    },
+    {
+      "addr": "0x20000194",
+      "len": 4,
+      "tag": "seed"
+    }
+  ],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x00015654",
+    "args": [],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x00000004",
+      "r1": "0x00000000",
+      "r2": "0x00000064",
+      "r3": "0x00000000"
+    }
+  }
+}

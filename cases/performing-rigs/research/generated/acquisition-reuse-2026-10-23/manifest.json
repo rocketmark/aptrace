@@ -1,0 +1,1124 @@
+{
+  "date": "2026-10-23",
+  "verdict": "REJECTED: new second initiation at return edge; initial candidate preserved, not promoted",
+  "candidate_sha256": "7a0824437f9620321632f141fdca6d755f13396da00a219e9b2d8f43c24f4e96",
+  "campaign_records": 69,
+  "checks": 3651,
+  "expected_regression_check_failures": 1,
+  "native_snapshots": 98,
+  "return_edge": {
+    "phase3_starts": 1,
+    "candidate_starts": 2,
+    "cause": "Acquisition moved after phase work restoring idle9; armed state survived into newly eligible sampling epoch"
+  },
+  "artifacts": {
+    "B1-full-reset-optimized-command.txt": {
+      "bytes": 1636,
+      "sha256": "8d8f978b4d0c8fd627aa6e05f00f94af5b6abb3541800ca3775fef4e384cb684"
+    },
+    "B1-full-reset-optimized.json": {
+      "bytes": 88497,
+      "sha256": "94b328e20e98a282332db9cb62fbbcdeb7c5b6f31571ebb735d4b42459fb2691",
+      "native": {
+        "instructions_executed": 11357618,
+        "stop_reason": "reached stop address 0x00005fa6",
+        "error": null
+      }
+    },
+    "G-to-enable-optimized-command.txt": {
+      "bytes": 2445,
+      "sha256": "cb16f25aad547a9ed40d38b03482f7310856c4ac697cd6c3abbb8f6881ee9414"
+    },
+    "G-to-enable-optimized.json": {
+      "bytes": 166374,
+      "sha256": "cdbb2d0abb17b7878159edb3caaf358f1a48865c931ca7a35d389cd8da3a2287",
+      "native": {
+        "instructions_executed": 12155017,
+        "stop_reason": "reached stop address 0x00005fa6",
+        "error": null
+      }
+    },
+    "README.md": {
+      "bytes": 8481,
+      "sha256": "71051be4cdb9b9246af3fcb855775e699734c2f816337ba7b0e6b5121206f4ed"
+    },
+    "RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_reuse.bin": {
+      "bytes": 71764,
+      "sha256": "7a0824437f9620321632f141fdca6d755f13396da00a219e9b2d8f43c24f4e96"
+    },
+    "RESEARCH_ONLY_NOT_FOR_HARDWARE_reuse.o": {
+      "bytes": 2012,
+      "sha256": "955adf98290b9f95349a723a5fbdd8cc786054d73d30b1bd13f968e2030bb7de"
+    },
+    "W1-nonzero-to-enable-optimized-command.txt": {
+      "bytes": 2458,
+      "sha256": "cde177d7b7749bbc5eb101bc9fa2963d07148b1b3c14eaeb7abc4223704f99e7"
+    },
+    "W1-nonzero-to-enable-optimized.json": {
+      "bytes": 309356,
+      "sha256": "e2ae63c2fd087f34f9e1a9b38e15fe1649c9c07f0cba94809a03101f00d69008",
+      "native": {
+        "instructions_executed": 12348279,
+        "stop_reason": "reached stop address 0x00005fa6",
+        "error": null
+      }
+    },
+    "allocator-command.txt": {
+      "bytes": 355,
+      "sha256": "1950c317496b7addb00ef221fba2ea6c4d31ff25f7bafde510c19b5c8e0bc3f3"
+    },
+    "allocator.json": {
+      "bytes": 1672,
+      "sha256": "fe897e3af5f7f6e5b1e9040c8f08ab62737410bc630b6994f81884c357f13d59",
+      "native": {
+        "instructions_executed": 11,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "analog-site-listing.txt": {
+      "bytes": 3558,
+      "sha256": "91fff4700c2222c36eb2eacb7541b9eeaf6ca62ca9f292af526585050e51ffe5"
+    },
+    "check-artifacts.py": {
+      "bytes": 14717,
+      "sha256": "9a2c43c07126f6ec8923a2f87c7c0587847a79cfbb42385b1e42447bcac05a7d"
+    },
+    "checks.json": {
+      "bytes": 322751,
+      "sha256": "fb16af34fc11c9221eace51533be866050900f2ff05c1de146eed0b2432b17d4"
+    },
+    "digital-detours-disassembly.txt": {
+      "bytes": 220,
+      "sha256": "33cd001d2ef6c225343b7b14f5c02d7f83a5e1a5fef9dd35aa215f9431a00a5f"
+    },
+    "digital-site-listing.txt": {
+      "bytes": 1789,
+      "sha256": "4ead2e787d9e116a55d97c8e8a440189c4fafdd7725fddc3447c33503a92f7fe"
+    },
+    "direct-commands.json": {
+      "bytes": 9954,
+      "sha256": "c34d54232d8923e8fe7a7769874e138302258ba6d030ea400c5ef4b1e03914b1"
+    },
+    "extra-controls.py": {
+      "bytes": 13850,
+      "sha256": "85e6c120140792eb21311e0b6fa0b682578be05a6d6d5ba86b6f4419982e5ca3"
+    },
+    "filter-listing.txt": {
+      "bytes": 1891,
+      "sha256": "b4536593d9a4a5adaba786c940956d8beca411d58debb6107446e78aab6d5082"
+    },
+    "fragment-classify-X2-fault-inactive.json": {
+      "bytes": 2709,
+      "sha256": "d5d0e830fee01ad15a13c42ea04bd68e9bdd0ff2f08c50479baa211e0134a529",
+      "native": {
+        "instructions_executed": 46,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-age20.json": {
+      "bytes": 2709,
+      "sha256": "b4bb186709a9c6a99aaf13f7a1034aa5532e50500d72c6747e4f3f0d49da5d45",
+      "native": {
+        "instructions_executed": 46,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-age21.json": {
+      "bytes": 2295,
+      "sha256": "5cee18f7421925c46476829c18dd3b9cb47da7403d7b449f7af7df678857f7a2",
+      "native": {
+        "instructions_executed": 23,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-digital-high.json": {
+      "bytes": 2457,
+      "sha256": "c1bc58bdc8faef4ea7911d67a2300df106c152769f00c0c8d1f8e860ceae8452",
+      "native": {
+        "instructions_executed": 32,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-digital-low.json": {
+      "bytes": 2457,
+      "sha256": "9485afffdbaddd6edbf3f293a685a56a35b7dcb4fe6c0bf37807a1411d7337d2",
+      "native": {
+        "instructions_executed": 32,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-filter-only-active.json": {
+      "bytes": 2691,
+      "sha256": "22cc8322ad2fa61d4077ddc82c0393cc25c808196fa6c8f7518a6d125432cc47",
+      "native": {
+        "instructions_executed": 45,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-missing.json": {
+      "bytes": 2061,
+      "sha256": "f65b94584609ea1c28143a4eaf5945eea7dece4d350d80c5112b845a65c14c92",
+      "native": {
+        "instructions_executed": 10,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-raw-only-active.json": {
+      "bytes": 2673,
+      "sha256": "daaf6266cacf00911483ad074341c89c7ef265264f3785e2946cf03da866520a",
+      "native": {
+        "instructions_executed": 44,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-classify-wrong-mode.json": {
+      "bytes": 2097,
+      "sha256": "8f1d2c40c37f75b00808566e5fa9369ee2f52d225eab225f34a9d1a981cd792c",
+      "native": {
+        "instructions_executed": 12,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-commands.json": {
+      "bytes": 12760,
+      "sha256": "2b21e8b20f2ba36be838719cb2c35ac4baf6ebb9821cab570272d4d1260ee2de"
+    },
+    "fragment-policy-gap21.json": {
+      "bytes": 3187,
+      "sha256": "5795ce1ef161f133a8fbf9252239d2a8ada4ff873d8cdbf34b4c76893ecd265a",
+      "native": {
+        "instructions_executed": 83,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-policy-interval49.json": {
+      "bytes": 3188,
+      "sha256": "b62d1761d20842ff73a1c33498597ae6340bece2dd47f6bc658ed7b46010df8b",
+      "native": {
+        "instructions_executed": 128,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-policy-interval50.json": {
+      "bytes": 3188,
+      "sha256": "45c7adf005c9ba76f24c63db04edf6fb9bd04f73734bf93f6b43d72c592a528b",
+      "native": {
+        "instructions_executed": 131,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-policy-missing.json": {
+      "bytes": 3187,
+      "sha256": "3c3f94f4994ae21e67203bb9c84ac7e9c591a86fd5305425677ee6a9ffacdd2f",
+      "native": {
+        "instructions_executed": 64,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "fragment-policy-stale21.json": {
+      "bytes": 3187,
+      "sha256": "599ea58f70959c88d4cdd6a994529abd9c665131f82173728dc61230102e9ff3",
+      "native": {
+        "instructions_executed": 77,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "frame-analog-command.txt": {
+      "bytes": 3421,
+      "sha256": "31a61abe737467943cee46b717b4009c53481857e244b4ed5d2774c337bff799"
+    },
+    "frame-analog.json": {
+      "bytes": 11023583,
+      "sha256": "20b8366aacc11faacd238d24dc6557d07ecfe1dbbd6cfde4f1277adc936c738d",
+      "native": {
+        "instructions_executed": 14000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "frame-digital-command.txt": {
+      "bytes": 3426,
+      "sha256": "24c80647ed583412327f60905272aae42c877c372166102e68ddf2c68076efe2"
+    },
+    "frame-digital.json": {
+      "bytes": 9159891,
+      "sha256": "e80abaa96ed062f77907ae5ccc3e1037c0b5bacb5efc0bb2967588d68b6c901b",
+      "native": {
+        "instructions_executed": 14000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "frozen-commands.json": {
+      "bytes": 133833,
+      "sha256": "0c146df564bc126124763a4451024238d45f9b8ab9fd28fe3347e67ba85144ca"
+    },
+    "frozen-optimized-elapsed51.json": {
+      "bytes": 11270,
+      "sha256": "700cfe40380d9f1fb4705614e8ca8f23028f23aaad03ba19409ecaf124f1db32",
+      "native": {
+        "instructions_executed": 1605,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "frozen-optimized-elapsed52.json": {
+      "bytes": 11270,
+      "sha256": "9dc0fa8891c82b6beb374ae40b00fbb2ed8062311ddb7a48d3abd139c01c712a",
+      "native": {
+        "instructions_executed": 1589,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "frozen-optimized-elapsed53.json": {
+      "bytes": 11270,
+      "sha256": "ef1be05da872ef6ce886c45babef4fd6a450187c0f0a73e1d034cc3d1e89f127",
+      "native": {
+        "instructions_executed": 1599,
+        "stop_reason": "reached stop address 0x2fff0010",
+        "error": null
+      }
+    },
+    "generate-patch.py": {
+      "bytes": 5023,
+      "sha256": "e9bafdae04657a4e79299e1d8116b075b221225068b363e0afa0a96652d8ce6d"
+    },
+    "ghidra-build.txt": {
+      "bytes": 375,
+      "sha256": "441ae5a1f697d5c676b7436967284471cbb28113cd1d81189ec09e6118ce2101"
+    },
+    "initial-smoke/optimized-analog-500.json.gz": {
+      "bytes": 491461,
+      "sha256": "14d8ba6a7d76b470972d285c5a2efc6adfb672c7decf874102318fc8a84198db",
+      "decompressed_sha256": "da0152981f30244f11fc741982d966770639dd82bc18cd9a22f73bac546fb450",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "initial-smoke/optimized-digital-500.json.gz": {
+      "bytes": 465922,
+      "sha256": "7f9c13f2a499b19b16ba88ad0be21c79abfef8e3daf363bb930d230681cd00ce",
+      "decompressed_sha256": "471a90e9edbbf662615089ff3171381ce110ef05def025053ce35632508b80f5",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "initial-smoke/phase3-analog-500.json.gz": {
+      "bytes": 469340,
+      "sha256": "0ed97a2c0f2184aaa1c1588d4df9b6636c033f833eed25678443d751f53b3622",
+      "decompressed_sha256": "fe34e1368e3972c29b52a0bdeb12894d4fd0c8cc5f90d7f931c6d29a4345f61b",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "initial-smoke/run-experiments.py": {
+      "bytes": 13344,
+      "sha256": "bb93de09efb466b41fcf9cc3b82cc0966538f67a9fa03d070d68c6f2b648e27a"
+    },
+    "inserted-disassembly.txt": {
+      "bytes": 9746,
+      "sha256": "62501afd90993e6b59f1aa1427cab21d4a86e2417fd7cd04f2de7bad03f9182a"
+    },
+    "integrity-commands.json": {
+      "bytes": 11849,
+      "sha256": "5573d42839649514e786245d682c3bc2156bc6ddd83a8290f65ff854530e127e"
+    },
+    "modification-manifest.json": {
+      "bytes": 5435,
+      "sha256": "4eb9a9c11879c8e6f00c7cfa073a729efa4b3ce528e3254fb06e4c88275d0740"
+    },
+    "native-filter-callers.txt": {
+      "bytes": 108,
+      "sha256": "27baaaff26e12a3830a1e9bc43210d71581c9ed7b04ab494879a8bad16d7c826"
+    },
+    "native-filter-state-xrefs.txt": {
+      "bytes": 252,
+      "sha256": "1cb120aa39a26a222364486f611e904da5839822b38afac76ea089cd16d4fb7c"
+    },
+    "optimized-after-commit.json.gz": {
+      "bytes": 7009,
+      "sha256": "8418649b19b5090c453782762a267b2cf604d3b4f9733a030aa6c35471269194",
+      "decompressed_sha256": "4c2c80ca5dbd9052db67ded5538caaabf548a3259afa268fd3826ea830a132d9",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-10.json.gz": {
+      "bytes": 5884,
+      "sha256": "f51c5aadd96ea9a6be705c398d342099a0d7373b32de43ca085259b98c86cfba",
+      "decompressed_sha256": "4ece454e61494cf40a5b2ceb65c02f22166a3c329dc638edcda98098e4461532",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-500.json.gz": {
+      "bytes": 491466,
+      "sha256": "6c4e008af36ea9155e0905831b5999f084e45da2dac3fa7feb73802ab97e07bf",
+      "decompressed_sha256": "da12b38246690d5bf31b0a899e01860324d37decc636ffa42f59bcb5021a5cb8",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-fault-after-arm.json.gz": {
+      "bytes": 7049,
+      "sha256": "b6c7b3a1e041152c0fb3303ee639890092b9f765204580b0bfe837d393e274b7",
+      "decompressed_sha256": "aee334352291c3b8b68a63cab6c48072cd6e04b013b471c451f94759fc4222a2",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-startup-fault.json.gz": {
+      "bytes": 5662,
+      "sha256": "e3b0c954b1139c226cc12e9e50808e690fe3fa4f018b5e18700ff63a08b84683",
+      "decompressed_sha256": "a2bd51ce2f1ebfba2fc4eb0c5d75cbfa6cca5b88f11315cf8ac1c759cbc4944e",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-x-change.json.gz": {
+      "bytes": 5907,
+      "sha256": "72ad7bef9306b2f6620ca9ee19a79ab2473e2d1b10e5ce06654906abc37f3543",
+      "decompressed_sha256": "893aed4cca8bbb75669a6c8268a50cc29362e6fa99e0584818bd11831cd2ca37",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-x2-500.json.gz": {
+      "bytes": 7226,
+      "sha256": "c7951af182dddbfe41099782dd316d0fde1daf3042ed9ee1ebdc6b096182cf2c",
+      "decompressed_sha256": "a3bb6aaf6e6d74dbfd01bf845c97a10237e31d075031cd953e53efa7a65970e3",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-analog-x2-fault.json.gz": {
+      "bytes": 5968,
+      "sha256": "56b6841c7d43b3affa4042ce9888f334c41acaa38de9fbe0a82c03e331bdecb7",
+      "decompressed_sha256": "da4328369e2aa16e13664f2dcf5a20d83be865c0517061fe9bca347f5e9e0ecf",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-before-commit.json.gz": {
+      "bytes": 10047,
+      "sha256": "5301d0934f6db9c10527e02724036b2f0d02fac06fa5bde498a986b379208003",
+      "decompressed_sha256": "443b02f53aa0870cdd2e03d79691f77d3ab86c658fa7403fb3cb46e1f5ec4a61",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-cache-forged-filter.json.gz": {
+      "bytes": 6000,
+      "sha256": "57076da5b0d92ceddae9eddde8b56edbcd6d7adcc879fe871c5672f10c3db5c1",
+      "decompressed_sha256": "482e769a312e9f5ba45ec338235f7a4dc094fd61d3a8a7d533c04d48695ac8fd",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-cached-no-raw.json.gz": {
+      "bytes": 6008,
+      "sha256": "039b786302870736799d66f72989a769b344c587913e10a5ef4fd20e30dafa57",
+      "decompressed_sha256": "f91385a883dc3added2a5f827bf079359a91708069104e494c70d9eddf23f4e9",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-digital-10.json.gz": {
+      "bytes": 5962,
+      "sha256": "c7c3eb7f4c1af23f98e96fe1678e740959df85a1146ffee282234948358e063a",
+      "decompressed_sha256": "5ed1a733906405ed63fc74a8406714178ab5b6ccace358190ed09915a9b9b6b8",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-digital-49.json.gz": {
+      "bytes": 5951,
+      "sha256": "d0c8aeb56cf42d09c150a306c94264c26694c10f1a1eb6b088cf51d4ce65be56",
+      "decompressed_sha256": "099c221f3773fae5a929c9a9d6e625173df3731196b167b4cc99bb1575fe86e2",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-digital-500.json.gz": {
+      "bytes": 465925,
+      "sha256": "6bd666daf19bc815f6f82f06ce46c7986bf2cd0650293f9e0037c805433cec09",
+      "decompressed_sha256": "5ed133f6a3df2b6ccefd55e0e46141588d33c4e7d964fd1ea9e8ded5fb738384",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-digital-51.json.gz": {
+      "bytes": 5951,
+      "sha256": "bf64c9cf68456352748c88741e0064b65821011c2cf8646dd0b5dd26317e00a8",
+      "decompressed_sha256": "ca5f62b97b20d0f020230efbd9cc638626c5ab058d39516237b10cf7e5fb2036",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-digital-to-analog-active.json.gz": {
+      "bytes": 6035,
+      "sha256": "b4d018871c98b3c070c83d84cb7089bf676e864cb77575c6d93a3bbd3ae04e25",
+      "decompressed_sha256": "c94e7e631d5bb9d8adfba168fbb2fffde47a0fb303a574b0f1b5e90cfbb9f821",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-gap20.json.gz": {
+      "bytes": 7110,
+      "sha256": "1cb315ab2345b6ca44524508a85926e67d30a119051e45c311d40eee89b95798",
+      "decompressed_sha256": "747d02c79d20c389a557c188be4df4ba94228eaf7479126bd6849a09b019cb14",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-gap21.json.gz": {
+      "bytes": 6015,
+      "sha256": "5ac00296266bd82120396319ccd8d8cba1839daf7db26a79886f9d3db713868e",
+      "decompressed_sha256": "b75704190b49dedacc7dc608a3f1917a4313edfc6fba31e02cc2a1cd735cf640",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-gate-age20.json.gz": {
+      "bytes": 6973,
+      "sha256": "b7f9f99d59f16118841368f2c1f34f590324892ec949e704763d0b486a20882b",
+      "decompressed_sha256": "be7697400a704594f8cd1ab80a5d67d1735492debe691dad01ac373a187fa86d",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-gate-age21.json.gz": {
+      "bytes": 6129,
+      "sha256": "abaf45b0e817af45a540b01649c2a12f2750a4b6329f359cde9bf843bb829457",
+      "decompressed_sha256": "ebcc947aed338d1c4a1da8452a93b89d9bc1fd4e45f46ca42a68358d0c608b99",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-held-w.json.gz": {
+      "bytes": 28462,
+      "sha256": "b7c70334f4711677a1135b74269e46b9a94f3bfbeff2f36efa77893cb4e6b179",
+      "decompressed_sha256": "e502155bf8c87af04d41996726038dd8df4cc1e1eae5e30262b5e95b3c6b4f3b",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-invalid-state.json.gz": {
+      "bytes": 6079,
+      "sha256": "eae328e7a7d5bac3320039481bc528a8e686694bad8786f23a7676a19072acda",
+      "decompressed_sha256": "bd20d16b2c6580d6dd651b563f6362d680d2d3d3343ec693c8b65f3074a0c296",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-mode-flip-active.json.gz": {
+      "bytes": 6025,
+      "sha256": "6e57dd64d34a520ce575d68ba9bb2eacce8a07eb1d3d58c9ec94e43ef412a469",
+      "decompressed_sha256": "9c111b25602fcbe6c0e5fc2276c81ca13bfb66767f7a84ee190e0fe63dda048d",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-pc-transient.json.gz": {
+      "bytes": 10014,
+      "sha256": "e0b065b027c3f6e7f7c5e642f2a5725039e251c62445df13c96ea8f2ee3f4f58",
+      "decompressed_sha256": "bf7024d9b584eeb1e02cf2f6db069edba92ded31efa163adc9c3fb9349c3fc63",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-release-during-motion.json.gz": {
+      "bytes": 22714,
+      "sha256": "6cdf4fa5e6f36b63fda37e0f3b0560d72f1260067a85553d370f86ff92f32235",
+      "decompressed_sha256": "c18a981e0f7857607385076944f4703e201626882d0dd96d28a7ac713bb03fc1",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-repress-w.json.gz": {
+      "bytes": 22534,
+      "sha256": "516c381d8e2f0a43ee52ea80ac2ca75116da6f8ef707fbf784b667c84d7f10bd",
+      "decompressed_sha256": "1d01e453d948c4a535de0dbffe6967e00c5cb4a04e17df926ce67d17c81edd5e",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-return-edge.json.gz": {
+      "bytes": 9528,
+      "sha256": "5418bb97a129533678c9b1cf79a7ca9c311b68891a0b9a58bd0306156c0086d5",
+      "decompressed_sha256": "1fdd300670336a2fd0d0b61db1933148c809c050c6f372ad37071c04c64c9c7f",
+      "native": {
+        "instructions_executed": 20000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-running-w.json.gz": {
+      "bytes": 9282,
+      "sha256": "35f3c60a6bb0e0ee70d5fb525d9915186bffdc79850a741304756b5bd053f228",
+      "decompressed_sha256": "e792fe33c5b4103efe1cd46f3d0fdb357c1a04a49456a1d473ff1a673a6787cf",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-stale-observation.json.gz": {
+      "bytes": 6001,
+      "sha256": "85f44865480f156422d2cc7f4deaa3ffc9bfaee4afebccef649767e4aeb5f81a",
+      "decompressed_sha256": "1e80ecae8c482fa253a83f14a48af20017456172c840fff05f9b30e511cf084a",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "optimized-startup-active.json.gz": {
+      "bytes": 5602,
+      "sha256": "468e4ffd3e6441fb2fc834778d64717e5edc3cb7f7eeffa0b160a0990fe966e6",
+      "decompressed_sha256": "00bfcb9c00b12f7e5288f18e724eb81747f926b049e9f9c6c61001fe9d0968ca",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-analog-500.json.gz": {
+      "bytes": 476356,
+      "sha256": "ce831be790de68fdf1e79b9c57e6ce587982a065f0b4ae672bf602a058cbce9f",
+      "decompressed_sha256": "c6ec22aebc8fe3d5000abd666a0c5e69bdfac2840d6a309461a4265fbeca89b3",
+      "native": {
+        "instructions_executed": 16000003,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-analog-fault-after-arm.json.gz": {
+      "bytes": 6588,
+      "sha256": "f5cd9af484797ec83cf091a047b083c7fa16e9c865ce008dcab995aea6e2700f",
+      "decompressed_sha256": "cdc31beed9d36a9ae4f10761eec6b6b28c3b759114da0ca868546a5d27aac89e",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-analog-startup-fault.json.gz": {
+      "bytes": 6562,
+      "sha256": "9bb6277a56b0531ea44006d58cb76fd687308122a6e38e2e5f50d727e516a057",
+      "decompressed_sha256": "61f12765f956de2500b95c26104c3d427365a79486dc8f853b5f1ef495a14628",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-before-commit.json.gz": {
+      "bytes": 6557,
+      "sha256": "943d988aed3dc96f51c0006f90590cd9f71d9cca9ac42d97519a8c6cce08020d",
+      "decompressed_sha256": "f377f0bedb99a953e26ef7b0dcff6bd5d0a4535c36e18c7e8b60e254a9c6d288",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-digital-10.json.gz": {
+      "bytes": 6518,
+      "sha256": "7e26530497e664b90e462ff0abb1cb4dbe35d6ebdfdfaf6cdd793018fcbdf79e",
+      "decompressed_sha256": "f2016b0ead5015707a7a52ff1d52e644829d7946e6b8fe95a3f9a57c15ea0993",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-digital-500.json.gz": {
+      "bytes": 443739,
+      "sha256": "083e553bad0907851446dd1722701c2d5fabd9060399b143a9513ed3d5bcbbc1",
+      "decompressed_sha256": "c30d567e8a5068d17c1b9396c68f2721fc66a5083e50caff9c20915e0323485b",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-held-w.json.gz": {
+      "bytes": 20906,
+      "sha256": "d9ed6cf2c487f6e82e3a306cf72891896c0c6d27d34289fb81be40e17c84ac6b",
+      "decompressed_sha256": "50886344d4264641b5b7f6cbb9afdc1c6bcd7e2ed9310df30c1b1f86ec788d71",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-pc-transient.json.gz": {
+      "bytes": 6545,
+      "sha256": "d54c64673ab60b225e30d842b2a54407841c9e46a47a8b789072bb3b4a8b2295",
+      "decompressed_sha256": "a56567a39df377aae29d9fcb1bb5691a0503fd3a0436649058bd1c579d9cfa87",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-repress-w.json.gz": {
+      "bytes": 21514,
+      "sha256": "6eb1ae2193e9c11ca5411eb75fa5af84dd4fb02744a58824a296cf3ba6f2cb10",
+      "decompressed_sha256": "3766f154698ed4b537478add3a6d0fc977455b94445243542fc2ed3b99e8434a",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-running-w.json.gz": {
+      "bytes": 7542,
+      "sha256": "2a7a5c4c6a23ec6e25927b41fe9d860a7140d1f95770fdfb5e13079bd2e9d33b",
+      "decompressed_sha256": "3c2f6ae665af967e03287e8b8419fd8d726eb2a5b5a941061f73b3fc55aa9a28",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "original-startup-active.json.gz": {
+      "bytes": 6459,
+      "sha256": "0e55a6d481babf67f4b6b7a48ac0aa31f8374309849ca672971230835fea426e",
+      "decompressed_sha256": "b897ea71f45b9c7ced741102e2d07a5c9af72a078ec3b224ec2b03231a7448a6",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "outcomes.json": {
+      "bytes": 1442561,
+      "sha256": "72f258c479337f38640611d093cf1d0499bb22194851cb6e0e6ef0a35643cbe6"
+    },
+    "phase3-after-commit.json.gz": {
+      "bytes": 6976,
+      "sha256": "2f670a69fab54aa4a558f0d2e96b1ecbb10550867d6c55ae8311066122e526c7",
+      "decompressed_sha256": "3b3d5b19e314dd5955f8365e0c5f05b3c7f8fc0e16efb20dabc237ee4dd731d6",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-10.json.gz": {
+      "bytes": 5821,
+      "sha256": "9829f69fe757ec327f55e6060329a15067f135929fdb17528a19327d63bb3372",
+      "decompressed_sha256": "7e002339a4c89e5ef16c8cf31e4b257e8d959a0e0454117f1132aa6507a5b141",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-500.json.gz": {
+      "bytes": 469343,
+      "sha256": "0ffa5c717eb58f3a95a5b7980b21919e040e2ff7a8b31f888ae04ded7a36b20b",
+      "decompressed_sha256": "e60d732068de5907f8ced23a2bce8f0c9a3c6f5be749f0d6a8b164d91ddb6b0d",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-fault-after-arm.json.gz": {
+      "bytes": 6964,
+      "sha256": "846d33a57cce0513aa4f32caaf86d29711544d2d5e451094402ebc4fb35be944",
+      "decompressed_sha256": "a6d8207056de0937940b3830405a3bffc806ca590fc69e6c9adbf32b65c56231",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-startup-fault.json.gz": {
+      "bytes": 5686,
+      "sha256": "534e5f4c55745f7272d9ab8108b404d25787f1a79b0c97308d87a1f752fc6939",
+      "decompressed_sha256": "603f7bb7d806a99e21b9d043b11eafb0d9fac694d552148c2d93c1f58c71b551",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-x-change.json.gz": {
+      "bytes": 6007,
+      "sha256": "ac1cad2765bba04fd78060c4a0d769b60970c09be683d429624c3b4d4057f72a",
+      "decompressed_sha256": "b77290e9c5344fe9e4fce75bcf16c997ace41d661ee965ba7e4e3ad0fbb18587",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-x2-500.json.gz": {
+      "bytes": 7135,
+      "sha256": "9aa630227fe81ad63fbdbf57209dd688b6f21a1295966d01ab9cc694829ec7a5",
+      "decompressed_sha256": "d7a6dde7f2a6b8ca94f20d5100b141eb1ab74505e23d2ae292b93f7cb9371066",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-analog-x2-fault.json.gz": {
+      "bytes": 5908,
+      "sha256": "725bf4725c448f7ba85e0a8fa3e25dadf6ce0e374f2cb1599a43b85886ccd061",
+      "decompressed_sha256": "c4ec172b4381b98b8039bdbae4d6c28862e3fb530fa3383fc12f1d2a84180a66",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-before-commit.json.gz": {
+      "bytes": 10311,
+      "sha256": "de95931567c383cc1f8c6b9cd9bf5360aab80609c208e45f41762985db819a66",
+      "decompressed_sha256": "21a34b2c84aa1cd7a66aee3eaf7d2a0909182a6526397dc92bba8d2e566ce90b",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-cache-forged-filter.json.gz": {
+      "bytes": 7024,
+      "sha256": "3c95d828573376141163ee37e877d512707d23b5a1e8c9572c5c206ccdcb9e78",
+      "decompressed_sha256": "2bada0334cd4afc805ca8d50c78a531cc7f415de69b70b04b49a386b9886067f",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-cached-no-raw.json.gz": {
+      "bytes": 7030,
+      "sha256": "5f15dd71054e0793c6a2ee86c2ecc762f84fd3c01200e71d1ba4ec61af4c43bd",
+      "decompressed_sha256": "6202fd5f6f9c77d5f8889da58bdeae1ae3a7f13a24a9263bba0793d1a7ab41a8",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-digital-10.json.gz": {
+      "bytes": 6097,
+      "sha256": "9b8ec92bf763d7a1f0725a7cb7198133cb4ace8d579da8b7ac6231910d8077ea",
+      "decompressed_sha256": "8b9a6af455e85fc4f5a5c585b99592363124a90df11f9a52726b062ba524dab5",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-digital-49.json.gz": {
+      "bytes": 6100,
+      "sha256": "444e9912fd0a6d6ea438547f814bc4a63e5b0da2e3a6977b1f6a1246bd08bd0e",
+      "decompressed_sha256": "83c26372f23f33ed726eb5181fc7e92249848ca0f7138f6d279cafa30d822a15",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-digital-500.json.gz": {
+      "bytes": 440330,
+      "sha256": "942f552ccf2efe3f17e5f492b3e36e915f183ed5d9900d9c68e3c6290c49a8e1",
+      "decompressed_sha256": "ad7a6a244526addb97bdbcbe70e91f0e1576fce50afdd0c1a40e595e865f41d0",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-digital-51.json.gz": {
+      "bytes": 6100,
+      "sha256": "b00060a202fb78664f919d3d358d3395102f1122c037b79d919ea852f0bc6253",
+      "decompressed_sha256": "7e36afecfd6a8cb3c10c4f0a867359c2ff30855e83cc7638552a59cbbbc47010",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-digital-to-analog-active.json.gz": {
+      "bytes": 6041,
+      "sha256": "3bd089e73b08b2c9a3a97eb8e3c77a5f42751049e7755709d9db2cb0fc5c2f95",
+      "decompressed_sha256": "b58cb668ef94dc99400f369b3c2b7234c790aa0116d200f8f6361de1b02cb33e",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-gap20.json.gz": {
+      "bytes": 7045,
+      "sha256": "8a59a46578e2d29953f79a24fc243c8d413c9e4f84818a21c8ef277b42a7f5f7",
+      "decompressed_sha256": "f1e05b9c01dee8da24d73d53c0787a01583c73bc583cf48f09c9ca93ed08e30d",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-gap21.json.gz": {
+      "bytes": 6030,
+      "sha256": "219e325c149e02204f49dcd1fecbe7ff9cbbacd7c45ec57e16da44f41c78d0d4",
+      "decompressed_sha256": "cce35abdd99f3438a4487f59032c6aac03ae494c5b4a782650043ce5c0781b9f",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-gate-age20.json.gz": {
+      "bytes": 7005,
+      "sha256": "a81e94f85e0ce8c39c63c8dbd2e4bce28a8c89601acdd2e14e2fe3b55667cf40",
+      "decompressed_sha256": "b25f3f1e683735cf539beabf5f35a1da4f05292a1de8fb1282ecae9251a99ec4",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-gate-age21.json.gz": {
+      "bytes": 6259,
+      "sha256": "4c26814c8db37eb2affb71a8dec74bec9b8eff67503fa91acd8d814965cd67fb",
+      "decompressed_sha256": "a271ade64c7b802634d335b70dbdbe4ca00620fcd7a6861a1b126cdaf3c8c042",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-held-w.json.gz": {
+      "bytes": 28291,
+      "sha256": "163670cb73c8ecbfa9590eca69b1f86e9ea712e4fd6de29a80e3d231628c022b",
+      "decompressed_sha256": "d5c93d37bee3d6aa77ea154efa8dfdebcdc32c094ffb2b248f5b90b70d0db78b",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-invalid-state.json.gz": {
+      "bytes": 6106,
+      "sha256": "f176c47b064ddb9ba0bc61b31642908194c439e943d7c0a17546c71296c46eaf",
+      "decompressed_sha256": "7098af17aea0bb08f4199e232751cbee8a8a8c3e24787cd2b2e51580565feb23",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-mode-flip-active.json.gz": {
+      "bytes": 6052,
+      "sha256": "083c00bd1c2e2fbe8d8e850f798d8a19239054344d39a3998fecee2579f9eabe",
+      "decompressed_sha256": "93099377620cfb7d4ec562ce288808d6a9cb1c2d879098173fd78c29eb483742",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-pc-transient.json.gz": {
+      "bytes": 10074,
+      "sha256": "cdedef0ccc3d197b0bad27981d051924dd411e6140099ada5f4903a812d44620",
+      "decompressed_sha256": "3757896129391f55647bb49db5181298b0a449f979332c6710b64f867dc28ef7",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-release-during-motion.json.gz": {
+      "bytes": 22461,
+      "sha256": "393b09bda6fd27fb10da636b4c64140a46d08931af6cd16f4cc9eab2cbf2d326",
+      "decompressed_sha256": "8eae26692086bf07952d9713d026884177d7f8da0592d04efb8b3baccea454c7",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-repress-w.json.gz": {
+      "bytes": 22572,
+      "sha256": "7a8cd6d030e9a0c19e1d86ff8ec6f3f884eb0aea71069c2e8d2f94a064e6160f",
+      "decompressed_sha256": "33f369080d100e535b5aa8a62d308920d0fe9d4f36ca0355b84725d5d5a4ff9f",
+      "native": {
+        "instructions_executed": 65000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-return-edge.json.gz": {
+      "bytes": 12301,
+      "sha256": "85ab88b39e6bd7a291e3aec1ec2aa4d619d95c1c64da702c6bfdc3eb2ba0a93c",
+      "decompressed_sha256": "47b3734e1f54c15d8b00cca11eaf22d7aef75ee3a7dd1c95c264f92e0abc9b70",
+      "native": {
+        "instructions_executed": 20000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-running-w.json.gz": {
+      "bytes": 9386,
+      "sha256": "8492dc6473f54067924a265f83880fa43fa6b7be033f550ea53fb4f7ba38bda2",
+      "decompressed_sha256": "2ac9d41f618233923ba2ddf226eea1e4a47a4afccd92ff2d633b6c0a73dff246",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-stale-observation.json.gz": {
+      "bytes": 7122,
+      "sha256": "964afe191a2e70dbb271888190e1a7beb90fa7e3de6d6b11ceafe39ad0158470",
+      "decompressed_sha256": "c11ee29448bdfa8178d6e30e2357986b9a89c1c4d1b340b1785e9d386d4ecf01",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "phase3-startup-active.json.gz": {
+      "bytes": 5702,
+      "sha256": "a211248db878f383258c609ee4ce70075d47429d42715c037588801d5a4405e5",
+      "decompressed_sha256": "9b7585f09cd11b74561ef7a03dc1e07eb47b70640f603121dcb3d0035e228e15",
+      "native": {
+        "instructions_executed": 16000000,
+        "stop_reason": "instruction limit reached",
+        "error": null
+      }
+    },
+    "protected-baselines.json": {
+      "bytes": 48173,
+      "sha256": "e977ff7a8ddee866ab10f81fd24ed55daf2510edee5712b1b713d37058dd6e1b"
+    },
+    "raw-detour-disassembly.txt": {
+      "bytes": 279,
+      "sha256": "7fec8cd18ba352ef22ab57d61862c1f2d1ca17ea85b07810d0526ebb6679f653"
+    },
+    "reset-command.txt": {
+      "bytes": 552,
+      "sha256": "2475eb427a6cf8749ddf8202a2d1d991050aaa45420c52954a0d1dca45cf2d9f"
+    },
+    "reset-state-clear.json": {
+      "bytes": 6184,
+      "sha256": "5d188102b24dc1e674fbbbc588ff73e18caaa088fcf67d1dd3df92884a1f0ad8",
+      "native": {
+        "instructions_executed": 16334,
+        "stop_reason": "reached stop address 0x0000cc42",
+        "error": null
+      }
+    },
+    "return-edge.py": {
+      "bytes": 14321,
+      "sha256": "48643e6a1e7bff418560249e6c99db9a7c914aa13c788077576292e9608baca0"
+    },
+    "reuse.S": {
+      "bytes": 7674,
+      "sha256": "52e896fa640960e0ca1a2fb818b8f386abd0d5823a87d0f31d961a3534f17547"
+    },
+    "run-direct.py": {
+      "bytes": 300,
+      "sha256": "52f6b627d4d1829b7ef27f825bba4c853b15282eda2aa08c0692ced77ef72903"
+    },
+    "run-experiments.py": {
+      "bytes": 13440,
+      "sha256": "6e55598dbea8a2cb1d08bda8e8efaedfd1b4096f6f443a819987fb7014af486d"
+    },
+    "run-fragments.py": {
+      "bytes": 319,
+      "sha256": "7364c5e79418b2b1172023def54e40dcb8bb160c55cdc83bbeb36af633f2e4c2"
+    },
+    "run-frozen.py": {
+      "bytes": 290,
+      "sha256": "c3dad89bfb0d9e9c370581544abf1d2213771d20f562838827c758eb447ba92e"
+    },
+    "run-integrity.py": {
+      "bytes": 295,
+      "sha256": "e7b12a233e784d8085540731cc1b0bcb8c6811154d491048025c29ebb8d8e3d4"
+    }
+  }
+}
