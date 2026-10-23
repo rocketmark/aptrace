@@ -1,0 +1,435 @@
+{
+ "measurement": {
+  "extra": {
+   "ghidra_install_version": "12.1.3"
+  },
+  "peak_rss_bytes": 345767936,
+  "walker_seconds": 0.0178,
+  "wall_seconds": 2.8
+ },
+ "result": {
+  "analysis": "pcode_forward_use",
+  "analysis_version": 1,
+  "bounds": {
+   "max_steps": 20000
+  },
+  "driver_sha256": "43b07cb98635ff340fb01a691b43ee57c9c0f4f797cf211c6db93c673b5ecba0",
+  "engine": {
+   "argument_storage": [
+    "s0",
+    "s1",
+    "s2",
+    "s3",
+    "s4",
+    "s5",
+    "s6",
+    "s7",
+    "s8",
+    "s9",
+    "s10",
+    "s11",
+    "s12",
+    "s13",
+    "s14",
+    "s15",
+    "r0",
+    "r1",
+    "r2",
+    "r3"
+   ],
+   "calling_convention": "__stdcall",
+   "compiler_spec_id": "default",
+   "language_id": "ARM:LE:32:Cortex",
+   "language_version": "1.108",
+   "low_bit_code_mode": true,
+   "name": "ghidra",
+   "pointer_size": 4,
+   "program_counter": "pc",
+   "return_storage": "r0",
+   "stack_pointer": "sp",
+   "unaffected_storage": [
+    "r4",
+    "r5",
+    "r6",
+    "r7",
+    "r8",
+    "r9",
+    "r10",
+    "r11",
+    "d8",
+    "d9",
+    "d10",
+    "d11",
+    "d12",
+    "d13",
+    "d14",
+    "d15",
+    "sp",
+    "lr",
+    "pc"
+   ],
+   "version": "12.1.3"
+  },
+  "program": {
+   "executable_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+   "function_count": 436,
+   "image_base": "0x00000000",
+   "memory_blocks": [
+    {
+     "end": "0x0001546f",
+     "initialized": true,
+     "name": "ram",
+     "permissions": "rwx",
+     "start": "0x00004000"
+    }
+   ]
+  },
+  "results": [
+   {
+    "assumptions": [],
+    "complete": true,
+    "derivation": [],
+    "escape_kinds": [
+     "ARGUMENT_ESCAPE"
+    ],
+    "incomplete": [],
+    "kills": [
+     {
+      "address": "0x0000636a",
+      "by": "call clobber (cspec)",
+      "instruction": "bl 0x0000dae8",
+      "storage": "r0"
+     }
+    ],
+    "origin_address": "0x00006368",
+    "origin_instruction": "subs r0,r0,r3",
+    "origin_value": {
+     "kind": "computed"
+    },
+    "precision": [
+     {
+      "code": "ARGUMENT_BY_STORAGE",
+      "detail": "ARGUMENT means the value may be in argument storage of the default calling convention at a call or tail transfer; whether the callee reads it is not analyzed"
+     }
+    ],
+    "scope": {
+     "body": [
+      [
+       "0x00006338",
+       "0x0000663f"
+      ],
+      [
+       "0x0000669c",
+       "0x000068eb"
+      ]
+     ],
+     "body_bytes": 1368,
+     "function_entry": "0x00006338",
+     "function_name": "FUN_00006338",
+     "kind": "function"
+    },
+    "status": "analyzed",
+    "tracked": {
+     "storage": "r0",
+     "varnode": "(register, 0x20, 4)"
+    },
+    "uses": [
+     {
+      "address": "0x00006368",
+      "detail": "INT_EQUAL",
+      "instruction": "subs r0,r0,r3",
+      "kind": "COMPARE",
+      "pcode_op": "INT_EQUAL",
+      "via": [
+       "r0"
+      ]
+     },
+     {
+      "address": "0x00006368",
+      "detail": "INT_SLESS",
+      "instruction": "subs r0,r0,r3",
+      "kind": "COMPARE",
+      "pcode_op": "INT_SLESS",
+      "via": [
+       "r0"
+      ]
+     },
+     {
+      "address": "0x0000636a",
+      "callee": "FUN_0000dae8",
+      "detail": "may be live in argument storage at call to 0x0000dae8 (FUN_0000dae8)",
+      "instruction": "bl 0x0000dae8",
+      "kind": "ARGUMENT",
+      "pcode_op": "CALL",
+      "via": [
+       "r0"
+      ]
+     },
+     {
+      "address": "0x0000636a",
+      "detail": "no copy of the value survives this edge to 0x0000636e",
+      "instruction": "bl 0x0000dae8",
+      "kind": "DEAD",
+      "pcode_op": null,
+      "via": []
+     }
+    ],
+    "verdict": "ESCAPE",
+    "work": {
+     "budget_exhausted": false,
+     "instructions": 1,
+     "max_steps": 20000,
+     "steps": 1
+    }
+   },
+   {
+    "assumptions": [],
+    "complete": true,
+    "derivation": [
+     {
+      "address": "0x000066ee",
+      "from": [
+       "r3"
+      ],
+      "instruction": "str.w r0,[r3,r4,lsl #0x2]",
+      "pcode_index": 1,
+      "pcode_op": "INT_ADD",
+      "to": "$U12ba00:4"
+     },
+     {
+      "address": "0x000066f6",
+      "from": [
+       "r3"
+      ],
+      "instruction": "ldr.w r1,[r3,r4,lsl #0x2]",
+      "pcode_index": 1,
+      "pcode_op": "INT_ADD",
+      "to": "$U12ba00:4"
+     },
+     {
+      "address": "0x000066fe",
+      "from": [
+       "r3"
+      ],
+      "instruction": "str.w r2,[r3,r4,lsl #0x2]",
+      "pcode_index": 1,
+      "pcode_op": "INT_ADD",
+      "to": "$U12ba00:4"
+     }
+    ],
+    "escape_kinds": [],
+    "incomplete": [],
+    "kills": [
+     {
+      "address": "0x0000670c",
+      "by": "INT_ZEXT",
+      "instruction": "ldrb.w r3,[r8,r4]",
+      "storage": "r3"
+     }
+    ],
+    "origin_address": "0x000066ea",
+    "origin_instruction": "ldr r3,[0x000068f0]",
+    "origin_value": {
+     "code_address": "0x2000007c",
+     "function_at_code_address": null,
+     "kind": "load",
+     "size": 4,
+     "source_address": "0x000068f0",
+     "source_block": "ram",
+     "source_block_writable": true,
+     "source_initialized": true,
+     "value": "0x2000007c"
+    },
+    "precision": [],
+    "scope": {
+     "body": [
+      [
+       "0x00006338",
+       "0x0000663f"
+      ],
+      [
+       "0x0000669c",
+       "0x000068eb"
+      ]
+     ],
+     "body_bytes": 1368,
+     "function_entry": "0x00006338",
+     "function_name": "FUN_00006338",
+     "kind": "function"
+    },
+    "status": "analyzed",
+    "tracked": {
+     "storage": "r3",
+     "varnode": "(register, 0x2c, 4)"
+    },
+    "uses": [
+     {
+      "address": "0x000066ee",
+      "detail": "used as a store address",
+      "instruction": "str.w r0,[r3,r4,lsl #0x2]",
+      "kind": "DEREFERENCE_STORE",
+      "pcode_op": "STORE",
+      "via": [
+       "$U12ba00:4"
+      ]
+     },
+     {
+      "address": "0x000066f6",
+      "detail": "used as a load address",
+      "instruction": "ldr.w r1,[r3,r4,lsl #0x2]",
+      "kind": "DEREFERENCE_LOAD",
+      "pcode_op": "LOAD",
+      "via": [
+       "$U12ba00:4"
+      ]
+     },
+     {
+      "address": "0x000066fe",
+      "detail": "used as a store address",
+      "instruction": "str.w r2,[r3,r4,lsl #0x2]",
+      "kind": "DEREFERENCE_STORE",
+      "pcode_op": "STORE",
+      "via": [
+       "$U12ba00:4"
+      ]
+     },
+     {
+      "address": "0x00006708",
+      "detail": "live outside return storage at return",
+      "instruction": "pop.w {r4,r5,r6,r7,r8,r9,r10,r11,pc}",
+      "kind": "ENDS_AT_RETURN",
+      "pcode_op": "RETURN",
+      "via": [
+       "r3"
+      ]
+     },
+     {
+      "address": "0x0000670c",
+      "detail": "no copy of the value survives this edge to 0x00006710",
+      "instruction": "ldrb.w r3,[r8,r4]",
+      "kind": "DEAD",
+      "pcode_op": null,
+      "via": []
+     }
+    ],
+    "verdict": "NO_ESCAPE_WITHIN_SCOPE",
+    "work": {
+     "budget_exhausted": false,
+     "instructions": 11,
+     "max_steps": 20000,
+     "steps": 11
+    }
+   },
+   {
+    "assumptions": [],
+    "complete": true,
+    "derivation": [],
+    "escape_kinds": [
+     "MEMORY_ESCAPE"
+    ],
+    "incomplete": [],
+    "kills": [
+     {
+      "address": "0x00005f2e",
+      "by": "INT_ZEXT",
+      "instruction": "ldrb r3,[r7,r4]",
+      "storage": "r3"
+     }
+    ],
+    "origin_address": "0x00005f26",
+    "origin_instruction": "lsrs r3,r3,#0x7",
+    "origin_value": {
+     "kind": "computed"
+    },
+    "precision": [
+     {
+      "code": "MEMORY_FLOW_NOT_FOLLOWED",
+      "detail": "the value is stored to memory (computed); later reloads and uses through memory are not tracked, so MEMORY_ESCAPE is a sound over-approximation"
+     }
+    ],
+    "scope": {
+     "body": [
+      [
+       "0x00005ee8",
+       "0x00005f73"
+      ]
+     ],
+     "body_bytes": 140,
+     "function_entry": "0x00005ee8",
+     "function_name": "FUN_00005ee8",
+     "kind": "function"
+    },
+    "status": "analyzed",
+    "tracked": {
+     "storage": "r3",
+     "varnode": "(register, 0x2c, 4)"
+    },
+    "uses": [
+     {
+      "address": "0x00005f26",
+      "detail": "INT_EQUAL",
+      "instruction": "lsrs r3,r3,#0x7",
+      "kind": "COMPARE",
+      "pcode_op": "INT_EQUAL",
+      "via": [
+       "r3"
+      ]
+     },
+     {
+      "address": "0x00005f26",
+      "detail": "INT_SLESS",
+      "instruction": "lsrs r3,r3,#0x7",
+      "kind": "COMPARE",
+      "pcode_op": "INT_SLESS",
+      "via": [
+       "r3"
+      ]
+     },
+     {
+      "address": "0x00005f28",
+      "detail": "stored to memory",
+      "instruction": "str.w r3,[r6,r4,lsl #0x2]",
+      "kind": "STORE",
+      "pcode_op": "STORE",
+      "store_target": {
+       "region": "computed"
+      },
+      "via": [
+       "r3"
+      ]
+     },
+     {
+      "address": "0x00005f2e",
+      "detail": "no copy of the value survives this edge to 0x00005f30",
+      "instruction": "ldrb r3,[r7,r4]",
+      "kind": "DEAD",
+      "pcode_op": null,
+      "via": []
+     }
+    ],
+    "verdict": "ESCAPE",
+    "work": {
+     "budget_exhausted": false,
+     "instructions": 3,
+     "max_steps": 20000,
+     "steps": 3
+    }
+   }
+  ],
+  "status": "ok",
+  "target": {
+   "base": "0x4000",
+   "compiler_spec_id": "default",
+   "image_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+   "language_id": "ARM:LE:32:Cortex",
+   "mode": "project",
+   "program": "firmware_autopilot915.bin",
+   "project_identity": null
+  },
+  "walker": {
+   "name": "aptrace-pcode-forward-use",
+   "version": 1
+  },
+  "walker_sha256": "2de9ae3d230d652f326487afb21ec2577d8266d5571e00580c5c408d422d921c"
+ }
+}

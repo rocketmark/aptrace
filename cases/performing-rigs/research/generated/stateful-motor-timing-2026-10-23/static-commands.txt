@@ -1,0 +1,17 @@
+# Environment used for Ghidra commands:
+# JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+# JAVA_TOOL_OPTIONS=-Duser.home=/tmp/aptrace-ghidra-home
+python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0x6338 0x5ee8 0x5c00 0x5f8c 0xccd0
+python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0xccdc 0x6b50 0x6260
+python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0x93fc
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x6338 0x669c
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x669c 0x6726
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x5ee8 0x5fac
+python3 tools/ghidra/aptrace_ghidra.py dump autopilot915 0x6640 --length 92
+python3 tools/ghidra/aptrace_ghidra.py dump autopilot915 0x68ec --length 36
+python3 tools/ghidra/aptrace_ghidra.py dump autopilot915 0x5f74 --length 28
+python3 tools/ghidra/aptrace_ghidra.py dump autopilot915 0x6318 --length 32
+python3 tools/ghidra/aptrace_ghidra.py dump autopilot915 0x9458 --length 12
+python3 tools/ghidra/pcode_forward_use.py project cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin --sha256 0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920 --language ARM:LE:32:Cortex --cspec default --base 0x4000 --project-dir cases/performing-rigs/research/runs/ghidra_cache/autopilot915 --project-name aptrace --program firmware_autopilot915.bin --origin 0x6368:r0 --origin 0x66ea:r3 --origin 0x5f26:r3
+# Initial p-code request used 0x66ee:r0 instead of 0x66ea:r3; unsupported REGISTER_NOT_WRITTEN, retained.
+# Initial dump attempt passed an ending address; corrected to --length (no artifact from invalid invocation).

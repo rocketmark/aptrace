@@ -41,8 +41,12 @@ The [Phase 3 experiment](docs/investigations/stateful-trigger-qualification-phas
 is complete as a bounded working subset, with overall mitigation PARTIAL. Preserve
 its binary/evidence. Existing APTrace operations can probe W during qualification,
 additional pulse phases, mode/filter transitions and selected manual/internal paths.
-Prioritize explaining the changed initial timer periods before asserting motion
-profile preservation. Validated continuous TC/NVIC service and stronger frame/writer
+The [timing investigation](docs/investigations/stateful-patch-motor-timing-preservation.md)
+now explains the initial periods as different sampled ages of the same prepared
+profile law under instruction-paced time. Next assess native-acquisition reuse,
+independent release sampling and scheduler budget before a separately authorized
+patch change; compare equivalent elapsed/feedback states as well as start-aligned
+streams. Physical timing and whole-motion preservation remain unproven. Validated continuous TC/NVIC service and stronger frame/writer
 closure require separate framework work; physical timing, exact field firmware and
 flash/update ownership require new evidence. Sustained false-active after arming
 needs electrical discrimination or a changed product contract, not another claim

@@ -34,6 +34,21 @@ provenance, initialized coupled Remote service, nonzero return, multi-record/
 full-W-burst behavior and universal writer/IRQ closure remain open. No firmware,
 model, framework or Gate1–5 verdict changed; VVR recurrence is not explained.
 
+## Stateful patch motor-timing cause
+
+The [timing investigation](docs/investigations/stateful-patch-motor-timing-preservation.md)
+explains all sampled CC0 differences through profile age, unchanged coefficients
+and native period scaling. Six matched traces, nine frozen-clock evaluator controls,
+three prepared-state captures and four two-leg clock controls support this result;
+2,869 saved-artifact checks pass. At equal elapsed/feedback state all three images
+produce identical evaluator/timer results. The recurring poll hook adds median97
+instructions digital /373 analog beyond the original prologue, including while
+live. Profile origin and shared5ms scheduler phase differ, so start alignment
+alone does not make streams equal. Guest instruction time is not physical CPU
+cost, and COUNT/position feedback remains unvalidated. Whole-motion preservation
+is still unproven. Next test native-acquisition reuse and bounded background work;
+no third patch, hardware work, model or gate change was performed.
+
 ## Stateful external-trigger qualification experiment
 
 [Phase 3](docs/investigations/stateful-trigger-qualification-phase3.md) produces a

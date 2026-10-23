@@ -1,0 +1,9 @@
+{
+  "cases/performing-rigs/research/generated/stateful-trigger-patch-2026-10-22/stateful.S": "bf798efc89846ae2e3bd728757feba38a28db89b31bac4281bf0240c682b01a1",
+  "cases/performing-rigs/research/generated/stateful-trigger-patch-2026-10-22/generate-patch.py": "287860ce742721b5d7a3483b38a6548ea8c31fb1d91db28b4509181b6acf4958",
+  "cases/performing-rigs/research/generated/stateful-trigger-patch-2026-10-22/modification-manifest.json": "290f2a2952ecc02222d305344d1cf8146a1d71b1719965429995072090369f7e",
+  "cases/performing-rigs/research/generated/stateful-trigger-patch-2026-10-22/run-experiments.py": "9ec885004fca8b7a9d102323e7d0adc0ef840b11115c97f4251bdfe7bd4cea7d",
+  "cases/performing-rigs/research/generated/stateful-trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_stateful.bin": "29d4bd68348bcfccef26098c4cf6cc85a1f2ef40a861d046b7c4c43e76f230db",
+  "cases/performing-rigs/research/generated/trigger-patch-2026-10-22/RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_freshness.bin": "ae9e6a749426fc3d800a0e26d016cc58f818ce8f84d5a7ba12c41d6d727bc616",
+  "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920"
+}
