@@ -1,0 +1,75 @@
+{
+  "firmware": "cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "entry": "0x00011039",
+  "instructions_executed": 11,
+  "stop_reason": "reached stop address 0x2fff0010",
+  "error": null,
+  "error_free": true,
+  "completed": true,
+  "requested_stop_at": [
+    "0x2fff0010"
+  ],
+  "execution_mode": "continuous",
+  "registers": {
+    "r0": "0x2000531c",
+    "r1": "0x2000531c",
+    "r2": "0x20005308",
+    "r3": "0x2000531c",
+    "r4": "0x00000000",
+    "r5": "0x00000000",
+    "r6": "0x00000000",
+    "r7": "0x00000000",
+    "r8": "0x00000000",
+    "r9": "0x00000000",
+    "r10": "0x00000000",
+    "r11": "0x00000000",
+    "r12": "0x00000000",
+    "sp": "0x20030000",
+    "lr": "0x2fff0011",
+    "pc": "0x2fff0010",
+    "cpsr": "0x60100033"
+  },
+  "memory": {
+    "0x20005308": "5c530020"
+  },
+  "reg_pointee": {},
+  "recent_pcs": [
+    "0x00011038",
+    "0x0001103a",
+    "0x0001103c",
+    "0x0001103e",
+    "0x00011040",
+    "0x00011042",
+    "0x00011044",
+    "0x00011046",
+    "0x00011048",
+    "0x0001104a",
+    "0x2fff0010"
+  ],
+  "visited_pcs": null,
+  "ram_log": [],
+  "applied_seeds": [],
+  "watch_hits": [],
+  "mmio_log": [],
+  "stub_hits": [],
+  "mem_write_hits": [],
+  "mem_write_dropped": 0,
+  "fake_ticks_applied": [],
+  "mmio_force_bits_applied": [],
+  "mmio_clear_bits_applied": [],
+  "force_reg_hits": [],
+  "force_mem_hits": [],
+  "call": {
+    "function": "0x00011038",
+    "args": [
+      "0x00000040"
+    ],
+    "returned": true,
+    "return_registers": {
+      "r0": "0x2000531c",
+      "r1": "0x2000531c",
+      "r2": "0x20005308",
+      "r3": "0x2000531c"
+    }
+  }
+}

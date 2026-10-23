@@ -1,0 +1,818 @@
+[
+  {
+    "check": "original-digital-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-digital-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-digital-500: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-digital-10: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-digital-10: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-digital-10: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-startup-active: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-startup-active: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-startup-active: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-pc-transient: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-pc-transient: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-pc-transient: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-before-commit: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-before-commit: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-before-commit: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-analog-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-analog-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-analog-500: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-analog-startup-fault: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-analog-startup-fault: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-analog-startup-fault: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-analog-fault-after-arm: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-analog-fault-after-arm: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-analog-fault-after-arm: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-held-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-held-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-held-w: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-held-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "original-held-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "original-running-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-running-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-running-w: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-running-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "original-running-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "original-repress-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "original-repress-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "original-repress-w: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "original-repress-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "original-repress-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "first-digital-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-digital-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-digital-500: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-digital-10: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-digital-10: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-digital-10: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-startup-active: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-startup-active: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-startup-active: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-pc-transient: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-pc-transient: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-pc-transient: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-before-commit: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-before-commit: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-before-commit: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-analog-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-analog-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-analog-500: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-analog-startup-fault: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-analog-startup-fault: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-analog-startup-fault: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-analog-fault-after-arm: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-analog-fault-after-arm: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-analog-fault-after-arm: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-held-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-held-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-held-w: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-held-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "first-held-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "first-running-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-running-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-running-w: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-running-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "first-running-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "first-repress-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "first-repress-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "first-repress-w: baseline characterized",
+    "pass": true
+  },
+  {
+    "check": "first-repress-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "first-repress-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-500: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-500: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-10: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-startup-active: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-pc-transient: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-before-commit: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-500: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-500: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-startup-fault: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-fault-after-arm: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-fault-after-arm: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-fault-after-arm: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-fault-after-arm: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "stateful-held-w: W restores eligibility",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "stateful-running-w: W restores eligibility",
+    "pass": true
+  },
+  {
+    "check": "stateful-repress-w: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-repress-w: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-repress-w: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-repress-w: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-repress-w: one supplied W only",
+    "pass": true
+  },
+  {
+    "check": "stateful-repress-w: return request executed",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-49: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-51: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-51: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-51: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-51: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-after-commit: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-after-commit: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-after-commit: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-after-commit: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: intended acceptance count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: intended initiation count",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: rejected before 0x5f8c",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: rejected before 0x571c",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: rejected before 0x5810",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-10: rejected before 0x5fa4",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-x2-500: native success and complete bound",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-x2-500: untruncated",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-x2-500: intended acceptance count",
+    "pass": false
+  },
+  {
+    "check": "stateful-analog-x2-500: intended initiation count",
+    "pass": false
+  },
+  {
+    "check": "original-digital-500: same program record",
+    "pass": true
+  },
+  {
+    "check": "first-digital-500: same program record",
+    "pass": true
+  },
+  {
+    "check": "stateful-digital-500: same program record",
+    "pass": true
+  },
+  {
+    "check": "original-analog-500: same program record",
+    "pass": true
+  },
+  {
+    "check": "first-analog-500: same program record",
+    "pass": true
+  },
+  {
+    "check": "stateful-analog-500: same program record",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset: native live boundary",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset: same final TC0/live",
+    "pass": true
+  },
+  {
+    "check": "B1-full-reset: no trigger grant consumed",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable: native live boundary",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable: same final TC0/live",
+    "pass": true
+  },
+  {
+    "check": "G-to-enable: no trigger grant consumed",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable: native live boundary",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable: same final TC0/live",
+    "pass": true
+  },
+  {
+    "check": "W1-nonzero-to-enable: no trigger grant consumed",
+    "pass": true
+  },
+  {
+    "check": "original and patched identity",
+    "pass": true
+  },
+  {
+    "check": "listed bytes 0x8e18",
+    "pass": true
+  },
+  {
+    "check": "listed bytes 0x8f98",
+    "pass": true
+  },
+  {
+    "check": "listed bytes 0x81d0",
+    "pass": true
+  },
+  {
+    "check": "listed bytes 0xcca0",
+    "pass": true
+  },
+  {
+    "check": "listed bytes 0x11050",
+    "pass": true
+  },
+  {
+    "check": "no unlisted original-region changes",
+    "pass": true
+  },
+  {
+    "check": "reset clears reserved64 bytes",
+    "pass": true
+  },
+  {
+    "check": "heap begins above new state",
+    "pass": true
+  },
+  {
+    "check": "accepted inline frame preserved",
+    "pass": true
+  },
+  {
+    "check": "bounded new-state write ownership",
+    "pass": true
+  }
+]

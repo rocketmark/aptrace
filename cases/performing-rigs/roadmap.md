@@ -32,8 +32,22 @@ naturally initialized Remote session/RX state while replaying captured @/status
 traffic through its general service, then close nonzero return, multi-record,
 full six-W arrival timing and feasible ISR interleavings. Existing bounded
 APTrace operations should be used first; validated coupled/peripheral workflows
-or complete alias closure are separate development if needed. No second patch,
-model change or physical experiment is authorized by these recommendations.
+or complete alias closure are separate development if needed. Phase 3 separately implements the expressly requested simulation-only second
+patch; these recommendations do not authorize a model change or physical experiment.
+
+## Stateful patch follow-up
+
+The [Phase 3 experiment](docs/investigations/stateful-trigger-qualification-phase3.md)
+is complete as a bounded working subset, with overall mitigation PARTIAL. Preserve
+its binary/evidence. Existing APTrace operations can probe W during qualification,
+additional pulse phases, mode/filter transitions and selected manual/internal paths.
+Prioritize explaining the changed initial timer periods before asserting motion
+profile preservation. Validated continuous TC/NVIC service and stronger frame/writer
+closure require separate framework work; physical timing, exact field firmware and
+flash/update ownership require new evidence. Sustained false-active after arming
+needs electrical discrimination or a changed product contract, not another claim
+of debounce completeness. No new gates, deployment or framework implementation
+is authorized by this follow-up.
 
 ## Trigger reliability follow-up
 
@@ -281,25 +295,14 @@ the way.
 
 ## Open — trigger-input mitigation
 
-A software mitigation (consecutive-sample debounce on the digital arm) is
-designed and Unicorn-prototyped in
-[`cases/performing-rigs/docs/investigations/trigger-input.md`](docs/investigations/trigger-input.md),
-but nothing has been flashed to real hardware. Before any patch is real:
-
-4. **Get physical measurements** at the trigger jack and at PB05:
-   transient polarity/duration/bounce count, whether the line floats when
-   disconnected, and whether the MCU-side waveform matches the jack-side
-   waveform. Also measure the real main-loop period (to convert a
-   poll-count debounce threshold into real time) and the minimum
-   legitimate trigger pulse width.
-5. **Find a verified, real flash code cave** for the mitigation trampoline
-   — the current design uses a harness-only scratch page. The most
-   promising unexplored option is flash beyond the current image's end,
-   within the part's real 512KB; this needs either a real device flash
-   dump or vendor/BOSSA documentation review, not assumed blank.
-6. Once (4) and (5) are done: pick a real debounce threshold, build a real
-   flashable patch, and validate it against a real device — none of this
-   has been attempted yet.
+A simulation-only [stateful915 binary](docs/investigations/stateful-trigger-qualification-phase3.md)
+now exists alongside the first freshness patch. Neither is hardware qualified.
+Remaining physical evidence requirements are jack/PB05/ADC polarity and timing,
+mode and revision correspondence, real acquisition cadence and intentional pulse
+width, plus actual ownership of appended flash and update/bootloader contracts.
+Do not infer a flashable release from the simulation extension or treat the
+experimental50-tick intervals as measured physical debounce. Any physical unit
+work requires a separate authorized plan and recovery evidence.
 
 ## Open — hardware-bringup loose ends
 

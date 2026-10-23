@@ -1,0 +1,80 @@
+{
+  "warning": "SIMULATION RESEARCH ONLY; NOT FOR HARDWARE DEPLOYMENT",
+  "source_path": "/Users/mstalzer/github/aptrace/cases/performing-rigs/research/firmware/originals/firmware_autopilot915.bin",
+  "source_sha256": "0e8e807ac987a61659c95111c0532083d761ca01f0b7def51e6acd409bfd7920",
+  "original_size": 70768,
+  "patched_file": "RESEARCH_ONLY_NOT_FOR_HARDWARE_autopilot915_stateful.bin",
+  "patched_size": 71384,
+  "patched_sha256": "29d4bd68348bcfccef26098c4cf6cc85a1f2ef40a861d046b7c4c43e76f230db",
+  "load_base": "0x4000",
+  "extension": {
+    "address": "0x15470",
+    "size": 616,
+    "bytes": "2de9f74f2de90f5000f078f8bde80f50dff894f02de90f502448002101608160bde80f50dff888f02de9f0501f4f21480078022827d0012833d144f2a52ce04705463b204df2b51ce04704461a480068012806d0022824d140f2fa0240f2ee2303e040f2c80240f244230020944201db9c4201dd40f00100954201db9d420cdd40f0020009e039204df2dd3ce0470446054600280cbf03200020bc61fd61bde8f0900420bde8f0901d8e00001c530020ffb20000c01f0020940100200a48006878b90a4800687b280bd109480078092807d10848007820b90748007808b90120704700207047000024250020381b0020d800002020310020600000202de9f041324c4cf6d14ce0470546216a691a142913d82f490978a26891420ed12d490968e268914209d12c4909682269914204d12a4909786269914202d0002121606560256223490978a16022490968e16022490968216121490978616199bb2668042e30d8fff761ff002808d0032815d0012828d1022e26d30221216025e0022e23d0012e06d16168691a32291dd3022121601ae001212160656016e0022e12d3fff78dff00280ed0042e0ed0032e06d16168691a322908d30421216005e003212160656001e000212160bde8f0811c530020c01f002094010020381b0020203100202de9ff5f1a4c206804282cd1fff71cff032826d14cf6d14ce047216a401a14281fd8eff3108672b6fff758ff002816d010480078a168884211d10f480068e16888420cd100202060a06a0130a06286f31088bde8ff5f094b0322dff824f086f3108800202060bde8ff5fdff818f000001c530020c01f002094010020bc2500209d8f000033920000"
+  },
+  "modifications": [
+    {
+      "address": "0x8e18",
+      "file_offset": "0x4e18",
+      "before": "2de9f74f",
+      "after": "0cf02abb"
+    },
+    {
+      "address": "0x8f98",
+      "file_offset": "0x4f98",
+      "before": "6b4b0322",
+      "after": "0cf05abb"
+    },
+    {
+      "address": "0x81d0",
+      "file_offset": "0x41d0",
+      "before": "03f095b8",
+      "after": "0df058b9"
+    },
+    {
+      "address": "0xcca0",
+      "file_offset": "0x8ca0",
+      "before": "1c530020",
+      "after": "5c530020"
+    },
+    {
+      "address": "0x11050",
+      "file_offset": "0xd050",
+      "before": "1c530020",
+      "after": "5c530020"
+    }
+  ],
+  "symbols": {
+    "$t": "0x15650",
+    "$d": "0x156c0",
+    "poll_hook": "0x15470",
+    "accept_hook": "0x15650",
+    "program_hook": "0x15484",
+    "armed": "0x155fc",
+    "qualified": "0x15626",
+    "commit": "0x15694"
+  },
+  "new_state": {
+    "start": "0x2000531c",
+    "end_exclusive": "0x2000535c",
+    "bytes": 64,
+    "reservation": "Extend reset BSS end at cca0 AND allocator initial-break literal at11050; preserve existing heap cursor20005308"
+  },
+  "policy": {
+    "inactive_ticks": 50,
+    "active_ticks": 50,
+    "maximum_poll_gap_ticks": 20,
+    "states": {
+      "0": "need inactive",
+      "1": "qualifying inactive",
+      "2": "armed",
+      "3": "qualifying active",
+      "4": "qualified"
+    },
+    "analog": "fresh raw AND native filtered classification must agree; X1/X2 only",
+    "commit": "fresh classification, stable context/eligibility and atomic consume before original queue1 store"
+  },
+  "compatibility": "Exact original915 only. Appended executable extent allocated for simulation; no physical flash ownership/bootloader claim.",
+  "assembly_sha256": "bf798efc89846ae2e3bd728757feba38a28db89b31bac4281bf0240c682b01a1",
+  "object_sha256": "73577fea25bec549d5366d4fcce58936e1601cad5c48321d85f77eef549defac"
+}

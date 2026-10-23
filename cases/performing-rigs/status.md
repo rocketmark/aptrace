@@ -34,6 +34,23 @@ provenance, initialized coupled Remote service, nonzero return, multi-record/
 full-W-burst behavior and universal writer/IRQ closure remain open. No firmware,
 model, framework or Gate1–5 verdict changed; VVR recurrence is not explained.
 
+## Stateful external-trigger qualification experiment
+
+[Phase 3](docs/investigations/stateful-trigger-qualification-phase3.md) produces a
+second actual915 binary, **NOT FOR HARDWARE DEPLOYMENT**, with shared digital/analog
+qualification, initial inactive arming, fresh acquisition and consumed authorization.
+Native matched histories reject a10-tick pulse, saved-LOW/current-HIGH transient,
+startup-active input and pre-arm analog fault; nominal500-tick digital/analog inputs
+still initiate. A single W after completion or during execution restores idle9
+without held-input repetition; qualified release/repress permits the next start.
+Direct G/W1/B1 preserve their tested timer/live endpoints. Overall mitigation is
+**PARTIAL**: sustained false-active after arming and post-commit release still
+initiate; trigger-driven timer periods/write streams differ. Physical timing,
+flash ownership, universal writer/IRQ closure and continuous STEP service remain
+unqualified. This does not reproduce an autonomous field loop or change the first
+patch's Gate1–4 findings. Originals, first patch, models and apfw2 remain unchanged;
+Gate5 remains NOT RUN. See the dossier and packet for bounded evidence and checks.
+
 ## Physical trigger failure correlation
 
 The [VVR assessment](docs/investigations/vvr-trigger-failure-correlation.md)

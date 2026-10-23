@@ -1,0 +1,13 @@
+# APTrace Ghidra commands; use the JAVA_HOME/JAVA_TOOL_OPTIONS environment in README.
+python3 tools/ghidra/aptrace_ghidra.py build autopilot915_stateful_research
+python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0xcc24 0x8e18 0x42a4
+python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0xcdd8 0xcd90
+python3 tools/ghidra/aptrace_ghidra.py decompile autopilot915 0xf3dc 0x11038
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x10ffc 0x11060
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x8e18 0x8e50
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x9220 0x9248
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x81b0 0x81d4
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915 0x8710 0x8730
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915_stateful_research 0x15470 0x156d8
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915_stateful_research 0x8f90 0x8fa8
+python3 tools/ghidra/aptrace_ghidra.py disasm autopilot915_stateful_research 0xcc68 0xcc8c
